@@ -27,4 +27,8 @@ Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-An
 
 - Planning development in the [issues](https://github.com/scribe-org/Scribe-Android/issues)
 
-- Creating an MVP: noun-gender coloration for any language that is currently in Scribe-iOS
+- Creating an MVP that would include:
+
+  - Noun-gender coloration for any language that is currently in Scribe-iOS
+
+  - Commands for querying the conjugation of verbs and plurals of nouns
