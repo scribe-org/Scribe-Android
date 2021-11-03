@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/scribe-org/Scribe-Android"><img src="https://github.com/scribe-org/Scribe-Android/blob/main/Resources/Scribe-Android_logo_transparent.png" width=795 height=164></a>
+  <a href="https://github.com/scribe-org/Scribe-Android"><img src="https://github.com/scribe-org/Scribe-Android/blob/main/Resources/Scribe-Android_logo_transparent.png" width=807 height=164></a>
 </div>
 
 ---
