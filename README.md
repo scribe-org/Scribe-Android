@@ -13,7 +13,7 @@
 
 ### Scribe language keyboards for Android
 
-This repository would contain the Android version of Scribe. Developers interested in porting [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS) to Android are invited to discuss the project in the [issues](https://github.com/scribe-org/Scribe-Android/issues). Contributors would be able to join the Scribe organization, which is currently looking for people interested in bringing Scribe to both Android and desktop as an extension to various platforms.
+This repository would contain the Android version of Scribe. Developers interested in helping to port [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS) to Android are invited to discuss the project in the [issues](https://github.com/scribe-org/Scribe-Android/issues).
 
 Thanks for your interest in contributing!
 
@@ -25,10 +25,12 @@ Thanks for your interest in contributing!
 
 Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/.github/CONTRIBUTING.md) if you are interested in contributing to this project. Work that is in progress or could be implemented includes:
 
-- Planning development in the [issues](https://github.com/scribe-org/Scribe-Android/issues)
+- Planning development of Scribe-Android in the [issues](https://github.com/scribe-org/Scribe-Android/issues)
 
 - Creating an MVP that would include:
 
-  - Noun-gender annotation for any language that is currently in Scribe-iOS
+  - Noun and preposition annotation for any language that is currently in Scribe-iOS
 
-  - Commands for querying the conjugation of verbs and plurals of nouns
+  - Commands for querying the conjugations of verbs and plurals of nouns
+
+  - Accessing translations of words from a common directory in [scribe-org](https://github.com/scribe-org)
