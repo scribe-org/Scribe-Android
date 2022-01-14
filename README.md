@@ -23,7 +23,7 @@ Thanks for your interest in contributing!
 
 # To-Do [`↩`](#contents) <a id="to-do"></a>
 
-Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/.github/CONTRIBUTING.md) if you are interested in contributing to this project. Work that is in progress or could be implemented includes:
+Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to this project. Work that is in progress or could be implemented includes:
 
 - Planning development of Scribe-Android in the [issues](https://github.com/scribe-org/Scribe-Android/issues)
 
