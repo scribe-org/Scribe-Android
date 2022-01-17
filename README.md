@@ -33,4 +33,4 @@ Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-An
 
   - Commands for querying the conjugations of verbs, plurals of nouns and translations
 
-  - Accessing translations of words from a common directory in [scribe-org](https://github.com/scribe-org)
+  - Accessing word data from a common directory in [scribe-org](https://github.com/scribe-org) [(see Scribe-iOS issue)](https://github.com/scribe-org/Scribe-iOS/issues/10)
