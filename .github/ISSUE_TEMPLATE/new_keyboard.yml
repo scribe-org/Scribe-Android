@@ -8,9 +8,9 @@ body:
     attributes:
       label: Terms
       options:
-        - label: I have searched [open new keyboard issues](https://github.com/scribe-org/Scribe-iOS/issues?q=is%3Aopen+is%3Aissue+label%3A%22new+keyboard%22)
+        - label: I have searched [open new keyboard issues](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aopen+is%3Aissue+label%3A%22new+keyboard%22)
           required: true
-        - label: I agree to follow Scribe-iOS' [Code of Conduct](https://github.com/scribe-org/Scribe-iOS/blob/main/.github/CODE_OF_CONDUCT.md)
+        - label: I agree to follow Scribe-Android' [Code of Conduct](https://github.com/scribe-org/Scribe-Android/blob/main/.github/CODE_OF_CONDUCT.md)
           required: true
         - label: This issue is about one language, and I've changed the title to reflect this
           required: true
@@ -34,24 +34,6 @@ body:
       placeholder: Let us know if you'd like to help and how :)
     validations:
       required: false
-  # - type: input
-  #   id: data
-  #   attributes:
-  #     label: Available data
-  #     description: |
-  #       This information is appreciated as it helps us know how much support we can offer for the language.
-  #       Feel free to leave this blank and we'll do it for you :)
-  #     placeholder: X nouns, Y verbs, etc
-  #   validations:
-  #     required: false
-  # - type: markdown
-  #   attributes:
-  #     value: |
-  #       - You can get this information by running [Data/check_language_data.sparql](https://github.com/scribe-org/Scribe-iOS/blob/main/Data/check_language_data.sparql) at https://query.wikidata.org/.
-  # - type: markdown
-  #   attributes:
-  #     value: |
-  #       - You'll need the QID of your language for the above query, which you can find on Wikidata by [searching for it](https://www.wikidata.org/w/index.php?search=%3Clanguage%3E&title=Special:Search&profile=advanced&fulltext=1&ns0=1&ns120=1).
   - type: markdown
     attributes:
       value: |
