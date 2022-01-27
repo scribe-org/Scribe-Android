@@ -10,7 +10,7 @@ body:
       options:
         - label: I have searched [open new keyboard issues](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aopen+is%3Aissue+label%3A%22new+keyboard%22)
           required: true
-        - label: I agree to follow Scribe-Android' [Code of Conduct](https://github.com/scribe-org/Scribe-Android/blob/main/.github/CODE_OF_CONDUCT.md)
+        - label: I agree to follow Scribe-Android's [Code of Conduct](https://github.com/scribe-org/Scribe-Android/blob/main/.github/CODE_OF_CONDUCT.md)
           required: true
         - label: This issue is about one language, and I've changed the title to reflect this
           required: true
