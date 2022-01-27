@@ -1,0 +1,50 @@
+name: 🗃️ Data and Wikidata
+description: Help Scribe bring open-source language data to your fingertips.
+labels: "data"
+body:
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Terms
+      options:
+        - label: I have searched [open and closed data issues](https://github.com/scribe-org/Scribe-iOS/issues?q=is%3Aissue+label%3Adata+)
+          required: true
+        - label: I agree to follow Scribe-iOS' [Code of Conduct](https://github.com/scribe-org/Scribe-iOS/blob/main/.github/CODE_OF_CONDUCT.md)
+          required: true
+  - type: input
+    id: language
+    attributes:
+      label: Languages
+      placeholder: Tell us which languages this relates to.
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: Data procedure
+      options:
+        - ETL (Wikidata to Scribe)
+        - ELT (Add to Wikidata)
+        - ETL and ELT
+        - Other or not sure
+    validations:
+      required: true
+  - type: textarea
+    id: choice
+    attributes:
+      label: Issue
+      placeholder: Let us know what your idea is!
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        - Including related Wikidata [QIDs, PIDs and lexemes](https://www.wikidata.org/wiki/Wikidata:Identifiers) would be very appreciated!
+  - type: markdown
+    attributes:
+      value: |
+        - Tip: you can search Wikidata for language data by putting `L:` at the start of a [search](https://www.wikidata.org/w/index.php?search=&search=&title=Special%3ASearch&go=Go)
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for supporting free information platforms!
