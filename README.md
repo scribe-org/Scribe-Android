@@ -22,9 +22,9 @@ Thanks for your interest in contributing!
 
 # **Contents**<a id="contents"></a>
 
-- [To-Do](#to-do)
+- [Contributing](#contributing)
 
-# To-Do [`↩`](#contents) <a id="to-do"></a>
+# Contributing [`↩`](#contents) <a id="contributing"></a>
 
 Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to this project. Work that is in progress or could be implemented includes:
 
