@@ -4,7 +4,7 @@
 
 ---
 
-[![platforms](https://img.shields.io/badge/platforms-Android-999999.svg)](https://github.com/scribe-org/Scribe-Android)
+[![platform](https://img.shields.io/badge/platform-Android-999999.svg)](https://github.com/scribe-org/Scribe-Android)
 [![issues](https://img.shields.io/github/issues/scribe-org/Scribe-Android)](https://github.com/scribe-org/Scribe-Android/issues)
 [![license](https://img.shields.io/github/license/scribe-org/Scribe-Android.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt)
 [![coc](https://img.shields.io/badge/coc-Contributor%20Covenant-ff69b4.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/.github/CODE_OF_CONDUCT.md)
