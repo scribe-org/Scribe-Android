@@ -6,6 +6,7 @@
 
 [![platform](https://img.shields.io/badge/platform-Android-999999.svg)](https://github.com/scribe-org/Scribe-Android)
 [![issues](https://img.shields.io/github/issues/scribe-org/Scribe-Android)](https://github.com/scribe-org/Scribe-Android/issues)
+[![discussions](https://img.shields.io/github/discussions/scribe-org/Scribe-Android)](https://github.com/scribe-org/Scribe-Android/discussions)
 [![license](https://img.shields.io/github/license/scribe-org/Scribe-Android.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt)
 [![coc](https://img.shields.io/badge/coc-Contributor%20Covenant-ff69b4.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/.github/CODE_OF_CONDUCT.md)
 
@@ -28,7 +29,7 @@ Thanks for your interest in contributing!
 
 Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to this project. Work that is in progress or could be implemented includes:
 
-- Planning development of Scribe-Android in the [issues](https://github.com/scribe-org/Scribe-Android/issues)
+- Planning development of Scribe-Android in the [Issues](https://github.com/scribe-org/Scribe-Android/issues) and [Discussions](https://github.com/scribe-org/Scribe-Android/discussions)
 
 - Creating an MVP that would include:
 
