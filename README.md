@@ -12,7 +12,7 @@
 [![platform](https://img.shields.io/badge/platform-Android-999999.svg)](https://github.com/scribe-org/Scribe-Android)
 [![issues](https://img.shields.io/github/issues/scribe-org/Scribe-Android)](https://github.com/scribe-org/Scribe-Android/issues)
 [![discussions](https://img.shields.io/github/discussions/scribe-org/Scribe-Android)](https://github.com/scribe-org/Scribe-Android/discussions)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1-A97AFE.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md)
+[![language](https://img.shields.io/badge/Kotlin-1-A97AFE.svg?logo=kotlin&logoColor=ffffff)](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md)
 [![license](https://img.shields.io/github/license/scribe-org/Scribe-Android.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt)
 [![coc](https://img.shields.io/badge/coc-Contributor%20Covenant-ff69b4.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/.github/CODE_OF_CONDUCT.md)
 
