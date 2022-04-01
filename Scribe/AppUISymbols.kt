@@ -1,13 +1,14 @@
-//
-//  AppUISymbols.kt
-//
-//  Functions returning symbols for the app UI.
-//
+/**
+ * AppUISymbols.kt
+ *
+ * Functions returning symbols for the app UI.
+ */
 
-/// Formats and returns the settings symbol for the app UI.
-///
-/// - Parameters
-///  - fontSize: the size of the font derived for the app text given screen dimensions.
+/**
+ * Formats and returns the settings symbol for the app UI.
+ *
+ * @param fontSize The size of the font derived for the app text given screen dimensions.
+ */
 internal fun getSettingsSymbol(fontSize: CGFloat) : UIImage {
     var settingsSymbolConfig = UIImage.SymbolConfiguration(pointSize = fontSize * 0.2, weight = .medium, scale = .medium)
     if (DeviceType.isPad) {
@@ -21,10 +22,11 @@ internal fun getSettingsSymbol(fontSize: CGFloat) : UIImage {
     return settingsSymbol
 }
 
-/// Formats and returns the privacy symbol for the app UI.
-///
-/// - Parameters
-///  - fontSize: the size of the font derived for the app text given screen dimensions.
+/**
+ * Formats and returns the privacy symbol for the app UI.
+ *
+ * @param fontSize The size of the font derived for the app text given screen dimensions.
+ */
 internal fun getPrivacySymbol(fontSize: CGFloat) : UIImage {
     var privacySymbolConfig = UIImage.SymbolConfiguration(pointSize = fontSize * 0.25, weight = .medium, scale = .medium)
     if (DeviceType.isPad) {

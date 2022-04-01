@@ -1,10 +1,12 @@
-//
-//  ViewController.kt
-//
-//  The ViewController for the Scribe app.
-//
+/**
+ * ViewController.kt
+ *
+ * The ViewController for the Scribe app.
+ */
 
-/// A UIViewController that provides instructions on how to install Keyboards as well as information about Scribe.
+/**
+ * A UIViewController that provides instructions on how to install Keyboards as well as information about Scribe.
+ */
 internal class ViewController: UIViewController {
     // Variables linked to elements in AppScreen.storyboard.
     @BindView() lateinit internal var appTextView: UITextView
@@ -29,33 +31,43 @@ internal class ViewController: UIViewController {
     @BindView() lateinit internal var svSpace: View
     @BindView() lateinit internal var bottomSpace: View
 
-    /// Includes a call to checkDarkModeSetColors to set brand colors and a call to set the UI for the app screen.
+    /**
+    * Includes a call to checkDarkModeSetColors to set brand colors and a call to set the UI for the app screen.
+    */
     internal override fun viewDidLoad() {
         super.viewDidLoad()
         checkDarkModeSetColors()
         setCurrentUI()
     }
 
-    /// Includes a call to checkDarkModeSetColors to set brand colors and a call to set the UI for the app screen.
+    /**
+    * Includes a call to checkDarkModeSetColors to set brand colors and a call to set the UI for the app screen.
+    */
     internal override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         checkDarkModeSetColors()
         setCurrentUI()
     }
 
-    /// Includes a call to set the UI for the app screen.
+    /**
+    * Includes a call to set the UI for the app screen.
+    */
     internal override fun viewWillAppear(animated: Boolean) {
         super.viewWillAppear(animated)
         setCurrentUI()
     }
 
-    /// Includes a call to set the UI for the app screen.
+    /**
+    * Includes a call to set the UI for the app screen.
+    */
     internal override fun viewWillTransition(size: CGSize, coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to = size, with = coordinator)
         setCurrentUI()
     }
 
-    /// Includes a call to set the UI for the app screen.
+    /**
+    * Includes a call to set the UI for the app screen.
+    */
     internal override fun viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         setCurrentUI()
@@ -73,7 +85,9 @@ internal class ViewController: UIViewController {
     internal override val preferredStatusBarStyle: UIStatusBarStyle
         get() = .lightContent
 
-    /// Sets the top icon for the app screen given the device to assure that it's oriented correctly to its background.
+    /**
+    * Sets the top icon for the app screen given the device to assure that it's oriented correctly to its background.
+    */
     internal fun setTopIcon() {
         if (DeviceType.isPhone) {
             topIconPhone.isHidden = false
@@ -85,7 +99,9 @@ internal class ViewController: UIViewController {
     }
     internal val switchViewColor = UIColor(red = 241.0 / 255.0, green = 204.0 / 255.0, blue = 131.0 / 255.0, alpha = 1.0)
 
-    /// Sets the functionality of the button that switches between installation instructions and the privacy policy.
+    /**
+    * Sets the functionality of the button that switches between installation instructions and the privacy policy.
+    */
     internal fun setSwitchViewBtn() {
         if (displayPrivacyPolicy == false) {
             switchView.setTitle("View Privacy Policy", for = .normal)
@@ -107,19 +123,25 @@ internal class ViewController: UIViewController {
         applyCornerRadius(elem = switchViewBackground, radius = switchView.frame.height * 0.35)
     }
 
-    /// Sets the functionality of the button over the keyboard installation guide that opens Settings.
+    /**
+    * Sets the functionality of the button over the keyboard installation guide that opens Settings.
+    */
     internal fun setSettingsBtn() {
         settingsBtn.addTarget(this, action = #selector(openSettingsApp), for = .touchUpInside)
         settingsBtn.addTarget(this, action = #selector(keyTouchDown), for = .touchDown)
     }
 
-    /// Sets the functionality of the button over the keyboard installation guide that links to Scribe's GitHub.
+    /**
+    * Sets the functionality of the button over the keyboard installation guide that links to Scribe's GitHub.
+    */
     internal fun setGHBtn() {
         GHBtn.addTarget(this, action = #selector(openScribeGH), for = .touchUpInside)
         GHBtn.addTarget(this, action = #selector(keyTouchDown), for = .touchDown)
     }
 
-    /// Sets constant properties for the app screen.
+    /**
+    * Sets constant properties for the app screen.
+    */
     internal fun setUIConstantProperties() {
         // Set the scroll bar so that it appears on a white background regardless of light or dark mode.
         val scrollbarAppearance = UINavigationBarAppearance()
@@ -135,7 +157,9 @@ internal class ViewController: UIViewController {
         topIconPad.tintColor = .white
     }
 
-    /// Sets properties for the app screen given the current device.
+    /**
+    * Sets properties for the app screen given the current device.
+    */
     internal fun setUIDeviceProperties() {
         // Height ratios to set corner radii exactly.
         val installTextToSwitchBtnHeightRatio = appTextBackground.frame.height / switchViewBackground.frame.height
@@ -175,7 +199,9 @@ internal class ViewController: UIViewController {
         }
     }
 
-    /// Sets the necessary properties for the installation UI including calling text generation functions.
+    /**
+    * Sets the necessary properties for the installation UI including calling text generation functions.
+    */
     internal fun setInstallationUI() {
         val settingsSymbol: UIImage = getSettingsSymbol(fontSize = fontSize)
         topIconPhone.image = settingsSymbol
@@ -201,7 +227,9 @@ internal class ViewController: UIViewController {
         GHTextView.textColor = UIColor.keyCharColorLight
     }
 
-    /// Sets the necessary properties for the privacy policy UI including calling the text generation function.
+    /**
+    * Sets the necessary properties for the privacy policy UI including calling the text generation function.
+    */
     internal fun setPrivacyUI() {
         val privacySymbol: UIImage = getPrivacySymbol(fontSize = fontSize)
         topIconPhone.image = privacySymbol
@@ -223,7 +251,9 @@ internal class ViewController: UIViewController {
         privacyTextView.textColor = UIColor.keyCharColorLight
     }
 
-    /// Creates the current app UI by applying constraints and calling child UI functions.
+    /**
+    * Creates the current app UI by applying constraints and calling child UI functions.
+    */
     internal fun setCurrentUI() {
         // Set the font size and all button elements.
         setFontSize()
@@ -240,7 +270,9 @@ internal class ViewController: UIViewController {
         }
     }
 
-    /// Switches the view of the app based on the current view.
+    /**
+    * Switches the view of the app based on the current view.
+    */
     @objc internal fun switchAppView() {
         if (displayPrivacyPolicy == false) {
             displayPrivacyPolicy = true
@@ -250,12 +282,16 @@ internal class ViewController: UIViewController {
         setCurrentUI()
     }
 
-    /// Function to open the settings app that is targeted by settingsBtn.
+    /**
+    * Function to open the settings app that is targeted by settingsBtn.
+    */
     @objc internal fun openSettingsApp() {
         UIApplication.shared.open(URL(string = UIApplication.openSettingsURLString)!!)
     }
 
-    /// Function to open Scribe's GitHub page that is targeted by GHBtn.
+    /**
+    * Function to open Scribe's GitHub page that is targeted by GHBtn.
+    */
     @objc internal fun openScribeGH() {
         val url = URL(string = "https://github.com/scribe-org") ?: return
         if (#available(iOS 10.0, *)) {
@@ -265,10 +301,9 @@ internal class ViewController: UIViewController {
         }
     }
 
-    /// Function to change the key coloration given a touch down.
-///
-/// - Parameters
-///  - sender: the button that has been pressed.
+    /**
+    * Function to change the key coloration given a touch down of a button [sender].
+    */
     @objc internal fun keyTouchDown(sender: Button) {
         if (sender == switchView) {
             sender.backgroundColor = .clear

@@ -1,13 +1,14 @@
-//
-//  PrivacyPolicy.kt
-//
-//  The English privacy policy for the Scribe app.
-//
-//  PRIVACY.txt is formatted for GitHub, and this is formatted for modular sizing.
-//
+/**
+ * PrivacyPolicy.kt
+ *
+ * The English privacy policy for the Scribe app.
+ *
+ * PRIVACY.txt is formatted for GitHub, and this is formatted for modular sizing.
+ */
 
-
-/// Formats and returns the text of the Scribe privacy policy.
+/**
+ * Formats and returns the text of the Scribe privacy policy.
+ */
 internal fun setENPrivacyPolicy(fontSize: CGFloat) : NSMutableAttributedString {
     val privacyTextTitle = NSMutableAttributedString(string = """
 Privacy Policy
@@ -18,12 +19,23 @@ Privacy Policy
     val scribeEmail: String = "scribe.langauge@gmail.com"
     val gitHubLogoLicensing: String = "https://github.com/logos"
     val wikidataLogoLicensing: String = "https://foundation.wikimedia.org/wiki/Policy:Trademark_policy"
-    val privacyPolicyTextWithLinks = addHyperLinks(originalText = privacyPolicyText, links = mapOf<wikidataDataLicensing , wikidataDataLicensing, huggingFaceLicensing , huggingFaceLicensing, scribeGitHub , scribeGitHub, scribeEmail , "mailto:" + scribeEmail, gitHubLogoLicensing , gitHubLogoLicensing, wikidataLogoLicensing , wikidataLogoLicensing>, fontSize = fontSize)
+    val privacyPolicyTextWithLinks = addHyperLinks(
+        originalText = privacyPolicyText,
+        links = mapOf<
+            wikidataDataLicensing , wikidataDataLicensing,
+            huggingFaceLicensing , huggingFaceLicensing,
+            scribeGitHub , scribeGitHub,
+            scribeEmail , "mailto:" + scribeEmail,
+            gitHubLogoLicensing , gitHubLogoLicensing,
+            wikidataLogoLicensing , wikidataLogoLicensing
+            >,
+        fontSize = fontSize
+    )
     return concatAttributedStrings(left = privacyTextTitle, right = privacyPolicyTextWithLinks)
 }
-internal// swiftlint:disable all
+
 // Includes a new line so that there is space between it and the page title.
- val privacyPolicyText = """
+internal val privacyPolicyText = """
 \n
 The Scribe developers (SCRIBE) built the iOS application "Scribe - Language Keyboards" (SERVICE) as an open-source application. This SERVICE is provided by SCRIBE at no cost and is intended for use as is.
 
