@@ -1,10 +1,12 @@
-//
-//  CommandBar.kt
-//
-//  Class defining the bar into which commands are typed.
-//
-/// A custom UILabel used to house all the functionality of the command bar.
+/**
+ * CommandBar.kt
+ *
+ * Class defining the bar into which commands are typed.
+ */
 
+/**
+ * A custom UILabel used to house all the functionality of the command bar.
+ */
 internal class CommandBar: TextView {
 
     internal override constructor(frame: CGRect) : super(frame = frame) {}
@@ -17,7 +19,9 @@ internal class CommandBar: TextView {
     lateinit internal var shadow: Button
     lateinit internal var blend: TextView
 
-    /// Sets up the command bar's color and text alignment.
+    /**
+     * Sets up the command bar's color and text alignment.
+     */
     internal fun set() {
         this.backgroundColor = commandBarColor
         this.blend.backgroundColor = commandBarColor
@@ -37,7 +41,9 @@ internal class CommandBar: TextView {
         }
     }
 
-    /// Sets up the command bar's radius and shadow.
+    /**
+     * Sets up the command bar's radius and shadow.
+     */
     internal fun setCornerRadiusAndShadow() {
         this.clipsToBounds = true
         this.layer.cornerRadius = commandKeyCornerRadius
@@ -55,7 +61,9 @@ internal class CommandBar: TextView {
         this.shadow.layer.shadowColor = keyShadowColor
     }
 
-    // Hides the command bar when command buttons will be showed.
+    /**
+     * Hides the command bar when command buttons will be showed.
+     */
     internal fun hide() {
         this.backgroundColor = UIColor.clear
         this.layer.borderColor = UIColor.clear.cgColor

@@ -187,15 +187,25 @@ internal class ViewController: UIViewController {
         // Set backgrounds and corner radii.
         appTextBackground.isUserInteractionEnabled = false
         appTextBackground.clipsToBounds = true
-        applyCornerRadius(elem = appTextBackground, radius = appTextBackground.frame.height * 0.4 / installTextToSwitchBtnHeightRatio)
+        applyCornerRadius(
+            elem = appTextBackground, radius = appTextBackground.frame.height * 0.4 / installTextToSwitchBtnHeightRatio
+        )
         GHTextBackground.isUserInteractionEnabled = false
         GHTextBackground.clipsToBounds = true
-        applyCornerRadius(elem = GHTextBackground, radius = GHTextBackground.frame.height * 0.4 / GHTextToSwitchBtnHeightRatio)
+        applyCornerRadius(
+            elem = GHTextBackground, radius = GHTextBackground.frame.height * 0.4 / GHTextToSwitchBtnHeightRatio
+        )
         privacyTextView.backgroundColor = .clear
-        applyCornerRadius(elem = privacyTextBackground, radius = privacyTextBackground.frame.height * 0.4 / privacyTextToSwitchBtnHeightRatio)
+        applyCornerRadius(
+            elem = privacyTextBackground,
+            radius = privacyTextBackground.frame.height * 0.4 / privacyTextToSwitchBtnHeightRatio
+        )
         // Set link attributes for all textViews.
         for (textView in allTextViews) {
-            textView.linkTextAttributes = mapOf(NSAttributedString.Key.foregroundColor to UIColor.annotateBlueLight, NSAttributedString.Key.underlineStyle to NSUnderlineStyle.single.rawValue)
+            textView.linkTextAttributes = mapOf(
+                NSAttributedString.Key.foregroundColor to UIColor.annotateBlueLight,
+                NSAttributedString.Key.underlineStyle to NSUnderlineStyle.single.rawValue
+            )
         }
     }
 

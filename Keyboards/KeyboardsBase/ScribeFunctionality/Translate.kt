@@ -1,13 +1,12 @@
-//
-//  Translate.swift
-//
-//  Functions that control the translate command.
-//
+/**
+ * Translate.kt
+ *
+ * Functions that control the translate command.
+ */
 
-/// Inserts the translation of a valid word in the command bar into the proxy.
-///
-/// - Parameters
-///   - commandBar: the command bar into which an input was entered.
+/**
+ * Inserts the translation of a valid word in the [commandBar] into the proxy.
+ */
 internal fun queryTranslation(commandBar: TextView) {
     // Cancel via a return press.
     if (commandBar.text!! == translatePromptAndCursor) {

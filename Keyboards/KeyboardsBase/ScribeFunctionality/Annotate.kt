@@ -5,13 +5,25 @@
  */
 
 // Dictionary for accessing keyboard conjugation state.
-internal val formToColorDict: Map<String, UIColor> = mapOf("F" to annotateRed, "M" to annotateBlue, "C" to annotatePurple, "N" to annotateGreen, "PL" to annotateOrange)
+internal val formToColorDict: Map<String, UIColor> = mapOf(
+    "F" to annotateRed,
+    "M" to annotateBlue,
+    "C" to annotatePurple,
+    "N" to annotateGreen,
+    "PL" to annotateOrange
+)
 
 // Dictionary to convert noun annotations into the keyboard language.
-internal val nounAnnotationConversionDict = mapOf("Swedish" to mapOf("C" to "U"), "Russian" to mapOf("F" to "Ж", "M" to "М", "N" to "Н", "PL" to "МН"))
+internal val nounAnnotationConversionDict = mapOf(
+    "Swedish" to mapOf("C" to "U"),
+    "Russian" to mapOf("F" to "Ж", "M" to "М", "N" to "Н", "PL" to "МН")
+)
 
 // Dictionary to convert case annotations into the keyboard language.
-internal val caseAnnotationConversionDict = mapOf("German" to mapOf("Acc" to "Akk"), "Russian" to mapOf("Acc" to "Вин", "Dat" to "Дат", "Gen" to "Род", "Loc" to "Мес", "Pre" to "Пре", "Ins" to "Инс"))
+internal val caseAnnotationConversionDict = mapOf(
+    "German" to mapOf("Acc" to "Akk"),
+    "Russian" to mapOf("Acc" to "Вин", "Dat" to "Дат", "Gen" to "Род", "Loc" to "Мес", "Pre" to "Пре", "Ins" to "Инс")
+)
 
 
 /**
@@ -59,14 +71,17 @@ internal fun setNounAnnotation(label: TextView, annotation: String) {
     }
 }
 
-/// Checks if a word is a noun and annotates the command bar if so.
-///
-/// - Parameters
-///   - commandBar: the command bar into which an input was entered.
-///   - nounAnnotationDisplay: the part of the annotation display that's for nouns.
-///   - annotationDisplay: the full annotation display elements.
-///   - givenWord: a word that is potentially a noun.
-internal fun nounAnnotation(commandBar: TextView, nounAnnotationDisplay: List<TextView>, annotationDisplay: List<TextView>, givenWord: String) {
+/**
+ * Checks if a word is a noun and annotates the command bar if so.
+ *
+ * @param commandBar The command bar into which an input was entered.
+ * @param nounAnnotationDisplay The part of the annotation display that's for nouns.
+ * @param annotationDisplay The full annotation display elements.
+ * @param givenWord A word that is potentially a noun.
+ */
+internal fun nounAnnotation(
+    commandBar: TextView, nounAnnotationDisplay: List<TextView>, annotationDisplay: List<TextView>, givenWord: String
+    ) {
     // Convert the given word to lower case unless nouns are capitalized in the language.
     var wordToCheck: String = ""
     if (!languagesWithCapitalizedNouns.contains(controllerLanguage)) {
@@ -92,8 +107,7 @@ internal fun nounAnnotation(commandBar: TextView, nounAnnotationDisplay: List<Te
             // Count how many annotations will be changed.
             var numberOfAnnotations: Int = 0
             var annotationsToAssign: List<String> = listOf<String>()
-            if (nounForm.size >= 3) {
-                // Would have a slash as the largest is PL
+            if (nounForm.size >= 3) { // Would have a slash as the largest is PL
                 annotationsToAssign = (nounForm.components(separatedBy = "/"))
                 numberOfAnnotations = annotationsToAssign.size
             } else {
@@ -122,12 +136,13 @@ internal fun nounAnnotation(commandBar: TextView, nounAnnotationDisplay: List<Te
     }
 }
 
-/// Annotates the command bar with the form of a valid selected noun.
-///
-/// - Parameters
-///   - commandBar: the command bar into which an input was entered.
-///   - nounAnnotationDisplay: the part of the annotation display that's for nouns.
-///   - annotationDisplay: the full annotation display elements.
+/**
+ * Annotates the command bar with the form of a valid selected noun.
+ *
+ * @param commandBar The command bar into which an input was entered.
+ * @param nounAnnotationDisplay The part of the annotation display that's for nouns.
+ * @param annotationDisplay The full annotation display elements.
+ */
 internal fun selectedNounAnnotation(commandBar: TextView, nounAnnotationDisplay: List<TextView>, annotationDisplay: List<TextView>) {
     val selectedWord = proxy.selectedText ?: ""
     nounAnnotation(commandBar = commandBar, nounAnnotationDisplay = nounAnnotationDisplay, annotationDisplay = annotationDisplay, givenWord = selectedWord)
@@ -136,7 +151,6 @@ internal fun selectedNounAnnotation(commandBar: TextView, nounAnnotationDisplay:
 /**
  * Annotates the command bar with the form of a valid typed noun.
  *
- * Avoid the following if possible:
  * @param commandBar The command bar into which an input was entered.
  * @param nounAnnotationDisplay The part of the annotation display that's for nouns.
  * @param annotationDisplay The full annotation display elements.
@@ -151,11 +165,12 @@ internal fun typedNounAnnotation(commandBar: TextView, nounAnnotationDisplay: Li
     }
 }
 
-/// Sets the annotation of an preposition annotation element given parameters.
-///
-/// - Parameters
-///  - label: the label to change the appearance of to show annotations.
-///  - annotation: the annotation to set to the element.
+/**
+ * Sets the annotation of an preposition annotation element given parameters.
+ *
+ * @param label The label to change the appearance of to show annotations.
+ * @param annotation The annotation to set to the element.
+ */
 internal fun setPrepAnnotation(label: TextView, annotation: String) {
     var annotationToDisplay: String = annotation
     if (scribeKeyState != true) {
@@ -176,12 +191,13 @@ internal fun setPrepAnnotation(label: TextView, annotation: String) {
     }
 }
 
-/// Checks if a word is a preposition and annotates the command bar if so.
-///
-/// - Parameters
-///   - commandBar: the command bar into which an input was entered.
-///   - prepAnnotationDisplay: the part of the annotation display that's for prepositions.
-///   - givenWord: a word that is potentially a preposition.
+/**
+ * Checks if a word is a preposition and annotates the command bar if so.
+ *
+ * @param commandBar The command bar into which an input was entered.
+ * @param prepAnnotationDisplay The part of the annotation display that's for prepositions.
+ * @param givenWord A word that is potentially a preposition.
+ */
 internal fun prepositionAnnotation(commandBar: TextView, prepAnnotationDisplay: List<TextView>, givenWord: String) {
     // Check to see if the input was uppercase to return an uppercase annotation.
     val wordToCheck = givenWord.lowercased()
@@ -202,8 +218,7 @@ internal fun prepositionAnnotation(commandBar: TextView, prepAnnotationDisplay: 
         val prepositionCase: String = prepositions?[wordToCheck] as? String ?: return
         var numberOfAnnotations: Int = 0
         var annotationsToAssign: List<String> = listOf<String>()
-        if (prepositionCase.size >= 4) {
-            // Would have a slash as they all are three characters long
+        if (prepositionCase.size >= 4) { // Would have a slash as they all are three characters long
             annotationsToAssign = (prepositionCase.components(separatedBy = "/"))
             numberOfAnnotations = annotationsToAssign.size
         } else {
@@ -220,11 +235,12 @@ internal fun prepositionAnnotation(commandBar: TextView, prepAnnotationDisplay: 
     }
 }
 
-/// Annotates the command bar with the form of a valid selected preposition.
-///
-/// - Parameters
-///   - commandBar: the command bar into which an input was entered.
-///   - prepAnnotationDisplay: the part of the annotation display that's for prepositions.
+/**
+ * Annotates the command bar with the form of a valid selected preposition.
+ *
+ * @param commandBar The command bar into which an input was entered.
+ * @param prepAnnotationDisplay The part of the annotation display that's for prepositions.
+ */
 internal fun selectedPrepAnnotation(commandBar: TextView, prepAnnotationDisplay: List<TextView>) {
     if (languagesWithCaseDependantOnPrepositions.contains(controllerLanguage)) {
         val selectedWord = proxy.selectedText ?: ""
@@ -232,18 +248,23 @@ internal fun selectedPrepAnnotation(commandBar: TextView, prepAnnotationDisplay:
     }
 }
 
-/// Annotates the command bar with the form of a valid typed preposition.
-///
-/// - Parameters
-///   - commandBar: the command bar into which an input was entered.
-///   - prepAnnotationDisplay: the part of the annotation display that's for prepositions.
+/**
+ * Annotates the command bar with the form of a valid typed preposition.
+ *
+ * @param commandBar The command bar into which an input was entered.
+ * @param prepAnnotationDisplay The part of the annotation display that's for prepositions.
+ */
 internal fun typedPrepAnnotation(commandBar: TextView, prepAnnotationDisplay: List<TextView>) {
     if (languagesWithCaseDependantOnPrepositions.contains(controllerLanguage)) {
         if (proxy.documentContextBeforeInput != null) {
             val wordsTyped = proxy.documentContextBeforeInput!!.components(separatedBy = " ")
             val lastWordTyped = wordsTyped.secondToLast()
             if (lastWordTyped != "") {
-                prepositionAnnotation(commandBar = commandBar, prepAnnotationDisplay = prepAnnotationDisplay, givenWord = lastWordTyped ?: "")
+                prepositionAnnotation(
+                    commandBar = commandBar,
+                    prepAnnotationDisplay = prepAnnotationDisplay,
+                    givenWord = lastWordTyped ?: ""
+                )
             }
         }
     }

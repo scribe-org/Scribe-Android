@@ -36,7 +36,9 @@ internal fun concatAttributedStrings(left: NSAttributedString, right: NSAttribut
  * @param originalText The original text that hyperlinks will be added to.
  * @param hyperLinks A dictionary of strings and the link to which they should link.
  */
-internal fun addHyperLinks(originalText: String, links: Map<String, String>, fontSize: CGFloat) : NSMutableAttributedString {
+internal fun addHyperLinks(
+    originalText: String, links: Map<String, String>, fontSize: CGFloat
+    ) : NSMutableAttributedString {
     val style = NSMutableParagraphStyle()
     style.alignment = .left
     val attributedOriginalText = NSMutableAttributedString(

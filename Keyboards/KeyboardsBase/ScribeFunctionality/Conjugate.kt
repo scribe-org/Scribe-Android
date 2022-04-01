@@ -1,22 +1,45 @@
-//
-//  Conjugation.swift
-//
-//  Functions and elements that control the conjugation command.
-//
+/**
+ * Conjugation.kt
+ *
+ * Functions and elements that control the conjugation command.
+ */
 
 // Dictionary for accessing keyboard conjugation state.
-internal val keyboardConjTitleDict: Map<String, Any> = mapOf("French" to frGetConjugationTitle, "German" to deGetConjugationTitle, "Italian" to itGetConjugationTitle, "Portuguese" to ptGetConjugationTitle, "Russian" to ruGetConjugationTitle, "Spanish" to esGetConjugationTitle, "Swedish" to svGetConjugationTitle)
+internal val keyboardConjTitleDict: Map<String, Any> = mapOf(
+    "French" to frGetConjugationTitle,
+    "German" to deGetConjugationTitle,
+    "Italian" to itGetConjugationTitle,
+    "Portuguese" to ptGetConjugationTitle,
+    "Russian" to ruGetConjugationTitle,
+    "Spanish" to esGetConjugationTitle,
+    "Swedish" to svGetConjugationTitle
+)
 
 // Dictionary for accessing keyboard conjugation state.
-internal val keyboardConjStateDict: Map<String, Any> = mapOf("French" to frGetConjugationState, "German" to deGetConjugationState, "Italian" to itGetConjugationState, "Portuguese" to ptGetConjugationState, "Russian" to ruGetConjugationState, "Spanish" to esGetConjugationState, "Swedish" to svGetConjugationState)
+internal val keyboardConjStateDict: Map<String, Any> = mapOf(
+    "French" to frGetConjugationState,
+    "German" to deGetConjugationState,
+    "Italian" to itGetConjugationState,
+    "Portuguese" to ptGetConjugationState,
+    "Russian" to ruGetConjugationState,
+    "Spanish" to esGetConjugationState,
+    "Swedish" to svGetConjugationState
+)
 
 // Dictionary for accessing keyboard conjugation state.
-internal val keyboardConjLabelDict: Map<String, Any> = mapOf("French" to frSetConjugationLabels, "German" to deSetConjugationLabels, "Italian" to itSetConjugationLabels, "Portuguese" to ptSetConjugationLabels, "Russian" to ruSetConjugationLabels, "Spanish" to esSetConjugationLabels, "Swedish" to svSetConjugationLabels)
+internal val keyboardConjLabelDict: Map<String, Any> = mapOf(
+    "French" to frSetConjugationLabels,
+    "German" to deSetConjugationLabels,
+    "Italian" to itSetConjugationLabels,
+    "Portuguese" to ptSetConjugationLabels,
+    "Russian" to ruSetConjugationLabels,
+    "Spanish" to esSetConjugationLabels,
+    "Swedish" to svSetConjugationLabels
+)
 
-/// Triggers the display of the conjugation view for a valid verb in the command bar.
-///
-/// - Parameters
-///   - commandBar: the command bar into which an input was entered.
+/**
+ * Triggers the display of the conjugation view for a valid verb in the [commandBar].
+ */
 internal fun triggerConjugation(commandBar: TextView) : Boolean {
     // Cancel via a return press.
     if (commandBar.text!! == conjugatePromptAndCursor) {
@@ -32,11 +55,12 @@ internal fun triggerConjugation(commandBar: TextView) : Boolean {
     return verbs?[verbToConjugate] != null
 }
 
-/// Returns a conjugation once a user presses a key in the conjugateView.
-///
-/// - Parameters
-///   - keyPressed: the button pressed as sender.
-///   - requestedTense: the tense that is triggered by the given key.
+/**
+ * Returns a conjugation once a user presses a key in the conjugateView.
+ *
+ * @param keyPressed The button pressed as sender.
+ * @param requestedTense The tense that is triggered by the given key.
+ */
 internal fun returnConjugation(keyPressed: Button, requestedTense: String) {
     // Don't change proxy if they select a conjugation that's missing.
     if (keyPressed.titleLabel?.text == invalidCommandMsg) {

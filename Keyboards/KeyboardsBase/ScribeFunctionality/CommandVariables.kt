@@ -1,8 +1,8 @@
-//
-//  CommandVariables.kt
-//
-//  Variables associated with Scribe commands.
-//
+/**
+ * CommandVariables.kt
+ *
+ * Variables associated with Scribe commands.
+ */
 
 // Basic keyboard functionality variables.
 internal var capsLockPossible = false
@@ -41,14 +41,15 @@ internal var allPrompts: List<String> = listOf("")
 internal val languagesWithCapitalizedNouns = listOf("German")
 internal val languagesWithCaseDependantOnPrepositions = listOf("German", "Russian")
 
-// MARK: Translate Variables
+//region Translate Variables
 internal var translateKeyLbl: String = ""
 internal var translatePrompt: String = ""
 internal var translatePromptAndCursor: String = ""
 internal var getTranslation: Boolean = false
 internal var wordToTranslate: String = ""
+//endregion
 
-// MARK: Conjugate Variables
+//region Conjugate Variables
 internal var conjugateKeyLbl: String = ""
 internal var conjugatePrompt: String = ""
 internal var conjugatePromptAndCursor: String = ""
@@ -81,11 +82,13 @@ internal var verbToConjugate: String = ""
 internal var verbToDisplay: String = ""
 internal var conjugationToDisplay: String = ""
 internal var verbConjugated: String = ""
+//endregion
 
-// MARK: Plural Variables
+//region Plural Variables
 internal var pluralKeyLbl: String = ""
 internal var pluralPrompt: String = ""
 internal var pluralPromptAndCursor: String = ""
 internal var getPlural: Boolean = false
 internal var isAlreadyPluralState: Boolean = false
 internal var isAlreadyPluralMessage: String = ""
+//endregion

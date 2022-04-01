@@ -1,13 +1,15 @@
-//
-//  Plural.swift
-//
-//  Functions that control the plural command.
-//
+/**
+ * Plural.kt
+ *
+ * Functions that control the plural command.
+ */
 
-/// Inserts the plural of a valid noun in the command bar into the proxy.
-///
-/// - Parameters
-///   - commandBar: the command bar into which an input was entered.
+/**
+ * Inserts the plural of a valid noun in the [commandBar] into the proxy.
+ *
+ * @param keyPressed The button pressed as sender.
+ * @param requestedTense The tense that is triggered by the given key.
+ */
 internal fun queryPlural(commandBar: TextView) {
     // Cancel via a return press.
     if (commandBar.text!! == pluralPromptAndCursor) {

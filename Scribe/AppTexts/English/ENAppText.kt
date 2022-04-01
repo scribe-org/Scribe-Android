@@ -42,7 +42,10 @@ internal fun getENInstallationDirections(fontSize: CGFloat) : NSMutableAttribute
 \u0020 Keyboards
 
 """, attributes = mapOf<NSAttributedString.Key.font , UIFont.systemFont(ofSize = fontSize)>))
-    installDirections.append(NSMutableAttributedString(string = "\n                    ", attributes = mapOf<NSAttributedString.Key.font , UIFont.systemFont(ofSize = fontSize)>))
+    installDirections.append(
+        NSMutableAttributedString(string = "\n                    ",
+        attributes = mapOf<NSAttributedString.Key.font , UIFont.systemFont(ofSize = fontSize)>)
+    )
     installDirections.append(arrowString)
     installDirections.append(NSMutableAttributedString(string = """
 \u0020 Add New Keyboard
