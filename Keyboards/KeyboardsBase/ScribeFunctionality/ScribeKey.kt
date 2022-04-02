@@ -41,7 +41,7 @@ internal class ScribeKey: Button {
      */
     internal fun set() {
         this.setImage(scribeKeyIcon, for = .normal)
-        setBtn(btn = this, color = commandKeyColor, name = "Scribe", canCapitalize = false, isSpecial = false)
+        setBtn(btn = this, color = commandKeyColor, name = "Scribe", canCap = false, isSpecial = false)
         this.layer.borderColor = commandBarBorderColor
         this.layer.borderWidth = 1.0
         this.contentMode = .center

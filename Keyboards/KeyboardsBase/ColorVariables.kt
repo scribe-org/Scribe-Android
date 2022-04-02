@@ -1,8 +1,8 @@
-//
-//  ColorVariables.kt
-//
-//  Variables associated with coloration for Scribe.
-//
+/**
+ * ColorVariables.kt
+ *
+ * Variables associated with coloration for Scribe.
+ */
 
 
 // The Scribe key icon that changes based on light and dark mode as well as device.

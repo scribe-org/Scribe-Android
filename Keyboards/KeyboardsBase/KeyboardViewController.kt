@@ -1,39 +1,50 @@
-//
-//  KeyboardViewController.kt
-//
-//  Classes for the parent keyboard view controller that language keyboards inherit and keyboard keys.
-//
+/**
+ * KeyboardViewController.kt
+ *
+ * Classes for the parent keyboard view controller that language keyboards inherit and keyboard keys.
+ */
 
-/// The parent KeyboardViewController class that is inherited by all Scribe keyboards.
+/**
+ * The parent KeyboardViewController class that is inherited by all Scribe keyboards.
+ */
 internal class KeyboardViewController: UIInputViewController {
     lateinit internal var keyboardView: View
+
     // Stack views that are populated with they keyboard rows.
     @BindView() lateinit internal var stackView0: LinearLayout
     @BindView() lateinit internal var stackView1: LinearLayout
     @BindView() lateinit internal var stackView2: LinearLayout
     @BindView() lateinit internal var stackView3: LinearLayout
 
-    /// Changes the keyboard state such that the letters view will be shown.
+    /**
+     * Changes the keyboard state such that the letters view will be shown.
+     */
     internal fun changeKeyboardToLetterKeys() {
         keyboardState = .letters
         loadKeys()
     }
 
-    /// Changes the keyboard state such that the numbers view will be shown.
+    /**
+     * Changes the keyboard state such that the numbers view will be shown.
+     */
     internal fun changeKeyboardToNumberKeys() {
         keyboardState = .numbers
         shiftButtonState = .normal
         loadKeys()
     }
 
-    /// Changes the keyboard state such that the symbols view will be shown.
+    /**
+     * Changes the keyboard state such that the symbols view will be shown.
+     */
     internal fun changeKeyboardToSymbolKeys() {
         keyboardState = .symbols
         loadKeys()
     }
 
-    // MARK: Display Activation Functions
-/// Function to load the keyboard interface into which keyboardView is instantiated.
+    //region Display Activation Functions
+    /**
+     * Function to load the keyboard interface into which keyboardView is instantiated.
+     */
     internal fun loadInterface() {
         val keyboardNib = UINib(nibName = "Keyboard", bundle = null)
         keyboardView = keyboardNib.instantiate(withOwner = this, options = null)[0] as? View
@@ -49,10 +60,9 @@ internal class KeyboardViewController: UIInputViewController {
         loadKeys()
     }
 
-    /// Activates a button by assigning key touch functions for their given actions.
-///
-/// - Parameters
-///   - btn: the button to be activated.
+    /**
+     * Activates a button [btn] by assigning key touch functions for their given actions.
+     */
     internal fun activateBtn(btn: Button) {
         btn.addTarget(this, action = #selector(executeKeyActions), for = .touchUpInside)
         btn.addTarget(this, action = #selector(keyTouchDown), for = .touchDown)
@@ -60,10 +70,9 @@ internal class KeyboardViewController: UIInputViewController {
         btn.isUserInteractionEnabled = true
     }
 
-    /// Deactivates a button by removing key touch functions for their given actions and making it clear.
-///
-/// - Parameters
-///   - btn: the button to be deactivated.
+    /**
+     * Deactivates a button [btn] by removing key touch functions for their given actions and making it clear.
+     */
     internal fun deactivateBtn(btn: Button) {
         btn.setTitle("", for = .normal)
         btn.backgroundColor = UIColor.clear
@@ -72,9 +81,12 @@ internal class KeyboardViewController: UIInputViewController {
         btn.removeTarget(this, action = #selector(keyUntouched), for = .touchDragExit)
         btn.isUserInteractionEnabled = false
     }
+    //endregion
 
-    // MARK: Override UIInputViewController Functions
-/// Includes adding custom view sizing constraints.
+    //region Override UIInputViewController Functions
+    /**
+     * Includes adding custom view sizing constraints.
+     */
     internal override fun updateViewConstraints() {
         super.updateViewConstraints()
         checkLandscapeMode()
@@ -91,18 +103,29 @@ internal class KeyboardViewController: UIInputViewController {
                 keyboardHeight = 340
             }
         }
-        val heightConstraint = NSLayoutConstraint(item = view!!, attribute = NSLayoutConstraint.Attribute.height, relatedBy = NSLayoutConstraint.Relation.equal, toItem = null, attribute = NSLayoutConstraint.Attribute.notAnAttribute, multiplier = 1.0, constant = keyboardHeight)
+        val heightConstraint = NSLayoutConstraint(
+            item = view!!,
+            attribute = NSLayoutConstraint.Attribute.height,
+            relatedBy = NSLayoutConstraint.Relation.equal,
+            toItem = null,
+            attribute = NSLayoutConstraint.Attribute.notAnAttribute,
+            multiplier = 1.0,
+            constant = keyboardHeight
+        )
         view.addConstraint(heightConstraint)
         keyboardView.frame.size = view.frame.size
     }
-    @// Button to be assigned as the select keyboard button if necessary.
-    BindView() lateinit internal var selectKeyboardButton: Button
 
-    /// Includes the following:
-/// - Assignment of the proxy
-/// - Loading the Scribe interface
-/// - Making keys letters
-/// - Adding the keyboard selector target
+    // Button to be assigned as the select keyboard button if necessary.
+    @BindView() lateinit internal var selectKeyboardButton: Button
+
+    /**
+     * Overrides the loading of the view and includes the following:
+     * Assignment of the proxy
+     * Loading the Scribe interface
+     * Making keys letters
+     * Adding the keyboard selector target
+     */
     internal override fun viewDidLoad() {
         super.viewDidLoad()
         checkDarkModeSetColors()
@@ -115,31 +138,41 @@ internal class KeyboardViewController: UIInputViewController {
         proxy = textDocumentProxy as UITextDocumentProxy
         keyboardState = .letters
         loadInterface()
-        this.selectKeyboardButton.addTarget(this, action = #selector(handleInputModeList(from:with:)), for = .allTouchEvents)
+        this.selectKeyboardButton.addTarget(
+            this, action = #selector(handleInputModeList(from:with:)), for = .allTouchEvents
+        )
     }
 
-    /// Includes hiding the keyboard selector button if it is not needed for the current device.
+    /**
+     * Includes hiding the keyboard selector button if it is not needed for the current device.
+     */
     internal override fun viewWillLayoutSubviews() {
         this.selectKeyboardButton.isHidden = !this.needsInputModeSwitchKey
         super.viewWillLayoutSubviews()
     }
 
-    /// Includes updateViewConstraints to change the keyboard height given device type and orientation.
+    /**
+     * Includes updateViewConstraints to change the keyboard height given device type and orientation.
+     */
     internal override fun viewWillAppear(animated: Boolean) {
         super.viewWillAppear(animated)
         updateViewConstraints()
     }
 
-    /// Includes:
-/// - updateViewConstraints to change the keyboard height
-/// - A call to loadKeys to reload the display after an orientation change
+    /**
+     * Overrides the transitioning of the view and includes:
+     * updateViewConstraints to change the keyboard height
+     * A call to loadKeys to reload the display after an orientation change
+     */
     internal override fun viewWillTransition(size: CGSize, coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to = size, with = coordinator)
         updateViewConstraints()
         loadKeys()
     }
 
-    /// Overrides the previous color variables if the user switches between light and dark mode.
+    /**
+     * Overrides the previous color variables if the user switches between light and dark mode.
+     */
     internal override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         checkDarkModeSetColors()
@@ -151,20 +184,28 @@ internal class KeyboardViewController: UIInputViewController {
         }
         loadKeys()
     }
-    @// MARK: Scribe Command Elements
-    // The background for the Scribe command elements.
-    BindView() lateinit internal var commandBackground: TextView
+    //endregion
 
+    //region Scribe Command Elements
+    // The background for the Scribe command elements.
+    @BindView() lateinit internal var commandBackground: TextView
+
+    /**
+     * Sets the background of the command area to match the keyboard.
+     */
     internal fun setCommandBackground() {
         commandBackground.backgroundColor = keyboardBackColor
         commandBackground.isUserInteractionEnabled = false
     }
-    @// The bar that displays language logic or is typed into for Scribe commands.
-    BindView() lateinit internal var commandBar: CommandBar
+
+    // The bar that displays language logic or is typed into for Scribe commands.
+    @BindView() lateinit internal var commandBar: CommandBar
     @BindView() lateinit internal var commandBarShadow: Button
     @BindView() lateinit internal var commandBarBlend: TextView
 
-    /// Clears the text found in the command bar.
+    /**
+     * Clears the text found in the command bar.
+     */
     internal fun clearCommandBar() {
         if (commandState == false) {
             commandBar.textColor = keyCharColor
@@ -174,7 +215,9 @@ internal class KeyboardViewController: UIInputViewController {
         hideAnnotations(annotationDisplay = getAnnotationLabels())
     }
 
-    /// Deletes in the proxy or command bar given the current constraints.
+    /**
+     * Deletes in the proxy or command bar given the current constraints.
+     */
     internal fun handleDeleteButtonPressed() {
         if (commandState != true) {
             proxy.deleteBackward()
@@ -189,43 +232,54 @@ internal class KeyboardViewController: UIInputViewController {
             backspaceTimer = null
         }
     }
-    @// The button used to display Scribe commands and its shadow.
-    BindView() lateinit internal var scribeKey: ScribeKey
+
+    // The button used to display Scribe commands and its shadow.
+    @BindView() lateinit internal var scribeKey: ScribeKey
     @BindView() lateinit internal var scribeKeyShadow: Button
 
-    /// Links various UI elements that interact concurrently.
+    /**
+     * Links various UI elements that interact concurrently.
+     */
     internal fun linkElements() {
         scribeKey.shadow = scribeKeyShadow
         commandBar.shadow = commandBarShadow
         commandBar.blend = commandBarBlend
     }
-    @// Buttons used to trigger Scribe command functionality.
-    BindView() lateinit internal var translateKey: Button
+
+    // Buttons used to trigger Scribe command functionality.
+    @BindView() lateinit internal var translateKey: Button
     @BindView() lateinit internal var conjugateKey: Button
     @BindView() lateinit internal var pluralKey: Button
 
-    /// Sets up all buttons that are associated with Scribe commands.
+    /**
+     * Sets up all buttons that are associated with Scribe commands.
+     */
     internal fun setCommandBtns() {
-        setBtn(btn = translateKey, color = commandKeyColor, name = "Translate", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateKey, color = commandKeyColor, name = "Conjugate", canCapitalize = false, isSpecial = false)
-        setBtn(btn = pluralKey, color = commandKeyColor, name = "Plural", canCapitalize = false, isSpecial = false)
+        setBtn(btn = translateKey, color = commandKeyColor, name = "Translate", canCap = false, isSpecial = false)
+        setBtn(btn = conjugateKey, color = commandKeyColor, name = "Conjugate", canCap = false, isSpecial = false)
+        setBtn(btn = pluralKey, color = commandKeyColor, name = "Plural", canCap = false, isSpecial = false)
         activateBtn(btn = translateKey)
         activateBtn(btn = conjugateKey)
         activateBtn(btn = pluralKey)
     }
     @BindView() lateinit internal var conjugateShiftLeft: Button
     @BindView() lateinit internal var conjugateShiftRight: Button
-    @// Buttons for the conjugation view.
-    BindView() lateinit internal var conjugateKeyFPS: Button
+
+    // Buttons for the conjugation view.
+    @BindView() lateinit internal var conjugateKeyFPS: Button
     @BindView() lateinit internal var conjugateKeySPS: Button
     @BindView() lateinit internal var conjugateKeyTPS: Button
     @BindView() lateinit internal var conjugateKeyFPP: Button
     @BindView() lateinit internal var conjugateKeySPP: Button
     @BindView() lateinit internal var conjugateKeyTPP: Button
 
-    /// Returns all buttons for the 3x2 conjugation display.
+    /**
+     * Returns all buttons for the 3x2 conjugation display.
+     */
     internal fun get3x2ConjButtons() : List<Button> {
-        val conjugationButtons: List<Button> = listOf(conjugateKeyFPS, conjugateKeySPS, conjugateKeyTPS, conjugateKeyFPP, conjugateKeySPP, conjugateKeyTPP)
+        val conjugationButtons: List<Button> = listOf(
+            conjugateKeyFPS, conjugateKeySPS, conjugateKeyTPS, conjugateKeyFPP, conjugateKeySPP, conjugateKeyTPP
+        )
         return conjugationButtons
     }
     @BindView() lateinit internal var conjugateKeyTL: Button
@@ -233,23 +287,30 @@ internal class KeyboardViewController: UIInputViewController {
     @BindView() lateinit internal var conjugateKeyBL: Button
     @BindView() lateinit internal var conjugateKeyBR: Button
 
-    /// Returns all buttons for the 2x2 conjugation display
+    /**
+     * Returns all buttons for the 2x2 conjugation display.
+     */
     internal fun get2x2ConjButtons() : List<Button> {
         val conjugationButtons: List<Button> = listOf(conjugateKeyTL, conjugateKeyTR, conjugateKeyBL, conjugateKeyBR)
         return conjugationButtons
     }
-    @// Labels for the conjugation view buttons.
+
+    // Labels for the conjugation view buttons.
     // Note that we're using buttons as labels weren't allowing for certain constraints to be set.
-    BindView() lateinit internal var conjugateLblFPS: Button
+    @BindView() lateinit internal var conjugateLblFPS: Button
     @BindView() lateinit internal var conjugateLblSPS: Button
     @BindView() lateinit internal var conjugateLblTPS: Button
     @BindView() lateinit internal var conjugateLblFPP: Button
     @BindView() lateinit internal var conjugateLblSPP: Button
     @BindView() lateinit internal var conjugateLblTPP: Button
 
-    /// Returns all labels for the 3x2 conjugation display.
+    /**
+     * Returns all labels for the 3x2 conjugation display.
+     */
     internal fun get3x2ConjLabels() : List<Button> {
-        val conjugationLabels: List<Button> = listOf(conjugateLblFPS, conjugateLblSPS, conjugateLblTPS, conjugateLblFPP, conjugateLblSPP, conjugateLblTPP)
+        val conjugationLabels: List<Button> = listOf(
+            conjugateLblFPS, conjugateLblSPS, conjugateLblTPS, conjugateLblFPP, conjugateLblSPP, conjugateLblTPP
+        )
         return conjugationLabels
     }
     @BindView() lateinit internal var conjugateLblTL: Button
@@ -257,20 +318,24 @@ internal class KeyboardViewController: UIInputViewController {
     @BindView() lateinit internal var conjugateLblBL: Button
     @BindView() lateinit internal var conjugateLblBR: Button
 
-    /// Returns all labels for the 2x2 conjugation display.
+    /**
+     * Returns all labels for the 2x2 conjugation display.
+     */
     internal fun get2x2ConjLabels() : List<Button> {
         val conjugationLabels: List<Button> = listOf(conjugateLblTL, conjugateLblTR, conjugateLblBL, conjugateLblBR)
         return conjugationLabels
     }
 
-    /// Sets up all buttons and labels that are associated with the 3x2 conjugation display.
+    /**
+     * Sets up all buttons and labels that are associated with the 3x2 conjugation display.
+     */
     internal fun setConj3x2View() {
-        setBtn(btn = conjugateKeyFPS, color = keyColor, name = "firstPersonSingular", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateKeySPS, color = keyColor, name = "secondPersonSingular", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateKeyTPS, color = keyColor, name = "thirdPersonSingular", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateKeyFPP, color = keyColor, name = "firstPersonPlural", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateKeySPP, color = keyColor, name = "secondPersonPlural", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateKeyTPP, color = keyColor, name = "thirdPersonPlural", canCapitalize = false, isSpecial = false)
+        setBtn(btn = conjugateKeyFPS, color = keyColor, name = "firstPersonSingular", canCap = false, isSpecial = false)
+        setBtn(btn = conjugateKeySPS, color = keyColor, name = "secondPersonSingular", canCap = false, isSpecial = false)
+        setBtn(btn = conjugateKeyTPS, color = keyColor, name = "thirdPersonSingular", canCap = false, isSpecial = false)
+        setBtn(btn = conjugateKeyFPP, color = keyColor, name = "firstPersonPlural", canCap = false, isSpecial = false)
+        setBtn(btn = conjugateKeySPP, color = keyColor, name = "secondPersonPlural", canCap = false, isSpecial = false)
+        setBtn(btn = conjugateKeyTPP, color = keyColor, name = "thirdPersonPlural", canCap = false, isSpecial = false)
         for (btn in get3x2ConjButtons()) {
             activateBtn(btn = btn)
         }
@@ -285,12 +350,14 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Sets up all buttons and labels that are associated with the 2x2 conjugation display.
+    /**
+     * Sets up all buttons and labels that are associated with the 2x2 conjugation display.
+     */
     internal fun setConj2x2View() {
-        setBtn(btn = conjugateKeyTL, color = keyColor, name = "conjugateTopLeft", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateKeyTR, color = keyColor, name = "conjugateTopRight", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateKeyBL, color = keyColor, name = "conjugateBottomLeft", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateKeyBR, color = keyColor, name = "conjugateBottomRight", canCapitalize = false, isSpecial = false)
+        setBtn(btn = conjugateKeyTL, color = keyColor, name = "conjugateTopLeft", canCap = false, isSpecial = false)
+        setBtn(btn = conjugateKeyTR, color = keyColor, name = "conjugateTopRight", canCap = false, isSpecial = false)
+        setBtn(btn = conjugateKeyBL, color = keyColor, name = "conjugateBottomLeft", canCap = false, isSpecial = false)
+        setBtn(btn = conjugateKeyBR, color = keyColor, name = "conjugateBottomRight", canCap = false, isSpecial = false)
         for (btn in get2x2ConjButtons()) {
             activateBtn(btn = btn)
         }
@@ -305,7 +372,9 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Sets up all buttons and labels for the conjugation view given constraints to determine the dimensions.
+    /**
+     * Sets up all buttons and labels for the conjugation view given constraints to determine the dimensions.
+     */
     internal fun setConjugationBtns() {
         // Set the conjugation view to 2x2 for Swedish and Russian past tense.
         if (controllerLanguage == "Swedish") {
@@ -315,17 +384,24 @@ internal class KeyboardViewController: UIInputViewController {
         } else {
             conjugateAlternateView = false
         }
+
         // The base conjugation view is 3x2 for first, second, and third person in singular and plural.
         if (conjugateAlternateView == false) {
             setConj3x2View()
         } else {
             setConj2x2View()
         }
+
         // Setup the view shift buttons.
-        setBtn(btn = conjugateShiftLeft, color = keyColor, name = "shiftConjugateLeft", canCapitalize = false, isSpecial = false)
-        setBtn(btn = conjugateShiftRight, color = keyColor, name = "shiftConjugateRight", canCapitalize = false, isSpecial = false)
+        setBtn(
+            btn = conjugateShiftLeft, color = keyColor, name = "shiftConjugateLeft", canCap = false, isSpecial = false
+        )
+        setBtn(
+            btn = conjugateShiftRight, color = keyColor, name = "shiftConjugateRight", canCap = false, isSpecial = false
+        )
         activateBtn(btn = conjugateShiftLeft)
         activateBtn(btn = conjugateShiftRight)
+
         // Make all labels clear and set their font for if they will be used.
         val allConjLabels: List<Button> = get3x2ConjLabels() + get2x2ConjLabels()
         for (lbl in allConjLabels) {
@@ -338,7 +414,9 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Activates all buttons that are associated with the conjugation display.
+    /**
+     * Activates all buttons that are associated with the conjugation display.
+     */
     internal fun activateConjugationDisplay() {
         activateBtn(btn = conjugateShiftLeft)
         activateBtn(btn = conjugateShiftRight)
@@ -360,7 +438,9 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Deactivates all buttons that are associated with the conjugation display.
+    /**
+     * Deactivates all buttons that are associated with the conjugation display.
+     */
     internal fun deactivateConjugationDisplay() {
         deactivateBtn(btn = conjugateShiftLeft)
         conjugateShiftLeft.tintColor = UIColor.clear
@@ -376,7 +456,9 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Assign the conjugations that will be selectable in the conjugation display.
+    /**
+     * Assign the conjugations that will be selectable in the conjugation display.
+     */
     internal fun assignConjStates() {
         var conjugationStateFxn: () -> String = deGetConjugationState
         if (controllerLanguage != "Swedish") {
@@ -412,7 +494,9 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Sets the label of the conjugation state and assigns the current tenses that are accessed to label the buttons.
+    /**
+     * Sets the label of the conjugation state and assigns the current tenses that are accessed to label the buttons.
+     */
     internal fun setConjugationState() {
         // Assign the conjugations that will be selectable.
         assignConjStates()
@@ -433,6 +517,7 @@ internal class KeyboardViewController: UIInputViewController {
             commandBar.text = svGetConjugationTitle()
             svSetConjugationLabels()
         }
+
         // Assign labels that have been set by SetConjugationLabels functions.
         conjugateLblFPS.setTitle("  " + labelFPS, for = .normal)
         conjugateLblSPS.setTitle("  " + labelSPS, for = .normal)
@@ -451,6 +536,7 @@ internal class KeyboardViewController: UIInputViewController {
             allTenses = listOf(tenseTopLeft, tenseTopRight, tenseBottomLeft, tenseBottomRight)
             allConjugationBtns = get2x2ConjButtons()
         }
+
         // Populate conjugation view buttons.
         for (index in 0 until allTenses.size) {
             if (verbs?[verbToConjugate]!![allTenses[index]] as? String == "") {
@@ -465,16 +551,18 @@ internal class KeyboardViewController: UIInputViewController {
             }
         }
     }
-    @// Labels to annotate noun genders.
-    BindView() lateinit internal var nounAnnotation1: TextView
+
+    // Labels to annotate noun genders.
+    @BindView() lateinit internal var nounAnnotation1: TextView
     @BindView() lateinit internal var nounAnnotation2: TextView
     @BindView() lateinit internal var nounAnnotation3: TextView
     @BindView() lateinit internal var nounAnnotation4: TextView
     @BindView() lateinit internal var nounAnnotation5: TextView
-    @// Labels to annotate preposition cases.
+
+    // Labels to annotate preposition cases.
     // There are multiple versions to account for when a word is both a noun and a preposition.
     // In this case a shifted set is used - the noun annotations precede those of prepositions.
-    BindView() lateinit internal var prepAnnotation11: TextView
+    @BindView() lateinit internal var prepAnnotation11: TextView
     @BindView() lateinit internal var prepAnnotation12: TextView
     @BindView() lateinit internal var prepAnnotation13: TextView
     @BindView() lateinit internal var prepAnnotation14: TextView
@@ -487,20 +575,34 @@ internal class KeyboardViewController: UIInputViewController {
     @BindView() lateinit internal var prepAnnotation33: TextView
     @BindView() lateinit internal var prepAnnotation34: TextView
 
-    /// Returns all available annotation labels.
+    /**
+     * Returns all available annotation labels.
+     */
     internal fun getAnnotationLabels() : List<TextView> {
-        val nounAnnotationDisplay: List<TextView> = listOf(nounAnnotation1, nounAnnotation2, nounAnnotation3, nounAnnotation4, nounAnnotation5)
-        val prepAnnotationDisplay: List<TextView> = listOf(prepAnnotation11, prepAnnotation12, prepAnnotation13, prepAnnotation14, prepAnnotation21, prepAnnotation22, prepAnnotation23, prepAnnotation24, prepAnnotation31, prepAnnotation32, prepAnnotation33, prepAnnotation34)
+        val nounAnnotationDisplay: List<TextView> = listOf(
+            nounAnnotation1, nounAnnotation2, nounAnnotation3, nounAnnotation4, nounAnnotation5
+        )
+        val prepAnnotationDisplay: List<TextView> = listOf(
+            prepAnnotation11, prepAnnotation12, prepAnnotation13, prepAnnotation14,
+            prepAnnotation21, prepAnnotation22, prepAnnotation23, prepAnnotation24,
+            prepAnnotation31, prepAnnotation32, prepAnnotation33, prepAnnotation34
+        )
         return nounAnnotationDisplay + prepAnnotationDisplay
     }
 
-    /// Returns the noun annotation labels.
+    /**
+     * Returns the noun annotation labels.
+     */
     internal fun getNounAnnotationLabels() : List<TextView> {
-        val nounAnnotationDisplay: List<TextView> = listOf(nounAnnotation1, nounAnnotation2, nounAnnotation3, nounAnnotation4, nounAnnotation5)
+        val nounAnnotationDisplay: List<TextView> = listOf(
+            nounAnnotation1, nounAnnotation2, nounAnnotation3, nounAnnotation4, nounAnnotation5
+        )
         return nounAnnotationDisplay
     }
 
-    /// Returns the preposition annotation labels given the current number of noun annotations displayed.
+    /**
+     * Returns the preposition annotation labels given the current number of noun annotations displayed.
+     */
     internal fun getPrepAnnotationLabels() : List<TextView> {
         // Initialize an array of display elements and count how many will be changed.
         // This is initialized based on how many noun annotations have already been assigned (max 2).
@@ -515,10 +617,16 @@ internal class KeyboardViewController: UIInputViewController {
         return prepAnnotationDisplay
     }
 
-    /// Styles the labels within the annotation display and removes user interactions.
+    /**
+     * Styles the labels within the annotation display and removes user interactions.
+     */
     internal fun styleAnnotations() {
         val nounAnnotationDisplay = getNounAnnotationLabels()
-        val prepAnnotationDisplay: List<TextView> = listOf(prepAnnotation11, prepAnnotation12, prepAnnotation13, prepAnnotation14, prepAnnotation21, prepAnnotation22, prepAnnotation23, prepAnnotation24, prepAnnotation31, prepAnnotation32, prepAnnotation33, prepAnnotation34)
+        val prepAnnotationDisplay: List<TextView> = listOf(
+            prepAnnotation11, prepAnnotation12, prepAnnotation13, prepAnnotation14,
+            prepAnnotation21, prepAnnotation22, prepAnnotation23, prepAnnotation24,
+            prepAnnotation31, prepAnnotation32, prepAnnotation33, prepAnnotation34
+        )
         for (annotationDisplay in nounAnnotationDisplay) {
             annotationDisplay.clipsToBounds = true
             annotationDisplay.layer.cornerRadius = keyCornerRadius / 2
@@ -536,9 +644,12 @@ internal class KeyboardViewController: UIInputViewController {
             annotationDisplay.textColor = commandBarColor
         }
     }
+    //endregion
 
-    // MARK: Load keys
-/// Loads the keys given the current constraints.
+    //region Load keys
+    /**
+     * Loads the keys given the current constraints.
+     */
     internal fun loadKeys() {
         // The name of the language keyboard that's referencing KeyboardViewController.
         controllerLanguage = classForCoder.description().components(separatedBy = ".KeyboardViewController")[0]
@@ -548,7 +659,9 @@ internal class KeyboardViewController: UIInputViewController {
         setCommandBtns()
         setConjugationBtns()
         invalidState = false
-        val specialKeys = listOf("shift", "delete", "ABC", "123", "#+=", "selectKeyboard", "space", "return", ".?123", "hideKeyboard")
+        val specialKeys = listOf(
+            "shift", "delete", "ABC", "123", "#+=", "selectKeyboard", "space", "return", ".?123", "hideKeyboard"
+        )
         allNonSpecialKeys = allKeys.filter { !specialKeys.contains(it) }
         // Clear interface from the last state.
         keyboardKeys.forEach { it.removeFromSuperview() }
@@ -567,6 +680,7 @@ internal class KeyboardViewController: UIInputViewController {
             letterKeyWidth = (UIScreen.main.bounds.width - 6) / CGFloat(letterKeys[0].size) * 0.9
             numSymKeyWidth = (UIScreen.main.bounds.width - 6) / CGFloat(numberKeys[0].size) * 0.9
         }
+
         // Derive keyboard given current states and set widths.
         when (keyboardState) {
             letters -> {
@@ -586,6 +700,7 @@ internal class KeyboardViewController: UIInputViewController {
                 keyWidth = numSymKeyWidth
             }
         }
+
         // Derive corner radii.
         if (DeviceType.isPhone) {
             if (isLandscapeView == true) {
@@ -624,6 +739,7 @@ internal class KeyboardViewController: UIInputViewController {
                     view?.layoutMargins = UIEdgeInsets(top = 6, left = 0, bottom = 5, right = 0)
                 }
             }
+
             // Set up and activate Scribe key and other command elements.
             scribeKey.set()
             activateBtn(btn = scribeKey)
@@ -676,19 +792,32 @@ internal class KeyboardViewController: UIInputViewController {
                     val key: String = btn.key
                     // Pad before key is added.
                     var leftPadding = CGFloat(0)
-                    if (DeviceType.isPhone && key == "y" && listOf("German", "Swedish").contains(controllerLanguage) && switchInput != true) {
+                    if (DeviceType.isPhone
+                        && key == "y"
+                        && listOf("German", "Swedish").contains(controllerLanguage)
+                        && switchInput != true
+                    ) {
                         leftPadding = keyWidth / 3
                         addPadding(to = stackView2, width = leftPadding, key = "y")
                     }
-                    if (DeviceType.isPhone && key == "a" && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true)) {
+                    if (DeviceType.isPhone
+                        && key == "a"
+                        && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true)
+                    ) {
                         leftPadding = keyWidth / 4
                         addPadding(to = stackView1, width = leftPadding, key = "a")
                     }
-                    if (DeviceType.isPad && key == "a" && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true)) {
+                    if (DeviceType.isPad
+                        && key == "a"
+                        && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true)
+                    ) {
                         leftPadding = keyWidth / 3
                         addPadding(to = stackView1, width = leftPadding, key = "a")
                     }
-                    if (DeviceType.isPad && key == "@" && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true)) {
+                    if (DeviceType.isPad
+                        && key == "@"
+                        && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true)
+                    ) {
                         leftPadding = keyWidth / 3
                         addPadding(to = stackView1, width = leftPadding, key = "@")
                     }
@@ -708,14 +837,19 @@ internal class KeyboardViewController: UIInputViewController {
                         3 -> stackView3.addArrangedSubview(btn)
                         else -> break
                     }
+
                     // Special key styling.
                     if (key == "delete") {
-                        val longPressRecognizer = UILongPressGestureRecognizer(target = this, action = #selector(keyLongPressed(_:)))
+                        val longPressRecognizer = UILongPressGestureRecognizer(
+                            target = this, action = #selector(keyLongPressed(_:))
+                        )
                         btn.addGestureRecognizer(longPressRecognizer)
                     }
                     if (key == "selectKeyboard") {
                         selectKeyboardButton = btn
-                        this.selectKeyboardButton.addTarget(this, action = #selector(handleInputModeList(from:with:)), for = .allTouchEvents)
+                        this.selectKeyboardButton.addTarget(
+                            this, action = #selector(handleInputModeList(from:with:)), for = .allTouchEvents
+                        )
                         styleIconBtn(btn = btn, color = keyCharColor, iconName = "globe")
                     }
                     if (key == "hideKeyboard") {
@@ -730,31 +864,52 @@ internal class KeyboardViewController: UIInputViewController {
                     if (key == "delete") {
                         styleIconBtn(btn = btn, color = keyCharColor, iconName = "delete.left")
                     }
+
                     // Setting key pop functionality.
-                    val keyHoldPop = UILongPressGestureRecognizer(target = this, action = #selector(genHoldPopUpView(sender:)))
+                    val keyHoldPop = UILongPressGestureRecognizer(
+                        target = this, action = #selector(genHoldPopUpView(sender:))
+                    )
                     keyHoldPop.minimumPressDuration = 0.125
                     if (allNonSpecialKeys.contains(key)) {
                         btn.addTarget(this, action = #selector(genPopUpView), for = .touchDown)
                         btn.addGestureRecognizer(keyHoldPop)
                     }
+
                     // Pad after key is added.
                     var rightPadding = CGFloat(0)
-                    if (DeviceType.isPhone && key == "m" && listOf("German", "Swedish").contains(controllerLanguage) && switchInput != true) {
+                    if (DeviceType.isPhone
+                        && key == "m"
+                        && listOf("German", "Swedish").contains(controllerLanguage)
+                        && switchInput != true
+                    ) {
                         rightPadding = keyWidth / 3
                         addPadding(to = stackView2, width = rightPadding, key = "m")
                     }
-                    if (DeviceType.isPhone && key == "l" && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true)) {
+                    if (DeviceType.isPhone
+                        && key == "l"
+                        && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true)
+                    ) {
                         rightPadding = keyWidth / 4
                         addPadding(to = stackView1, width = rightPadding, key = "l")
                     }
+
                     // Set the width of the key given device and the given key.
                     btn.adjustKeyWidth()
+
                     // Extend button touch areas.
                     var widthOfSpacing = CGFloat(0)
                     if (keyboardState == .letters) {
-                        widthOfSpacing = ((UIScreen.main.bounds.width - 6.0) - (CGFloat(letterKeys[0].size) * keyWidth)) / (CGFloat(letterKeys[0].size) - 1.0)
+                        widthOfSpacing = (
+                            (UIScreen.main.bounds.width - 6.0)
+                            - (CGFloat(letterKeys[0].size) * keyWidth))
+                            / (CGFloat(letterKeys[0].size) - 1.0
+                        )
                     } else {
-                        widthOfSpacing = ((UIScreen.main.bounds.width - 6.0) - (CGFloat(numberKeys[0].size) * numSymKeyWidth)) / (CGFloat(letterKeys[0].size) - 1.0)
+                        widthOfSpacing = (
+                            (UIScreen.main.bounds.width - 6.0)
+                            - (CGFloat(numberKeys[0].size) * numSymKeyWidth))
+                            / (CGFloat(letterKeys[0].size) - 1.0
+                        )
                     }
                     when (row) {
                         0 -> {
@@ -775,6 +930,7 @@ internal class KeyboardViewController: UIInputViewController {
                         }
                         else -> break
                     }
+
                     // Pad left and right based on if the button has been shifted.
                     if (leftPadding == CGFloat(0)) {
                         btn.leftShift = -(widthOfSpacing / 2)
@@ -786,6 +942,7 @@ internal class KeyboardViewController: UIInputViewController {
                     } else {
                         btn.rightShift = -(rightPadding)
                     }
+
                     // Activate keyboard interface buttons.
                     activateBtn(btn = btn)
                     if (key == "shift" || key == spaceBar) {
@@ -793,6 +950,7 @@ internal class KeyboardViewController: UIInputViewController {
                     }
                 }
             }
+
             // End padding.
             when (keyboardState) {
                 letters -> break
@@ -820,12 +978,12 @@ internal class KeyboardViewController: UIInputViewController {
             styleIconBtn(btn = conjugateShiftRight, color = keyCharColor, iconName = "chevron.right")
         }
     }
+    //endregion
 
-    // MARK: Button Actions
-/// Triggers actions based on the press of a key.
-///
-/// - Parameters
-///   - sender: the button pressed as sender.
+    //region Button Actions
+    /**
+     * Triggers actions based on the press of a key [sender].
+     */
     @OnClick() internal fun executeKeyActions(sender: Button) {
         val originalKey = sender.layer.value(forKey = "original") as? String
         val keyToDisplay = sender.layer.value(forKey = "keyToDisplay") as? String
@@ -834,14 +992,17 @@ internal class KeyboardViewController: UIInputViewController {
         }
         val isSpecial = sender.layer.value(forKey = "isSpecial") as? Boolean ?: return
         sender.backgroundColor = if (isSpecial) specialKeyColor else keyColor
+
         // Disable the possibility of a double shift call.
         if (originalKey != "shift") {
             capsLockPossible = false
         }
+
         // Disable the possibility of a double space period call.
         if (originalKey != spaceBar) {
             doubleSpacePeriodPossible = false
         }
+
         // Reset the Russian verbs view after a selection.
         ruConjugationState = .present
         when (originalKey) {
@@ -852,7 +1013,11 @@ internal class KeyboardViewController: UIInputViewController {
                         scribeKeyState = false
                     }
                     loadKeys()
-                    selectedNounAnnotation(commandBar = commandBar, nounAnnotationDisplay = getNounAnnotationLabels(), annotationDisplay = getAnnotationLabels())
+                    selectedNounAnnotation(
+                        commandBar = commandBar,
+                        nounAnnotationDisplay = getNounAnnotationLabels(),
+                        annotationDisplay = getAnnotationLabels()
+                    )
                     selectedPrepAnnotation(commandBar = commandBar, prepAnnotationDisplay = getPrepAnnotationLabels())
                 } else {
                     if (commandState == true) {
@@ -882,17 +1047,20 @@ internal class KeyboardViewController: UIInputViewController {
                     loadKeys()
                 }
             }
+
             // Switch to translate state.
             "Translate" -> {
                 scribeKeyState = false
                 commandState = true
                 getTranslation = true
                 switchInput = true
+
                 // Always start in letters with a new keyboard.
                 keyboardState = .letters
                 loadKeys()
                 commandBar.text = translatePromptAndCursor
             }
+
             // Switch to conjugate state.
             "Conjugate" -> {
                 scribeKeyState = false
@@ -901,11 +1069,11 @@ internal class KeyboardViewController: UIInputViewController {
                 loadKeys()
                 commandBar.text = conjugatePromptAndCursor
             }
+
             // Switch to plural state.
             "Plural" -> {
                 scribeKeyState = false
-                if (controllerLanguage == "German") {
-                    // capitalize for nouns
+                if (controllerLanguage == "German") { // capitalize for nouns
                     if (shiftButtonState == .normal) {
                         shiftButtonState = .shift
                     }
@@ -915,6 +1083,7 @@ internal class KeyboardViewController: UIInputViewController {
                 loadKeys()
                 commandBar.text = pluralPromptAndCursor
             }
+
             // Move displayed conjugations to the left in order if able.
             "shiftConjugateLeft" -> {
                 if (controllerLanguage == "French") {
@@ -934,6 +1103,7 @@ internal class KeyboardViewController: UIInputViewController {
                 }
                 loadKeys()
             }
+
             // Move displayed conjugations to the right in order if able.
             "shiftConjugateRight" -> {
                 if (controllerLanguage == "French") {
@@ -998,6 +1168,7 @@ internal class KeyboardViewController: UIInputViewController {
                     shiftButtonState = .normal
                     loadKeys()
                 }
+
                 // Prevent the command state prompt from being deleted.
                 if (commandState == true && allPrompts.contains((commandBar?.text!!)!!)) {
                     shiftButtonState = .shift
@@ -1006,6 +1177,7 @@ internal class KeyboardViewController: UIInputViewController {
                     return
                 }
                 handleDeleteButtonPressed()
+
                 // Auto-capitalization if delete goes to the start of the proxy.
                 if (proxy.documentContextBeforeInput == null && commandState != true) {
                     if (keyboardState == .letters && shiftButtonState == .normal) {
@@ -1026,16 +1198,23 @@ internal class KeyboardViewController: UIInputViewController {
                     }
                 } else {
                     commandBar.text!! = (commandBar?.text!!?.insertPriorToCursor(char = " "))!!
-                    if (listOf(". " + commandCursor, "? " + commandCursor, "! " + commandCursor).contains(String(commandBar.text!!.suffix(3)))) {
+                    if (listOf(
+                        ". " + commandCursor, "? " + commandCursor, "! " + commandCursor
+                        ).contains(String(commandBar.text!!.suffix(3)))) {
                         shiftButtonState = .shift
                     }
                     if (keyboardState != .letters) {
                         changeKeyboardToLetterKeys()
                     }
                 }
+
                 // Prevent annotations from being triggered during commands.
                 if (getConjugation == false && getTranslation == false) {
-                    typedNounAnnotation(commandBar = commandBar, nounAnnotationDisplay = getNounAnnotationLabels(), annotationDisplay = getAnnotationLabels())
+                    typedNounAnnotation(
+                        commandBar = commandBar,
+                        nounAnnotationDisplay = getNounAnnotationLabels(),
+                        annotationDisplay = getAnnotationLabels()
+                    )
                     typedPrepAnnotation(commandBar = commandBar, prepAnnotationDisplay = getPrepAnnotationLabels())
                     annotationState = false
                     prepAnnotationState = false
@@ -1049,14 +1228,13 @@ internal class KeyboardViewController: UIInputViewController {
             "selectKeyboard" -> this.advanceToNextInputMode()
             "hideKeyboard" -> this.dismissKeyboard()
             "return" -> {
-                if (getTranslation && commandState == true) {
-                    // translate state
+                if (getTranslation && commandState == true) { // translate state
                     queryTranslation(commandBar = commandBar)
                     getTranslation = false
                     switchInput = false
                 }
-                if (getConjugation && commandState == true) {
-                    // conjugate state
+
+                if (getConjugation && commandState == true) { // conjugate state
                     // Reset to the most basic conjugations.
                     deConjugationState = .indicativePresent
                     val triggerConjugationState = triggerConjugation(commandBar = commandBar)
@@ -1068,24 +1246,25 @@ internal class KeyboardViewController: UIInputViewController {
                     }
                     getConjugation = false
                 }
-                if (getPlural && commandState == true) {
-                    // plural state
+
+                if (getPlural && commandState == true) { // plural state
                     queryPlural(commandBar = commandBar)
                     getPlural = false
                 }
-                if (commandState == false) {
-                    // normal return button
+
+                if (commandState == false) { // normal return button
                     proxy.insertText("\n")
                     clearCommandBar()
-                } else if (invalidState == true) {
-                    // invalid state
+                } else if (invalidState == true) { // invalid state
                     commandState = false
+
                     // Return to the original input method if it has been switched away from.
                     if (switchInput == true) {
                         switchInput = false
                         loadKeys()
                     }
                     autoCapAtStartOfProxy()
+
                     if (isAlreadyPluralState != true) {
                         commandBar.text = commandPromptSpacing + invalidCommandMsg
                     }
@@ -1099,7 +1278,11 @@ internal class KeyboardViewController: UIInputViewController {
                     loadKeys()
                     // Avoid showing noun annotation instead of conjugation state header.
                     if (conjugateView == false) {
-                        typedNounAnnotation(commandBar = commandBar, nounAnnotationDisplay = getNounAnnotationLabels(), annotationDisplay = getAnnotationLabels())
+                        typedNounAnnotation(
+                            commandBar = commandBar,
+                            nounAnnotationDisplay = getNounAnnotationLabels(),
+                            annotationDisplay = getAnnotationLabels()
+                        )
                         typedPrepAnnotation(commandBar = commandBar, prepAnnotationDisplay = getPrepAnnotationLabels())
                         annotationState = false
                         prepAnnotationState = false
@@ -1107,28 +1290,34 @@ internal class KeyboardViewController: UIInputViewController {
                     }
                 }
             }
+
             "123" -> {
                 changeKeyboardToNumberKeys()
                 clearCommandBar()
             }
+
             ".?123" -> {
                 changeKeyboardToNumberKeys()
                 clearCommandBar()
             }
+
             "#+=" -> {
                 changeKeyboardToSymbolKeys()
                 clearCommandBar()
             }
+
             "ABC" -> {
                 changeKeyboardToLetterKeys()
                 clearCommandBar()
                 autoCapAtStartOfProxy()
             }
+
             "АБВ" -> {
                 changeKeyboardToLetterKeys()
                 clearCommandBar()
                 autoCapAtStartOfProxy()
             }
+
             "'" -> {
                 // Change back to letter keys.
                 if (commandState != true) {
@@ -1139,16 +1328,19 @@ internal class KeyboardViewController: UIInputViewController {
                 changeKeyboardToLetterKeys()
                 clearCommandBar()
             }
+
             "shift" -> {
                 shiftButtonState = if (shiftButtonState == .normal) .shift else .normal
                 loadKeys()
                 clearCommandBar()
                 capsLockPossible = true
             }
+
             else -> if (shiftButtonState == .shift) {
                 shiftButtonState = .normal
                 loadKeys()
             }
+
             if (commandState == false) {
                 proxy.insertText(keyToDisplay)
                 clearCommandBar()
@@ -1156,6 +1348,7 @@ internal class KeyboardViewController: UIInputViewController {
                 commandBar.text = commandBar.text!!.insertPriorToCursor(char = keyToDisplay)
             }
         }
+
         // Remove alternates view if it's present.
         if (this.view.viewWithTag(1001) != null) {
             val viewWithTag = this.view.viewWithTag(1001)
@@ -1163,9 +1356,12 @@ internal class KeyboardViewController: UIInputViewController {
             alternatesShapeLayer.removeFromSuperlayer()
         }
     }
+    //endregion
 
-    // MARK: Key press functions
-/// Auto-capitalization if the cursor is at the start of the proxy.
+    //region Key press functions
+    /**
+     * Auto-capitalization if the cursor is at the start of the proxy.
+     */
     internal fun autoCapAtStartOfProxy() {
         proxy.insertText(" ")
         if (proxy.documentContextBeforeInput == " ") {
@@ -1177,28 +1373,30 @@ internal class KeyboardViewController: UIInputViewController {
         proxy.deleteBackward()
     }
 
-    /// Colors keys to show they have been pressed.
-///
-/// - Parameters
-///   - sender: the key that was pressed.
+    /**
+     * Colors a key [sender] to show they have been pressed.
+     */
     @objc internal fun keyTouchDown(sender: Button) {
         sender.backgroundColor = keyPressedColor
     }
 
-    /// Defines events that occur given multiple presses of a single key.
-///
-/// - Parameters
-///  - sender: the key that was pressed multiple times.
-///  - event: event to derive tap counts.
+    /**
+     * Defines events that occur given multiple presses of a single key.
+     *
+     * @param sender The key that was pressed multiple times.
+     * @param event Event to derive tap counts.
+     */
     @objc internal fun keyMultiPress(sender: Button, event: UIEvent) {
         var originalKey = sender.layer.value(forKey = "original") as? String ?: return
         val touch: UITouch = event.allTouches!!.firstOrNull()!!
+
         // Caps lock given two taps of shift.
         if (touch.tapCount == 2 && originalKey == "shift" && capsLockPossible == true) {
             shiftButtonState = .caps
             loadKeys()
             clearCommandBar()
         }
+
         // To make sure that the user can still use the double space period shortcut after numbers and symbols.
         val punctuationThatCancelsShortcut = listOf("?", "!", ",", ".", ":", ";", "-")
         if (originalKey != "shift" && proxy.documentContextBeforeInput?.size != 1 && commandState == false) {
@@ -1212,8 +1410,13 @@ internal class KeyboardViewController: UIInputViewController {
                 originalKey = "Cancel shortcut"
             }
         }
+
         // Double space period shortcut.
-        if (touch.tapCount == 2 && originalKey == spaceBar && proxy.documentContextBeforeInput?.size != 1 && doubleSpacePeriodPossible == true) {
+        if (touch.tapCount == 2
+            && originalKey == spaceBar
+            && proxy.documentContextBeforeInput?.size != 1
+            && doubleSpacePeriodPossible == true
+        ) {
             // The fist condition prevents a period if the prior characters are spaces as the user wants a series of spaces.
             if (proxy.documentContextBeforeInput?.suffix(2) != "  " && commandState == false) {
                 proxy.deleteBackward()
@@ -1221,8 +1424,8 @@ internal class KeyboardViewController: UIInputViewController {
                 keyboardState = .letters
                 shiftButtonState = .shift
                 loadKeys()
-            } else // The fist condition prevents a period if the prior characters are spaces as the user wants a series of spaces.
-            if (commandBar.text!!.suffix(2) != "  " && commandState == true) {
+            // The fist condition prevents a period if the prior characters are spaces as the user wants a series of spaces.
+            } else if (commandBar.text!!.suffix(2) != "  " && commandState == true) {
                 commandBar.text!! = (commandBar?.text!!?.deletePriorToCursor())!!
                 commandBar.text!! = (commandBar?.text!!?.insertPriorToCursor(char = ". "))!!
                 keyboardState = .letters
@@ -1233,15 +1436,15 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Defines the criteria under which a key is long pressed.
-///
-/// - Parameters
-///   - gesture: the gesture that was received.
+    /**
+     * Defines the criteria under which a key is long pressed depending on the [gesture].
+     */
     @objc internal fun keyLongPressed(gesture: UIGestureRecognizer) {
         // Prevent the command state prompt from being deleted.
         if (commandState == true && allPrompts.contains((commandBar?.text!!)!!)) {
             gesture.state = .cancelled
         }
+
         if (gesture.state == .began) {
             backspaceTimer = Timer.scheduledTimer(withTimeInterval = 0.1, repeats = true) { _  ->
                 this.handleDeleteButtonPressed()
@@ -1252,19 +1455,17 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Resets key coloration after they have been annotated to by keyPressedColor.
-///
-/// - Parameters
-///   - sender: the key that was pressed.
+    /**
+     * Resets key [sender] coloration after they have been annotated to by keyPressedColor.
+     */
     @objc internal fun keyUntouched(sender: Button) {
         val isSpecial = sender.layer.value(forKey = "isSpecial") as? Boolean ?: return
         sender.backgroundColor = if (isSpecial) specialKeyColor else keyColor
     }
 
-    /// Generates a pop up of the key pressed.
-///
-/// - Parameters
-///   - key: the key pressed.
+    /**
+     * Generates a pop up of the key [key] pressed.
+     */
     @objc internal fun genPopUpView(key: Button) {
         val charPressed: String = key.layer.value(forKey = "original") as? String ?: ""
         val displayChar: String = key.layer.value(forKey = "keyToDisplay") as? String ?: ""
@@ -1277,15 +1478,15 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Generates a pop up of the key long pressed.
-///
-/// - Parameters
-///   - sender: the long press of the given key.
+    /**
+     * Generates a pop up of the key [sender] long pressed.
+     */
     @objc internal fun genHoldPopUpView(sender: UILongPressGestureRecognizer) {
         // Derive which button was pressed and get its alternates.
         val key: Button = sender.view as? Button ?: return
         val charPressed: String = key.layer.value(forKey = "original") as? String ?: ""
         val displayChar: String = key.layer.value(forKey = "keyToDisplay") as? String ?: ""
+
         // Timer is short as the alternates view gets canceled by sender.state.changed.
         Timer.scheduledTimer(withTimeInterval = 0.00001, repeats = false) { _  ->
             if (keysWithAlternates.contains(charPressed)) {
@@ -1315,25 +1516,32 @@ internal class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// Sets the characters that can be selected on an alternates view that is generated.
-///
-/// - Parameters
-///   - sender: the long press of the given key.
+    /**
+     * Sets the characters that can be selected on an alternates view that is generated.
+     *
+     * @param sender The long press of the given key.
+     */
     @objc internal fun setAlternatesView(sender: UILongPressGestureRecognizer) {
         // Only run this code when the state begins.
         if (sender.state != UIGestureRecognizer.State.began) {
             return
         }
-        val // Derive which button was pressed and get its alternates.
-        key: Button = sender.view as? Button ?: return
+
+        // Derive which button was pressed and get its alternates.
+        val key: Button = sender.view as? Button ?: return
         genAlternatesView(key = key)
         alternateBtnStartX = 5.0
         var alternatesBtnY = key.frame.height * 0.15
         if (DeviceType.isPad) {
             alternatesBtnY = key.frame.height * 0.2
         }
+
         for (char in alternateKeys) {
-            val alternateKey: KeyboardKey = KeyboardKey(frame = CGRect(x = alternateBtnStartX, y = alternatesBtnY, width = key.frame.width, height = alternatesBtnHeight))
+            val alternateKey: KeyboardKey = KeyboardKey(
+                frame = CGRect(
+                    x = alternateBtnStartX, y = alternatesBtnY, width = key.frame.width, height = alternatesBtnHeight
+                )
+            )
             if (shiftButtonState == .normal || char == "ß") {
                 alternateKey.setTitle(char, for = .normal)
             } else {
@@ -1344,15 +1552,16 @@ internal class KeyboardViewController: UIInputViewController {
             alternateKey.layer.cornerRadius = keyCornerRadius
             alternatesKeyView.addSubview(alternateKey)
             if (char == alternateKeys.firstOrNull() && keysWithAlternatesLeft.contains(char)) {
-                setBtn(btn = alternateKey, color = commandKeyColor, name = char, canCapitalize = true, isSpecial = false)
+                setBtn(btn = alternateKey, color = commandKeyColor, name = char, canCap = true, isSpecial = false)
             } else if (char == alternateKeys.lastOrNull() && keysWithAlternatesRight.contains(char)) {
-                setBtn(btn = alternateKey, color = commandKeyColor, name = char, canCapitalize = true, isSpecial = false)
+                setBtn(btn = alternateKey, color = commandKeyColor, name = char, canCap = true, isSpecial = false)
             } else {
-                setBtn(btn = alternateKey, color = keyColor, name = char, canCapitalize = true, isSpecial = false)
+                setBtn(btn = alternateKey, color = keyColor, name = char, canCap = true, isSpecial = false)
             }
             activateBtn(btn = alternateKey)
             alternateBtnStartX += (key.frame.width + 3.0)
         }
+
         // If alternateKeysView is already added than remove and then add again.
         if (this.view.viewWithTag(1001) != null) {
             val viewWithTag = this.view.viewWithTag(1001)
@@ -1362,4 +1571,5 @@ internal class KeyboardViewController: UIInputViewController {
         this.view.layer.addSublayer(alternatesShapeLayer)
         this.view.addSubview(alternatesKeyView)
     }
+    //endregion
 }

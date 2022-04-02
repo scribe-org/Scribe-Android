@@ -1,10 +1,12 @@
-//
-//  Extensions.kt
-//
-//  Extensions for Scribe keyboards.
-//
+/**
+ * Extensions.kt
+ *
+ * Extensions for Scribe keyboards.
+ */
 
-/// Extension to access the second to last element of an array.
+/**
+ * Extension to access the second to last element of an array.
+ */
 internal fun Array.secondToLast() : Element? {
     if (this.count < 2) {
         return null
@@ -13,7 +15,9 @@ internal fun Array.secondToLast() : Element? {
     return this[index]
 }
 
-/// Extensions to String to allow for easier indexing, substring extraction and checking for certain characteristics.
+/**
+ * Extensions to String to allow for easier indexing, substring extraction and checking for certain characteristics.
+ */
 internal fun String.index(fromIdx: Int) : Index =
     this.index(startIndex, offsetBy = fromIdx)
 

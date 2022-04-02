@@ -1,14 +1,14 @@
-//
-//  InterfaceVariables.kt
-//
-//  Variables associated with the base keyboard interface.
-//
+/**
+ * InterfaceVariables.kt
+ *
+ * Variables associated with the base keyboard interface.
+ */
 
 
 // A proxy into which text is typed.
 lateinit internal var proxy: UITextDocumentProxy
 
-// MARK: Display Variables
+//region Display Variables
 // Variables for the keyboard and its appearance.
 internal var keyboard: List<List<String>> = listOf<listOf(String)>()
 internal var allKeys: List<String> = listOf<String>()
@@ -35,10 +35,13 @@ internal enum class KeyboardState {
     symbols
 }
 
-/// What the keyboard state is in regards to the shift key.
-/// - normal: not capitalized
-/// - shift: capitalized
-/// - caps: caps-lock
+/**
+ * What the keyboard state is in regards to the shift key.
+ *
+ * @param normal Not capitalized
+ * @param shift Capitalized
+ * @param caps Caps-lock
+ */
 internal enum class ShiftButtonState {
     normal,
     shift,
@@ -50,13 +53,17 @@ internal var keyboardState: KeyboardState = .letters
 internal var shiftButtonState: ShiftButtonState = .normal
 internal var scribeKeyState: Boolean = false
 
-// Variables and functions to determine display parameters.
+/**
+ * Variables and functions to determine display parameters.
+ */
 internal data class DeviceType(
     internal val isPhone = UIDevice.current.userInterfaceIdiom == .phone,
     internal val isPad = UIDevice.current.userInterfaceIdiom == .pad) {}
 internal var isLandscapeView: Boolean = false
 
-/// Checks if the device is in landscape mode.
+/**
+ * Checks if the device is in landscape mode.
+ */
 internal fun checkLandscapeMode() {
     if (UIScreen.main.bounds.height < UIScreen.main.bounds.width) {
         isLandscapeView = true
@@ -70,24 +77,46 @@ internal var controllerLanguage = String()
 internal var controllerLanguageAbbr = String()
 
 // Dictionary for accessing language abbreviations.
-internal val languagesAbbrDict: Map<String, String> = mapOf("French" to "fr", "German" to "de", "Italian" to "it", "Portuguese" to "pt", "Russian" to "ru", "Spanish" to "es", "Swedish" to "sv")
+internal val languagesAbbrDict: Map<String, String> = mapOf(
+    "French" to "fr",
+    "German" to "de",
+    "Italian" to "it",
+    "Portuguese" to "pt",
+    "Russian" to "ru",
+    "Spanish" to "es",
+    "Swedish" to "sv"
+)
 
-/// Returns the abbreviation of the language for use in commands.
+/**
+ * Returns the abbreviation of the language for use in commands.
+ */
 internal fun getControllerLanguageAbbr() : String {
     val abbreviation = languagesAbbrDict[controllerLanguage] ?: return ""
     return abbreviation
 }
 
 // Dictionary for accessing keyboard abbreviations and layouts.
-internal val keyboardLayoutDict: Map<String, () -> Unit> = mapOf("French" to setFRKeyboardLayout, "German" to setDEKeyboardLayout, "Italian" to setITKeyboardLayout, "Portuguese" to setPTKeyboardLayout, "Russian" to setRUKeyboardLayout, "Spanish" to setESKeyboardLayout, "Swedish" to setSVKeyboardLayout)
+internal val keyboardLayoutDict: Map<String, () -> Unit> = mapOf(
+    "French" to setFRKeyboardLayout,
+    "German" to setDEKeyboardLayout,
+    "Italian" to setITKeyboardLayout,
+    "Portuguese" to setPTKeyboardLayout,
+    "Russian" to setRUKeyboardLayout,
+    "Spanish" to setESKeyboardLayout,
+    "Swedish" to setSVKeyboardLayout
+)
 
-/// Sets the keyboard layout and its alternate keys.
+/**
+ * Sets the keyboard layout and its alternate keys.
+ */
 internal fun setKeyboard() {
     setKeyboardLayout()
     setKeyboardAlternateKeys()
 }
 
-/// Sets the keyboard layouts given the chosen keyboard and device type.
+/**
+ * Sets the keyboard layouts given the chosen keyboard and device type.
+ */
 internal fun setKeyboardLayout() {
     if (switchInput) {
         setENKeyboardLayout()
@@ -97,29 +126,76 @@ internal fun setKeyboardLayout() {
     }
     allPrompts = listOf(translatePromptAndCursor, conjugatePromptAndCursor, pluralPromptAndCursor)
 }
-// MARK: English Interface Variables
+
+// Variables that define which keys are positioned on the very left, right or in the center of the keyboard.
+// The purpose of these is to define which key pop up functions should be ran.
+internal var centralKeyChars: List<String> = listOf<String>()
+internal var leftKeyChars: List<String> = listOf<String>()
+internal var rightKeyChars: List<String> = listOf<String>()
+
+// Variables for call out positioning.
+internal var horizStart = CGFloat(0)
+internal var vertStart = CGFloat(0)
+internal var widthMultiplier = CGFloat(0)
+internal var maxHeightMultiplier = CGFloat(0)
+internal var maxHeight = CGFloat(0)
+internal var heightBeforeTopCurves = CGFloat(0)
+internal var maxWidthCurveControl = CGFloat(0)
+internal var maxHeightCurveControl = CGFloat(0)
+internal var minHeightCurveControl = CGFloat(0)
+internal var keyPopChar = TextView()
+internal var keyHoldPopChar = TextView()
+internal var keyPopLayer = CAShapeLayer()
+internal var keyHoldPopLayer = CAShapeLayer()
+//endregion
+
+//region English Interface Variables
 // Note: here only until there is an English keyboard.
 enum class EnglishKeyboardConstants {
 
     // Keyboard key layouts.
-    internal val letterKeysPhone = listOf(listOf("q", "w", "e", "r", "t", "y", "u", "i", "o", "p"), listOf("a", "s", "d", "f", "g", "h", "j", "k", "l"), listOf("shift", "z", "x", "c", "v", "b", "n", "m", "delete"), listOf("123", "selectKeyboard", "space", "return"))
+    internal val letterKeysPhone = listOf(
+        listOf("q", "w", "e", "r", "t", "y", "u", "i", "o", "p"),
+        listOf("a", "s", "d", "f", "g", "h", "j", "k", "l"),
+        listOf("shift", "z", "x", "c", "v", "b", "n", "m", "delete"),
+        listOf("123", "selectKeyboard", "space", "return") // "undoArrow"
+    )
 
-    // "undoArrow"
-    internal val numberKeysPhone = listOf(listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"), listOf("-", "/", ":", ";", "(", ")", "$", "&", "@", "\""), listOf("#+=", ".", ",", "?", "!", "'", "delete"), listOf("ABC", "selectKeyboard", "space", "return"))
+    internal val numberKeysPhone = listOf(
+        listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"),
+        listOf("-", "/", ":", ";", "(", ")", "$", "&", "@", "\""),
+        listOf("#+=", ".", ",", "?", "!", "'", "delete"),
+        listOf("ABC", "selectKeyboard", "space", "return") // "undoArrow"
+    )
 
-    // "undoArrow"
-    internal val symbolKeysPhone = listOf(listOf("[", "]", "{", "}", "#", "%", "^", "*", "+", "="), listOf("_", "\\", "|", "~", "<", ">", "€", "£", "¥", "·"), listOf("123", ".", ",", "?", "!", "'", "delete"), listOf("ABC", "selectKeyboard", "space", "return"))
+    internal val symbolKeysPhone = listOf(
+        listOf("[", "]", "{", "}", "#", "%", "^", "*", "+", "="),
+        listOf("_", "\\", "|", "~", "<", ">", "€", "£", "¥", "·"),
+        listOf("123", ".", ",", "?", "!", "'", "delete"),
+        listOf("ABC", "selectKeyboard", "space", "return") // "undoArrow"
+    )
 
-    // "undoArrow"
-    internal val letterKeysPad = listOf(listOf("q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "delete"), listOf("a", "s", "d", "f", "g", "h", "j", "k", "l", "return"), listOf("shift", "w", "x", "c", "v", "b", "n", "m", ",", ".", "shift"), listOf(".?123", "selectKeyboard", "space", ".?123", "hideKeyboard"))
+    internal val letterKeysPad = listOf(
+        listOf("q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "delete"),
+        listOf("a", "s", "d", "f", "g", "h", "j", "k", "l", "return"),
+        listOf("shift", "w", "x", "c", "v", "b", "n", "m", ",", ".", "shift"),
+        listOf(".?123", "selectKeyboard", "space", ".?123", "hideKeyboard") // "undoArrow"
+    )
 
-    // "undoArrow"
-    internal val numberKeysPad = listOf(listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "delete"), listOf("@", "#", "$", "&", "*", "(", ")", "'", "\"", "return"), listOf("#+=", "%", "_", "+", "=", "/", ";", ":", ",", ".", "#+="), listOf("ABC", "selectKeyboard", "space", "ABC", "hideKeyboard"))
+    internal val numberKeysPad = listOf(
+        listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "delete"),
+        listOf("@", "#", "$", "&", "*", "(", ")", "'", "\"", "return"),
+        listOf("#+=", "%", "_", "+", "=", "/", ";", ":", ",", ".", "#+="),
+        listOf("ABC", "selectKeyboard", "space", "ABC", "hideKeyboard") // "undoArrow"
+    )
 
-    // "undoArrow"
-    internal val symbolKeysPad = listOf(listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "delete"), listOf("€", "£", "¥", "_", "^", "[", "]", "{", "}", "return"), listOf("123", "§", "|", "~", "...", "\\", "<", ">", "!", "?", "123"), listOf("ABC", "selectKeyboard", "space", "ABC", "hideKeyboard"))
+    internal val symbolKeysPad = listOf(
+        listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "delete"),
+        listOf("€", "£", "¥", "_", "^", "[", "]", "{", "}", "return"),
+        listOf("123", "§", "|", "~", "...", "\\", "<", ">", "!", "?", "123"),
+        listOf("ABC", "selectKeyboard", "space", "ABC", "hideKeyboard") // "undoArrow"
+    )
 
-    // "undoArrow"
     // Alternate key vars.
     internal val keysWithAlternates = listOf("a", "e", "i", "o", "u", "y", "s", "l", "z", "c", "n")
     internal val keysWithAlternatesLeft = listOf("a", "e", "y", "s", "z", "c")
@@ -136,7 +212,9 @@ enum class EnglishKeyboardConstants {
     internal val nAlternateKeys = listOf("ń", "ñ")
 }
 
-/// Gets the keys for the English keyboard.
+/**
+ * Gets the keys for the English keyboard.
+ */
 internal fun getENKeys() {
     if (DeviceType.isPhone) {
         letterKeys = EnglishKeyboardConstants.letterKeysPhone
@@ -170,7 +248,9 @@ internal fun getENKeys() {
     nAlternateKeys = EnglishKeyboardConstants.nAlternateKeys
 }
 
-/// Provides an English keyboard layout.
+/**
+ * Provides an English keyboard layout.
+ */
 internal fun setENKeyboardLayout() {
     getENKeys()
     currencySymbol = "$"
@@ -188,3 +268,4 @@ internal fun setENKeyboardLayout() {
     pluralPromptAndCursor = pluralPrompt + commandCursor
     isAlreadyPluralMessage = "Already plural"
 }
+//endregion

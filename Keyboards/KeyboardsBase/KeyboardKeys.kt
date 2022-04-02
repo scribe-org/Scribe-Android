@@ -1,13 +1,16 @@
-//
-//  KeyboardKey.kt
-//
-//  Classes and variables that define keys for Scribe keyboards.
+/**
+ * KeyboardKey.kt
+ *
+ * Classes and variables that define keys for Scribe keyboards.
+ */
 
 // The keys collection as well as one for the padding for placements.
 internal var keyboardKeys: List<Button> = listOf()
 internal var paddingViews: List<Button> = listOf()
 
-/// Class of UIButton that allows the tap area to be increased so that edges between keys can still receive user input.
+/**
+ * Class of UIButton that allows the tap area to be increased so that edges between keys can still receive user input.
+ */
 internal class KeyboardKey: Button {
     // Properties for the touch area - passing negative values will expand the touch area.
     internal var topShift = CGFloat(0)
@@ -17,12 +20,16 @@ internal class KeyboardKey: Button {
 
     /// Allows the bounds of the key to be expanded.
     internal override fun point(point: CGPoint, event: UIEvent?) : Boolean =
-        bounds.inset(by = UIEdgeInsets(top = topShift, left = leftShift, bottom = bottomShift, right = rightShift)).contains(point)
+        bounds.inset(
+            by = UIEdgeInsets(top = topShift, left = leftShift, bottom = bottomShift, right = rightShift)
+        ).contains(point)
     lateinit internal var row: Int
     lateinit internal var idx: Int
     lateinit internal var key: String
 
-    /// Styles the key with a color, corner radius and shadow.
+    /**
+     * Styles the key with a color, corner radius and shadow.
+     */
     internal fun style() {
         this.backgroundColor = keyColor
         this.layer.cornerRadius = keyCornerRadius
@@ -33,7 +40,9 @@ internal class KeyboardKey: Button {
         this.layer.masksToBounds = false
     }
 
-    /// Sets the character of the key and defines its capitalized state.
+    /**
+     * Sets the character of the key and defines its capitalized state.
+     */
     internal fun setChar() {
         this.key = keyboard[this.row][this.idx]
         if (this.key == "space") {
@@ -51,11 +60,12 @@ internal class KeyboardKey: Button {
         this.layer.setValue(this.key, forKey = "original")
         this.layer.setValue(keyToDisplay, forKey = "keyToDisplay")
         this.layer.setValue(false, forKey = "isSpecial")
-        this.setTitle(keyToDisplay, for = .normal)
+        this.setTitle(keyToDisplay, for = .normal) // set button character
     }
 
-    // set button character
-/// Sets the character size of a capital key if the device is an iPhone given the orientation.
+    /**
+     * Sets the character size of a capital key if the device is an iPhone given the orientation.
+     */
     internal fun setPhoneCapCharSize() {
         if (isLandscapeView == true) {
             if (this.key == "#+=" || this.key == "ABC" || this.key == "АБВ" || this.key == "123") {
@@ -76,10 +86,17 @@ internal class KeyboardKey: Button {
         }
     }
 
-    /// Checks if the character is a lower case letter and adjusts it if so.
+    /**
+     * Checks if the character is a lower case letter and adjusts it if so.
+     */
     internal fun checkSetPhoneLowerCharSize() {
         val isSpecial = this.layer.value(forKey = "isSpecial") as? Boolean ?: return
-        if (keyboardState == .letters && isSpecial == false && !listOf("123", spaceBar).contains(this.key) && shiftButtonState == .normal) {
+        if (
+            keyboardState == .letters
+            && isSpecial == false
+            && !listOf("123", spaceBar).contains(this.key)
+            && shiftButtonState == .normal
+        ) {
             this.titleEdgeInsets = UIEdgeInsets(top = -4.0, left = 0.0, bottom = 0.0, right = 0.0)
             if (isLandscapeView == true) {
                 this.titleLabel?.font = .systemFont(ofSize = letterKeyWidth / 2.4)
@@ -91,13 +108,17 @@ internal class KeyboardKey: Button {
         }
     }
 
-    /// Sets the character size of a key if the device is an iPhone.
+    /**
+     * Sets the character size of a key if the device is an iPhone.
+     */
     internal fun setPhoneCharSize() {
         setPhoneCapCharSize()
         checkSetPhoneLowerCharSize()
     }
 
-    /// Sets the character size of a key if the device is an iPad given the orientation.
+    /**
+     * Sets the character size of a key if the device is an iPad given the orientation.
+     */
     internal fun setPadCapCharSize() {
         if (isLandscapeView == true) {
             if (this.key == "#+=" || this.key == "ABC" || this.key == "АБВ" || this.key == "hideKeyboard") {
@@ -122,10 +143,17 @@ internal class KeyboardKey: Button {
         }
     }
 
-    /// Sets the character size of a key if the device is an iPad given the orientation.
+    /**
+     * Sets the character size of a key if the device is an iPad given the orientation.
+     */
     internal fun checkSetPadLowerCharSize() {
         val isSpecial = this.layer.value(forKey = "isSpecial") as? Boolean ?: return
-        if (keyboardState == .letters && isSpecial == false && !listOf(".?123", spaceBar, "ß", ",", ".", "'", "-").contains(this.key) && shiftButtonState == .normal) {
+        if (
+            keyboardState == .letters
+            && isSpecial == false
+            && !listOf(".?123", spaceBar, "ß", ",", ".", "'", "-").contains(this.key)
+            && shiftButtonState == .normal
+        ) {
             this.titleEdgeInsets = UIEdgeInsets(top = -4.0, left = 0.0, bottom = 0.0, right = 0.0)
             if (isLandscapeView == true) {
                 this.titleLabel?.font = .systemFont(ofSize = letterKeyWidth / 3.35)
@@ -137,13 +165,17 @@ internal class KeyboardKey: Button {
         }
     }
 
-    /// Sets the character size of a key if the device is an iPad.
+    /**
+     * Sets the character size of a key if the device is an iPad.
+     */
     internal fun setPadCharSize() {
         setPadCapCharSize()
         checkSetPadLowerCharSize()
     }
 
-    /// Sets the key character sizes depending on device type and orientation.
+    /**
+     * Sets the key character sizes depending on device type and orientation.
+     */
     internal fun setCharSize() {
         if (DeviceType.isPhone) {
             setPhoneCharSize()
@@ -152,7 +184,9 @@ internal class KeyboardKey: Button {
         }
     }
 
-    /// Adjusts the width of a key if it's one of the special characters on the iPhone keyboard.
+    /**
+     * Adjusts the width of a key if it's one of the special characters on the iPhone keyboard.
+     */
     internal fun adjustPhoneKeyWidth() {
         if (this.key == "ABC" || this.key == "АБВ") {
             this.layer.setValue(true, forKey = "isSpecial")
@@ -182,7 +216,9 @@ internal class KeyboardKey: Button {
         }
     }
 
-    /// Adjusts the width of a key if it's one of the special characters on the iPad keyboard.
+    /**
+     * Adjusts the width of a key if it's one of the special characters on the iPad keyboard.
+     */
     internal fun adjustPadKeyWidth() {
         if (this.key == "ABC" || this.key == "АБВ") {
             this.layer.setValue(true, forKey = "isSpecial")
@@ -191,7 +227,12 @@ internal class KeyboardKey: Button {
             this.layer.setValue(true, forKey = "isSpecial")
             this.widthAnchor.constraint(equalToConstant = numSymKeyWidth * 1).isActive = true
         } else if (this.key == "123" || this.key == ".?123" || this.key == "return" || this.key == "hideKeyboard") {
-            if (this.key == "return" && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true) && this.row == 1 && DeviceType.isPad) {
+            if (
+                this.key == "return"
+                && (controllerLanguage == "Portuguese" || controllerLanguage == "Italian" || switchInput == true)
+                && this.row == 1
+                && DeviceType.isPad
+            ) {
                 this.layer.setValue(true, forKey = "isSpecial")
                 this.widthAnchor.constraint(equalToConstant = numSymKeyWidth * 1.5).isActive = true
             } else {
@@ -203,7 +244,9 @@ internal class KeyboardKey: Button {
         }
     }
 
-    /// Adjusts the width of a key if it's one of the special characters on the keyboard.
+    /**
+     * Adjusts the width of a key if it's one of the special characters on the keyboard.
+     */
     internal fun adjustKeyWidth() {
         if (DeviceType.isPhone) {
             adjustPhoneKeyWidth()
@@ -231,20 +274,21 @@ internal class KeyboardKey: Button {
     }
 }
 
-/// Sets a button's values that are displayed and inserted into the proxy as well as assigning a color.
-///
-/// - Parameters
-///   - btn: the button to be set up.
-///   - color: the color to assign to the background.
-///   - name: the name of the value for the key.
-///   - canCapitalize: whether the key receives a special character for the shift state.
-///   - isSpecial: whether the btn should be marked as special to be colored accordingly.
-internal fun setBtn(btn: Button, color: UIColor, name: String, canCapitalize: Boolean, isSpecial: Boolean) {
+/**
+ * Sets a button's values that are displayed and inserted into the proxy as well as assigning a color.
+ *
+ * @param btn The button to be set up.
+ * @param color The color to assign to the background.
+ * @param name The name of the value for the key.
+ * @param canCap Whether the key receives a special character for the shift state.
+ * @param isSpecial Whether the btn should be marked as special to be colored accordingly.
+ */
+internal fun setBtn(btn: Button, color: UIColor, name: String, canCap: Boolean, isSpecial: Boolean) {
     btn.backgroundColor = color
     btn.layer.setValue(name, forKey = "original")
     val charsWithoutShiftState = listOf("ß")
     var capsKey = ""
-    if (canCapitalize == true) {
+    if (canCap == true) {
         if (!charsWithoutShiftState.contains(name)) {
             capsKey = name.capitalized
         } else {

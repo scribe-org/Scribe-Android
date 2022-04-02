@@ -1,13 +1,14 @@
-//
-//  LoadData.kt
-//
-//  Function for loading in data to the keyboards.
-//
+/**
+ * LoadData.kt
+ *
+ * Function for loading in data to the keyboards.
+ */
 
-/// Loads a JSON file that contains grammatical information into a dictionary.
-///
-/// - Parameters
-///  - filename: the name of the JSON file to be loaded.
+/**
+ * Loads a JSON file that contains grammatical information into a dictionary.
+ *
+ * @param filename The name of the JSON file to be loaded.
+ */
 internal fun loadJSONToDict(fileName: String) : Map<String, Any>? {
     val url = Bundle.main.url(forResource = fileName, withExtension = "json")
     if (url != null) {
