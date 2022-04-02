@@ -1,9 +1,12 @@
-//
-//  FRCommandVaribles.kt
-//
-//  Variables associated with Scribe commands for the French keyboard.
-//
+/**
+ * FRCommandVaribles.kt
+ *
+ * Variables associated with Scribe commands for the French keyboard.
+ */
 
+/**
+ * Provides labels for the French conjugation state.
+ */
 internal fun frSetConjugationLabels() {
     labelFPS = "je"
     labelSPS = "tu"
@@ -12,15 +15,20 @@ internal fun frSetConjugationLabels() {
     labelSPP = "vous"
     labelTPP = "ils/elles"
 }
-internal/// What the conjugation state is for the conjugate feature.
- enum class FRConjugationState {
+
+/**
+ * What the conjugation state is for the conjugate feature.
+ */
+internal enum class FRConjugationState {
     indicativePresent,
     preterite,
     imperfect
 }
 internal var frConjugationState: FRConjugationState = .indicativePresent
 
-/// Sets the title of the command bar when the keyboard is in conjugate mode.
+/**
+ * Sets the title of the command bar when the keyboard is in conjugate mode.
+ */
 internal fun frGetConjugationTitle() : String {
     if (inputWordIsCapitalized == true) {
         verbToDisplay = verbToConjugate.capitalized
@@ -34,7 +42,9 @@ internal fun frGetConjugationTitle() : String {
     }
 }
 
-/// Returns the appropriate key in the verbs dictionary to access conjugations.
+/**
+ * Returns the appropriate key in the verbs dictionary to access conjugations.
+ */
 internal fun frGetConjugationState() : String {
     when (frConjugationState) {
         indicativePresent -> return "pres"
@@ -43,7 +53,9 @@ internal fun frGetConjugationState() : String {
     }
 }
 
-/// Action associated with the left view switch button of the conjugation state.
+/**
+ * Action associated with the left view switch button of the conjugation state.
+ */
 internal fun frConjugationStateLeft() {
     if (frConjugationState == .indicativePresent) {
         return
@@ -56,7 +68,9 @@ internal fun frConjugationStateLeft() {
     }
 }
 
-/// Action associated with the right view switch button of the conjugation state.
+/**
+ * Action associated with the right view switch button of the conjugation state.
+ */
 internal fun frConjugationStateRight() {
     if (frConjugationState == .indicativePresent) {
         frConjugationState = .preterite

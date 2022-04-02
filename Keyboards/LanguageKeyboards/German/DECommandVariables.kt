@@ -1,9 +1,12 @@
-//
-//  DECommandVariables.kt
-//
-//  Variables associated with Scribe commands for the German keyboard.
-//
+/**
+ * DECommandVariables.kt
+ *
+ * Variables associated with Scribe commands for the German keyboard.
+ */
 
+/**
+ * Provides labels for the German conjugation state.
+ */
 internal fun deSetConjugationLabels() {
     labelFPS = "ich"
     labelSPS = "du"
@@ -13,7 +16,9 @@ internal fun deSetConjugationLabels() {
     labelTPP = "sie/Sie"
 }
 
-/// What the conjugation state is for the conjugate feature.
+/**
+ * What the conjugation state is for the conjugate feature.
+ */
 internal enum class DEConjugationState {
     indicativePresent,
     indicativePreterite,
@@ -21,7 +26,9 @@ internal enum class DEConjugationState {
 }
 internal var deConjugationState: DEConjugationState = .indicativePresent
 
-/// Sets the title of the command bar when the keyboard is in conjugate mode.
+/**
+ * Sets the title of the command bar when the keyboard is in conjugate mode.
+ */
 internal fun deGetConjugationTitle() : String {
     if (inputWordIsCapitalized == true) {
         verbToDisplay = verbToConjugate.capitalized
@@ -35,7 +42,9 @@ internal fun deGetConjugationTitle() : String {
     }
 }
 
-/// Returns the appropriate key in the verbs dictionary to access conjugations.
+/**
+ * Returns the appropriate key in the verbs dictionary to access conjugations.
+ */
 internal fun deGetConjugationState() : String {
     when (deConjugationState) {
         indicativePresent -> return "pres"
@@ -44,7 +53,9 @@ internal fun deGetConjugationState() : String {
     }
 }
 
-/// Action associated with the left view switch button of the conjugation state.
+/**
+ * Action associated with the left view switch button of the conjugation state.
+ */
 internal fun deConjugationStateLeft() {
     if (deConjugationState == .indicativePresent) {
         return
@@ -57,7 +68,9 @@ internal fun deConjugationStateLeft() {
     }
 }
 
-/// Action associated with the right view switch button of the conjugation state.
+/**
+ * Action associated with the right view switch button of the conjugation state.
+ */
 internal fun deConjugationStateRight() {
     if (deConjugationState == .indicativePresent) {
         deConjugationState = .indicativePreterite

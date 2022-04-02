@@ -1,28 +1,53 @@
-//
-//  DEInterfaceVariables.kt
-//
-//  Constants and functions to load the German Scribe keyboard.
-//
+/**
+ * DEInterfaceVariables.kt
+ *
+ * Constants and functions to load the German Scribe keyboard.
+ */
+
 enum class GermanKeyboardConstants {
 
     // Keyboard key layouts.
-    internal val letterKeysPhone = listOf(listOf("q", "w", "e", "r", "t", "z", "u", "i", "o", "p", "ü"), listOf("a", "s", "d", "f", "g", "h", "j", "k", "l", "ö", "ä"), listOf("shift", "y", "x", "c", "v", "b", "n", "m", "delete"), listOf("123", "selectKeyboard", "space", "return"))
-    // "undoArrow"
+    internal val letterKeysPhone = listOf(
+        listOf("q", "w", "e", "r", "t", "z", "u", "i", "o", "p", "ü"),
+        listOf("a", "s", "d", "f", "g", "h", "j", "k", "l", "ö", "ä"),
+        listOf("shift", "y", "x", "c", "v", "b", "n", "m", "delete"),
+        listOf("123", "selectKeyboard", "space", "return") // "undoArrow"
+    )
 
-    internal val numberKeysPhone = listOf(listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"), listOf("-", "/", ":", ";", "(", ")", "€", "&", "@", "\""), listOf("#+=", ".", ",", "?", "!", "'", "delete"), listOf("ABC", "selectKeyboard", "space", "return"))
-    // "undoArrow"
+    internal val numberKeysPhone = listOf(
+        listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"),
+        listOf("-", "/", ":", ";", "(", ")", "€", "&", "@", "\""),
+        listOf("#+=", ".", ",", "?", "!", "'", "delete"),
+        listOf("ABC", "selectKeyboard", "space", "return") // "undoArrow"
+    )
 
-    internal val symbolKeysPhone = listOf(listOf("[", "]", "{", "}", "#", "%", "^", "*", "+", "="), listOf("_", "\\", "|", "~", "<", ">", "$", "£", "¥", "·"), listOf("123", ".", ",", "?", "!", "'", "delete"), listOf("ABC", "selectKeyboard", "space", "return"))
-    // "undoArrow"
+    internal val symbolKeysPhone = listOf(
+        listOf("[", "]", "{", "}", "#", "%", "^", "*", "+", "="),
+        listOf("_", "\\", "|", "~", "<", ">", "$", "£", "¥", "·"),
+        listOf("123", ".", ",", "?", "!", "'", "delete"),
+        listOf("ABC", "selectKeyboard", "space", "return") // "undoArrow"
+    )
 
-    internal val letterKeysPad = listOf(listOf("q", "w", "e", "r", "t", "z", "u", "i", "o", "p", "ü", "delete"), listOf("a", "s", "d", "f", "g", "h", "j", "k", "l", "ö", "ä", "return"), listOf("shift", "y", "x", "c", "v", "b", "n", "m", ",", ".", "ß", "shift"), listOf(".?123", "selectKeyboard", "space", ".?123", "hideKeyboard"))
-    // "undoArrow"
+    internal val letterKeysPad = listOf(
+        listOf("q", "w", "e", "r", "t", "z", "u", "i", "o", "p", "ü", "delete"),
+        listOf("a", "s", "d", "f", "g", "h", "j", "k", "l", "ö", "ä", "return"),
+        listOf("shift", "y", "x", "c", "v", "b", "n", "m", ",", ".", "ß", "shift"),
+        listOf(".?123", "selectKeyboard", "space", ".?123", "hideKeyboard") // "undoArrow"
+    )
 
-    internal val numberKeysPad = listOf(listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "+", "delete"), listOf("\"", "§", "€", "%", "&", "/", "(", ")", "=", "'", "#", "return"), listOf("#+=", "—", "`", "'", "...", "@", ";", ":", ",", ".", "-", "#+="), listOf("ABC", "selectKeyboard", "space", "ABC", "hideKeyboard"))
-    // "undoArrow"
+    internal val numberKeysPad = listOf(
+        listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "+", "delete"),
+        listOf("\"", "§", "€", "%", "&", "/", "(", ")", "=", "'", "#", "return"),
+        listOf("#+=", "—", "`", "'", "...", "@", ";", ":", ",", ".", "-", "#+="),
+        listOf("ABC", "selectKeyboard", "space", "ABC", "hideKeyboard") // "undoArrow"
+    )
 
-    internal val symbolKeysPad = listOf(listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "*", "delete"), listOf("$", "£", "¥", "¿", "―", "\\", "[", "]", "{", "}", "|", "return"), listOf("123", "¡", "<", ">", "≠", "·", "^", "~", "!", "?", "_", "123"), listOf("ABC", "selectKeyboard", "space", "ABC", "hideKeyboard"))
-    // "undoArrow"
+    internal val symbolKeysPad = listOf(
+        listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "*", "delete"),
+        listOf("$", "£", "¥", "¿", "―", "\\", "[", "]", "{", "}", "|", "return"),
+        listOf("123", "¡", "<", ">", "≠", "·", "^", "~", "!", "?", "_", "123"),
+        listOf("ABC", "selectKeyboard", "space", "ABC", "hideKeyboard") // "undoArrow"
+    )
 
     // Alternate key vars.
     internal val keysWithAlternates = listOf("a", "e", "i", "o", "u", "y", "s", "l", "z", "c", "n")
@@ -41,7 +66,9 @@ enum class GermanKeyboardConstants {
     internal val nAlternateKeys = listOf("ń", "ñ")
 }
 
-/// Gets the keys for the German keyboard.
+/**
+ * Gets the keys for the German keyboard.
+ */
 internal fun getDEKeys() {
     if (DeviceType.isPhone) {
         letterKeys = GermanKeyboardConstants.letterKeysPhone
@@ -76,7 +103,9 @@ internal fun getDEKeys() {
     nAlternateKeys = GermanKeyboardConstants.nAlternateKeys
 }
 
-/// Provides a German keyboard layout.
+/**
+ * Provides a German keyboard layout.
+ */
 internal fun setDEKeyboardLayout() {
     getDEKeys()
     currencySymbol = "€"

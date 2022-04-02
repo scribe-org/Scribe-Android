@@ -1,5 +1,5 @@
-//
-//  SwedishKeyboardViewController.kt
-//
+/**
+ * SwedishKeyboardViewController.kt
+ */
 
 internal class SwedishKeyboardViewController: KeyboardViewController {}

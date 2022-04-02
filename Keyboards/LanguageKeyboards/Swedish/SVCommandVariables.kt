@@ -1,9 +1,12 @@
-//
-//  SVCommandVariables.kt
-//
-//  Variables associated with Scribe commands for the Swedish keyboard.
-//
+/**
+ * SVCommandVariables.kt
+ *
+ * Variables associated with Scribe commands for the Swedish keyboard.
+ */
 
+/**
+ * Provides labels for the Swedish conjugation state.
+ */
 internal fun svSetConjugationLabels() {
     when (svConjugationState) {
         active -> {
@@ -21,14 +24,18 @@ internal fun svSetConjugationLabels() {
     }
 }
 
-/// What the conjugation state is for the conjugate feature.
+/**
+ * What the conjugation state is for the conjugate feature.
+ */
 internal enum class SVConjugationState {
     active,
     passive
 }
 internal var svConjugationState: SVConjugationState = .active
 
-/// Sets the title of the command bar when the keyboard is in conjugate mode.
+/**
+ * Sets the title of the command bar when the keyboard is in conjugate mode.
+ */
 internal fun svGetConjugationTitle() : String {
     if (inputWordIsCapitalized == true) {
         verbToDisplay = verbToConjugate.capitalized
@@ -41,7 +48,9 @@ internal fun svGetConjugationTitle() : String {
     }
 }
 
-/// Returns the appropriate key in the verbs dictionary to access conjugations.
+/**
+ * Returns the appropriate key in the verbs dictionary to access conjugations.
+ */
 internal fun svGetConjugationState() : List<String> {
     when (svConjugationState) {
         active -> return listOf("imperative", "activeSupine", "activePresent", "activePreterite")
@@ -49,7 +58,9 @@ internal fun svGetConjugationState() : List<String> {
     }
 }
 
-/// Action associated with the left view switch button of the conjugation state.
+/**
+ * Action associated with the left view switch button of the conjugation state.
+ */
 internal fun svConjugationStateLeft() {
     if (svConjugationState == .active) {
         return
@@ -59,7 +70,9 @@ internal fun svConjugationStateLeft() {
     }
 }
 
-/// Action associated with the right view switch button of the conjugation state.
+/**
+ * Action associated with the right view switch button of the conjugation state.
+ */
 internal fun svConjugationStateRight() {
     if (svConjugationState == .active) {
         svConjugationState = .passive

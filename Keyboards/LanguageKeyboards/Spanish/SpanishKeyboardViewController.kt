@@ -1,5 +1,5 @@
-//
-//  SpanishKeyboardViewController.kt
-//
+/**
+ * SpanishKeyboardViewController.kt
+ */
 
 internal class SpanishKeyboardViewController: KeyboardViewController {}

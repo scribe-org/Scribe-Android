@@ -1,5 +1,5 @@
-//
-//  GermanKeyboardViewController.kt
-//
+/**
+ * GermanKeyboardViewController.kt
+ */
 
 internal class GermanKeyboardViewController: KeyboardViewController {}

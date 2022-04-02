@@ -1,9 +1,12 @@
-//
-//  RUCommandVariables.kt
-//
-//  Variables associated with Scribe commands for the Russian keyboard.
-//
+/**
+ * RUCommandVariables.kt
+ *
+ * Variables associated with Scribe commands for the Russian keyboard.
+ */
 
+/**
+ * Provides labels for the Russian conjugation state.
+ */
 internal fun ruSetConjugationLabels() {
     when (ruConjugationState) {
         present -> {
@@ -33,14 +36,18 @@ internal fun ruSetConjugationLabels() {
     }
 }
 
-/// What the conjugation state is for the conjugate feature.
+/**
+ * What the conjugation state is for the conjugate feature.
+ */
 internal enum class RUConjugationState {
     present,
     past
 }
 internal var ruConjugationState: RUConjugationState = .present
 
-/// Sets the title of the command bar when the keyboard is in conjugate mode.
+/**
+ * Sets the title of the command bar when the keyboard is in conjugate mode.
+ */
 internal fun ruGetConjugationTitle() : String {
     if (inputWordIsCapitalized == true) {
         verbToDisplay = verbToConjugate.capitalized
@@ -53,7 +60,9 @@ internal fun ruGetConjugationTitle() : String {
     }
 }
 
-/// Returns the appropriate key in the verbs dictionary to access conjugations.
+/**
+ * Returns the appropriate key in the verbs dictionary to access conjugations.
+ */
 internal fun ruGetConjugationState() : String {
     when (ruConjugationState) {
         present -> return "pres"
@@ -61,7 +70,9 @@ internal fun ruGetConjugationState() : String {
     }
 }
 
-/// Action associated with the left view switch button of the conjugation state.
+/**
+ * Action associated with the left view switch button of the conjugation state.
+ */
 internal fun ruConjugationStateLeft() {
     if (ruConjugationState == .present) {
         return
@@ -71,7 +82,9 @@ internal fun ruConjugationStateLeft() {
     }
 }
 
-/// Action associated with the right view switch button of the conjugation state.
+/**
+ * Action associated with the right view switch button of the conjugation state.
+ */
 internal fun ruConjugationStateRight() {
     if (ruConjugationState == .present) {
         ruConjugationState = .past

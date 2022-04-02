@@ -1,5 +1,5 @@
-//
-//  FrenchKeyboardViewController.kt
-//
+/**
+ * FrenchKeyboardViewController.kt
+ */
 
 internal class FrenchKeyboardViewController: KeyboardViewController {}

@@ -1,9 +1,12 @@
-//
-//  PTCommandVariables.kt
-//
-//  Variables associated with Scribe commands for the Portuguese keyboard.
-//
+/**
+ * PTCommandVariables.kt
+ *
+ * Variables associated with Scribe commands for the Portuguese keyboard.
+ */
 
+/**
+ * Provides labels for the Portuguese conjugation state.
+ */
 internal fun ptSetConjugationLabels() {
     labelFPS = "eu"
     labelSPS = "tu"
@@ -13,7 +16,9 @@ internal fun ptSetConjugationLabels() {
     labelTPP = "eles/elas/vocês"
 }
 
-/// What the conjugation state is for the conjugate feature.
+/**
+ * What the conjugation state is for the conjugate feature.
+ */
 internal enum class PTConjugationState {
     indicativePresent,
     pastPerfect,
@@ -22,7 +27,9 @@ internal enum class PTConjugationState {
 }
 internal var ptConjugationState: PTConjugationState = .indicativePresent
 
-/// Sets the title of the command bar when the keyboard is in conjugate mode.
+/**
+ * Sets the title of the command bar when the keyboard is in conjugate mode.
+ */
 internal fun ptGetConjugationTitle() : String {
     if (inputWordIsCapitalized == true) {
         verbToDisplay = verbToConjugate.capitalized
@@ -37,7 +44,9 @@ internal fun ptGetConjugationTitle() : String {
     }
 }
 
-/// Returns the appropriate key in the verbs dictionary to access conjugations.
+/**
+ * Returns the appropriate key in the verbs dictionary to access conjugations.
+ */
 internal fun ptGetConjugationState() : String {
     when (ptConjugationState) {
         indicativePresent -> return "pres"
@@ -47,7 +56,9 @@ internal fun ptGetConjugationState() : String {
     }
 }
 
-/// Action associated with the left view switch button of the conjugation state.
+/**
+ * Action associated with the left view switch button of the conjugation state.
+ */
 internal fun ptConjugationStateLeft() {
     if (ptConjugationState == .indicativePresent) {
         return
@@ -63,7 +74,9 @@ internal fun ptConjugationStateLeft() {
     }
 }
 
-/// Action associated with the right view switch button of the conjugation state.
+/**
+ * Action associated with the right view switch button of the conjugation state.
+ */
 internal fun ptConjugationStateRight() {
     if (ptConjugationState == .indicativePresent) {
         ptConjugationState = .pastPerfect

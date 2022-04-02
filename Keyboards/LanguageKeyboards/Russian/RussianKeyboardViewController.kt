@@ -1,5 +1,5 @@
-//
-//  RussianKeyboardViewController.kt
-//
+/**
+ * RussianKeyboardViewController.kt
+ */
 
 internal class RussianKeyboardViewController: KeyboardViewController {}

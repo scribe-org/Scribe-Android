@@ -1,9 +1,12 @@
-//
-//  ITCommandVariables.kt
-//
-//  Variables associated with Scribe commands for the Italian keyboard.
-//
+/**
+ * ITCommandVariables.kt
+ *
+ * Variables associated with Scribe commands for the Italian keyboard.
+ */
 
+/**
+ * Provides labels for the Italian conjugation state.
+ */
 internal fun itSetConjugationLabels() {
     labelFPS = "io"
     labelSPS = "tu"
@@ -13,7 +16,9 @@ internal fun itSetConjugationLabels() {
     labelTPP = "loro"
 }
 
-/// What the conjugation state is for the conjugate feature.
+/**
+ * What the conjugation state is for the conjugate feature.
+ */
 internal enum class ITConjugationState {
     present,
     preterite,
@@ -21,7 +26,9 @@ internal enum class ITConjugationState {
 }
 internal var itConjugationState: ITConjugationState = .present
 
-/// Sets the title of the command bar when the keyboard is in conjugate mode.
+/**
+ * Sets the title of the command bar when the keyboard is in conjugate mode.
+ */
 internal fun itGetConjugationTitle() : String {
     if (inputWordIsCapitalized == true) {
         verbToDisplay = verbToConjugate.capitalized
@@ -35,7 +42,9 @@ internal fun itGetConjugationTitle() : String {
     }
 }
 
-/// Returns the appropriate key in the verbs dictionary to access conjugations.
+/**
+ * Returns the appropriate key in the verbs dictionary to access conjugations.
+ */
 internal fun itGetConjugationState() : String {
     when (itConjugationState) {
         present -> return "pres"
@@ -44,7 +53,9 @@ internal fun itGetConjugationState() : String {
     }
 }
 
-/// Action associated with the left view switch button of the conjugation state.
+/**
+ * Action associated with the left view switch button of the conjugation state.
+ */
 internal fun itConjugationStateLeft() {
     if (itConjugationState == .present) {
         return
@@ -57,7 +68,9 @@ internal fun itConjugationStateLeft() {
     }
 }
 
-/// Action associated with the right view switch button of the conjugation state.
+/**
+ * Action associated with the right view switch button of the conjugation state.
+ */
 internal fun itConjugationStateRight() {
     if (itConjugationState == .present) {
         itConjugationState = .preterite

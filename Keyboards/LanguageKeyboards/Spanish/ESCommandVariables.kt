@@ -1,9 +1,12 @@
-//
-//  ESCommandVariables.kt
-//
-//  Variables associated with Scribe commands for the Spanish keyboard.
-//
+/**
+ * ESCommandVariables.kt
+ *
+ * Variables associated with Scribe commands for the Spanish keyboard.
+ */
 
+/**
+ * Provides labels for the Spanish conjugation state.
+ */
 internal fun esSetConjugationLabels() {
     labelFPS = "yo"
     labelSPS = "tú"
@@ -13,7 +16,9 @@ internal fun esSetConjugationLabels() {
     labelTPP = "ellos/ellas/Uds."
 }
 
-/// What the conjugation state is for the conjugate feature.
+/**
+ * What the conjugation state is for the conjugate feature.
+ */
 internal enum class ESConjugationState {
     indicativePresent,
     preterite,
@@ -21,7 +26,9 @@ internal enum class ESConjugationState {
 }
 internal var esConjugationState: ESConjugationState = .indicativePresent
 
-/// Sets the title of the command bar when the keyboard is in conjugate mode.
+/**
+ * Sets the title of the command bar when the keyboard is in conjugate mode.
+ */
 internal fun esGetConjugationTitle() : String {
     if (inputWordIsCapitalized == true) {
         verbToDisplay = verbToConjugate.capitalized
@@ -35,7 +42,9 @@ internal fun esGetConjugationTitle() : String {
     }
 }
 
-/// Returns the appropriate key in the verbs dictionary to access conjugations.
+/**
+ * Returns the appropriate key in the verbs dictionary to access conjugations.
+ */
 internal fun esGetConjugationState() : String {
     when (esConjugationState) {
         indicativePresent -> return "pres"
@@ -44,7 +53,9 @@ internal fun esGetConjugationState() : String {
     }
 }
 
-/// Action associated with the left view switch button of the conjugation state.
+/**
+ * Action associated with the left view switch button of the conjugation state.
+ */
 internal fun esConjugationStateLeft() {
     if (esConjugationState == .indicativePresent) {
         return
@@ -57,7 +68,9 @@ internal fun esConjugationStateLeft() {
     }
 }
 
-/// Action associated with the right view switch button of the conjugation state.
+/**
+ * Action associated with the right view switch button of the conjugation state.
+ */
 internal fun esConjugationStateRight() {
     if (esConjugationState == .indicativePresent) {
         esConjugationState = .preterite
