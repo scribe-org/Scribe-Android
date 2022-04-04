@@ -52,7 +52,7 @@ See the [presentation slides](https://docs.google.com/presentation/d/16ld_rCbwJC
 
 # Supported Languages [`⇧`](#contents) <a id="supported-languages"></a>
 
-Scribe's goal is functional, feature-rich keyboards for all languages. Check [Scribe-Data/Data](https://github.com/scribe-org/Scribe-Data/tree/main/Data) for queries for currently supported languages and those that have substantial data on [Wikidata](https://www.wikidata.org/). Also see the [`new keyboard`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3A%22new+keyboard%22) label in the [Issues](https://github.com/scribe-org/Scribe-Android/issues) for keyboards that are currently in progress or being discussed, and [suggest a new keyboard](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=new+keyboard&template=new_keyboard.yml&title=Add+%3Clanguage%3E+keyboard) if you don't see it being worked on already!
+Scribe's goal is functional, feature-rich keyboards for all languages. Check [Scribe-Data/Data](https://github.com/scribe-org/Scribe-Data/tree/main/Data) for queries for currently supported languages and those that have substantial data on [Wikidata](https://www.wikidata.org/).
 
 The following table shows the supported languages and the amount of data available for each on [Wikidata](https://www.wikidata.org/):
 
@@ -72,7 +72,7 @@ The following table shows the supported languages and the amount of data availab
 
 `‡` Only for languages for which preposition annotation is needed.
 
-Updates to the above data can be done using [Scribe-Data/update_data.py](https://github.com/scribe-org/Scribe-Data/tree/main/Data/update_data.py).
+Updates to the above data can be done using [Scribe-Data/Data/update_data.py](https://github.com/scribe-org/Scribe-Data/tree/main/Data/update_data.py).
 
 # Keyboard Features [`⇧`](#contents) <a id="keyboard-features"></a>
 
