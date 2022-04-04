@@ -20,11 +20,9 @@
 <a href='https://play.google.com/store/apps'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height='80px'/></a>
 -->
 
-Also available on [iOS](https://github.com/scribe-org/Scribe-iOS).
+Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](https://github.com/scribe-org/Scribe-Desktop) (planned).
 
-<!-- and [Desktop](https://github.com/scribe-org/Scribe-Desktop) -->
-
-# WIP port from [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
+# WIP port of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
 
 ### Language learning keyboards for Android
 
