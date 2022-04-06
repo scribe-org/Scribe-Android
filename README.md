@@ -16,8 +16,8 @@
 [![license](https://img.shields.io/github/license/scribe-org/Scribe-Android.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt)
 [![coc](https://img.shields.io/badge/coc-Contributor%20Covenant-ff69b4.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/.github/CODE_OF_CONDUCT.md)
 
-<!-- <a href='https://play.google.com/store/apps'><img alt='Get it on Google Play' src='https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/Resources/GitHub/Images/google_play_badge.png' height='80px'/>
-</a><a href='https://f-droid.org/packages/'><img src='https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/Resources/GitHub/Images/f_droid_badge.png' alt='Get it on F-Droid' height='80px' /></a> -->
+<!-- <a href='https://play.google.com/store/apps'><img alt='Get it on Google Play' src='https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/Resources/GitHub/Images/google_play_badge.png' height='60px'/></a>
+<a href='https://f-droid.org/packages/'><img src='https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/Resources/GitHub/Images/f_droid_badge.png' alt='Get it on F-Droid' height='60px' /></a> -->
 
 Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](https://github.com/scribe-org/Scribe-Desktop) (planned).
 
