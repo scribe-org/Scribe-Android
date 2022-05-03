@@ -1,0 +1,16 @@
+<resources>
+
+    <style name="AppTheme" parent="AppTheme.Base" />
+
+    <style name="MyKeyboard">
+        <item name="itemTextAppearance">?attr/itemTextAppearance</item>
+    </style>
+
+    <style name="MyKeyboardView" parent="MyKeyboard">
+        <item name="keyTextSize">@dimen/keyboard_text_size</item>
+    </style>
+
+    <style name="MyKeyboardViewPopup" parent="MyKeyboard">
+        <item name="keyTextSize">@dimen/preview_text_size</item>
+    </style>
+</resources>

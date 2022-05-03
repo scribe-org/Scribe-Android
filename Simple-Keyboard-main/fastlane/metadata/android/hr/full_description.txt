@@ -1,0 +1,16 @@
+Brza lagana aplikacija za tipkovnicu koja pomaže u razgovoru s prijateljima ili umetanju bilo kojeg drugog teksta, brojeva ili simbola. 
+
+Dolazi s materijalnim dizajnom i tamnom temom prema zadanim postavkama, pruža izvrsno korisničko iskustvo za jednostavnu upotrebu. 
+
+Nedostatak pristupa internetu daje vam više privatnosti, sigurnosti i stabilnosti od drugih aplikacija. Ne sadrži oglase niti nepotrebna dopuštenja. 
+
+Potpuno je otvorenog koda, pruža prilagodljive boje. 
+
+<b>Pogledajte cijeli paket Jednostavni Alati ovdje:</b>
+https://www.simplemobiletools.com
+
+<b>Facebook:</b>
+https://www.facebook.com/simplemobiletools
+
+<b>Reddit:</b>
+https://www.reddit.com/r/SimpleMobileTools

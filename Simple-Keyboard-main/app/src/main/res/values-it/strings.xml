@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tastiera semplice</string>
+    <string name="app_launcher_name">Tastiera</string>
+    <string name="redirection_note">Abilita Simple Keyboard nella prossima schermata, per renderla una tastiera disponibile. Premi «Indietro» una volta abilitata.</string>
+    <string name="change_keyboard">Cambia la tastiera</string>
+    <!-- Clipboard -->
+    <string name="manage_clipboard_items">Gestisci gli elementi degli appunti</string>
+    <string name="manage_clipboard_empty">Gli appunti sono vuoti.</string>
+    <string name="manage_clipboard_label">Una volta copiato del testo, verrà mostrato qui. Puoi anche appuntare le clip in modo che non spariscano più tardi.</string>
+    <string name="clear_clipboard_data">Elimina i dati degli appunti</string>
+    <string name="clear_clipboard_data_confirmation">Vuoi davvero eliminare i dati degli appunti\?</string>
+    <string name="clipboard">Clipboard</string>
+    <string name="clipboard_recent">Recent</string>
+    <string name="clipboard_current">Attuale</string>
+    <string name="clipboard_pinned">Appuntato</string>
+    <string name="add_new_item">Aggiungi un nuovo elemento</string>
+    <string name="manage_clips">Puoi gestire o aggiungere clip qui per un accesso rapido.</string>
+    <string name="clip_text">Ritaglia il testo</string>
+    <string name="pin_text">Pin text</string>
+    <string name="text_pinned">Il testo è stato appuntato</string>
+    <string name="export_clipboard_items">Export clipboard items</string>
+    <string name="import_clipboard_items">Import clipboard items</string>
+    <!-- Accessibility -->
+    <string name="keycode_delete">Elimina</string>
+    <string name="keycode_mode_change">Cambia il tipo di tastiera</string>
+    <string name="keycode_shift">Maiusc</string>
+    <string name="keycode_enter">Invio</string>
+    <!-- Settings -->
+    <string name="show_clipboard_content">Mostra il contenuto degli appunti se disponibile</string>
+    <string name="show_popup">Mostra un popup alla pressione di un tasto</string>
+    <string name="vibrate_on_keypress">Vibra premendo un tasto</string>
+    <string name="keyboard_language">Lingua della tastiera</string>
+    <!-- Strings displayed only on Google Playstore. Optional, but good to have -->
+    <!-- App title has to have less than 30 characters. If you cannot squeeze it, just remove a part of it -->
+    <string name="app_title">Tastiera semplice</string>
+    <!-- Short description has to have less than 80 chars -->
+    <string name="app_short_description">Tastiera facile per inserire tutti i tipi di testo, caratteri speciali e numeri</string>
+    <string name="app_long_description">
+        Un\'app rapida e leggera per la tastiera che aiuta a chattare con i tuoi amici, o a inserire qualsiasi altro testo, numero o simbolo.
+
+        Viene fornito con Material Design e tema scuro per impostazione predefinita, fornisce una grande esperienza utente per un facile utilizzo.
+
+        La mancanza di accesso a internet ti dà più privacy, sicurezza e stabilità rispetto ad altre app. Non contiene annunci o permessi inutili. Il codice sorgente è completamente aperto, fornisce colori personalizzabili.
+
+        <b> Guarda la suite completa di Simple Tools qui:</b>
+        https://www.simplemobiletools.com
+
+        <b>Facebook:</b>
+        https://www.facebook.com/simplemobiletools
+
+        <b>Reddit:</b>
+        https://www.reddit.com/r/SimpleMobileTools
+    </string>
+    <!--
+        Haven't found some strings? There's more at
+        https://github.com/SimpleMobileTools/Simple-Commons/tree/master/commons/src/main/res
+    -->
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Basit Klavye</string>
+    <string name="app_launcher_name">Klavye</string>
+    <string name="redirection_note">Kullanılabilir bir klavye yapmak için lütfen bir sonraki ekranda Basit Klavye\'yi etkinleştirin. Etkinleştirildikten sonra \'Geri\' düğmesine basın.</string>
+    <string name="change_keyboard">Klavye Değiştir</string>
+    <!-- Clipboard -->
+    <string name="manage_clipboard_items">Pano ögelerini yönet</string>
+    <string name="manage_clipboard_empty">Panonuz boş.</string>
+    <string name="manage_clipboard_label">Bir metni kopyaladığınızda, burada görünecektir. Daha sonra kaybolmamaları için panoları da sabitleyebilirsiniz.</string>
+    <string name="clear_clipboard_data">Pano verilerini temizle</string>
+    <string name="clear_clipboard_data_confirmation">Pano verilerini silmek istediğinizden emin misiniz\?</string>
+    <string name="clipboard">Pano</string>
+    <string name="clipboard_recent">Son kopyalananlar</string>
+    <string name="clipboard_current">Geçerli</string>
+    <string name="clipboard_pinned">Sabitlendi</string>
+    <string name="add_new_item">Yeni öge ekle</string>
+    <string name="manage_clips">Hızlı erişim için burada panoları yönetebilir veya ekleyebilirsiniz.</string>
+    <string name="clip_text">Metni panoya kopyala</string>
+    <string name="pin_text">Metni sabitle</string>
+    <string name="text_pinned">Metin sabitlendi</string>
+    <string name="export_clipboard_items">Pano ögelerini dışa aktar</string>
+    <string name="import_clipboard_items">Pano ögelerini içe aktar</string>
+    <!-- Accessibility -->
+    <string name="keycode_delete">Sil</string>
+    <string name="keycode_mode_change">Klavye türünü değiştir</string>
+    <string name="keycode_shift">Shift</string>
+    <string name="keycode_enter">Enter</string>
+    <!-- Settings -->
+    <string name="show_clipboard_content">Varsa pano içeriğini göster</string>
+    <string name="show_popup">Tuşa basıldığında bir açılır menü göster</string>
+    <string name="vibrate_on_keypress">Tuşa basıldığında titret</string>
+    <string name="keyboard_language">Klavye dili</string>
+    <!-- Strings displayed only on Google Playstore. Optional, but good to have -->
+    <!-- App title has to have less than 30 characters. If you cannot squeeze it, just remove a part of it -->
+    <string name="app_title">Basit Klavye</string>
+    <!-- Short description has to have less than 80 chars -->
+    <string name="app_short_description">Her türlü metin, özel karakter ve sayı girmek için kolay klavye</string>
+    <string name="app_long_description"> Arkadaşlarınızla sohbet etmenize veya başka metinler, sayılar veya simgeler eklemenize yardımcı olan hızlı, hafif bir klavye uygulaması. Öntanımlı olarak materyal tasarım ve koyu tema ile birlikte gelir, kolay kullanım için harika bir kullanıcı deneyimi sağlar. İnternet erişiminin olmaması size diğer uygulamalardan daha fazla gizlilik, güvenlik ve istikrar sağlar. Reklam veya gereksiz izinler içermez. Tamamen açık kaynaktır, özelleştirilebilir renkler sunar. <b>Basit Araçlar paketinin tamamını buradan inceleyin:</b> https://www.simplemobiletools.com <b>Facebook:</b> https://www.facebook.com/simplemobiletools <b>Reddit:</b> https://www.reddit.com/r/SimpleMobileTools </string>
+    <!--
+        Haven't found some strings? There's more at
+        https://github.com/SimpleMobileTools/Simple-Commons/tree/master/commons/src/main/res
+    -->
+</resources>
