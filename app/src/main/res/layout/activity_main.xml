@@ -13,17 +13,10 @@
         <android.widget.TextView
             android:id="@+id/change_keyboard"
             style="@style/ColoredButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
             android:text="@string/change_keyboard" />
 
     </RelativeLayout>
-
-    <com.simplemobiletools.commons.views.MyEditText
-        android:id="@+id/text_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/change_keyboard_holder"
-        android:layout_margin="@dimen/activity_margin" />
 
 </RelativeLayout>
