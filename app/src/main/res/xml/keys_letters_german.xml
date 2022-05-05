@@ -17,43 +17,43 @@
         <Key
             app:keyLabel="e"
             app:keyWidth="9.05%p"
-            app:popupCharacters="éè3êëēę"
+            app:popupCharacters="3"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="3" />
         <Key
             app:keyLabel="r"
             app:keyWidth="9.05%p"
-            app:popupCharacters="ř4ŕ"
+            app:popupCharacters="4"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="4" />
         <Key
             app:keyLabel="t"
             app:keyWidth="9.05%p"
-            app:popupCharacters="5ť"
+            app:popupCharacters="5"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="5" />
         <Key
             app:keyLabel="z"
             app:keyWidth="9.05%p"
-            app:popupCharacters="ź6žż"
+            app:popupCharacters="6"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="6" />
         <Key
             app:keyLabel="u"
             app:keyWidth="9.05%p"
-            app:popupCharacters="űúù7üûū"
+            app:popupCharacters="7"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="7" />
         <Key
             app:keyLabel="i"
             app:keyWidth="9.05%p"
-            app:popupCharacters="íìî8ïī"
+            app:popupCharacters="8"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="8" />
         <Key
             app:keyLabel="o"
             app:keyWidth="9.05%p"
-            app:popupCharacters="őóôòõō9ö"
+            app:popupCharacters="9"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="9" />
         <Key
@@ -71,24 +71,16 @@
         <Key
             app:keyEdgeFlags="left"
             app:keyLabel="a"
-            app:keyWidth="9.05%p"
-            app:popupCharacters="áäàâãåāæą"
-            app:popupKeyboard="@xml/keyboard_popup_template" />
+            app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="s"
-            app:keyWidth="9.05%p"
-            app:popupCharacters="śßš"
-            app:popupKeyboard="@xml/keyboard_popup_template" />
+            app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="d"
-            app:keyWidth="9.05%p"
-            app:popupCharacters="ďđ"
-            app:popupKeyboard="@xml/keyboard_popup_template" />
+            app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="f"
-            app:keyWidth="9.05%p"
-            app:popupCharacters="₣"
-            app:popupKeyboard="@xml/keyboard_popup_template" />
+            app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="g"
             app:keyWidth="9.05%p" />
@@ -103,9 +95,7 @@
             app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="l"
-            app:keyWidth="9.05%p"
-            app:popupCharacters="ĺľł"
-            app:popupKeyboard="@xml/keyboard_popup_template" />
+            app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="ä"
             app:keyWidth="9.05%p" />
@@ -119,19 +109,24 @@
             app:code="-1"
             app:keyEdgeFlags="left"
             app:keyIcon="@drawable/ic_caps_outline_vector"
-            app:keyWidth="7.5%p" />
+            app:keyWidth="15%p" />
+        <!--
+        This needs to have nine keys on the bottom row, hence once before and after the letter keys.
+        Not having these causes the ?123 key to instead trigger a space instead of switching the view.
+        -->
         <Key
-            app:horizontalGap="10%"
+            app:keyLabel=""
+            app:keyWidth="0%p" />
+        <Key
+            app:horizontalGap="3.325%"
             app:keyLabel="y"
-            app:keyWidth="9.05%p"
-            app:popupCharacters="ýÿ¥"
-            app:popupKeyboard="@xml/keyboard_popup_template" />
-        <Key app:keyLabel="x" />
+            app:keyWidth="9.05%p" />
+        <Key
+            app:keyLabel="x"
+            app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="c"
-            app:keyWidth="9.05%p"
-            app:popupCharacters="çčć¢"
-            app:popupKeyboard="@xml/keyboard_popup_template" />
+            app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="v"
             app:keyWidth="9.05%p" />
@@ -140,25 +135,26 @@
             app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="n"
-            app:keyWidth="9.05%p"
-            app:popupCharacters="ňńñ"
-            app:popupKeyboard="@xml/keyboard_popup_template" />
+            app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="m"
             app:keyWidth="9.05%p" />
         <Key
+            app:keyLabel=""
+            app:keyWidth="0%p" />
+        <Key
             app:code="-5"
-            app:horizontalGap="7.5%"
+            app:horizontalGap="3.325%"
             app:isRepeatable="true"
             app:keyEdgeFlags="right"
             app:keyIcon="@drawable/ic_clear_vector"
-            app:keyWidth="10%p" />
+            app:keyWidth="15%p" />
     </Row>
     <Row>
         <Key
             app:code="-2"
             app:keyEdgeFlags="left"
-            app:keyLabel="123"
+            app:keyLabel="\?123"
             app:keyWidth="15%p" />
         <Key
             app:keyLabel=","
