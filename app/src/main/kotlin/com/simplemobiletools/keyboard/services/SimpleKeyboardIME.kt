@@ -244,10 +244,12 @@ class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionL
     private fun getKeyboardLayoutXML(): Int {
         return when (baseContext.config.keyboardLanguage) {
             LANGUAGE_FRENCH -> R.xml.keys_letters_french
-            LANGUAGE_RUSSIAN -> R.xml.keys_letters_russian
-            LANGUAGE_ENGLISH_QWERTZ -> R.xml.keys_letters_english_qwertz
-            LANGUAGE_SPANISH -> R.xml.keys_letters_spanish_qwerty
             LANGUAGE_GERMAN -> R.xml.keys_letters_german
+            LANGUAGE_ITALIAN -> R.xml.keys_letters_italian
+            LANGUAGE_PORTUGUESE -> R.xml.keys_letters_portuguese
+            LANGUAGE_RUSSIAN -> R.xml.keys_letters_russian
+            LANGUAGE_SPANISH -> R.xml.keys_letters_spanish
+            LANGUAGE_SWEDISH -> R.xml.keys_letters_swedish
             else -> R.xml.keys_letters_english_qwerty
         }
     }

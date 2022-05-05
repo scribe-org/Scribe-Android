@@ -111,11 +111,13 @@ class SettingsActivity : SimpleActivity() {
         settings_keyboard_language_holder.setOnClickListener {
             val items = arrayListOf(
                 RadioItem(LANGUAGE_ENGLISH_QWERTY, getKeyboardLanguageText(LANGUAGE_ENGLISH_QWERTY)),
-                RadioItem(LANGUAGE_ENGLISH_QWERTZ, getKeyboardLanguageText(LANGUAGE_ENGLISH_QWERTZ)),
                 RadioItem(LANGUAGE_FRENCH, getKeyboardLanguageText(LANGUAGE_FRENCH)),
                 RadioItem(LANGUAGE_GERMAN, getKeyboardLanguageText(LANGUAGE_GERMAN)),
+                RadioItem(LANGUAGE_ITALIAN, getKeyboardLanguageText(LANGUAGE_ITALIAN)),
+                RadioItem(LANGUAGE_PORTUGUESE, getKeyboardLanguageText(LANGUAGE_PORTUGUESE)),
+                RadioItem(LANGUAGE_RUSSIAN, getKeyboardLanguageText(LANGUAGE_RUSSIAN)),
                 RadioItem(LANGUAGE_SPANISH, getKeyboardLanguageText(LANGUAGE_SPANISH)),
-                RadioItem(LANGUAGE_RUSSIAN, getKeyboardLanguageText(LANGUAGE_RUSSIAN))
+                RadioItem(LANGUAGE_SWEDISH, getKeyboardLanguageText(LANGUAGE_SWEDISH))
             )
 
             RadioGroupDialog(this@SettingsActivity, items, config.keyboardLanguage) {
@@ -129,10 +131,12 @@ class SettingsActivity : SimpleActivity() {
         return when (language) {
             LANGUAGE_FRENCH -> getString(R.string.translation_french)
             LANGUAGE_GERMAN -> getString(R.string.translation_german)
+            LANGUAGE_ITALIAN -> getString(R.string.translation_italian)
+            LANGUAGE_PORTUGUESE -> getString(R.string.translation_portuguese)
             LANGUAGE_RUSSIAN -> getString(R.string.translation_russian)
-            LANGUAGE_ENGLISH_QWERTZ -> "${getString(R.string.translation_english)} (QWERTZ)"
             LANGUAGE_SPANISH -> getString(R.string.translation_spanish)
-            else -> "${getString(R.string.translation_english)} (QWERTY)"
+            LANGUAGE_SWEDISH -> getString(R.string.translation_swedish)
+            else -> getString(R.string.translation_english)
         }
     }
 }
