@@ -17,7 +17,7 @@
         <Key
             app:keyLabel="e"
             app:keyWidth="9.05%p"
-            app:popupCharacters="3"
+            app:popupCharacters="èé3ėêë"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="3" />
         <Key
@@ -41,19 +41,19 @@
         <Key
             app:keyLabel="u"
             app:keyWidth="9.05%p"
-            app:popupCharacters="7"
+            app:popupCharacters="ûū7ùú"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="7" />
         <Key
             app:keyLabel="i"
             app:keyWidth="9.05%p"
-            app:popupCharacters="8"
+            app:popupCharacters="ìïîī8íį"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="8" />
         <Key
             app:keyLabel="o"
             app:keyWidth="9.05%p"
-            app:popupCharacters="9"
+            app:popupCharacters="ōøœõóò9ô"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="9" />
         <Key
@@ -71,10 +71,14 @@
         <Key
             app:keyEdgeFlags="left"
             app:keyLabel="a"
-            app:keyWidth="9.05%p" />
+            app:keyWidth="9.05%p"
+            app:popupCharacters="âàáæãåā"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
         <Key
             app:keyLabel="s"
-            app:keyWidth="9.05%p" />
+            app:keyWidth="9.05%p"
+            app:popupCharacters="šßś"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
         <Key
             app:keyLabel="d"
             app:keyWidth="9.05%p" />
@@ -135,7 +139,9 @@
             app:keyWidth="9.05%p" />
         <Key
             app:keyLabel="n"
-            app:keyWidth="9.05%p" />
+            app:keyWidth="9.05%p"
+            app:popupCharacters="ñń"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
         <Key
             app:keyLabel="m"
             app:keyWidth="9.05%p" />
@@ -165,7 +171,9 @@
             app:keyWidth="50%p" />
         <Key
             app:keyLabel="."
-            app:keyWidth="10%p" />
+            app:keyWidth="10%p"
+            app:popupCharacters="¿¡/()#!,?"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
         <Key
             app:code="-4"
             app:keyEdgeFlags="right"

@@ -29,7 +29,7 @@
         <Key
             app:keyLabel="е"
             app:keyWidth="9.05%p"
-            app:popupCharacters="5"
+            app:popupCharacters="5ë"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="5" />
         <Key
@@ -161,7 +161,9 @@
             app:keyWidth="50%p" />
         <Key
             app:keyLabel="."
-            app:keyWidth="10%p" />
+            app:keyWidth="10%p"
+            app:popupCharacters="¿¡/()#!,?"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
         <Key
             app:code="-4"
             app:keyEdgeFlags="right"
