@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Simple Keyboard</string>
-    <string name="app_launcher_name">Keyboard</string>
-    <string name="redirection_note">Please enable Simple Keyboard on the next screen, to make it an available keyboard. Press \'Back\' once enabled.</string>
+    <string name="app_name">Scribe - Language Keyboards</string>
+    <string name="app_launcher_name">Scribe</string>
+    <string name="redirection_note">Thanks for downloading Scribe! Please enable keyboards on the next screen, and press \'Back\' when finished.</string>
     <string name="change_keyboard">Enable Keyboard</string>
     <!-- Clipboard -->
     <string name="manage_clipboard_items">Manage clipboard items</string>
@@ -31,29 +31,28 @@
     <string name="show_popup">Show a popup on keypress</string>
     <string name="vibrate_on_keypress">Vibrate on keypress</string>
     <string name="keyboard_language">Keyboard language</string>
-    <!-- Strings displayed only on Google Playstore. Optional, but good to have -->
+    <!-- Strings displayed only on Google Play. Optional, but good to have -->
     <!-- App title has to have less than 30 characters. If you cannot squeeze it, just remove a part of it -->
-    <string name="app_title">Simple Keyboard</string>
+    <string name="app_title">Scribe - Language Keyboards</string>
     <!-- Short description has to have less than 80 chars -->
-    <string name="app_short_description">Easy keyboard for inserting all kinds of texts, special characters and numbers</string>
+    <string name="app_short_description">Keyboards that help second language learners communicate with confidence.</string>
     <string name="app_long_description">
-        A quick lightweight keyboard app that helps chatting with your friends, or inserting any other texts, numbers or symbols.
+        <b>Scribe</b> is a pack of Android and F-Droid keyboards for language learners. It provides features to help users remember grammar rules so they can effectively communicate without ever leaving their keyboard.
 
-        It comes with material design and dark theme by default, provides great user experience for easy usage. The lack of internet access gives you more privacy, security and stability than other apps.
+        <b>Included Languages</b>
 
-        Contains no ads or unnecessary permissions. It is fully opensource, provides customizable colors.
+        French, German, Italian, Portuguese, Russian, Spanish and Swedish.
 
-        <b>Check out the full suite of Simple Tools here:</b>
-        https://www.simplemobiletools.com
+        <b>Current Features</b>
 
-        <b>Facebook:</b>
-        https://www.facebook.com/simplemobiletools
+        - The (beta) <b>Translate</b> feature can translate single words or phrases from English into the language of the current keyboard.
 
-        <b>Reddit:</b>
-        https://www.reddit.com/r/SimpleMobileTools
+        - With the <b>Conjugate</b> feature, a user is presented with the grammar charts for an entered verb instead of the keyboard. Pressing an example in the charts inserts the chosen conjugation into the text field.
+
+        - The Plural <b>feature</b> allows a user to enter a noun and then insert its plural into the text field.
+
+        - Scribe further annotates noun genders and preposition cases in the command bar to help users understand the context of what they're typing. Annotations are displayed once a user has typed a given word and pressed space or by pressing the Scribe key while it is selected.
+
+        Being fully open-source including data from Wikidata, the Scribe team loves to get both feedback and contributions. Please don't hesitate to visit us at https://github.com/scribe-org/Scribe-iOS!
     </string>
-    <!--
-        Haven't found some strings? There's more at
-        https://github.com/SimpleMobileTools/Simple-Commons/tree/master/commons/src/main/res
-    -->
 </resources>
