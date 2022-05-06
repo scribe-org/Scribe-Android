@@ -91,7 +91,7 @@
         <Key
             app:keyLabel="'"
             app:popupCharacters="‚‘’‹›"
-            app:popupKeyboard="@xml/keyboard_popup_template" />/>
+            app:popupKeyboard="@xml/keyboard_popup_template" />
         <Key
             app:code="-5"
             app:isRepeatable="true"

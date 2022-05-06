@@ -37,22 +37,10 @@
     <!-- Short description has to have less than 80 chars -->
     <string name="app_short_description">Keyboards that help second language learners communicate with confidence.</string>
     <string name="app_long_description">
-        <b>Scribe</b> is a pack of Android and F-Droid keyboards for language learners. It provides features to help users remember grammar rules so they can effectively communicate without ever leaving their keyboard.
+        Scribe is a pack of Android and F-Droid keyboards for language learners.
 
-        <b>Included Languages</b>
+        Included languages are French, German, Italian, Portuguese, Russian, Spanish and Swedish.
 
-        French, German, Italian, Portuguese, Russian, Spanish and Swedish.
-
-        <b>Current Features</b>
-
-        - The (beta) <b>Translate</b> feature can translate single words or phrases from English into the language of the current keyboard.
-
-        - With the <b>Conjugate</b> feature, a user is presented with the grammar charts for an entered verb instead of the keyboard. Pressing an example in the charts inserts the chosen conjugation into the text field.
-
-        - The Plural <b>feature</b> allows a user to enter a noun and then insert its plural into the text field.
-
-        - Scribe further annotates noun genders and preposition cases in the command bar to help users understand the context of what they're typing. Annotations are displayed once a user has typed a given word and pressed space or by pressing the Scribe key while it is selected.
-
-        Being fully open-source including data from Wikidata, the Scribe team loves to get both feedback and contributions. Please don't hesitate to visit us at https://github.com/scribe-org/Scribe-iOS!
+        With Scribe keyboards a user can translate from English, select verb conjugations, find plurals of nouns, and see nouns and prepositions annotated to help with genders and cases.
     </string>
 </resources>
