@@ -218,6 +218,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         mPrimaryColor = context.getProperPrimaryColor()
 
         mPreviewPopup = PopupWindow(context)
+        mPreviewText = inflater.inflate(resources.getLayout(R.layout.keyboard_key_preview), null) as TextView
         mPreviewTextSizeLarge = context.resources.getDimension(R.dimen.preview_text_size).toInt()
         mPreviewPopup.contentView = mPreviewText
         mPreviewPopup.setBackgroundDrawable(null)
