@@ -13,13 +13,13 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.simplemobiletools.keyboard"
+        applicationId "org.scribe"
         minSdk 23
         targetSdk 31
         versionCode 7
-        versionName "5.1.1"
+        versionName "1.0.0"
         multiDexEnabled true
-        setProperty("archivesBaseName", "keyboard")
+        setProperty("archivesBaseName", "scribe")
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -60,6 +60,7 @@ android {
         abortOnError false
         checkReleaseBuilds false
     }
+    namespace 'org.scribe'
 
 }
 
