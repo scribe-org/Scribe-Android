@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="key_color">#FF75CEFA</color>
-    <color name="key_press_color">#FFD1D6D9</color>
+    <color name="key_color">#FFFFFFFF</color>
+    <color name="key_press_color">#FF757575</color>
     <color name="keyboard_background_color">#FFECEFF1</color>
     <color name="scribe_blue_light">#FF75CEFA</color>
     <color name="scribe_blue_dark">#FF4CADE6</color>
 
     <!-- Commons colors -->
-    <color name="color_primary">#FFF57C00</color>
-    <color name="color_primary_dark">#FFD76D00</color>
+    <color name="color_primary">#FF4CADE6</color>
+    <color name="color_primary_dark">#FF4CADE6</color>
     <color name="color_accent">@color/color_primary</color>
 
     <color name="pressed_item_foreground">#08000000</color>
