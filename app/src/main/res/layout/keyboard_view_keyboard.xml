@@ -196,7 +196,7 @@
                 android:textSize="@dimen/normal_text_size"
                 android:visibility="gone" />
 
-            <com.simplemobiletools.commons.views.MyRecyclerView
+            <org.scribe.commons.views.MyRecyclerView
                 android:id="@+id/clips_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -8,13 +8,13 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
-import com.simplemobiletools.commons.dialogs.ConfirmationAdvancedDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.LICENSE_GSON
-import com.simplemobiletools.commons.models.FAQItem
 import kotlinx.android.synthetic.main.activity_main.*
 import org.scribe.BuildConfig
 import org.scribe.R
+import org.scribe.commons.dialogs.ConfirmationAdvancedDialog
+import org.scribe.commons.extensions.*
+import org.scribe.commons.helpers.LICENSE_GSON
+import org.scribe.commons.models.FAQItem
 
 class MainActivity : SimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

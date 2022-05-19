@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_all_corners">
 
-                <com.simplemobiletools.commons.views.MyTextView
+                <org.scribe.commons.views.MyTextView
                     android:id="@+id/settings_customize_colors_label"
                     style="@style/SettingsTextLabelStyle"
                     android:layout_width="wrap_content"
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_top_corners">
 
-                <com.simplemobiletools.commons.views.MyTextView
+                <org.scribe.commons.views.MyTextView
                     android:id="@+id/settings_purchase_thank_you"
                     style="@style/SettingsTextLabelStyle"
                     android:layout_width="wrap_content"
@@ -81,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_background">
 
-                <com.simplemobiletools.commons.views.MyAppCompatCheckbox
+                <org.scribe.commons.views.MyAppCompatCheckbox
                     android:id="@+id/settings_use_english"
                     style="@style/SettingsCheckboxStyle"
                     android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_bottom_corners">
 
-                <com.simplemobiletools.commons.views.MyTextView
+                <org.scribe.commons.views.MyTextView
                     android:id="@+id/settings_manage_clipboard_items_label"
                     style="@style/SettingsTextLabelStyle"
                     android:layout_width="wrap_content"
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_background">
 
-                <com.simplemobiletools.commons.views.MyAppCompatCheckbox
+                <org.scribe.commons.views.MyAppCompatCheckbox
                     android:id="@+id/settings_vibrate_on_keypress"
                     style="@style/SettingsCheckboxStyle"
                     android:layout_width="match_parent"
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_background">
 
-                <com.simplemobiletools.commons.views.MyAppCompatCheckbox
+                <org.scribe.commons.views.MyAppCompatCheckbox
                     android:id="@+id/settings_show_popup_on_keypress"
                     style="@style/SettingsCheckboxStyle"
                     android:layout_width="match_parent"
@@ -145,14 +145,14 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_bottom_corners">
 
-                <com.simplemobiletools.commons.views.MyTextView
+                <org.scribe.commons.views.MyTextView
                     android:id="@+id/settings_keyboard_language_label"
                     style="@style/SettingsTextLabelStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/keyboard_language" />
 
-                <com.simplemobiletools.commons.views.MyTextView
+                <org.scribe.commons.views.MyTextView
                     android:id="@+id/settings_keyboard_language"
                     style="@style/SettingsTextValueStyle"
                     android:layout_width="match_parent"

@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
 import kotlinx.android.synthetic.main.item_clip_on_keyboard.view.*
 import kotlinx.android.synthetic.main.item_section_label.view.*
 import org.scribe.R
+import org.scribe.commons.extensions.*
+import org.scribe.commons.helpers.ensureBackgroundThread
 import org.scribe.extensions.config
 import org.scribe.extensions.getCurrentClip
 import org.scribe.extensions.getStrokeColor

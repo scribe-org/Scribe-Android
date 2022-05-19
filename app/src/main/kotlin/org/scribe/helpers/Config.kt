@@ -1,7 +1,7 @@
 package org.scribe.helpers
 
 import android.content.Context
-import com.simplemobiletools.commons.helpers.BaseConfig
+import org.scribe.commons.helpers.BaseConfig
 import java.util.*
 
 class Config(context: Context) : BaseConfig(context) {

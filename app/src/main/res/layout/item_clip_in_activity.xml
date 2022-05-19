@@ -10,7 +10,7 @@
     android:foreground="@drawable/selector"
     android:paddingEnd="@dimen/normal_margin">
 
-    <com.simplemobiletools.commons.views.MyTextView
+    <org.scribe.commons.views.MyTextView
         android:id="@+id/clip_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

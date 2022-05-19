@@ -1,7 +1,7 @@
 package org.scribe.activities
 
 import android.content.Intent
-import com.simplemobiletools.commons.activities.BaseSplashActivity
+import org.scribe.commons.activities.BaseSplashActivity
 
 class SplashActivity : BaseSplashActivity() {
     override fun initActivity() {

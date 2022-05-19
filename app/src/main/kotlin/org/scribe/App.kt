@@ -1,7 +1,7 @@
 package org.scribe
 
 import android.app.Application
-import com.simplemobiletools.commons.extensions.checkUseEnglish
+import org.scribe.commons.extensions.checkUseEnglish
 
 class App : Application() {
     override fun onCreate() {

@@ -1,14 +1,14 @@
 package org.scribe.dialogs
 
 import androidx.appcompat.app.AlertDialog
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.extensions.setupDialogStuff
-import com.simplemobiletools.commons.extensions.showKeyboard
-import com.simplemobiletools.commons.extensions.toast
-import com.simplemobiletools.commons.extensions.value
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
 import kotlinx.android.synthetic.main.dialog_add_or_edit_clip.view.*
 import org.scribe.R
+import org.scribe.commons.activities.BaseSimpleActivity
+import org.scribe.commons.extensions.setupDialogStuff
+import org.scribe.commons.extensions.showKeyboard
+import org.scribe.commons.extensions.toast
+import org.scribe.commons.extensions.value
+import org.scribe.commons.helpers.ensureBackgroundThread
 import org.scribe.helpers.ClipsHelper
 import org.scribe.models.Clip
 

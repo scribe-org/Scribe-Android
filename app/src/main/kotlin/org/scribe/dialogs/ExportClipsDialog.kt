@@ -1,12 +1,12 @@
 package org.scribe.dialogs
 
 import androidx.appcompat.app.AlertDialog
-import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.dialogs.ConfirmationDialog
-import com.simplemobiletools.commons.dialogs.FilePickerDialog
-import com.simplemobiletools.commons.extensions.*
 import kotlinx.android.synthetic.main.dialog_export_clips.view.*
 import org.scribe.R
+import org.scribe.commons.activities.BaseSimpleActivity
+import org.scribe.commons.dialogs.ConfirmationDialog
+import org.scribe.commons.dialogs.FilePickerDialog
+import org.scribe.commons.extensions.*
 import org.scribe.extensions.config
 
 class ExportClipsDialog(

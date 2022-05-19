@@ -36,4 +36,14 @@
         <!-- Top small number shown above letters of the first row. -->
         <attr name="topSmallNumber" format="string" />
     </declare-styleable>
+
+    <!-- Commons attrs -->
+    <declare-styleable name="BottomActionMenuItem">
+        <attr name="android:id" />
+        <attr name="android:title" />
+        <attr name="android:icon" />
+        <attr name="android:visible" />
+        <attr name="showAsAction" />
+    </declare-styleable>
+
 </resources>

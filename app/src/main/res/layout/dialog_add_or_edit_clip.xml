@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:paddingTop="@dimen/activity_margin">
 
-    <com.simplemobiletools.commons.views.MyEditText
+    <org.scribe.commons.views.MyEditText
         android:id="@+id/add_clip_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

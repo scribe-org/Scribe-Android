@@ -3,11 +3,11 @@ package org.scribe.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import com.simplemobiletools.commons.dialogs.RadioGroupDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.models.RadioItem
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.scribe.R
+import org.scribe.commons.dialogs.RadioGroupDialog
+import org.scribe.commons.extensions.*
+import org.scribe.commons.models.RadioItem
 import org.scribe.extensions.config
 import org.scribe.helpers.*
 import java.util.*
