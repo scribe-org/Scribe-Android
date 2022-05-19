@@ -198,46 +198,7 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/about_donate_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_bottom_corners"
-                android:padding="@dimen/medium_margin"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/about_donate_icon"
-                    android:layout_width="@dimen/normal_icon_size"
-                    android:layout_height="@dimen/normal_icon_size"
-                    android:contentDescription="@null"
-                    android:padding="@dimen/medium_margin"
-                    android:src="@drawable/ic_dollar_vector" />
-
-                <org.scribe.commons.views.MyTextView
-                    android:id="@+id/about_donate"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignTop="@+id/about_donate_icon"
-                    android:layout_alignBottom="@+id/about_donate_icon"
-                    android:layout_marginStart="@dimen/normal_margin"
-                    android:layout_marginEnd="@dimen/normal_margin"
-                    android:layout_toEndOf="@+id/about_donate_icon"
-                    android:gravity="center_vertical"
-                    android:text="@string/donate"
-                    android:textSize="@dimen/bigger_text_size" />
-
-            </RelativeLayout>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/about_social"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/social"
-            android:textSize="@dimen/big_text_size" />
 
         <LinearLayout
             android:id="@+id/about_social_holder"
@@ -245,72 +206,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/medium_margin"
             android:background="@drawable/section_holder_stroke"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:id="@+id/about_facebook_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_top_corners"
-                android:paddingStart="@dimen/activity_margin"
-                android:paddingTop="@dimen/medium_margin"
-                android:paddingBottom="@dimen/medium_margin">
-
-                <ImageView
-                    android:id="@+id/about_facebook_icon"
-                    android:layout_width="@dimen/normal_icon_size"
-                    android:layout_height="@dimen/normal_icon_size"
-                    android:contentDescription="@null"
-                    android:padding="@dimen/medium_margin"
-                    android:src="@drawable/ic_facebook_vector" />
-
-                <org.scribe.commons.views.MyTextView
-                    android:id="@+id/about_facebook"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignTop="@+id/about_facebook_icon"
-                    android:layout_alignBottom="@+id/about_facebook_icon"
-                    android:layout_marginStart="@dimen/normal_margin"
-                    android:layout_marginEnd="@dimen/normal_margin"
-                    android:layout_toEndOf="@+id/about_facebook_icon"
-                    android:gravity="center_vertical"
-                    android:text="@string/facebook"
-                    android:textSize="@dimen/bigger_text_size" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/about_reddit_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_bottom_corners"
-                android:paddingStart="@dimen/activity_margin"
-                android:paddingTop="@dimen/medium_margin"
-                android:paddingBottom="@dimen/medium_margin">
-
-                <ImageView
-                    android:id="@+id/about_reddit_icon"
-                    android:layout_width="@dimen/normal_icon_size"
-                    android:layout_height="@dimen/normal_icon_size"
-                    android:contentDescription="@null"
-                    android:padding="@dimen/medium_margin"
-                    android:src="@drawable/ic_reddit_vector" />
-
-                <org.scribe.commons.views.MyTextView
-                    android:id="@+id/about_reddit"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignTop="@+id/about_reddit_icon"
-                    android:layout_alignBottom="@+id/about_reddit_icon"
-                    android:layout_marginStart="@dimen/normal_margin"
-                    android:layout_marginEnd="@dimen/normal_margin"
-                    android:layout_toEndOf="@+id/about_reddit_icon"
-                    android:gravity="center_vertical"
-                    android:text="@string/reddit"
-                    android:textSize="@dimen/bigger_text_size" />
-
-            </RelativeLayout>
-        </LinearLayout>
+            android:orientation="vertical" />
 
         <TextView
             android:id="@+id/about_other"
@@ -328,36 +224,6 @@
             android:layout_margin="@dimen/medium_margin"
             android:background="@drawable/section_holder_stroke"
             android:orientation="vertical">
-
-            <RelativeLayout
-                android:id="@+id/about_more_apps_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_top_corners"
-                android:padding="@dimen/medium_margin">
-
-                <ImageView
-                    android:id="@+id/about_more_apps_icon"
-                    android:layout_width="@dimen/normal_icon_size"
-                    android:layout_height="@dimen/normal_icon_size"
-                    android:contentDescription="@null"
-                    android:padding="@dimen/medium_margin"
-                    android:src="@drawable/ic_heart_vector" />
-
-                <org.scribe.commons.views.MyTextView
-                    android:id="@+id/about_more_apps"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignTop="@+id/about_more_apps_icon"
-                    android:layout_alignBottom="@+id/about_more_apps_icon"
-                    android:layout_marginStart="@dimen/normal_margin"
-                    android:layout_marginEnd="@dimen/normal_margin"
-                    android:layout_toEndOf="@+id/about_more_apps_icon"
-                    android:gravity="center_vertical"
-                    android:text="@string/more_apps_from_us"
-                    android:textSize="@dimen/bigger_text_size" />
-
-            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/about_website_holder"
@@ -480,16 +346,6 @@
 
             </RelativeLayout>
         </LinearLayout>
-
-        <org.scribe.commons.views.MyTextView
-            android:id="@+id/footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/medium_margin"
-            android:gravity="center_horizontal"
-            android:padding="@dimen/small_margin"
-            android:text="@string/about_footer"
-            android:textSize="@dimen/bigger_text_size" />
 
     </LinearLayout>
 </ScrollView>

@@ -5,6 +5,7 @@
     <string name="app_launcher_name">Scribe</string>
     <string name="redirection_note">Thanks for downloading Scribe! Please enable keyboards on the next screen, and press \'Back\' when finished.</string>
     <string name="change_keyboard">Enable Keyboard</string>
+
     <!-- Clipboard -->
     <string name="manage_clipboard_items">Manage clipboard items</string>
     <string name="manage_clipboard_empty">Your clipboard is empty.</string>
@@ -22,19 +23,23 @@
     <string name="text_pinned">Text has been pinned</string>
     <string name="export_clipboard_items">Export clipboard items</string>
     <string name="import_clipboard_items">Import clipboard items</string>
+
     <!-- Accessibility -->
     <string name="keycode_delete">Delete</string>
     <string name="keycode_mode_change">Change keyboard type</string>
     <string name="keycode_shift">Shift</string>
     <string name="keycode_enter">Enter</string>
+
     <!-- Settings -->
     <string name="show_clipboard_content">Show clipboard content if available</string>
     <string name="show_popup">Show a popup on keypress</string>
     <string name="vibrate_on_keypress">Vibrate on keypress</string>
     <string name="keyboard_language">Keyboard language</string>
+
     <!-- Strings displayed only on Google Play. Optional, but good to have -->
     <!-- App title has to have less than 30 characters. If you cannot squeeze it, just remove a part of it -->
     <string name="app_title">Scribe - Language Keyboards</string>
+
     <!-- Short description has to have less than 80 chars -->
     <string name="app_short_description">Keyboards that help second language learners communicate with confidence.</string>
     <string name="app_long_description">
@@ -44,7 +49,6 @@
 
         With Scribe keyboards a user can translate from English, select verb conjugations, find plurals of nouns, and see nouns and prepositions annotated to help with genders and cases.
     </string>
-
 
     <!-- Commons strings -->
     <string name="ok">OK</string>
@@ -610,14 +614,11 @@
 
     <!-- Settings -->
     <string name="settings">Settings</string>
-    <string name="purchase_simple_thank_you">Purchase Simple Thank You</string>
-    <string name="general_settings">General</string>
-    <string name="color_customization">Color customization</string>
     <string name="customize_colors">Customize colors</string>
+    <string name="purchase_simple_thank_you">Purchase Simple Thank You</string>
     <string name="customize_colors_locked">Customize colors (Locked)</string>
     <string name="customize_widget_colors">Customize widget colors</string>
     <string name="customize_notifications">Customize notifications</string>
-    <string name="use_english_language">Use English language</string>
     <string name="language">Language</string>
     <string name="show_hidden_items">Show hidden items</string>
     <string name="font_size">Font size</string>
@@ -781,7 +782,6 @@
     <string name="email_label">Send your feedback or suggestions to</string>
     <string name="upgrade_to_pro">Upgrade to Pro</string>
     <string name="more_apps">More apps</string>
-    <string name="more_apps_from_us">More apps from us</string>
     <string name="invite_friends">Invite friends</string>
     <string name="share_text">Hey, come check out %1$s at %2$s</string>
     <string name="invite_via">Invite via</string>
@@ -793,12 +793,10 @@
     <string name="copyright">v %1$s\nCopyright © Simple Mobile Tools %2$d</string>
     <string name="support">Support</string>
     <string name="help_us">Help us</string>
-    <string name="social">Social</string>
     <string name="other">Other</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="version_placeholder">Version %s</string>
     <string name="hello">Hello :)</string>
-    <string name="about_footer">Made with &#10084;&#65039; in Slovakia</string>
     <string name="additional_info">Additional info</string>
     <string name="app_version">App version: %s</string>
     <string name="device_os">Device OS: %s</string>
@@ -891,7 +889,7 @@
     <string name="faq_2_text_commons">
         <![CDATA[
             Yes, of course. You can spread the word about the apps or give good feedback and ratings. You can also help by translating the apps in a new language, or just update some existing translations.
-            The guide to translating is at <a href="https://github.com/SimpleMobileTools/General-Discussion#how-can-i-suggest-an-edit-to-a-file">this website</a>, or just contact us at <a href="mailto:hello@simplemobiletools.com">hello@simplemobiletools.com</a> if you have any questions.
+            The guide to translating is at <a href="https://github.com/SimpleMobileTools/General-Discussion#how-can-i-suggest-an-edit-to-a-file">this website</a>, or just contact us at <a href="mailto:scribe.language@gmail.com">scribe.language@gmail.com</a> if you have any questions.
         ]]>
     </string>
     <string name="faq_3_title_commons">I deleted some files by mistake, how can I recover them?</string>
@@ -908,7 +906,7 @@
     <string name="faq_8_title_commons">Why should I upgrade to the Pro version?</string>
     <string name="faq_8_text_commons">As your app version is no longer updated, the bugs you have maybe spotted will never be fixed. There will also be no new functions added. You can purchase the Pro version on Google Play for a small sum of money.
         It is a one time payment, which means that once you purchase it, you will never have to pay again. Not even after getting a new device. If you won\'t like the Pro version, you can just uninstall it within a few hours and you will automatically get your money back.
-        If you want a refund anytime later, just contact us at hello@simplemobiletools.com and you will get it.</string>
+        If you want a refund anytime later, just contact us at scribe.language@gmail.com and you will get it.</string>
     <string name="faq_9_title_commons">How can I select multiple items at once?</string>
     <string name="faq_9_text_commons">There are multiple ways of doing that. The first one is starting the selection mode by long pressing one item, then short clicking on others to select them. The second way is similar to selecting items on PCs with a mouse,
         just start the selection mode by long pressing one item, then with your finger still down drag it across other items for selecting. The third way of selecting multiple items is long pressing one item, then long pressing another one and everything in between gets selected. If you
@@ -924,7 +922,7 @@
     <string name="contributors_label">
         <![CDATA[
             This list contains everyone that noticeably helped any app within the Simple Mobile Tools suite, not only this one. Translations are handled by volunteers,
-            let us know if you want to help too. The guide to translating is at <a href="https://github.com/SimpleMobileTools/General-Discussion#how-can-i-suggest-an-edit-to-a-file">this website</a>, or just contact us at <a href="mailto:hello@simplemobiletools.com">hello@simplemobiletools.com</a> if you have any questions.
+            let us know if you want to help too. The guide to translating is at <a href="https://github.com/SimpleMobileTools/General-Discussion#how-can-i-suggest-an-edit-to-a-file">this website</a>, or just contact us at <a href="mailto:scribe.language@gmail.com">scribe.language@gmail.com</a> if you have any questions.
             Thanks to all contributors and other supporters!
         ]]>
     </string>
@@ -1054,7 +1052,7 @@
 
     <!-- Google Play listing -->
     <string name="deprecated_app">DEPRECATED: This version of the app is no longer maintained, get the Pro version at https://play.google.com/store/apps/details?id=com.simplemobiletools.xxx.pro</string>
-    <string name="pro_app_refund">Don\'t forget that if you uninstall any paid app within 2 hours, you will automatically be refunded. If you want a refund anytime later, just contact us at hello@simplemobiletools.com and you will get it. That makes it easy to try it out :)</string>
+    <string name="pro_app_refund">Don\'t forget that if you uninstall any paid app within 2 hours, you will automatically be refunded. If you want a refund anytime later, just contact us at scribe.language@gmail.com and you will get it. That makes it easy to try it out :)</string>
 
     <!-- Description of our developer profile on Google Play, it can have max 140 characters -->
     <string name="developer_description">A group of simple, open source Android apps with customizable widgets, without ads and unnecessary permissions.</string>
@@ -1072,9 +1070,7 @@
     <!-- About -->
     <string name="two_string_placeholder">%1$s%2$s</string>
     <string name="my_website">\nhttps://simplemobiletools.com</string>
-    <string name="my_email">hello@simplemobiletools.com</string>
-    <string name="facebook">Facebook</string>
-    <string name="reddit">Reddit</string>
+    <string name="my_email">scribe.language@gmail.com</string>
 
     <!-- Contributors -->
     <string name="contributors_developers">Aga-C, AlbertoPellitteri, Alfavio, connyduck, correia55, dagkalis, DaPa, ForgottenUmbrella, KryptKode, qwertyfinger</string>
