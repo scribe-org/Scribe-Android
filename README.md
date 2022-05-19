@@ -31,9 +31,8 @@ give users the tools needed to communicate with confidence.
 Scribe is fully open-source and does not collect usage data or ask for system access. Feature data is sourced from [Wikidata](https://www.wikidata.org/) and
 stored in-app, meaning Scribe is a highly responsive experience that does not require an internet connection.
 
-See the [presentation slides](https://docs.google.com/presentation/d/16ld_rCbwJCiAdRrfhF-Fq9Wm_ciHCbk_HCzGQs6TB1Q/edit?usp=sharing)
-for [Wikidata Data Reuse Days 2022](https://diff.wikimedia.org/event/wikidata-data-reuse-days-2022/) and the articles about Scribe in
-the [Featured By](#featured-by) section for a full description of the project. Those interested in contributing are also welcome to join us in
+The [Contributing](#contributing) section has information for those interested, with the articles and presentations in [Featured In](#featured-in) also being a
+good resource for learning more about Scribe. Those interested in contributing are also welcome to join us in
 the [discussions](https://github.com/scribe-org/Scribe-Android/discussions)!
 
 # **Contents**<a id="contents"></a>
@@ -48,7 +47,7 @@ the [discussions](https://github.com/scribe-org/Scribe-Android/discussions)!
     - [Word Annotation](#word-annotation)
 - [Language Practice](#language-practice)
 - [Contributing](#contributing)
-- [Featured By](#featured-by)
+- [Featured In](#featured-in)
 
 # Preview Images [`⇧`](#contents) <a id="preview-images"></a>
 
@@ -197,15 +196,19 @@ on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us 
 by [opening a data issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in
 the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
 
-# Featured By [`⇧`](#contents) <a id="featured-by"></a>
+# Featured In [`⇧`](#contents) <a id="featured-in"></a>
 
-<details><summary><strong>List of articles featuring Scribe</strong></summary>
+<details><summary><strong>Articles and Presentations on Scribe</strong></summary>
 <p>
 
+- [Presentation slides](https://docs.google.com/presentation/d/1Cu3VwQ3lJUp5W84YDe0AFYS-6zfBxKsm0MI-OMl_IzY/edit?usp=sharing)
+  for [Wikimedia Hackathon 2022](https://www.mediawiki.org/wiki/Wikimedia_Hackathon_2022)
 - [Blog post](https://tech-news.wikimedia.de/en/2022/03/18/lexicographical-data-for-language-learners-the-wikidata-based-app-scribe/)
   on [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS)
   for [Wikimedia Tech News](https://tech-news.wikimedia.de/en/homepage/) ([DE](https://tech-news.wikimedia.de/2022/03/18/sprachenlernen-mit-lexikografische-daten-die-wikidata-basierte-app-scribe/)
   / [Tweet](https://twitter.com/wikidata/status/1507335538596106257?s=20&t=YGRGamftI-5B_VwQ_bFRhA))
+- [Presentation slides](https://docs.google.com/presentation/d/16ld_rCbwJCiAdRrfhF-Fq9Wm_ciHCbk_HCzGQs6TB1Q/edit?usp=sharing)
+  for [Wikidata Data Reuse Days 2022](https://diff.wikimedia.org/event/wikidata-data-reuse-days-2022/)
 
 </p>
 </details>
