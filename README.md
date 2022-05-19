@@ -38,11 +38,9 @@ the [discussions](https://github.com/scribe-org/Scribe-Android/discussions)!
 
 # **Contents**<a id="contents"></a>
 
-<!-- - [Preview Videos](#preview-videos)
-- [Setup](#setup)
-  - [Base Functionality](#base-functionality) -->
-
+- [Preview Images](#preview-images)
 - [Supported Languages](#supported-languages)
+- [Setup](#setup)
 - [Keyboard Features](#keyboard-features)
     - [Translation](#translation)
     - [Verb Conjugation](#verb-conjugation)
@@ -51,6 +49,16 @@ the [discussions](https://github.com/scribe-org/Scribe-Android/discussions)!
 - [Language Practice](#language-practice)
 - [Contributing](#contributing)
 - [Featured By](#featured-by)
+
+# Preview Images [`⇧`](#contents) <a id="preview-images"></a>
+
+#### Current WIP status
+
+<div align="center">
+  <br>
+  <a href="https://github.com/scribe-org/Scribe-Android"><img height="512" src="https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/Resources/GitHub/Images/android_preview.png" alt="Android Preview"></a>
+  <br>
+</div>
 
 # Supported Languages [`⇧`](#contents) <a id="supported-languages"></a>
 
@@ -78,6 +86,15 @@ The following table shows the supported languages and the amount of data availab
 
 Updates to the above data can be done
 using [scribe_data/load/update_data.py](https://github.com/scribe-org/Scribe-Data/tree/main/src/scribe_data/load/update_data.py).
+
+# Setup [`⇧`](#contents) <a id="setup"></a>
+
+Users access Scribe language keyboards through the following:
+
+- Open the app and press **`Enable Keyboard`**
+    - Or: Settings -> System -> Languages & input -> On-screen keyboard -> Manage on-screen keyboards
+- Choose from the available Scribe language keyboards
+- When typing press `🌐` or the keyboard button to select keyboards
 
 # Keyboard Features [`⇧`](#contents) <a id="keyboard-features"></a>
 

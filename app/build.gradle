@@ -65,8 +65,6 @@ android {
 }
 
 dependencies {
-    // Removed Simple-Commons as a dependency: implementation 'com.github.SimpleMobileTools:Simple-Commons:e3376e4f56'
-
     kapt 'androidx.room:room-compiler:2.3.0'
     implementation 'androidx.room:room-runtime:2.3.0'
     annotationProcessor 'androidx.room:room-compiler:2.3.0'
