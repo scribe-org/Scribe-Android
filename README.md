@@ -128,6 +128,25 @@ The above form abbreviations are translated into their equivalents in the keyboa
 
 Scribe also annotates the grammatical cases (accusative, dative, etc) of prepositions in the command bar if there is a relation in the given language.
 
+### • Base Functionality [`⇧`](#contents) <a id="base-functionality"></a>
+
+The goal is for Scribe to have all the functionality of system keyboards. See
+the [Base Keyboard Features project](https://github.com/scribe-org/Scribe-Android/projects/1) if interested in helping.
+
+<details><summary><strong>Current features</strong></summary>
+<p>
+
+- Dynamic layouts for cross-device performance
+- Dark mode compatibility (WIP - [see issue](https://github.com/scribe-org/Scribe-Android/issues/27))
+- Auto-capitalization following `.`, `?` and `!`
+- The double space period shortcut (WIP - [see issue](https://github.com/scribe-org/Scribe-Android/issues/20))
+- Typing symbols and numbers followed by a space returns keyboard to letters
+- Hold-to-select characters for letters and symbols
+- Key pop up views for letters and symbols
+
+</p>
+</details>
+
 # Language Practice [`⇧`](#contents) <a id="language-practice"></a>
 
 A future feature of Scribe is language practice within the app itself. Scribe presents users with information that is directly relevant to their current
@@ -187,14 +206,3 @@ the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) a
   <a href="https://www.wikidata.org/"><img height="175" src="https://raw.githubusercontent.com/scribe-org/Organization/main/resources/images/wikidata_logo.png" alt="Wikidata"></a>
   <br>
 </div>
-
-# Based On
-
-<details><summary><strong>List of projects Scribe-Android is based on</strong></summary>
-<p>
-
-- [Simple Keyboard](https://github.com/SimpleMobileTools/Simple-Keyboard)
-- [Simple Commons](https://github.com/SimpleMobileTools/Simple-Commons)
-
-</p>
-</details>
