@@ -171,7 +171,8 @@ that Scribe has provided.
 
 # Contributing [`⇧`](#contents) <a id="contributing"></a>
 
-Work that is in progress or could be implemented is tracked in the [Issues](https://github.com/scribe-org/Scribe-Android/issues). Please see
+Work that is in progress or could be implemented is tracked in the [Issues](https://github.com/scribe-org/Scribe-Android/issues)
+and [Projects](https://github.com/scribe-org/Scribe-Android/projects). Please see
 the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to Scribe-Android.
 Also check the [`-next release-`](https://github.com/scribe-org/Scribe-Android/labels/-next%20release-)
 and [`-priority-`](https://github.com/scribe-org/Scribe-Android/labels/-priority-) labels in the [Issues](https://github.com/scribe-org/Scribe-Android/issues)
