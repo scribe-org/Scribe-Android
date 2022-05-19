@@ -56,7 +56,7 @@ the [discussions](https://github.com/scribe-org/Scribe-Android/discussions)!
 
 <div align="center">
   <br>
-  <a href="https://github.com/scribe-org/Scribe-Android"><img height="512" src="https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/Resources/GitHub/Images/android_preview.png" alt="Android Preview"></a>
+  <a href="https://github.com/scribe-org/Scribe-Android/blob/main/Resources/GitHub/Images/android_preview.png"><img height="512" src="https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/Resources/GitHub/Images/android_preview.png" alt="Android Preview"></a>
   <br>
 </div>
 
