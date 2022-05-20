@@ -1,10 +1,6 @@
 package org.scribe.views
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
@@ -12,32 +8,21 @@ import android.graphics.Paint.Align
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.RippleDrawable
 import android.os.Handler
-import android.os.Looper
 import android.os.Message
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
-import android.view.animation.AccelerateInterpolator
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
 import kotlinx.android.synthetic.main.keyboard_popup_keyboard.view.*
 import kotlinx.android.synthetic.main.keyboard_view_keyboard.view.*
 import org.scribe.R
-import org.scribe.activities.ManageClipboardItemsActivity
 import org.scribe.activities.SettingsActivity
-import org.scribe.adapters.ClipsKeyboardAdapter
 import org.scribe.commons.extensions.*
-import org.scribe.commons.helpers.ensureBackgroundThread
-import org.scribe.commons.helpers.isPiePlus
-import org.scribe.extensions.clipsDB
 import org.scribe.extensions.config
-import org.scribe.extensions.getCurrentClip
 import org.scribe.extensions.getStrokeColor
 import org.scribe.helpers.*
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_DELETE
@@ -45,10 +30,6 @@ import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_ENTER
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_MODE_CHANGE
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_SHIFT
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_SPACE
-import org.scribe.interfaces.RefreshClipsListener
-import org.scribe.models.Clip
-import org.scribe.models.ClipsSectionLabel
-import org.scribe.models.ListItem
 import java.util.*
 
 @SuppressLint("UseCompatLoadingForDrawables")
@@ -152,7 +133,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
     private var mKeyBackground: Drawable? = null
 
     private var mToolbarHolder: View? = null
-    private var mClipboardManagerHolder: View? = null
 
     // For multi-tap
     private var mLastTapTime = 0L
@@ -261,7 +241,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility)
-        closeClipboardManager()
 
         if (visibility == VISIBLE) {
             mTextColor = context.getProperTextColor()
@@ -296,42 +275,14 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 background.applyColorFilter(darkerColor)
             }
 
-            val rippleBg = resources.getDrawable(R.drawable.clipboard_background, context.theme) as RippleDrawable
-            val layerDrawable = rippleBg.findDrawableByLayerId(R.id.clipboard_background_holder) as LayerDrawable
-            layerDrawable.findDrawableByLayerId(R.id.clipboard_background_stroke).applyColorFilter(strokeColor)
-            layerDrawable.findDrawableByLayerId(R.id.clipboard_background_shape).applyColorFilter(mBackgroundColor)
-
             val wasDarkened = mBackgroundColor != mBackgroundColor.darkenColor()
             mToolbarHolder?.apply {
                 top_keyboard_divider.beGoneIf(wasDarkened)
                 top_keyboard_divider.background = ColorDrawable(strokeColor)
 
                 background = ColorDrawable(toolbarColor)
-                clipboard_value.apply {
-                    background = rippleBg
-                    setTextColor(mTextColor)
-                    setLinkTextColor(mTextColor)
-                }
-
                 settings_cog.applyColorFilter(mTextColor)
-                pinned_clipboard_items.applyColorFilter(mTextColor)
-                clipboard_clear.applyColorFilter(mTextColor)
             }
-
-            mClipboardManagerHolder?.apply {
-                top_clipboard_divider.beGoneIf(wasDarkened)
-                top_clipboard_divider.background = ColorDrawable(strokeColor)
-                clipboard_manager_holder.background = ColorDrawable(toolbarColor)
-
-                clipboard_manager_close.applyColorFilter(mTextColor)
-                clipboard_manager_manage.applyColorFilter(mTextColor)
-
-                clipboard_manager_label.setTextColor(mTextColor)
-                clipboard_content_placeholder_1.setTextColor(mTextColor)
-                clipboard_content_placeholder_2.setTextColor(mTextColor)
-            }
-
-            setupStoredClips()
         }
     }
 
@@ -344,7 +295,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             showPreview(NOT_A_KEY)
         }
 
-        closeClipboardManager()
         removeMessages()
         mKeyboard = keyboard
         val keys = mKeyboard!!.mKeys
@@ -360,53 +310,15 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         mAbortKey = true // Until the next ACTION_DOWN
     }
 
-    /** Sets the top row above the keyboard containing a couple buttons and the clipboard **/
+    /** Sets the top row above the keyboard containing Scribe command buttons **/
     fun setKeyboardHolder(keyboardHolder: View) {
         mToolbarHolder = keyboardHolder.toolbar_holder
-        mClipboardManagerHolder = keyboardHolder.clipboard_manager_holder
 
         mToolbarHolder!!.apply {
             settings_cog.setOnLongClickListener { context.toast(R.string.settings); true; }
             settings_cog.setOnClickListener {
                 vibrateIfNeeded()
                 Intent(context, SettingsActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(this)
-                }
-            }
-
-            pinned_clipboard_items.setOnLongClickListener { context.toast(R.string.clipboard); true; }
-            pinned_clipboard_items.setOnClickListener {
-                vibrateIfNeeded()
-                openClipboardManager()
-            }
-
-            clipboard_clear.setOnLongClickListener { context.toast(R.string.clear_clipboard_data); true; }
-            clipboard_clear.setOnClickListener {
-                vibrateIfNeeded()
-                clearClipboardContent()
-                toggleClipboardVisibility(false)
-            }
-        }
-
-        val clipboardManager = (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-        clipboardManager.addPrimaryClipChangedListener {
-            val clipboardContent = clipboardManager.primaryClip?.getItemAt(0)?.text?.trim()
-            if (clipboardContent?.isNotEmpty() == true) {
-                handleClipboard()
-            }
-            setupStoredClips()
-        }
-
-        mClipboardManagerHolder!!.apply {
-            clipboard_manager_close.setOnClickListener {
-                vibrateIfNeeded()
-                closeClipboardManager()
-            }
-
-            clipboard_manager_manage.setOnLongClickListener { context.toast(R.string.manage_clipboard_items); true; }
-            clipboard_manager_manage.setOnClickListener {
-                Intent(context, ManageClipboardItemsActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(this)
                 }
@@ -533,7 +445,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         }
 
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-        handleClipboard()
 
         val keyCount = keys.size
         for (i in 0 until keyCount) {
@@ -630,79 +541,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         mCanvas!!.restore()
         mDrawPending = false
         mDirtyRect.setEmpty()
-    }
-
-    private fun handleClipboard() {
-        if (mToolbarHolder != null && mPopupParent.id != R.id.mini_keyboard_view) {
-            val clipboardContent = context.getCurrentClip()
-            if (clipboardContent?.isNotEmpty() == true) {
-                mToolbarHolder?.apply {
-                    clipboard_value.apply {
-                        text = clipboardContent
-                        removeUnderlines()
-                        setOnClickListener {
-                            mOnKeyboardActionListener!!.onText(clipboardContent.toString())
-                            vibrateIfNeeded()
-                        }
-                    }
-
-                    toggleClipboardVisibility(true)
-                }
-            } else {
-                hideClipboardViews()
-            }
-        } else {
-            hideClipboardViews()
-        }
-    }
-
-    private fun hideClipboardViews() {
-        mToolbarHolder?.apply {
-            clipboard_value_holder?.beGone()
-            clipboard_value_holder?.alpha = 0f
-            clipboard_clear?.beGone()
-            clipboard_clear?.alpha = 0f
-        }
-    }
-
-    private fun clearClipboardContent() {
-        val clipboardManager = (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-        if (isPiePlus()) {
-            clipboardManager.clearPrimaryClip()
-        } else {
-            val clip = ClipData.newPlainText("", "")
-            clipboardManager.setPrimaryClip(clip)
-        }
-    }
-
-    private fun toggleClipboardVisibility(show: Boolean) {
-        if ((show && mToolbarHolder?.clipboard_value_holder!!.alpha == 0f) || (!show && mToolbarHolder?.clipboard_value_holder!!.alpha == 1f)) {
-            val newAlpha = if (show) 1f else 0f
-            val animations = ArrayList<ObjectAnimator>()
-            val clipboardValueAnimation = ObjectAnimator.ofFloat(mToolbarHolder!!.clipboard_value_holder!!, "alpha", newAlpha)
-            animations.add(clipboardValueAnimation)
-
-            val clipboardClearAnimation = ObjectAnimator.ofFloat(mToolbarHolder!!.clipboard_clear!!, "alpha", newAlpha)
-            animations.add(clipboardClearAnimation)
-
-            val animSet = AnimatorSet()
-            animSet.playTogether(*animations.toTypedArray())
-            animSet.duration = 150
-            animSet.interpolator = AccelerateInterpolator()
-            animSet.doOnStart {
-                if (show) {
-                    mToolbarHolder?.clipboard_value_holder?.beVisible()
-                    mToolbarHolder?.clipboard_clear?.beVisible()
-                }
-            }
-            animSet.doOnEnd {
-                if (!show) {
-                    mToolbarHolder?.clipboard_value_holder?.beGone()
-                    mToolbarHolder?.clipboard_clear?.beGone()
-                }
-            }
-            animSet.start()
-        }
     }
 
     private fun getPressedKeyIndex(x: Int, y: Int): Int {
@@ -1312,64 +1150,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             detectAndSendKey(mCurrentKey, key.x, key.y, mLastTapTime)
         }
         return true
-    }
-
-    fun closeClipboardManager() {
-        mClipboardManagerHolder?.clipboard_manager_holder?.beGone()
-    }
-
-    private fun openClipboardManager() {
-        mClipboardManagerHolder!!.clipboard_manager_holder.beVisible()
-        setupStoredClips()
-    }
-
-    private fun setupStoredClips() {
-        ensureBackgroundThread {
-            val clips = ArrayList<ListItem>()
-            val clipboardContent = context.getCurrentClip()
-
-            val pinnedClips = context.clipsDB.getClips()
-            val isCurrentClipPinnedToo = pinnedClips.any { clipboardContent?.isNotEmpty() == true && it.value.trim() == clipboardContent }
-
-            if (!isCurrentClipPinnedToo && clipboardContent?.isNotEmpty() == true) {
-                val section = ClipsSectionLabel(context.getString(R.string.clipboard_current), true)
-                clips.add(section)
-
-                val clip = Clip(-1, clipboardContent)
-                clips.add(clip)
-            }
-
-            if (!isCurrentClipPinnedToo && clipboardContent?.isNotEmpty() == true) {
-                val section = ClipsSectionLabel(context.getString(R.string.clipboard_pinned), false)
-                clips.add(section)
-            }
-
-            clips.addAll(pinnedClips)
-            Handler(Looper.getMainLooper()).post {
-                setupClipsAdapter(clips)
-            }
-        }
-    }
-
-    private fun setupClipsAdapter(clips: ArrayList<ListItem>) {
-        mClipboardManagerHolder?.apply {
-            clipboard_content_placeholder_1.beVisibleIf(clips.isEmpty())
-            clipboard_content_placeholder_2.beVisibleIf(clips.isEmpty())
-            clips_list.beVisibleIf(clips.isNotEmpty())
-        }
-
-        val refreshClipsListener = object : RefreshClipsListener {
-            override fun refreshClips() {
-                setupStoredClips()
-            }
-        }
-
-        val adapter = ClipsKeyboardAdapter(context, clips, refreshClipsListener) { clip ->
-            mOnKeyboardActionListener!!.onText(clip.value)
-            vibrateIfNeeded()
-        }
-
-        mClipboardManagerHolder?.clips_list?.adapter = adapter
     }
 
     private fun closing() {
