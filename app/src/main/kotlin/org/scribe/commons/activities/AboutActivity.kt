@@ -52,7 +52,7 @@ class AboutActivity : BaseSimpleActivity() {
         }
 
         arrayOf(about_support, about_help_us, about_other).forEach {
-            it.setTextColor(primaryColor)
+            it.setTextColor(textColor)
         }
 
         arrayOf(about_support_holder, about_help_us_holder, about_other_holder).forEach {

@@ -270,8 +270,6 @@
     </style>
 
     <style name="SettingsTextValueStyle">
-        <item name="android:alpha">0.6</item>
-        <item name="android:textFontWeight">300</item>
         <item name="android:textSize">@dimen/normal_text_size</item>
     </style>
 

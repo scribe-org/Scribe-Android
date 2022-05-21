@@ -4,6 +4,6 @@
     <corners android:radius="@dimen/activity_margin" />
     <stroke
         android:width="1dp"
-        android:color="@color/light_grey_stroke" />
+        android:color="@color/default_text_color" />
     <solid android:color="@android:color/transparent" />
 </shape>

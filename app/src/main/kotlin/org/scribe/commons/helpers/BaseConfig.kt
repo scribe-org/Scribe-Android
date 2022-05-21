@@ -80,6 +80,10 @@ open class BaseConfig(val context: Context) {
         get() = prefs.getInt(TEXT_COLOR, context.resources.getColor(R.color.default_text_color))
         set(textColor) = prefs.edit().putInt(TEXT_COLOR, textColor).apply()
 
+    var keyColor: Int
+        get() = prefs.getInt(KEY_COLOR, context.resources.getColor(R.color.default_key_color))
+        set(keyColor) = prefs.edit().putInt(KEY_COLOR, keyColor).apply()
+
     var backgroundColor: Int
         get() = prefs.getInt(BACKGROUND_COLOR, context.resources.getColor(R.color.default_background_color))
         set(backgroundColor) = prefs.edit().putInt(BACKGROUND_COLOR, backgroundColor).apply()

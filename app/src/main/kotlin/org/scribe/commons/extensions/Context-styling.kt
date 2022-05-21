@@ -19,6 +19,12 @@ fun Context.getProperTextColor() = if (baseConfig.isUsingSystemTheme) {
     baseConfig.textColor
 }
 
+fun Context.getProperKeyColor() = if (baseConfig.isUsingSystemTheme) {
+    resources.getColor(R.color.you_neutral_text_color, theme)
+} else {
+    baseConfig.keyColor
+}
+
 fun Context.getProperBackgroundColor() = if (baseConfig.isUsingSystemTheme) {
     resources.getColor(R.color.you_background_color, theme)
 } else {

@@ -165,7 +165,7 @@
             app:horizontalGap="3.325%"
             app:isRepeatable="true"
             app:keyEdgeFlags="right"
-            app:keyIcon="@drawable/ic_clear_vector"
+            app:keyIcon="@drawable/ic_clear_outline_vector"
             app:keyWidth="15%p" />
     </Row>
     <Row>

@@ -143,7 +143,7 @@
             app:code="-5"
             app:isRepeatable="true"
             app:keyEdgeFlags="right"
-            app:keyIcon="@drawable/ic_clear_vector"
+            app:keyIcon="@drawable/ic_clear_outline_vector"
             app:keyWidth="10%p" />
     </Row>
     <Row>

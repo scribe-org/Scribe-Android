@@ -80,6 +80,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
     private var mTextColor = 0
     private var mBackgroundColor = 0
     private var mPrimaryColor = 0
+    private var mKeyColor = 0
 
     private var mPreviewText: TextView? = null
     private val mPreviewPopup: PopupWindow
@@ -196,6 +197,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         mTextColor = context.getProperTextColor()
         mBackgroundColor = context.getProperBackgroundColor()
         mPrimaryColor = context.getProperPrimaryColor()
+        mKeyColor = context.getProperKeyColor()
 
         mPreviewPopup = PopupWindow(context)
         mPreviewText = inflater.inflate(resources.getLayout(R.layout.keyboard_key_preview), null) as TextView
@@ -251,19 +253,19 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             val toolbarColor = if (context.config.isUsingSystemTheme) {
                 resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
             } else {
-                mBackgroundColor.darkenColor()
+                mBackgroundColor
             }
 
             val darkerColor = if (context.config.isUsingSystemTheme) {
                 resources.getColor(R.color.you_keyboard_background_color, context.theme)
             } else {
-                mBackgroundColor.darkenColor(2)
+                mBackgroundColor
             }
 
             val miniKeyboardBackgroundColor = if (context.config.isUsingSystemTheme) {
                 resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
             } else {
-                mBackgroundColor.darkenColor(4)
+                mBackgroundColor
             }
 
             if (changedView == mini_keyboard_view) {
@@ -312,7 +314,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     /** Sets the top row above the keyboard containing Scribe command buttons **/
     fun setKeyboardHolder(keyboardHolder: View) {
-        mToolbarHolder = keyboardHolder.toolbar_holder
+        mToolbarHolder = keyboardHolder.command_field
 
         mToolbarHolder!!.apply {
             settings_cog.setOnLongClickListener { context.toast(R.string.settings); true; }
@@ -451,14 +453,14 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             val key = keys[i]
             val code = key.code
             var keyBackground = mKeyBackground
-            if (code == KEYCODE_SPACE) {
+            if (code == KEYCODE_ENTER) {
+                keyBackground = resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
+            } else if (code == KEYCODE_SPACE) {
                 keyBackground = if (context.config.isUsingSystemTheme) {
                     resources.getDrawable(R.drawable.keyboard_space_background_material, context.theme)
                 } else {
-                    resources.getDrawable(R.drawable.keyboard_space_background, context.theme)
+                    resources.getDrawable(R.drawable.keyboard_key_background, context.theme)
                 }
-            } else if (code == KEYCODE_ENTER) {
-                keyBackground = resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
             }
 
             // Switch the character to uppercase if shift is pressed
@@ -476,6 +478,8 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
             if (key.focused || code == KEYCODE_ENTER) {
                 keyBackground.applyColorFilter(mPrimaryColor)
+            } else {
+                keyBackground.applyColorFilter(mKeyColor)
             }
 
             canvas.translate(key.x.toFloat(), key.y.toFloat())
@@ -517,7 +521,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
 
                 if (code == KEYCODE_ENTER) {
-                    key.icon!!.applyColorFilter(mPrimaryColor.getContrastColor())
+                    key.icon!!.applyColorFilter(mTextColor)
                 } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT) {
                     key.icon!!.applyColorFilter(mTextColor)
                 }
@@ -530,12 +534,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 canvas.translate(-drawableX.toFloat(), -drawableY.toFloat())
             }
             canvas.translate(-key.x.toFloat(), -key.y.toFloat())
-        }
-
-        // Overlay a dark rectangle to dim the keyboard
-        if (mMiniKeyboardOnScreen) {
-            paint.color = Color.BLACK.adjustAlpha(0.3f)
-            canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
         }
 
         mCanvas!!.restore()
@@ -636,7 +634,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         val previewBackgroundColor = if (context.config.isUsingSystemTheme) {
             resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
         } else {
-            mBackgroundColor.darkenColor(4)
+            mBackgroundColor
         }
 
         val previewBackground = mPreviewText!!.background as LayerDrawable
