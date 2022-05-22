@@ -4,7 +4,7 @@
     <color name="scribe_blue_light">#FF75CEFA</color>
     <color name="scribe_blue_dark">#FF4CADE6</color>
     <color name="light_text_color">#95000000</color>
-    <color name="light_keyboard_bg_color">#FFE8EBEE</color>
+    <color name="light_keyboard_bg_color">#FFD3D6DD</color>
     <color name="light_key_color">#FFFFFFFF</color>
 
     <!-- Commons colors -->

@@ -459,9 +459,21 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 keyBackground = if (context.config.isUsingSystemTheme) {
                     resources.getDrawable(R.drawable.keyboard_space_background_material, context.theme)
                 } else {
-                    resources.getDrawable(R.drawable.keyboard_key_background, context.theme)
+                    resources.getDrawable(R.drawable.keyboard_space_background, context.theme)
                 }
             }
+
+//            keyBackground = if (code == KEYCODE_ENTER) {
+//                resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
+//            } else if (code == KEYCODE_ENTER) {
+//                if (context.config.isUsingSystemTheme) {
+//                    resources.getDrawable(R.drawable.keyboard_space_background_material, context.theme)
+//                } else {
+//                    resources.getDrawable(R.drawable.keyboard_space_background, context.theme)
+//                }
+//            } else {
+//                resources.getDrawable(R.drawable.keyboard_key_background, context.theme)
+//            }
 
             // Switch the character to uppercase if shift is pressed
             val label = adjustCase(key.label)?.toString()
@@ -508,7 +520,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                     canvas.drawText(key.topSmallNumber, key.width - mTopSmallNumberMarginWidth, mTopSmallNumberMarginHeight, smallLetterPaint)
                 }
 
-                // Turn off drop shadow
+                // Turn off drop shadow.
                 paint.setShadowLayer(0f, 0f, 0f, 0)
             } else if (key.icon != null && mKeyboard != null) {
                 if (code == KEYCODE_SHIFT) {
@@ -526,6 +538,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                     key.icon!!.applyColorFilter(mTextColor)
                 }
 
+                // Controls where icons are located on their keys.
                 val drawableX = (key.width - key.icon!!.intrinsicWidth) / 2
                 val drawableY = (key.height - key.icon!!.intrinsicHeight) / 2
                 canvas.translate(drawableX.toFloat(), drawableY.toFloat())
