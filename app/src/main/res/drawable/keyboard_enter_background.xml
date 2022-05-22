@@ -7,7 +7,7 @@
         android:right="@dimen/small_margin"
         android:top="@dimen/normal_margin">
         <shape android:shape="rectangle">
-            <solid android:color="@color/scribe_blue_light" />
+            <solid android:color="@color/light_scribe_blue" />
             <corners android:radius="@dimen/medium_margin" />
         </shape>
     </item>

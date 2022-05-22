@@ -22,7 +22,7 @@
             android:contentDescription="@string/scribe_key"
             android:foreground="@drawable/ic_scribe_icon_vector"
             android:foregroundGravity="center"
-            android:foregroundTint="@color/light_text_color"
+            android:foregroundTint="@color/light_key_text_color"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
             app:layout_constraintEnd_toStartOf="@+id/separator_1"
             app:layout_constraintHorizontal_chainStyle="packed"
