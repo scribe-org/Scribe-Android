@@ -28,11 +28,11 @@
     <color name="dark_key_press_color">#FF363636</color>
     <color name="dark_key_text_color">#95FFFFFF</color>
 
-    <color name="dark_keyboard_bg_color">#FF000000</color>
-    <color name="dark_key_shadow_color">#35FFFFFF</color>
+    <color name="dark_keyboard_bg_color">#FF1E1E1E</color>
+    <color name="dark_key_shadow_color">#95000000</color>
 
     <color name="dark_cmd_key_color">@color/dark_scribe_blue</color>
-    <color name="dark_cmd_bar_color">@color/dark_keyboard_bg_color</color>
+    <color name="dark_cmd_bar_color">#FF000000</color>
     <color name="dark_cmd_bar_border_color">#FF4B4B4B</color>
 
     <color name="dark_annotation_red">#90F8595E</color>
