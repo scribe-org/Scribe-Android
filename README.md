@@ -31,7 +31,9 @@ Scribe is fully open-source and does not collect usage data or ask for system ac
 
 The [contributing](#contributing) section has information for those interested, with the articles and presentations in [featured by](#featured-by) also being a good resource for learning more about Scribe. Those interested in contributing are also welcome to join us in the [discussions](https://github.com/scribe-org/Scribe-Android/discussions)!
 
-# **Contents**<a id="contents"></a>
+<a id="contents"></a>
+
+# **Contents**
 
 -   [Preview Images](#preview-images)
 -   [Supported Languages](#supported-languages)
@@ -45,7 +47,9 @@ The [contributing](#contributing) section has information for those interested, 
 -   [Contributing](#contributing)
 -   [Featured By](#featured-by)
 
-# Preview Images [`⇧`](#contents) <a id="preview-images"></a>
+<a id="preview-images"></a>
+
+# Preview Images [`⇧`](#contents)
 
 #### Current WIP status
 
@@ -55,7 +59,9 @@ The [contributing](#contributing) section has information for those interested, 
   <br>
 </div>
 
-# Supported Languages [`⇧`](#contents) <a id="supported-languages"></a>
+<a id="supported-languages"></a>
+
+# Supported Languages [`⇧`](#contents)
 
 Scribe's goal is functional, feature-rich keyboards for all languages. Check [scribe_data/extract_transform](https://github.com/scribe-org/Scribe-Data/tree/main/src/scribe_data/extract_transform) for queries for currently supported languages and those that have substantial data on [Wikidata](https://www.wikidata.org/).
 
@@ -79,7 +85,9 @@ The following table shows the supported languages and the amount of data availab
 
 Updates to the above data can be done using [scribe_data/load/update_data.py](https://github.com/scribe-org/Scribe-Data/tree/main/src/scribe_data/load/update_data.py).
 
-# Setup [`⇧`](#contents) <a id="setup"></a>
+<a id="setup"></a>
+
+# Setup [`⇧`](#contents)
 
 Users access Scribe language keyboards through the following:
 
@@ -88,28 +96,38 @@ Users access Scribe language keyboards through the following:
 -   Choose from the available Scribe language keyboards
 -   When typing press `🌐` or the keyboard button to select keyboards
 
-# Keyboard Features [`⇧`](#contents) <a id="keyboard-features"></a>
+<a id="keyboard-features"></a>
+
+# Keyboard Features [`⇧`](#contents)
 
 Keyboard features are accessed via the `Scribe key` at the top left of any Scribe keyboard. Pressing this key gives the user three new selectable options: `Translate`, `Conjugate` and `Plural` in the keyboard's language. These keys allow for words to be queried and inserted into the text field followed by
 a space.
 
 **Current features include:**
 
-### • Translation [`⇧`](#contents) <a id="translation"></a>
+<a id="translation"></a>
+
+### • Translation [`⇧`](#contents)
 
 The **`beta`** `Translate` feature can translate single words or phrases from English into the language of the current keyboard when the `return` key is pressed.
 
 As of now translations are not widely available on [Wikidata](https://www.wikidata.org/) [(see iOS issue)](https://github.com/scribe-org/Scribe-iOS/issues/40). The current functionality is thus based on [🤗 Transformers](https://github.com/huggingface/transformers) machine translations of words queried from [Wikidata](https://www.wikidata.org/). The ultimate goal is for the translations and synonyms to all be directly queried.
 
-### • Verb Conjugation [`⇧`](#contents) <a id="verb-conjugation"></a>
+<a id="verb-conjugation"></a>
+
+### • Verb Conjugation [`⇧`](#contents)
 
 With the `Conjugate` feature, a user is presented with the grammar charts for an entered verb instead of the keyboard. Pressing an example in the charts inserts the chosen conjugation into the text field.
 
-### • Noun Plurals [`⇧`](#contents) <a id="noun-plurals"></a>
+<a id="noun-plurals"></a>
+
+### • Noun Plurals [`⇧`](#contents)
 
 The `Plural` feature allows a user to enter a noun and then insert its plural into the text field when the `return` key is pressed.
 
-### • Word Annotation [`⇧`](#contents) <a id="word-annotation"></a>
+<a id="word-annotation"></a>
+
+### • Word Annotation [`⇧`](#contents)
 
 Scribe further annotates words in the command bar to help users understand the context of what they're typing. Annotations are displayed once a user has typed a given word and pressed space or by pressing the `Scribe key` while it is selected. The hope is that annotation will help a user remember grammar rules even when
 not using Scribe.
@@ -149,11 +167,15 @@ The goal is for Scribe to have all the functionality of system keyboards. See th
 </p>
 </details>
 
-# Language Practice [`⇧`](#contents) <a id="language-practice"></a>
+<a id="language-practice"></a>
+
+# Language Practice [`⇧`](#contents)
 
 A future feature of Scribe is language practice within the app itself. Scribe presents users with information that is directly relevant to their current struggles with a second language. This information can be saved in-app and used to create personalized lessons such as flashcards to reinforce the information that Scribe has provided.
 
-# Contributing [`⇧`](#contents) <a id="contributing"></a>
+<a id="contributing"></a>
+
+# Contributing [`⇧`](#contents)
 
 Work that is in progress or could be implemented is tracked in the [issues](https://github.com/scribe-org/Scribe-Android/issues) and [projects](https://github.com/scribe-org/Scribe-Android/projects). Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to Scribe-Android. This document has all necessary information and also includes steps to set up a development environment.
 
@@ -172,7 +194,9 @@ Those interested can further check the [`-next release-`](https://github.com/scr
 
 Scribe does not accept direct edits to the grammar JSON files as they are sourced from [Wikidata](https://www.wikidata.org/). Edits can be discussed and the [Scribe-Data](https://github.com/scribe-org/Scribe-Data) queries will be changed and ran before an update. If there is a problem with one of the files, then the fix should be made on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us know that edits have been made by [opening a data issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
 
-# Featured By [`⇧`](#contents) <a id="featured-by"></a>
+<a id="featured-by"></a>
+
+# Featured By [`⇧`](#contents)
 
 <details><summary><strong>Articles and Presentations on Scribe</strong></summary>
 <p>
