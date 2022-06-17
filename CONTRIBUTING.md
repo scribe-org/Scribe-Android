@@ -32,11 +32,9 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 3. Open the Scribe-Android directory in Android Studio
 4. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
 
-    4.1 In the top bar find and select the "Device Manager" option
-
-    4.2 [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
-
-    4.3 Press the play button marked "Run App"
+    - In the top bar find and select the "Device Manager" option
+    - [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
+    - Press the play button marked "Run App"
 
 From there code edits that are made will be reflected in the app each time it is ran.
 
