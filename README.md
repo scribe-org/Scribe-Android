@@ -39,17 +39,17 @@ the [discussions](https://github.com/scribe-org/Scribe-Android/discussions)!
 
 # **Contents**
 
-- [Preview Images](#preview-images)
-- [Supported Languages](#supported-languages)
-- [Setup](#setup)
-- [Keyboard Features](#keyboard-features)
-    - [Translation](#translation)
-    - [Verb Conjugation](#verb-conjugation)
-    - [Noun Plurals](#noun-plurals)
-    - [Word Annotation](#word-annotation)
-- [Language Practice](#language-practice)
-- [Contributing](#contributing)
-- [Featured By](#featured-by)
+-   [Preview Images](#preview-images)
+-   [Supported Languages](#supported-languages)
+-   [Setup](#setup)
+-   [Keyboard Features](#keyboard-features)
+    -   [Translation](#translation)
+    -   [Verb Conjugation](#verb-conjugation)
+    -   [Noun Plurals](#noun-plurals)
+    -   [Word Annotation](#word-annotation)
+-   [Language Practice](#language-practice)
+-   [Contributing](#contributing)
+-   [Featured By](#featured-by)
 
 <a id="preview-images"></a>
 
@@ -98,10 +98,10 @@ using [scribe_data/load/update_data.py](https://github.com/scribe-org/Scribe-Dat
 
 Users access Scribe language keyboards through the following:
 
-- Open the app and press **`Enable Keyboard`**
-    - Or: Settings -> System -> Languages & input -> On-screen keyboard -> Manage on-screen keyboards
-- Choose from the available Scribe language keyboards
-- When typing press `🌐` or the keyboard button to select keyboards
+-   Open the app and press **`Enable Keyboard`**
+    -   Or: Settings -> System -> Languages & input -> On-screen keyboard -> Manage on-screen keyboards
+-   Choose from the available Scribe language keyboards
+-   When typing press `🌐` or the keyboard button to select keyboards
 
 <a id="keyboard-features"></a>
 
@@ -149,12 +149,12 @@ not using Scribe.
 
 Scribe annotates nouns in the command bar according to the following conventions:
 
-- Feminine: colored red 🟥 and marked with (F)
-- Masculine: colored blue 🟦 and marked with (M)
-- Common: colored purple 🟪 and marked with (C)
-- Neutral: colored green 🟩 and marked with (N)
-- Plural: colored orange 🟧 and marked with (PL)
-- More than one: marked with all their forms
+-   Feminine: colored red 🟥 and marked with (F)
+-   Masculine: colored blue 🟦 and marked with (M)
+-   Common: colored purple 🟪 and marked with (C)
+-   Neutral: colored green 🟩 and marked with (N)
+-   Plural: colored orange 🟧 and marked with (PL)
+-   More than one: marked with all their forms
 
 The above form abbreviations are translated into their equivalents in the keyboard's language.
 
@@ -172,13 +172,13 @@ the [Base Keyboard Features project](https://github.com/scribe-org/Scribe-Androi
 <details><summary><strong>Current features</strong></summary>
 <p>
 
-- Dynamic layouts for cross-device performance
-- Dark mode compatibility (WIP - [see issue](https://github.com/scribe-org/Scribe-Android/issues/27))
-- Auto-capitalization following `.`, `?` and `!`
-- The double space period shortcut (WIP - [see issue](https://github.com/scribe-org/Scribe-Android/issues/20))
-- Typing symbols and numbers followed by a space returns keyboard to letters
-- Hold-to-select characters for letters and symbols
-- Key pop up views for letters and symbols
+-   Dynamic layouts for cross-device performance
+-   Dark mode compatibility (WIP - [see issue](https://github.com/scribe-org/Scribe-Android/issues/27))
+-   Auto-capitalization following `.`, `?` and `!`
+-   The double space period shortcut (WIP - [see issue](https://github.com/scribe-org/Scribe-Android/issues/20))
+-   Typing symbols and numbers followed by a space returns keyboard to letters
+-   Hold-to-select characters for letters and symbols
+-   Key pop up views for letters and symbols
 
 </p>
 </details>
@@ -208,12 +208,12 @@ first time contributors.
 
 ### Ways to Help
 
-- Join us in the [Discussions](https://github.com/scribe-org/Scribe-Android/discussions) 👋
-- [Reporting bugs](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=bug&template=bug_report.yml) as they're found
-- Working on [new features](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Afeature)
-- [Localization](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Alocalization) for the app and Google Play
-- [Documentation](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Adocumentation) for onboarding and project cohesion
-- Adding language data to [Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) via [Wikidata](https://www.wikidata.org/)!
+-   Join us in the [Discussions](https://github.com/scribe-org/Scribe-Android/discussions) 👋
+-   [Reporting bugs](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=bug&template=bug_report.yml) as they're found
+-   Working on [new features](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Afeature)
+-   [Localization](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Alocalization) for the app and Google Play
+-   [Documentation](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Adocumentation) for onboarding and project cohesion
+-   Adding language data to [Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) via [Wikidata](https://www.wikidata.org/)!
 
 ### Data Edits
 
@@ -230,14 +230,14 @@ the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) a
 <details><summary><strong>Articles and Presentations on Scribe</strong></summary>
 <p>
 
-- [Presentation slides](https://docs.google.com/presentation/d/1Cu3VwQ3lJUp5W84YDe0AFYS-6zfBxKsm0MI-OMl_IzY/edit?usp=sharing)
-  for [Wikimedia Hackathon 2022](https://www.mediawiki.org/wiki/Wikimedia_Hackathon_2022)
-- [Blog post](https://tech-news.wikimedia.de/en/2022/03/18/lexicographical-data-for-language-learners-the-wikidata-based-app-scribe/)
-  on [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS)
-  for [Wikimedia Tech News](https://tech-news.wikimedia.de/en/homepage/) ([DE](https://tech-news.wikimedia.de/2022/03/18/sprachenlernen-mit-lexikografische-daten-die-wikidata-basierte-app-scribe/)
-  / [Tweet](https://twitter.com/wikidata/status/1507335538596106257?s=20&t=YGRGamftI-5B_VwQ_bFRhA))
-- [Presentation slides](https://docs.google.com/presentation/d/16ld_rCbwJCiAdRrfhF-Fq9Wm_ciHCbk_HCzGQs6TB1Q/edit?usp=sharing)
-  for [Wikidata Data Reuse Days 2022](https://diff.wikimedia.org/event/wikidata-data-reuse-days-2022/)
+-   [Presentation slides](https://docs.google.com/presentation/d/1Cu3VwQ3lJUp5W84YDe0AFYS-6zfBxKsm0MI-OMl_IzY/edit?usp=sharing)
+    for [Wikimedia Hackathon 2022](https://www.mediawiki.org/wiki/Wikimedia_Hackathon_2022)
+-   [Blog post](https://tech-news.wikimedia.de/en/2022/03/18/lexicographical-data-for-language-learners-the-wikidata-based-app-scribe/)
+    on [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS)
+    for [Wikimedia Tech News](https://tech-news.wikimedia.de/en/homepage/) ([DE](https://tech-news.wikimedia.de/2022/03/18/sprachenlernen-mit-lexikografische-daten-die-wikidata-basierte-app-scribe/)
+    / [Tweet](https://twitter.com/wikidata/status/1507335538596106257?s=20&t=YGRGamftI-5B_VwQ_bFRhA))
+-   [Presentation slides](https://docs.google.com/presentation/d/16ld_rCbwJCiAdRrfhF-Fq9Wm_ciHCbk_HCzGQs6TB1Q/edit?usp=sharing)
+    for [Wikidata Data Reuse Days 2022](https://diff.wikimedia.org/event/wikidata-data-reuse-days-2022/)
 
 </p>
 </details>
@@ -249,6 +249,17 @@ the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) a
 </div>
 
 # Powered By
+
+<details><summary><strong>List of referenced codes</strong></summary>
+<p>
+
+-   https://github.com/SimpleMobileTools/Simple-Keyboard
+    -   License: https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE
+-   https://github.com/SimpleMobileTools/Simple-Commons
+    -   License: https://github.com/SimpleMobileTools/Simple-Commons/blob/master/LICENSE
+
+</p>
+</details>
 
 <div align="center">
   <br>
