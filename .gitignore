@@ -2,10 +2,6 @@
 ##########
 .DS_Store
 
-# iOS to Android conversion
-###########################
-SwiftKotlin
-
 # Android Studio files
 ######################
 .idea
