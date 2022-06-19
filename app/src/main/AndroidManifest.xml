@@ -72,6 +72,11 @@
             android:parentActivityName=".activities.MainActivity" />
 
         <activity
+            android:name="org.scribe.commons.activities.ContributorsActivity"
+            android:label="@string/contributors"
+            android:parentActivityName=".activities.SettingsActivity" />
+
+        <activity
             android:name="org.scribe.commons.activities.CustomizationActivity"
             android:label="@string/customize_colors"
             android:parentActivityName=".activities.SettingsActivity" />
