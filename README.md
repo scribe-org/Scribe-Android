@@ -23,7 +23,7 @@ Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](
 
 # WIP port of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
 
-### Second language keyboards for Android
+### Android app with keyboards for language learners
 
 **Scribe-Android** is a pack of Android keyboards for language learners. Features include translation **`(beta)`**, verb conjugation and word annotation that give users the tools needed to communicate with confidence.
 
