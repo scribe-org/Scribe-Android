@@ -228,10 +228,8 @@ Scribe does not accept direct edits to the grammar JSON files as they are source
 <details><summary><strong>List of referenced codes</strong></summary>
 <p>
 
--   https://github.com/SimpleMobileTools/Simple-Keyboard
-    -   License: https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE
--   https://github.com/SimpleMobileTools/Simple-Commons
-    -   License: https://github.com/SimpleMobileTools/Simple-Commons/blob/master/LICENSE
+-   [Simple-Keyboard](https://github.com/SimpleMobileTools/Simple-Keyboard) by [SimpleMobileTools](https://github.com/SimpleMobileTools) ([License](https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE))
+-   [Simple-Commons](https://github.com/SimpleMobileTools/Simple-Commons) by [SimpleMobileTools](https://github.com/SimpleMobileTools) ([License](https://github.com/SimpleMobileTools/Simple-Commons/blob/master/LICENSE))
 
 </p>
 </details>
