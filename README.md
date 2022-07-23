@@ -19,8 +19,6 @@
 <!-- <a href='https://play.google.com/store/apps'><img alt='Get it on Google Play' src='https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/.github/resources/images/google_play_badge.png' height='60px'/></a>
 <a href='https://f-droid.org/packages/'><img src='https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/.github/resources/images/f_droid_badge.png' alt='Get it on F-Droid' height='60px' /></a> -->
 
-Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](https://github.com/scribe-org/Scribe-Desktop) (planned).
-
 # WIP port of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
 
 ### Android app with keyboards for language learners
@@ -30,6 +28,8 @@ Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](
 Scribe is fully open-source and does not collect usage data or ask for system access. Feature data is sourced from [Wikidata](https://www.wikidata.org/) and stored in-app, meaning Scribe is a highly responsive experience that does not require an internet connection.
 
 The [contributing](#contributing) section has information for those interested, with the articles and presentations in [featured by](#featured-by) also being a good resource for learning more about Scribe.
+
+Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](https://github.com/scribe-org/Scribe-Desktop) (planned).
 
 <a id="contents"></a>
 
