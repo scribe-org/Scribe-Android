@@ -36,6 +36,7 @@ The [contributing](#contributing) section has information for those interested, 
 # **Contents**
 
 -   [Preview Images](#preview-images)
+-   [Contributing](#contributing)
 -   [Supported Languages](#supported-languages)
 -   [Setup](#setup)
 -   [Keyboard Features](#keyboard-features)
@@ -44,7 +45,6 @@ The [contributing](#contributing) section has information for those interested, 
     -   [Noun Plurals](#noun-plurals)
     -   [Word Annotation](#word-annotation)
 -   [Language Practice](#language-practice)
--   [Contributing](#contributing)
 -   [Featured By](#featured-by)
 
 <a id="preview-images"></a>
@@ -58,6 +58,27 @@ The [contributing](#contributing) section has information for those interested, 
   <a href="https://github.com/scribe-org/Scribe-Android/blob/main/.github/resources/images/android_preview.png"><img height="512" src="https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/.github/resources/images/android_preview.png" alt="Android Preview"></a>
   <br>
 </div>
+
+<a id="contributing"></a>
+
+# Contributing [`⇧`](#contents)
+
+Work that is in progress or could be implemented is tracked in the [issues](https://github.com/scribe-org/Scribe-Android/issues) and [projects](https://github.com/scribe-org/Scribe-Android/projects). Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to Scribe-Android. This document has all necessary information and also includes steps to set up a development environment.
+
+Those interested can further check the [`-next release-`](https://github.com/scribe-org/Scribe-Android/labels/-next%20release-) and [`-priority-`](https://github.com/scribe-org/Scribe-Android/labels/-priority-) labels in the [issues](https://github.com/scribe-org/Scribe-Android/issues) for those that are most important, as well as those marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) that are tailored for first time contributors.
+
+### Ways to Help
+
+-   Join us in the [Discussions](https://github.com/scribe-org/Scribe-Android/discussions) 👋
+-   [Reporting bugs](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=bug&template=bug_report.yml) as they're found 🐞
+-   Working on [new features](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Afeature) ✨
+-   [Localization](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Alocalization) for the app and Google Play 🌐
+-   [Documentation](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Adocumentation) for onboarding and project cohesion 📝
+-   Adding language data to [Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) via [Wikidata](https://www.wikidata.org/)! 🗃️
+
+### Data Edits
+
+Scribe does not accept direct edits to the grammar JSON files as they are sourced from [Wikidata](https://www.wikidata.org/). Edits can be discussed and the [Scribe-Data](https://github.com/scribe-org/Scribe-Data) queries will be changed and ran before an update. If there is a problem with one of the files, then the fix should be made on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us know that edits have been made by [opening a data issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
 
 <a id="supported-languages"></a>
 
@@ -173,27 +194,6 @@ The goal is for Scribe to have all the functionality of system keyboards. See th
 # Language Practice [`⇧`](#contents)
 
 A future feature of Scribe is language practice within the app itself. Scribe presents users with information that is directly relevant to their current struggles with a second language. This information can be saved in-app and used to create personalized lessons such as flashcards to reinforce the information that Scribe has provided.
-
-<a id="contributing"></a>
-
-# Contributing [`⇧`](#contents)
-
-Work that is in progress or could be implemented is tracked in the [issues](https://github.com/scribe-org/Scribe-Android/issues) and [projects](https://github.com/scribe-org/Scribe-Android/projects). Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to Scribe-Android. This document has all necessary information and also includes steps to set up a development environment.
-
-Those interested can further check the [`-next release-`](https://github.com/scribe-org/Scribe-Android/labels/-next%20release-) and [`-priority-`](https://github.com/scribe-org/Scribe-Android/labels/-priority-) labels in the [issues](https://github.com/scribe-org/Scribe-Android/issues) for those that are most important, as well as those marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) that are tailored for first time contributors.
-
-### Ways to Help
-
--   Join us in the [Discussions](https://github.com/scribe-org/Scribe-Android/discussions) 👋
--   [Reporting bugs](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=bug&template=bug_report.yml) as they're found
--   Working on [new features](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Afeature)
--   [Localization](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Alocalization) for the app and Google Play
--   [Documentation](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Adocumentation) for onboarding and project cohesion
--   Adding language data to [Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) via [Wikidata](https://www.wikidata.org/)!
-
-### Data Edits
-
-Scribe does not accept direct edits to the grammar JSON files as they are sourced from [Wikidata](https://www.wikidata.org/). Edits can be discussed and the [Scribe-Data](https://github.com/scribe-org/Scribe-Data) queries will be changed and ran before an update. If there is a problem with one of the files, then the fix should be made on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us know that edits have been made by [opening a data issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
 
 <a id="featured-by"></a>
 
