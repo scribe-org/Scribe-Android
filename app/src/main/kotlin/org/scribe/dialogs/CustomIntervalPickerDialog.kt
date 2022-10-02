@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.dialog_custom_interval_picker.view.*
 import org.scribe.R
-import org.scribe.commons.extensions.*
+import org.scribe.extensions.*
 import org.scribe.helpers.DAY_SECONDS
 import org.scribe.helpers.HOUR_SECONDS
 import org.scribe.helpers.MINUTE_SECONDS

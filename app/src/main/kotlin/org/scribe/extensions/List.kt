@@ -1,4 +1,4 @@
-package org.scribe.commons.extensions
+package org.scribe.extensions
 
 fun List<String>.getMimeType(): String {
     val mimeGroups = HashSet<String>(size)

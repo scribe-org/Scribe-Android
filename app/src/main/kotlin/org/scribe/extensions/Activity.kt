@@ -1,4 +1,4 @@
-package org.scribe.commons.extensions
+package org.scribe.extensions
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -38,8 +38,6 @@ import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.dialog_title.view.*
 import org.scribe.R
 import org.scribe.activities.BaseSimpleActivity
-import org.scribe.commons.helpers.*
-import org.scribe.commons.models.*
 import org.scribe.dialogs.*
 import org.scribe.dialogs.WritePermissionDialog.Mode
 import org.scribe.helpers.*

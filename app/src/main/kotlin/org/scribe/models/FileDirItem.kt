@@ -3,7 +3,7 @@ package org.scribe.models
 import android.content.Context
 import android.net.Uri
 import com.bumptech.glide.signature.ObjectKey
-import org.scribe.commons.extensions.*
+import org.scribe.extensions.*
 import org.scribe.helpers.*
 import java.io.File
 

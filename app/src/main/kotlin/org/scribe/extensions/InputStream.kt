@@ -1,4 +1,4 @@
-package org.scribe.commons.extensions
+package org.scribe.extensions
 
 import org.scribe.helpers.MD5
 import java.io.InputStream

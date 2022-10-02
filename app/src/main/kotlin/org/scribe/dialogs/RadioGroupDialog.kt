@@ -8,8 +8,8 @@ import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.dialog_radio_group.view.*
 import org.scribe.R
-import org.scribe.commons.extensions.onGlobalLayout
-import org.scribe.commons.extensions.setupDialogStuff
+import org.scribe.extensions.onGlobalLayout
+import org.scribe.extensions.setupDialogStuff
 import org.scribe.models.RadioItem
 
 class RadioGroupDialog(

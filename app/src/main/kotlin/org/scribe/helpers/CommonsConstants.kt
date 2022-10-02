@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.ChecksSdkIntAtLeast
-import org.scribe.commons.overloads.times
 
 const val EXTERNAL_STORAGE_PROVIDER_AUTHORITY = "com.android.externalstorage.documents"
 const val EXTRA_SHOW_ADVANCED = "android.content.extra.SHOW_ADVANCED"

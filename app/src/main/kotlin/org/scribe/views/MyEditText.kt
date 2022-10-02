@@ -3,8 +3,8 @@ package org.scribe.views
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.EditText
-import org.scribe.commons.extensions.adjustAlpha
-import org.scribe.commons.extensions.applyColorFilter
+import org.scribe.extensions.adjustAlpha
+import org.scribe.extensions.applyColorFilter
 import org.scribe.helpers.MEDIUM_ALPHA
 
 class MyEditText : EditText {

@@ -6,9 +6,9 @@ import android.text.method.LinkMovementMethod
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.dialog_textview.view.*
 import org.scribe.R
-import org.scribe.commons.extensions.getStringsPackageName
-import org.scribe.commons.extensions.launchViewIntent
-import org.scribe.commons.extensions.setupDialogStuff
+import org.scribe.extensions.getStringsPackageName
+import org.scribe.extensions.launchViewIntent
+import org.scribe.extensions.setupDialogStuff
 
 class AppSideloadedDialog(val activity: Activity, val callback: () -> Unit) {
     private var dialog: AlertDialog

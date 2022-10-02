@@ -9,8 +9,8 @@ import kotlinx.android.synthetic.main.dialog_write_permission.view.*
 import kotlinx.android.synthetic.main.dialog_write_permission_otg.view.*
 import org.scribe.R
 import org.scribe.activities.BaseSimpleActivity
-import org.scribe.commons.extensions.humanizePath
-import org.scribe.commons.extensions.setupDialogStuff
+import org.scribe.extensions.humanizePath
+import org.scribe.extensions.setupDialogStuff
 
 class WritePermissionDialog(activity: Activity, val mode: Mode, val callback: () -> Unit) {
     sealed class Mode {

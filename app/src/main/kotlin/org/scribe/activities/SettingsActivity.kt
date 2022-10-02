@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.Menu
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.scribe.R
-import org.scribe.commons.extensions.updateTextColors
 import org.scribe.dialogs.RadioGroupDialog
 import org.scribe.extensions.config
+import org.scribe.extensions.updateTextColors
 import org.scribe.helpers.*
 import org.scribe.models.RadioItem
 

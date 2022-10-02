@@ -1,4 +1,4 @@
-package org.scribe.commons.extensions
+package org.scribe.extensions
 
 import android.view.HapticFeedbackConstants
 import android.view.View

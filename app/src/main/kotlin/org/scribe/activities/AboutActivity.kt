@@ -9,8 +9,8 @@ import android.view.Menu
 import androidx.core.net.toUri
 import kotlinx.android.synthetic.main.activity_about.*
 import org.scribe.R
-import org.scribe.commons.extensions.*
 import org.scribe.dialogs.ConfirmationAdvancedDialog
+import org.scribe.extensions.*
 import org.scribe.helpers.*
 
 class AboutActivity : BaseSimpleActivity() {

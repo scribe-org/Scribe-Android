@@ -21,9 +21,7 @@ import kotlinx.android.synthetic.main.keyboard_popup_keyboard.view.*
 import kotlinx.android.synthetic.main.keyboard_view_keyboard.view.*
 import org.scribe.R
 import org.scribe.activities.SettingsActivity
-import org.scribe.commons.extensions.*
-import org.scribe.extensions.config
-import org.scribe.extensions.getStrokeColor
+import org.scribe.extensions.*
 import org.scribe.helpers.*
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_DELETE
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_ENTER

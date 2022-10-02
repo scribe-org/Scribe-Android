@@ -27,10 +27,10 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import org.scribe.R
-import org.scribe.commons.extensions.*
 import org.scribe.dialogs.ConfirmationDialog
 import org.scribe.dialogs.WritePermissionDialog
 import org.scribe.dialogs.WritePermissionDialog.Mode
+import org.scribe.extensions.*
 import org.scribe.helpers.*
 import java.util.regex.Pattern
 

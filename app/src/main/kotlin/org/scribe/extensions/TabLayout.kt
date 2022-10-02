@@ -1,4 +1,4 @@
-package org.scribe.commons.extensions
+package org.scribe.extensions
 
 import com.google.android.material.tabs.TabLayout
 

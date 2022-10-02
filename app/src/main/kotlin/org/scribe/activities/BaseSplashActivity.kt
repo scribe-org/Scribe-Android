@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.scribe.R
-import org.scribe.commons.extensions.*
+import org.scribe.extensions.*
 import org.scribe.helpers.SIDELOADING_TRUE
 import org.scribe.helpers.SIDELOADING_UNCHECKED
 

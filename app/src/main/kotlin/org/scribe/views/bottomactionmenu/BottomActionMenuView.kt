@@ -14,10 +14,10 @@ import android.widget.LinearLayout
 import androidx.annotation.IdRes
 import com.google.android.material.animation.AnimationUtils
 import org.scribe.R
-import org.scribe.commons.extensions.applyColorFilter
-import org.scribe.commons.extensions.beVisibleIf
-import org.scribe.commons.extensions.toast
-import org.scribe.commons.extensions.windowManager
+import org.scribe.extensions.applyColorFilter
+import org.scribe.extensions.beVisibleIf
+import org.scribe.extensions.toast
+import org.scribe.extensions.windowManager
 import org.scribe.helpers.isRPlus
 
 class BottomActionMenuView : LinearLayout {

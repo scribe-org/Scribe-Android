@@ -3,9 +3,9 @@ package org.scribe.helpers
 import android.content.Context
 import android.text.format.DateFormat
 import org.scribe.R
-import org.scribe.commons.extensions.getInternalStoragePath
-import org.scribe.commons.extensions.getSDCardPath
-import org.scribe.commons.extensions.getSharedPrefs
+import org.scribe.extensions.getInternalStoragePath
+import org.scribe.extensions.getSDCardPath
+import org.scribe.extensions.getSharedPrefs
 import java.text.SimpleDateFormat
 import java.util.*
 

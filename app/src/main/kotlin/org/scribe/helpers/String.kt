@@ -1,4 +1,4 @@
-package org.scribe.commons.overloads
+package org.scribe.helpers
 
 operator fun String.times(x: Int): String {
     val stringBuilder = StringBuilder()

@@ -4,9 +4,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import org.scribe.R
-import org.scribe.commons.extensions.getProperBackgroundColor
-import org.scribe.commons.extensions.isUsingSystemDarkTheme
-import org.scribe.commons.extensions.lightenColor
 import org.scribe.databases.ClipsDatabase
 import org.scribe.helpers.Config
 import org.scribe.interfaces.ClipsDao

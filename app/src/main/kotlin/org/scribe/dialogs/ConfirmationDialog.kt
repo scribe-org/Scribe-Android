@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.dialog_message.view.*
 import org.scribe.R
-import org.scribe.commons.extensions.setupDialogStuff
+import org.scribe.extensions.setupDialogStuff
 
 /**
  * A simple dialog without any view, just a messageId, a positive button and optionally a negative button

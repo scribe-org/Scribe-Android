@@ -13,8 +13,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.PopupWindowCompat
 import kotlinx.android.synthetic.main.item_action_mode_popup.view.*
 import org.scribe.R
-import org.scribe.commons.extensions.applyColorFilter
-import org.scribe.commons.extensions.windowManager
+import org.scribe.extensions.applyColorFilter
+import org.scribe.extensions.windowManager
 import org.scribe.helpers.isRPlus
 
 class BottomActionMenuItemPopup(

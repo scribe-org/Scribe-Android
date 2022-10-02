@@ -11,8 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.scribe.BuildConfig
 import org.scribe.R
-import org.scribe.commons.extensions.*
 import org.scribe.dialogs.ConfirmationAdvancedDialog
+import org.scribe.extensions.*
 import org.scribe.helpers.LICENSE_GSON
 
 class MainActivity : SimpleActivity() {

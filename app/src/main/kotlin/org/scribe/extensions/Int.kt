@@ -1,4 +1,4 @@
-package org.scribe.commons.extensions
+package org.scribe.extensions
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -99,7 +99,6 @@ fun Int.addBitIf(add: Boolean, bit: Int) =
         removeBit(bit)
     }
 
-// TODO: how to do "bits & ~bit" in kotlin?
 fun Int.removeBit(bit: Int) = addBit(bit) - bit
 
 fun Int.addBit(bit: Int) = this or bit

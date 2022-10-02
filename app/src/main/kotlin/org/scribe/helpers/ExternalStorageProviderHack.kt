@@ -5,7 +5,7 @@ import android.database.MatrixCursor
 import android.database.MergeCursor
 import android.net.Uri
 import android.provider.DocumentsContract
-import org.scribe.commons.extensions.getStringValue
+import org.scribe.extensions.getStringValue
 
 // On Android 11, ExternalStorageProvider no longer returns Android/data and Android/obb as children
 // of the Android directory on primary storage. However, the two child directories are actually

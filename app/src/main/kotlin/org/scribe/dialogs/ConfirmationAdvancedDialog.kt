@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.dialog_message.view.*
 import org.scribe.R
-import org.scribe.commons.extensions.setupDialogStuff
+import org.scribe.extensions.setupDialogStuff
 
 // similar fo ConfirmationDialog, but has a callback for negative button too
 class ConfirmationAdvancedDialog(

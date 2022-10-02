@@ -1,4 +1,4 @@
-package org.scribe.commons.extensions
+package org.scribe.extensions
 
 fun <T> ArrayList<T>.moveLastItemToFront() {
     val last = removeAt(size - 1)

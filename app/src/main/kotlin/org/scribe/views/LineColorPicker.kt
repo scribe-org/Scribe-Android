@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import org.scribe.R
-import org.scribe.commons.extensions.isRTLLayout
-import org.scribe.commons.extensions.onGlobalLayout
+import org.scribe.extensions.isRTLLayout
+import org.scribe.extensions.onGlobalLayout
 import org.scribe.interfaces.LineColorPickerListener
 
 class LineColorPicker(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
