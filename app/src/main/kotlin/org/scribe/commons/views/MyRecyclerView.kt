@@ -8,7 +8,6 @@ import android.view.ScaleGestureDetector
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.scribe.R
-import org.scribe.commons.interfaces.RecyclerScrollCallback
 
 // drag selection is based on https://github.com/afollestad/drag-select-recyclerview
 open class MyRecyclerView : RecyclerView {
@@ -42,14 +41,6 @@ open class MyRecyclerView : RecyclerView {
 
     private var currScaleFactor = 1.0f
     private var lastUp = 0L    // allow only pinch zoom, not double tap
-
-    // things related to parallax scrolling (for now only in the music player)
-    // cut from https://github.com/ksoichiro/Android-ObservableScrollView
-    var recyclerScrollCallback: RecyclerScrollCallback? = null
-    private var mPrevFirstVisiblePosition = 0
-    private var mPrevScrolledChildrenHeight = 0
-    private var mPrevFirstVisibleChildHeight = -1
-    private var mScrollY = 0
 
     // variables used for fetching additional items at scrolling to the bottom/top
     var endlessScrollListener: EndlessScrollListener? = null
@@ -249,33 +240,6 @@ open class MyRecyclerView : RecyclerView {
                 val firstVisiblePosition = linearLayoutManager?.findFirstVisibleItemPosition() ?: -1
                 if (firstVisiblePosition == 0) {
                     endlessScrollListener!!.updateTop()
-                }
-            }
-        }
-    }
-
-    override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
-        super.onScrollChanged(l, t, oldl, oldt)
-        if (recyclerScrollCallback != null) {
-            if (childCount > 0) {
-                val firstVisiblePosition = getChildAdapterPosition(getChildAt(0))
-                val firstVisibleChild = getChildAt(0)
-                if (firstVisibleChild != null) {
-                    if (mPrevFirstVisiblePosition < firstVisiblePosition) {
-                        mPrevScrolledChildrenHeight += mPrevFirstVisibleChildHeight
-                    }
-
-                    if (firstVisiblePosition == 0) {
-                        mPrevFirstVisibleChildHeight = firstVisibleChild.height
-                        mPrevScrolledChildrenHeight = 0
-                    }
-
-                    if (mPrevFirstVisibleChildHeight < 0) {
-                        mPrevFirstVisibleChildHeight = 0
-                    }
-
-                    mScrollY = mPrevScrolledChildrenHeight - firstVisibleChild.top
-                    recyclerScrollCallback?.onScrolled(mScrollY)
                 }
             }
         }

@@ -103,30 +103,9 @@ fun Activity.appLaunched(appId: String) {
         }
     }
 
-    baseConfig.appRunCount++
-    if (baseConfig.appRunCount % 30 == 0 && !isAProApp()) {
-        if (!resources.getBoolean(R.bool.hide_google_relations)) {
-            showDonateOrUpgradeDialog()
-        }
-    }
-
-    if (baseConfig.appRunCount % 40 == 0 && !baseConfig.wasAppRated) {
-        if (!resources.getBoolean(R.bool.hide_google_relations)) {
-            RateStarsDialog(this)
-        }
-    }
-
     if (baseConfig.navigationBarColor == INVALID_NAVIGATION_BAR_COLOR && (window.attributes.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN == 0)) {
         baseConfig.defaultNavigationBarColor = window.navigationBarColor
         baseConfig.navigationBarColor = window.navigationBarColor
-    }
-}
-
-fun Activity.showDonateOrUpgradeDialog() {
-    if (getCanAppBeUpgraded()) {
-        UpgradeToProDialog(this)
-    } else if (!isOrWasThankYouInstalled()) {
-        DonateDialog(this)
     }
 }
 
@@ -606,28 +585,6 @@ fun Activity.tryGenericMimeType(intent: Intent, mimeType: String, uri: Uri): Boo
         true
     } catch (e: Exception) {
         false
-    }
-}
-
-fun BaseSimpleActivity.checkWhatsNew(releases: List<Release>, currVersion: Int) {
-    if (baseConfig.lastVersion == 0) {
-        baseConfig.lastVersion = currVersion
-        return
-    }
-
-    val newReleases = arrayListOf<Release>()
-    releases.filterTo(newReleases) { it.id > baseConfig.lastVersion }
-
-    if (newReleases.isNotEmpty()) {
-        WhatsNewDialog(this, newReleases)
-    }
-
-    baseConfig.lastVersion = currVersion
-}
-
-fun BaseSimpleActivity.deleteFolders(folders: List<FileDirItem>, deleteMediaOnly: Boolean = true, callback: ((wasSuccess: Boolean) -> Unit)? = null) {
-    ensureBackgroundThread {
-        deleteFoldersBg(folders, deleteMediaOnly, callback)
     }
 }
 
@@ -1299,30 +1256,6 @@ private fun createCasualFileOutputStream(activity: BaseSimpleActivity, targetFil
     }
 }
 
-fun Activity.performSecurityCheck(
-    protectionType: Int,
-    requiredHash: String,
-    successCallback: ((String, Int) -> Unit)? = null,
-    failureCallback: (() -> Unit)? = null
-) {
-    if (protectionType == PROTECTION_FINGERPRINT && isTargetSdkVersion30Plus()) {
-        showBiometricPrompt(successCallback, failureCallback)
-    } else {
-        SecurityDialog(
-            activity = this,
-            requiredHash = requiredHash,
-            showTabIndex = protectionType,
-            callback = { hash, type, success ->
-                if (success) {
-                    successCallback?.invoke(hash, type)
-                } else {
-                    failureCallback?.invoke()
-                }
-            }
-        )
-    }
-}
-
 fun Activity.showBiometricPrompt(
     successCallback: ((String, Int) -> Unit)? = null,
     failureCallback: (() -> Unit)? = null
@@ -1350,50 +1283,6 @@ fun Activity.showBiometricPrompt(
                 }
             }
         )
-}
-
-fun Activity.handleHiddenFolderPasswordProtection(callback: () -> Unit) {
-    if (baseConfig.isHiddenPasswordProtectionOn) {
-        SecurityDialog(this, baseConfig.hiddenPasswordHash, baseConfig.hiddenProtectionType) { _, _, success ->
-            if (success) {
-                callback()
-            }
-        }
-    } else {
-        callback()
-    }
-}
-
-fun Activity.handleAppPasswordProtection(callback: (success: Boolean) -> Unit) {
-    if (baseConfig.isAppPasswordProtectionOn) {
-        SecurityDialog(this, baseConfig.appPasswordHash, baseConfig.appProtectionType) { _, _, success ->
-            callback(success)
-        }
-    } else {
-        callback(true)
-    }
-}
-
-fun Activity.handleDeletePasswordProtection(callback: () -> Unit) {
-    if (baseConfig.isDeletePasswordProtectionOn) {
-        SecurityDialog(this, baseConfig.deletePasswordHash, baseConfig.deleteProtectionType) { _, _, success ->
-            if (success) {
-                callback()
-            }
-        }
-    } else {
-        callback()
-    }
-}
-
-fun Activity.handleLockedFolderOpening(path: String, callback: (success: Boolean) -> Unit) {
-    if (baseConfig.isFolderProtected(path)) {
-        SecurityDialog(this, baseConfig.getFolderProtectionHash(path), baseConfig.getFolderProtectionType(path)) { _, _, success ->
-            callback(success)
-        }
-    } else {
-        callback(true)
-    }
 }
 
 fun BaseSimpleActivity.createDirectorySync(directory: String): Boolean {

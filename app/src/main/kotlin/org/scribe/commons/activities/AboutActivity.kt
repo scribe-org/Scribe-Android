@@ -11,7 +11,6 @@ import androidx.core.net.toUri
 import kotlinx.android.synthetic.main.activity_about.*
 import org.scribe.R
 import org.scribe.commons.dialogs.ConfirmationAdvancedDialog
-import org.scribe.commons.dialogs.RateStarsDialog
 import org.scribe.commons.extensions.*
 import org.scribe.commons.helpers.*
 import org.scribe.commons.models.FAQItem
@@ -39,7 +38,6 @@ class AboutActivity : BaseSimpleActivity() {
 
         arrayOf(
             about_faq_icon,
-            about_rate_us_icon,
             about_invite_icon,
             about_contributors_icon,
             about_email_icon,
@@ -66,7 +64,6 @@ class AboutActivity : BaseSimpleActivity() {
 
         setupFAQ()
         setupEmail()
-        setupRateUs()
         setupInvite()
         setupContributors()
         setupDonate()
@@ -149,32 +146,6 @@ class AboutActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun setupRateUs() {
-        if (resources.getBoolean(R.bool.hide_google_relations)) {
-            about_rate_us_holder.beGone()
-        }
-
-        about_rate_us_holder.setOnClickListener {
-            if (baseConfig.wasBeforeRateShown) {
-                if (baseConfig.wasAppRated) {
-                    redirectToRateUs()
-                } else {
-                    RateStarsDialog(this)
-                }
-            } else {
-                baseConfig.wasBeforeRateShown = true
-                val msg = "${getString(R.string.before_rate_read_faq)}\n\n${getString(R.string.make_sure_latest)}"
-                ConfirmationAdvancedDialog(this, msg, 0, R.string.read_faq, R.string.skip) { success ->
-                    if (success) {
-                        about_faq_holder.performClick()
-                    } else {
-                        about_rate_us_holder.performClick()
-                    }
-                }
-            }
-        }
-    }
-
     private fun setupInvite() {
         if (resources.getBoolean(R.bool.hide_google_relations)) {
             about_invite_holder.beGone()
@@ -193,7 +164,7 @@ class AboutActivity : BaseSimpleActivity() {
     }
 
     private fun setupContributors() {
-        if (about_rate_us_holder.isGone() && about_invite_holder.isGone()) {
+        if (about_invite_holder.isGone()) {
             about_contributors_holder.background = resources.getDrawable(R.drawable.ripple_all_corners, theme)
         }
 
@@ -205,7 +176,7 @@ class AboutActivity : BaseSimpleActivity() {
 
     private fun setupDonate() {
         if (resources.getBoolean(R.bool.show_donate_in_about) && !resources.getBoolean(R.bool.hide_all_external_links)) {
-            val contributorsBg = if (about_rate_us_holder.isGone() && about_invite_holder.isGone()) {
+            val contributorsBg = if (about_invite_holder.isGone()) {
                 R.drawable.ripple_top_corners
             } else {
                 R.drawable.ripple_background

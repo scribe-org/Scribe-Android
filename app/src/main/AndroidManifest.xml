@@ -30,13 +30,6 @@
             android:name=".activities.MainActivity"
             android:exported="false" />
 
-
-        <activity
-            android:name=".activities.ManageClipboardItemsActivity"
-            android:exported="false"
-            android:label="@string/manage_clipboard_items"
-            android:parentActivityName=".activities.SettingsActivity" />
-
         <service
             android:name=".services.SimpleKeyboardIME"
             android:exported="true"

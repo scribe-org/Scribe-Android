@@ -6,10 +6,12 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_customization.*
 import org.scribe.R
-import org.scribe.commons.dialogs.*
+import org.scribe.commons.dialogs.ConfirmationAdvancedDialog
+import org.scribe.commons.dialogs.ConfirmationDialog
+import org.scribe.commons.dialogs.LineColorPickerDialog
+import org.scribe.commons.dialogs.RadioGroupDialog
 import org.scribe.commons.extensions.*
 import org.scribe.commons.helpers.*
 import org.scribe.commons.models.MyTheme
@@ -115,22 +117,6 @@ class CustomizationActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_customization, menu)
-        menu.findItem(R.id.save).isVisible = hasUnsavedChanges
-        updateMenuItemColors(menu, true, getCurrentStatusBarColor())
-        this.menu = menu
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.save -> saveChanges(true)
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
-    }
-
     override fun onBackPressed() {
         if (hasUnsavedChanges && System.currentTimeMillis() - lastSavePromptTS > SAVE_DISCARD_PROMPT_INTERVAL) {
             promptSaveDiscard()
@@ -210,11 +196,6 @@ class CustomizationActivity : BaseSimpleActivity() {
         }
 
         RadioGroupDialog(this@CustomizationActivity, items, curSelectedThemeId) {
-            if (it == THEME_SHARED && !isThankYouInstalled()) {
-                PurchaseThankYouDialog(this)
-                return@RadioGroupDialog
-            }
-
             updateColorTheme(it as Int, true)
             if (it != THEME_CUSTOM && it != THEME_SHARED && it != THEME_AUTO && it != THEME_SYSTEM && !baseConfig.wasCustomThemeSwitchDescriptionShown) {
                 baseConfig.wasCustomThemeSwitchDescriptionShown = true
@@ -453,13 +434,8 @@ class CustomizationActivity : BaseSimpleActivity() {
         customization_navigation_bar_color.setFillWithStroke(curNavigationBarColor, backgroundColor)
         apply_to_all.setTextColor(primaryColor.getContrastColor())
 
-        customization_text_color_holder.setOnClickListener { pickTextColor() }
-        customization_background_color_holder.setOnClickListener { pickBackgroundColor() }
         customization_primary_color_holder.setOnClickListener { pickPrimaryColor() }
-        customization_accent_color_holder.setOnClickListener { pickAccentColor() }
-
         handleAccentColorLayout()
-        customization_navigation_bar_color_holder.setOnClickListener { pickNavigationBarColor() }
         apply_to_all.setOnClickListener {
             applyToAll()
         }
@@ -530,30 +506,6 @@ class CustomizationActivity : BaseSimpleActivity() {
 
     private fun isCurrentBlackAndWhiteTheme() = curTextColor == Color.WHITE && curPrimaryColor == Color.BLACK && curBackgroundColor == Color.BLACK
 
-    private fun pickTextColor() {
-        ColorPickerDialog(this, curTextColor) { wasPositivePressed, color ->
-            if (wasPositivePressed) {
-                if (hasColorChanged(curTextColor, color)) {
-                    setCurrentTextColor(color)
-                    colorChanged()
-                    updateColorTheme(getUpdatedTheme())
-                }
-            }
-        }
-    }
-
-    private fun pickBackgroundColor() {
-        ColorPickerDialog(this, curBackgroundColor) { wasPositivePressed, color ->
-            if (wasPositivePressed) {
-                if (hasColorChanged(curBackgroundColor, color)) {
-                    setCurrentBackgroundColor(color)
-                    colorChanged()
-                    updateColorTheme(getUpdatedTheme())
-                }
-            }
-        }
-    }
-
     private fun pickPrimaryColor() {
         if (!packageName.startsWith("com.simplemobiletools.", true) && baseConfig.appRunCount > 50) {
             finish()
@@ -576,35 +528,6 @@ class CustomizationActivity : BaseSimpleActivity() {
                 updateMenuItemColors(menu, true, curPrimaryColor)
             }
         }
-    }
-
-    private fun pickAccentColor() {
-        ColorPickerDialog(this, curAccentColor) { wasPositivePressed, color ->
-            if (wasPositivePressed) {
-                if (hasColorChanged(curAccentColor, color)) {
-                    curAccentColor = color
-                    colorChanged()
-
-                    if (isCurrentWhiteTheme() || isCurrentBlackAndWhiteTheme()) {
-                        updateActionbarColor(getCurrentStatusBarColor())
-                    }
-                }
-            }
-        }
-    }
-
-    private fun pickNavigationBarColor() {
-        ColorPickerDialog(this, curNavigationBarColor, true, true, currentColorCallback = {
-            updateNavigationBarColor(it)
-        }, callback = { wasPositivePressed, color ->
-            if (wasPositivePressed) {
-                setCurrentNavigationBarColor(color)
-                colorChanged()
-                updateColorTheme(getUpdatedTheme())
-            } else {
-                updateNavigationBarColor(curNavigationBarColor)
-            }
-        })
     }
 
     private fun pickAppIconColor() {
@@ -637,8 +560,6 @@ class CustomizationActivity : BaseSimpleActivity() {
                 updateColorTheme(THEME_SHARED)
                 saveChanges(false)
             }
-        } else {
-            PurchaseThankYouDialog(this)
         }
     }
 

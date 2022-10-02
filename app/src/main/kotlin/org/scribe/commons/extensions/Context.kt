@@ -390,15 +390,6 @@ fun Context.getSizeFromContentUri(uri: Uri): Long {
 
 fun Context.getMyContentProviderCursorLoader() = CursorLoader(this, MyContentProvider.MY_CONTENT_URI, null, null, null, null)
 
-fun Context.getMyContactsCursor(favoritesOnly: Boolean, withPhoneNumbersOnly: Boolean) = try {
-    val getFavoritesOnly = if (favoritesOnly) "1" else "0"
-    val getWithPhoneNumbersOnly = if (withPhoneNumbersOnly) "1" else "0"
-    val args = arrayOf(getFavoritesOnly, getWithPhoneNumbersOnly)
-    CursorLoader(this, MyContactsContentProvider.CONTACTS_CONTENT_URI, null, null, args, null).loadInBackground()
-} catch (e: Exception) {
-    null
-}
-
 fun Context.getCurrentFormattedDateTime(): String {
     val simpleDateFormat = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
     return simpleDateFormat.format(Date(System.currentTimeMillis()))

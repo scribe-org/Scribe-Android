@@ -26,21 +26,13 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.util.Pair
 import org.scribe.R
-import org.scribe.commons.asynctasks.CopyMoveTask
 import org.scribe.commons.dialogs.ConfirmationDialog
-import org.scribe.commons.dialogs.ExportSettingsDialog
-import org.scribe.commons.dialogs.FileConflictDialog
 import org.scribe.commons.dialogs.WritePermissionDialog
 import org.scribe.commons.dialogs.WritePermissionDialog.Mode
 import org.scribe.commons.extensions.*
 import org.scribe.commons.helpers.*
-import org.scribe.commons.interfaces.CopyMoveListener
 import org.scribe.commons.models.FAQItem
-import org.scribe.commons.models.FileDirItem
-import java.io.File
-import java.io.OutputStream
 import java.util.regex.Pattern
 
 abstract class BaseSimpleActivity : AppCompatActivity() {
@@ -375,9 +367,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             } else {
                 funAfterSAFPermission?.invoke(false)
             }
-        } else if (requestCode == SELECT_EXPORT_SETTINGS_FILE_INTENT && resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
-            val outputStream = contentResolver.openOutputStream(resultData.data!!)
-            exportSettingsTo(outputStream, configItemsToExport)
         } else if (requestCode == DELETE_FILE_SDK_30_HANDLER) {
             funAfterSdk30Action?.invoke(resultCode == Activity.RESULT_OK)
         } else if (requestCode == RECOVERABLE_SECURITY_HANDLER) {
@@ -590,152 +579,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
     }
 
-    fun copyMoveFilesTo(
-        fileDirItems: ArrayList<FileDirItem>, source: String, destination: String, isCopyOperation: Boolean, copyPhotoVideoOnly: Boolean,
-        copyHidden: Boolean, callback: (destinationPath: String) -> Unit
-    ) {
-        if (source == destination) {
-            toast(R.string.source_and_destination_same)
-            return
-        }
-
-        if (!getDoesFilePathExist(destination)) {
-            toast(R.string.invalid_destination)
-            return
-        }
-
-        handleSAFDialog(destination) {
-            if (!it) {
-                copyMoveListener.copyFailed()
-                return@handleSAFDialog
-            }
-
-            handleSAFDialogSdk30(destination) {
-                if (!it) {
-                    copyMoveListener.copyFailed()
-                    return@handleSAFDialogSdk30
-                }
-
-                copyMoveCallback = callback
-                var fileCountToCopy = fileDirItems.size
-                if (isCopyOperation) {
-                    startCopyMove(fileDirItems, destination, isCopyOperation, copyPhotoVideoOnly, copyHidden)
-                } else {
-                    if (isPathOnOTG(source) || isPathOnOTG(destination) || isPathOnSD(source) || isPathOnSD(destination) ||
-                        isRestrictedSAFOnlyRoot(source) || isRestrictedSAFOnlyRoot(destination) ||
-                        isAccessibleWithSAFSdk30(source) || isAccessibleWithSAFSdk30(destination) ||
-                        fileDirItems.first().isDirectory
-                    ) {
-                        handleSAFDialog(source) {
-                            if (it) {
-                                startCopyMove(fileDirItems, destination, isCopyOperation, copyPhotoVideoOnly, copyHidden)
-                            }
-                        }
-                    } else {
-                        try {
-                            checkConflicts(fileDirItems, destination, 0, LinkedHashMap()) {
-                                toast(R.string.moving)
-                                ensureBackgroundThread {
-                                    val updatedPaths = ArrayList<String>(fileDirItems.size)
-                                    val destinationFolder = File(destination)
-                                    for (oldFileDirItem in fileDirItems) {
-                                        var newFile = File(destinationFolder, oldFileDirItem.name)
-                                        if (newFile.exists()) {
-                                            when {
-                                                getConflictResolution(it, newFile.absolutePath) == CONFLICT_SKIP -> fileCountToCopy--
-                                                getConflictResolution(it, newFile.absolutePath) == CONFLICT_KEEP_BOTH -> newFile = getAlternativeFile(newFile)
-                                                else ->
-                                                    // this file is guaranteed to be on the internal storage, so just delete it this way
-                                                    newFile.delete()
-                                            }
-                                        }
-
-                                        if (!newFile.exists() && File(oldFileDirItem.path).renameTo(newFile)) {
-                                            if (!baseConfig.keepLastModified) {
-                                                newFile.setLastModified(System.currentTimeMillis())
-                                            }
-                                            updatedPaths.add(newFile.absolutePath)
-                                            deleteFromMediaStore(oldFileDirItem.path)
-                                        }
-                                    }
-
-                                    runOnUiThread {
-                                        if (updatedPaths.isEmpty()) {
-                                            copyMoveListener.copySucceeded(false, fileCountToCopy == 0, destination, false)
-                                        } else {
-                                            copyMoveListener.copySucceeded(false, fileCountToCopy <= updatedPaths.size, destination, updatedPaths.size == 1)
-                                        }
-                                    }
-                                }
-                            }
-                        } catch (e: Exception) {
-                            showErrorToast(e)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fun getAlternativeFile(file: File): File {
-        var fileIndex = 1
-        var newFile: File?
-        do {
-            val newName = String.format("%s(%d).%s", file.nameWithoutExtension, fileIndex, file.extension)
-            newFile = File(file.parent, newName)
-            fileIndex++
-        } while (getDoesFilePathExist(newFile!!.absolutePath))
-        return newFile
-    }
-
-    private fun startCopyMove(
-        files: ArrayList<FileDirItem>,
-        destinationPath: String,
-        isCopyOperation: Boolean,
-        copyPhotoVideoOnly: Boolean,
-        copyHidden: Boolean
-    ) {
-        val availableSpace = destinationPath.getAvailableStorageB()
-        val sumToCopy = files.sumByLong { it.getProperSize(applicationContext, copyHidden) }
-        if (availableSpace == -1L || sumToCopy < availableSpace) {
-            checkConflicts(files, destinationPath, 0, LinkedHashMap()) {
-                toast(if (isCopyOperation) R.string.copying else R.string.moving)
-                val pair = Pair(files, destinationPath)
-                CopyMoveTask(this, isCopyOperation, copyPhotoVideoOnly, it, copyMoveListener, copyHidden).execute(pair)
-            }
-        } else {
-            val text = String.format(getString(R.string.no_space), sumToCopy.formatSize(), availableSpace.formatSize())
-            toast(text, Toast.LENGTH_LONG)
-        }
-    }
-
-    fun checkConflicts(
-        files: ArrayList<FileDirItem>, destinationPath: String, index: Int, conflictResolutions: LinkedHashMap<String, Int>,
-        callback: (resolutions: LinkedHashMap<String, Int>) -> Unit
-    ) {
-        if (index == files.size) {
-            callback(conflictResolutions)
-            return
-        }
-
-        val file = files[index]
-        val newFileDirItem = FileDirItem("$destinationPath/${file.name}", file.name, file.isDirectory)
-        if (getDoesFilePathExist(newFileDirItem.path)) {
-            FileConflictDialog(this, newFileDirItem, files.size > 1) { resolution, applyForAll ->
-                if (applyForAll) {
-                    conflictResolutions.clear()
-                    conflictResolutions[""] = resolution
-                    checkConflicts(files, destinationPath, files.size, conflictResolutions, callback)
-                } else {
-                    conflictResolutions[newFileDirItem.path] = resolution
-                    checkConflicts(files, destinationPath, index + 1, conflictResolutions, callback)
-                }
-            }
-        } else {
-            checkConflicts(files, destinationPath, index + 1, conflictResolutions, callback)
-        }
-    }
-
     fun handlePermission(permissionId: Int, callback: (granted: Boolean) -> Unit) {
         actionOnPermission = null
         if (hasPermission(permissionId)) {
@@ -755,103 +598,11 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
     }
 
-    val copyMoveListener = object : CopyMoveListener {
-        override fun copySucceeded(copyOnly: Boolean, copiedAll: Boolean, destinationPath: String, wasCopyingOneFileOnly: Boolean) {
-            if (copyOnly) {
-                toast(
-                    if (copiedAll) {
-                        if (wasCopyingOneFileOnly) {
-                            R.string.copying_success_one
-                        } else {
-                            R.string.copying_success
-                        }
-                    } else {
-                        R.string.copying_success_partial
-                    }
-                )
-            } else {
-                toast(
-                    if (copiedAll) {
-                        if (wasCopyingOneFileOnly) {
-                            R.string.moving_success_one
-                        } else {
-                            R.string.moving_success
-                        }
-                    } else {
-                        R.string.moving_success_partial
-                    }
-                )
-            }
-
-            copyMoveCallback?.invoke(destinationPath)
-            copyMoveCallback = null
-        }
-
-        override fun copyFailed() {
-            toast(R.string.copy_move_failed)
-            copyMoveCallback = null
-        }
-    }
-
     fun checkAppOnSDCard() {
         if (!baseConfig.wasAppOnSDShown && isAppInstalledOnSDCard()) {
             baseConfig.wasAppOnSDShown = true
             ConfirmationDialog(this, "", R.string.app_on_sd_card, R.string.ok, 0) {}
         }
-    }
-
-    fun exportSettings(configItems: LinkedHashMap<String, Any>) {
-        if (isQPlus()) {
-            configItemsToExport = configItems
-            ExportSettingsDialog(this, getExportSettingsFilename(), true) { path, filename ->
-                Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TITLE, filename)
-                    addCategory(Intent.CATEGORY_OPENABLE)
-
-                    try {
-                        startActivityForResult(this, SELECT_EXPORT_SETTINGS_FILE_INTENT)
-                    } catch (e: ActivityNotFoundException) {
-                        toast(R.string.system_service_disabled, Toast.LENGTH_LONG)
-                    } catch (e: Exception) {
-                        showErrorToast(e)
-                    }
-                }
-            }
-        } else {
-            handlePermission(PERMISSION_WRITE_STORAGE) {
-                if (it) {
-                    ExportSettingsDialog(this, getExportSettingsFilename(), false) { path, filename ->
-                        val file = File(path)
-                        getFileOutputStream(file.toFileDirItem(this), true) {
-                            exportSettingsTo(it, configItems)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun exportSettingsTo(outputStream: OutputStream?, configItems: LinkedHashMap<String, Any>) {
-        if (outputStream == null) {
-            toast(R.string.unknown_error_occurred)
-            return
-        }
-
-        ensureBackgroundThread {
-            outputStream.bufferedWriter().use { out ->
-                for ((key, value) in configItems) {
-                    out.writeLn("$key=$value")
-                }
-            }
-
-            toast(R.string.settings_exported_successfully)
-        }
-    }
-
-    private fun getExportSettingsFilename(): String {
-        val appName = baseConfig.appId.removeSuffix(".debug").removeSuffix(".pro").removePrefix("com.simplemobiletools.")
-        return "$appName-settings_${getCurrentFormattedDateTime()}.txt"
     }
 
     @SuppressLint("InlinedApi")
