@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.Intent.*
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import androidx.core.net.toUri
 import kotlinx.android.synthetic.main.activity_about.*
@@ -13,7 +12,6 @@ import org.scribe.R
 import org.scribe.commons.dialogs.ConfirmationAdvancedDialog
 import org.scribe.commons.extensions.*
 import org.scribe.commons.helpers.*
-import org.scribe.commons.models.FAQItem
 
 class AboutActivity : BaseSimpleActivity() {
     private var appName = ""
@@ -37,23 +35,17 @@ class AboutActivity : BaseSimpleActivity() {
         primaryColor = getProperPrimaryColor()
 
         arrayOf(
-            about_faq_icon,
             about_invite_icon,
-            about_contributors_icon,
-            about_email_icon,
-            about_privacy_policy_icon,
-            about_licenses_icon,
-            about_website_icon,
-            about_version_icon
+            about_email_icon
         ).forEach {
             it.applyColorFilter(textColor)
         }
 
-        arrayOf(about_support, about_help_us, about_other).forEach {
+        arrayOf(about_support, about_help_us).forEach {
             it.setTextColor(textColor)
         }
 
-        arrayOf(about_support_holder, about_help_us_holder, about_other_holder).forEach {
+        arrayOf(about_support_holder, about_help_us_holder).forEach {
             it.background.applyColorFilter(backgroundColor.getContrastColor())
         }
     }
@@ -62,15 +54,8 @@ class AboutActivity : BaseSimpleActivity() {
         super.onResume()
         updateTextColors(about_scrollview)
 
-        setupFAQ()
         setupEmail()
         setupInvite()
-        setupContributors()
-        setupDonate()
-        setupWebsite()
-        setupPrivacyPolicy()
-        setupLicense()
-        setupVersion()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -78,33 +63,9 @@ class AboutActivity : BaseSimpleActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun setupFAQ() {
-        val faqItems = intent.getSerializableExtra(APP_FAQ) as ArrayList<FAQItem>
-        about_faq_holder.beVisibleIf(faqItems.isNotEmpty())
-        about_faq_holder.setOnClickListener {
-            Intent(applicationContext, FAQActivity::class.java).apply {
-                putExtra(APP_ICON_IDS, getAppIconIDs())
-                putExtra(APP_LAUNCHER_NAME, getAppLauncherName())
-                putExtra(APP_FAQ, faqItems)
-                startActivity(this)
-            }
-        }
-    }
-
     private fun setupEmail() {
-        if (about_faq_holder.isGone()) {
-            about_email_holder.background = resources.getDrawable(R.drawable.ripple_all_corners, theme)
-        }
-
         if (resources.getBoolean(R.bool.hide_all_external_links)) {
             about_email_holder.beGone()
-
-            if (about_faq_holder.isGone()) {
-                about_support.beGone()
-                about_support_holder.beGone()
-            } else {
-                about_faq_holder.background = resources.getDrawable(R.drawable.ripple_all_corners, theme)
-            }
         }
 
         about_email_holder.setOnClickListener {
@@ -112,11 +73,7 @@ class AboutActivity : BaseSimpleActivity() {
             if (intent.getBooleanExtra(SHOW_FAQ_BEFORE_MAIL, false) && !baseConfig.wasBeforeAskingShown) {
                 baseConfig.wasBeforeAskingShown = true
                 ConfirmationAdvancedDialog(this, msg, 0, R.string.read_faq, R.string.skip) { success ->
-                    if (success) {
-                        about_faq_holder.performClick()
-                    } else {
-                        about_email_holder.performClick()
-                    }
+                    about_email_holder.performClick()
                 }
             } else {
                 val appVersion = String.format(getString(R.string.app_version, intent.getStringExtra(APP_VERSION_NAME)))
@@ -159,95 +116,6 @@ class AboutActivity : BaseSimpleActivity() {
                 putExtra(EXTRA_TEXT, text)
                 type = "text/plain"
                 startActivity(createChooser(this, getString(R.string.invite_via)))
-            }
-        }
-    }
-
-    private fun setupContributors() {
-        if (about_invite_holder.isGone()) {
-            about_contributors_holder.background = resources.getDrawable(R.drawable.ripple_all_corners, theme)
-        }
-
-        about_contributors_holder.setOnClickListener {
-            val intent = Intent(applicationContext, ContributorsActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    private fun setupDonate() {
-        if (resources.getBoolean(R.bool.show_donate_in_about) && !resources.getBoolean(R.bool.hide_all_external_links)) {
-            val contributorsBg = if (about_invite_holder.isGone()) {
-                R.drawable.ripple_top_corners
-            } else {
-                R.drawable.ripple_background
-            }
-
-            about_contributors_holder.background = resources.getDrawable(contributorsBg, theme)
-        }
-    }
-
-    private fun setupWebsite() {
-        if (resources.getBoolean(R.bool.show_donate_in_about) && !resources.getBoolean(R.bool.hide_all_external_links)) {
-            about_website_holder.background = resources.getDrawable(R.drawable.ripple_top_corners, theme)
-
-            about_website_holder.beVisible()
-            about_website_holder.setOnClickListener {
-                launchViewIntent("https://simplemobiletools.com/")
-            }
-        } else {
-            about_website_holder.beGone()
-        }
-    }
-
-    private fun setupPrivacyPolicy() {
-        if (resources.getBoolean(R.bool.hide_google_relations) || resources.getBoolean(R.bool.hide_all_external_links)) {
-            about_privacy_policy_holder.beGone()
-        }
-
-        about_privacy_policy_holder.setOnClickListener {
-            val appId = baseConfig.appId.removeSuffix(".debug").removeSuffix(".pro").removePrefix("com.simplemobiletools.")
-            val url = "https://simplemobiletools.com/privacy/$appId.txt"
-            launchViewIntent(url)
-        }
-    }
-
-    private fun setupLicense() {
-        if (about_website_holder.isGone() && about_privacy_policy_holder.isGone()) {
-            about_licenses_holder.background = resources.getDrawable(R.drawable.ripple_top_corners, theme)
-        }
-
-        about_licenses_holder.setOnClickListener {
-            Intent(applicationContext, LicenseActivity::class.java).apply {
-                putExtra(APP_ICON_IDS, getAppIconIDs())
-                putExtra(APP_LAUNCHER_NAME, getAppLauncherName())
-                putExtra(APP_LICENSES, intent.getIntExtra(APP_LICENSES, 0))
-                startActivity(this)
-            }
-        }
-    }
-
-    private fun setupVersion() {
-        var version = intent.getStringExtra(APP_VERSION_NAME) ?: ""
-        if (baseConfig.appId.removeSuffix(".debug").endsWith(".pro")) {
-            version += " ${getString(R.string.pro)}"
-        }
-
-        val fullVersion = String.format(getString(R.string.version_placeholder, version))
-        about_version.text = fullVersion
-        about_version_holder.setOnClickListener {
-            if (firstVersionClickTS == 0L) {
-                firstVersionClickTS = System.currentTimeMillis()
-                Handler().postDelayed({
-                    firstVersionClickTS = 0L
-                    clicksSinceFirstClick = 0
-                }, EASTER_EGG_TIME_LIMIT)
-            }
-
-            clicksSinceFirstClick++
-            if (clicksSinceFirstClick >= EASTER_EGG_REQUIRED_CLICKS) {
-                toast(R.string.hello)
-                firstVersionClickTS = 0L
-                clicksSinceFirstClick = 0
             }
         }
     }

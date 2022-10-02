@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.item_filepicker_list.view.*
 import org.scribe.R
 import org.scribe.commons.activities.BaseSimpleActivity
 import org.scribe.commons.extensions.*
-import org.scribe.commons.helpers.getFilePlaceholderDrawables
 import org.scribe.commons.models.FileDirItem
 import org.scribe.commons.views.MyRecyclerView
 import java.util.*
@@ -145,7 +144,6 @@ class FilepickerItemsAdapter(
         folderDrawable = resources.getColoredDrawableWithColor(R.drawable.ic_folder_vector, textColor)
         folderDrawable.alpha = 180
         fileDrawable = resources.getDrawable(R.drawable.ic_file_generic)
-        fileDrawables = getFilePlaceholderDrawables(activity)
     }
 
     override fun onChange(position: Int) = fileDirItems.getOrNull(position)?.getBubbleText(activity, dateFormat, timeFormat) ?: ""
