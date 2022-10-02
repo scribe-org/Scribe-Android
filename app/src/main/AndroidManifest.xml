@@ -60,7 +60,7 @@
         </activity>
 
         <activity
-            android:name="org.scribe.commons.activities.AboutActivity"
+            android:name="org.scribe.activities.AboutActivity"
             android:label="@string/about"
             android:parentActivityName=".activities.MainActivity" />
 

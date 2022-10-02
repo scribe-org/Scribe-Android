@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.Menu
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.scribe.R
-import org.scribe.commons.dialogs.RadioGroupDialog
 import org.scribe.commons.extensions.updateTextColors
-import org.scribe.commons.models.RadioItem
+import org.scribe.dialogs.RadioGroupDialog
 import org.scribe.extensions.config
 import org.scribe.helpers.*
+import org.scribe.models.RadioItem
 
 class SettingsActivity : SimpleActivity() {
 
@@ -19,7 +19,7 @@ class SettingsActivity : SimpleActivity() {
 
     override fun onResume() {
         super.onResume()
-        
+
         setupVibrateOnKeypress()
         setupShowPopupOnKeypress()
         setupKeyboardLanguage()
@@ -52,7 +52,10 @@ class SettingsActivity : SimpleActivity() {
         settings_keyboard_language.text = getKeyboardLanguageText(config.keyboardLanguage)
         settings_keyboard_language_holder.setOnClickListener {
             val items = arrayListOf(
-                RadioItem(LANGUAGE_ENGLISH_QWERTY, getKeyboardLanguageText(LANGUAGE_ENGLISH_QWERTY)),
+                RadioItem(
+                    LANGUAGE_ENGLISH_QWERTY,
+                    getKeyboardLanguageText(LANGUAGE_ENGLISH_QWERTY)
+                ),
                 RadioItem(LANGUAGE_FRENCH, getKeyboardLanguageText(LANGUAGE_FRENCH)),
                 RadioItem(LANGUAGE_GERMAN, getKeyboardLanguageText(LANGUAGE_GERMAN)),
                 RadioItem(LANGUAGE_ITALIAN, getKeyboardLanguageText(LANGUAGE_ITALIAN)),

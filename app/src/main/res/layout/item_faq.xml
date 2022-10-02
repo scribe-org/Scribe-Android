@@ -10,13 +10,13 @@
     android:paddingEnd="@dimen/activity_margin"
     android:paddingBottom="@dimen/activity_margin">
 
-    <org.scribe.commons.views.MyTextView
+    <org.scribe.views.MyTextView
         android:id="@+id/faq_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/normal_text_size" />
 
-    <org.scribe.commons.views.MyTextView
+    <org.scribe.views.MyTextView
         android:id="@+id/faq_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

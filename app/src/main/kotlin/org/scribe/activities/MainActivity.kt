@@ -11,10 +11,9 @@ import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.scribe.BuildConfig
 import org.scribe.R
-import org.scribe.commons.dialogs.ConfirmationAdvancedDialog
 import org.scribe.commons.extensions.*
-import org.scribe.commons.helpers.LICENSE_GSON
-import org.scribe.commons.models.FAQItem
+import org.scribe.dialogs.ConfirmationAdvancedDialog
+import org.scribe.helpers.LICENSE_GSON
 
 class MainActivity : SimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,12 +68,7 @@ class MainActivity : SimpleActivity() {
     private fun launchAbout() {
         val licenses = LICENSE_GSON
 
-        val faqItems = arrayListOf(
-            FAQItem(R.string.faq_2_title_commons, R.string.faq_2_text_commons),
-            FAQItem(R.string.faq_6_title_commons, R.string.faq_6_text_commons),
-        )
-
-        startAboutActivity(R.string.app_name, licenses, BuildConfig.VERSION_NAME, faqItems, true)
+        startAboutActivity(R.string.app_name, licenses, BuildConfig.VERSION_NAME, true)
     }
 
     private fun updateChangeKeyboardColor() {

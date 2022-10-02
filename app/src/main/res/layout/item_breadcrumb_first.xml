@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_marginStart="@dimen/tiny_margin">
 
-    <org.scribe.commons.views.MyTextView
+    <org.scribe.views.MyTextView
         android:id="@+id/breadcrumb_text"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

@@ -44,7 +44,7 @@
                     android:padding="@dimen/medium_margin"
                     android:src="@drawable/ic_mail_vector" />
 
-                <org.scribe.commons.views.MyTextView
+                <org.scribe.views.MyTextView
                     android:id="@+id/about_email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -92,7 +92,7 @@
                     android:padding="@dimen/medium_margin"
                     android:src="@drawable/ic_add_person_vector" />
 
-                <org.scribe.commons.views.MyTextView
+                <org.scribe.views.MyTextView
                     android:id="@+id/about_invite"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
