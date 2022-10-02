@@ -64,6 +64,8 @@ class AboutActivity : BaseSimpleActivity() {
     }
 
     private fun setupEmail() {
+        about_email_holder.background = resources.getDrawable(R.drawable.ripple_all_corners, theme)
+        
         if (resources.getBoolean(R.bool.hide_all_external_links)) {
             about_email_holder.beGone()
         }
