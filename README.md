@@ -37,6 +37,8 @@ Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](
 -   [Preview Images](#preview-images)
 -   [Contributing](#contributing)
 -   [Setup](#setup)
+-   [Keyboard Features](#keyboard-features)
+    -   [Base Functionality](#base-functionality)
 -   [Featured By](#featured-by)
 
 <a id="preview-images"></a>
@@ -85,6 +87,24 @@ Users access Scribe language keyboards through the following:
     -   Or: Settings -> System -> Languages & input -> On-screen keyboard -> Manage on-screen keyboards
 -   Choose from the available Scribe language keyboards
 -   When typing press `🌐` or the keyboard button to select keyboards
+
+<a id="keyboard-features"></a>
+
+# Keyboard Features [`⇧`](#contents)
+
+Scribe-Android is currently a work in progress, and currently only has base keyboard functionality. The goal is to slowly add Scribe features before an initial release, and then iterate to match the functionality of Scribe-iOS.
+
+**Current features include:**
+
+### • Base Functionality [`⇧`](#contents)
+
+The goal is for Scribe to have all the functionality of system keyboards. See the [Base Keyboard Features project](https://github.com/scribe-org/Scribe-iOS/projects/6) if interested in helping.
+
+-   Dynamic layouts for cross-device performance
+-   Auto-capitalization following `.`, `?` and `!`
+-   Typing symbols and numbers followed by a space returns keyboard to letters
+-   Hold-to-select characters for letters and symbols
+-   Key pop up views for letters and symbols
 
 <a id="featured-by"></a>
 
