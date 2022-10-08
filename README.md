@@ -92,13 +92,13 @@ Users access Scribe language keyboards through the following:
 
 # Keyboard Features [`⇧`](#contents)
 
-Scribe-Android is currently a work in progress, and currently only has base keyboard functionality. The goal is to slowly add Scribe features before an initial release, and then iterate to match the functionality of Scribe-iOS.
+Scribe-Android is currently a work in progress and only has base keyboard functionality. The goal is to slowly add Scribe features before an initial release, and then iterate to match the functionality of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS).
 
 **Current features include:**
 
 ### • Base Functionality [`⇧`](#contents)
 
-The goal is for Scribe to have all the functionality of system keyboards. See the [Base Keyboard Features project](https://github.com/scribe-org/Scribe-iOS/projects/6) if interested in helping.
+The goal is for Scribe to have all the functionality of system keyboards. Currently the keyboards include:
 
 -   Dynamic layouts for cross-device performance
 -   Auto-capitalization following `.`, `?` and `!`
