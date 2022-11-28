@@ -1,15 +1,13 @@
 <div align="center">
-  <a href="https://github.com/scribe-org/Scribe-Android"><img src="https://raw.githubusercontent.com/scribe-org/Organization/main/logo/ScribeLogoRounded.png" width=410 height=184 alt="Scribe Logo"></a>
+  <a href="https://github.com/scribe-org/Scribe-Android"><img src="https://raw.githubusercontent.com/scribe-org/Organization/main/logo/ScribeGitHubOrgBanner.png" width=1024 alt="Scribe Logo"></a>
 </div>
-
-<ol></ol>
 
 <!---
 [![ci](https://img.shields.io/github/workflow/status/scribe-org/Scribe-Android/CI?logo=github)](https://github.com/scribe-org/Scribe-Android/actions?query=workflow%3ACI)
 --->
 <!-- [![version](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?color=%2300550&sort=semver)](https://github.com/scribe-org/Scribe-Android/releases/) -->
 
-[![platform](https://img.shields.io/badge/platform-Android-999999.svg)](https://github.com/scribe-org/Scribe-Android)
+[![platforms](https://img.shields.io/static/v1?message=Android&logo=android&labelColor=5B5B5B&color=999999&logoColor=white&label=%20)](https://github.com/scribe-org/Scribe-Android)
 [![issues](https://img.shields.io/github/issues/scribe-org/Scribe-Android)](https://github.com/scribe-org/Scribe-Android/issues)
 [![language](https://img.shields.io/badge/Kotlin-1-A97AFE.svg?logo=kotlin&logoColor=ffffff)](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md)
 [![license](https://img.shields.io/github/license/scribe-org/Scribe-Android.svg)](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt)
