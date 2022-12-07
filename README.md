@@ -36,7 +36,6 @@ Also available on [iOS](https://github.com/scribe-org/Scribe-iOS), [Desktop](htt
 -   [Contributing](#contributing)
 -   [Setup](#setup)
 -   [Keyboard Features](#keyboard-features)
-    -   [Base Functionality](#base-functionality)
 -   [Featured By](#featured-by)
 
 <a id="preview-images"></a>
@@ -57,7 +56,7 @@ Also available on [iOS](https://github.com/scribe-org/Scribe-iOS), [Desktop](htt
 
 Work that is in progress or could be implemented is tracked in the [issues](https://github.com/scribe-org/Scribe-Android/issues) and [projects](https://github.com/scribe-org/Scribe-Android/projects). Please also see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to Scribe-Android. Those interested can further check the [`-next release-`](https://github.com/scribe-org/Scribe-Android/labels/-next%20release-) and [`-priority-`](https://github.com/scribe-org/Scribe-Android/labels/-priority-) labels in the [issues](https://github.com/scribe-org/Scribe-Android/issues) for those that are most important, as well as those marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) that are tailored for first time contributors.
 
-### Ways to Help
+### Ways to Help [`⇧`](#contents)
 
 -   [Reporting bugs](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=bug&template=bug_report.yml) as they're found 🐞
 -   Working on [new features](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Afeature) ✨
@@ -65,11 +64,15 @@ Work that is in progress or could be implemented is tracked in the [issues](http
 -   [Documentation](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Adocumentation) for onboarding and project cohesion 📝
 -   Adding language data to [Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) via [Wikidata](https://www.wikidata.org/)! 🗃️
 
-### Data Edits
+### Road Map [`⇧`](#contents)
+
+The Scribe road map can be followed in the organization's [project board](https://github.com/orgs/scribe-org/projects/1) where we list the most important issues along with their priority, status and an indication of which sub projects they're included in (if applicable).
+
+### Data Edits [`⇧`](#contents)
 
 Scribe does not accept direct edits to the grammar JSON files as they are sourced from [Wikidata](https://www.wikidata.org/). Edits can be discussed and the [Scribe-Data](https://github.com/scribe-org/Scribe-Data) queries will be changed and ran before an update. If there is a problem with one of the files, then the fix should be made on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us know that edits have been made by [opening a data issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
 
-### Designs
+### Designs [`⇧`](#contents)
 
 <a href="https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?node-id=405%3A464"><img src="https://raw.githubusercontent.com/scribe-org/Organization/main/resources/images/figma_logo.png" height="50" alt="Public Figma Designs" align="right"></a>
 
@@ -84,7 +87,7 @@ Users access Scribe language keyboards through the following:
 -   Open the app and press **`Enable Keyboard`**
     -   Or: Settings -> System -> Languages & input -> On-screen keyboard -> Manage on-screen keyboards
 -   Choose from the available Scribe language keyboards
--   When typing press `🌐` or the keyboard button to select keyboards
+-   When typing press 🌐 or the keyboard button to select keyboards
 
 <a id="keyboard-features"></a>
 
