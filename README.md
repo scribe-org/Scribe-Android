@@ -139,7 +139,15 @@ The goal is for Scribe to have all the functionality of system keyboards. Curren
 
 # Powered By
 
-<details><summary><strong>List of referenced codes</strong></summary>
+Many thanks to all the [Scribe-Android contributors](https://github.com/scribe-org/Scribe-Android/graphs/contributors)! 🚀
+
+<a href="https://github.com/scribe-org/Scribe-Android/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=scribe-org/Scribe-Android" />
+</a>
+
+### Code
+
+<details><summary><strong>List of referenced code</strong></summary>
 <p>
 
 -   [Simple-Keyboard](https://github.com/SimpleMobileTools/Simple-Keyboard) by [SimpleMobileTools](https://github.com/SimpleMobileTools) ([License](https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE))
@@ -147,6 +155,8 @@ The goal is for Scribe to have all the functionality of system keyboards. Curren
 
 </p>
 </details>
+
+### Wikimedia Communities
 
 <div align="center">
   <br>
