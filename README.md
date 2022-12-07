@@ -139,6 +139,8 @@ The goal is for Scribe to have all the functionality of system keyboards. Curren
 
 # Powered By
 
+### Contributors
+
 Many thanks to all the [Scribe-Android contributors](https://github.com/scribe-org/Scribe-Android/graphs/contributors)! 🚀
 
 <a href="https://github.com/scribe-org/Scribe-Android/graphs/contributors">
