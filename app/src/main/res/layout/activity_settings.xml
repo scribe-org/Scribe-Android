@@ -5,11 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <LinearLayout
         android:id="@+id/settings_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+
 
         <LinearLayout
             android:id="@+id/settings_general_settings_holder"
@@ -72,6 +75,22 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/settings_keyboard_language_label"
                     tools:text="@string/translation_english" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/settings_dark_mode_holder"
+                style="@style/SettingsHolderCheckboxStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple_background">
+
+                <org.scribe.views.MyAppCompatCheckbox
+                    android:id="@+id/settings_dark_mode"
+                    style="@style/SettingsCheckboxStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dark_mode" />
 
             </RelativeLayout>
         </LinearLayout>

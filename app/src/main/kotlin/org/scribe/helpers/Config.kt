@@ -16,6 +16,10 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getBoolean(SHOW_POPUP_ON_KEYPRESS, true)
         set(showPopupOnKeypress) = prefs.edit().putBoolean(SHOW_POPUP_ON_KEYPRESS, showPopupOnKeypress).apply()
 
+    var darkTheme: Boolean
+        get() = prefs.getBoolean(DARK_THEME, true)
+        set(darkTheme) = prefs.edit().putBoolean(DARK_THEME, darkTheme).apply()
+
     var lastExportedClipsFolder: String
         get() = prefs.getString(LAST_EXPORTED_CLIPS_FOLDER, "")!!
         set(lastExportedClipsFolder) = prefs.edit().putString(LAST_EXPORTED_CLIPS_FOLDER, lastExportedClipsFolder).apply()

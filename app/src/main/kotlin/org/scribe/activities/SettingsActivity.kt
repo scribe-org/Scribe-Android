@@ -1,6 +1,8 @@
 package org.scribe.activities
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
+
 import android.view.Menu
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.scribe.R
@@ -20,9 +22,13 @@ class SettingsActivity : SimpleActivity() {
     override fun onResume() {
         super.onResume()
 
+        setupDarkTheme()
         setupVibrateOnKeypress()
         setupShowPopupOnKeypress()
         setupKeyboardLanguage()
+
+        AppCompatDelegate.setDefaultNightMode(if (config.darkTheme) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+
 
         updateTextColors(settings_scrollview)
     }
@@ -40,6 +46,14 @@ class SettingsActivity : SimpleActivity() {
         }
     }
 
+    private fun setupDarkTheme(){
+        settings_dark_mode.isChecked=config.darkTheme
+        settings_dark_mode_holder.setOnClickListener{
+            settings_dark_mode.toggle()
+            config.darkTheme=settings_dark_mode.isChecked
+        }
+    }
+
     private fun setupShowPopupOnKeypress() {
         settings_show_popup_on_keypress.isChecked = config.showPopupOnKeypress
         settings_show_popup_on_keypress_holder.setOnClickListener {
@@ -47,6 +61,9 @@ class SettingsActivity : SimpleActivity() {
             config.showPopupOnKeypress = settings_show_popup_on_keypress.isChecked
         }
     }
+
+
+
 
     private fun setupKeyboardLanguage() {
         settings_keyboard_language.text = getKeyboardLanguageText(config.keyboardLanguage)

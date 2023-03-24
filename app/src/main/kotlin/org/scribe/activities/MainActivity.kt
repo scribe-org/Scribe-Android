@@ -23,6 +23,9 @@ class MainActivity : SimpleActivity() {
         scribe_key.setOnClickListener {
             (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
         }
+
+
+
     }
 
     override fun onResume() {
@@ -85,4 +88,6 @@ class MainActivity : SimpleActivity() {
             it.settingsActivity == SettingsActivity::class.java.canonicalName
         }
     }
+
+
 }

@@ -1,0 +1,83 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/keyboard_holder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/command_field"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:layout_above="@+id/keyboard_view"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/scribe_key"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginStart="@dimen/small_margin"
+            android:background="@drawable/scribe_key_background_left_rounded"
+            android:contentDescription="@string/scribe_key"
+            android:foreground="@drawable/ic_scribe_icon_vector"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/light_key_text_color"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/command_bar"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_weight="20"
+            app:layout_constraintStart_toStartOf="@+id/command_field"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <Button
+            android:id="@+id/command_bar"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginEnd="@dimen/tiny_margin"
+            android:background="@drawable/cmd_bar_background_right_rounded"
+            android:contentDescription="@string/command_bar"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/settings_cog"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_weight="84"
+            app:layout_constraintStart_toEndOf="@+id/scribe_key"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <ImageView
+            android:id="@+id/settings_cog"
+            android:layout_width="@dimen/toolbar_icon_height"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings"
+            android:padding="@dimen/tiny_margin"
+            android:src="@drawable/ic_settings_cog_vector"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toEndOf="@+id/command_field"
+            app:layout_constraintStart_toEndOf="@+id/command_bar"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <ImageView
+            android:id="@+id/top_keyboard_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/divider"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <org.scribe.views.MyKeyboardView
+        android:id="@+id/keyboard_view"
+        style="@style/MyKeyboardView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/theme_dark_background_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
