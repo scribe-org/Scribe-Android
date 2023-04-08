@@ -117,7 +117,7 @@ The goal is for Scribe to have all the functionality of system keyboards. Curren
 
 # Featured By [`⇧`](#contents)
 
-<details><summary><strong>Articles and Presentations on Scribe</strong></summary>
+<details open><summary><strong>Articles and Presentations on Scribe</strong></summary>
 <p>
 
 <strong>2023</strong>
