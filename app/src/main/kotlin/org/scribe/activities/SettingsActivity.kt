@@ -62,9 +62,6 @@ class SettingsActivity : SimpleActivity() {
         }
     }
 
-
-
-
     private fun setupKeyboardLanguage() {
         settings_keyboard_language.text = getKeyboardLanguageText(config.keyboardLanguage)
         settings_keyboard_language_holder.setOnClickListener {
