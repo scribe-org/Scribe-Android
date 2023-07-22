@@ -27,7 +27,8 @@
 
 Scribe is fully open-source and does not collect usage data or ask for system access. Feature data is sourced from [Wikidata](https://www.wikidata.org/) and stored in-app, meaning Scribe is a highly responsive experience that does not require an internet connection.
 
-> **Note**: The [contributing](#contributing) section has information for those interested, with the articles and presentations in [featured by](#featured-by) also being good resources for learning more about Scribe.
+> [!NOTE]\
+> The [contributing](#contributing) section has information for those interested, with the articles and presentations in [featured by](#featured-by) also being good resources for learning more about Scribe.
 
 Also available on [iOS](https://github.com/scribe-org/Scribe-iOS), [Desktop](https://github.com/scribe-org/Scribe-Desktop) (planned) and for the data processes see [Scribe-Data](https://github.com/scribe-org/Scribe-Data).
 
@@ -63,7 +64,8 @@ Scribe uses [Matrix](https://matrix.org/) for communications. You're more than w
 
 Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to Scribe-Android. Work that is in progress or could be implemented is tracked in the [issues](https://github.com/scribe-org/Scribe-Android/issues) and [projects](https://github.com/scribe-org/Scribe-Android/projects).
 
-> **Note**: Just because an issue is assigned on GitHub doesn't mean that the team isn't interested in your contribution! Feel free to write [in the issues](https://github.com/scribe-org/Scribe-Android/issues) and we can potentially reassign it to you.
+> [!NOTE]\
+> Just because an issue is assigned on GitHub doesn't mean that the team isn't interested in your contribution! Feel free to write [in the issues](https://github.com/scribe-org/Scribe-Android/issues) and we can potentially reassign it to you.
 
 Those interested can further check the [`-next release-`](https://github.com/scribe-org/Scribe-Android/labels/-next%20release-) and [`-priority-`](https://github.com/scribe-org/Scribe-Android/labels/-priority-) labels in the [issues](https://github.com/scribe-org/Scribe-Android/issues) for those that are most important, as well as those marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) that are tailored for first time contributors.
 
