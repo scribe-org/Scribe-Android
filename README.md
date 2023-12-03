@@ -66,7 +66,9 @@ Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-An
 > [!NOTE]\
 > Just because an issue is assigned on GitHub doesn't mean that the team isn't interested in your contribution! Feel free to write [in the issues](https://github.com/scribe-org/Scribe-Android/issues) and we can potentially reassign it to you.
 
-Those interested can further check the [`-next release-`](https://github.com/scribe-org/Scribe-Android/labels/-next%20release-) and [`-priority-`](https://github.com/scribe-org/Scribe-Android/labels/-priority-) labels in the [issues](https://github.com/scribe-org/Scribe-Android/issues) for those that are most important, as well as those marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) that are tailored for first time contributors.
+Those interested can further check the [`-next release-`](https://github.com/scribe-org/Scribe-Android/labels/-next%20release-) and [`-priority-`](https://github.com/scribe-org/Scribe-Android/labels/-priority-) labels in the [issues](https://github.com/scribe-org/Scribe-Android/issues) for those that are most important, as well as those marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) that are tailored for first time contributors. For those new to coding or our tech stack, we've collected [links to helpful documentation pages](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md#learning-the-tech) in the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md).
+
+After your first few pull requests organization members would be happy to discuss granting you further rights as a contributor, with a maintainer role then being possible after continued interest in the project. Scribe seeks to be an inclusive and supportive organization. We'd love to have you on the team!
 
 ### Ways to Help [`⇧`](#contents)
 
@@ -80,18 +82,70 @@ Those interested can further check the [`-next release-`](https://github.com/scr
 
 The Scribe road map can be followed in the organization's [project board](https://github.com/orgs/scribe-org/projects/1) where we list the most important issues along with their priority, status and an indication of which sub projects they're included in (if applicable).
 
+### Designs [`⇧`](#contents)
+
+<a href="https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?node-id=405%3A464"><img src="https://raw.githubusercontent.com/scribe-org/Organization/main/resources/images/logos/FigmaLogo.png" height="50" alt="Public Figma Designs" align="right"></a>
+
+The [designs for Scribe](https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?node-id=405%3A464) are made using [Figma](https://www.figma.com). Those with interest in contributing can [open a design issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=design&template=design_improvement.yml) to make suggestions! Design related issues are marked with the [`design`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aopen+is%3Aissue+label%3Adesign) label.
+
+### Development environment [`⇧`](#contents)
+
+Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding language. Those new to Kotlin or wanting to develop their skills are more than welcome to contribute! The first step on your Kotlin journey would be to read through the [Kotlin documentation](https://kotlinlang.org/docs/getting-started.html). The general steps to setting up a development environment are:
+
+1. Download [Android Studio](https://developer.android.com/studio)
+
+2. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [Scribe-Android repo](https://github.com/scribe-org/Scribe-Android), clone your fork, and configure the remotes:
+
+> [!NOTE]
+>
+> <details><summary>Consider using SSH</summary>
+>
+> <p>
+>
+> Alternatively to using HTTPS as in the instructions below, consider SSH to interact with GitHub from the terminal. SSH allows you to connect without a user-pass authentication flow.
+>
+> To run git commands with SSH, remember then to substitute the HTTPS URL, `https://github.com/...`, with the SSH one, `git@github.com:...`.
+>
+> -   e.g. Cloning now becomes `git clone git@github.com:<your-username>/Scribe-Android.git`
+>
+> GitHub also has their documentation on how to [Generate new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent). 🔑
+>
+> </p>
+> </details>
+
+```bash
+# Clone your fork of the repo into the current directory.
+git clone https://github.com/<your-username>/Scribe-Android.git
+# Navigate to the newly cloned directory.
+cd Scribe-Android
+# Assign the original repo to a remote called "upstream".
+git remote add upstream https://github.com/scribe-org/Scibe-Android.git
+```
+
+Now, if you run `git remote -v` you should see two remote repositories named:
+
+-   `origin` (forked repository)
+-   `upstream` (Scribe-Android repository)
+
+3. Open the Scribe-Android directory in Android Studio
+
+4. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
+
+    - In the top bar find and select the "Device Manager" option
+    - [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
+    - Press the play button marked "Run App"
+
+From there code edits that are made will be reflected in the app each time it is ran.
+
+> [!NOTE]
+> Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
+
 ### Data Edits [`⇧`](#contents)
 
 > [!NOTE]\
 > Please see the [Wikidata and Scribe Guide](https://github.com/scribe-org/Organization/blob/main/WIKIDATAGUIDE.md) for an overview of [Wikidata](https://www.wikidata.org/) and how Scribe uses it.
 
 Scribe does not accept direct edits to the grammar JSON files as they are sourced from [Wikidata](https://www.wikidata.org/). Edits can be discussed and the [Scribe-Data](https://github.com/scribe-org/Scribe-Data) queries will be changed and ran before an update. If there is a problem with one of the files, then the fix should be made on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us know that edits have been made by [opening a data issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
-
-### Designs [`⇧`](#contents)
-
-<a href="https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?node-id=405%3A464"><img src="https://raw.githubusercontent.com/scribe-org/Organization/main/resources/images/logos/FigmaLogo.png" height="50" alt="Public Figma Designs" align="right"></a>
-
-The [designs for Scribe](https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?node-id=405%3A464) are made using [Figma](https://www.figma.com). Those with interest in contributing can [open a design issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=design&template=design_improvement.yml) to make suggestions! Design related issues are marked with the [`design`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aopen+is%3Aissue+label%3Adesign) label.
 
 <a id="setup"></a>
 

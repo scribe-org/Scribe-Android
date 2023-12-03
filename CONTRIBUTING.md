@@ -12,6 +12,8 @@ If you have questions or would like to communicate with the team, please [join u
 
 # **Contents**
 
+-   [First steps as a contributor](#first-steps)
+-   [Learning the tech stack](#learning-the-tech)
 -   [Development environment](#dev-env)
 -   [Issues and projects](#issues-projects)
 -   [Bug reports](#bug-reports)
@@ -22,6 +24,49 @@ If you have questions or would like to communicate with the team, please [join u
 -   [Documentation](#documentation)
 -   [Design](#design)
 
+<a id="first-steps"></a>
+
+## First steps as a contributor [`⇧`](#contents)
+
+Thank you for your interest in contributing to Scribe-Android! We look forward to welcoming you to the community and working with you to build an tools for language learners to communicate effectively :) The following are some suggested steps for people interested in joining our community:
+
+-   Please join the [public Matrix chat](https://matrix.to/#/#scribe_community:matrix.org) to connect with the community
+    -   [Matrix](https://matrix.org/) is a network for secure, decentralized communication
+    -   Scribe would suggest that you use the [Element](https://element.io/) client
+    -   The [General](https://matrix.to/#/!yQJjLmluvlkWttNhKo:matrix.org?via=matrix.org) and [Android](https://matrix.to/#/#ScribeAndroid:matrix.org) channels would be great places to start!
+    -   Feel free to introduce yourself and tell us what your interests are if you're comfortable :)
+-   Read through this contributing guide for all the information you need to contribute
+-   Look into issues marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) and the [Projects board](https://github.com/orgs/scribe-org/projects/1) to get a better understanding of what you can work on
+-   Check out our [public designs on Figma](https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?type=design&node-id=405-464&mode=design&t=E3ccS9Z8MDVSizQ4-0) to understand Scribes's goals and direction
+-   Consider joining our [bi-weekly developer sync](https://etherpad.wikimedia.org/p/scribe-dev-sync)!
+
+> [!NOTE]
+> Those new to Kotlin or wanting to work on their Kotlin skills are more than welcome to contribute! The team would be happy to help you on your development journey :)
+
+<a id="learning-the-tech"></a>
+
+## Learning the tech stack [`⇧`](#contents)
+
+Scribe is very open to contributions from people in the early stages of their coding journey! The following is a select list of documentation pages to help you understand the technologies we use.
+
+<details><summary>Docs for those new to programming</summary>
+<p>
+
+-   [Mozilla Developer Network Learning Area](https://developer.mozilla.org/en-US/docs/Learn)
+    -   Doing MDN sections for HTML, CSS and JavaScript is the best ways to get into web development!
+
+</p>
+</details>
+
+<details><summary>Kotlin learning docs</summary>
+<p>
+
+-   [Kotlin getting started guide](https://kotlinlang.org/docs/getting-started.html)
+-   [Kotlin documentation](https://kotlinlang.org/docs/home.html)
+
+</p>
+</details>
+
 <a id="dev-env"></a>
 
 # Development environment [`⇧`](#contents)
@@ -29,9 +74,42 @@ If you have questions or would like to communicate with the team, please [join u
 Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding language. Those new to Kotlin or wanting to develop their skills are more than welcome to contribute! The first step on your Kotlin journey would be to read through the [Kotlin documentation](https://kotlinlang.org/docs/getting-started.html). The general steps to setting up a development environment are:
 
 1. Download [Android Studio](https://developer.android.com/studio)
-2. [Fork](http://help.github.com/fork-a-repo/) a copy of the [Scribe-Android](https://github.com/scribe-org/Scribe-Android) repository
-    - Alternatively you can [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the repository
+
+2. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [Scribe-Android repo](https://github.com/scribe-org/Scribe-Android), clone your fork, and configure the remotes:
+
+> [!NOTE]
+>
+> <details><summary>Consider using SSH</summary>
+>
+> <p>
+>
+> Alternatively to using HTTPS as in the instructions below, consider SSH to interact with GitHub from the terminal. SSH allows you to connect without a user-pass authentication flow.
+>
+> To run git commands with SSH, remember then to substitute the HTTPS URL, `https://github.com/...`, with the SSH one, `git@github.com:...`.
+>
+> -   e.g. Cloning now becomes `git clone git@github.com:<your-username>/Scribe-Android.git`
+>
+> GitHub also has their documentation on how to [Generate new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent). 🔑
+>
+> </p>
+> </details>
+
+```bash
+# Clone your fork of the repo into the current directory.
+git clone https://github.com/<your-username>/Scribe-Android.git
+# Navigate to the newly cloned directory.
+cd Scribe-Android
+# Assign the original repo to a remote called "upstream".
+git remote add upstream https://github.com/scribe-org/Scibe-Android.git
+```
+
+Now, if you run `git remote -v` you should see two remote repositories named:
+
+-   `origin` (forked repository)
+-   `upstream` (Scribe-Android repository)
+
 3. Open the Scribe-Android directory in Android Studio
+
 4. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
 
     - In the top bar find and select the "Device Manager" option
@@ -40,7 +118,8 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 
 From there code edits that are made will be reflected in the app each time it is ran.
 
-Again, those new to Kotlin or wanting to work on their Kotlin skills are more than welcome to contribute! Scribe itself was developed as a way to learn Kotlin and Android coding. The team would be happy to help you on your development journey :)
+> [!NOTE]
+> Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
 
 <a id="issues-projects"></a>
 
@@ -89,51 +168,46 @@ Feature requests are more than welcome! Please take a moment to find out whether
 
 # Pull requests [`⇧`](#contents)
 
-Good pull requests - patches, improvements and new features - are a fantastic help. They should remain focused in scope and avoid containing unrelated commits. Note that all contributions to this project will be made under [the specified license](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt) and should follow the coding indentation and style standards (contact us if unsure).
+Good pull requests - patches, improvements and new features - are the foundation of our community making Scribe-Android. They should remain focused in scope and avoid containing unrelated commits. Note that all contributions to this project will be made under [the specified license](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt) and should follow the coding indentation and style standards (contact us if unsure).
 
 **Please ask first** before embarking on any significant pull request (implementing features, refactoring code, etc), otherwise you risk spending a lot of time working on something that the developers might not want to merge into the project. With that being said, major additions are very appreciated!
 
 When making a contribution, adhering to the [GitHub flow](https://guides.github.com/introduction/flow/index.html) process is the best way to get your work merged:
 
-1. [Fork](http://help.github.com/fork-a-repo/) the repo, clone your fork, and configure the remotes:
-
-    ```bash
-    # Clone your fork of the repo into the current directory
-    git clone https://github.com/<your-username>/<repo-name>
-    # Navigate to the newly cloned directory
-    cd <repo-name>
-    # Assign the original repo to a remote called "upstream"
-    git remote add upstream https://github.com/<upsteam-owner>/<repo-name>
-    ```
-
-2. If you cloned a while ago, get the latest changes from upstream:
+1. If you cloned a while ago, get the latest changes from upstream:
 
     ```bash
     git checkout <dev-branch>
     git pull upstream <dev-branch>
     ```
 
-3. Create a new topic branch (off the main project development branch) to contain your feature, change, or fix:
+2. Create a new topic branch (off the main project development branch) to contain your feature, change, or fix:
 
     ```bash
     git checkout -b <topic-branch-name>
     ```
 
-4. Commit your changes in logical chunks, and please try to adhere to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). Use Git's [interactive rebase](https://docs.github.com/en/github/getting-started-with-github/about-git-rebase) feature to tidy up your commits before making them public.
+3. Commit your changes in logical chunks, and please try to adhere to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
-5. Locally merge (or rebase) the upstream development branch into your topic branch:
+> [!NOTE]
+> The following are tools and methods to help you write good commit messages ✨
+>
+> -   [commitlint](https://commitlint.io/) helps write [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+> -   Git's [interactive rebase](https://docs.github.com/en/github/getting-started-with-github/about-git-rebase) cleans up commits
+
+4. Locally merge (or rebase) the upstream development branch into your topic branch:
 
     ```bash
     git pull --rebase upstream <dev-branch>
     ```
 
-6. Push your topic branch up to your fork:
+5. Push your topic branch up to your fork:
 
     ```bash
     git push origin <topic-branch-name>
     ```
 
-7. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/) with a clear title and description.
+6. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/) with a clear title and description.
 
 Thank you in advance for your contributions!
 
