@@ -117,7 +117,7 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 >
 > -   e.g. Cloning now becomes `git clone git@github.com:<your-username>/Scribe-Android.git`
 >
-> GitHub also has their documentation on how to [Generate new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent). 🔑
+> GitHub also has their documentation on how to [Generate a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) 🔑
 >
 > </p>
 > </details>
@@ -140,9 +140,9 @@ Now, if you run `git remote -v` you should see two remote repositories named:
 
 4. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
 
-    - In the top bar find and select the "Device Manager" option
-    - [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
-    - Press the play button marked "Run App"
+-   In the top bar find and select the "Device Manager" option
+-   [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
+-   Press the play button marked "Run App"
 
 From there code edits that are made will be reflected in the app each time it is ran.
 
