@@ -131,20 +131,18 @@ cd Scribe-Android
 git remote add upstream https://github.com/scribe-org/Scibe-Android.git
 ```
 
-Now, if you run `git remote -v` you should see two remote repositories named:
-
--   `origin` (forked repository)
--   `upstream` (Scribe-Android repository)
+-   Now, if you run `git remote -v` you should see two remote repositories named:
+    -   `origin` (forked repository)
+    -   `upstream` (Scribe-Android repository)
 
 3. Open the Scribe-Android directory in Android Studio
 
 4. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
 
--   In the top bar find and select the "Device Manager" option
--   [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
--   Press the play button marked "Run App"
-
-From there code edits that are made will be reflected in the app each time it is ran.
+    - In the top bar find and select the "Device Manager" option
+    - [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
+    - Press the play button marked "Run App"
+    - From here code edits that are made will be reflected in the app each time it is ran.
 
 > [!NOTE]
 > Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
