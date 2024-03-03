@@ -100,7 +100,7 @@ git clone https://github.com/<your-username>/Scribe-Android.git
 # Navigate to the newly cloned directory.
 cd Scribe-Android
 # Assign the original repo to a remote called "upstream".
-git remote add upstream https://github.com/scribe-org/Scibe-Android.git
+git remote add upstream https://github.com/scribe-org/Scribe-Android.git
 ```
 
 -   Now, if you run `git remote -v` you should see two remote repositories named:
