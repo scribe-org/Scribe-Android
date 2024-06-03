@@ -415,6 +415,13 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun onBufferDraw() {
+        val keyMargin = 8
+        val shadowOffset = 5
+        val shadowPaint = Paint().apply {
+            style = Paint.Style.STROKE
+            strokeWidth = 2f
+            color = Color.BLACK
+        }
         if (mBuffer == null || mKeyboardChanged) {
             if (mBuffer == null || mKeyboardChanged && (mBuffer!!.width != width || mBuffer!!.height != height)) {
                 // Make sure our bitmap is at least 1x1
@@ -442,6 +449,12 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             color = paint.color.adjustAlpha(0.8f)
             textSize = mTopSmallNumberSize
             typeface = Typeface.DEFAULT
+        }
+
+        val borderPaint = Paint().apply {
+            style = Paint.Style.STROKE
+            strokeWidth = 0.5f
+            color = Color.BLACK
         }
 
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
@@ -473,11 +486,19 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 //                resources.getDrawable(R.drawable.keyboard_key_background, context.theme)
 //            }
 
+
+            val shadowRect = RectF(
+                (key.x + keyMargin - shadowOffset).toFloat(),
+                (key.y + keyMargin - shadowOffset).toFloat(),
+                (key.x + key.width - keyMargin + shadowOffset).toFloat(),
+                (key.y + key.height - keyMargin + shadowOffset).toFloat()
+            )
+            canvas.drawRect(shadowRect, shadowPaint)
             // Switch the character to uppercase if shift is pressed
             val label = adjustCase(key.label)?.toString()
             val bounds = keyBackground!!.bounds
             if (key.width != bounds.right || key.height != bounds.bottom) {
-                keyBackground.setBounds(0, 0, key.width, key.height)
+                keyBackground.setBounds(keyMargin, keyMargin, key.width - keyMargin, key.height - keyMargin)
             }
 
             keyBackground.state = when {
@@ -494,6 +515,9 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
             canvas.translate(key.x.toFloat(), key.y.toFloat())
             keyBackground.draw(canvas)
+            val borderRect = RectF(keyMargin.toFloat(), keyMargin.toFloat(), (key.width - keyMargin).toFloat(), (key.height - keyMargin).toFloat())
+
+            canvas.drawRect(borderRect, borderPaint)
             if (label?.isNotEmpty() == true) {
                 // For characters, use large font. For labels like "Done", use small font.
                 if (label.length > 1) {
