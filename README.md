@@ -223,7 +223,7 @@ The goal is for Scribe to have all the functionality of system keyboards. Curren
   <br>
 </div>
 
-# Powered By
+# Powered By [`⇧`](#contents)
 
 ### Contributors
 
