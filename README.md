@@ -190,6 +190,7 @@ The goal is for Scribe to have all the functionality of system keyboards. Curren
 
 <strong>2024</strong>
 
+-   April: [Blog post on Medium](https://medium.com/@mhmohona/scribe-data-a-guide-to-open-source-language-data-a801c59db4c9) about [Scribe-Data](https://github.com/scribe-org/Scribe-Data) and its functionalities
 -   February: [Presentation slides](https://docs.google.com/presentation/d/1lMhYiQx1R99SVGhbikUGjOVaFgPPASvbzM2Bsu3NXSg/edit?usp=sharing) for Scribe's participation at the [Wikimedia Tech Safari Program](https://www.mediawiki.org/wiki/Wikimedia_Tech_Safari_Program)
 
 <strong>2023</strong>
