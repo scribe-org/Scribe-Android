@@ -40,6 +40,7 @@
     <string name="vibrate_on_keypress">Vibrate on keypress</string>
     <string name="keyboard_language">Keyboard language</string>
     <string name="dark_mode">Dark theme</string>
+    <string name="period_on_space_bar">Double Tap on SpaceBar for Period</string>
 
 
     <!-- Strings displayed only on Google Play. Optional, but good to have -->

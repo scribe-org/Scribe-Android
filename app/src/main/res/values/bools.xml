@@ -7,5 +7,5 @@
     <bool name="hide_google_relations">false</bool>
     <bool name="hide_all_external_links">false</bool>
     <bool name="is_dark_mode_enabled">false</bool>
-
+    <bool name="is_period_on_space_bar_enabled">false</bool>
 </resources>

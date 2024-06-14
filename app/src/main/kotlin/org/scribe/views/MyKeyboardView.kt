@@ -29,6 +29,7 @@ import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_MODE_CHANGE
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_SHIFT
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_SPACE
 import java.util.*
+import org.scribe.services.SimpleKeyboardIME.*
 
 @SuppressLint("UseCompatLoadingForDrawables")
 class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: AttributeSet?, defStyleRes: Int = 0) :
@@ -156,6 +157,9 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private var mHandler: Handler? = null
 
+
+    private var lastSpaceBarTapTime = 0L
+
     companion object {
         private const val NOT_A_KEY = -1
         private val LONG_PRESSABLE_STATE_SET = intArrayOf(R.attr.state_long_pressable)
@@ -167,6 +171,8 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         private const val REPEAT_INTERVAL = 50 // ~20 keys per second
         private const val REPEAT_START_DELAY = 400
         private val LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout()
+        private const val DOUBLE_TAP_DELAY = 300L
+
     }
 
     init {
@@ -177,6 +183,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
         try {
             for (i in 0 until indexCnt) {
+
                 val attr = attributes.getIndex(i)
                 when (attr) {
                     R.styleable.MyKeyboardView_keyTextSize -> mKeyTextSize = attributes.getDimensionPixelSize(attr, 18)
@@ -219,6 +226,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         mTopSmallNumberMarginWidth = resources.getDimension(R.dimen.top_small_number_margin_width)
         mTopSmallNumberMarginHeight = resources.getDimension(R.dimen.top_small_number_margin_height)
     }
+
 
     @SuppressLint("HandlerLeak")
     override fun onAttachedToWindow() {
@@ -331,6 +339,10 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             performHapticFeedback()
         }
     }
+
+
+
+
 
     /**
      * Sets the state of the shift key of the keyboard, if any.
@@ -1123,9 +1135,17 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
 
                 if (mKeys.getOrNull(mCurrentKey)?.code == KEYCODE_SPACE && !mIsLongPressingSpace) {
-                    detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
-                }
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + 200  && context.config.periodOnDoubleTap && mKeys.size > 0 ) {
+                        mOnKeyboardActionListener!!.moveCursorRight()
+                        mOnKeyboardActionListener?.onText(".")
 
+                    } else {
+                        detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
+                    }
+                    lastSpaceBarTapTime = currentTime
+
+                }
                 invalidateKey(keyIndex)
                 mRepeatKeyIndex = NOT_A_KEY
                 mOnKeyboardActionListener!!.onActionUp()
