@@ -68,6 +68,10 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
          * @param text the string to be displayed.
          */
         fun onText(text: String)
+
+        fun hasTextBeforeCursor(): Boolean
+
+        fun commitPeriodAfterSpace()
     }
 
     private var mKeyboard: MyKeyboard? = null
@@ -823,6 +827,14 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                     override fun onText(text: String) {
                         mOnKeyboardActionListener!!.onText(text)
                     }
+
+                    override fun hasTextBeforeCursor(): Boolean {
+                       return mOnKeyboardActionListener!!.hasTextBeforeCursor()
+                    }
+
+                    override fun commitPeriodAfterSpace() {
+                        mOnKeyboardActionListener!!.commitPeriodAfterSpace()
+                    }
                 }
 
                 val keyboard = if (popupKey.popupCharacters != null) {
@@ -1136,10 +1148,8 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
                 if (mKeys.getOrNull(mCurrentKey)?.code == KEYCODE_SPACE && !mIsLongPressingSpace) {
                     val currentTime = System.currentTimeMillis()
-                    if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + 200  && context.config.periodOnDoubleTap && mKeys.size > 0 ) {
-                        mOnKeyboardActionListener!!.moveCursorRight()
-                        mOnKeyboardActionListener?.onText(".")
-
+                    if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + 200  && context.config.periodOnDoubleTap  && mOnKeyboardActionListener!!.hasTextBeforeCursor() ) {
+                        mOnKeyboardActionListener!!.commitPeriodAfterSpace()
                     } else {
                         detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
                     }

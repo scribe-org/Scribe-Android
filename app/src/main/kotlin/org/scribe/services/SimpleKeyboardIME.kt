@@ -7,6 +7,7 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -39,6 +40,23 @@ class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionL
     override fun onInitializeInterface() {
         super.onInitializeInterface()
         keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+    }
+
+    override fun hasTextBeforeCursor(): Boolean {
+        val inputConnection = currentInputConnection ?: return false
+        val textBeforeCursor = inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0)
+        if (textBeforeCursor.isNullOrBlank()) {
+            return false
+        }
+        val trimmedText = textBeforeCursor.trim()
+        val lastChar = trimmedText.lastOrNull()
+        return lastChar != '.'
+    }
+
+    override fun commitPeriodAfterSpace() {
+        val inputConnection = currentInputConnection ?: return
+        inputConnection.deleteSurroundingText(1, 0)
+        inputConnection.commitText(". ", 1)
     }
 
     override fun onCreateInputView(): View {
