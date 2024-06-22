@@ -84,15 +84,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_background">
-
                 <org.scribe.views.MyAppCompatCheckbox
                     android:id="@+id/settings_dark_mode"
                     style="@style/SettingsCheckboxStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/dark_mode" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/settings_period_on_space_bar_holder"
+                style="@style/SettingsHolderCheckboxStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple_background">
+
+                <org.scribe.views.MyAppCompatCheckbox
+                    android:id="@+id/settings_period_on_space_bar"
+                    style="@style/SettingsCheckboxStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/period_on_space_bar"/>
 
             </RelativeLayout>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

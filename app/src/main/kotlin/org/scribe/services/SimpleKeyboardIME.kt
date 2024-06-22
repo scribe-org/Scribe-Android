@@ -7,6 +7,7 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -34,10 +35,28 @@ class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionL
     private var inputTypeClass = InputType.TYPE_CLASS_TEXT
     private var enterKeyType = IME_ACTION_NONE
     private var switchToLetters = false
+    private var hasTextBeforeCursor = false
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()
         keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+    }
+
+    override fun hasTextBeforeCursor(): Boolean {
+        val inputConnection = currentInputConnection ?: return false
+        val textBeforeCursor = inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0)
+        if (textBeforeCursor.isNullOrBlank()) {
+            return false
+        }
+        val trimmedText = textBeforeCursor.trim()
+        val lastChar = trimmedText.lastOrNull()
+        return lastChar != '.'
+    }
+
+    override fun commitPeriodAfterSpace() {
+        val inputConnection = currentInputConnection ?: return
+        inputConnection.deleteSurroundingText(1, 0)
+        inputConnection.commitText(". ", 1)
     }
 
     override fun onCreateInputView(): View {
@@ -59,6 +78,9 @@ class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionL
         super.onStartInput(attribute, restarting)
         inputTypeClass = attribute!!.inputType and TYPE_MASK_CLASS
         enterKeyType = attribute.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
+        val inputConnection = currentInputConnection
+        hasTextBeforeCursor = inputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
+
 
         val keyboardXml = when (inputTypeClass) {
             TYPE_CLASS_NUMBER, TYPE_CLASS_DATETIME, TYPE_CLASS_PHONE -> {
@@ -87,6 +109,7 @@ class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionL
             }
         }
     }
+
 
     override fun onKey(code: Int) {
         val inputConnection = currentInputConnection
@@ -165,6 +188,7 @@ class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionL
                 // However, avoid doing that in cases when the EditText for example requires numbers as the input.
                 // We can detect that by the text not changing on pressing Space.
                 if (keyboardMode != KEYBOARD_LETTERS && code == MyKeyboard.KEYCODE_SPACE) {
+
                     val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                     inputConnection.commitText(codeChar.toString(), 1)
                     val newText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text

@@ -28,6 +28,10 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getInt(KEYBOARD_LANGUAGE, getDefaultLanguage())
         set(keyboardLanguage) = prefs.edit().putInt(KEYBOARD_LANGUAGE, keyboardLanguage).apply()
 
+    var periodOnDoubleTap : Boolean
+        get() = prefs.getBoolean(PERIOD_ON_DOUBLE_TAP, true)
+        set(periodOnDoubleTap) = prefs.edit().putBoolean(PERIOD_ON_DOUBLE_TAP, periodOnDoubleTap).apply()
+
     private fun getDefaultLanguage(): Int {
         val conf = context.resources.configuration
         return if (conf.locale.toString().toLowerCase(Locale.getDefault()).startsWith("ru_")) {

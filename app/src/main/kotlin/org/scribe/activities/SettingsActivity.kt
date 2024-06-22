@@ -23,6 +23,7 @@ class SettingsActivity : SimpleActivity() {
         super.onResume()
 
         setupDarkTheme()
+        setupPeriodOnSpaceBarDoubleTap()
         setupVibrateOnKeypress()
         setupShowPopupOnKeypress()
         setupKeyboardLanguage()
@@ -43,6 +44,14 @@ class SettingsActivity : SimpleActivity() {
         settings_vibrate_on_keypress_holder.setOnClickListener {
             settings_vibrate_on_keypress.toggle()
             config.vibrateOnKeypress = settings_vibrate_on_keypress.isChecked
+        }
+    }
+
+    private fun setupPeriodOnSpaceBarDoubleTap() {
+        settings_period_on_space_bar.isChecked = config.periodOnDoubleTap
+        settings_period_on_space_bar_holder.setOnClickListener {
+            settings_period_on_space_bar.toggle()
+            config.periodOnDoubleTap = settings_period_on_space_bar.isChecked
         }
     }
 
