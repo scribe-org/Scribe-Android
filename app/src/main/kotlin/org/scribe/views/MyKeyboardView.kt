@@ -416,7 +416,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun onBufferDraw() {
         val keyMargin = 8
-        val shadowOffset = 5
+        val shadowOffset = 3
         val shadowPaint = Paint().apply {
             style = Paint.Style.STROKE
             strokeWidth = 2f
@@ -464,15 +464,15 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             val key = keys[i]
             val code = key.code
             var keyBackground = mKeyBackground
-            if (code == KEYCODE_ENTER) {
-                keyBackground = resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
-            } else if (code == KEYCODE_SPACE) {
-                keyBackground = if (context.config.isUsingSystemTheme) {
-                    resources.getDrawable(R.drawable.keyboard_space_background_material, context.theme)
-                } else {
-                    resources.getDrawable(R.drawable.keyboard_space_background, context.theme)
-                }
-            }
+//            if (code == KEYCODE_ENTER) {
+//                keyBackground = resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
+//            } else if (code == KEYCODE_SPACE) {
+//                keyBackground = if (context.config.isUsingSystemTheme) {
+//                    resources.getDrawable(R.drawable.keyboard_space_background_material, context.theme)
+//                } else {
+//                    resources.getDrawable(R.drawable.keyboard_space_background, context.theme)
+//                }
+//            }
 
 //            keyBackground = if (code == KEYCODE_ENTER) {
 //                resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
@@ -487,13 +487,23 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 //            }
 
 
-            val shadowRect = RectF(
-                (key.x + keyMargin - shadowOffset).toFloat(),
-                (key.y + keyMargin - shadowOffset).toFloat(),
-                (key.x + key.width - keyMargin + shadowOffset).toFloat(),
-                (key.y + key.height - keyMargin + shadowOffset).toFloat()
+            val padding = 5
+
+            val rectRadius = 25f
+
+            val keyRect = RectF(
+                (key.x + keyMargin - shadowOffset + padding).toFloat(),
+                (key.y + keyMargin - shadowOffset + padding).toFloat(),
+                (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
+                (key.y + key.height - keyMargin + shadowOffset - padding).toFloat()
             )
-            canvas.drawRect(shadowRect, shadowPaint)
+            canvas.drawRoundRect(keyRect, rectRadius, rectRadius, shadowPaint)
+
+            keyBackground!!.setBounds(
+                keyMargin, keyMargin,
+                key.width - keyMargin, key.height - keyMargin
+            )
+
             // Switch the character to uppercase if shift is pressed
             val label = adjustCase(key.label)?.toString()
             val bounds = keyBackground!!.bounds
@@ -515,9 +525,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
             canvas.translate(key.x.toFloat(), key.y.toFloat())
             keyBackground.draw(canvas)
-            val borderRect = RectF(keyMargin.toFloat(), keyMargin.toFloat(), (key.width - keyMargin).toFloat(), (key.height - keyMargin).toFloat())
-
-            canvas.drawRect(borderRect, borderPaint)
             if (label?.isNotEmpty() == true) {
                 // For characters, use large font. For labels like "Done", use small font.
                 if (label.length > 1) {
