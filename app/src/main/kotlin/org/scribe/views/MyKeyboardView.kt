@@ -433,11 +433,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun onBufferDraw() {
         val keyMargin = 8
         val shadowOffset = 3
-        val shadowPaint = Paint().apply {
-            style = Paint.Style.STROKE
-            strokeWidth = 2f
-            color = Color.BLACK
-        }
         if (mBuffer == null || mKeyboardChanged) {
             if (mBuffer == null || mKeyboardChanged && (mBuffer!!.width != width || mBuffer!!.height != height)) {
                 // Make sure our bitmap is at least 1x1
@@ -467,10 +462,18 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             typeface = Typeface.DEFAULT
         }
 
-        val borderPaint = Paint().apply {
-            style = Paint.Style.STROKE
-            strokeWidth = 0.5f
-            color = Color.BLACK
+
+
+
+        val keyBackgroundPaint = Paint().apply {
+            color = Color.WHITE
+            style = Paint.Style.FILL
+        }
+
+        val shadowPaint = Paint().apply {
+            color = Color.GRAY
+            alpha = 100
+            style = Paint.Style.FILL
         }
 
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
@@ -505,7 +508,15 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
             val padding = 5
 
-            val rectRadius = 25f
+            val rectRadius = 15f
+            val shadowOffsetY = 9f
+
+            val shadowRect = RectF(
+                (key.x + keyMargin + padding).toFloat(),
+                (key.y + keyMargin + padding + shadowOffsetY).toFloat(),
+                (key.x + key.width - keyMargin - padding).toFloat(),
+                (key.y + key.height - keyMargin - padding + shadowOffsetY).toFloat()
+            )
 
             val keyRect = RectF(
                 (key.x + keyMargin - shadowOffset + padding).toFloat(),
@@ -513,7 +524,10 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
                 (key.y + key.height - keyMargin + shadowOffset - padding).toFloat()
             )
-            canvas.drawRoundRect(keyRect, rectRadius, rectRadius, shadowPaint)
+            canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+
+            canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+
 
             keyBackground!!.setBounds(
                 keyMargin, keyMargin,
@@ -860,7 +874,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                     }
 
                     override fun hasTextBeforeCursor(): Boolean {
-                       return mOnKeyboardActionListener!!.hasTextBeforeCursor()
+                        return mOnKeyboardActionListener!!.hasTextBeforeCursor()
                     }
 
                     override fun commitPeriodAfterSpace() {
