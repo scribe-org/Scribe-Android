@@ -29,6 +29,7 @@ import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_MODE_CHANGE
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_SHIFT
 import org.scribe.helpers.MyKeyboard.Companion.KEYCODE_SPACE
 import java.util.*
+import org.scribe.services.SimpleKeyboardIME.*
 
 @SuppressLint("UseCompatLoadingForDrawables")
 class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: AttributeSet?, defStyleRes: Int = 0) :
@@ -67,6 +68,10 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
          * @param text the string to be displayed.
          */
         fun onText(text: String)
+
+        fun hasTextBeforeCursor(): Boolean
+
+        fun commitPeriodAfterSpace()
     }
 
     private var mKeyboard: MyKeyboard? = null
@@ -156,6 +161,9 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private var mHandler: Handler? = null
 
+
+    private var lastSpaceBarTapTime = 0L
+
     companion object {
         private const val NOT_A_KEY = -1
         private val LONG_PRESSABLE_STATE_SET = intArrayOf(R.attr.state_long_pressable)
@@ -167,6 +175,8 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         private const val REPEAT_INTERVAL = 50 // ~20 keys per second
         private const val REPEAT_START_DELAY = 400
         private val LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout()
+        private const val DOUBLE_TAP_DELAY = 300L
+
     }
 
     init {
@@ -177,6 +187,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
         try {
             for (i in 0 until indexCnt) {
+
                 val attr = attributes.getIndex(i)
                 when (attr) {
                     R.styleable.MyKeyboardView_keyTextSize -> mKeyTextSize = attributes.getDimensionPixelSize(attr, 18)
@@ -219,6 +230,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         mTopSmallNumberMarginWidth = resources.getDimension(R.dimen.top_small_number_margin_width)
         mTopSmallNumberMarginHeight = resources.getDimension(R.dimen.top_small_number_margin_height)
     }
+
 
     @SuppressLint("HandlerLeak")
     override fun onAttachedToWindow() {
@@ -331,6 +343,10 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             performHapticFeedback()
         }
     }
+
+
+
+
 
     /**
      * Sets the state of the shift key of the keyboard, if any.
@@ -467,8 +483,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             val key = keys[i]
             val code = key.code
             var keyBackground = mKeyBackground
-
-
 //            if (code == KEYCODE_ENTER) {
 //                keyBackground = resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
 //            } else if (code == KEYCODE_SPACE) {
@@ -533,8 +547,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 else -> intArrayOf()
             }
 
-
-
             if (key.focused || code == KEYCODE_ENTER) {
                 keyBackground.applyColorFilter(mPrimaryColor)
             } else {
@@ -543,8 +555,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
             canvas.translate(key.x.toFloat(), key.y.toFloat())
             keyBackground.draw(canvas)
-
-            paint.color = Color.BLACK
             if (label?.isNotEmpty() == true) {
                 // For characters, use large font. For labels like "Done", use small font.
                 if (label.length > 1) {
@@ -862,6 +872,14 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                     override fun onText(text: String) {
                         mOnKeyboardActionListener!!.onText(text)
                     }
+
+                    override fun hasTextBeforeCursor(): Boolean {
+                        return mOnKeyboardActionListener!!.hasTextBeforeCursor()
+                    }
+
+                    override fun commitPeriodAfterSpace() {
+                        mOnKeyboardActionListener!!.commitPeriodAfterSpace()
+                    }
                 }
 
                 val keyboard = if (popupKey.popupCharacters != null) {
@@ -1174,9 +1192,15 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
 
                 if (mKeys.getOrNull(mCurrentKey)?.code == KEYCODE_SPACE && !mIsLongPressingSpace) {
-                    detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
-                }
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + 200  && context.config.periodOnDoubleTap  && mOnKeyboardActionListener!!.hasTextBeforeCursor() ) {
+                        mOnKeyboardActionListener!!.commitPeriodAfterSpace()
+                    } else {
+                        detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
+                    }
+                    lastSpaceBarTapTime = currentTime
 
+                }
                 invalidateKey(keyIndex)
                 mRepeatKeyIndex = NOT_A_KEY
                 mOnKeyboardActionListener!!.onActionUp()
