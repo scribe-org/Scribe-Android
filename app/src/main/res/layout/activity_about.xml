@@ -3,6 +3,9 @@
     android:id="@+id/about_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/you_background_color"
+    android:backgroundTint="@color/you_background_color"
+    android:backgroundTintMode="add"
     android:fillViewport="true"
     android:scrollbars="none">
 
@@ -10,6 +13,8 @@
         android:id="@+id/about_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/you_background_color"
+        android:backgroundTint="@color/you_background_color"
         android:orientation="vertical">
 
         <TextView
@@ -17,6 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_margin"
+            android:background="@color/you_background_color"
+            android:backgroundTint="@color/you_background_color"
             android:gravity="center_horizontal"
             android:text="@string/support"
             android:textSize="@dimen/big_text_size" />
@@ -40,6 +47,8 @@
                     android:id="@+id/about_email_icon"
                     android:layout_width="@dimen/normal_icon_size"
                     android:layout_height="@dimen/normal_icon_size"
+                    android:background="@color/you_background_color"
+                    android:backgroundTint="@color/you_background_color"
                     android:contentDescription="@null"
                     android:padding="@dimen/medium_margin"
                     android:src="@drawable/ic_mail_vector" />
@@ -53,8 +62,14 @@
                     android:layout_marginStart="@dimen/normal_margin"
                     android:layout_marginEnd="@dimen/normal_margin"
                     android:layout_toEndOf="@+id/about_email_icon"
+                    android:background="@color/you_background_color"
+                    android:backgroundTint="@color/you_background_color"
                     android:gravity="center_vertical"
                     android:text="@string/my_email"
+                    android:textColor="@color/app_text_color"
+                    android:textColorHighlight="@color/app_text_color"
+                    android:textColorHint="@color/app_text_color"
+                    android:textColorLink="@color/app_text_color"
                     android:textSize="@dimen/bigger_text_size" />
 
             </RelativeLayout>
@@ -65,8 +80,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_margin"
+            android:background="@color/you_background_color"
+            android:backgroundTint="@color/you_background_color"
             android:gravity="center_horizontal"
             android:text="@string/help_us"
+            android:textColor="@color/app_text_color"
+            android:textColorHighlight="@color/app_text_color"
+            android:textColorHint="@color/app_text_color"
+            android:textColorLink="@color/app_text_color"
             android:textSize="@dimen/big_text_size" />
 
         <LinearLayout
@@ -88,6 +109,8 @@
                     android:id="@+id/about_invite_icon"
                     android:layout_width="@dimen/normal_icon_size"
                     android:layout_height="@dimen/normal_icon_size"
+                    android:background="@color/you_background_color"
+                    android:backgroundTint="@color/you_background_color"
                     android:contentDescription="@null"
                     android:padding="@dimen/medium_margin"
                     android:src="@drawable/ic_add_person_vector" />
@@ -101,8 +124,14 @@
                     android:layout_marginStart="@dimen/normal_margin"
                     android:layout_marginEnd="@dimen/normal_margin"
                     android:layout_toEndOf="@+id/about_invite_icon"
+                    android:background="@color/you_background_color"
+                    android:backgroundTint="@color/you_background_color"
                     android:gravity="center_vertical"
                     android:text="@string/invite_friends"
+                    android:textColor="@color/app_text_color"
+                    android:textColorHighlight="@color/app_text_color"
+                    android:textColorHint="@color/app_text_color"
+                    android:textColorLink="@color/app_text_color"
                     android:textSize="@dimen/bigger_text_size" />
 
             </RelativeLayout>

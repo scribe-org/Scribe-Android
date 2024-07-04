@@ -1,9 +1,10 @@
 package org.scribe.activities
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
-
 import android.view.Menu
+import androidx.appcompat.app.AppCompatDelegate
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.scribe.R
 import org.scribe.dialogs.RadioGroupDialog
@@ -21,16 +22,11 @@ class SettingsActivity : SimpleActivity() {
 
     override fun onResume() {
         super.onResume()
-
         setupDarkTheme()
         setupPeriodOnSpaceBarDoubleTap()
         setupVibrateOnKeypress()
         setupShowPopupOnKeypress()
         setupKeyboardLanguage()
-
-        AppCompatDelegate.setDefaultNightMode(if (config.darkTheme) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
-
-
         updateTextColors(settings_scrollview)
     }
 
@@ -55,11 +51,28 @@ class SettingsActivity : SimpleActivity() {
         }
     }
 
-    private fun setupDarkTheme(){
-        settings_dark_mode.isChecked=config.darkTheme
-        settings_dark_mode_holder.setOnClickListener{
+    private fun setupDarkTheme() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+
+        settings_dark_mode.isChecked = isUserDarkMode
+
+        settings_dark_mode_holder.setOnClickListener {
             settings_dark_mode.toggle()
-            config.darkTheme=settings_dark_mode.isChecked
+            editor.putBoolean("dark_mode", settings_dark_mode.isChecked)
+            editor.apply()
+
+            if (settings_dark_mode.isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+
+            recreate()
         }
     }
 
