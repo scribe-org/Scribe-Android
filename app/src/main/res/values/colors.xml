@@ -62,7 +62,7 @@
     <color name="theme_light_background_color">@color/md_grey_white</color>
     <color name="theme_dark_background_color">@color/md_grey_800</color>
 
-    <color name="default_text_color">@color/light_key_text_color</color>
+    <color name="default_text_color">@color/app_text_color</color>
     <color name="default_key_color">@color/light_key_color</color>
     <color name="default_background_color">@color/light_keyboard_bg_color</color>
 

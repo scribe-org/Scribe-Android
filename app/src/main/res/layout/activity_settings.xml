@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_scrollview"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
 
+    android:background="@color/you_background_color">
 
     <LinearLayout
         android:id="@+id/settings_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/you_background_color"
         android:orientation="vertical">
-
-
 
         <LinearLayout
             android:id="@+id/settings_general_settings_holder"
@@ -34,8 +34,8 @@
                     style="@style/SettingsCheckboxStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/vibrate_on_keypress" />
-
+                    android:text="@string/vibrate_on_keypress"
+                    android:textColor="@color/app_text_color" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -50,8 +50,8 @@
                     style="@style/SettingsCheckboxStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/show_popup" />
-
+                    android:text="@string/show_popup"
+                    android:textColorLink="#E1DCDC" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -66,7 +66,8 @@
                     style="@style/SettingsTextLabelStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/keyboard_language" />
+                    android:text="@string/keyboard_language"
+                    android:textColor="@color/you_neutral_text_color" />
 
                 <org.scribe.views.MyTextView
                     android:id="@+id/settings_keyboard_language"
@@ -75,7 +76,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/settings_keyboard_language_label"
                     tools:text="@string/translation_english" />
-
             </RelativeLayout>
 
             <RelativeLayout
@@ -84,14 +84,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_background">
+
                 <org.scribe.views.MyAppCompatCheckbox
                     android:id="@+id/settings_dark_mode"
                     style="@style/SettingsCheckboxStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/dark_mode" />
+                    android:text="@string/dark_mode"
+                    android:textColor="@color/you_neutral_text_color" />
             </RelativeLayout>
-
 
             <RelativeLayout
                 android:id="@+id/settings_period_on_space_bar_holder"
@@ -105,8 +106,8 @@
                     style="@style/SettingsCheckboxStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/period_on_space_bar"/>
-
+                    android:text="@string/period_on_space_bar"
+                    android:textColor="@color/you_neutral_text_color" />
             </RelativeLayout>
 
         </LinearLayout>

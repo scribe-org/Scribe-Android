@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/keyboard_holder"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content" android:background="@color/you_keyboard_background_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/command_field"
@@ -11,7 +11,8 @@
         android:layout_above="@+id/keyboard_view"
         app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/you_keyboard_background_color">
 
         <Button
             android:id="@+id/scribe_key"
@@ -128,7 +129,7 @@
         style="@style/MyKeyboardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/theme_dark_background_color"
+        android:background="@color/you_keyboard_background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

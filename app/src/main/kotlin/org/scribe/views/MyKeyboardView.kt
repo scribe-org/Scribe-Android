@@ -3,6 +3,7 @@ package org.scribe.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.*
 import android.graphics.Paint.Align
 import android.graphics.drawable.ColorDrawable
@@ -11,6 +12,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.accessibility.AccessibilityEvent
@@ -163,6 +165,9 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
 
     private var lastSpaceBarTapTime = 0L
+
+
+    private var mKeyboardBackgroundColor = 0
 
     companion object {
         private const val NOT_A_KEY = -1
@@ -428,7 +433,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         }
         canvas.drawBitmap(mBuffer!!, 0f, 0f, null)
     }
-
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun onBufferDraw() {
         val keyMargin = 8
@@ -454,20 +458,33 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
         canvas!!.clipRect(mDirtyRect)
         val paint = mPaint
         val keys = mKeys
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        val changeKeyColor = sharedPref.getBoolean("pref_key_change_key_color", false)
+        val keyBackgroundColor =
+            if (isUserDarkMode) {
+                Color.DKGRAY
+            } else {
+                Color.WHITE
+            }
+        mTextColor = if (keyBackgroundColor == Color.WHITE) {
+            Color.BLACK
+        } else {
+            Color.WHITE
+        }
         paint.color = mTextColor
-        val smallLetterPaint = Paint().apply {
-            set(paint)
-            color = paint.color.adjustAlpha(0.8f)
-            textSize = mTopSmallNumberSize
-            typeface = Typeface.DEFAULT
+        val keyBackgroundPaint = Paint().apply {
+            color = keyBackgroundColor
+            style = Paint.Style.FILL
         }
 
-
-
-
-        val keyBackgroundPaint = Paint().apply {
-            color = Color.WHITE
-            style = Paint.Style.FILL
+        val smallLetterPaint = Paint().apply {
+            set(paint)
+            color = mTextColor.adjustAlpha(0.8f)
+            textSize = mTopSmallNumberSize
+            typeface = Typeface.DEFAULT
         }
 
         val shadowPaint = Paint().apply {
@@ -476,38 +493,22 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             style = Paint.Style.FILL
         }
 
+        mKeyboardBackgroundColor =
+            if (isUserDarkMode) {
+                Color.BLACK
+            } else {
+                Color.LTGRAY
+            }
+
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        canvas.drawColor(mKeyboardBackgroundColor)
 
         val keyCount = keys.size
         for (i in 0 until keyCount) {
             val key = keys[i]
             val code = key.code
-            var keyBackground = mKeyBackground
-//            if (code == KEYCODE_ENTER) {
-//                keyBackground = resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
-//            } else if (code == KEYCODE_SPACE) {
-//                keyBackground = if (context.config.isUsingSystemTheme) {
-//                    resources.getDrawable(R.drawable.keyboard_space_background_material, context.theme)
-//                } else {
-//                    resources.getDrawable(R.drawable.keyboard_space_background, context.theme)
-//                }
-//            }
-
-//            keyBackground = if (code == KEYCODE_ENTER) {
-//                resources.getDrawable(R.drawable.keyboard_enter_background, context.theme)
-//            } else if (code == KEYCODE_ENTER) {
-//                if (context.config.isUsingSystemTheme) {
-//                    resources.getDrawable(R.drawable.keyboard_space_background_material, context.theme)
-//                } else {
-//                    resources.getDrawable(R.drawable.keyboard_space_background, context.theme)
-//                }
-//            } else {
-//                resources.getDrawable(R.drawable.keyboard_key_background, context.theme)
-//            }
-
 
             val padding = 5
-
             val rectRadius = 15f
             val shadowOffsetY = 9f
 
@@ -525,36 +526,18 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 (key.y + key.height - keyMargin + shadowOffset - padding).toFloat()
             )
             canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
-
             canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
-
-
-            keyBackground!!.setBounds(
-                keyMargin, keyMargin,
-                key.width - keyMargin, key.height - keyMargin
-            )
 
             // Switch the character to uppercase if shift is pressed
             val label = adjustCase(key.label)?.toString()
-            val bounds = keyBackground!!.bounds
-            if (key.width != bounds.right || key.height != bounds.bottom) {
-                keyBackground.setBounds(keyMargin, keyMargin, key.width - keyMargin, key.height - keyMargin)
-            }
-
-            keyBackground.state = when {
-                key.pressed -> intArrayOf(android.R.attr.state_pressed)
-                key.focused -> intArrayOf(android.R.attr.state_focused)
-                else -> intArrayOf()
-            }
 
             if (key.focused || code == KEYCODE_ENTER) {
-                keyBackground.applyColorFilter(mPrimaryColor)
-            } else {
-                keyBackground.applyColorFilter(mKeyColor)
+                keyBackgroundPaint.color = mPrimaryColor
+                canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                keyBackgroundPaint.color = keyBackgroundColor
             }
 
             canvas.translate(key.x.toFloat(), key.y.toFloat())
-            keyBackground.draw(canvas)
             if (label?.isNotEmpty() == true) {
                 // For characters, use large font. For labels like "Done", use small font.
                 if (label.length > 1) {

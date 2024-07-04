@@ -1,6 +1,8 @@
 package org.scribe.activities
 
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
@@ -8,6 +10,7 @@ import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatDelegate
 import kotlinx.android.synthetic.main.activity_main.*
 import org.scribe.BuildConfig
 import org.scribe.R
@@ -17,6 +20,7 @@ import org.scribe.helpers.LICENSE_GSON
 
 class MainActivity : SimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        applyUserDarkModePreference()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         appLaunched(BuildConfig.APPLICATION_ID)
@@ -25,6 +29,18 @@ class MainActivity : SimpleActivity() {
         }
     }
 
+
+    private fun applyUserDarkModePreference() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+
+        AppCompatDelegate.setDefaultNightMode(
+            if (isUserDarkMode) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
+    }
     override fun onResume() {
         super.onResume()
         if (!isKeyboardEnabled()) {
