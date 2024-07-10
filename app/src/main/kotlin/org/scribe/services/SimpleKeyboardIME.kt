@@ -22,7 +22,10 @@ import org.scribe.helpers.*
 import org.scribe.views.MyKeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
-class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionListener {
+
+
+abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionListener {
+    abstract fun getKeyboardLayoutXML(): Int
     private var SHIFT_PERM_TOGGLE_SPEED = 500   // how quickly do we have to doubletap shift to enable permanent caps lock
     private val KEYBOARD_LETTERS = 0
     private val KEYBOARD_SYMBOLS = 1
@@ -258,16 +261,4 @@ class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionL
         }
     }
 
-    private fun getKeyboardLayoutXML(): Int {
-        return when (baseContext.config.keyboardLanguage) {
-            LANGUAGE_FRENCH -> R.xml.keys_letters_french
-            LANGUAGE_GERMAN -> R.xml.keys_letters_german
-            LANGUAGE_ITALIAN -> R.xml.keys_letters_italian
-            LANGUAGE_PORTUGUESE -> R.xml.keys_letters_portuguese
-            LANGUAGE_RUSSIAN -> R.xml.keys_letters_russian
-            LANGUAGE_SPANISH -> R.xml.keys_letters_spanish
-            LANGUAGE_SWEDISH -> R.xml.keys_letters_swedish
-            else -> R.xml.keys_letters_english
-        }
     }
-}
