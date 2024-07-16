@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/about_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,7 +13,7 @@
     <LinearLayout
         android:id="@+id/about_holder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="669dp"
         android:background="@color/you_background_color"
         android:backgroundTint="@color/you_background_color"
         android:orientation="vertical">
@@ -137,7 +138,16 @@
             </RelativeLayout>
 
         </LinearLayout>
-
     </LinearLayout>
 
-</ScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        app:itemBackground="@color/nav_bar_color"
+        app:itemIconTint="@drawable/nav_bar_selector"
+        app:itemTextColor="@drawable/nav_bar_selector"
+        app:menu="@menu/menu_navigation_bottom" />
+
+</RelativeLayout>

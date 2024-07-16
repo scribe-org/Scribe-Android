@@ -5,15 +5,19 @@ import android.content.Intent
 import android.content.Intent.*
 import android.os.Build
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.Menu
+import android.view.MotionEvent
 import androidx.core.net.toUri
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_about.*
 import org.scribe.R
 import org.scribe.dialogs.ConfirmationAdvancedDialog
 import org.scribe.extensions.*
 import org.scribe.helpers.*
+import kotlin.math.abs
 
-class AboutActivity : BaseSimpleActivity() {
+class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
     private var appName = ""
     private var primaryColor = 0
 
@@ -22,6 +26,10 @@ class AboutActivity : BaseSimpleActivity() {
     private val EASTER_EGG_TIME_LIMIT = 3000L
     private val EASTER_EGG_REQUIRED_CLICKS = 7
 
+    private lateinit var gestureDetector: GestureDetector
+    private val swipeThreshold = 100
+    private val swipeVelocityThreshold = 100
+
     override fun getAppIconIDs() = intent.getIntegerArrayListExtra(APP_ICON_IDS) ?: ArrayList()
 
     override fun getAppLauncherName() = intent.getStringExtra(APP_LAUNCHER_NAME) ?: ""
@@ -29,10 +37,35 @@ class AboutActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+        gestureDetector = GestureDetector(this)
         appName = intent.getStringExtra(APP_NAME) ?: ""
         val textColor = getProperTextColor()
         val backgroundColor = getProperBackgroundColor()
         primaryColor = getProperPrimaryColor()
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+        bottomNavigationView.selectedItemId = R.id.info
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.settings -> {
+                    startActivity(Intent(applicationContext, SettingsActivity::class.java))
+                    overridePendingTransition(0, 0)
+                    return@OnNavigationItemSelectedListener true
+                }
+
+                R.id.about ->  {
+                    return@OnNavigationItemSelectedListener true }
+                R.id.installation -> {
+                    startActivity(Intent(applicationContext, MainActivity::class.java))
+                    overridePendingTransition(0, 0)
+                    return@OnNavigationItemSelectedListener true
+                }
+            }
+            false
+        })
+        bottomNavigationView.selectedItemId = R.id.about
 
         arrayOf(
             about_invite_icon,
@@ -47,6 +80,15 @@ class AboutActivity : BaseSimpleActivity() {
 
         arrayOf(about_support_holder, about_help_us_holder).forEach {
             it.background.applyColorFilter(backgroundColor.getContrastColor())
+        }
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        return if (gestureDetector.onTouchEvent(event)) {
+            true
+        }
+        else {
+            super.onTouchEvent(event)
         }
     }
 
@@ -121,4 +163,47 @@ class AboutActivity : BaseSimpleActivity() {
             }
         }
     }
+
+    override fun onDown(e: MotionEvent): Boolean {
+        return false
+    }
+
+    override fun onShowPress(e: MotionEvent) {
+        return
+    }
+
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
+       return false
+    }
+
+    override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        return false
+    }
+
+    override fun onLongPress(e: MotionEvent) {
+        return
+    }
+
+    override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+        try {
+            val diffY = e2.y - e1!!.y
+            val diffX = e2.x - e1.x
+            if (abs(diffX) > abs(diffY)) {
+                if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {
+                    if (diffX > 0) {
+                        startActivity(Intent(applicationContext, SettingsActivity::class.java))
+                    }
+                    else {
+                        return false
+                    }
+                }
+            }
+        }
+        catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+        return true
+    }
 }
+
+
