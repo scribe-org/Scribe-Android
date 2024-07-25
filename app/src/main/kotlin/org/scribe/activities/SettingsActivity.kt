@@ -1,10 +1,14 @@
 package org.scribe.activities
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.Menu
+import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.scribe.R
 import org.scribe.dialogs.RadioGroupDialog
@@ -12,12 +16,40 @@ import org.scribe.extensions.config
 import org.scribe.extensions.updateTextColors
 import org.scribe.helpers.*
 import org.scribe.models.RadioItem
+import kotlin.math.abs
 
-class SettingsActivity : SimpleActivity() {
+class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
 
+    private lateinit var gestureDetector: GestureDetector
+    private val swipeThreshold = 100
+    private val swipeVelocityThreshold = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_settings)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        gestureDetector = GestureDetector(this)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        if (bottomNavigationView != null) {
+            bottomNavigationView.selectedItemId = R.id.settings
+
+            bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.installation -> {
+                        startActivity(Intent(applicationContext, MainActivity::class.java))
+                        overridePendingTransition(0, 0)
+                        true
+                    }
+                    R.id.settings -> true
+                    R.id.info -> {
+                        startActivity(Intent(applicationContext, AboutActivity::class.java))
+                        overridePendingTransition(0, 0)
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -120,4 +152,55 @@ class SettingsActivity : SimpleActivity() {
             else -> getString(R.string.translation_english)
         }
     }
-}
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        return if (gestureDetector.onTouchEvent(event)) {
+            true
+        }
+        else {
+            super.onTouchEvent(event)
+        }
+    }
+
+    override fun onDown(e: MotionEvent): Boolean {
+        return false
+    }
+
+    override fun onShowPress(e: MotionEvent) {
+        return
+    }
+
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
+        return false
+    }
+
+    override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+       return false
+    }
+
+    override fun onLongPress(e: MotionEvent) {
+        return
+    }
+
+    override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+        try {
+            val diffY = e2.y - e1!!.y
+            val diffX = e2.x - e1.x
+            if (abs(diffX) > abs(diffY)) {
+                if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {
+                    if (diffX > 0) {
+                        startActivity(Intent(applicationContext, MainActivity::class.java))
+                    }
+                    else {
+                        startActivity(Intent(applicationContext, AboutActivity::class.java))
+                    }
+                }
+            }
+        }
+        catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+        return true
+    }
+    }
+
