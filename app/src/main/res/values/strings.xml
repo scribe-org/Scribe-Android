@@ -1510,6 +1510,14 @@
 
     <!-- Message digest algorithms -->
     <string name="md5">MD5</string>
+    <string name="english_keyboard">English(US)</string>
+    <string name="german_keyboard">German</string>
+    <string name="french">French</string>
+    <string name="italian">Italian</string>
+    <string name="portugu_s">Português</string>
+    <string name="russian">Russian</string>
+    <string name="spanish">spanish</string>
+    <string name="swedish">swedish</string>
 
     <string-array name="months">
         <item>@string/january</item>
