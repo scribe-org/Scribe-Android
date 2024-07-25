@@ -1,0 +1,9 @@
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="org.scribe.activities.SettingsActivity"
+    android:icon="@mipmap/ic_launcher" >
+    <subtype
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/portugu_s"
+        android:imeSubtypeLocale="po"
+        android:imeSubtypeMode="keyboard" />
+</input-method>
