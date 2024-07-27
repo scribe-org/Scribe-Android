@@ -6,9 +6,9 @@ import be.scri.models.SharedTheme
 
 class MyContentProvider {
     companion object {
-        private const val AUTHORITY = "be.scribe.commons.provider"
-        const val SHARED_THEME_ACTIVATED = "be.scribe.commons.SHARED_THEME_ACTIVATED"
-        const val SHARED_THEME_UPDATED = "be.scribe.commons.SHARED_THEME_UPDATED"
+        private const val AUTHORITY = "be.scri.commons.provider"
+        const val SHARED_THEME_ACTIVATED = "be.scri.commons.SHARED_THEME_ACTIVATED"
+        const val SHARED_THEME_UPDATED = "be.scri.commons.SHARED_THEME_UPDATED"
         val MY_CONTENT_URI = Uri.parse("content://$AUTHORITY/themes")
 
         const val COL_ID = "_id"    // used in Simple Thank You

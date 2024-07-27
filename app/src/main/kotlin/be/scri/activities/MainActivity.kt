@@ -143,7 +143,7 @@ class MainActivity : SimpleActivity(), GestureDetector.OnGestureListener {
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         val enabledKeyboards = inputMethodManager.enabledInputMethodList
         return enabledKeyboards.any {
-            it.packageName == packageName
+            it.settingsActivity == SettingsActivity::class.java.canonicalName
         }
     }
 
