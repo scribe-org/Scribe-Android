@@ -124,7 +124,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <org.scribe.views.MyKeyboardView
+    <be.scri.views.MyKeyboardView
         android:id="@+id/keyboard_view"
         style="@style/MyKeyboardView"
         android:layout_width="match_parent"

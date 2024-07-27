@@ -1,4 +1,4 @@
-<org.scribe.views.MyKeyboardView xmlns:android="http://schemas.android.com/apk/res/android"
+<be.scri.views.MyKeyboardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mini_keyboard_view"
     style="@style/MyKeyboardViewPopup"
     android:layout_width="match_parent"

@@ -14,20 +14,20 @@
         android:layout_marginBottom="@dimen/medium_margin"
         android:visibility="gone" />
 
-    <org.scribe.views.LineColorPicker
+    <be.scri.views.LineColorPicker
         android:id="@+id/primary_line_color_picker"
         android:layout_width="match_parent"
         android:layout_height="@dimen/line_color_picker_height"
         android:layout_below="@+id/line_color_picker_icon" />
 
-    <org.scribe.views.LineColorPicker
+    <be.scri.views.LineColorPicker
         android:id="@+id/secondary_line_color_picker"
         android:layout_width="match_parent"
         android:layout_height="@dimen/line_color_picker_height"
         android:layout_below="@+id/primary_line_color_picker"
         android:layout_marginTop="@dimen/big_margin" />
 
-    <org.scribe.views.MyTextView
+    <be.scri.views.MyTextView
         android:id="@+id/hex_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
