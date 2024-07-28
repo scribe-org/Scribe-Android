@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
     android:icon="@mipmap/ic_launcher"
-    android:settingsActivity="org.scribe.activities.SettingsActivity">
+    android:settingsActivity="be.scri.activities.SettingsActivity">
 
     <subtype android:imeSubtypeMode="Keyboard" />
 

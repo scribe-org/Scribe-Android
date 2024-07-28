@@ -1,5 +1,5 @@
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
-    android:settingsActivity="org.scribe.activities.SettingsActivity"
+    android:settingsActivity="be.scri.activities.SettingsActivity"
     android:icon="@mipmap/ic_launcher" >
     <subtype
         android:icon="@mipmap/ic_launcher"

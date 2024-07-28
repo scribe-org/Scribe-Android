@@ -13,7 +13,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "org.scribe"
+        applicationId "be.scri"
         minSdk 23
         targetSdk 31
         versionCode 7
@@ -60,7 +60,7 @@ android {
         abortOnError false
         checkReleaseBuilds false
     }
-    namespace 'org.scribe'
+    namespace 'be.scri'
 
 }
 
@@ -68,7 +68,6 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.3.0'
     implementation 'androidx.room:room-runtime:2.3.0'
     annotationProcessor 'androidx.room:room-compiler:2.3.0'
-
     // Commons dependencies
     implementation 'com.andrognito.patternlockview:patternlockview:1.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
