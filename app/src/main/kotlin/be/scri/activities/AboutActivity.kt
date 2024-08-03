@@ -1,30 +1,30 @@
 package be.scri.activities
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.Intent.*
-import android.os.Build
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.Menu
 import android.view.MotionEvent
-import androidx.core.net.toUri
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_about.*
 import be.scri.R
-import be.scri.dialogs.ConfirmationAdvancedDialog
 import be.scri.extensions.*
 import be.scri.helpers.*
+import be.scri.models.ItemsViewModel
 import kotlin.math.abs
 
 class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
     private var appName = ""
     private var primaryColor = 0
 
-    private var firstVersionClickTS = 0L
-    private var clicksSinceFirstClick = 0
-    private val EASTER_EGG_TIME_LIMIT = 3000L
-    private val EASTER_EGG_REQUIRED_CLICKS = 7
+    private val recyclerView1 by lazy { findViewById<RecyclerView>(R.id.recycleView2) }
+    private val recyclerView2 by lazy { findViewById<RecyclerView>(R.id.recycleView) }
+    private  val EASTER_EGG_TIME_LIMIT = 3000L
+    private  val EASTER_EGG_REQUIRED_CLICKS = 7
+    private  val SWIPE_THRESHOLD = 100
+    private  val SWIPE_VELOCITY_THRESHOLD = 100
 
     private lateinit var gestureDetector: GestureDetector
     private val swipeThreshold = 100
@@ -34,10 +34,11 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
 
     override fun getAppLauncherName() = intent.getStringExtra(APP_LAUNCHER_NAME) ?: ""
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
-        gestureDetector = GestureDetector(this)
+        setupRecyclerViews()
         appName = intent.getStringExtra(APP_NAME) ?: ""
         val textColor = getProperTextColor()
         val backgroundColor = getProperBackgroundColor()
@@ -66,22 +67,119 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
             false
         })
         bottomNavigationView.selectedItemId = R.id.about
-
-        arrayOf(
-            about_invite_icon,
-            about_email_icon
-        ).forEach {
-            it.applyColorFilter(textColor)
-        }
-
-        arrayOf(about_support, about_help_us).forEach {
-            it.setTextColor(textColor)
-        }
-
-        arrayOf(about_support_holder, about_help_us_holder).forEach {
-            it.background.applyColorFilter(backgroundColor.getContrastColor())
-        }
     }
+
+
+    private fun setupRecyclerViews() {
+        val recyclerView1 = findViewById<RecyclerView>(R.id.recycleView2)
+        recyclerView1.layoutManager = LinearLayoutManager(this)
+        recyclerView1.adapter = CustomAdapter(getFirstRecyclerViewData(), this)
+        recyclerView1.suppressLayout(true)
+
+        val recyclerView2 = findViewById<RecyclerView>(R.id.recycleView)
+        recyclerView2.layoutManager = LinearLayoutManager(this)
+        recyclerView2.adapter = CustomAdapter(getSecondRecyclerViewData(), this)
+        recyclerView2.suppressLayout(true)
+    }
+
+    private fun getFirstRecyclerViewData(): List<ItemsViewModel> {
+        val data = ArrayList<ItemsViewModel>()
+        data.add(ItemsViewModel(
+            image = R.drawable.github_logo,
+            "Get the code on GitHub",
+            image2 = R.drawable.external_link,
+            url = "https://github.com/scribe-org/Scribe-Android",
+            activity = null,
+            action = null
+        ))
+        data.add(ItemsViewModel(
+            image = R.drawable.matrix_icon,
+            "Chat with the team on Matrix",
+            image2 = R.drawable.external_link,
+            url = "https://matrix.to/%23/%23scribe_community:matrix.org",
+            activity = null,
+            action = null
+        ))
+        data.add(ItemsViewModel(
+            image = R.drawable.mastodon_svg_icon,
+            "Follow us on Mastodon",
+            image2 = R.drawable.external_link,
+            url = "https://wikis.world/@scribe",
+            activity = null,
+            action = null
+        ))
+        data.add(ItemsViewModel(
+            image = R.drawable.share_icon,
+            "Share Scribe",
+            image2 = R.drawable.external_link,
+            url = null,
+            activity = null,
+            action = ::shareScribe
+        ))
+        data.add(ItemsViewModel(
+            image = R.drawable.scribe_icon,
+            "View all Scribe Apps",
+            image2 = R.drawable.external_link,
+            url = null,
+            activity = null,
+            action = null
+        ))
+        data.add(ItemsViewModel(
+            image = R.drawable.wikimedia_logo_black,
+            "Wikimedia and Scribe",
+            image2 = R.drawable.right_arrow,
+            url = null,
+            activity = null,
+            action = null
+        ))
+        return data
+    }
+
+    private fun getSecondRecyclerViewData(): List<ItemsViewModel> {
+        val data2 = ArrayList<ItemsViewModel>()
+        data2.add(ItemsViewModel(
+            image = R.drawable.star,
+            "Rate Scribe",
+            image2 = R.drawable.external_link,
+            url = null,
+            activity = null,
+            action = null
+        ))
+        data2.add(ItemsViewModel(
+            image = R.drawable.bug_report_icon,
+            "Report a bug",
+            image2 = R.drawable.external_link,
+            url = "https://github.com/scribe-org/Scribe-Android/issues",
+            activity = null,
+            action = null
+        ))
+        data2.add(ItemsViewModel(
+            image = R.drawable.mail_icon,
+            "Send us an email",
+            image2 = R.drawable.external_link,
+            url = null,
+            activity = null,
+            action = ::sendEmail
+        ))
+        data2.add(ItemsViewModel(
+            image = R.drawable.bookmark_icon,
+            "Version x.x.x",
+            image2 = R.drawable.right_arrow,
+            url = null,
+            activity = null,
+            action = null
+        ))
+        data2.add(ItemsViewModel(
+            image = R.drawable.light_bulb_icon,
+            "Reset App hints",
+            image2 = R.drawable.counter_clockwise_icon,
+            url = null,
+            activity = null,
+            action = null
+        ))
+        return data2
+    }
+
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return if (gestureDetector.onTouchEvent(event)) {
@@ -92,12 +190,26 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         }
     }
 
+    fun shareScribe() {
+        val sharingIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
+        }
+        startActivity(Intent.createChooser(sharingIntent, "Share via"))
+    }
+
+    fun sendEmail() {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
+            putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
+            type = "message/rfc822"
+        }
+        startActivity(Intent.createChooser(intent, "Choose an Email client:"))
+    }
+
     override fun onResume() {
         super.onResume()
         updateTextColors(about_scrollview)
-
-        setupEmail()
-        setupInvite()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -105,64 +217,6 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun setupEmail() {
-        about_email_holder.background = resources.getDrawable(R.drawable.ripple_all_corners, theme)
-
-        if (resources.getBoolean(R.bool.hide_all_external_links)) {
-            about_email_holder.beGone()
-        }
-
-        about_email_holder.setOnClickListener {
-            val msg = "${getString(R.string.before_asking_question_read_faq)}\n\n${getString(R.string.make_sure_latest)}"
-            if (intent.getBooleanExtra(SHOW_FAQ_BEFORE_MAIL, false) && !baseConfig.wasBeforeAskingShown) {
-                baseConfig.wasBeforeAskingShown = true
-                ConfirmationAdvancedDialog(this, msg, 0, R.string.read_faq, R.string.skip) { success ->
-                    about_email_holder.performClick()
-                }
-            } else {
-                val appVersion = String.format(getString(R.string.app_version, intent.getStringExtra(APP_VERSION_NAME)))
-                val deviceOS = String.format(getString(R.string.device_os), Build.VERSION.RELEASE)
-                val newline = "\n"
-                val separator = "------------------------------"
-                val body = "$appVersion$newline$deviceOS$newline$separator$newline$newline"
-
-                val address = getString(R.string.my_email)
-                val selectorIntent = Intent(ACTION_SENDTO)
-                    .setData("mailto:$address".toUri())
-                val emailIntent = Intent(ACTION_SEND).apply {
-                    putExtra(EXTRA_EMAIL, arrayOf(address))
-                    putExtra(EXTRA_SUBJECT, appName)
-                    putExtra(EXTRA_TEXT, body)
-                    selector = selectorIntent
-                }
-
-                try {
-                    startActivity(emailIntent)
-                } catch (e: ActivityNotFoundException) {
-                    toast(R.string.no_app_found)
-                } catch (e: Exception) {
-                    showErrorToast(e)
-                }
-            }
-        }
-    }
-
-    private fun setupInvite() {
-        if (resources.getBoolean(R.bool.hide_google_relations)) {
-            about_invite_holder.beGone()
-        }
-
-        about_invite_holder.setOnClickListener {
-            val text = String.format(getString(R.string.share_text), appName, getStoreUrl())
-            Intent().apply {
-                action = ACTION_SEND
-                putExtra(EXTRA_SUBJECT, appName)
-                putExtra(EXTRA_TEXT, text)
-                type = "text/plain"
-                startActivity(createChooser(this, getString(R.string.invite_via)))
-            }
-        }
-    }
 
     override fun onDown(e: MotionEvent): Boolean {
         return false

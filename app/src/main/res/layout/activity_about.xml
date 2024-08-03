@@ -1,153 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/about_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/you_background_color"
-    android:backgroundTint="@color/you_background_color"
-    android:backgroundTintMode="add"
-    android:fillViewport="true"
-    android:scrollbars="none">
+    android:background="@color/background_color">
 
-    <LinearLayout
-        android:id="@+id/about_holder"
-        android:layout_width="match_parent"
-        android:layout_height="669dp"
-        android:background="@color/you_background_color"
-        android:backgroundTint="@color/you_background_color"
-        android:orientation="vertical">
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/community_title"
+        android:textColor="@color/text_color"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/about_support"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_margin"
-            android:background="@color/you_background_color"
-            android:backgroundTint="@color/you_background_color"
-            android:gravity="center_horizontal"
-            android:text="@string/support"
-            android:textSize="@dimen/big_text_size" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvTitle2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
-        <LinearLayout
-            android:id="@+id/about_support_holder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/medium_margin"
-            android:background="@drawable/section_holder_stroke"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/tvTitle2"
+        android:layout_width="204dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/feedback_and_support"
+        android:textColor="@color/text_color"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/recycleView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycleView2" />
 
-            <RelativeLayout
-                android:id="@+id/about_email_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_bottom_corners"
-                android:padding="@dimen/medium_margin">
-
-                <ImageView
-                    android:id="@+id/about_email_icon"
-                    android:layout_width="@dimen/normal_icon_size"
-                    android:layout_height="@dimen/normal_icon_size"
-                    android:background="@color/you_background_color"
-                    android:backgroundTint="@color/you_background_color"
-                    android:contentDescription="@null"
-                    android:padding="@dimen/medium_margin"
-                    android:src="@drawable/ic_mail_vector" />
-
-                <be.scri.views.MyTextView
-                    android:id="@+id/about_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignTop="@+id/about_email_icon"
-                    android:layout_alignBottom="@+id/about_email_icon"
-                    android:layout_marginStart="@dimen/normal_margin"
-                    android:layout_marginEnd="@dimen/normal_margin"
-                    android:layout_toEndOf="@+id/about_email_icon"
-                    android:background="@color/you_background_color"
-                    android:backgroundTint="@color/you_background_color"
-                    android:gravity="center_vertical"
-                    android:text="@string/my_email"
-                    android:textColor="@color/app_text_color"
-                    android:textColorHighlight="@color/app_text_color"
-                    android:textColorHint="@color/app_text_color"
-                    android:textColorLink="@color/app_text_color"
-                    android:textSize="@dimen/bigger_text_size" />
-
-            </RelativeLayout>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/about_help_us"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_margin"
-            android:background="@color/you_background_color"
-            android:backgroundTint="@color/you_background_color"
-            android:gravity="center_horizontal"
-            android:text="@string/help_us"
-            android:textColor="@color/app_text_color"
-            android:textColorHighlight="@color/app_text_color"
-            android:textColorHint="@color/app_text_color"
-            android:textColorLink="@color/app_text_color"
-            android:textSize="@dimen/big_text_size" />
-
-        <LinearLayout
-            android:id="@+id/about_help_us_holder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/medium_margin"
-            android:background="@drawable/section_holder_stroke"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:id="@+id/about_invite_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_background"
-                android:padding="@dimen/medium_margin">
-
-                <ImageView
-                    android:id="@+id/about_invite_icon"
-                    android:layout_width="@dimen/normal_icon_size"
-                    android:layout_height="@dimen/normal_icon_size"
-                    android:background="@color/you_background_color"
-                    android:backgroundTint="@color/you_background_color"
-                    android:contentDescription="@null"
-                    android:padding="@dimen/medium_margin"
-                    android:src="@drawable/ic_add_person_vector" />
-
-                <be.scri.views.MyTextView
-                    android:id="@+id/about_invite"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignTop="@+id/about_invite_icon"
-                    android:layout_alignBottom="@+id/about_invite_icon"
-                    android:layout_marginStart="@dimen/normal_margin"
-                    android:layout_marginEnd="@dimen/normal_margin"
-                    android:layout_toEndOf="@+id/about_invite_icon"
-                    android:background="@color/you_background_color"
-                    android:backgroundTint="@color/you_background_color"
-                    android:gravity="center_vertical"
-                    android:text="@string/invite_friends"
-                    android:textColor="@color/app_text_color"
-                    android:textColorHighlight="@color/app_text_color"
-                    android:textColorHint="@color/app_text_color"
-                    android:textColorLink="@color/app_text_color"
-                    android:textSize="@dimen/bigger_text_size" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle2" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        app:itemBackground="@color/nav_bar_color"
+        android:background="@color/nav_bar_color"
         app:itemIconTint="@drawable/nav_bar_selector"
         app:itemTextColor="@drawable/nav_bar_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_navigation_bottom" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
