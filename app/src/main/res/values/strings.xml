@@ -1518,6 +1518,8 @@
     <string name="russian">Russian</string>
     <string name="spanish">spanish</string>
     <string name="swedish">swedish</string>
+    <string name="feedback_and_support">Feedback and support\n</string>
+    <string name="community_title">Community</string>
 
     <string-array name="months">
         <item>@string/january</item>
