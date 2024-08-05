@@ -38,6 +38,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+        gestureDetector = GestureDetector(this)
         setupRecyclerViews()
         appName = intent.getStringExtra(APP_NAME) ?: ""
         val textColor = getProperTextColor()
