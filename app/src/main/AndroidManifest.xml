@@ -150,6 +150,10 @@
             android:name="be.scri.activities.AboutActivity"
             android:label="@string/about"
             android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name="be.scri.activities.WikimediaScribeActivity"
+            android:label="@string/wikimedia_and_scribe"
+            android:parentActivityName=".activities.MainActivity" />
 
         <activity-alias
             android:name=".activities.SplashActivity.Orange"

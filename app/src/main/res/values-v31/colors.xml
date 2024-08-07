@@ -12,6 +12,7 @@
     <color name="icon_color">#000</color>
     <color name = "card_view_color">#FFF</color>
     <color name = "menu_option_color">#878472</color>
+    <color name = "corner_polygon_color">@color/light_tutorial_button_color</color>
 
     <!-- Commons colors -->
     <color name="you_status_bar_color">@android:color/system_accent2_50</color>

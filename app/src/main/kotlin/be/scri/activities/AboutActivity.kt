@@ -130,11 +130,13 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
             "Wikimedia and Scribe",
             image2 = R.drawable.right_arrow,
             url = null,
-            activity = null,
+            activity = WikimediaScribeActivity::class.java,
             action = null
         ))
         return data
     }
+
+
 
     private fun getSecondRecyclerViewData(): List<ItemsViewModel> {
         val data2 = ArrayList<ItemsViewModel>()
