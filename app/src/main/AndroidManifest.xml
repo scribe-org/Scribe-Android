@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="auto"
-    package="be.scri">
+    android:installLocation="auto">
 
     <uses-permission
         android:name="android.permission.USE_FINGERPRINT"
@@ -149,6 +148,10 @@
         <activity
             android:name="be.scri.activities.AboutActivity"
             android:label="@string/about"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name="be.scri.activities.WikimediaScribeActivity"
+            android:label="@string/wikimedia_and_scribe"
             android:parentActivityName=".activities.MainActivity" />
 
         <activity-alias
