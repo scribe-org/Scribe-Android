@@ -18,12 +18,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="5dp">
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="303dp"
@@ -36,81 +40,81 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@color/card_view_color"
-                app:cardBackgroundColor="@color/card_view_color"
-                app:cardCornerRadius="20dp">
-
-                <LinearLayout
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/card_view_color"
+                    app:cardBackgroundColor="@color/card_view_color"
+                    app:cardCornerRadius="20dp">
 
-                    <TextView
-                        android:layout_width="321dp"
-                        android:layout_height="136dp"
-                        android:layout_gravity=""
-                        android:text="@string/scribe_wikimedia"
-                        android:textSize="16sp" />
-
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="550px"
-                        android:layout_height="380px"
-                        android:layout_gravity="center"
-                        android:baselineAlignBottom="false"
-                        app:srcCompat="@drawable/wikidata_logo" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/wikidata_and_scribe"
-                        android:textSize="16sp" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="321dp"
+                            android:layout_height="136dp"
+                            android:layout_gravity=""
+                            android:text="@string/scribe_wikimedia"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="550px"
+                            android:layout_height="380px"
+                            android:layout_gravity="center"
+                            android:baselineAlignBottom="false"
+                            app:srcCompat="@drawable/wikidata_logo" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/wikidata_and_scribe"
+                            android:textSize="16sp" />
+
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="251dp"
+                            android:layout_height="123dp"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/wikipedia_logo" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/wikipedia_and_scribe"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
 
                     <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="251dp"
-                        android:layout_height="123dp"
-                        android:layout_gravity="center"
-                        app:srcCompat="@drawable/wikipedia_logo" />
+                        android:layout_width="75dp"
+                        android:layout_height="76dp"
+                        android:layout_gravity="top|end"
+                        android:alpha="0.9"
+                        android:contentDescription="@string/wikimedia_logo"
+                        android:src="@drawable/corner_polygon" />
 
-                    <TextView
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/wikipedia_and_scribe"
-                        android:textSize="16sp" />
+                        android:layout_gravity="top|end"
+                        android:layout_margin="8dp"
 
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="75dp"
-                    android:layout_height="76dp"
-                    android:layout_gravity="top|end"
-                    android:alpha="0.9"
-                    android:contentDescription="@string/wikimedia_logo"
-                    android:src="@drawable/corner_polygon" />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/wikimedia_logo"
-                    android:src="@drawable/wikimedia_logo_black"
-
-                    android:layout_gravity="top|end"
-                    android:layout_margin="8dp"/>
-            </androidx.cardview.widget.CardView>
+                        android:contentDescription="@string/wikimedia_logo"
+                        android:src="@drawable/wikimedia_logo_black" />
+                </androidx.cardview.widget.CardView>
             </FrameLayout>
         </LinearLayout>
     </ScrollView>
