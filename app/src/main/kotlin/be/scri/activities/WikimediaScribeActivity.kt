@@ -30,7 +30,7 @@ class WikimediaScribeActivity : BaseSimpleActivity(){
                     return@OnNavigationItemSelectedListener true
                 }
 
-                R.id.about ->  {
+                R.id.info ->  {
                     return@OnNavigationItemSelectedListener true }
                 R.id.installation -> {
                     startActivity(Intent(applicationContext, MainActivity::class.java))
@@ -40,7 +40,7 @@ class WikimediaScribeActivity : BaseSimpleActivity(){
             }
             false
         })
-        bottomNavigationView.selectedItemId = R.id.about
+        bottomNavigationView.selectedItemId = R.id.info
     }
 
     }

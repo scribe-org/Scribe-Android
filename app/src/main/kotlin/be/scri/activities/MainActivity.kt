@@ -116,7 +116,7 @@ class MainActivity : SimpleActivity(), GestureDetector.OnGestureListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.settings -> launchSettings()
-            R.id.about -> launchAbout()
+            R.id.info -> launchAbout()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
