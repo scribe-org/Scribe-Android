@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="_global.english">Inglés</string>
+    <string name="_global.french">Francés</string>
+    <string name="_global.german">Alemán</string>
+    <string name="_global.italian">Italiano</string>
+    <string name="_global.portuguese">Portugués</string>
+    <string name="_global.russian">Ruso</string>
+    <string name="_global.spanish">Español</string>
+    <string name="_global.swedish">Sueco</string>
+    <string name="app.about.appHint">Aquí puedes obtener más información sobre Scribe y su comunidad.</string>
+    <string name="app.about.appHints">Restablecer notificaciones de aplicaciones</string>
+    <string name="app.about.bugReport">Reportar un error</string>
+    <string name="app.about.community">Comunidad</string>
+    <string name="app.about.email">Envianos un correo electrónico</string>
+    <string name="app.about.feedback">Comentarios y soporte</string>
+    <string name="app.about.github">Ver el código en GitHub</string>
+    <string name="app.about.legal">Legal</string>
+    <string name="app.about.mastodon">Siguenos en Mastodon</string>
+    <string name="app.about.matrix">Chatea con el equipo en Matrix</string>
+    <string name="app.about.privacyPolicy">Política de privacidad</string>
+    <string name="app.about.privacyPolicy.body">Tenga en cuenta que la versión en inglés de esta política tiene prioridad sobre todas las demás versiones.
+
+Los desarrolladores de Scribe (SCRIBE) crearon la aplicación para iOS "Scribe - Language Keyboards" (SERVICIO) como una aplicación de código abierto. SCRIBE proporciona este SERVICIO sin coste y está destinado a usarse tal como está.
+
+Esta política de privacidad (POLÍTICA) se utiliza para informar al lector sobre las políticas de acceso, seguimiento, recopilación, retención, uso y divulgación de información personal (INFORMACIÓN DEL USUARIO) y datos de uso (DATOS DEL USUARIO) para todas las personas que hacen uso de este SERVICIO (USUARIOS).
+
+LA INFORMACIÓN DEL USUARIO se define específicamente como cualquier información relacionada con los propios USUARIOS o los dispositivos que utilizan para acceder al SERVICIO.
+
+LOS DATOS DEL USUARIO se definen específicamente como cualquier texto escrito o acción realizada por los USUARIOS mientras utilizan el SERVICIO.
+
+1. Declaración de política
+
+Este SERVICIO no accede, rastrea, recopila, retiene, utiliza ni divulga ninguna INFORMACIÓN DEL USUARIO ni DATOS DEL USUARIO.
+
+2. No rastrear
+
+A los USUARIOS que se comuniquen con SCRIBE para solicitar que su INFORMACIÓN DE USUARIO y sus DATOS DE USUARIO no sean rastreados se les proporcionará una copia de esta POLÍTICA así como un enlace a todos los códigos fuente como prueba de que no están siendo rastreados.
+
+3. Datos de terceros
+
+Este SERVICIO hace uso de datos de terceros. Todos los datos utilizados en la creación de este SERVICIO provienen de fuentes que permiten su uso completo en la forma en que lo hace el SERVICIO. En concreto, los datos de este SERVICIO provienen de Wikidata, Wikipedia y Unicode. Wikidata afirma que "Todos los datos estructurados en los espacios de nombres principal, de propiedad y de lexema están disponibles bajo la Licencia Creative Commons CC0; el texto en otros espacios de nombres está disponible bajo la Licencia Creative Commons Attribution-Share Alike". La política que detalla el uso de los datos de Wikidata se puede encontrar en https://www.wikidata.org/wiki/Wikidata:Licensing. Wikipedia afirma que los datos de texto, el tipo de datos utilizados por el SERVICIO, "... pueden usarse bajo los términos de la licencia Creative Commons Attribution Share-Alike". La política que detalla el uso de los datos de Wikipedia se puede encontrar en https://en.wikipedia.org/wiki/Wikipedia:Reusing_Wikipedia_content. Unicode otorga permiso, "... sin cargo, a cualquier persona que obtenga una copia de los archivos de datos Unicode y cualquier documentación asociada (los "Archivos de Datos") o el software Unicode y cualquier documentación asociada (el "Software") para tratar los Archivos de Datos o el Software sin restricción..." La política que detalla el uso de datos Unicode se puede encontrar en https://www.unicode.org/license.txt.
+
+4. Código fuente de terceros
+
+Este SERVICIO se basó en código de terceros. Todo el código fuente utilizado en la creación de este SERVICIO proviene de fuentes que permiten su uso completo en la forma en que lo hace el SERVICIO. En concreto, la base de este proyecto fue el proyecto CustomKeyboard de Ethan Sarif-Kattan. CustomKeyboard se publicó bajo una licencia MIT, que está disponible en https://github.com/EthanSK/CustomKeyboard/blob/master/LICENSE.
+
+5. Servicios de terceros
+
+Este SERVICIO hace uso de servicios de terceros para manipular algunos de los datos de terceros. En concreto, los datos se han traducido utilizando modelos de los transformadores de Hugging Face. Este servicio está cubierto por una Licencia Apache 2.0, que establece que está disponible para uso comercial, modificación, distribución, uso de patentes y uso privado. La licencia para el servicio mencionado anteriormente se puede encontrar en https://github.com/huggingface/transformers/blob/master/LICENSE.
+
+6. Enlaces de terceros
+
+Este SERVICIO contiene enlaces a páginas web externas. Si los USUARIOS hacen clic en un enlace de un tercero, serán dirigidos a un sitio web. Tenga en cuenta que estos sitios web externos no son operados por este SERVICIO. Por lo tanto, se recomienda encarecidamente a los USUARIOS que revisen la política de privacidad de estos sitios web. Este SERVICIO no tiene control ni asume ninguna responsabilidad por el contenido, las políticas de privacidad o las prácticas de los sitios o servicios de terceros.
+
+7. Imágenes de terceros
+
+Este SERVICIO contiene imágenes con derechos de autor de terceros. En concreto, esta aplicación incluye una copia de los logotipos de GitHub, Inc. y Wikidata, marcas registradas de Wikimedia Foundation, Inc. Los términos por los que se puede utilizar el logotipo de GitHub se encuentran en https://github.com/logos, y los términos para el logotipo de Wikidata se encuentran en la siguiente página de Wikimedia: https://foundation.wikimedia.org/wiki/Policy:Trademark_policy. Este SERVICIO utiliza las imágenes con derechos de autor de una manera que cumple con estos criterios, con la única desviación de una rotación del logotipo de GitHub que es común en la comunidad de código abierto para indicar que hay un enlace al sitio web de GitHub.
+
+8. Aviso de contenido
+
+Este SERVICIO permite a los USUARIOS acceder a contenido lingüístico (CONTENIDO). Parte de este CONTENIDO podría considerarse inapropiado para niños y menores de edad. El acceso al CONTENIDO mediante el SERVICIO se realiza de forma que la información no esté disponible a menos que se conozca explícitamente. En concreto, los USUARIOS "pueden" traducir palabras, conjugar verbos y acceder a otras características gramaticales del CONTENIDO que puedan ser de naturaleza sexual, violenta o inapropiada de otro modo. Los USUARIOS "no pueden" traducir palabras, conjugar verbos y acceder a otras características gramaticales del CONTENIDO que puedan ser de naturaleza sexual, violenta o inapropiada de otro modo si no conocen ya la naturaleza de este CONTENIDO. SCRIBE no asume ninguna responsabilidad por el acceso a dicho CONTENIDO.
+
+9. Cambios
+
+Esta POLÍTICA está sujeta a cambios. Las actualizaciones de esta POLÍTICA reemplazarán todas las anteriores y, si se consideran importantes, se indicarán claramente en la próxima actualización correspondiente del SERVICIO. SCRIBE alienta a los USUARIOS a revisar periódicamente esta POLÍTICA para obtener la información más reciente sobre nuestras prácticas de privacidad y familiarizarse con los cambios.
+
+10. Contacto
+
+Si tiene alguna pregunta, inquietud o sugerencia sobre esta POLÍTICA, no dude en visitar https://github.com/scribe-org o comunicarse con SCRIBE a través de scribe.langauge@gmail.com. La persona responsable de dichas consultas es Andrew Tavis McAllister.
+
+11. Fecha de entrada en vigor
+
+Esta POLÍTICA entra en vigencia a partir del 24 de mayo de 2022.</string>
+    <string name="app.about.privacyPolicy.caption">Velamos por tu seguridad</string>
+    <string name="app.about.rate">Puntúa a Scribe</string>
+    <string name="app.about.scribe">Ver todas las aplicaciones de Scribe</string>
+    <string name="app.about.share">Compartir Scribe</string>
+    <string name="app.about.thirdParty">Licencias de terceros</string>
+    <string name="app.about.thirdParty.author">Autor</string>
+    <string name="app.about.thirdParty.body">Los desarrolladores de Scribe (SCRIBE) han creado la aplicación iOS "Scribe - Language Keyboards" (SERVICIO) utilizando código de terceros. Todo el código fuente utilizado en la creación de este SERVICIO proviene de fuentes que permiten su uso completo en la forma en que lo hace el SERVICIO. En esta sección se enumera el código fuente en el que se basó el SERVICIO, así como las licencias coincidentes de cada uno.
+
+A continuación se muestra una lista de todo el código fuente utilizado, el autor o autores principales del código, la licencia bajo la cual fue publicado en el momento de su uso y un enlace a la licencia.
+
+1. Teclado personalizado
+• Autor: EthanSK
+• Licencia: MIT
+• Enlace: https://github.com/EthanSK/CustomKeyboard/blob/master/LICENSE</string>
+    <string name="app.about.thirdParty.caption">¿De quién es el código que utilizamos?</string>
+    <string name="app.about.thirdParty.license">Licencia</string>
+    <string name="app.about.thirdParty.link">Enlace</string>
+    <string name="app.about.title">Acerca de</string>
+    <string name="app.about.wikimedia">Wikimedia y Scribe</string>
+    <string name="app.about.wikimedia.caption">¿Cómo funcionan juntos?</string>
+    <string name="app.about.wikimedia.text1">Scribe no sería posible sin las innumerables contribuciones de los colaboradores de Wikimedia a los numerosos proyectos que apoya. En concreto, Scribe utiliza datos de la comunidad de datos lexicográficos de Wikidata, así como datos de Wikipedia para cada idioma que Scribe admite.</string>
+    <string name="app.about.wikimedia.text2">Wikidata es un gráfico de conocimiento colaborativo y multilingüe alojado por la Fundación Wikimedia. Proporciona datos disponibles gratuitamente bajo una licencia de dominio público Creative Commons (CC0). Scribe utiliza datos de idioma de Wikidata para proporcionar a los usuarios conjugaciones verbales, anotaciones de casos, plurales y muchas otras características.</string>
+    <string name="app.about.wikimedia.text3">La Wikipedia es una enciclopedia libre multilingüe escrita y mantenida por una comunidad de voluntarios mediante una colaboración abierta y un sistema de edición basado en wiki. Scribe utiliza datos de la Wikipedia para generar autosugestiones derivando las palabras más comunes de un idioma, así como las palabras más comunes que las siguen.</string>
+    <string name="app.install">Instalación</string>
+    <string name="app.installation.appHint">Sigue las instrucciones para instalar los teclados Scribe en tu dispositivo.</string>
+    <string name="app.installation.settingsLink">Abrir la configuración de Scribe</string>
+    <string name="app.installation.text1">Seleccionar</string>
+    <string name="app.installation.text2">Activa los teclados que quieras utilizar
+
+4. Al escribir, presiona</string>
+    <string name="app.installation.text3">para seleccionar teclados</string>
+    <string name="app.installation.title">Instalación del teclado</string>
+    <string name="app.keyboards">Teclados</string>
+    <string name="app.settings.appHint">La configuración de la aplicación y los teclados de idiomas instalados se encuentran aquí.</string>
+    <string name="app.settings.appSettings">Ajustes de la aplicación</string>
+    <string name="app.settings.appSettings.appLanguage">Idioma de la aplicación</string>
+    <string name="app.settings.functionality">Funcionalidad</string>
+    <string name="app.settings.functionality.autoSuggestEmoji">Autosugerir emojis</string>
+    <string name="app.settings.installedKeyboards">Seleccionar el teclado instalado</string>
+    <string name="app.settings.layout">Disposición</string>
+    <string name="app.settings.layout.autoSuggestEmoji.description">Active las sugerencias y el autocompletado de los emojis para una escritura más expresiva.</string>
+    <string name="app.settings.layout.disableAccentCharacters">Deshabilitar caracteres acentuados</string>
+    <string name="app.settings.layout.disableAccentCharacters.description">Elimine las teclas de los letras acentuadas en la distribución del teclado principal.</string>
+    <string name="app.settings.layout.periodAndComma">Punto y coma en ABC</string>
+    <string name="app.settings.layout.periodAndComma.description">Agrega teclas de punto y coma al teclado principal para escribir más cómodamente.</string>
+    <string name="app.settings.oneDeviceLanguage.message">Solo tienes un idioma instalado en tu dispositivo. Instala más idiomas en Configuración y luego podrás seleccionar diferentes localizaciones de Scribe.</string>
+    <string name="app.settings.oneDeviceLanguage.title">Solo un idioma para el dispositivo</string>
+    <string name="app.settings.title">Ajustes</string>
+    <string name="app.settings.translation">Traducción</string>
+    <string name="app.settings.translation.translateLang">Idioma de la traducción</string>
+    <string name="app.settings.translation.translateLang.caption">Elige un idioma para traducir</string>
+    <string name="app.wikidataExplanation1">Wikidata es un gráfico de conocimiento editado de forma colaborativa y mantenido por la Fundación Wikimedia. Sirve como fuente de datos abiertos para proyectos como Wikipedia y muchos otros.</string>
+    <string name="app.wikidataExplanation2">Scribe utiliza los datos lingüísticos de Wikidata para muchas de sus funciones principales. ¡Obtenemos información como géneros de sustantivos, conjugaciones de verbos y mucho más!</string>
+    <string name="app.wikidataExplanation3">Puedes crear una cuenta en wikidata.org para unirte a la comunidad que apoya a Scribe y a muchos otros proyectos. ¡Ayúdanos a llevar información gratuita al mundo!</string>
+</resources>
