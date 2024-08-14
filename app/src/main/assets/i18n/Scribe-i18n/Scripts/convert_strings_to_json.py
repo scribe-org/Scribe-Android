@@ -10,6 +10,15 @@ import os
 import json
 import re
 
+def unescape_special_characters(string):
+    string = string.replace("&gt;", ">")
+    string = string.replace("&lt;", "<")
+    string = string.replace("&amp;", "&")
+    string = string.replace("\\'", "'")
+    return string
+
+
+
 directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dir_list = os.listdir(directory)
 languages = sorted(
@@ -23,6 +32,7 @@ for lang in languages:
         content = file.read()
     matches = regex.findall(content)
     result = dict(matches)
+    result = {key: unescape_special_characters(value) for key, value in result.items()}
     with open(os.path.join(directory,f'{lang}.json'), 'w',encoding='utf-8') as file:
         json.dump(result, file, indent=4,ensure_ascii=False)
 

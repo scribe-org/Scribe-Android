@@ -7,6 +7,14 @@ Usage:
 import os
 import json
 
+
+def replace_special_characters(string):
+    string = string.replace("'", "\\'")
+    string = string.replace("&", "&amp;")
+    string = string.replace("<", "&lt;")
+    string = string.replace(">", "&gt;")
+    return string
+
 directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dir_list = os.listdir(directory)
 languages = sorted(
@@ -30,6 +38,7 @@ for lang in languages:
             json_data = json.loads(json_data)
 
             for key, value in json_data.items():
+                value = replace_special_characters(value)
                 xml_file.write(f'    <string name="{key}">{value}</string>\n')
 
         xml_file.write('</resources>\n')

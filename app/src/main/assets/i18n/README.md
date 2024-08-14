@@ -81,7 +81,7 @@ The [issue tracker for Scribe-i18n](https://github.com/scribe-org/Scribe-i18n/is
 7. Scribe-i18n directories that are [Git subtrees](https://docs.github.com/en/get-started/using-git/about-git-subtree-merges) in other Scribe application repos are then synched. For each project using Scribe-i18n:
 
    - Navigate to the root of the Scribe project's repo
-   - To load into the project the latest Scribe-i18n updates, run the following - where `subtree-directory` is the directory within the repo structure with the Scribe-i18n subtree (refer to the `Localization` section of the project's `CONTRIBUTING.md`):
+   - To load into the project the latest Scribe-i18n updates, run the following - where `subtree-directory` is the directory within the repo structure with the Scribe-i18n subtree:
 
      ```bash
      git subtree pull --prefix <subtree-directory> git@github.com:scribe-org/Scribe-i18n.git main --squash

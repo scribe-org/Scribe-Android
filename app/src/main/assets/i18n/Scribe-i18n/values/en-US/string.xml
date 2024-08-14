@@ -8,7 +8,7 @@
     <string name="_global.russian">Russian</string>
     <string name="_global.spanish">Spanish</string>
     <string name="_global.swedish">Swedish</string>
-    <string name="app.about.appHint">Here's where you can learn more about Scribe and its community.</string>
+    <string name="app.about.appHint">Here\'s where you can learn more about Scribe and its community.</string>
     <string name="app.about.appHints">Reset app hints</string>
     <string name="app.about.bugReport">Report a bug</string>
     <string name="app.about.community">Community</string>
@@ -123,7 +123,7 @@ The following is a list of all used source code, the main author or authors of t
     <string name="app.settings.translation">Translation</string>
     <string name="app.settings.translation.translateLang">Translation language</string>
     <string name="app.settings.translation.translateLang.caption">Choose a language to translate from</string>
-    <string name="app.wikidataExplanation1">Wikidata is a collaboratively edited knowledge graph that's maintained by the Wikimedia Foundation. It serves as a source of open data for projects like Wikipedia and countless others.</string>
-    <string name="app.wikidataExplanation2">Scribe uses Wikidata's language data for many of its core features. We get information like noun genders, verb conjugations and much more!</string>
-    <string name="app.wikidataExplanation3">You can make an account at wikidata.org to join the community that's supporting Scribe and so many other projects. Help us bring free information to the world!</string>
+    <string name="app.wikidataExplanation1">Wikidata is a collaboratively edited knowledge graph that\'s maintained by the Wikimedia Foundation. It serves as a source of open data for projects like Wikipedia and countless others.</string>
+    <string name="app.wikidataExplanation2">Scribe uses Wikidata\'s language data for many of its core features. We get information like noun genders, verb conjugations and much more!</string>
+    <string name="app.wikidataExplanation3">You can make an account at wikidata.org to join the community that\'s supporting Scribe and so many other projects. Help us bring free information to the world!</string>
 </resources>
