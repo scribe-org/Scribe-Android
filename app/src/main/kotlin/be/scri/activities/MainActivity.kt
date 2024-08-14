@@ -107,21 +107,6 @@ class MainActivity : SimpleActivity(), GestureDetector.OnGestureListener {
 
 
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        updateMenuItemColors(menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.settings -> launchSettings()
-            R.id.about -> launchAbout()
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
-    }
-
     private fun launchSettings() {
         hideKeyboard()
         startActivity(Intent(applicationContext, SettingsActivity::class.java))
