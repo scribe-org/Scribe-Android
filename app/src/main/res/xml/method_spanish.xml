@@ -3,7 +3,7 @@
     android:icon="@mipmap/ic_launcher" >
     <subtype
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/spanish"
+        android:label="@string/_global.spanish"
         android:imeSubtypeLocale="sp"
         android:imeSubtypeMode="keyboard" />
 </input-method>
