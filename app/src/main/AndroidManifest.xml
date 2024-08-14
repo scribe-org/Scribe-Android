@@ -19,7 +19,8 @@
         android:label="@string/app_launcher_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:localeConfig="@xml/locales_config">
 
         <activity
             android:name=".activities.SplashActivity"
@@ -132,7 +133,7 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:exported="true"
-            android:label="@string/settings"
+            android:label="@string/app.settings.title"
             android:parentActivityName=".activities.MainActivity">
 
             <intent-filter>
@@ -147,11 +148,11 @@
 
         <activity
             android:name="be.scri.activities.AboutActivity"
-            android:label="@string/about"
+            android:label="@string/app.about.title"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name="be.scri.activities.WikimediaScribeActivity"
-            android:label="@string/wikimedia_and_scribe"
+            android:label="@string/app.about.wikimedia"
             android:parentActivityName=".activities.MainActivity" />
 
         <activity-alias

@@ -28,14 +28,15 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="40dp" />
+
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="303dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="56dp"
+                android:text="@string/app.about.wikimedia.caption"
                 android:layout_marginEnd="16dp"
-                android:text="@string/wikimedia_and_scribe_title"
                 android:textColor="@color/app_text_color"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -63,10 +64,10 @@
                         android:padding="16dp">
 
                         <TextView
-                            android:layout_width="321dp"
-                            android:layout_height="136dp"
+                            android:layout_width="304dp"
+                            android:layout_height="146dp"
                             android:layout_gravity=""
-                            android:text="@string/scribe_wikimedia"
+                            android:text="@string/app.about.wikimedia.text1"
                             android:textSize="16sp" />
 
                         <ImageView
@@ -80,7 +81,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/wikidata_and_scribe"
+                            android:text="@string/app.about.wikimedia.text2"
                             android:textSize="16sp" />
 
                         <ImageView
@@ -93,7 +94,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/wikipedia_and_scribe"
+                            android:text="@string/app.about.wikimedia.text3"
                             android:textSize="16sp" />
 
                     </LinearLayout>
@@ -103,7 +104,7 @@
                         android:layout_height="76dp"
                         android:layout_gravity="top|end"
                         android:alpha="0.9"
-                        android:contentDescription="@string/wikimedia_logo"
+                        android:contentDescription="@string/app.about.wikimedia"
                         android:src="@drawable/corner_polygon" />
 
                     <ImageView
@@ -112,7 +113,7 @@
                         android:layout_gravity="top|end"
                         android:layout_margin="8dp"
 
-                        android:contentDescription="@string/wikimedia_logo"
+                        android:contentDescription="@string/app.about.wikimedia"
                         android:src="@drawable/wikimedia_logo_black" />
                 </androidx.cardview.widget.CardView>
             </FrameLayout>

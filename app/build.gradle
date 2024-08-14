@@ -12,6 +12,8 @@ if (keystorePropertiesFile.exists()) {
 android {
     compileSdk 34
 
+
+
     defaultConfig {
         applicationId "be.scri"
         minSdk 23

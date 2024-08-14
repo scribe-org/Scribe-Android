@@ -29,7 +29,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Get the code on GitHub"
-            android:textSize="16sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="15sp"
+            android:autoSizeMaxTextSize="24sp"
+            android:autoSizeStepGranularity="2sp"
             android:textStyle="normal" />
 
         <ImageView

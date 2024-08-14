@@ -87,7 +87,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         val data = ArrayList<ItemsViewModel>()
         data.add(ItemsViewModel(
             image = R.drawable.github_logo,
-            "Get the code on GitHub",
+            R.string.app_about_github,
             image2 = R.drawable.external_link,
             url = "https://github.com/scribe-org/Scribe-Android",
             activity = null,
@@ -95,7 +95,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ))
         data.add(ItemsViewModel(
             image = R.drawable.matrix_icon,
-            "Chat with the team on Matrix",
+            R.string.app_about_matrix,
             image2 = R.drawable.external_link,
             url = "https://matrix.to/%23/%23scribe_community:matrix.org",
             activity = null,
@@ -103,7 +103,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ))
         data.add(ItemsViewModel(
             image = R.drawable.mastodon_svg_icon,
-            "Follow us on Mastodon",
+            R.string.app_about_mastodon,
             image2 = R.drawable.external_link,
             url = "https://wikis.world/@scribe",
             activity = null,
@@ -111,7 +111,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ))
         data.add(ItemsViewModel(
             image = R.drawable.share_icon,
-            "Share Scribe",
+            R.string.app_about_share,
             image2 = R.drawable.external_link,
             url = null,
             activity = null,
@@ -119,7 +119,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ))
         data.add(ItemsViewModel(
             image = R.drawable.scribe_icon,
-            "View all Scribe Apps",
+            R.string.app_about_scribe,
             image2 = R.drawable.external_link,
             url = null,
             activity = null,
@@ -127,7 +127,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ))
         data.add(ItemsViewModel(
             image = R.drawable.wikimedia_logo_black,
-            "Wikimedia and Scribe",
+            R.string.app_about_wikimedia,
             image2 = R.drawable.right_arrow,
             url = null,
             activity = WikimediaScribeActivity::class.java,
@@ -142,7 +142,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         val data2 = ArrayList<ItemsViewModel>()
         data2.add(ItemsViewModel(
             image = R.drawable.star,
-            "Rate Scribe",
+            R.string.app_about_rate,
             image2 = R.drawable.external_link,
             url = null,
             activity = null,
@@ -150,7 +150,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ))
         data2.add(ItemsViewModel(
             image = R.drawable.bug_report_icon,
-            "Report a bug",
+            R.string.app_about_bugReport,
             image2 = R.drawable.external_link,
             url = "https://github.com/scribe-org/Scribe-Android/issues",
             activity = null,
@@ -158,7 +158,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ))
         data2.add(ItemsViewModel(
             image = R.drawable.mail_icon,
-            "Send us an email",
+            R.string.app_about_email,
             image2 = R.drawable.external_link,
             url = null,
             activity = null,
@@ -166,7 +166,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ))
         data2.add(ItemsViewModel(
             image = R.drawable.bookmark_icon,
-            "Version x.x.x",
+            R.string.app_version,
             image2 = R.drawable.right_arrow,
             url = null,
             activity = null,
@@ -174,7 +174,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ))
         data2.add(ItemsViewModel(
             image = R.drawable.light_bulb_icon,
-            "Reset App hints",
+            R.string.app_about_appHints,
             image2 = R.drawable.counter_clockwise_icon,
             url = null,
             activity = null,
