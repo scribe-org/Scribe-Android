@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
 import be.scri.models.ItemsViewModel
@@ -28,7 +29,7 @@ class CustomAdapter(private val mList: List<ItemsViewModel> , private val contex
         val itemViewModel = mList[position]
         holder.imageView.setImageResource(itemViewModel.image)
 
-        holder.textView.text = itemViewModel.text
+        holder.textView.text = getString(context,itemViewModel.textResId)
         holder.imageView2.setImageResource(itemViewModel.image2)
         if (position == 0) {
             holder.itemView.setBackgroundResource(R.drawable.rounded_top);

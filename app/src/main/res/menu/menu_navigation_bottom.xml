@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/installation"
-        android:title="Installation"
+        android:title="@string/app.install"
         android:icon="@drawable/material_keyboard"/>
     <item
         android:id="@+id/settings"
-        android:title="Settings"
+        android:title="@string/app.settings.title"
         android:icon="@drawable/material_settings"/>
 
     <item
         android:id="@+id/info"
-        android:title="About"
+        android:title="@string/app.about.title"
         android:icon="@drawable/material_info"/>
 
 </menu>

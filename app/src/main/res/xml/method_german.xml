@@ -1,6 +1,6 @@
 <input-method xmlns:android="http://schemas.android.com/apk/res/android">
     <subtype
-        android:label="@string/german_keyboard"
+        android:label="@string/_global.german"
         android:imeSubtypeLocale="ge"
         android:imeSubtypeMode="keyboard" />
 </input-method>

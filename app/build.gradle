@@ -12,6 +12,8 @@ if (keystorePropertiesFile.exists()) {
 android {
     compileSdk 34
 
+
+
     defaultConfig {
         applicationId "be.scri"
         minSdk 23
@@ -93,3 +95,33 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 }
+
+
+task moveFromi18n {
+    def locales = ['de','es','sv','en-US']
+
+    locales.each { locale ->
+        def fromDir = "src/main/assets/i18n/Scribe-i18n/values/${locale}/"
+        def toDir = locale == 'en-US' ? "src/main/res/values/" : "src/main/res/values-${locale}/"
+        def sourceDir = file(fromDir)
+
+        if (sourceDir.exists()) {
+            println "Preparing to move from $fromDir to $toDir"
+            doLast {
+                copy {
+                    from fileTree(dir: fromDir)
+                    into toDir
+                    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+                }
+            }
+        } else {
+            println "Source directory does not exist: $fromDir"
+        }
+    }
+}
+
+tasks.named('preBuild').configure {
+    dependsOn tasks.named('moveFromi18n')
+}
+
+
