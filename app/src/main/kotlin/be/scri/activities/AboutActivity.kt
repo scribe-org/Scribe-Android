@@ -81,106 +81,35 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         recyclerView2.layoutManager = LinearLayoutManager(this)
         recyclerView2.adapter = CustomAdapter(getSecondRecyclerViewData(), this)
         recyclerView2.suppressLayout(true)
+
+        val recyclerView3 = findViewById<RecyclerView>(R.id.recycleView3)
+        recyclerView3.layoutManager = LinearLayoutManager(this)
+        recyclerView3.adapter = CustomAdapter(getThirdRecyclerViewData(), this)
+        recyclerView3.suppressLayout(true)
     }
 
-    private fun getFirstRecyclerViewData(): List<ItemsViewModel> {
-        val data = ArrayList<ItemsViewModel>()
-        data.add(ItemsViewModel(
-            image = R.drawable.github_logo,
-            R.string.app_about_github,
-            image2 = R.drawable.external_link,
-            url = "https://github.com/scribe-org/Scribe-Android",
-            activity = null,
-            action = null
-        ))
-        data.add(ItemsViewModel(
-            image = R.drawable.matrix_icon,
-            R.string.app_about_matrix,
-            image2 = R.drawable.external_link,
-            url = "https://matrix.to/%23/%23scribe_community:matrix.org",
-            activity = null,
-            action = null
-        ))
-        data.add(ItemsViewModel(
-            image = R.drawable.mastodon_svg_icon,
-            R.string.app_about_mastodon,
-            image2 = R.drawable.external_link,
-            url = "https://wikis.world/@scribe",
-            activity = null,
-            action = null
-        ))
-        data.add(ItemsViewModel(
-            image = R.drawable.share_icon,
-            R.string.app_about_share,
-            image2 = R.drawable.external_link,
-            url = null,
-            activity = null,
-            action = ::shareScribe
-        ))
-        data.add(ItemsViewModel(
-            image = R.drawable.scribe_icon,
-            R.string.app_about_scribe,
-            image2 = R.drawable.external_link,
-            url = null,
-            activity = null,
-            action = null
-        ))
-        data.add(ItemsViewModel(
-            image = R.drawable.wikimedia_logo_black,
-            R.string.app_about_wikimedia,
-            image2 = R.drawable.right_arrow,
-            url = null,
-            activity = WikimediaScribeActivity::class.java,
-            action = null
-        ))
-        return data
-    }
+    private fun getFirstRecyclerViewData(): List<ItemsViewModel> = listOf(
+        ItemsViewModel(image = R.drawable.github_logo, textResId = R.string.app_about_github, image2 = R.drawable.external_link, url = "https://github.com/scribe-org/Scribe-Android", activity = null, action = null),
+        ItemsViewModel(image = R.drawable.matrix_icon, textResId = R.string.app_about_matrix, image2 = R.drawable.external_link, url = "https://matrix.to/%23/%23scribe_community:matrix.org", activity = null, action = null),
+        ItemsViewModel(image = R.drawable.mastodon_svg_icon, textResId = R.string.app_about_mastodon, image2 = R.drawable.external_link, url = "https://wikis.world/@scribe", activity = null, action = null),
+        ItemsViewModel(image = R.drawable.share_icon, textResId = R.string.app_about_share, image2 = R.drawable.external_link, url = null, activity = null, action = ::shareScribe),
+        ItemsViewModel(image = R.drawable.scribe_icon, textResId = R.string.app_about_scribe, image2 = R.drawable.external_link, url = null, activity = null, action = null),
+        ItemsViewModel(image = R.drawable.wikimedia_logo_black, textResId = R.string.app_about_wikimedia, image2 = R.drawable.right_arrow, url = null, activity = WikimediaScribeActivity::class.java, action = null)
+    )
 
+    private fun getSecondRecyclerViewData(): List<ItemsViewModel> = listOf(
+        ItemsViewModel(image = R.drawable.star, textResId = R.string.app_about_rate, image2 = R.drawable.external_link, url = null, activity = null, action = null),
+        ItemsViewModel(image = R.drawable.bug_report_icon, textResId = R.string.app_about_bugReport, image2 = R.drawable.external_link, url = "https://github.com/scribe-org/Scribe-Android/issues", activity = null, action = null),
+        ItemsViewModel(image = R.drawable.mail_icon, textResId = R.string.app_about_email, image2 = R.drawable.external_link, url = null, activity = null, action = ::sendEmail),
+        ItemsViewModel(image = R.drawable.bookmark_icon, textResId = R.string.app_version, image2 = R.drawable.right_arrow, url = null, activity = null, action = null),
+        ItemsViewModel(image = R.drawable.light_bulb_icon, textResId = R.string.app_about_appHints, image2 = R.drawable.counter_clockwise_icon, url = null, activity = null, action = null)
+    )
 
-
-    private fun getSecondRecyclerViewData(): List<ItemsViewModel> {
-        val data2 = ArrayList<ItemsViewModel>()
-        data2.add(ItemsViewModel(
-            image = R.drawable.star,
-            R.string.app_about_rate,
-            image2 = R.drawable.external_link,
-            url = null,
-            activity = null,
-            action = null
-        ))
-        data2.add(ItemsViewModel(
-            image = R.drawable.bug_report_icon,
-            R.string.app_about_bugReport,
-            image2 = R.drawable.external_link,
-            url = "https://github.com/scribe-org/Scribe-Android/issues",
-            activity = null,
-            action = null
-        ))
-        data2.add(ItemsViewModel(
-            image = R.drawable.mail_icon,
-            R.string.app_about_email,
-            image2 = R.drawable.external_link,
-            url = null,
-            activity = null,
-            action = ::sendEmail
-        ))
-        data2.add(ItemsViewModel(
-            image = R.drawable.bookmark_icon,
-            R.string.app_version,
-            image2 = R.drawable.right_arrow,
-            url = null,
-            activity = null,
-            action = null
-        ))
-        data2.add(ItemsViewModel(
-            image = R.drawable.light_bulb_icon,
-            R.string.app_about_appHints,
-            image2 = R.drawable.counter_clockwise_icon,
-            url = null,
-            activity = null,
-            action = null
-        ))
-        return data2
+    private fun getThirdRecyclerViewData(): List<ItemsViewModel> {
+        return listOf(
+            ItemsViewModel(image = R.drawable.shield_lock, R.string.app_about_privacyPolicy, image2 = R.drawable.right_arrow, url = null, activity = null, action = null),
+            ItemsViewModel(image = R.drawable.license_icon, R.string.app_about_thirdParty, image2 = R.drawable.right_arrow, url = null, activity = null, action = null)
+        )
     }
 
 
