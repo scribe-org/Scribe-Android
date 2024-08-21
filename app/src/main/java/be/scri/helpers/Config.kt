@@ -8,6 +8,7 @@ class Config(context: Context) : BaseConfig(context) {
         fun newInstance(context: Context) = Config(context)
     }
 
+
     var vibrateOnKeypress: Boolean
         get() = prefs.getBoolean(VIBRATE_ON_KEYPRESS, true)
         set(vibrateOnKeypress) = prefs.edit().putBoolean(VIBRATE_ON_KEYPRESS, vibrateOnKeypress).apply()
@@ -31,6 +32,7 @@ class Config(context: Context) : BaseConfig(context) {
     var periodOnDoubleTap : Boolean
         get() = prefs.getBoolean(PERIOD_ON_DOUBLE_TAP, true)
         set(periodOnDoubleTap) = prefs.edit().putBoolean(PERIOD_ON_DOUBLE_TAP, periodOnDoubleTap).apply()
+
 
     private fun getDefaultLanguage(): Int {
         val conf = context.resources.configuration
