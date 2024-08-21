@@ -11,13 +11,13 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     compileSdk 34
-
-
-
+    buildFeatures {
+        viewBinding = true
+    }
     defaultConfig {
         applicationId "be.scri"
-        minSdk 23
-        targetSdk 31
+        minSdk 26
+        targetSdk 34
         versionCode 7
         versionName "1.0.0"
         multiDexEnabled true
@@ -67,6 +67,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.activity:activity-ktx:1.9.1'
     kapt 'androidx.room:room-compiler:2.6.1'
     implementation 'androidx.room:room-runtime:2.6.1'
     annotationProcessor 'androidx.room:room-compiler:2.6.1'
