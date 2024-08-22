@@ -1,126 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/settings_scrollview"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:background="@color/you_background_color">
 
-    <LinearLayout
-        android:id="@+id/settings_holder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/you_background_color"
-        android:orientation="vertical">
+    <ScrollView
+        android:id="@+id/settings_scrollview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:paddingBottom="0dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/settings_general_settings_holder"
+            android:id="@+id/settings_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/medium_margin"
-            android:background="@drawable/section_holder_stroke"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/settings_vibrate_on_keypress_holder"
-                style="@style/SettingsHolderCheckboxStyle"
+            <TextView
+                android:id="@+id/languageTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ripple_background">
+                android:paddingStart="20dp"
+                android:paddingTop="30dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="10dp"
+                android:text="@string/app.settings.appSettings"
+                android:textColor="@color/app_text_color"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-                <be.scri.views.MyAppCompatCheckbox
-                    android:id="@+id/settings_vibrate_on_keypress"
-                    style="@style/SettingsCheckboxStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/vibrate_on_keypress"
-                    android:textColor="@color/app_text_color" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/settings_show_popup_on_keypress_holder"
-                style="@style/SettingsHolderCheckboxStyle"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ripple_background">
+                android:padding="2dp" />
 
-                <be.scri.views.MyAppCompatCheckbox
-                    android:id="@+id/settings_show_popup_on_keypress"
-                    style="@style/SettingsCheckboxStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/show_popup"
-                    android:textColorLink="#E1DCDC" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/settings_keyboard_language_holder"
-                style="@style/SettingsHolderTextViewStyle"
+            <TextView
+                android:id="@+id/selectLanguage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ripple_bottom_corners">
-
-                <be.scri.views.MyTextView
-                    android:id="@+id/settings_keyboard_language_label"
-                    style="@style/SettingsTextLabelStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/keyboard_language"
-                    android:textColor="@color/you_neutral_text_color" />
-
-                <be.scri.views.MyTextView
-                    android:id="@+id/settings_keyboard_language"
-                    style="@style/SettingsTextValueStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/settings_keyboard_language_label"
-                    tools:text="@string/translation_english" />
-            </RelativeLayout>
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="10dp"
+                android:text="@string/app.settings.installedKeyboards"
+                android:textColor="@color/app_text_color"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <RelativeLayout
-                android:id="@+id/settings_dark_mode_holder"
-                style="@style/SettingsHolderCheckboxStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_background">
+                android:layout_height="wrap_content">
 
-                <be.scri.views.MyAppCompatCheckbox
-                    android:id="@+id/settings_dark_mode"
-                    style="@style/SettingsCheckboxStyle"
+                <Button
+                    android:id="@+id/btnInstall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/dark_mode"
-                    android:textColor="@color/you_neutral_text_color" />
-            </RelativeLayout>
+                    android:layout_margin="10dp"
+                    android:background="@color/corner_polygon_color"
+                    android:padding="10dp"
+                    android:text="@string/app.install" />
 
-            <RelativeLayout
-                android:id="@+id/settings_period_on_space_bar_holder"
-                style="@style/SettingsHolderCheckboxStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_background">
-
-                <be.scri.views.MyAppCompatCheckbox
-                    android:id="@+id/settings_period_on_space_bar"
-                    style="@style/SettingsCheckboxStyle"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/period_on_space_bar"
-                    android:textColor="@color/you_neutral_text_color" />
+                    android:padding="2dp" />
             </RelativeLayout>
 
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        app:itemBackground="@color/nav_bar_color"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/nav_bar_color"
         app:itemIconTint="@drawable/nav_bar_selector"
         app:itemTextColor="@drawable/nav_bar_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_navigation_bottom" />
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

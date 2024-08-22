@@ -3,7 +3,6 @@ package be.scri.helpers
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +13,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
-import be.scri.activities.AboutActivity
-import be.scri.models.ImageItem
+import be.scri.models.ItemsViewModel
 import be.scri.models.SwitchItem
 import be.scri.models.TextItem
-import kotlinx.android.synthetic.main.card_view_with_switch.view.tvText
 
 class CustomAdapter(private val mList: List<Any>, private val context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -68,7 +65,7 @@ class CustomAdapter(private val mList: List<Any>, private val context: Activity)
     }
 
     private fun bindImageViewHolder(holder: ImageViewHolder, position: Int) {
-        val item = mList[position] as ImageItem
+        val item = mList[position] as ItemsViewModel
         holder.imageView.setImageResource(item.image)
         holder.textView.text = getString(context, item.textResId)
         holder.imageView2.setImageResource(item.image2)
@@ -95,7 +92,7 @@ class CustomAdapter(private val mList: List<Any>, private val context: Activity)
 
     private fun bindTextViewHolder(holder: TextViewHolder, position: Int) {
         val item = mList[position] as TextItem
-        holder.textView.text = item.text
+        holder.textView.text = getString(context,item.text)
         holder.imageView.setImageResource(item.image)
         holder.itemView.setOnClickListener {
             when(item.action){
@@ -128,7 +125,7 @@ class CustomAdapter(private val mList: List<Any>, private val context: Activity)
 
     override fun getItemViewType(position: Int): Int {
         return when (mList[position]) {
-            is ImageItem -> VIEW_TYPE_IMAGE
+            is ItemsViewModel -> VIEW_TYPE_IMAGE
             is SwitchItem -> VIEW_TYPE_SWITCH
             is TextItem -> VIEW_TYPE_TEXT
             else -> throw IllegalArgumentException("Invalid item type")

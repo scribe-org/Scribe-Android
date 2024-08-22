@@ -2,33 +2,63 @@ package be.scri.activities
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
+import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
 import android.view.GestureDetector
 import android.view.Menu
 import android.view.MotionEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_settings.*
+import androidx.recyclerview.widget.LinearLayoutManager
 import be.scri.R
-import be.scri.dialogs.RadioGroupDialog
+import be.scri.databinding.ActivitySettingsBinding
 import be.scri.extensions.config
 import be.scri.extensions.updateTextColors
-import be.scri.helpers.*
-import be.scri.models.RadioItem
+import be.scri.helpers.CustomAdapter
+import be.scri.models.SwitchItem
+import be.scri.models.TextItem
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_settings.settings_scrollview
 import kotlin.math.abs
+
 
 class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
 
     private lateinit var gestureDetector: GestureDetector
     private val swipeThreshold = 100
     private val swipeVelocityThreshold = 100
+    private lateinit var binding: ActivitySettingsBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setupRecycleView()
+        setupRecyclerView2()
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         gestureDetector = GestureDetector(this)
+
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val enabledInputMethods = imm.enabledInputMethodList
+        for(inputMethod in enabledInputMethods) {
+            if (inputMethod.packageName == "be.scri.debug") {
+                binding.btnInstall.visibility = View.INVISIBLE
+                binding.selectLanguage.visibility = View.VISIBLE
+            }
+        }
+        binding.btnInstall.setOnClickListener {
+            Intent(ACTION_INPUT_METHOD_SETTINGS).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(this)
+            }
+        }
+
+
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         if (bottomNavigationView != null) {
             bottomNavigationView.selectedItemId = R.id.settings
@@ -52,13 +82,157 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
         }
     }
 
+    private fun setupRecycleView(){
+        val recyclerView = binding.recyclerViewSettings
+        recyclerView.adapter = CustomAdapter(getFirstRecyclerViewData(),this)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.suppressLayout(true)
+    }
+
+    private fun getFirstRecyclerViewData():List<Any> = listOf(
+        TextItem(R.string.app_settings_appSettings_appLanguage , image = R.drawable.right_arrow , action = ::selectLanguage),
+        SwitchItem("Dark mode", isChecked = config.darkTheme , action = ::darkMode , action2 = ::lightMode),
+        SwitchItem("Vibrate on Keypress", isChecked = config.vibrateOnKeypress , action = ::enableVibrateOnKeypress , action2 = ::disableVibrateOnKeypress),
+        SwitchItem("Show a popup on keypress", isChecked = config.showPopupOnKeypress , action = ::enableShowPopupOnKeypress , action2 = ::disableShowPopupOnKeypress),
+    )
+
+
+    private fun selectLanguage() {
+        val intent: Intent = Intent(ACTION_APP_LOCALE_SETTINGS)
+        val uri = Uri.fromParts("package", packageName, null)
+        intent.setData(uri)
+        startActivity(intent)
+
+    }
+
+    private fun setupRecyclerView2() {
+        val recyclerView = binding.recyclerView2
+        val adapter = CustomAdapter(getRecyclerViewElements(),this)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+        recyclerView.suppressLayout(true)
+    }
+
+    private fun getRecyclerViewElements(): MutableList<TextItem> {
+        val languages = setupKeyboardLanguage()
+        val list = mutableListOf<TextItem>()
+        for (language in languages) {
+            var localizeLanguage:Int = 0
+            when(language) {
+                "English" -> localizeLanguage = R.string._global_english
+                "French" -> localizeLanguage = R.string._global_french
+                "German" -> localizeLanguage = R.string._global_german
+                "Russian" -> localizeLanguage = R.string._global_russian
+                "Spanish" -> localizeLanguage = R.string._global_spanish
+                "Italian" -> localizeLanguage = R.string._global_italian
+                "Portuguese" -> localizeLanguage = R.string._global_portuguese
+            }
+            list.add(
+                TextItem(
+                    text = localizeLanguage,
+                    image = R.drawable.right_arrow,
+                    action = { loadLanguageSettings(language) },
+                    language = language
+                )
+            )
+        }
+        return list
+    }
+    private fun loadLanguageSettings(language: String) {
+        val intent = Intent(this, LanguageSettings::class.java)
+        intent.putExtra("LANGUAGE_EXTRA", language)
+        startActivity(intent)
+    }
+
+
+    private fun setupKeyboardLanguage(): MutableList<String> {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val enabledInputMethods = imm.enabledInputMethodList
+        val result = mutableListOf<String>()
+
+        for (inputMethod in enabledInputMethods) {
+            when (inputMethod.serviceName) {
+                "be.scri.services.EnglishKeyboardIME" -> result.add("English")
+                "be.scri.services.GermanKeyboardIME" -> result.add("German")
+                "be.scri.services.RussianKeyboardIME" -> result.add("Russian")
+                "be.scri.services.SpanishKeyboardIME" -> result.add("Spanish")
+                "be.scri.services.FrenchKeyboardIME" -> result.add("French")
+                "be.scri.services.ItalianKeyboardIME" -> result.add("Italian")
+                "be.scri.services.PortugueseKeyboardIME" -> result.add("Portuguese")
+            }
+        }
+        return result
+    }
+
+
+    private fun lightMode() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("dark_mode", false)
+        editor.apply()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+
+    }
+    private fun darkMode(){
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("dark_mode", true)
+        editor.apply()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+    }
+
+    private fun enableVibrateOnKeypress() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("vibrate_on_keypress", true)
+        editor.apply()
+        config.vibrateOnKeypress = true
+    }
+
+    private fun disableVibrateOnKeypress() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("vibrate_on_keypress", false)
+        editor.apply()
+        config.vibrateOnKeypress = false
+    }
+
+    private fun enableShowPopupOnKeypress() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("show_popup_on_keypress", true)
+        editor.apply()
+        config.showPopupOnKeypress = true
+    }
+
+    private fun disableShowPopupOnKeypress() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("show_popup_on_keypress", false)
+        editor.apply()
+        config.showPopupOnKeypress = false
+    }
+
+    private fun enablePeriodOnSpaceBarDoubleTap() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("period_on_double_tap", true)
+        editor.apply()
+        config.periodOnDoubleTap = true
+    }
+
+    private fun disablePeriodOnSpaceBarDoubleTap() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("period_on_double_tap", false)
+        editor.apply()
+        config.periodOnDoubleTap = false
+    }
+
     override fun onResume() {
         super.onResume()
-        setupDarkTheme()
-        setupPeriodOnSpaceBarDoubleTap()
-        setupVibrateOnKeypress()
-        setupShowPopupOnKeypress()
-        setupKeyboardLanguage()
         updateTextColors(settings_scrollview)
     }
 
@@ -67,91 +241,6 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
         return super.onCreateOptionsMenu(menu)
     }
 
-    private fun setupVibrateOnKeypress() {
-        settings_vibrate_on_keypress.isChecked = config.vibrateOnKeypress
-        settings_vibrate_on_keypress_holder.setOnClickListener {
-            settings_vibrate_on_keypress.toggle()
-            config.vibrateOnKeypress = settings_vibrate_on_keypress.isChecked
-        }
-    }
-
-    private fun setupPeriodOnSpaceBarDoubleTap() {
-        settings_period_on_space_bar.isChecked = config.periodOnDoubleTap
-        settings_period_on_space_bar_holder.setOnClickListener {
-            settings_period_on_space_bar.toggle()
-            config.periodOnDoubleTap = settings_period_on_space_bar.isChecked
-        }
-    }
-
-    private fun setupDarkTheme() {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
-
-        settings_dark_mode.isChecked = isUserDarkMode
-
-        settings_dark_mode_holder.setOnClickListener {
-            settings_dark_mode.toggle()
-            editor.putBoolean("dark_mode", settings_dark_mode.isChecked)
-            editor.apply()
-
-            if (settings_dark_mode.isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-
-            recreate()
-        }
-    }
-
-    private fun setupShowPopupOnKeypress() {
-        settings_show_popup_on_keypress.isChecked = config.showPopupOnKeypress
-        settings_show_popup_on_keypress_holder.setOnClickListener {
-            settings_show_popup_on_keypress.toggle()
-            config.showPopupOnKeypress = settings_show_popup_on_keypress.isChecked
-        }
-    }
-
-    private fun setupKeyboardLanguage() {
-        settings_keyboard_language.text = getKeyboardLanguageText(config.keyboardLanguage)
-        settings_keyboard_language_holder.setOnClickListener {
-            val items = arrayListOf(
-                RadioItem(
-                    LANGUAGE_ENGLISH_QWERTY,
-                    getKeyboardLanguageText(LANGUAGE_ENGLISH_QWERTY)
-                ),
-                RadioItem(LANGUAGE_FRENCH, getKeyboardLanguageText(LANGUAGE_FRENCH)),
-                RadioItem(LANGUAGE_GERMAN, getKeyboardLanguageText(LANGUAGE_GERMAN)),
-                RadioItem(LANGUAGE_ITALIAN, getKeyboardLanguageText(LANGUAGE_ITALIAN)),
-                RadioItem(LANGUAGE_PORTUGUESE, getKeyboardLanguageText(LANGUAGE_PORTUGUESE)),
-                RadioItem(LANGUAGE_RUSSIAN, getKeyboardLanguageText(LANGUAGE_RUSSIAN)),
-                RadioItem(LANGUAGE_SPANISH, getKeyboardLanguageText(LANGUAGE_SPANISH)),
-                RadioItem(LANGUAGE_SWEDISH, getKeyboardLanguageText(LANGUAGE_SWEDISH))
-            )
-
-            RadioGroupDialog(this@SettingsActivity, items, config.keyboardLanguage) {
-                config.keyboardLanguage = it as Int
-                settings_keyboard_language.text = getKeyboardLanguageText(config.keyboardLanguage)
-            }
-        }
-    }
-
-    private fun getKeyboardLanguageText(language: Int): String {
-        return when (language) {
-            LANGUAGE_FRENCH -> getString(R.string.translation_french)
-            LANGUAGE_GERMAN -> getString(R.string.translation_german)
-            LANGUAGE_ITALIAN -> getString(R.string.translation_italian)
-            LANGUAGE_PORTUGUESE -> getString(R.string.translation_portuguese)
-            LANGUAGE_RUSSIAN -> getString(R.string.translation_russian)
-            LANGUAGE_SPANISH -> getString(R.string.translation_spanish)
-            LANGUAGE_SWEDISH -> getString(R.string.translation_swedish)
-            else -> getString(R.string.translation_english)
-        }
-    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return if (gestureDetector.onTouchEvent(event)) {
@@ -175,7 +264,7 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
     }
 
     override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-       return false
+        return false
     }
 
     override fun onLongPress(e: MotionEvent) {
@@ -202,5 +291,4 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
         }
         return true
     }
-    }
-
+}
