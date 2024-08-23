@@ -1,5 +1,6 @@
 package be.scri.activities
 
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

@@ -1,5 +1,6 @@
 package be.scri.activities
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.GestureDetector
@@ -88,7 +89,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         recyclerView3.suppressLayout(true)
     }
 
-    private fun getFirstRecyclerViewData(): List<ItemsViewModel> = listOf(
+    private fun getFirstRecyclerViewData(): List<Any> = listOf(
         ItemsViewModel(image = R.drawable.github_logo, textResId = R.string.app_about_github, image2 = R.drawable.external_link, url = "https://github.com/scribe-org/Scribe-Android", activity = null, action = null),
         ItemsViewModel(image = R.drawable.matrix_icon, textResId = R.string.app_about_matrix, image2 = R.drawable.external_link, url = "https://matrix.to/%23/%23scribe_community:matrix.org", activity = null, action = null),
         ItemsViewModel(image = R.drawable.mastodon_svg_icon, textResId = R.string.app_about_mastodon, image2 = R.drawable.external_link, url = "https://wikis.world/@scribe", activity = null, action = null),
@@ -97,7 +98,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ItemsViewModel(image = R.drawable.wikimedia_logo_black, textResId = R.string.app_about_wikimedia, image2 = R.drawable.right_arrow, url = null, activity = WikimediaScribeActivity::class.java, action = null)
     )
 
-    private fun getSecondRecyclerViewData(): List<ItemsViewModel> = listOf(
+    private fun getSecondRecyclerViewData(): List<Any> = listOf(
         ItemsViewModel(image = R.drawable.star, textResId = R.string.app_about_rate, image2 = R.drawable.external_link, url = null, activity = null, action = null),
         ItemsViewModel(image = R.drawable.bug_report_icon, textResId = R.string.app_about_bugReport, image2 = R.drawable.external_link, url = "https://github.com/scribe-org/Scribe-Android/issues", activity = null, action = null),
         ItemsViewModel(image = R.drawable.mail_icon, textResId = R.string.app_about_email, image2 = R.drawable.external_link, url = null, activity = null, action = ::sendEmail),
