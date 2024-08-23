@@ -3,6 +3,7 @@ package be.scri.activities
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
@@ -90,16 +91,31 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
         recyclerView.suppressLayout(true)
     }
 
-    private fun getFirstRecyclerViewData():List<Any> = listOf(
-        TextItem(R.string.app_settings_appSettings_appLanguage , image = R.drawable.right_arrow , action = ::selectLanguage),
-        SwitchItem("Dark mode", isChecked = config.darkTheme , action = ::darkMode , action2 = ::lightMode),
-        SwitchItem("Vibrate on Keypress", isChecked = config.vibrateOnKeypress , action = ::enableVibrateOnKeypress , action2 = ::disableVibrateOnKeypress),
-        SwitchItem("Show a popup on keypress", isChecked = config.showPopupOnKeypress , action = ::enableShowPopupOnKeypress , action2 = ::disableShowPopupOnKeypress),
-    )
+    private fun getFirstRecyclerViewData():List<Any> {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        return listOf(
+        TextItem(R.string.app_settings_appSettings_appLanguage, image = R.drawable.right_arrow, action = ::selectLanguage),
+        SwitchItem("Dark mode", isChecked = sharedPref.getBoolean("dark_mode", false), action = ::darkMode, action2 = ::lightMode),
+        SwitchItem("Vibrate on Keypress", isChecked = config.vibrateOnKeypress, action = ::enableVibrateOnKeypress, action2 = ::disableVibrateOnKeypress),
+        SwitchItem(
+            "Show a popup on keypress",
+            isChecked = config.showPopupOnKeypress,
+            action = ::enableShowPopupOnKeypress,
+            action2 = ::disableShowPopupOnKeypress
+        ),
+        )
+    }
 
 
     private fun selectLanguage() {
-        val intent: Intent = Intent(ACTION_APP_LOCALE_SETTINGS)
+        val intent: Intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Intent(ACTION_APP_LOCALE_SETTINGS)
+        } else {
+            Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", packageName, null)
+                putExtra("android.intent.extra.SHOW_FRAGMENT", "com.android.settings.localepicker.LocaleListEditor")
+            }
+        }
         val uri = Uri.fromParts("package", packageName, null)
         intent.setData(uri)
         startActivity(intent)
@@ -214,22 +230,7 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
         editor.apply()
         config.showPopupOnKeypress = false
     }
-
-    private fun enablePeriodOnSpaceBarDoubleTap() {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("period_on_double_tap", true)
-        editor.apply()
-        config.periodOnDoubleTap = true
-    }
-
-    private fun disablePeriodOnSpaceBarDoubleTap() {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("period_on_double_tap", false)
-        editor.apply()
-        config.periodOnDoubleTap = false
-    }
+    
 
     override fun onResume() {
         super.onResume()
