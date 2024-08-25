@@ -57,7 +57,8 @@
                 android:text="@string/app.settings.installedKeyboards"
                 android:textColor="@color/app_text_color"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="invisible" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

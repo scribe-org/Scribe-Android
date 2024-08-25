@@ -23,7 +23,6 @@ import be.scri.helpers.CustomAdapter
 import be.scri.models.SwitchItem
 import be.scri.models.TextItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_settings.settings_scrollview
 import kotlin.math.abs
 
 
@@ -33,7 +32,6 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
     private val swipeThreshold = 100
     private val swipeVelocityThreshold = 100
     private lateinit var binding: ActivitySettingsBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +46,7 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
         val enabledInputMethods = imm.enabledInputMethodList
         for(inputMethod in enabledInputMethods) {
             if (inputMethod.packageName == "be.scri.debug") {
-                binding.btnInstall.visibility = View.INVISIBLE
-                binding.selectLanguage.visibility = View.VISIBLE
+               setupItemVisibility()
             }
         }
         binding.btnInstall.setOnClickListener {
@@ -123,6 +120,13 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
     }
 
     private fun setupRecyclerView2() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val enabledInputMethods = imm.enabledInputMethodList
+        for(inputMethod in enabledInputMethods) {
+            if (inputMethod.packageName == "be.scri.debug") {
+                setupItemVisibility()
+            }
+        }
         val recyclerView = binding.recyclerView2
         val adapter = CustomAdapter(getRecyclerViewElements(),this)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -188,7 +192,7 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
         editor.putBoolean("dark_mode", false)
         editor.apply()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
+        recreate()
 
     }
     private fun darkMode(){
@@ -197,6 +201,7 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
         editor.putBoolean("dark_mode", true)
         editor.apply()
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        recreate()
     }
 
     private fun enableVibrateOnKeypress() {
@@ -232,9 +237,14 @@ class SettingsActivity : SimpleActivity(), GestureDetector.OnGestureListener {
     }
     
 
+    private fun setupItemVisibility() {
+        binding.btnInstall.visibility = View.INVISIBLE
+        binding.selectLanguage.visibility = View.VISIBLE
+    }
     override fun onResume() {
         super.onResume()
-        updateTextColors(settings_scrollview)
+        setupRecyclerView2()
+        updateTextColors(binding.settingsScrollview)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

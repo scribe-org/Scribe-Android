@@ -2,8 +2,8 @@ package be.scri.dialogs
 
 import android.app.Activity
 import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.dialog_message.view.*
 import be.scri.R
+import be.scri.databinding.DialogMessageBinding
 import be.scri.extensions.setupDialogStuff
 
 // similar fo ConfirmationDialog, but has a callback for negative button too
@@ -16,10 +16,11 @@ class ConfirmationAdvancedDialog(
     val callback: (result: Boolean) -> Unit
 ) {
     var dialog: AlertDialog
+    private var binding: DialogMessageBinding = DialogMessageBinding.inflate(activity.layoutInflater)
 
     init {
-        val view = activity.layoutInflater.inflate(R.layout.dialog_message, null)
-        view.message.text =
+        val view = binding.root
+        binding.message.text =
             if (message.isEmpty()) activity.resources.getString(messageId) else message
 
         val builder = AlertDialog.Builder(activity)
