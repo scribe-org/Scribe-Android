@@ -19,10 +19,10 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.PopupWindow
 import android.widget.TextView
-import kotlinx.android.synthetic.main.keyboard_popup_keyboard.view.*
-import kotlinx.android.synthetic.main.keyboard_view_keyboard.view.*
 import be.scri.R
 import be.scri.activities.SettingsActivity
+import be.scri.databinding.KeyboardPopupKeyboardBinding
+import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.extensions.*
 import be.scri.helpers.*
 import be.scri.helpers.MyKeyboard.Companion.KEYCODE_DELETE
@@ -184,6 +184,23 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     }
 
+    private var _popupBinding: KeyboardPopupKeyboardBinding? = null
+    private val popupBinding: KeyboardPopupKeyboardBinding
+        get() {
+            if (_popupBinding == null) {
+                _popupBinding = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
+            }
+            return _popupBinding!!
+        }
+
+    private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
+    private val keyboardBinding: KeyboardViewKeyboardBinding
+        get() {
+            if (_keyboardBinding == null) {
+                _keyboardBinding = KeyboardViewKeyboardBinding.inflate(LayoutInflater.from(context))
+            }
+            return _keyboardBinding!!
+        }
     init {
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.MyKeyboardView, 0, defStyleRes)
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -283,7 +300,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 mBackgroundColor
             }
 
-            if (changedView == mini_keyboard_view) {
+            if (changedView == _popupBinding?.miniKeyboardView) {
                 val previewBackground = background as LayerDrawable
                 previewBackground.findDrawableByLayerId(R.id.button_background_shape).applyColorFilter(miniKeyboardBackgroundColor)
                 previewBackground.findDrawableByLayerId(R.id.button_background_stroke).applyColorFilter(strokeColor)
@@ -294,11 +311,13 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
             val wasDarkened = mBackgroundColor != mBackgroundColor.darkenColor()
             mToolbarHolder?.apply {
-                top_keyboard_divider.beGoneIf(wasDarkened)
-                top_keyboard_divider.background = ColorDrawable(strokeColor)
+                _keyboardBinding?.apply {
+                    topKeyboardDivider.beGoneIf(wasDarkened)
+                    topKeyboardDivider.background = ColorDrawable(strokeColor)
 
-                background = ColorDrawable(toolbarColor)
-                settings_cog.applyColorFilter(mTextColor)
+                    background = ColorDrawable(toolbarColor)
+                    settingsCog.applyColorFilter(mTextColor)
+                }
             }
         }
     }
@@ -329,15 +348,24 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     /** Sets the top row above the keyboard containing Scribe command buttons **/
     fun setKeyboardHolder(keyboardHolder: View) {
-        mToolbarHolder = keyboardHolder.command_field
+        mToolbarHolder = _keyboardBinding?.commandField
 
-        mToolbarHolder!!.apply {
-            settings_cog.setOnLongClickListener { context.toast(R.string.settings); true; }
-            settings_cog.setOnClickListener {
-                vibrateIfNeeded()
-                Intent(context, SettingsActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    context.startActivity(this)
+        mToolbarHolder?.let { toolbarHolder ->
+            _keyboardBinding?.let { binding ->
+                binding.settingsCog?.apply {
+                    setOnLongClickListener {
+                        context?.toast(R.string.settings)
+                        true
+                    }
+                    setOnClickListener {
+                        context?.let { ctx ->
+                            vibrateIfNeeded()
+                            Intent(ctx, SettingsActivity::class.java).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                ctx.startActivity(this)
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -35,9 +35,9 @@ import androidx.biometric.auth.AuthPromptHost
 import androidx.biometric.auth.Class2BiometricAuthPrompt
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.FragmentActivity
-import kotlinx.android.synthetic.main.dialog_title.view.*
 import be.scri.R
 import be.scri.activities.BaseSimpleActivity
+import be.scri.databinding.DialogTitleBinding
 import be.scri.dialogs.*
 import be.scri.dialogs.WritePermissionDialog.Mode
 import be.scri.helpers.*
@@ -48,6 +48,11 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.OutputStream
 import java.util.*
+
+
+private lateinit var binding: DialogTitleBinding
+
+
 
 fun AppCompatActivity.updateActionBarTitle(text: String, color: Int = getProperStatusBarColor()) {
     val colorToUse = if (baseConfig.isUsingSystemTheme) {
@@ -1327,7 +1332,7 @@ fun Activity.setupDialogStuff(
     if (isDestroyed || isFinishing) {
         return
     }
-
+    binding = DialogTitleBinding.inflate(layoutInflater)
     val textColor = getProperTextColor()
     val backgroundColor = getProperBackgroundColor()
     val primaryColor = getProperPrimaryColor()
@@ -1337,16 +1342,19 @@ fun Activity.setupDialogStuff(
         view.setColors(textColor, primaryColor, backgroundColor)
     }
 
+
     var title: TextView? = null
     if (titleId != 0 || titleText.isNotEmpty()) {
         title = layoutInflater.inflate(R.layout.dialog_title, null) as TextView
-        title.dialog_title_textview.apply {
-            if (titleText.isNotEmpty()) {
-                text = titleText
-            } else {
-                setText(titleId)
+        binding.apply {
+            dialogTitleTextview.apply {
+                if (titleText.isNotEmpty()) {
+                    text = titleText
+                } else {
+                    setText(titleId)
+                }
+                setTextColor(textColor)
             }
-            setTextColor(textColor)
         }
     }
 

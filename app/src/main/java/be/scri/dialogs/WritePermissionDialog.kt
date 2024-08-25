@@ -5,10 +5,10 @@ import android.text.Html
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import kotlinx.android.synthetic.main.dialog_write_permission.view.*
-import kotlinx.android.synthetic.main.dialog_write_permission_otg.view.*
 import be.scri.R
 import be.scri.activities.BaseSimpleActivity
+import be.scri.databinding.DialogWritePermissionBinding
+import be.scri.databinding.DialogWritePermissionOtgBinding
 import be.scri.extensions.humanizePath
 import be.scri.extensions.setupDialogStuff
 
@@ -19,39 +19,40 @@ class WritePermissionDialog(activity: Activity, val mode: Mode, val callback: ()
         data class OpenDocumentTreeSDK30(val path: String) : Mode()
         object CreateDocumentSDK30 : Mode()
     }
+    private lateinit var otgBinding: DialogWritePermissionOtgBinding
+    private lateinit var binding: DialogWritePermissionBinding
 
     var dialog: AlertDialog
 
     init {
-        val layout = if (mode == Mode.SdCard) R.layout.dialog_write_permission else R.layout.dialog_write_permission_otg
-        val view = activity.layoutInflater.inflate(layout, null)
+        val view =  if (mode == Mode.SdCard) binding.root else otgBinding.root
 
         val glide = Glide.with(activity)
         val crossFade = DrawableTransitionOptions.withCrossFade()
         when (mode) {
             Mode.Otg -> {
-                view.write_permissions_dialog_otg_text.setText(R.string.confirm_usb_storage_access_text)
-                glide.load(R.drawable.img_write_storage_otg).transition(crossFade).into(view.write_permissions_dialog_otg_image)
+                otgBinding.writePermissionsDialogOtgText.setText(R.string.confirm_usb_storage_access_text)
+                glide.load(R.drawable.img_write_storage_otg).transition(crossFade).into(otgBinding.writePermissionsDialogOtgImage)
             }
             Mode.SdCard -> {
-                glide.load(R.drawable.img_write_storage).transition(crossFade).into(view.write_permissions_dialog_image)
-                glide.load(R.drawable.img_write_storage_sd).transition(crossFade).into(view.write_permissions_dialog_image_sd)
+                glide.load(R.drawable.img_write_storage).transition(crossFade).into(binding.writePermissionsDialogImage)
+                glide.load(R.drawable.img_write_storage_sd).transition(crossFade).into(binding.writePermissionsDialogImageSd)
             }
             is Mode.OpenDocumentTreeSDK30 -> {
                 val humanizedPath = activity.humanizePath(mode.path)
-                view.write_permissions_dialog_otg_text.text =
+                otgBinding.writePermissionsDialogOtgText.text =
                     Html.fromHtml(activity.getString(R.string.confirm_storage_access_android_text_specific, humanizedPath))
-                glide.load(R.drawable.img_write_storage_sdk_30).transition(crossFade).into(view.write_permissions_dialog_otg_image)
+                glide.load(R.drawable.img_write_storage_sdk_30).transition(crossFade).into(otgBinding.writePermissionsDialogOtgImage)
 
-                view.write_permissions_dialog_otg_image.setOnClickListener {
+                otgBinding.writePermissionsDialogOtgImage.setOnClickListener {
                     dialogConfirmed()
                 }
             }
             Mode.CreateDocumentSDK30 -> {
-                view.write_permissions_dialog_otg_text.text = Html.fromHtml(activity.getString(R.string.confirm_create_doc_for_new_folder_text))
-                glide.load(R.drawable.img_write_storage_create_doc_sdk_30).transition(crossFade).into(view.write_permissions_dialog_otg_image)
+                otgBinding.writePermissionsDialogOtgText.text = Html.fromHtml(activity.getString(R.string.confirm_create_doc_for_new_folder_text))
+                glide.load(R.drawable.img_write_storage_create_doc_sdk_30).transition(crossFade).into(otgBinding.writePermissionsDialogOtgImage)
 
-                view.write_permissions_dialog_otg_image.setOnClickListener {
+                otgBinding.writePermissionsDialogOtgImage.setOnClickListener {
                     dialogConfirmed()
                 }
             }

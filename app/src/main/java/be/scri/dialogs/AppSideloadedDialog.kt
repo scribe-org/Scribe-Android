@@ -4,8 +4,8 @@ import android.app.Activity
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.dialog_textview.view.*
 import be.scri.R
+import be.scri.databinding.DialogTextviewBinding
 import be.scri.extensions.getStringsPackageName
 import be.scri.extensions.launchViewIntent
 import be.scri.extensions.setupDialogStuff
@@ -13,13 +13,15 @@ import be.scri.extensions.setupDialogStuff
 class AppSideloadedDialog(val activity: Activity, val callback: () -> Unit) {
     private var dialog: AlertDialog
     private val url = "https://play.google.com/store/apps/details?id=${activity.getStringsPackageName()}"
+    private var binding: DialogTextviewBinding = DialogTextviewBinding.inflate(activity.layoutInflater)
 
     init {
-        val view = activity.layoutInflater.inflate(R.layout.dialog_textview, null).apply {
+        val view = binding.root.apply {
             val text = String.format(activity.getString(R.string.sideloaded_app), url)
-            text_view.text = Html.fromHtml(text)
-            text_view.movementMethod = LinkMovementMethod.getInstance()
+            binding.textView.text = Html.fromHtml(text)
+            binding.textView.movementMethod = LinkMovementMethod.getInstance()
         }
+
 
         dialog = AlertDialog.Builder(activity)
             .setNegativeButton(R.string.cancel) { dialog, which -> negativePressed() }

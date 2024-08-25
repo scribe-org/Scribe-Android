@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.dialog_radio_group.view.*
 import be.scri.R
+import be.scri.databinding.DialogRadioGroupBinding
 import be.scri.extensions.onGlobalLayout
 import be.scri.extensions.setupDialogStuff
 import be.scri.models.RadioItem
@@ -20,9 +20,10 @@ class RadioGroupDialog(
     private var wasInit = false
     private var selectedItemId = -1
 
+    private var binding: DialogRadioGroupBinding = DialogRadioGroupBinding.inflate(activity.layoutInflater)
     init {
-        val view = activity.layoutInflater.inflate(R.layout.dialog_radio_group, null)
-        view.dialog_radio_group.apply {
+        val view = binding.root
+        binding.dialogRadioGroup.apply {
             for (i in 0 until items.size) {
                 val radioButton = (activity.layoutInflater.inflate(R.layout.radio_button, null) as RadioButton).apply {
                     text = items[i].title
@@ -51,9 +52,9 @@ class RadioGroupDialog(
         }
 
         if (selectedItemId != -1) {
-            view.dialog_radio_holder.apply {
+            binding.dialogRadioHolder.apply {
                 onGlobalLayout {
-                    scrollY = view.dialog_radio_group.findViewById<View>(selectedItemId).bottom - height
+                    scrollY = binding.dialogRadioGroup.findViewById<View>(selectedItemId).bottom - height
                 }
             }
         }
