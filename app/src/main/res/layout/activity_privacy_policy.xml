@@ -64,9 +64,8 @@
                         android:padding="16dp">
 
                         <TextView
-                            android:singleLine="false"
                             android:layout_width="304dp"
-                            android:layout_height="3560dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity=""
                             android:text="@string/app.about.privacyPolicy.body"
                             android:textSize="16sp" />
