@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="56dp"
-                android:text="@string/app.about.privacyPolicy"
+                android:text="@string/app.about.privacyPolicy.caption"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/app_text_color"
                 android:textSize="20sp"
