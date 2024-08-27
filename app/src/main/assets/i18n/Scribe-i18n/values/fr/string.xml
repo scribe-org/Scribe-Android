@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="_global.english"></string>
     <string name="_global.french"></string>
     <string name="_global.german"></string>
     <string name="_global.italian"></string>
@@ -7,6 +8,7 @@
     <string name="_global.russian"></string>
     <string name="_global.spanish"></string>
     <string name="_global.swedish"></string>
+    <string name="app.about.appHint"></string>
     <string name="app.about.appHints"></string>
     <string name="app.about.bugReport"></string>
     <string name="app.about.community"></string>
@@ -14,6 +16,7 @@
     <string name="app.about.feedback"></string>
     <string name="app.about.github"></string>
     <string name="app.about.legal"></string>
+    <string name="app.about.mastodon"></string>
     <string name="app.about.matrix"></string>
     <string name="app.about.privacyPolicy"></string>
     <string name="app.about.privacyPolicy.body"></string>
@@ -34,12 +37,14 @@
     <string name="app.about.wikimedia.text2"></string>
     <string name="app.about.wikimedia.text3"></string>
     <string name="app.install"></string>
+    <string name="app.installation.appHint"></string>
     <string name="app.installation.settingsLink"></string>
     <string name="app.installation.text1"></string>
     <string name="app.installation.text2"></string>
     <string name="app.installation.text3"></string>
     <string name="app.installation.title"></string>
     <string name="app.keyboards"></string>
+    <string name="app.settings.appHint"></string>
     <string name="app.settings.appSettings"></string>
     <string name="app.settings.appSettings.appLanguage"></string>
     <string name="app.settings.functionality"></string>
@@ -51,7 +56,12 @@
     <string name="app.settings.layout.disableAccentCharacters.description"></string>
     <string name="app.settings.layout.periodAndComma"></string>
     <string name="app.settings.layout.periodAndComma.description"></string>
+    <string name="app.settings.oneDeviceLanguage.message"></string>
+    <string name="app.settings.oneDeviceLanguage.title"></string>
     <string name="app.settings.title"></string>
+    <string name="app.settings.translation"></string>
+    <string name="app.settings.translation.translateLang"></string>
+    <string name="app.settings.translation.translateLang.caption"></string>
     <string name="app.wikidataExplanation1"></string>
     <string name="app.wikidataExplanation2"></string>
     <string name="app.wikidataExplanation3"></string>

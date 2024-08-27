@@ -129,7 +129,7 @@ If all looks good, then you're ready to start adding localizable key-string pair
 
 ### File Conversion
 
-The files in the [Scribe-i18n/Scripts](https://github.com/scribe-org/Scribe-i18n/tree/main/Scribe-i18n/Scripts) directory can be used to convert base localization JSON files into the filetypes that are needed for an application as well as the same in reverse. JSON files are automatically converted to their target files for Scribe applications after commits to the main branch, and their opposites can be used to update the JSON files when strings are first changed in the applications.
+The files in the [Scribe-i18n/scripts](https://github.com/scribe-org/Scribe-i18n/tree/main/Scribe-i18n/scripts) directory can be used to convert base localization JSON files into the filetypes that are needed for an application as well as the same in reverse. JSON files are automatically converted to their target files for Scribe applications after commits to the main branch, and their opposites can be used to update the JSON files when strings are first changed in the applications.
 
 ### Adding Scribe-i18n to Projects [`⇧`](#contents)
 

@@ -1,0 +1,22 @@
+name: json_conversion.yml
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Scribe-i18n/jsons/**.json"
+
+jobs:
+  # Run JSON to app strings conversion scripts if needed.
+  convert_json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Execute script to convert JSON to string files
+        run: |
+          python Scribe-i18n/scripts/android/convert_jsons_to_strings.py
+          python Scribe-i18n/scripts/ios/convert_jsons_to_xcstrings.py
