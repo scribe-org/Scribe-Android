@@ -179,7 +179,7 @@
             android:label="@string/app.about.wikimedia"
             android:parentActivityName=".fragments.MainFragment" />
         <activity
-            android:name=".activities.PrivacyPolicyActivity"
+            android:name=".fragments.PrivacyPolicyFragment"
             android:label="@string/app.about.privacyPolicy"
             android:parentActivityName=".activities.MainActivity" />
         <activity

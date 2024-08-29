@@ -10,6 +10,7 @@ import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
 import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -28,6 +29,10 @@ class SettingsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            getParentFragmentManager().popBackStack()
+        }
+        callback.isEnabled = true
         return binding.root
     }
 

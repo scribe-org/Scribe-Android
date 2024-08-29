@@ -6,6 +6,7 @@ import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.scri.R
@@ -32,6 +33,10 @@ class AboutFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAboutBinding.inflate(inflater, container, false)
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            getParentFragmentManager().popBackStack()
+        }
+        callback.isEnabled = true
         return binding.root
     }
 
@@ -77,7 +82,7 @@ class AboutFragment : Fragment() {
 
     private fun getThirdRecyclerViewData(): List<ItemsViewModel> {
         return listOf(
-            ItemsViewModel(image = R.drawable.shield_lock, R.string.app_about_privacyPolicy, image2 = R.drawable.right_arrow, url = null, activity = null, action = null),
+            ItemsViewModel(image = R.drawable.shield_lock, R.string.app_about_privacyPolicy, image2 = R.drawable.right_arrow, url = null, activity = null, action = ::loadPrivacyPolicyFragment),
             ItemsViewModel(image = R.drawable.license_icon, R.string.app_about_thirdParty, image2 = R.drawable.right_arrow, url = null, activity = null, action = null)
         )
     }
@@ -108,6 +113,14 @@ class AboutFragment : Fragment() {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment, "WikimediaScribePage")
         fragmentTransaction.addToBackStack("WikimediaScribePage")
+        fragmentTransaction.commit()
+    }
+
+    private fun loadPrivacyPolicyFragment() {
+        val fragment = PrivacyPolicyFragment()
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, fragment)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
