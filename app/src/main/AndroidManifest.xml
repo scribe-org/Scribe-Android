@@ -172,7 +172,11 @@
         <activity
             android:name=".activities.PrivacyPolicyActivity"
             android:label="@string/app.about.privacyPolicy"
-            android:parentActivityName=".activities.MainActivity" />/>
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.ThirdPartyActivity"
+            android:label="@string/app.about.thirdParty"
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.LanguageSettings"
             android:label="Language Settings"
