@@ -110,12 +110,10 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
         ItemsViewModel(image = R.drawable.light_bulb_icon, textResId = R.string.app_about_appHints, image2 = R.drawable.counter_clockwise_icon, url = null, activity = null, action = null)
     )
 
-    private fun getThirdRecyclerViewData(): List<ItemsViewModel> {
-        return listOf(
-            ItemsViewModel(image = R.drawable.shield_lock, R.string.app_about_privacyPolicy, image2 = R.drawable.right_arrow, url = null, activity = PrivacyPolicyActivity::class.java, action = null),
-            ItemsViewModel(image = R.drawable.license_icon, R.string.app_about_thirdParty, image2 = R.drawable.right_arrow, url = null, activity = null, action = null)
-        )
-    }
+    private fun getThirdRecyclerViewData(): List<Any> = listOf(
+        ItemsViewModel(image = R.drawable.shield_lock, textResId = R.string.app_about_privacyPolicy, image2 = R.drawable.right_arrow, url = null, activity = PrivacyPolicyActivity::class.java, action = null),
+        ItemsViewModel(image = R.drawable.license_icon, textResId = R.string.app_about_thirdParty, image2 = R.drawable.right_arrow, url = null, activity = ThirdPartyActivity::class.java, action = null)
+    )
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
