@@ -112,7 +112,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
 
     private fun getThirdRecyclerViewData(): List<ItemsViewModel> {
         return listOf(
-            ItemsViewModel(image = R.drawable.shield_lock, R.string.app_about_privacyPolicy, image2 = R.drawable.right_arrow, url = null, activity = null, action = null),
+            ItemsViewModel(image = R.drawable.shield_lock, R.string.app_about_privacyPolicy, image2 = R.drawable.right_arrow, url = null, activity = PrivacyPolicyActivity::class.java, action = null),
             ItemsViewModel(image = R.drawable.license_icon, R.string.app_about_thirdParty, image2 = R.drawable.right_arrow, url = null, activity = null, action = null)
         )
     }

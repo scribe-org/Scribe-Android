@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="303dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="56dp"
+                android:text="@string/app.about.privacyPolicy.caption"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/app_text_color"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/card_view_color"
+                    app:cardBackgroundColor="@color/card_view_color"
+                    app:cardCornerRadius="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="304dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity=""
+                            android:text="@string/app.about.privacyPolicy.body"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="75dp"
+                        android:layout_height="76dp"
+                        android:layout_gravity="top|end"
+                        android:alpha="0.9"
+                        android:contentDescription="@string/app.about.privacyPolicy"
+                        android:src="@drawable/corner_polygon" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|end"
+                        android:layout_margin="8dp"
+
+                        android:contentDescription="@string/app.about.privacyPolicy"
+                        android:src="@drawable/shield_check" />
+                </androidx.cardview.widget.CardView>
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/nav_bar_color"
+        app:itemIconTint="@drawable/nav_bar_selector"
+        app:itemTextColor="@drawable/nav_bar_selector"
+        app:menu="@menu/menu_navigation_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
