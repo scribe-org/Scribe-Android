@@ -35,7 +35,7 @@ class MainActivity : SimpleActivity() {
                 bottomNavigationView.menu.getItem(position).isChecked = true
                 when(position) {
                     0 -> {
-                        supportActionBar?.title = getString(R.string.app_title_new)
+                        supportActionBar?.title = getString(R.string.app_launcher_name)
                         binding.fragmentContainer.visibility = View.GONE
                     }
                     1 -> {
@@ -55,7 +55,7 @@ class MainActivity : SimpleActivity() {
             when (menuItem.itemId) {
                 R.id.installation -> {
                     viewPager.setCurrentItem(0, true)
-                    supportActionBar?.title = getString(R.string.app_title_new)
+                    supportActionBar?.title = getString(R.string.app_launcher_name)
                     binding.fragmentContainer.visibility = View.GONE
                     true
                 }
