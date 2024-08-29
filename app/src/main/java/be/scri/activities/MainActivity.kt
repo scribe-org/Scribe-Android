@@ -7,17 +7,14 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.GestureDetector
-import android.view.Menu
-import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.*
 import be.scri.BuildConfig
 import be.scri.R
+import be.scri.databinding.ActivityMainBinding
 import be.scri.dialogs.ConfirmationAdvancedDialog
 import be.scri.extensions.*
 import be.scri.helpers.LICENSE_GSON
@@ -28,11 +25,14 @@ class MainActivity : SimpleActivity(), GestureDetector.OnGestureListener {
     private lateinit var gestureDetector: GestureDetector
     private val swipeThreshold = 100
     private val swipeVelocityThreshold = 100
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        binding = ActivityMainBinding.inflate(layoutInflater)
         applyUserDarkModePreference()
+        val view = binding.root
+        setContentView(view)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         appLaunched(BuildConfig.APPLICATION_ID)
         gestureDetector = GestureDetector(this)
 
@@ -60,7 +60,7 @@ class MainActivity : SimpleActivity(), GestureDetector.OnGestureListener {
             false
         })
 
-        scribe_key.setOnClickListener {
+        binding.scribeKey.setOnClickListener {
             (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
         }
     }
@@ -75,6 +75,9 @@ class MainActivity : SimpleActivity(), GestureDetector.OnGestureListener {
             if (isUserDarkMode) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
         )
+        if (isUserDarkMode != (currentNightMode == Configuration.UI_MODE_NIGHT_YES)) {
+            recreate()
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -100,9 +103,9 @@ class MainActivity : SimpleActivity(), GestureDetector.OnGestureListener {
             }
         }
 
-        updateTextColors(main_holder)
+        updateTextColors(binding.mainHolder)
         updateChangeKeyboardColor()
-        main_holder.setBackgroundColor(getProperBackgroundColor())
+        binding.mainHolder.setBackgroundColor(getProperBackgroundColor())
     }
 
 
@@ -120,8 +123,8 @@ class MainActivity : SimpleActivity(), GestureDetector.OnGestureListener {
     private fun updateChangeKeyboardColor() {
         val applyBackground = resources.getDrawable(R.drawable.button_background_rounded, theme) as RippleDrawable
         (applyBackground as LayerDrawable).findDrawableByLayerId(R.id.button_background_holder).applyColorFilter(getProperPrimaryColor())
-        change_keyboard.background = applyBackground
-        change_keyboard.setTextColor(getProperPrimaryColor().getContrastColor())
+        binding.changeKeyboard.background = applyBackground
+        binding.changeKeyboard.setTextColor(getProperPrimaryColor().getContrastColor())
     }
 
     private fun isKeyboardEnabled(): Boolean {

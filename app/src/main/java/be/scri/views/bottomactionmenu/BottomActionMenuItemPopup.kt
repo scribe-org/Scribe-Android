@@ -11,8 +11,8 @@ import android.widget.ListView
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import androidx.core.widget.PopupWindowCompat
-import kotlinx.android.synthetic.main.item_action_mode_popup.view.*
 import be.scri.R
+import be.scri.databinding.ItemActionModePopupBinding
 import be.scri.extensions.applyColorFilter
 import be.scri.extensions.windowManager
 import be.scri.helpers.isRPlus
@@ -32,33 +32,32 @@ class BottomActionMenuItemPopup(
     private val popupPaddingStart: Int
     private val popupPaddingEnd: Int
     private val popupPaddingTop: Int
+    private lateinit var binding: ItemActionModePopupBinding
 
     val isShowing: Boolean
         get() = popup.isShowing
 
     private val popupListAdapter = object : ArrayAdapter<BottomActionMenuItem>(context, R.layout.item_action_mode_popup, items) {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var view = convertView
-            if (view == null) {
-                view = LayoutInflater.from(context).inflate(R.layout.item_action_mode_popup, parent, false)
-            }
+            val binding = ItemActionModePopupBinding.inflate(LayoutInflater.from(context), parent, false)
 
             val item = items[position]
-            view!!.cab_item.text = item.title
+            binding.cabItem.text = item.title
             if (item.icon != View.NO_ID) {
                 val icon = ContextCompat.getDrawable(context, item.icon)
                 icon?.applyColorFilter(Color.WHITE)
-                view.cab_item.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+                binding.cabItem.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
             }
 
-            view.setOnClickListener {
+            binding.root.setOnClickListener {
                 onSelect.invoke(item)
                 popup.dismiss()
             }
 
-            return view
+            return binding.root
         }
     }
+
 
     init {
         popup.isFocusable = true
@@ -67,6 +66,7 @@ class BottomActionMenuItemPopup(
         popupPaddingEnd = context.resources.getDimensionPixelSize(R.dimen.smaller_margin)
         popupPaddingTop = context.resources.getDimensionPixelSize(R.dimen.smaller_margin)
         popupPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.smaller_margin)
+        binding = ItemActionModePopupBinding.inflate(LayoutInflater.from(context))
     }
 
     fun show(anchorView: View) {

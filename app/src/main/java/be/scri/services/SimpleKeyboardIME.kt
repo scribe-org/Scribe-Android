@@ -7,7 +7,6 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -15,8 +14,8 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
 import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
-import kotlinx.android.synthetic.main.keyboard_view_keyboard.view.*
 import be.scri.R
+import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.*
 import be.scri.views.MyKeyboardView
 
@@ -38,6 +37,7 @@ abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboa
     private var enterKeyType = IME_ACTION_NONE
     private var switchToLetters = false
     private var hasTextBeforeCursor = false
+    private lateinit var binding: KeyboardViewKeyboardBinding
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()
@@ -62,10 +62,11 @@ abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboa
     }
 
     override fun onCreateInputView(): View {
-        val keyboardHolder = layoutInflater.inflate(R.layout.keyboard_view_keyboard, null)
-        keyboardView = keyboardHolder.keyboard_view as MyKeyboardView
+        binding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
+        val keyboardHolder = binding.root
+        keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.setKeyboardHolder(keyboardHolder.keyboard_holder)
+        keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
         keyboardView!!.mOnKeyboardActionListener = this
         return keyboardHolder!!
     }

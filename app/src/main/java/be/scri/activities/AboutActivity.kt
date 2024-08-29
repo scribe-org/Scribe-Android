@@ -9,8 +9,8 @@ import android.view.MotionEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_about.*
 import be.scri.R
+import be.scri.databinding.ActivityAboutBinding
 import be.scri.extensions.*
 import be.scri.helpers.*
 import be.scri.models.ItemsViewModel
@@ -27,6 +27,8 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
     private  val SWIPE_THRESHOLD = 100
     private  val SWIPE_VELOCITY_THRESHOLD = 100
 
+    private lateinit var binding: ActivityAboutBinding
+
     private lateinit var gestureDetector: GestureDetector
     private val swipeThreshold = 100
     private val swipeVelocityThreshold = 100
@@ -38,7 +40,9 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         gestureDetector = GestureDetector(this)
         setupRecyclerViews()
         appName = intent.getStringExtra(APP_NAME) ?: ""
@@ -140,7 +144,7 @@ class AboutActivity : BaseSimpleActivity(), GestureDetector.OnGestureListener{
 
     override fun onResume() {
         super.onResume()
-        updateTextColors(about_scrollview)
+        updateTextColors(binding.aboutScrollview)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
