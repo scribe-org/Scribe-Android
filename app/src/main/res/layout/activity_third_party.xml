@@ -67,7 +67,7 @@
                             android:layout_width="304dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity=""
-                            android:text="@string/app.about.thirdParty.body"
+                            android:text="@string/third_party_licenses_body"
                             android:textSize="16sp" />
 
                     </LinearLayout>
