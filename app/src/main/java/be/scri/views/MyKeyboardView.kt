@@ -20,7 +20,7 @@ import android.view.accessibility.AccessibilityManager
 import android.widget.PopupWindow
 import android.widget.TextView
 import be.scri.R
-import be.scri.activities.SettingsActivity
+import be.scri.fragments.SettingsFragment
 import be.scri.databinding.KeyboardPopupKeyboardBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.extensions.*
@@ -360,7 +360,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                     setOnClickListener {
                         context?.let { ctx ->
                             vibrateIfNeeded()
-                            Intent(ctx, SettingsActivity::class.java).apply {
+                            Intent(ctx, SettingsFragment::class.java).apply {
                                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 ctx.startActivity(this)
                             }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,18 +8,6 @@
     android:layout_height="match_parent"
     android:background="@color/you_background_color">
 
-    <ScrollView
-        android:id="@+id/settings_scrollview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        android:paddingBottom="0dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/settings_holder"
@@ -44,7 +32,7 @@
                 android:id="@+id/recyclerViewSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="2dp" />
+                android:padding="10dp" />
 
             <TextView
                 android:id="@+id/selectLanguage"
@@ -77,21 +65,10 @@
                     android:id="@+id/recyclerView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="2dp" />
+                    android:padding="10dp" />
             </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/nav_bar_color"
-        app:itemIconTint="@drawable/nav_bar_selector"
-        app:itemTextColor="@drawable/nav_bar_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/menu_navigation_bottom" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+
