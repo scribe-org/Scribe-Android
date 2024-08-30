@@ -20,6 +20,18 @@ class LanguageSettingsFragment : Fragment() {
     private var _binding: FragmentLanguageSettingsBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
+        val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            viewpager.setCurrentItem(3, true);
+            (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false);
+        }
+        callback.isEnabled = true
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -97,7 +109,5 @@ class LanguageSettingsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 
 }

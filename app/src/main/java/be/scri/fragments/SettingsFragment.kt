@@ -41,7 +41,6 @@ class SettingsFragment : Fragment() {
         setupRecycleView()
         setupRecyclerView2()
         (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_settings_title)
-
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val enabledInputMethods = imm.enabledInputMethodList
         for (inputMethod in enabledInputMethods) {

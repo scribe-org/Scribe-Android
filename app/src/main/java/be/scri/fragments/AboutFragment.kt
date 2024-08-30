@@ -83,7 +83,7 @@ class AboutFragment : Fragment() {
     private fun getThirdRecyclerViewData(): List<ItemsViewModel> {
         return listOf(
             ItemsViewModel(image = R.drawable.shield_lock, R.string.app_about_privacyPolicy, image2 = R.drawable.right_arrow, url = null, activity = null, action = ::loadPrivacyPolicyFragment),
-            ItemsViewModel(image = R.drawable.license_icon, R.string.app_about_thirdParty, image2 = R.drawable.right_arrow, url = null, activity = null, action = null)
+            ItemsViewModel(image = R.drawable.license_icon, R.string.app_about_thirdParty, image2 = R.drawable.right_arrow, url = null, activity = null, action = ::loadThirdPartyLicensesFragment)
         )
     }
 
@@ -118,6 +118,14 @@ class AboutFragment : Fragment() {
 
     private fun loadPrivacyPolicyFragment() {
         val fragment = PrivacyPolicyFragment()
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
+
+    private fun loadThirdPartyLicensesFragment() {
+        val fragment = ThirdPartyFragment()
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.addToBackStack(null)

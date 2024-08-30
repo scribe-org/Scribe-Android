@@ -11,13 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.databinding.ActivityPrivacyPolicyBinding
+import be.scri.databinding.FragmentPrivacyPolicyBinding
 
 
 class PrivacyPolicyFragment : Fragment(){
 
 
-    private lateinit var binding: ActivityPrivacyPolicyBinding
+    private lateinit var binding: FragmentPrivacyPolicyBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +34,7 @@ class PrivacyPolicyFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ActivityPrivacyPolicyBinding.inflate(inflater, container, false)
+        binding = FragmentPrivacyPolicyBinding.inflate(inflater, container, false)
         (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_about_privacyPolicy)
         (requireActivity() as MainActivity).showFragmentContainer()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
@@ -59,6 +59,8 @@ class PrivacyPolicyFragment : Fragment(){
         return binding.root
 
     }
+
+
 
 }
 

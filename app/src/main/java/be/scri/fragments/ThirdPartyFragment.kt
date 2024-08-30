@@ -11,12 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.databinding.FragmentWikimediaScribeBinding
+import be.scri.databinding.FragmentThirdPartyBinding
 
 
-class WikimediaScribeFragment : Fragment(){
+class ThirdPartyFragment : Fragment() {
 
-    private lateinit var binding: FragmentWikimediaScribeBinding
+    private lateinit var binding: FragmentThirdPartyBinding
 
 
 
@@ -35,8 +35,8 @@ class WikimediaScribeFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentWikimediaScribeBinding.inflate(inflater, container, false)
-        (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_about_wikimedia)
+        binding = FragmentThirdPartyBinding.inflate(inflater, container, false)
+        (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_about_thirdParty)
         (requireActivity() as MainActivity).showFragmentContainer()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -59,8 +59,4 @@ class WikimediaScribeFragment : Fragment(){
         })
         return binding.root
     }
-
-    }
-
-
-
+}
