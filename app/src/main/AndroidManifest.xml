@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="auto">
+    android:installLocation="auto" >
+
     <uses-permission
         android:name="android.permission.USE_FINGERPRINT"
         tools:node="remove" />
@@ -19,6 +20,14 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".activities.SplashActivity"
             android:exported="false"
@@ -30,7 +39,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:roundIcon="@mipmap/ic_launcher"
-            android:targetActivity=".activities.SplashActivity">
+            android:targetActivity=".activities.SplashActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,14 +48,14 @@
         </activity-alias>
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".fragments.MainFragment"
             android:exported="false" />
 
         <service
             android:name=".services.EnglishKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -59,7 +68,7 @@
             android:name=".services.GermanKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -72,7 +81,7 @@
             android:name=".services.FrenchKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -85,7 +94,7 @@
             android:name=".services.ItalianKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -98,7 +107,7 @@
             android:name=".services.PortugueseKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -111,7 +120,7 @@
             android:name=".services.RussianKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -124,7 +133,7 @@
             android:name=".services.SpanishKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -137,7 +146,7 @@
             android:name=".services.SwedishKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:permission="android.permission.BIND_INPUT_METHOD" >
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -148,10 +157,10 @@
         </service>
 
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".fragments.SettingsFragment"
             android:exported="true"
             android:label="@string/app.settings.title"
-            android:parentActivityName=".activities.MainActivity">
+            android:parentActivityName=".fragments.MainFragment" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -162,25 +171,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.AboutActivity"
+            android:name=".fragments.AboutFragment"
             android:label="@string/app.about.title"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".fragments.MainFragment" />
         <activity
-            android:name=".activities.WikimediaScribeActivity"
+            android:name=".fragments.WikimediaScribeFragment"
             android:label="@string/app.about.wikimedia"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".fragments.MainFragment" />
         <activity
-            android:name=".activities.PrivacyPolicyActivity"
+            android:name=".fragments.PrivacyPolicyFragment"
             android:label="@string/app.about.privacyPolicy"
             android:parentActivityName=".activities.MainActivity" />
         <activity
-            android:name=".activities.ThirdPartyActivity"
+            android:name=".fragments.ThirdPartyFragment"
             android:label="@string/app.about.thirdParty"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.LanguageSettings"
             android:label="Language Settings"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".fragments.MainFragment" />
     </application>
 
 </manifest>

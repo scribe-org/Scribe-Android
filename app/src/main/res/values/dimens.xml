@@ -69,4 +69,5 @@
 
     <dimen name="cab_popup_menu_min_width">168dp</dimen>
     <dimen name="cab_item_min_width">85dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

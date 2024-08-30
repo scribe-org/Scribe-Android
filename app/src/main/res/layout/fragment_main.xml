@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/you_background_color"
+    android:backgroundTint="@color/you_background_color">
+
+    <RelativeLayout
+        android:id="@+id/scribe_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/big_margin">
+
+        <android.widget.TextView
+            android:id="@+id/change_keyboard"
+            style="@style/ColoredButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="@string/change_keyboard" />
+
+    </RelativeLayout>
+</RelativeLayout>

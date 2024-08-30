@@ -1,6 +1,6 @@
 package be.scri.helpers
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -17,7 +17,7 @@ import be.scri.models.ItemsViewModel
 import be.scri.models.SwitchItem
 import be.scri.models.TextItem
 
-class CustomAdapter(private val mList: List<Any>, private val context: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CustomAdapter(private val mList: List<Any>, private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val VIEW_TYPE_IMAGE = 0

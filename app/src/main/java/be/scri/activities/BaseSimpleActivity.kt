@@ -31,6 +31,7 @@ import be.scri.dialogs.ConfirmationDialog
 import be.scri.dialogs.WritePermissionDialog
 import be.scri.dialogs.WritePermissionDialog.Mode
 import be.scri.extensions.*
+import be.scri.fragments.AboutFragment
 import be.scri.helpers.*
 import java.util.regex.Pattern
 
@@ -409,7 +410,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
 
     fun startAboutActivity(appNameId: Int, licenseMask: Int, versionName: String, showFAQBeforeMail: Boolean) {
         hideKeyboard()
-        Intent(applicationContext, AboutActivity::class.java).apply {
+        Intent(applicationContext, AboutFragment::class.java).apply {
             putExtra(APP_ICON_IDS, getAppIconIDs())
             putExtra(APP_LAUNCHER_NAME, getAppLauncherName())
             putExtra(APP_NAME, getString(appNameId))

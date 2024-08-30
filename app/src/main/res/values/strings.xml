@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Scribe - Language Keyboards</string>
     <string name="app_launcher_name">Scribe</string>
     <string name="redirection_note">Thanks for downloading Scribe! Please enable keyboards on the
@@ -1587,5 +1586,4 @@
         <item>@string/saturday_short</item>
         <item>@string/sunday_short</item>
     </array>
-
 </resources>
