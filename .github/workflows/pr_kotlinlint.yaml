@@ -1,34 +1,17 @@
-name: pr_kotlinlint
-on:
-  pull_request:
-    branches:
-      - main
-    types: [opened, reopened, synchronize]
-
+name: pr_review_ktlint
+on: [pull_request]
 jobs:
-  lint:
-    name: Run KotlinLint
+  ktlint:
+    name: Check Code Quality
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with: 
-          java-version: '11'
-          distribution: 'zulu'
-          
-      - name: Install ktlint
-        run: curl -sSLO https://github.com/pinterest/ktlint/releases/download/0.45.2/ktlint && chmod a+x ktlint
-
-      - name: Run ktlint
-        run: ./ktlint --relative "**/*.kt" --reporter=checkstyle,output=ktlint-checkstyle-report.xml || echo "ktlint found issues"
-
-      - name: Upload lint reports
-        if: failure()
-        uses: actions/upload-artifact@v3
+      - name: Clone repo
+        uses: actions/checkout@master
         with:
-          name: lint-results
-          path: ./ktlint-checkstyle-report.xml
+          fetch-depth: 1
+      - name: ktlint
+        uses: ScaCap/action-ktlint@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
