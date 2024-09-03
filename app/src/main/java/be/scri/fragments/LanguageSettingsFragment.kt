@@ -24,10 +24,14 @@ class LanguageSettingsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
         val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
+        (requireActivity() as MainActivity).setActionBarButtonFunction(3,R.string.app_settings_title)
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             viewpager.setCurrentItem(3, true);
             (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false);
+            (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         }
+        (requireActivity() as MainActivity).setActionBarLayoutMargin()
+
         callback.isEnabled = true
 
     }
@@ -40,9 +44,11 @@ class LanguageSettingsFragment : Fragment() {
             override fun handleOnBackPressed() {
                 val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
                 val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
+                (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
                 if (viewpager.currentItem == 3) {
                     viewpager.setCurrentItem(3, true)
                     frameLayout.visibility = View.GONE
+                    (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
                 } else {
                     if (parentFragmentManager.backStackEntryCount > 0) {
                         parentFragmentManager.popBackStack()
@@ -62,10 +68,13 @@ class LanguageSettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val language = arguments?.getString("LANGUAGE_EXTRA") ?: return
-        (requireActivity() as MainActivity).supportActionBar?.title = language
+        val titleInt = getLanguageStringFromi18n(language)
+        (requireActivity() as MainActivity).setActionBarTitle(titleInt)
         (requireActivity() as MainActivity).showFragmentContainer()
-
+        (requireActivity() as MainActivity).setActionBarButtonVisible()
+        (requireActivity() as MainActivity).setActionBarButtonFunction(3,R.string.app_settings_title)
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            (requireActivity() as MainActivity).setActionBarButtonInvisible()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SettingsFragment())
                 .addToBackStack(null)
@@ -110,4 +119,16 @@ class LanguageSettingsFragment : Fragment() {
         _binding = null
     }
 
+    fun getLanguageStringFromi18n(language: String): Int {
+        when (language) {
+            "German" -> return R.string._global_german
+            "French" -> return R.string._global_french
+            "Spanish" -> return R.string._global_spanish
+            "Italian" -> return R.string._global_italian
+            "Russian" -> return R.string._global_russian
+            "Portuguese" -> return R.string._global_portuguese
+            "Swedish" -> return R.string._global_swedish
+            else -> return R.string._global_english
+        }
+    }
 }

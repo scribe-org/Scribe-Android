@@ -37,12 +37,14 @@ class AboutFragment : Fragment() {
             getParentFragmentManager().popBackStack()
         }
         callback.isEnabled = true
+        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
+        (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+        (requireActivity() as MainActivity).setActionBarButtonInvisible()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_settings_title)
         setupRecyclerViews()
     }
 

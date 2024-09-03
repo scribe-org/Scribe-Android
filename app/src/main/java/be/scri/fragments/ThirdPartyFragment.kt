@@ -26,7 +26,12 @@ class ThirdPartyFragment : Fragment() {
         val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             viewpager.setCurrentItem(2, true);
+            (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         }
+        (requireActivity() as MainActivity).setActionBarButtonFunction(2,R.string.app_about_title)
+        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_thirdParty)
+        (requireActivity() as MainActivity).setActionBarButtonVisible()
+        (requireActivity() as MainActivity).setActionBarLayoutMargin()
         callback.isEnabled = true
 
 
@@ -36,12 +41,16 @@ class ThirdPartyFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentThirdPartyBinding.inflate(inflater, container, false)
-        (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_about_thirdParty)
         (requireActivity() as MainActivity).showFragmentContainer()
+        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_thirdParty)
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
                 val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
+                (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
+                (requireActivity() as MainActivity).setActionBarButtonInvisible()
+                (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+
                 if (viewpager.currentItem == 2) {
                     viewpager.setCurrentItem(2, true)
                     frameLayout.visibility = View.GONE
@@ -54,7 +63,6 @@ class ThirdPartyFragment : Fragment() {
                     }
                 }
 
-                (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_about_title)
             }
         })
         return binding.root
