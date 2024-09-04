@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top"
+    android:background="@color/you_background_color">
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="start|top">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:textAllCaps="false"
+        android:textColor="@color/app_text_color"
+        android:layout_height="wrap_content"
+        android:paddingBottom="7dp"
+        android:layout_marginStart="-6dp"
+        android:text="@string/app.about.title"
+        android:layout_gravity="top|start"
+        android:drawablePadding="2dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="top|start"
+        android:paddingBottom="-2dp"
+        android:paddingTop="2dp"
+        android:layout_weight="2"
+        android:text="@string/app_launcher_name"
+        android:textColor="@color/app_text_color"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    </LinearLayout>
+</androidx.appcompat.widget.Toolbar>

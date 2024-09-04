@@ -32,7 +32,11 @@ class SettingsFragment : Fragment() {
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             getParentFragmentManager().popBackStack()
         }
+        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_settings_title)
+        (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+        (requireActivity() as MainActivity).setActionBarButtonInvisible()
         callback.isEnabled = true
+        (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_settings_title)
         return binding.root
     }
 
@@ -40,7 +44,6 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecycleView()
         setupRecyclerView2()
-        (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_settings_title)
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val enabledInputMethods = imm.enabledInputMethodList
         for (inputMethod in enabledInputMethods) {
@@ -140,10 +143,9 @@ class SettingsFragment : Fragment() {
             }
         }
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.replace(R.id.fragment_container, fragment, "LanguageFragment")
+        fragmentTransaction.addToBackStack("LanguageFragment")
         fragmentTransaction.commit()
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.app_about_wikimedia)
     }
 
 

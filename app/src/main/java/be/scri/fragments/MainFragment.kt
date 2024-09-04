@@ -14,6 +14,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import be.scri.R
+import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentMainBinding
 import be.scri.dialogs.ConfirmationAdvancedDialog
 
@@ -47,6 +48,7 @@ class MainFragment : Fragment() {
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             getParentFragmentManager().popBackStack()
         }
+        (requireActivity() as MainActivity).setActionBarButtonInvisible()
         callback.isEnabled = true
         return binding.root
     }

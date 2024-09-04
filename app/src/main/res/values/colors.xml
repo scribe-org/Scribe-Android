@@ -51,9 +51,9 @@
     <color name="dark_annotation_orange">#90FE9448</color>
 
     <!-- Commons colors -->
-    <color name="color_primary">@color/light_scribe_blue</color>
-    <color name="color_primary_dark">@color/light_scribe_blue</color>
-    <color name="color_accent">@color/light_scribe_blue</color>
+    <color name="color_primary">@color/you_background_color</color>
+    <color name="color_primary_dark">@color/you_background_color</color>
+    <color name="color_accent">@color/you_background_color</color>
 
     <color name="pressed_item_foreground">#08000000</color>
     <color name="activated_item_foreground">#44888888</color>
