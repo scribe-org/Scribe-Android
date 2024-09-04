@@ -316,7 +316,6 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                     topKeyboardDivider.background = ColorDrawable(strokeColor)
 
                     background = ColorDrawable(toolbarColor)
-                    settingsCog.applyColorFilter(mTextColor)
                 }
             }
         }
