@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
@@ -34,6 +35,7 @@ class PrivacyPolicyFragment : Fragment(){
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_privacyPolicy)
         (requireActivity() as MainActivity).setActionBarLayoutMargin()
         val textView = (requireActivity() as MainActivity).supportActionBar?.customView?.findViewById<TextView>(R.id.name)
+        (requireActivity() as MainActivity).supportActionBar?.customView?.findViewById<Button>(R.id.button)?.text = getString(R.string.app_about_title)
 
         textView?.let{
             val params = it.layoutParams as ViewGroup.MarginLayoutParams

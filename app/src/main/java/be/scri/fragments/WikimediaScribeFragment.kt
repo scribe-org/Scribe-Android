@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
@@ -32,6 +33,7 @@ class WikimediaScribeFragment : Fragment(){
         (requireActivity() as MainActivity).setActionBarButtonVisible()
         (requireActivity() as MainActivity).setActionBarButtonFunction(2,R.string.app_about_title)
         (requireActivity() as MainActivity).setActionBarLayoutMargin()
+        (requireActivity() as MainActivity).supportActionBar?.customView?.findViewById<Button>(R.id.button)?.text = getString(R.string.app_about_title)
         callback.isEnabled = true
 
 

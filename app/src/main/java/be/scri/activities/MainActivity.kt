@@ -145,13 +145,13 @@ class MainActivity : SimpleActivity() {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
         params.topMargin = -50
-        params.bottomMargin = 50
+        params.bottomMargin = 30
         textView.layoutParams = params
     }
     fun unsetActionBarLayoutMargin() {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
-        params.topMargin = 0
+        params.topMargin = 50
         params.bottomMargin = 0
         textView.layoutParams = params
     }
