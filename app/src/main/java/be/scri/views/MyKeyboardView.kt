@@ -2,7 +2,6 @@ package be.scri.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.*
 import android.graphics.Paint.Align
@@ -22,7 +21,6 @@ import be.scri.R
 import be.scri.databinding.KeyboardPopupKeyboardBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.extensions.*
-import be.scri.fragments.SettingsFragment
 import be.scri.helpers.*
 import be.scri.helpers.MyKeyboard.Companion.KEYCODE_DELETE
 import be.scri.helpers.MyKeyboard.Companion.KEYCODE_ENTER
@@ -301,7 +299,30 @@ class MyKeyboardView
                         mBackgroundColor
                     }
 
-                    background = ColorDrawable(toolbarColor)
+                val miniKeyboardBackgroundColor =
+                    if (context.config.isUsingSystemTheme) {
+                        resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
+                    } else {
+                        mBackgroundColor
+                    }
+
+                if (changedView == _popupBinding?.miniKeyboardView) {
+                    val previewBackground = background as LayerDrawable
+                    previewBackground.findDrawableByLayerId(R.id.button_background_shape).applyColorFilter(miniKeyboardBackgroundColor)
+                    previewBackground.findDrawableByLayerId(R.id.button_background_stroke).applyColorFilter(strokeColor)
+                    background = previewBackground
+                } else {
+                    background.applyColorFilter(darkerColor)
+                }
+
+                val wasDarkened = mBackgroundColor != mBackgroundColor.darkenColor()
+                mToolbarHolder?.apply {
+                    _keyboardBinding?.apply {
+                        topKeyboardDivider.beGoneIf(wasDarkened)
+                        topKeyboardDivider.background = ColorDrawable(strokeColor)
+
+                        background = ColorDrawable(toolbarColor)
+                    }
                 }
             }
         }
@@ -334,69 +355,15 @@ class MyKeyboardView
         fun setKeyboardHolder(keyboardHolder: View) {
             mToolbarHolder = _keyboardBinding?.commandField
 
-    /** Sets the top row above the keyboard containing Scribe command buttons **/
-    fun setKeyboardHolder(keyboardHolder: View) {
-        mToolbarHolder = _keyboardBinding?.commandField
-
-        mToolbarHolder?.let { toolbarHolder ->
-            _keyboardBinding?.let { binding ->
+            mToolbarHolder?.let { toolbarHolder ->
+                _keyboardBinding?.let { binding ->
+                }
             }
-
         }
 
-
-    fun vibrateIfNeeded() {
-        if (context.config.vibrateOnKeypress) {
-            performHapticFeedback()
-        }
-    }
-
-
-
-
-
-    /**
-     * Sets the state of the shift key of the keyboard, if any.
-     * @param shifted whether or not to enable the state of the shift key
-     * @return true if the shift key state changed, false if there was no change
-     */
-    private fun setShifted(shiftState: Int) {
-        if (mKeyboard?.setShifted(shiftState) == true) {
-            invalidateAllKeys()
-        }
-    }
-
-    /**
-     * Returns the state of the shift key of the keyboard, if any.
-     * @return true if the shift is in a pressed state, false otherwise
-     */
-    private fun isShifted(): Boolean {
-        return mKeyboard?.mShiftState ?: SHIFT_OFF > SHIFT_OFF
-    }
-
-    private fun setPopupOffset(x: Int, y: Int) {
-        mMiniKeyboardOffsetX = x
-        mMiniKeyboardOffsetY = y
-        if (mPreviewPopup.isShowing) {
-            mPreviewPopup.dismiss()
-        }
-    }
-
-    private fun adjustCase(label: CharSequence): CharSequence? {
-        var newLabel: CharSequence? = label
-        if (newLabel != null && newLabel.isNotEmpty() && mKeyboard!!.mShiftState > SHIFT_OFF && newLabel.length < 3 && Character.isLowerCase(newLabel[0])) {
-            newLabel = newLabel.toString().toUpperCase()
-        }
-        return newLabel
-    }
-
-    public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        if (mKeyboard == null) {
-            setMeasuredDimension(0, 0)
-        } else {
-            var width = mKeyboard!!.mMinWidth
-            if (MeasureSpec.getSize(widthMeasureSpec) < width + 10) {
-                width = MeasureSpec.getSize(widthMeasureSpec)
+        fun vibrateIfNeeded() {
+            if (context.config.vibrateOnKeypress) {
+                performHapticFeedback()
             }
         }
 
