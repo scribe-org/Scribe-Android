@@ -9,7 +9,12 @@ import be.scri.helpers.DAY_SECONDS
 import be.scri.helpers.HOUR_SECONDS
 import be.scri.helpers.MINUTE_SECONDS
 
-class CustomIntervalPickerDialog(val activity: Activity, val selectedSeconds: Int = 0, val showSeconds: Boolean = false, val callback: (minutes: Int) -> Unit) {
+class CustomIntervalPickerDialog(
+    val activity: Activity,
+    val selectedSeconds: Int = 0,
+    val showSeconds: Boolean = false,
+    val callback: (minutes: Int) -> Unit,
+) {
     var dialog: AlertDialog
     private var binding: DialogCustomIntervalPickerBinding = DialogCustomIntervalPickerBinding.inflate(activity.layoutInflater)
     var view = binding.root
@@ -43,14 +48,17 @@ class CustomIntervalPickerDialog(val activity: Activity, val selectedSeconds: In
             }
         }
 
-        dialog = AlertDialog.Builder(activity)
-            .setPositiveButton(R.string.ok) { dialogInterface, i -> confirmReminder() }
-            .setNegativeButton(R.string.cancel, null)
-            .create().apply {
-                activity.setupDialogStuff(view, this) {
-                    showKeyboard(binding.dialogCustomIntervalValue)
+        dialog =
+            AlertDialog
+                .Builder(activity)
+                .setPositiveButton(R.string.ok) { dialogInterface, i -> confirmReminder() }
+                .setNegativeButton(R.string.cancel, null)
+                .create()
+                .apply {
+                    activity.setupDialogStuff(view, this) {
+                        showKeyboard(binding.dialogCustomIntervalValue)
+                    }
                 }
-            }
     }
 
     private fun confirmReminder() {
@@ -62,10 +70,11 @@ class CustomIntervalPickerDialog(val activity: Activity, val selectedSeconds: In
         dialog.dismiss()
     }
 
-    private fun getMultiplier(id: Int) = when (id) {
-        R.id.dialog_radio_days -> DAY_SECONDS
-        R.id.dialog_radio_hours -> HOUR_SECONDS
-        R.id.dialog_radio_minutes -> MINUTE_SECONDS
-        else -> 1
-    }
+    private fun getMultiplier(id: Int) =
+        when (id) {
+            R.id.dialog_radio_days -> DAY_SECONDS
+            R.id.dialog_radio_hours -> HOUR_SECONDS
+            R.id.dialog_radio_minutes -> MINUTE_SECONDS
+            else -> 1
+        }
 }

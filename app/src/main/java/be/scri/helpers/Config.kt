@@ -3,11 +3,12 @@ package be.scri.helpers
 import android.content.Context
 import java.util.*
 
-class Config(context: Context) : BaseConfig(context) {
+class Config(
+    context: Context,
+) : BaseConfig(context) {
     companion object {
         fun newInstance(context: Context) = Config(context)
     }
-
 
     var vibrateOnKeypress: Boolean
         get() = prefs.getBoolean(VIBRATE_ON_KEYPRESS, true)
@@ -29,14 +30,17 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getInt(KEYBOARD_LANGUAGE, getDefaultLanguage())
         set(keyboardLanguage) = prefs.edit().putInt(KEYBOARD_LANGUAGE, keyboardLanguage).apply()
 
-    var periodOnDoubleTap : Boolean
+    var periodOnDoubleTap: Boolean
         get() = prefs.getBoolean(PERIOD_ON_DOUBLE_TAP, true)
         set(periodOnDoubleTap) = prefs.edit().putBoolean(PERIOD_ON_DOUBLE_TAP, periodOnDoubleTap).apply()
 
-
     private fun getDefaultLanguage(): Int {
         val conf = context.resources.configuration
-        return if (conf.locale.toString().toLowerCase(Locale.getDefault()).startsWith("ru_")) {
+        return if (conf.locale
+                .toString()
+                .toLowerCase(Locale.getDefault())
+                .startsWith("ru_")
+        ) {
             LANGUAGE_RUSSIAN
         } else {
             LANGUAGE_ENGLISH_QWERTY

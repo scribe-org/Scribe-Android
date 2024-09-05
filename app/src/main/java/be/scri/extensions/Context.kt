@@ -14,11 +14,15 @@ val Context.clipsDB: ClipsDao get() = ClipsDatabase.getInstance(applicationConte
 
 fun Context.getCurrentClip(): String? {
     val clipboardManager = (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-    return clipboardManager.primaryClip?.getItemAt(0)?.text?.trim()?.toString()
+    return clipboardManager.primaryClip
+        ?.getItemAt(0)
+        ?.text
+        ?.trim()
+        ?.toString()
 }
 
-fun Context.getStrokeColor(): Int {
-    return if (config.isUsingSystemTheme) {
+fun Context.getStrokeColor(): Int =
+    if (config.isUsingSystemTheme) {
         if (isUsingSystemDarkTheme()) {
             resources.getColor(R.color.md_grey_800, theme)
         } else {
@@ -32,4 +36,3 @@ fun Context.getStrokeColor(): Int {
             lighterColor
         }
     }
-}

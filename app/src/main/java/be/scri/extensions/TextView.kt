@@ -15,12 +15,17 @@ fun TextView.underlineText() {
 fun TextView.removeUnderlines() {
     val spannable = SpannableString(text)
     for (u in spannable.getSpans(0, spannable.length, URLSpan::class.java)) {
-        spannable.setSpan(object : URLSpan(u.url) {
-            override fun updateDrawState(textPaint: TextPaint) {
-                super.updateDrawState(textPaint)
-                textPaint.isUnderlineText = false
-            }
-        }, spannable.getSpanStart(u), spannable.getSpanEnd(u), 0)
+        spannable.setSpan(
+            object : URLSpan(u.url) {
+                override fun updateDrawState(textPaint: TextPaint) {
+                    super.updateDrawState(textPaint)
+                    textPaint.isUnderlineText = false
+                }
+            },
+            spannable.getSpanStart(u),
+            spannable.getSpanEnd(u),
+            0,
+        )
     }
     text = spannable
 }

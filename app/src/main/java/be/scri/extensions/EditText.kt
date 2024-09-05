@@ -11,17 +11,33 @@ import androidx.core.graphics.ColorUtils
 
 val EditText.value: String get() = text.toString().trim()
 
-fun EditText.onTextChangeListener(onTextChangedAction: (newText: String) -> Unit) = addTextChangedListener(object : TextWatcher {
-    override fun afterTextChanged(s: Editable?) {
-        onTextChangedAction(s.toString())
-    }
+fun EditText.onTextChangeListener(onTextChangedAction: (newText: String) -> Unit) =
+    addTextChangedListener(
+        object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                onTextChangedAction(s.toString())
+            }
 
-    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(
+                s: CharSequence,
+                start: Int,
+                count: Int,
+                after: Int,
+            ) {}
 
-    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-})
+            override fun onTextChanged(
+                s: CharSequence,
+                start: Int,
+                before: Int,
+                count: Int,
+            ) {}
+        },
+    )
 
-fun EditText.highlightText(highlightText: String, color: Int) {
+fun EditText.highlightText(
+    highlightText: String,
+    color: Int,
+) {
     val content = text.toString()
     var indexOf = content.indexOf(highlightText, 0, true)
     val wordToSpan = SpannableString(text)

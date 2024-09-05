@@ -3,7 +3,10 @@ package be.scri.helpers
 // taken from https://gist.github.com/MichaelRocks/1b94bb44c7804e999dbf31dac86955ec
 // make IMG_5.jpg come before IMG_10.jpg
 class AlphanumericComparator {
-    fun compare(string1: String, string2: String): Int {
+    fun compare(
+        string1: String,
+        string2: String,
+    ): Int {
         var thisMarker = 0
         var thatMarker = 0
         val s1Length = string1.length
@@ -43,7 +46,11 @@ class AlphanumericComparator {
         return s1Length - s2Length
     }
 
-    private fun getChunk(string: String, length: Int, marker: Int): String {
+    private fun getChunk(
+        string: String,
+        length: Int,
+        marker: Int,
+    ): String {
         var current = marker
         val chunk = StringBuilder()
         var c = string[current]

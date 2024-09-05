@@ -1,0 +1,31 @@
+name: pr_ktlint_detekt
+on:
+    pull_request:
+        branches:
+            - main
+        types: [opened, reopened, synchronize]
+
+jobs:
+    ktlint:
+        runs-on: ubuntu-latest
+        name: Run ktlint and detekt
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup JDK environment
+              uses: actions/setup-java@v4
+              with:
+                  distribution: "zulu"
+                  java-version: 17
+
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@v4
+
+            - name: Run ktlint
+              run: ./gradlew lintKotlin
+
+            - name: Run detekt
+              if: always()
+              run: ./gradlew detekt

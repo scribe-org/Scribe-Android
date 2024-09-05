@@ -9,7 +9,6 @@ import be.scri.models.Clip
 
 @Database(entities = [Clip::class], version = 1)
 abstract class ClipsDatabase : RoomDatabase() {
-
     abstract fun ClipsDao(): ClipsDao
 
     companion object {

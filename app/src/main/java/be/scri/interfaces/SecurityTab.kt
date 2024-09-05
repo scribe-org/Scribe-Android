@@ -9,7 +9,7 @@ interface SecurityTab {
         listener: HashListener,
         scrollView: MyScrollView,
         biometricPromptHost: AuthPromptHost,
-        showBiometricAuthentication: Boolean
+        showBiometricAuthentication: Boolean,
     )
 
     fun visibilityChanged(isVisible: Boolean)

@@ -7,31 +7,35 @@ import androidx.exifinterface.media.ExifInterface
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun ExifInterface.copyTo(destination: ExifInterface, copyOrientation: Boolean = true) {
-    val attributes = arrayListOf(
-        ExifInterface.TAG_APERTURE_VALUE,
-        ExifInterface.TAG_DATETIME,
-        ExifInterface.TAG_DATETIME_DIGITIZED,
-        ExifInterface.TAG_DATETIME_ORIGINAL,
-        ExifInterface.TAG_EXPOSURE_TIME,
-        ExifInterface.TAG_FLASH,
-        ExifInterface.TAG_FOCAL_LENGTH,
-        ExifInterface.TAG_GPS_ALTITUDE,
-        ExifInterface.TAG_GPS_ALTITUDE_REF,
-        ExifInterface.TAG_GPS_DATESTAMP,
-        ExifInterface.TAG_GPS_LATITUDE,
-        ExifInterface.TAG_GPS_LATITUDE_REF,
-        ExifInterface.TAG_GPS_LONGITUDE,
-        ExifInterface.TAG_GPS_LONGITUDE_REF,
-        ExifInterface.TAG_GPS_PROCESSING_METHOD,
-        ExifInterface.TAG_GPS_TIMESTAMP,
-        ExifInterface.TAG_IMAGE_LENGTH,
-        ExifInterface.TAG_IMAGE_WIDTH,
-        ExifInterface.TAG_ISO_SPEED_RATINGS,
-        ExifInterface.TAG_MAKE,
-        ExifInterface.TAG_MODEL,
-        ExifInterface.TAG_WHITE_BALANCE
-    )
+fun ExifInterface.copyTo(
+    destination: ExifInterface,
+    copyOrientation: Boolean = true,
+) {
+    val attributes =
+        arrayListOf(
+            ExifInterface.TAG_APERTURE_VALUE,
+            ExifInterface.TAG_DATETIME,
+            ExifInterface.TAG_DATETIME_DIGITIZED,
+            ExifInterface.TAG_DATETIME_ORIGINAL,
+            ExifInterface.TAG_EXPOSURE_TIME,
+            ExifInterface.TAG_FLASH,
+            ExifInterface.TAG_FOCAL_LENGTH,
+            ExifInterface.TAG_GPS_ALTITUDE,
+            ExifInterface.TAG_GPS_ALTITUDE_REF,
+            ExifInterface.TAG_GPS_DATESTAMP,
+            ExifInterface.TAG_GPS_LATITUDE,
+            ExifInterface.TAG_GPS_LATITUDE_REF,
+            ExifInterface.TAG_GPS_LONGITUDE,
+            ExifInterface.TAG_GPS_LONGITUDE_REF,
+            ExifInterface.TAG_GPS_PROCESSING_METHOD,
+            ExifInterface.TAG_GPS_TIMESTAMP,
+            ExifInterface.TAG_IMAGE_LENGTH,
+            ExifInterface.TAG_IMAGE_WIDTH,
+            ExifInterface.TAG_ISO_SPEED_RATINGS,
+            ExifInterface.TAG_MAKE,
+            ExifInterface.TAG_MODEL,
+            ExifInterface.TAG_WHITE_BALANCE,
+        )
 
     if (copyOrientation) {
         attributes.add(ExifInterface.TAG_ORIENTATION)
@@ -51,32 +55,33 @@ fun ExifInterface.copyTo(destination: ExifInterface, copyOrientation: Boolean = 
 }
 
 fun ExifInterface.removeValues() {
-    val attributes = arrayListOf(
-        // ExifInterface.TAG_ORIENTATION,   // do not remove the orientation, it could lead to unexpected behaviour at displaying the file
-        ExifInterface.TAG_APERTURE_VALUE,
-        ExifInterface.TAG_DATETIME,
-        ExifInterface.TAG_DATETIME_DIGITIZED,
-        ExifInterface.TAG_DATETIME_ORIGINAL,
-        ExifInterface.TAG_EXPOSURE_TIME,
-        ExifInterface.TAG_FLASH,
-        ExifInterface.TAG_F_NUMBER,
-        ExifInterface.TAG_FOCAL_LENGTH,
-        ExifInterface.TAG_GPS_ALTITUDE,
-        ExifInterface.TAG_GPS_ALTITUDE_REF,
-        ExifInterface.TAG_GPS_DATESTAMP,
-        ExifInterface.TAG_GPS_LATITUDE,
-        ExifInterface.TAG_GPS_LATITUDE_REF,
-        ExifInterface.TAG_GPS_LONGITUDE,
-        ExifInterface.TAG_GPS_LONGITUDE_REF,
-        ExifInterface.TAG_GPS_PROCESSING_METHOD,
-        ExifInterface.TAG_GPS_TIMESTAMP,
-        ExifInterface.TAG_IMAGE_LENGTH,
-        ExifInterface.TAG_IMAGE_WIDTH,
-        ExifInterface.TAG_ISO_SPEED_RATINGS,
-        ExifInterface.TAG_MAKE,
-        ExifInterface.TAG_MODEL,
-        ExifInterface.TAG_WHITE_BALANCE
-    )
+    val attributes =
+        arrayListOf(
+            // ExifInterface.TAG_ORIENTATION,   // do not remove the orientation, it could lead to unexpected behaviour at displaying the file
+            ExifInterface.TAG_APERTURE_VALUE,
+            ExifInterface.TAG_DATETIME,
+            ExifInterface.TAG_DATETIME_DIGITIZED,
+            ExifInterface.TAG_DATETIME_ORIGINAL,
+            ExifInterface.TAG_EXPOSURE_TIME,
+            ExifInterface.TAG_FLASH,
+            ExifInterface.TAG_F_NUMBER,
+            ExifInterface.TAG_FOCAL_LENGTH,
+            ExifInterface.TAG_GPS_ALTITUDE,
+            ExifInterface.TAG_GPS_ALTITUDE_REF,
+            ExifInterface.TAG_GPS_DATESTAMP,
+            ExifInterface.TAG_GPS_LATITUDE,
+            ExifInterface.TAG_GPS_LATITUDE_REF,
+            ExifInterface.TAG_GPS_LONGITUDE,
+            ExifInterface.TAG_GPS_LONGITUDE_REF,
+            ExifInterface.TAG_GPS_PROCESSING_METHOD,
+            ExifInterface.TAG_GPS_TIMESTAMP,
+            ExifInterface.TAG_IMAGE_LENGTH,
+            ExifInterface.TAG_IMAGE_WIDTH,
+            ExifInterface.TAG_ISO_SPEED_RATINGS,
+            ExifInterface.TAG_MAKE,
+            ExifInterface.TAG_MODEL,
+            ExifInterface.TAG_WHITE_BALANCE,
+        )
 
     attributes.forEach {
         setAttribute(it, null)
@@ -105,11 +110,12 @@ fun ExifInterface.getExifProperties(): String {
     getAttribute(ExifInterface.TAG_EXPOSURE_TIME).let {
         if (it?.isNotEmpty() == true) {
             val exposureValue = it.toFloat()
-            exifString += if (exposureValue > 1f) {
-                "${exposureValue}s  "
-            } else {
-                "1/${Math.round(1 / exposureValue)}s  "
-            }
+            exifString +=
+                if (exposureValue > 1f) {
+                    "${exposureValue}s  "
+                } else {
+                    "1/${Math.round(1 / exposureValue)}s  "
+                }
         }
     }
 
@@ -129,7 +135,11 @@ fun ExifInterface.getExifDateTaken(context: Context): String {
         if (it?.isNotEmpty() == true) {
             try {
                 val simpleDateFormat = SimpleDateFormat("yyyy:MM:dd kk:mm:ss", Locale.ENGLISH)
-                return simpleDateFormat.parse(it).time.formatDate(context).trim()
+                return simpleDateFormat
+                    .parse(it)
+                    .time
+                    .formatDate(context)
+                    .trim()
             } catch (ignored: Exception) {
             }
         }

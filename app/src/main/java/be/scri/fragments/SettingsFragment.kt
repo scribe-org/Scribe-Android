@@ -11,7 +11,6 @@ import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,14 +23,18 @@ import be.scri.models.SwitchItem
 import be.scri.models.TextItem
 
 class SettingsFragment : Fragment() {
-
     private lateinit var binding: FragmentSettingsBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
-            getParentFragmentManager().popBackStack()
-        }
+        val callback =
+            requireActivity().onBackPressedDispatcher.addCallback(this) {
+                getParentFragmentManager().popBackStack()
+            }
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_settings_title)
         (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         (requireActivity() as MainActivity).setActionBarButtonInvisible()
@@ -40,7 +43,10 @@ class SettingsFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         setupRecycleView()
         setupRecyclerView2()
@@ -73,21 +79,32 @@ class SettingsFragment : Fragment() {
         return listOf(
             TextItem(R.string.app_settings_appSettings_appLanguage, image = R.drawable.right_arrow, action = ::selectLanguage),
             SwitchItem("Dark mode", isChecked = sharedPref.getBoolean("dark_mode", false), action = ::darkMode, action2 = ::lightMode),
-            SwitchItem("Vibrate on Keypress", isChecked = requireContext().config.vibrateOnKeypress, action = ::enableVibrateOnKeypress, action2 = ::disableVibrateOnKeypress),
-            SwitchItem("Show a popup on keypress", isChecked = requireContext().config.showPopupOnKeypress, action = ::enableShowPopupOnKeypress, action2 = ::disableShowPopupOnKeypress)
+            SwitchItem(
+                "Vibrate on Keypress",
+                isChecked = requireContext().config.vibrateOnKeypress,
+                action = ::enableVibrateOnKeypress,
+                action2 = ::disableVibrateOnKeypress,
+            ),
+            SwitchItem(
+                "Show a popup on keypress",
+                isChecked = requireContext().config.showPopupOnKeypress,
+                action = ::enableShowPopupOnKeypress,
+                action2 = ::disableShowPopupOnKeypress,
+            ),
         )
     }
 
     private fun selectLanguage() {
         val packageName = requireActivity().packageName
-        val intent: Intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Intent(ACTION_APP_LOCALE_SETTINGS)
-        } else {
-            Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.fromParts("package", packageName, null)
-                putExtra("android.intent.extra.SHOW_FRAGMENT", "com.android.settings.localepicker.LocaleListEditor")
+        val intent: Intent =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Intent(ACTION_APP_LOCALE_SETTINGS)
+            } else {
+                Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", packageName, null)
+                    putExtra("android.intent.extra.SHOW_FRAGMENT", "com.android.settings.localepicker.LocaleListEditor")
+                }
             }
-        }
 
         val uri = Uri.fromParts("package", packageName, null)
         intent.data = uri
@@ -114,40 +131,42 @@ class SettingsFragment : Fragment() {
         val languages = setupKeyboardLanguage()
         val list = mutableListOf<TextItem>()
         for (language in languages) {
-            val localizeLanguage: Int = when (language) {
-                "English" -> R.string._global_english
-                "French" -> R.string._global_french
-                "German" -> R.string._global_german
-                "Russian" -> R.string._global_russian
-                "Spanish" -> R.string._global_spanish
-                "Italian" -> R.string._global_italian
-                "Portuguese" -> R.string._global_portuguese
-                else -> 0
-            }
+            val localizeLanguage: Int =
+                when (language) {
+                    "English" -> R.string._global_english
+                    "French" -> R.string._global_french
+                    "German" -> R.string._global_german
+                    "Russian" -> R.string._global_russian
+                    "Spanish" -> R.string._global_spanish
+                    "Italian" -> R.string._global_italian
+                    "Portuguese" -> R.string._global_portuguese
+                    else -> 0
+                }
             list.add(
                 TextItem(
                     text = localizeLanguage,
                     image = R.drawable.right_arrow,
                     action = { loadLanguageSettingsFragment(language) },
-                    language = language
-                )
+                    language = language,
+                ),
             )
         }
         return list
     }
 
     private fun loadLanguageSettingsFragment(language: String) {
-        val fragment = LanguageSettingsFragment().apply {
-            arguments = Bundle().apply {
-                putString("LANGUAGE_EXTRA", language)
+        val fragment =
+            LanguageSettingsFragment().apply {
+                arguments =
+                    Bundle().apply {
+                        putString("LANGUAGE_EXTRA", language)
+                    }
             }
-        }
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment, "LanguageFragment")
         fragmentTransaction.addToBackStack("LanguageFragment")
         fragmentTransaction.commit()
     }
-
 
     private fun setupKeyboardLanguage(): MutableList<String> {
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

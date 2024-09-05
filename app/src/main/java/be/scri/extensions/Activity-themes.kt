@@ -5,18 +5,23 @@ import android.graphics.Color
 import be.scri.R
 import be.scri.helpers.DARK_GREY
 
-fun Activity.getThemeId(color: Int = baseConfig.primaryColor, showTransparentTop: Boolean = false) = when {
+fun Activity.getThemeId(
+    color: Int = baseConfig.primaryColor,
+    showTransparentTop: Boolean = false,
+) = when {
     baseConfig.isUsingSystemTheme -> if (isUsingSystemDarkTheme()) R.style.AppTheme_Base_System else R.style.AppTheme_Base_System_Light
-    isBlackAndWhiteTheme() -> when {
-        showTransparentTop -> R.style.AppTheme_BlackAndWhite_NoActionBar
-        baseConfig.primaryColor.getContrastColor() == DARK_GREY -> R.style.AppTheme_BlackAndWhite_DarkTextColor
-        else -> R.style.AppTheme_BlackAndWhite
-    }
-    isWhiteTheme() -> when {
-        showTransparentTop -> R.style.AppTheme_White_NoActionBar
-        baseConfig.primaryColor.getContrastColor() == Color.WHITE -> R.style.AppTheme_White_LightTextColor
-        else -> R.style.AppTheme_White
-    }
+    isBlackAndWhiteTheme() ->
+        when {
+            showTransparentTop -> R.style.AppTheme_BlackAndWhite_NoActionBar
+            baseConfig.primaryColor.getContrastColor() == DARK_GREY -> R.style.AppTheme_BlackAndWhite_DarkTextColor
+            else -> R.style.AppTheme_BlackAndWhite
+        }
+    isWhiteTheme() ->
+        when {
+            showTransparentTop -> R.style.AppTheme_White_NoActionBar
+            baseConfig.primaryColor.getContrastColor() == Color.WHITE -> R.style.AppTheme_White_LightTextColor
+            else -> R.style.AppTheme_White
+        }
     showTransparentTop -> {
         when (color) {
             -12846 -> R.style.AppTheme_Red_100_core

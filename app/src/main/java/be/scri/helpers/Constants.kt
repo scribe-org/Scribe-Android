@@ -12,7 +12,7 @@ const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
 const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
 const val LAST_EXPORTED_CLIPS_FOLDER = "last_exported_clips_folder"
 const val KEYBOARD_LANGUAGE = "keyboard_language"
-const val DARK_THEME= "dark_theme"
+const val DARK_THEME = "dark_theme"
 const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
 
 // differentiate current and pinned clips at the keyboards' Clipboard section
@@ -27,4 +27,3 @@ const val LANGUAGE_PORTUGUESE = 4
 const val LANGUAGE_RUSSIAN = 5
 const val LANGUAGE_SPANISH = 6
 const val LANGUAGE_SWEDISH = 7
-

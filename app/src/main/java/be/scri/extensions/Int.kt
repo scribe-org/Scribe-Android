@@ -53,7 +53,11 @@ fun Int.formatSize(): String {
     return "${DecimalFormat("#,##0.#").format(this / Math.pow(1024.0, digitGroups.toDouble()))} ${units[digitGroups]}"
 }
 
-fun Int.formatDate(context: Context, dateFormat: String? = null, timeFormat: String? = null): String {
+fun Int.formatDate(
+    context: Context,
+    dateFormat: String? = null,
+    timeFormat: String? = null,
+): String {
     val useDateFormat = dateFormat ?: context.baseConfig.dateFormat
     val useTimeFormat = timeFormat ?: context.getTimeFormat()
     val cal = Calendar.getInstance(Locale.ENGLISH)
@@ -62,7 +66,11 @@ fun Int.formatDate(context: Context, dateFormat: String? = null, timeFormat: Str
 }
 
 // if the given date is today, we show only the time. Else we show the date and optionally the time too
-fun Int.formatDateOrTime(context: Context, hideTimeAtOtherDays: Boolean, showYearEvenIfCurrent: Boolean): String {
+fun Int.formatDateOrTime(
+    context: Context,
+    hideTimeAtOtherDays: Boolean,
+    showYearEvenIfCurrent: Boolean,
+): String {
     val cal = Calendar.getInstance(Locale.ENGLISH)
     cal.timeInMillis = this * 1000L
 
@@ -71,7 +79,13 @@ fun Int.formatDateOrTime(context: Context, hideTimeAtOtherDays: Boolean, showYea
     } else {
         var format = context.baseConfig.dateFormat
         if (!showYearEvenIfCurrent && isThisYear()) {
-            format = format.replace("y", "").trim().trim('-').trim('.').trim('/')
+            format =
+                format
+                    .replace("y", "")
+                    .trim()
+                    .trim('-')
+                    .trim('.')
+                    .trim('/')
         }
 
         if (!hideTimeAtOtherDays) {
@@ -92,12 +106,14 @@ fun Int.isThisYear(): Boolean {
     return (thenYear == time.year)
 }
 
-fun Int.addBitIf(add: Boolean, bit: Int) =
-    if (add) {
-        addBit(bit)
-    } else {
-        removeBit(bit)
-    }
+fun Int.addBitIf(
+    add: Boolean,
+    bit: Int,
+) = if (add) {
+    addBit(bit)
+} else {
+    removeBit(bit)
+}
 
 fun Int.removeBit(bit: Int) = addBit(bit) - bit
 
@@ -118,8 +134,9 @@ fun Int.darkenColor(factor: Int = 8): Int {
     Color.colorToHSV(this, hsv)
     val hsl = hsv2hsl(hsv)
     hsl[2] -= DARK_FACTOR / 100f
-    if (hsl[2] < 0)
+    if (hsl[2] < 0) {
         hsl[2] = 0f
+    }
     hsv = hsl2hsv(hsl)
     return Color.HSVToColor(hsv)
 }
@@ -134,8 +151,9 @@ fun Int.lightenColor(factor: Int = 8): Int {
     Color.colorToHSV(this, hsv)
     val hsl = hsv2hsl(hsv)
     hsl[2] += LIGHT_FACTOR / 100f
-    if (hsl[2] < 0)
+    if (hsl[2] < 0) {
         hsl[2] = 0f
+    }
     hsv = hsl2hsv(hsl)
     return Color.HSVToColor(hsv)
 }
@@ -155,41 +173,44 @@ private fun hsv2hsl(hsv: FloatArray): FloatArray {
 
     val newHue = (2f - sat) * value
     var newSat = sat * value / if (newHue < 1f) newHue else 2f - newHue
-    if (newSat > 1f)
+    if (newSat > 1f) {
         newSat = 1f
+    }
 
     return floatArrayOf(hue, newSat, newHue / 2f)
 }
 
-fun Int.orientationFromDegrees() = when (this) {
-    270 -> ExifInterface.ORIENTATION_ROTATE_270
-    180 -> ExifInterface.ORIENTATION_ROTATE_180
-    90 -> ExifInterface.ORIENTATION_ROTATE_90
-    else -> ExifInterface.ORIENTATION_NORMAL
-}.toString()
+fun Int.orientationFromDegrees() =
+    when (this) {
+        270 -> ExifInterface.ORIENTATION_ROTATE_270
+        180 -> ExifInterface.ORIENTATION_ROTATE_180
+        90 -> ExifInterface.ORIENTATION_ROTATE_90
+        else -> ExifInterface.ORIENTATION_NORMAL
+    }.toString()
 
-fun Int.degreesFromOrientation() = when (this) {
-    ExifInterface.ORIENTATION_ROTATE_270 -> 270
-    ExifInterface.ORIENTATION_ROTATE_180 -> 180
-    ExifInterface.ORIENTATION_ROTATE_90 -> 90
-    else -> 0
-}
+fun Int.degreesFromOrientation() =
+    when (this) {
+        ExifInterface.ORIENTATION_ROTATE_270 -> 270
+        ExifInterface.ORIENTATION_ROTATE_180 -> 180
+        ExifInterface.ORIENTATION_ROTATE_90 -> 90
+        else -> 0
+    }
 
-fun Int.ensureTwoDigits(): String {
-    return if (toString().length == 1) {
+fun Int.ensureTwoDigits(): String =
+    if (toString().length == 1) {
         "0$this"
     } else {
         toString()
     }
-}
 
 fun Int.getColorStateList(): ColorStateList {
-    val states = arrayOf(
-        intArrayOf(android.R.attr.state_enabled),
-        intArrayOf(-android.R.attr.state_enabled),
-        intArrayOf(-android.R.attr.state_checked),
-        intArrayOf(android.R.attr.state_pressed)
-    )
+    val states =
+        arrayOf(
+            intArrayOf(android.R.attr.state_enabled),
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf(-android.R.attr.state_checked),
+            intArrayOf(android.R.attr.state_pressed),
+        )
     val colors = intArrayOf(this, this, this, this)
     return ColorStateList(states, colors)
 }

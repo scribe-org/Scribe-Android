@@ -1,14 +1,13 @@
 package be.scri.services
 
 import android.content.Context
-import android.util.Log
 import be.scri.R
 
 class RussianKeyboardIME : SimpleKeyboardIME() {
     override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_russian
+
     private var lastSpaceTime: Long = 0
     private val doubleTapThreshold: Long = 300
-
 
     private fun shouldCommitPeriodAfterSpace(language: String): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -22,6 +21,4 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
             inputConnection.commitText(". ", 1)
         }
     }
-
-
 }

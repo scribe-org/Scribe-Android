@@ -1,11 +1,11 @@
 package be.scri.services
 
 import android.content.Context
-import android.util.Log
 import be.scri.R
 
 class ItalianKeyboardIME : SimpleKeyboardIME() {
     override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_italian
+
     private var lastSpaceTime: Long = 0
     private val doubleTapThreshold: Long = 300
 
@@ -22,4 +22,3 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
         }
     }
 }
-

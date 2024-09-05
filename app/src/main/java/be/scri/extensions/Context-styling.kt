@@ -16,47 +16,53 @@ import be.scri.views.MyFloatingActionButton
 import be.scri.views.MyTextView
 
 // handle system default theme (Material You) specially as the color is taken from the system, not hardcoded by us
-fun Context.getProperTextColor() = if (baseConfig.isUsingSystemTheme) {
-    resources.getColor(R.color.you_neutral_text_color, theme)
-} else {
-    baseConfig.textColor
-}
+fun Context.getProperTextColor() =
+    if (baseConfig.isUsingSystemTheme) {
+        resources.getColor(R.color.you_neutral_text_color, theme)
+    } else {
+        baseConfig.textColor
+    }
 
-fun Context.getProperKeyColor() = if (baseConfig.isUsingSystemTheme) {
-    resources.getColor(R.color.you_neutral_text_color, theme)
-} else {
-    baseConfig.keyColor
-}
+fun Context.getProperKeyColor() =
+    if (baseConfig.isUsingSystemTheme) {
+        resources.getColor(R.color.you_neutral_text_color, theme)
+    } else {
+        baseConfig.keyColor
+    }
 
-fun Context.getProperBackgroundColor() = if (baseConfig.isUsingSystemTheme) {
-    resources.getColor(R.color.you_background_color, theme)
-} else {
-    baseConfig.backgroundColor
-}
+fun Context.getProperBackgroundColor() =
+    if (baseConfig.isUsingSystemTheme) {
+        resources.getColor(R.color.you_background_color, theme)
+    } else {
+        baseConfig.backgroundColor
+    }
 
-fun Context.getProperPrimaryColor() = when {
-    baseConfig.isUsingSystemTheme -> resources.getColor(R.color.you_primary_color, theme)
-    isWhiteTheme() || isBlackAndWhiteTheme() -> baseConfig.accentColor
-    else -> baseConfig.primaryColor
-}
+fun Context.getProperPrimaryColor() =
+    when {
+        baseConfig.isUsingSystemTheme -> resources.getColor(R.color.you_primary_color, theme)
+        isWhiteTheme() || isBlackAndWhiteTheme() -> baseConfig.accentColor
+        else -> baseConfig.primaryColor
+    }
 
-fun Context.getProperStatusBarColor() = when {
-    baseConfig.isUsingSystemTheme -> resources.getColor(R.color.you_primary_color, theme)
-    else -> baseConfig.primaryColor
-}
+fun Context.getProperStatusBarColor() =
+    when {
+        baseConfig.isUsingSystemTheme -> resources.getColor(R.color.you_primary_color, theme)
+        else -> baseConfig.primaryColor
+    }
 
 fun Context.updateTextColors(viewGroup: ViewGroup) {
-    val textColor = when {
-        baseConfig.isUsingSystemTheme -> getProperTextColor()
-        else -> baseConfig.textColor
-    }
+    val textColor =
+        when {
+            baseConfig.isUsingSystemTheme -> getProperTextColor()
+            else -> baseConfig.textColor
+        }
 
     val backgroundColor = baseConfig.backgroundColor
-    val accentColor = when {
-        isWhiteTheme() || isBlackAndWhiteTheme() -> baseConfig.accentColor
-        else -> getProperPrimaryColor()
-    }
-
+    val accentColor =
+        when {
+            isWhiteTheme() || isBlackAndWhiteTheme() -> baseConfig.accentColor
+            else -> getProperPrimaryColor()
+        }
 
     val cnt = viewGroup.childCount
     (0 until cnt).map { viewGroup.getChildAt(it) }.forEach {
@@ -70,13 +76,12 @@ fun Context.updateTextColors(viewGroup: ViewGroup) {
     }
 }
 
-fun Context.getLinkTextColor(): Int {
-    return if (baseConfig.primaryColor == resources.getColor(R.color.color_primary)) {
+fun Context.getLinkTextColor(): Int =
+    if (baseConfig.primaryColor == resources.getColor(R.color.color_primary)) {
         baseConfig.primaryColor
     } else {
         baseConfig.textColor
     }
-}
 
 fun Context.isBlackAndWhiteTheme() = baseConfig.textColor == Color.WHITE && baseConfig.primaryColor == Color.BLACK && baseConfig.backgroundColor == Color.BLACK
 
@@ -84,21 +89,24 @@ fun Context.isWhiteTheme() = baseConfig.textColor == DARK_GREY && baseConfig.pri
 
 fun Context.isUsingSystemDarkTheme() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES != 0
 
-fun Context.getTimePickerDialogTheme() = when {
-    baseConfig.isUsingSystemTheme -> if (isUsingSystemDarkTheme()) {
-        R.style.MyTimePickerMaterialTheme_Dark
-    } else {
-        R.style.MyDateTimePickerMaterialTheme
+fun Context.getTimePickerDialogTheme() =
+    when {
+        baseConfig.isUsingSystemTheme ->
+            if (isUsingSystemDarkTheme()) {
+                R.style.MyTimePickerMaterialTheme_Dark
+            } else {
+                R.style.MyDateTimePickerMaterialTheme
+            }
+        baseConfig.backgroundColor.getContrastColor() == Color.WHITE -> R.style.MyDialogTheme_Dark
+        else -> R.style.MyDialogTheme
     }
-    baseConfig.backgroundColor.getContrastColor() == Color.WHITE -> R.style.MyDialogTheme_Dark
-    else -> R.style.MyDialogTheme
-}
 
-fun Context.getDatePickerDialogTheme() = when {
-    baseConfig.isUsingSystemTheme -> R.style.MyDateTimePickerMaterialTheme
-    baseConfig.backgroundColor.getContrastColor() == Color.WHITE -> R.style.MyDialogTheme_Dark
-    else -> R.style.MyDialogTheme
-}
+fun Context.getDatePickerDialogTheme() =
+    when {
+        baseConfig.isUsingSystemTheme -> R.style.MyDateTimePickerMaterialTheme
+        baseConfig.backgroundColor.getContrastColor() == Color.WHITE -> R.style.MyDialogTheme_Dark
+        else -> R.style.MyDialogTheme
+    }
 
 fun Context.getSharedTheme(callback: (sharedTheme: SharedTheme?) -> Unit) {
     if (!isThankYouInstalled()) {
@@ -146,7 +154,12 @@ fun Context.checkAppIconColor() {
     }
 }
 
-fun Context.toggleAppIconColor(appId: String, colorIndex: Int, color: Int, enable: Boolean) {
+fun Context.toggleAppIconColor(
+    appId: String,
+    colorIndex: Int,
+    color: Int,
+    enable: Boolean,
+) {
     val className = "${appId.removeSuffix(".debug")}.activities.SplashActivity${appIconColorStrings[colorIndex]}"
     val state = if (enable) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED
     try {

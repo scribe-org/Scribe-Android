@@ -13,7 +13,7 @@ class ConfirmationAdvancedDialog(
     messageId: Int = R.string.proceed_with_deletion,
     positive: Int = R.string.yes,
     negative: Int,
-    val callback: (result: Boolean) -> Unit
+    val callback: (result: Boolean) -> Unit,
 ) {
     var dialog: AlertDialog
     private var binding: DialogMessageBinding = DialogMessageBinding.inflate(activity.layoutInflater)
@@ -23,16 +23,19 @@ class ConfirmationAdvancedDialog(
         binding.message.text =
             if (message.isEmpty()) activity.resources.getString(messageId) else message
 
-        val builder = AlertDialog.Builder(activity)
-            .setPositiveButton(positive) { dialog, which -> positivePressed() }
+        val builder =
+            AlertDialog
+                .Builder(activity)
+                .setPositiveButton(positive) { dialog, which -> positivePressed() }
 
         if (negative != 0) {
             builder.setNegativeButton(negative) { dialog, which -> negativePressed() }
         }
 
-        dialog = builder.create().apply {
-            activity.setupDialogStuff(view, this)
-        }
+        dialog =
+            builder.create().apply {
+                activity.setupDialogStuff(view, this)
+            }
     }
 
     private fun positivePressed() {
