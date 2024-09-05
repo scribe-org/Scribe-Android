@@ -351,24 +351,11 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
         mToolbarHolder?.let { toolbarHolder ->
             _keyboardBinding?.let { binding ->
-                binding.settingsCog?.apply {
-                    setOnLongClickListener {
-                        context?.toast(R.string.settings)
-                        true
-                    }
-                    setOnClickListener {
-                        context?.let { ctx ->
-                            vibrateIfNeeded()
-                            Intent(ctx, SettingsFragment::class.java).apply {
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                ctx.startActivity(this)
-                            }
-                        }
-                    }
-                }
             }
+
         }
     }
+
 
     fun vibrateIfNeeded() {
         if (context.config.vibrateOnKeypress) {
