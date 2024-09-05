@@ -39,24 +39,10 @@
             android:background="@drawable/cmd_bar_background_right_rounded"
             android:contentDescription="@string/command_bar"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
-            app:layout_constraintEnd_toStartOf="@+id/settings_cog"
+            app:layout_constraintEnd_toEndOf="@+id/command_field"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_weight="84"
             app:layout_constraintStart_toEndOf="@+id/scribe_key"
-            app:layout_constraintTop_toTopOf="@+id/command_field" />
-
-        <ImageView
-            android:id="@+id/settings_cog"
-            android:layout_width="@dimen/toolbar_icon_height"
-            android:layout_height="@dimen/toolbar_icon_height"
-            android:layout_marginEnd="@dimen/small_margin"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/settings"
-            android:padding="@dimen/tiny_margin"
-            android:src="@drawable/ic_settings_cog_vector"
-            app:layout_constraintBottom_toBottomOf="@+id/command_field"
-            app:layout_constraintEnd_toEndOf="@+id/command_field"
-            app:layout_constraintStart_toEndOf="@+id/command_bar"
             app:layout_constraintTop_toTopOf="@+id/command_field" />
 
         <ImageView
