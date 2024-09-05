@@ -1,6 +1,9 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'org.jlleitschuh.gradle.ktlint'
+}
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -77,6 +80,25 @@ android {
         toolVersion = "1.23.6"
         buildUponDefaultConfig = true
         allRules = true
+    }
+    ktlint {
+        version = "0.45.2"
+        debug = true
+        verbose = true
+        android = true
+        outputToConsole = true
+        outputColorName = "RED"
+        ignoreFailures = false
+        enableExperimentalRules = true
+        reporters {
+            reporter "plain"
+            reporter "checkstyle"
+            reporter "sarif"
+        }
+        filter {
+            exclude("**/generated/**")
+            include("**/kotlin/**")
+        }
     }
 
     namespace 'be.scri'
