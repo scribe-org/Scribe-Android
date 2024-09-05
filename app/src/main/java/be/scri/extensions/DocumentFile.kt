@@ -2,15 +2,17 @@ package be.scri.extensions
 
 import androidx.documentfile.provider.DocumentFile
 
-fun DocumentFile.getItemSize(countHiddenItems: Boolean): Long {
-    return if (isDirectory) {
+fun DocumentFile.getItemSize(countHiddenItems: Boolean): Long =
+    if (isDirectory) {
         getDirectorySize(this, countHiddenItems)
     } else {
         length()
     }
-}
 
-private fun getDirectorySize(dir: DocumentFile, countHiddenItems: Boolean): Long {
+private fun getDirectorySize(
+    dir: DocumentFile,
+    countHiddenItems: Boolean,
+): Long {
     var size = 0L
     if (dir.exists()) {
         val files = dir.listFiles()
@@ -26,15 +28,17 @@ private fun getDirectorySize(dir: DocumentFile, countHiddenItems: Boolean): Long
     return size
 }
 
-fun DocumentFile.getFileCount(countHiddenItems: Boolean): Int {
-    return if (isDirectory) {
+fun DocumentFile.getFileCount(countHiddenItems: Boolean): Int =
+    if (isDirectory) {
         getDirectoryFileCount(this, countHiddenItems)
     } else {
         1
     }
-}
 
-private fun getDirectoryFileCount(dir: DocumentFile, countHiddenItems: Boolean): Int {
+private fun getDirectoryFileCount(
+    dir: DocumentFile,
+    countHiddenItems: Boolean,
+): Int {
     var count = 0
     if (dir.exists()) {
         val files = dir.listFiles()

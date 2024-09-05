@@ -19,10 +19,13 @@ import be.scri.databinding.FragmentMainBinding
 import be.scri.dialogs.ConfirmationAdvancedDialog
 
 class MainFragment : Fragment() {
-
     private lateinit var binding: FragmentMainBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         binding.scribeKey.setOnClickListener {
             (requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
@@ -33,7 +36,7 @@ class MainFragment : Fragment() {
                 requireActivity(),
                 messageId = R.string.redirection_note,
                 positive = R.string.ok,
-                negative = 0
+                negative = 0,
             ) { success ->
                 if (success) {
                     Intent(Settings.ACTION_INPUT_METHOD_SETTINGS).apply {
@@ -45,9 +48,10 @@ class MainFragment : Fragment() {
                 }
             }
         }
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
-            getParentFragmentManager().popBackStack()
-        }
+        val callback =
+            requireActivity().onBackPressedDispatcher.addCallback(this) {
+                getParentFragmentManager().popBackStack()
+            }
         (requireActivity() as MainActivity).setActionBarButtonInvisible()
         callback.isEnabled = true
         return binding.root
@@ -59,11 +63,12 @@ class MainFragment : Fragment() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
 
-
-
         AppCompatDelegate.setDefaultNightMode(
-            if (isUserDarkMode) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
+            if (isUserDarkMode) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            },
         )
         if (isUserDarkMode != (currentNightMode == Configuration.UI_MODE_NIGHT_YES)) {
             requireActivity().recreate()
@@ -77,7 +82,7 @@ class MainFragment : Fragment() {
                 requireActivity(),
                 messageId = R.string.redirection_note,
                 positive = R.string.ok,
-                negative = 0
+                negative = 0,
             ) { success ->
                 if (success) {
                     Intent(Settings.ACTION_INPUT_METHOD_SETTINGS).apply {
@@ -89,7 +94,6 @@ class MainFragment : Fragment() {
                 }
             }
         }
-
     }
 
     private fun isKeyboardEnabled(): Boolean {

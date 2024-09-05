@@ -21,10 +21,12 @@ import be.scri.views.MyKeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
-
-abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboardActionListener {
+abstract class SimpleKeyboardIME :
+    InputMethodService(),
+    MyKeyboardView.OnKeyboardActionListener {
     abstract fun getKeyboardLayoutXML(): Int
-    private var SHIFT_PERM_TOGGLE_SPEED = 500   // how quickly do we have to doubletap shift to enable permanent caps lock
+
+    private var SHIFT_PERM_TOGGLE_SPEED = 500 // how quickly do we have to doubletap shift to enable permanent caps lock
     private val KEYBOARD_LETTERS = 0
     private val KEYBOARD_SYMBOLS = 1
     private val KEYBOARD_SYMBOLS_SHIFT = 2
@@ -77,24 +79,27 @@ abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboa
         }
     }
 
-    override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
+    override fun onStartInput(
+        attribute: EditorInfo?,
+        restarting: Boolean,
+    ) {
         super.onStartInput(attribute, restarting)
         inputTypeClass = attribute!!.inputType and TYPE_MASK_CLASS
         enterKeyType = attribute.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         val inputConnection = currentInputConnection
         hasTextBeforeCursor = inputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
 
-
-        val keyboardXml = when (inputTypeClass) {
-            TYPE_CLASS_NUMBER, TYPE_CLASS_DATETIME, TYPE_CLASS_PHONE -> {
-                keyboardMode = KEYBOARD_SYMBOLS
-                R.xml.keys_symbols
+        val keyboardXml =
+            when (inputTypeClass) {
+                TYPE_CLASS_NUMBER, TYPE_CLASS_DATETIME, TYPE_CLASS_PHONE -> {
+                    keyboardMode = KEYBOARD_SYMBOLS
+                    R.xml.keys_symbols
+                }
+                else -> {
+                    keyboardMode = KEYBOARD_LETTERS
+                    getKeyboardLayoutXML()
+                }
             }
-            else -> {
-                keyboardMode = KEYBOARD_LETTERS
-                getKeyboardLayoutXML()
-            }
-        }
 
         keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
@@ -112,7 +117,6 @@ abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboa
             }
         }
     }
-
 
     override fun onKey(code: Int) {
         val inputConnection = currentInputConnection
@@ -149,13 +153,14 @@ abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboa
 
                     lastShiftPressTS = System.currentTimeMillis()
                 } else {
-                    val keyboardXml = if (keyboardMode == KEYBOARD_SYMBOLS) {
-                        keyboardMode = KEYBOARD_SYMBOLS_SHIFT
-                        R.xml.keys_symbols_shift
-                    } else {
-                        keyboardMode = KEYBOARD_SYMBOLS
-                        R.xml.keys_symbols
-                    }
+                    val keyboardXml =
+                        if (keyboardMode == KEYBOARD_SYMBOLS) {
+                            keyboardMode = KEYBOARD_SYMBOLS_SHIFT
+                            R.xml.keys_symbols_shift
+                        } else {
+                            keyboardMode = KEYBOARD_SYMBOLS
+                            R.xml.keys_symbols
+                        }
                     keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
                     keyboardView!!.setKeyboard(keyboard!!)
                 }
@@ -171,13 +176,14 @@ abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboa
                 }
             }
             MyKeyboard.KEYCODE_MODE_CHANGE -> {
-                val keyboardXml = if (keyboardMode == KEYBOARD_LETTERS) {
-                    keyboardMode = KEYBOARD_SYMBOLS
-                    R.xml.keys_symbols
-                } else {
-                    keyboardMode = KEYBOARD_LETTERS
-                    getKeyboardLayoutXML()
-                }
+                val keyboardXml =
+                    if (keyboardMode == KEYBOARD_LETTERS) {
+                        keyboardMode = KEYBOARD_SYMBOLS
+                        R.xml.keys_symbols
+                    } else {
+                        keyboardMode = KEYBOARD_LETTERS
+                        getKeyboardLayoutXML()
+                    }
                 keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
                 keyboardView!!.setKeyboard(keyboard!!)
             }
@@ -191,7 +197,6 @@ abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboa
                 // However, avoid doing that in cases when the EditText for example requires numbers as the input.
                 // We can detect that by the text not changing on pressing Space.
                 if (keyboardMode != KEYBOARD_LETTERS && code == MyKeyboard.KEYCODE_SPACE) {
-
                     val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                     inputConnection.commitText(codeChar.toString(), 1)
                     val newText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
@@ -244,21 +249,20 @@ abstract class SimpleKeyboardIME : InputMethodService(), MyKeyboardView.OnKeyboa
     private fun moveCursor(moveRight: Boolean) {
         val extractedText = currentInputConnection?.getExtractedText(ExtractedTextRequest(), 0) ?: return
         var newCursorPosition = extractedText.selectionStart
-        newCursorPosition = if (moveRight) {
-            newCursorPosition + 1
-        } else {
-            newCursorPosition - 1
-        }
+        newCursorPosition =
+            if (moveRight) {
+                newCursorPosition + 1
+            } else {
+                newCursorPosition - 1
+            }
 
         currentInputConnection?.setSelection(newCursorPosition, newCursorPosition)
     }
 
-    private fun getImeOptionsActionId(): Int {
-        return if (currentInputEditorInfo.imeOptions and IME_FLAG_NO_ENTER_ACTION != 0) {
+    private fun getImeOptionsActionId(): Int =
+        if (currentInputEditorInfo.imeOptions and IME_FLAG_NO_ENTER_ACTION != 0) {
             IME_ACTION_NONE
         } else {
             currentInputEditorInfo.imeOptions and IME_MASK_ACTION
         }
-    }
-
-    }
+}

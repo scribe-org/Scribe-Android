@@ -73,11 +73,12 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         if (useDynamicTheme) {
             setTheme(getThemeId(showTransparentTop = showTransparentTop))
 
-            val backgroundColor = if (baseConfig.isUsingSystemTheme) {
-                resources.getColor(R.color.you_background_color, theme)
-            } else {
-                baseConfig.backgroundColor
-            }
+            val backgroundColor =
+                if (baseConfig.isUsingSystemTheme) {
+                    resources.getColor(R.color.you_background_color, theme)
+                } else {
+                    baseConfig.backgroundColor
+                }
 
             updateBackgroundColor(backgroundColor)
         }
@@ -85,11 +86,12 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         if (showTransparentTop) {
             window.statusBarColor = Color.TRANSPARENT
         } else {
-            val color = if (baseConfig.isUsingSystemTheme) {
-                resources.getColor(R.color.you_status_bar_color)
-            } else {
-                getProperStatusBarColor()
-            }
+            val color =
+                if (baseConfig.isUsingSystemTheme) {
+                    resources.getColor(R.color.you_status_bar_color)
+                } else {
+                    getProperStatusBarColor()
+                }
 
             updateActionbarColor(color)
         }
@@ -182,8 +184,12 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 
     fun updateMenuItemColors(
-        menu: Menu?, useCrossAsBack: Boolean = false, baseColor: Int = getProperStatusBarColor(), updateHomeAsUpColor: Boolean = true,
-        isContextualMenu: Boolean = false, forceWhiteIcons: Boolean = false
+        menu: Menu?,
+        useCrossAsBack: Boolean = false,
+        baseColor: Int = getProperStatusBarColor(),
+        updateHomeAsUpColor: Boolean = true,
+        isContextualMenu: Boolean = false,
+        forceWhiteIcons: Boolean = false,
     ) {
         if (menu == null) {
             return
@@ -226,18 +232,22 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        resultData: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, resultData)
-        val partition = try {
-            checkedDocumentPath.substring(9, 18)
-        } catch (e: Exception) {
-            ""
-        }
+        val partition =
+            try {
+                checkedDocumentPath.substring(9, 18)
+            } catch (e: Exception) {
+                ""
+            }
 
         val sdOtgPattern = Pattern.compile(SD_OTG_SHORT)
         if (requestCode == CREATE_DOCUMENT_SDK_30) {
             if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
-
                 val treeUri = resultData.data
                 val checkedUri = buildDocumentUriSdk30(checkedDocumentPath)
 
@@ -254,7 +264,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             } else {
                 funAfterSdk30Action?.invoke(false)
             }
-
         } else if (requestCode == OPEN_DOCUMENT_TREE_FOR_SDK_30) {
             if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
                 val treeUri = resultData.data
@@ -275,7 +284,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             } else {
                 funAfterSdk30Action?.invoke(false)
             }
-
         } else if (requestCode == OPEN_DOCUMENT_TREE_FOR_ANDROID_DATA_OR_OBB) {
             if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
                 if (isProperAndroidRoot(checkedDocumentPath, resultData.data!!)) {
@@ -311,8 +319,15 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             }
         } else if (requestCode == OPEN_DOCUMENT_TREE_SD) {
             if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
-                val isProperPartition = partition.isEmpty() || !sdOtgPattern.matcher(partition).matches() || (sdOtgPattern.matcher(partition)
-                    .matches() && resultData.dataString!!.contains(partition))
+                val isProperPartition =
+                    partition.isEmpty() ||
+                        !sdOtgPattern.matcher(partition).matches() ||
+                        (
+                            sdOtgPattern
+                                .matcher(partition)
+                                .matches() &&
+                                resultData.dataString!!.contains(partition)
+                        )
                 if (isProperSDRootFolder(resultData.data!!) && isProperPartition) {
                     if (resultData.dataString == baseConfig.OTGTreeUri) {
                         toast(R.string.sd_card_usb_same)
@@ -337,8 +352,15 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             }
         } else if (requestCode == OPEN_DOCUMENT_TREE_OTG) {
             if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
-                val isProperPartition = partition.isEmpty() || !sdOtgPattern.matcher(partition).matches() || (sdOtgPattern.matcher(partition)
-                    .matches() && resultData.dataString!!.contains(partition))
+                val isProperPartition =
+                    partition.isEmpty() ||
+                        !sdOtgPattern.matcher(partition).matches() ||
+                        (
+                            sdOtgPattern
+                                .matcher(partition)
+                                .matches() &&
+                                resultData.dataString!!.contains(partition)
+                        )
                 if (isProperOTGRootFolder(resultData.data!!) && isProperPartition) {
                     if (resultData.dataString == baseConfig.sdTreeUri) {
                         funAfterSAFPermission?.invoke(false)
@@ -346,7 +368,11 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
                         return
                     }
                     baseConfig.OTGTreeUri = resultData.dataString!!
-                    baseConfig.OTGPartition = baseConfig.OTGTreeUri.removeSuffix("%3A").substringAfterLast('/').trimEnd('/')
+                    baseConfig.OTGPartition =
+                        baseConfig.OTGTreeUri
+                            .removeSuffix("%3A")
+                            .substringAfterLast('/')
+                            .trimEnd('/')
                     updateOTGPathFromPartition()
 
                     val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
@@ -386,29 +412,43 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 
     private fun isProperSDRootFolder(uri: Uri) = isExternalStorageDocument(uri) && isRootUri(uri) && !isInternalStorage(uri)
+
     private fun isProperSDFolder(uri: Uri) = isExternalStorageDocument(uri) && !isInternalStorage(uri)
 
     private fun isProperOTGRootFolder(uri: Uri) = isExternalStorageDocument(uri) && isRootUri(uri) && !isInternalStorage(uri)
+
     private fun isProperOTGFolder(uri: Uri) = isExternalStorageDocument(uri) && !isInternalStorage(uri)
 
     private fun isRootUri(uri: Uri) = uri.lastPathSegment?.endsWith(":") ?: false
 
     private fun isInternalStorage(uri: Uri) = isExternalStorageDocument(uri) && DocumentsContract.getTreeDocumentId(uri).contains("primary")
+
     private fun isAndroidDir(uri: Uri) = isExternalStorageDocument(uri) && DocumentsContract.getTreeDocumentId(uri).contains(":Android")
+
     private fun isInternalStorageAndroidDir(uri: Uri) = isInternalStorage(uri) && isAndroidDir(uri)
+
     private fun isOTGAndroidDir(uri: Uri) = isProperOTGFolder(uri) && isAndroidDir(uri)
+
     private fun isSDAndroidDir(uri: Uri) = isProperSDFolder(uri) && isAndroidDir(uri)
+
     private fun isExternalStorageDocument(uri: Uri) = EXTERNAL_STORAGE_PROVIDER_AUTHORITY == uri.authority
 
-    private fun isProperAndroidRoot(path: String, uri: Uri): Boolean {
-        return when {
+    private fun isProperAndroidRoot(
+        path: String,
+        uri: Uri,
+    ): Boolean =
+        when {
             isPathOnOTG(path) -> isOTGAndroidDir(uri)
             isPathOnSD(path) -> isSDAndroidDir(uri)
             else -> isInternalStorageAndroidDir(uri)
         }
-    }
 
-    fun startAboutActivity(appNameId: Int, licenseMask: Int, versionName: String, showFAQBeforeMail: Boolean) {
+    fun startAboutActivity(
+        appNameId: Int,
+        licenseMask: Int,
+        versionName: String,
+        showFAQBeforeMail: Boolean,
+    ) {
         hideKeyboard()
         Intent(applicationContext, AboutFragment::class.java).apply {
             putExtra(APP_ICON_IDS, getAppIconIDs())
@@ -430,7 +470,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 
     // synchronous return value determines only if we are showing the SAF dialog, callback result tells if the SD or OTG permission has been granted
-    fun handleSAFDialog(path: String, callback: (success: Boolean) -> Unit): Boolean {
+    fun handleSAFDialog(
+        path: String,
+        callback: (success: Boolean) -> Unit,
+    ): Boolean {
         hideKeyboard()
         return if (!packageName.startsWith("be.scri")) {
             callback(true)
@@ -444,7 +487,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
     }
 
-    fun handleSAFDialogSdk30(path: String, callback: (success: Boolean) -> Unit): Boolean {
+    fun handleSAFDialogSdk30(
+        path: String,
+        callback: (success: Boolean) -> Unit,
+    ): Boolean {
         hideKeyboard()
         return if (!packageName.startsWith("be.scri")) {
             callback(true)
@@ -458,7 +504,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
     }
 
-    fun handleSAFCreateDocumentDialogSdk30(path: String, callback: (success: Boolean) -> Unit): Boolean {
+    fun handleSAFCreateDocumentDialogSdk30(
+        path: String,
+        callback: (success: Boolean) -> Unit,
+    ): Boolean {
         hideKeyboard()
         return if (!packageName.startsWith("be.scri")) {
             callback(true)
@@ -472,7 +521,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
     }
 
-    fun handleAndroidSAFDialog(path: String, callback: (success: Boolean) -> Unit): Boolean {
+    fun handleAndroidSAFDialog(
+        path: String,
+        callback: (success: Boolean) -> Unit,
+    ): Boolean {
         hideKeyboard()
         return if (!packageName.startsWith("be.scri")) {
             callback(true)
@@ -515,7 +567,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NewApi")
-    fun deleteSDK30Uris(uris: List<Uri>, callback: (success: Boolean) -> Unit) {
+    fun deleteSDK30Uris(
+        uris: List<Uri>,
+        callback: (success: Boolean) -> Unit,
+    ) {
         hideKeyboard()
         if (isRPlus()) {
             funAfterSdk30Action = callback
@@ -531,7 +586,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NewApi")
-    fun updateSDK30Uris(uris: List<Uri>, callback: (success: Boolean) -> Unit) {
+    fun updateSDK30Uris(
+        uris: List<Uri>,
+        callback: (success: Boolean) -> Unit,
+    ) {
         hideKeyboard()
         if (isRPlus()) {
             funAfterUpdate30File = callback
@@ -562,7 +620,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
     }
 
-    fun handlePermission(permissionId: Int, callback: (granted: Boolean) -> Unit) {
+    fun handlePermission(
+        permissionId: Int,
+        callback: (granted: Boolean) -> Unit,
+    ) {
         actionOnPermission = null
         if (hasPermission(permissionId)) {
             callback(true)
@@ -573,7 +634,11 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         isAskingPermissions = false
         if (requestCode == GENERIC_PERM_HANDLER && grantResults.isNotEmpty()) {

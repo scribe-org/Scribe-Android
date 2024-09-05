@@ -62,7 +62,12 @@ class MyKeyboard {
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
 
-        fun getDimensionOrFraction(a: TypedArray, index: Int, base: Int, defValue: Int): Int {
+        fun getDimensionOrFraction(
+            a: TypedArray,
+            index: Int,
+            base: Int,
+            defValue: Int,
+        ): Int {
             val value = a.peekValue(index) ?: return defValue
             return when (value.type) {
                 TypedValue.TYPE_DIMENSION -> a.getDimensionPixelOffset(index, defValue)
@@ -120,7 +125,9 @@ class MyKeyboard {
      * @attr ref android.R.styleable#Keyboard_Key_popupCharacters
      * @attr ref android.R.styleable#Keyboard_Key_keyEdgeFlags
      */
-    class Key(parent: Row) {
+    class Key(
+        parent: Row,
+    ) {
         /** Key code that this key generates.  */
         var code = 0
 
@@ -222,13 +229,18 @@ class MyKeyboard {
          * @return whether or not the point falls inside the key. If the key is attached to an edge, it will assume that all points between the key and
          * the edge are considered to be inside the key.
          */
-        fun isInside(x: Int, y: Int): Boolean {
+        fun isInside(
+            x: Int,
+            y: Int,
+        ): Boolean {
             val leftEdge = edgeFlags and EDGE_LEFT > 0
             val rightEdge = edgeFlags and EDGE_RIGHT > 0
-            return ((x >= this.x || leftEdge && x <= this.x + width)
-                && (x < this.x + width || rightEdge && x >= this.x)
-                && (y >= this.y && y <= this.y + height)
-                && (y < this.y + height && y >= this.y))
+            return (
+                (x >= this.x || leftEdge && x <= this.x + width) &&
+                    (x < this.x + width || rightEdge && x >= this.x) &&
+                    (y >= this.y && y <= this.y + height) &&
+                    (y < this.y + height && y >= this.y)
+            )
         }
     }
 
@@ -239,7 +251,11 @@ class MyKeyboard {
      * @param enterKeyType determines what icon should we show on Enter key
      */
     @JvmOverloads
-    constructor(context: Context, @XmlRes xmlLayoutResId: Int, enterKeyType: Int) {
+    constructor(
+        context: Context,
+        @XmlRes xmlLayoutResId: Int,
+        enterKeyType: Int,
+    ) {
         mDisplayWidth = context.resources.displayMetrics.widthPixels
         mDefaultHorizontalGap = 0
         mDefaultWidth = mDisplayWidth / 10
@@ -303,16 +319,24 @@ class MyKeyboard {
         return false
     }
 
-    private fun createRowFromXml(res: Resources, parser: XmlResourceParser?): Row {
-        return Row(res, this, parser)
-    }
+    private fun createRowFromXml(
+        res: Resources,
+        parser: XmlResourceParser?,
+    ): Row = Row(res, this, parser)
 
-    private fun createKeyFromXml(res: Resources, parent: Row, x: Int, y: Int, parser: XmlResourceParser?): Key {
-        return Key(res, parent, x, y, parser)
-    }
+    private fun createKeyFromXml(
+        res: Resources,
+        parent: Row,
+        x: Int,
+        y: Int,
+        parser: XmlResourceParser?,
+    ): Key = Key(res, parent, x, y, parser)
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private fun loadKeyboard(context: Context, parser: XmlResourceParser) {
+    private fun loadKeyboard(
+        context: Context,
+        parser: XmlResourceParser,
+    ) {
         var inKey = false
         var inRow = false
         var row = 0
@@ -337,12 +361,13 @@ class MyKeyboard {
                             key = createKeyFromXml(res, currentRow!!, x, y, parser)
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
-                                val enterResourceId = when (mEnterKeyType) {
-                                    EditorInfo.IME_ACTION_SEARCH -> R.drawable.ic_search_vector
-                                    EditorInfo.IME_ACTION_NEXT, EditorInfo.IME_ACTION_GO -> R.drawable.ic_arrow_right_vector
-                                    EditorInfo.IME_ACTION_SEND -> R.drawable.ic_send_vector
-                                    else -> R.drawable.ic_enter_vector
-                                }
+                                val enterResourceId =
+                                    when (mEnterKeyType) {
+                                        EditorInfo.IME_ACTION_SEARCH -> R.drawable.ic_search_vector
+                                        EditorInfo.IME_ACTION_NEXT, EditorInfo.IME_ACTION_GO -> R.drawable.ic_arrow_right_vector
+                                        EditorInfo.IME_ACTION_SEND -> R.drawable.ic_send_vector
+                                        else -> R.drawable.ic_enter_vector
+                                    }
                                 key.icon = context.resources.getDrawable(enterResourceId, context.theme)
                             }
                             currentRow.mKeys.add(key)
@@ -370,7 +395,10 @@ class MyKeyboard {
         mHeight = y
     }
 
-    private fun parseKeyboardAttributes(res: Resources, parser: XmlResourceParser) {
+    private fun parseKeyboardAttributes(
+        res: Resources,
+        parser: XmlResourceParser,
+    ) {
         val a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.MyKeyboard)
         mDefaultWidth = getDimensionOrFraction(a, R.styleable.MyKeyboard_keyWidth, mDisplayWidth, mDisplayWidth / 10)
         mDefaultHeight = res.getDimension(R.dimen.key_height).toInt()

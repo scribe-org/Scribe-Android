@@ -14,8 +14,8 @@ class MyScrollView : ScrollView {
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
-    override fun onTouchEvent(ev: MotionEvent): Boolean {
-        return when (ev.action) {
+    override fun onTouchEvent(ev: MotionEvent): Boolean =
+        when (ev.action) {
             MotionEvent.ACTION_DOWN -> {
                 if (isScrollable) {
                     super.onTouchEvent(ev)
@@ -25,13 +25,11 @@ class MyScrollView : ScrollView {
             }
             else -> super.onTouchEvent(ev)
         }
-    }
 
-    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        return if (!isScrollable) {
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean =
+        if (!isScrollable) {
             false
         } else {
             super.onInterceptTouchEvent(ev)
         }
-    }
 }

@@ -1,7 +1,6 @@
 package be.scri.services
 
 import android.content.Context
-import android.util.Log
 import be.scri.R
 
 class EnglishKeyboardIME : SimpleKeyboardIME() {
@@ -19,5 +18,4 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
             inputConnection.commitText(". ", 1)
         }
     }
-
 }

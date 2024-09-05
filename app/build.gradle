@@ -86,6 +86,10 @@ android {
         allRules = true
     }
 
+    kotlinter {
+        failBuildWhenCannotAutoFormat = false
+        ignoreFailures = false
+    }
 
     namespace 'be.scri'
 }

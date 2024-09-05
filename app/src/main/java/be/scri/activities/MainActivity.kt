@@ -1,6 +1,5 @@
 package be.scri.activities
 
-
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,7 @@ import be.scri.adapters.ViewPagerAdapter
 import be.scri.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
 class MainActivity : SimpleActivity() {
-
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPagerAdapter
@@ -22,9 +19,9 @@ class MainActivity : SimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.displayOptions = androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM;
-        supportActionBar?.setDisplayShowCustomEnabled(true);
-        supportActionBar?.setCustomView(R.layout.custom_action_bar_layout);
+        supportActionBar?.displayOptions = androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM
+        supportActionBar?.setDisplayShowCustomEnabled(true)
+        supportActionBar?.setCustomView(R.layout.custom_action_bar_layout)
         supportActionBar?.elevation = 0F
         val layoutParams = supportActionBar?.customView?.layoutParams
         layoutParams?.height = 1000
@@ -39,7 +36,6 @@ class MainActivity : SimpleActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         viewPager = findViewById(R.id.view_pager)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
 
@@ -50,32 +46,33 @@ class MainActivity : SimpleActivity() {
             viewPager.setCurrentItem(0, false)
         }
 
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                bottomNavigationView.menu.getItem(position).isChecked = true
-                when (position) {
-                    0 -> {
-                        binding.fragmentContainer.visibility = View.GONE
-                        setActionBarTitle(R.string.app_launcher_name)
-                    }
+        viewPager.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    bottomNavigationView.menu.getItem(position).isChecked = true
+                    when (position) {
+                        0 -> {
+                            binding.fragmentContainer.visibility = View.GONE
+                            setActionBarTitle(R.string.app_launcher_name)
+                        }
 
-                    1 -> {
-                        binding.fragmentContainer.visibility = View.GONE
-                        setActionBarTitle(R.string.app_settings_title)
-                    }
+                        1 -> {
+                            binding.fragmentContainer.visibility = View.GONE
+                            setActionBarTitle(R.string.app_settings_title)
+                        }
 
-                    2 -> {
-                        binding.fragmentContainer.visibility = View.GONE
-                        setActionBarTitle(R.string.app_about_title)
-                    }
+                        2 -> {
+                            binding.fragmentContainer.visibility = View.GONE
+                            setActionBarTitle(R.string.app_about_title)
+                        }
 
-                    else -> {
-                        binding.fragmentContainer.visibility = View.VISIBLE
+                        else -> {
+                            binding.fragmentContainer.visibility = View.VISIBLE
+                        }
                     }
                 }
-            }
-        })
-
+            },
+        )
 
         bottomNavigationView.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -123,24 +120,25 @@ class MainActivity : SimpleActivity() {
         supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.GONE
     }
 
-    fun setActionBarButtonFunction(page: Int, title: Int) {
+    fun setActionBarButtonFunction(
+        page: Int,
+        title: Int,
+    ) {
         val button = supportActionBar?.customView?.findViewById<Button>(R.id.button)
         button?.setOnClickListener {
             val viewpager = findViewById<ViewPager2>(R.id.view_pager)
             val frameLayout = findViewById<ViewGroup>(R.id.fragment_container)
             if (viewpager.currentItem == page) {
-
                 frameLayout.visibility = View.GONE
                 viewpager.setCurrentItem(page, true)
-
             }
             frameLayout.visibility = View.GONE
             unsetActionBarLayoutMargin()
             setActionBarTitle(title)
             button.visibility = View.GONE
-
         }
     }
+
     fun setActionBarLayoutMargin() {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
@@ -148,6 +146,7 @@ class MainActivity : SimpleActivity() {
         params.bottomMargin = 30
         textView.layoutParams = params
     }
+
     fun unsetActionBarLayoutMargin() {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
@@ -155,6 +154,4 @@ class MainActivity : SimpleActivity() {
         params.bottomMargin = 0
         textView.layoutParams = params
     }
-
-
 }

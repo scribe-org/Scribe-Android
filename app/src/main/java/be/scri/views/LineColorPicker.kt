@@ -10,7 +10,10 @@ import be.scri.extensions.isRTLLayout
 import be.scri.extensions.onGlobalLayout
 import be.scri.interfaces.LineColorPickerListener
 
-class LineColorPicker(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
+class LineColorPicker(
+    context: Context,
+    attrs: AttributeSet,
+) : LinearLayout(context, attrs) {
     private var colorsCount = 0
     private var pickerWidth = 0
     private var stripeWidth = 0
@@ -27,8 +30,9 @@ class LineColorPicker(context: Context, attrs: AttributeSet) : LinearLayout(cont
             if (pickerWidth == 0) {
                 pickerWidth = width
 
-                if (colorsCount != 0)
+                if (colorsCount != 0) {
                     stripeWidth = width / colorsCount
+                }
             }
 
             if (!wasInit) {
@@ -51,7 +55,10 @@ class LineColorPicker(context: Context, attrs: AttributeSet) : LinearLayout(cont
         }
     }
 
-    fun updateColors(colors: ArrayList<Int>, selectColorIndex: Int = -1) {
+    fun updateColors(
+        colors: ArrayList<Int>,
+        selectColorIndex: Int = -1,
+    ) {
         this.colors = colors
         colorsCount = colors.size
         if (pickerWidth != 0) {
@@ -94,7 +101,10 @@ class LineColorPicker(context: Context, attrs: AttributeSet) : LinearLayout(cont
         }
     }
 
-    private fun updateItemMargin(index: Int, addMargin: Boolean) {
+    private fun updateItemMargin(
+        index: Int,
+        addMargin: Boolean,
+    ) {
         getChildAt(index)?.apply {
             (layoutParams as LinearLayout.LayoutParams).apply {
                 topMargin = if (addMargin) unselectedMargin else 0

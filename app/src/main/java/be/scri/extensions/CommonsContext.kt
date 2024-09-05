@@ -38,13 +38,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.loader.content.CursorLoader
-import com.github.ajalt.reprint.core.Reprint
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import be.scri.R
 import be.scri.helpers.*
 import be.scri.models.AlarmSound
 import be.scri.models.BlockedNumber
+import com.github.ajalt.reprint.core.Reprint
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -55,11 +55,17 @@ val Context.isRTLLayout: Boolean get() = resources.configuration.layoutDirection
 
 val Context.areSystemAnimationsEnabled: Boolean get() = Settings.Global.getFloat(contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 0f) > 0f
 
-fun Context.toast(id: Int, length: Int = Toast.LENGTH_SHORT) {
+fun Context.toast(
+    id: Int,
+    length: Int = Toast.LENGTH_SHORT,
+) {
     toast(getString(id), length)
 }
 
-fun Context.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
+fun Context.toast(
+    msg: String,
+    length: Int = Toast.LENGTH_SHORT,
+) {
     try {
         if (isOnMainThread()) {
             doToast(this, msg, length)
@@ -72,7 +78,11 @@ fun Context.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
     }
 }
 
-private fun doToast(context: Context, message: String, length: Int) {
+private fun doToast(
+    context: Context,
+    message: String,
+    length: Int,
+) {
     if (context is Activity) {
         if (!context.isFinishing && !context.isDestroyed) {
             Toast.makeText(context, message, length).show()
@@ -82,11 +92,17 @@ private fun doToast(context: Context, message: String, length: Int) {
     }
 }
 
-fun Context.showErrorToast(msg: String, length: Int = Toast.LENGTH_LONG) {
+fun Context.showErrorToast(
+    msg: String,
+    length: Int = Toast.LENGTH_LONG,
+) {
     toast(String.format(getString(R.string.an_error_occurred), msg), length)
 }
 
-fun Context.showErrorToast(exception: Exception, length: Int = Toast.LENGTH_LONG) {
+fun Context.showErrorToast(
+    exception: Exception,
+    length: Int = Toast.LENGTH_LONG,
+) {
     showErrorToast(exception.toString(), length)
 }
 
@@ -101,15 +117,17 @@ fun Context.isTargetSdkVersion30Plus(): Boolean = targetSdkVersion >= Build.VERS
 
 fun Context.isFingerPrintSensorAvailable() = isMarshmallowPlus() && Reprint.isHardwarePresent()
 
-fun Context.isBiometricIdAvailable(): Boolean = when (BiometricManager.from(this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
-    BiometricManager.BIOMETRIC_SUCCESS, BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> true
-    else -> false
-}
+fun Context.isBiometricIdAvailable(): Boolean =
+    when (BiometricManager.from(this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
+        BiometricManager.BIOMETRIC_SUCCESS, BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> true
+        else -> false
+    }
 
 fun Context.getLatestMediaId(uri: Uri = Files.getContentUri("external")): Long {
-    val projection = arrayOf(
-        BaseColumns._ID
-    )
+    val projection =
+        arrayOf(
+            BaseColumns._ID,
+        )
     val sortOrder = "${BaseColumns._ID} DESC LIMIT 1"
     try {
         val cursor = contentResolver.query(uri, projection, null, null, sortOrder)
@@ -124,9 +142,10 @@ fun Context.getLatestMediaId(uri: Uri = Files.getContentUri("external")): Long {
 }
 
 fun Context.getLatestMediaByDateId(uri: Uri = Files.getContentUri("external")): Long {
-    val projection = arrayOf(
-        BaseColumns._ID
-    )
+    val projection =
+        arrayOf(
+            BaseColumns._ID,
+        )
     val sortOrder = "${Images.ImageColumns.DATE_TAKEN} DESC LIMIT 1"
     try {
         val cursor = contentResolver.query(uri, projection, null, null, sortOrder)
@@ -166,11 +185,12 @@ fun Context.getRealPathFromURI(uri: Uri): String? {
         val split = documentId.split(":").dropLastWhile { it.isEmpty() }.toTypedArray()
         val type = split[0]
 
-        val contentUri = when (type) {
-            "video" -> Video.Media.EXTERNAL_CONTENT_URI
-            "audio" -> Audio.Media.EXTERNAL_CONTENT_URI
-            else -> Images.Media.EXTERNAL_CONTENT_URI
-        }
+        val contentUri =
+            when (type) {
+                "video" -> Video.Media.EXTERNAL_CONTENT_URI
+                "audio" -> Audio.Media.EXTERNAL_CONTENT_URI
+                else -> Images.Media.EXTERNAL_CONTENT_URI
+            }
 
         val selection = "_id=?"
         val selectionArgs = arrayOf(split[1])
@@ -183,7 +203,11 @@ fun Context.getRealPathFromURI(uri: Uri): String? {
     return getDataColumn(uri)
 }
 
-fun Context.getDataColumn(uri: Uri, selection: String? = null, selectionArgs: Array<String>? = null): String? {
+fun Context.getDataColumn(
+    uri: Uri,
+    selection: String? = null,
+    selectionArgs: Array<String>? = null,
+): String? {
     try {
         val projection = arrayOf(Files.FileColumns.DATA)
         val cursor = contentResolver.query(uri, projection, selection, selectionArgs, null)
@@ -208,24 +232,25 @@ private fun isExternalStorageDocument(uri: Uri) = uri.authority == "com.android.
 
 fun Context.hasPermission(permId: Int) = ContextCompat.checkSelfPermission(this, getPermissionString(permId)) == PackageManager.PERMISSION_GRANTED
 
-fun Context.getPermissionString(id: Int) = when (id) {
-    PERMISSION_READ_STORAGE -> Manifest.permission.READ_EXTERNAL_STORAGE
-    PERMISSION_WRITE_STORAGE -> Manifest.permission.WRITE_EXTERNAL_STORAGE
-    PERMISSION_CAMERA -> Manifest.permission.CAMERA
-    PERMISSION_RECORD_AUDIO -> Manifest.permission.RECORD_AUDIO
-    PERMISSION_READ_CONTACTS -> Manifest.permission.READ_CONTACTS
-    PERMISSION_WRITE_CONTACTS -> Manifest.permission.WRITE_CONTACTS
-    PERMISSION_READ_CALENDAR -> Manifest.permission.READ_CALENDAR
-    PERMISSION_WRITE_CALENDAR -> Manifest.permission.WRITE_CALENDAR
-    PERMISSION_CALL_PHONE -> Manifest.permission.CALL_PHONE
-    PERMISSION_READ_CALL_LOG -> Manifest.permission.READ_CALL_LOG
-    PERMISSION_WRITE_CALL_LOG -> Manifest.permission.WRITE_CALL_LOG
-    PERMISSION_GET_ACCOUNTS -> Manifest.permission.GET_ACCOUNTS
-    PERMISSION_READ_SMS -> Manifest.permission.READ_SMS
-    PERMISSION_SEND_SMS -> Manifest.permission.SEND_SMS
-    PERMISSION_READ_PHONE_STATE -> Manifest.permission.READ_PHONE_STATE
-    else -> ""
-}
+fun Context.getPermissionString(id: Int) =
+    when (id) {
+        PERMISSION_READ_STORAGE -> Manifest.permission.READ_EXTERNAL_STORAGE
+        PERMISSION_WRITE_STORAGE -> Manifest.permission.WRITE_EXTERNAL_STORAGE
+        PERMISSION_CAMERA -> Manifest.permission.CAMERA
+        PERMISSION_RECORD_AUDIO -> Manifest.permission.RECORD_AUDIO
+        PERMISSION_READ_CONTACTS -> Manifest.permission.READ_CONTACTS
+        PERMISSION_WRITE_CONTACTS -> Manifest.permission.WRITE_CONTACTS
+        PERMISSION_READ_CALENDAR -> Manifest.permission.READ_CALENDAR
+        PERMISSION_WRITE_CALENDAR -> Manifest.permission.WRITE_CALENDAR
+        PERMISSION_CALL_PHONE -> Manifest.permission.CALL_PHONE
+        PERMISSION_READ_CALL_LOG -> Manifest.permission.READ_CALL_LOG
+        PERMISSION_WRITE_CALL_LOG -> Manifest.permission.WRITE_CALL_LOG
+        PERMISSION_GET_ACCOUNTS -> Manifest.permission.GET_ACCOUNTS
+        PERMISSION_READ_SMS -> Manifest.permission.READ_SMS
+        PERMISSION_SEND_SMS -> Manifest.permission.SEND_SMS
+        PERMISSION_READ_PHONE_STATE -> Manifest.permission.READ_PHONE_STATE
+        else -> ""
+    }
 
 fun Context.launchActivityIntent(intent: Intent) {
     try {
@@ -237,14 +262,18 @@ fun Context.launchActivityIntent(intent: Intent) {
     }
 }
 
-fun Context.getFilePublicUri(file: File, applicationId: String): Uri {
+fun Context.getFilePublicUri(
+    file: File,
+    applicationId: String,
+): Uri {
     // for images/videos/gifs try getting a media content uri first, like content://media/external/images/media/438
     // if media content uri is null, get our custom uri like content://com.simplemobiletools.gallery.provider/external_files/emulated/0/DCIM/IMG_20171104_233915.jpg
-    var uri = if (file.isMediaFile()) {
-        getMediaContentUri(file.absolutePath)
-    } else {
-        getMediaContent(file.absolutePath, Files.getContentUri("external"))
-    }
+    var uri =
+        if (file.isMediaFile()) {
+            getMediaContentUri(file.absolutePath)
+        } else {
+            getMediaContent(file.absolutePath, Files.getContentUri("external"))
+        }
 
     if (uri == null) {
         uri = FileProvider.getUriForFile(this, "$applicationId.provider", file)
@@ -254,16 +283,20 @@ fun Context.getFilePublicUri(file: File, applicationId: String): Uri {
 }
 
 fun Context.getMediaContentUri(path: String): Uri? {
-    val uri = when {
-        path.isImageFast() -> Images.Media.EXTERNAL_CONTENT_URI
-        path.isVideoFast() -> Video.Media.EXTERNAL_CONTENT_URI
-        else -> Files.getContentUri("external")
-    }
+    val uri =
+        when {
+            path.isImageFast() -> Images.Media.EXTERNAL_CONTENT_URI
+            path.isVideoFast() -> Video.Media.EXTERNAL_CONTENT_URI
+            else -> Files.getContentUri("external")
+        }
 
     return getMediaContent(path, uri)
 }
 
-fun Context.getMediaContent(path: String, uri: Uri): Uri? {
+fun Context.getMediaContent(
+    path: String,
+    uri: Uri,
+): Uri? {
     val projection = arrayOf(Images.Media._ID)
     val selection = Images.Media.DATA + "= ?"
     val selectionArgs = arrayOf(path)
@@ -287,7 +320,7 @@ fun Context.queryCursor(
     selectionArgs: Array<String>? = null,
     sortOrder: String? = null,
     showErrors: Boolean = false,
-    callback: (cursor: Cursor) -> Unit
+    callback: (cursor: Cursor) -> Unit,
 ) {
     try {
         val cursor = contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
@@ -305,13 +338,12 @@ fun Context.queryCursor(
     }
 }
 
-fun Context.getFilenameFromUri(uri: Uri): String {
-    return if (uri.scheme == "file") {
+fun Context.getFilenameFromUri(uri: Uri): String =
+    if (uri.scheme == "file") {
         File(uri.toString()).name
     } else {
         getFilenameFromContentUri(uri) ?: uri.lastPathSegment ?: ""
     }
-}
 
 fun Context.getMimeTypeFromUri(uri: Uri): String {
     var mimetype = uri.path?.getMimeType() ?: ""
@@ -324,8 +356,11 @@ fun Context.getMimeTypeFromUri(uri: Uri): String {
     return mimetype
 }
 
-fun Context.ensurePublicUri(path: String, applicationId: String): Uri? {
-    return when {
+fun Context.ensurePublicUri(
+    path: String,
+    applicationId: String,
+): Uri? =
+    when {
         hasProperStoredAndroidTreeUri(path) && isRestrictedSAFOnlyRoot(path) -> {
             getAndroidSAFUri(path)
         }
@@ -346,21 +381,23 @@ fun Context.ensurePublicUri(path: String, applicationId: String): Uri? {
             }
         }
     }
-}
 
-fun Context.ensurePublicUri(uri: Uri, applicationId: String): Uri {
-    return if (uri.scheme == "content") {
+fun Context.ensurePublicUri(
+    uri: Uri,
+    applicationId: String,
+): Uri =
+    if (uri.scheme == "content") {
         uri
     } else {
         val file = File(uri.path)
         getFilePublicUri(file, applicationId)
     }
-}
 
 fun Context.getFilenameFromContentUri(uri: Uri): String? {
-    val projection = arrayOf(
-        OpenableColumns.DISPLAY_NAME
-    )
+    val projection =
+        arrayOf(
+            OpenableColumns.DISPLAY_NAME,
+        )
 
     try {
         val cursor = contentResolver.query(uri, projection, null, null, null)
@@ -405,7 +442,10 @@ fun Context.updateSDCardPath() {
     }
 }
 
-fun Context.getUriMimeType(path: String, newUri: Uri): String {
+fun Context.getUriMimeType(
+    path: String,
+    newUri: Uri,
+): String {
     var mimeType = path.getMimeType()
     if (mimeType.isEmpty()) {
         mimeType = getMimeTypeFromUri(newUri)
@@ -415,8 +455,8 @@ fun Context.getUriMimeType(path: String, newUri: Uri): String {
 
 fun Context.isThankYouInstalled() = isPackageInstalled("com.simplemobiletools.thankyou")
 
-fun Context.isOrWasThankYouInstalled(): Boolean {
-    return when {
+fun Context.isOrWasThankYouInstalled(): Boolean =
+    when {
         baseConfig.hadThankYouInstalled -> true
         isThankYouInstalled() -> {
             baseConfig.hadThankYouInstalled = true
@@ -424,28 +464,27 @@ fun Context.isOrWasThankYouInstalled(): Boolean {
         }
         else -> false
     }
-}
 
 fun Context.isAProApp() = packageName.startsWith("be.scri.") && packageName.removeSuffix(".debug").endsWith(".pro")
 
 fun Context.getCustomizeColorsString(): String {
-    val textId = if (isOrWasThankYouInstalled()) {
-        R.string.customize_colors
-    } else {
-        R.string.customize_colors_locked
-    }
+    val textId =
+        if (isOrWasThankYouInstalled()) {
+            R.string.customize_colors
+        } else {
+            R.string.customize_colors_locked
+        }
 
     return getString(textId)
 }
 
-fun Context.isPackageInstalled(pkgName: String): Boolean {
-    return try {
+fun Context.isPackageInstalled(pkgName: String): Boolean =
+    try {
         packageManager.getPackageInfo(pkgName, 0)
         true
     } catch (e: Exception) {
         false
     }
-}
 
 // format day bits to strings like "Mon, Tue, Wed"
 fun Context.getSelectedDaysString(bitMask: Int): String {
@@ -501,9 +540,15 @@ fun Context.formatSecondsToTimeString(totalSeconds: Int): String {
     return result
 }
 
-fun Context.getFormattedMinutes(minutes: Int, showBefore: Boolean = true) = getFormattedSeconds(if (minutes == -1) minutes else minutes * 60, showBefore)
+fun Context.getFormattedMinutes(
+    minutes: Int,
+    showBefore: Boolean = true,
+) = getFormattedSeconds(if (minutes == -1) minutes else minutes * 60, showBefore)
 
-fun Context.getFormattedSeconds(seconds: Int, showBefore: Boolean = true) = when (seconds) {
+fun Context.getFormattedSeconds(
+    seconds: Int,
+    showBefore: Boolean = true,
+) = when (seconds) {
     -1 -> getString(R.string.no_reminder)
     0 -> getString(R.string.at_start)
     else -> {
@@ -571,8 +616,9 @@ fun Context.storeNewYourAlarmSound(resultData: Intent): AlarmSound {
     }
 
     val token = object : TypeToken<ArrayList<AlarmSound>>() {}.type
-    val yourAlarmSounds = Gson().fromJson<ArrayList<AlarmSound>>(baseConfig.yourAlarmSounds, token)
-        ?: ArrayList()
+    val yourAlarmSounds =
+        Gson().fromJson<ArrayList<AlarmSound>>(baseConfig.yourAlarmSounds, token)
+            ?: ArrayList()
     val newAlarmSoundId = (yourAlarmSounds.maxByOrNull { it.id }?.id ?: YOUR_ALARM_SOUNDS_MIN_ID) + 1
     val newAlarmSound = AlarmSound(newAlarmSoundId, filename, uri.toString())
     if (yourAlarmSounds.firstOrNull { it.uri == uri.toString() } == null) {
@@ -588,7 +634,10 @@ fun Context.storeNewYourAlarmSound(resultData: Intent): AlarmSound {
 }
 
 @RequiresApi(Build.VERSION_CODES.N)
-fun Context.saveImageRotation(path: String, degrees: Int): Boolean {
+fun Context.saveImageRotation(
+    path: String,
+    degrees: Int,
+): Boolean {
     if (!needsStupidWritePermissions(path)) {
         saveExifRotation(ExifInterface(path), degrees)
         return true
@@ -604,7 +653,10 @@ fun Context.saveImageRotation(path: String, degrees: Int): Boolean {
     return false
 }
 
-fun Context.saveExifRotation(exif: ExifInterface, degrees: Int) {
+fun Context.saveExifRotation(
+    exif: ExifInterface,
+    degrees: Int,
+) {
     val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
     val orientationDegrees = (orientation.degreesFromOrientation() + degrees) % 360
     exif.setAttribute(ExifInterface.TAG_ORIENTATION, orientationDegrees.orientationFromDegrees())
@@ -621,15 +673,14 @@ fun Context.getStoreUrl() = "https://play.google.com/store/apps/"
 
 fun Context.getTimeFormat() = if (baseConfig.use24HourFormat) TIME_FORMAT_24 else TIME_FORMAT_12
 
-fun Context.getResolution(path: String): Point? {
-    return if (path.isImageFast() || path.isImageSlow()) {
+fun Context.getResolution(path: String): Point? =
+    if (path.isImageFast() || path.isImageSlow()) {
         getImageResolution(path)
     } else if (path.isVideoFast() || path.isVideoSlow()) {
         getVideoResolution(path)
     } else {
         null
     }
-}
 
 fun Context.getImageResolution(path: String): Point? {
     val options = BitmapFactory.Options()
@@ -650,20 +701,21 @@ fun Context.getImageResolution(path: String): Point? {
 }
 
 fun Context.getVideoResolution(path: String): Point? {
-    var point = try {
-        val retriever = MediaMetadataRetriever()
-        if (isRestrictedSAFOnlyRoot(path)) {
-            retriever.setDataSource(this, getAndroidSAFUri(path))
-        } else {
-            retriever.setDataSource(path)
-        }
+    var point =
+        try {
+            val retriever = MediaMetadataRetriever()
+            if (isRestrictedSAFOnlyRoot(path)) {
+                retriever.setDataSource(this, getAndroidSAFUri(path))
+            } else {
+                retriever.setDataSource(path)
+            }
 
-        val width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)!!.toInt()
-        val height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)!!.toInt()
-        Point(width, height)
-    } catch (ignored: Exception) {
-        null
-    }
+            val width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)!!.toInt()
+            val height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)!!.toInt()
+            Point(width, height)
+        } catch (ignored: Exception) {
+            null
+        }
 
     if (point == null && path.startsWith("content://", true)) {
         try {
@@ -681,9 +733,10 @@ fun Context.getVideoResolution(path: String): Point? {
 }
 
 fun Context.getDuration(path: String): Int? {
-    val projection = arrayOf(
-        MediaColumns.DURATION
-    )
+    val projection =
+        arrayOf(
+            MediaColumns.DURATION,
+        )
 
     val uri = getFileUri(path)
     val selection = if (path.startsWith("content://")) "${BaseColumns._ID} = ?" else "${MediaColumns.DATA} = ?"
@@ -709,9 +762,10 @@ fun Context.getDuration(path: String): Int? {
 }
 
 fun Context.getTitle(path: String): String? {
-    val projection = arrayOf(
-        MediaColumns.TITLE
-    )
+    val projection =
+        arrayOf(
+            MediaColumns.TITLE,
+        )
 
     val uri = getFileUri(path)
     val selection = if (path.startsWith("content://")) "${BaseColumns._ID} = ?" else "${MediaColumns.DATA} = ?"
@@ -737,9 +791,10 @@ fun Context.getTitle(path: String): String? {
 }
 
 fun Context.getArtist(path: String): String? {
-    val projection = arrayOf(
-        Audio.Media.ARTIST
-    )
+    val projection =
+        arrayOf(
+            Audio.Media.ARTIST,
+        )
 
     val uri = getFileUri(path)
     val selection = if (path.startsWith("content://")) "${BaseColumns._ID} = ?" else "${MediaColumns.DATA} = ?"
@@ -765,9 +820,10 @@ fun Context.getArtist(path: String): String? {
 }
 
 fun Context.getAlbum(path: String): String? {
-    val projection = arrayOf(
-        Audio.Media.ALBUM
-    )
+    val projection =
+        arrayOf(
+            Audio.Media.ALBUM,
+        )
 
     val uri = getFileUri(path)
     val selection = if (path.startsWith("content://")) "${BaseColumns._ID} = ?" else "${MediaColumns.DATA} = ?"
@@ -793,9 +849,10 @@ fun Context.getAlbum(path: String): String? {
 }
 
 fun Context.getMediaStoreLastModified(path: String): Long {
-    val projection = arrayOf(
-        MediaColumns.DATE_MODIFIED
-    )
+    val projection =
+        arrayOf(
+            MediaColumns.DATE_MODIFIED,
+        )
 
     val uri = getFileUri(path)
     val selection = "${BaseColumns._ID} = ?"
@@ -815,21 +872,23 @@ fun Context.getMediaStoreLastModified(path: String): Long {
 
 fun Context.getStringsPackageName() = getString(R.string.package_name)
 
-fun Context.getFontSizeText() = getString(
-    when (baseConfig.fontSize) {
-        FONT_SIZE_SMALL -> R.string.small
-        FONT_SIZE_MEDIUM -> R.string.medium
-        FONT_SIZE_LARGE -> R.string.large
-        else -> R.string.extra_large
-    }
-)
+fun Context.getFontSizeText() =
+    getString(
+        when (baseConfig.fontSize) {
+            FONT_SIZE_SMALL -> R.string.small
+            FONT_SIZE_MEDIUM -> R.string.medium
+            FONT_SIZE_LARGE -> R.string.large
+            else -> R.string.extra_large
+        },
+    )
 
-fun Context.getTextSize() = when (baseConfig.fontSize) {
-    FONT_SIZE_SMALL -> resources.getDimension(R.dimen.smaller_text_size)
-    FONT_SIZE_MEDIUM -> resources.getDimension(R.dimen.bigger_text_size)
-    FONT_SIZE_LARGE -> resources.getDimension(R.dimen.big_text_size)
-    else -> resources.getDimension(R.dimen.extra_big_text_size)
-}
+fun Context.getTextSize() =
+    when (baseConfig.fontSize) {
+        FONT_SIZE_SMALL -> resources.getDimension(R.dimen.smaller_text_size)
+        FONT_SIZE_MEDIUM -> resources.getDimension(R.dimen.bigger_text_size)
+        FONT_SIZE_LARGE -> resources.getDimension(R.dimen.big_text_size)
+        else -> resources.getDimension(R.dimen.extra_big_text_size)
+    }
 
 val Context.telecomManager: TelecomManager get() = getSystemService(Context.TELECOM_SERVICE) as TelecomManager
 val Context.windowManager: WindowManager get() = getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -843,11 +902,12 @@ val Context.navigationBarHeight: Int get() = if (navigationBarBottom && navigati
 val Context.navigationBarWidth: Int get() = if (navigationBarRight) navigationBarSize.x else 0
 
 val Context.navigationBarSize: Point
-    get() = when {
-        navigationBarRight -> Point(newNavigationBarHeight, usableScreenSize.y)
-        navigationBarBottom -> Point(usableScreenSize.x, newNavigationBarHeight)
-        else -> Point()
-    }
+    get() =
+        when {
+            navigationBarRight -> Point(newNavigationBarHeight, usableScreenSize.y)
+            navigationBarBottom -> Point(usableScreenSize.x, newNavigationBarHeight)
+            else -> Point()
+        }
 
 val Context.newNavigationBarHeight: Int
     get() {
@@ -877,7 +937,6 @@ val Context.actionBarHeight: Int
         return actionBarHeight.toInt()
     }
 
-
 val Context.usableScreenSize: Point
     get() {
         val size = Point()
@@ -896,8 +955,8 @@ fun Context.getCornerRadius() = resources.getDimension(R.dimen.rounded_corner_ra
 
 // we need the Default Dialer functionality only in Simple Dialer and in Simple Contacts for now
 @TargetApi(Build.VERSION_CODES.M)
-fun Context.isDefaultDialer(): Boolean {
-    return if (!packageName.startsWith("com.simplemobiletools.contacts") && !packageName.startsWith("com.simplemobiletools.dialer")) {
+fun Context.isDefaultDialer(): Boolean =
+    if (!packageName.startsWith("com.simplemobiletools.contacts") && !packageName.startsWith("com.simplemobiletools.dialer")) {
         true
     } else if ((packageName.startsWith("com.simplemobiletools.contacts") || packageName.startsWith("com.simplemobiletools.dialer")) && isQPlus()) {
         val roleManager = getSystemService(RoleManager::class.java)
@@ -905,7 +964,6 @@ fun Context.isDefaultDialer(): Boolean {
     } else {
         isMarshmallowPlus() && telecomManager.defaultDialerPackage == packageName
     }
-}
 
 @TargetApi(Build.VERSION_CODES.N)
 fun Context.getBlockedNumbers(): ArrayList<BlockedNumber> {
@@ -915,11 +973,12 @@ fun Context.getBlockedNumbers(): ArrayList<BlockedNumber> {
     }
 
     val uri = BlockedNumbers.CONTENT_URI
-    val projection = arrayOf(
-        BlockedNumbers.COLUMN_ID,
-        BlockedNumbers.COLUMN_ORIGINAL_NUMBER,
-        BlockedNumbers.COLUMN_E164_NUMBER
-    )
+    val projection =
+        arrayOf(
+            BlockedNumbers.COLUMN_ID,
+            BlockedNumbers.COLUMN_ORIGINAL_NUMBER,
+            BlockedNumbers.COLUMN_E164_NUMBER,
+        )
 
     queryCursor(uri, projection) { cursor ->
         val id = cursor.getLongValue(BlockedNumbers.COLUMN_ID)
@@ -953,7 +1012,10 @@ fun Context.deleteBlockedNumber(number: String) {
     contentResolver.delete(BlockedNumbers.CONTENT_URI, selection, selectionArgs)
 }
 
-fun Context.isNumberBlocked(number: String, blockedNumbers: ArrayList<BlockedNumber> = getBlockedNumbers()): Boolean {
+fun Context.isNumberBlocked(
+    number: String,
+    blockedNumbers: ArrayList<BlockedNumber> = getBlockedNumbers(),
+): Boolean {
     if (!isNougatPlus()) {
         return false
     }
@@ -969,8 +1031,11 @@ fun Context.copyToClipboard(text: String) {
     toast(toastText)
 }
 
-fun Context.getPhoneNumberTypeText(type: Int, label: String): String {
-    return if (type == BaseTypes.TYPE_CUSTOM) {
+fun Context.getPhoneNumberTypeText(
+    type: Int,
+    label: String,
+): String =
+    if (type == BaseTypes.TYPE_CUSTOM) {
         label
     } else {
         getString(
@@ -983,7 +1048,6 @@ fun Context.getPhoneNumberTypeText(type: Int, label: String): String {
                 Phone.TYPE_FAX_HOME -> R.string.home_fax
                 Phone.TYPE_PAGER -> R.string.pager
                 else -> R.string.other
-            }
+            },
         )
     }
-}

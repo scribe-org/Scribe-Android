@@ -9,7 +9,9 @@ import be.scri.extensions.getSharedPrefs
 import java.text.SimpleDateFormat
 import java.util.*
 
-open class BaseConfig(val context: Context) {
+open class BaseConfig(
+    val context: Context,
+) {
     protected val prefs = context.getSharedPrefs()
 
     companion object {
@@ -191,15 +193,21 @@ open class BaseConfig(val context: Context) {
         set(deleteProtectionType) = prefs.edit().putInt(DELETE_PROTECTION_TYPE, deleteProtectionType).apply()
 
     // folder locking
-    fun addFolderProtection(path: String, hash: String, type: Int) {
-        prefs.edit()
+    fun addFolderProtection(
+        path: String,
+        hash: String,
+        type: Int,
+    ) {
+        prefs
+            .edit()
             .putString("$PROTECTED_FOLDER_HASH$path", hash)
             .putInt("$PROTECTED_FOLDER_TYPE$path", type)
             .apply()
     }
 
     fun removeFolderProtection(path: String) {
-        prefs.edit()
+        prefs
+            .edit()
             .remove("$PROTECTED_FOLDER_HASH$path")
             .remove("$PROTECTED_FOLDER_TYPE$path")
             .apply()
@@ -249,8 +257,11 @@ open class BaseConfig(val context: Context) {
 
     var wasCustomThemeSwitchDescriptionShown: Boolean
         get() = prefs.getBoolean(WAS_CUSTOM_THEME_SWITCH_DESCRIPTION_SHOWN, false)
-        set(wasCustomThemeSwitchDescriptionShown) = prefs.edit().putBoolean(WAS_CUSTOM_THEME_SWITCH_DESCRIPTION_SHOWN, wasCustomThemeSwitchDescriptionShown)
-            .apply()
+        set(wasCustomThemeSwitchDescriptionShown) =
+            prefs
+                .edit()
+                .putBoolean(WAS_CUSTOM_THEME_SWITCH_DESCRIPTION_SHOWN, wasCustomThemeSwitchDescriptionShown)
+                .apply()
 
     var wasSharedThemeForced: Boolean
         get() = prefs.getBoolean(WAS_SHARED_THEME_FORCED, false)
@@ -272,7 +283,10 @@ open class BaseConfig(val context: Context) {
         get() = prefs.getInt(SORT_ORDER, context.resources.getInteger(R.integer.default_sorting))
         set(sorting) = prefs.edit().putInt(SORT_ORDER, sorting).apply()
 
-    fun saveCustomSorting(path: String, value: Int) {
+    fun saveCustomSorting(
+        path: String,
+        value: Int,
+    ) {
         if (path.isEmpty()) {
             sorting = value
         } else {
@@ -385,8 +399,11 @@ open class BaseConfig(val context: Context) {
 
     var wasAppIconCustomizationWarningShown: Boolean
         get() = prefs.getBoolean(WAS_APP_ICON_CUSTOMIZATION_WARNING_SHOWN, false)
-        set(wasAppIconCustomizationWarningShown) = prefs.edit().putBoolean(WAS_APP_ICON_CUSTOMIZATION_WARNING_SHOWN, wasAppIconCustomizationWarningShown)
-            .apply()
+        set(wasAppIconCustomizationWarningShown) =
+            prefs
+                .edit()
+                .putBoolean(WAS_APP_ICON_CUSTOMIZATION_WARNING_SHOWN, wasAppIconCustomizationWarningShown)
+                .apply()
 
     var appSideloadingStatus: Int
         get() = prefs.getInt(APP_SIDELOADING_STATUS, SIDELOADING_UNCHECKED)
@@ -471,7 +488,12 @@ open class BaseConfig(val context: Context) {
 
     var favorites: MutableSet<String>
         get() = prefs.getStringSet(FAVORITES, HashSet())!!
-        set(favorites) = prefs.edit().remove(FAVORITES).putStringSet(FAVORITES, favorites).apply()
+        set(favorites) =
+            prefs
+                .edit()
+                .remove(FAVORITES)
+                .putStringSet(FAVORITES, favorites)
+                .apply()
 
     var showCallConfirmation: Boolean
         get() = prefs.getBoolean(SHOW_CALL_CONFIRMATION, false)
@@ -480,13 +502,14 @@ open class BaseConfig(val context: Context) {
     // color picker last used colors
     internal var colorPickerRecentColors: LinkedList<Int>
         get(): LinkedList<Int> {
-            val defaultList = arrayListOf(
-                context.resources.getColor(R.color.md_red_700),
-                context.resources.getColor(R.color.md_blue_700),
-                context.resources.getColor(R.color.md_green_700),
-                context.resources.getColor(R.color.md_yellow_700),
-                context.resources.getColor(R.color.md_orange_700)
-            )
+            val defaultList =
+                arrayListOf(
+                    context.resources.getColor(R.color.md_red_700),
+                    context.resources.getColor(R.color.md_blue_700),
+                    context.resources.getColor(R.color.md_green_700),
+                    context.resources.getColor(R.color.md_yellow_700),
+                    context.resources.getColor(R.color.md_orange_700),
+                )
             return LinkedList(prefs.getString(COLOR_PICKER_RECENT_COLORS, null)?.lines()?.map { it.toInt() } ?: defaultList)
         }
         set(recentColors) = prefs.edit().putString(COLOR_PICKER_RECENT_COLORS, recentColors.joinToString(separator = "\n")).apply()

@@ -13,11 +13,12 @@ import java.io.File
 
 private const val DOWNLOAD_DIR = "Download"
 private const val ANDROID_DIR = "Android"
-private val DIRS_INACCESSIBLE_WITH_SAF_SDK_30 = if (isSPlus()) {
-    listOf(DOWNLOAD_DIR, ANDROID_DIR)
-} else {
-    listOf(DOWNLOAD_DIR)
-}
+private val DIRS_INACCESSIBLE_WITH_SAF_SDK_30 =
+    if (isSPlus()) {
+        listOf(DOWNLOAD_DIR, ANDROID_DIR)
+    } else {
+        listOf(DOWNLOAD_DIR)
+    }
 
 fun Context.hasProperStoredFirstParentUri(path: String): Boolean {
     val firstParentUri = createFirstParentTreeUri(path)
@@ -39,13 +40,12 @@ fun Context.isAccessibleWithSAFSdk30(path: String): Boolean {
     return isValidName && isDirectory && isAnAccessibleDirectory
 }
 
-fun Context.getFirstParentLevel(path: String): Int {
-    return when {
+fun Context.getFirstParentLevel(path: String): Int =
+    when {
         isSPlus() && (isInAndroidDir(path) || isInSubFolderInDownloadDir(path)) -> 1
         isRPlus() && isInSubFolderInDownloadDir(path) -> 1
         else -> 0
     }
-}
 
 fun Context.isRestrictedWithSAFSdk30(path: String): Boolean {
     if (path.startsWith(recycleBinPath) || isExternalStorageManager()) {
@@ -93,20 +93,16 @@ fun Context.isInAndroidDir(path: String): Boolean {
     return firstParentDir.equals(ANDROID_DIR, true)
 }
 
-fun isNotExternalStorageManager(): Boolean {
-    return isRPlus() && !Environment.isExternalStorageManager()
-}
+fun isNotExternalStorageManager(): Boolean = isRPlus() && !Environment.isExternalStorageManager()
 
-fun isExternalStorageManager(): Boolean {
-    return isRPlus() && Environment.isExternalStorageManager()
-}
+fun isExternalStorageManager(): Boolean = isRPlus() && Environment.isExternalStorageManager()
 
 fun Context.createFirstParentTreeUriUsingRootTree(fullPath: String): Uri {
     val storageId = getSAFStorageId(fullPath)
     val level = getFirstParentLevel(fullPath)
     val rootParentDirName = fullPath.getFirstParentDirName(this, level)
     val treeUri = DocumentsContract.buildTreeDocumentUri(EXTERNAL_STORAGE_PROVIDER_AUTHORITY, "$storageId:")
-    val documentId = "${storageId}:$rootParentDirName"
+    val documentId = "$storageId:$rootParentDirName"
     return DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
 }
 
@@ -120,12 +116,13 @@ fun Context.createFirstParentTreeUri(fullPath: String): Uri {
 
 fun Context.createDocumentUriUsingFirstParentTreeUri(fullPath: String): Uri {
     val storageId = getSAFStorageId(fullPath)
-    val relativePath = when {
-        fullPath.startsWith(internalStoragePath) -> fullPath.substring(internalStoragePath.length).trim('/')
-        else -> fullPath.substringAfter(storageId).trim('/')
-    }
+    val relativePath =
+        when {
+            fullPath.startsWith(internalStoragePath) -> fullPath.substring(internalStoragePath.length).trim('/')
+            else -> fullPath.substringAfter(storageId).trim('/')
+        }
     val treeUri = createFirstParentTreeUri(fullPath)
-    val documentId = "${storageId}:$relativePath"
+    val documentId = "$storageId:$relativePath"
     return DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
 }
 
@@ -136,8 +133,8 @@ fun Context.getSAFDocumentId(path: String): String {
     return "$storageId:$relativePath"
 }
 
-fun Context.createSAFDirectorySdk30(path: String): Boolean {
-    return try {
+fun Context.createSAFDirectorySdk30(path: String): Boolean =
+    try {
         val treeUri = createFirstParentTreeUri(path)
         val parentPath = path.getParentPath()
         if (!getDoesFilePathExistSdk30(parentPath)) {
@@ -151,10 +148,9 @@ fun Context.createSAFDirectorySdk30(path: String): Boolean {
         showErrorToast(e)
         false
     }
-}
 
-fun Context.createSAFFileSdk30(path: String): Boolean {
-    return try {
+fun Context.createSAFFileSdk30(path: String): Boolean =
+    try {
         val treeUri = createFirstParentTreeUri(path)
         val parentPath = path.getParentPath()
         if (!getDoesFilePathExistSdk30(parentPath)) {
@@ -168,14 +164,12 @@ fun Context.createSAFFileSdk30(path: String): Boolean {
         showErrorToast(e)
         false
     }
-}
 
-fun Context.getDoesFilePathExistSdk30(path: String): Boolean {
-    return when {
+fun Context.getDoesFilePathExistSdk30(path: String): Boolean =
+    when {
         isAccessibleWithSAFSdk30(path) -> getFastDocumentSdk30(path)?.exists() ?: false
         else -> File(path).exists()
     }
-}
 
 fun Context.getSomeDocumentSdk30(path: String): DocumentFile? = getFastDocumentSdk30(path) ?: getDocumentSdk30(path)
 
@@ -205,8 +199,11 @@ fun Context.getDocumentSdk30(path: String): DocumentFile? {
     }
 }
 
-
-fun Context.deleteDocumentWithSAFSdk30(fileDirItem: FileDirItem, allowDeleteFolder: Boolean, callback: ((wasSuccess: Boolean) -> Unit)?) {
+fun Context.deleteDocumentWithSAFSdk30(
+    fileDirItem: FileDirItem,
+    allowDeleteFolder: Boolean,
+    callback: ((wasSuccess: Boolean) -> Unit)?,
+) {
     try {
         var fileDeleted = false
         if (fileDirItem.isDirectory.not() || allowDeleteFolder) {
@@ -218,15 +215,17 @@ fun Context.deleteDocumentWithSAFSdk30(fileDirItem: FileDirItem, allowDeleteFold
             deleteFromMediaStore(fileDirItem.path)
             callback?.invoke(true)
         }
-
     } catch (e: Exception) {
         callback?.invoke(false)
         showErrorToast(e)
     }
 }
 
-fun Context.renameDocumentSdk30(oldPath: String, newPath: String): Boolean {
-    return try {
+fun Context.renameDocumentSdk30(
+    oldPath: String,
+    newPath: String,
+): Boolean =
+    try {
         val treeUri = createFirstParentTreeUri(oldPath)
         val documentId = getSAFDocumentId(oldPath)
         val parentUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
@@ -235,7 +234,6 @@ fun Context.renameDocumentSdk30(oldPath: String, newPath: String): Boolean {
         showErrorToast(e)
         false
     }
-}
 
 fun Context.hasProperStoredDocumentUriSdk30(path: String): Boolean {
     val documentUri = buildDocumentUriSdk30(path)
@@ -245,12 +243,13 @@ fun Context.hasProperStoredDocumentUriSdk30(path: String): Boolean {
 fun Context.buildDocumentUriSdk30(fullPath: String): Uri {
     val storageId = getSAFStorageId(fullPath)
 
-    val relativePath = when {
-        fullPath.startsWith(internalStoragePath) -> fullPath.substring(internalStoragePath.length).trim('/')
-        else -> fullPath.substringAfter(storageId).trim('/')
-    }
+    val relativePath =
+        when {
+            fullPath.startsWith(internalStoragePath) -> fullPath.substring(internalStoragePath.length).trim('/')
+            else -> fullPath.substringAfter(storageId).trim('/')
+        }
 
-    val documentId = "${storageId}:$relativePath"
+    val documentId = "$storageId:$relativePath"
     return DocumentsContract.buildDocumentUri(EXTERNAL_STORAGE_PROVIDER_AUTHORITY, documentId)
 }
 

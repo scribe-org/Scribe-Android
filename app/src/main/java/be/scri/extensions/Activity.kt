@@ -49,27 +49,29 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 import java.util.*
 
-
 private lateinit var binding: DialogTitleBinding
 
-
-
-fun AppCompatActivity.updateActionBarTitle(text: String, color: Int = getProperStatusBarColor()) {
-    val colorToUse = if (baseConfig.isUsingSystemTheme) {
-        getProperTextColor()
-    } else {
-        color.getContrastColor()
-    }
+fun AppCompatActivity.updateActionBarTitle(
+    text: String,
+    color: Int = getProperStatusBarColor(),
+) {
+    val colorToUse =
+        if (baseConfig.isUsingSystemTheme) {
+            getProperTextColor()
+        } else {
+            color.getContrastColor()
+        }
 
     supportActionBar?.title = Html.fromHtml("<font color='${colorToUse.toHex()}'>$text</font>")
 }
 
 fun AppCompatActivity.updateActionBarSubtitle(text: String) {
-    val colorToUse = if (baseConfig.isUsingSystemTheme) {
-        getProperTextColor()
-    } else {
-        baseConfig.primaryColor.getContrastColor()
-    }
+    val colorToUse =
+        if (baseConfig.isUsingSystemTheme) {
+            getProperTextColor()
+        } else {
+            baseConfig.primaryColor.getContrastColor()
+        }
 
     supportActionBar?.subtitle = Html.fromHtml("<font color='${colorToUse.toHex()}'>$text</font>")
 }
@@ -93,14 +95,14 @@ fun Activity.appLaunched(appId: String) {
             packageManager.setComponentEnabledSetting(
                 ComponentName(baseConfig.appId, defaultClassName),
                 PackageManager.COMPONENT_ENABLED_STATE_DEFAULT,
-                PackageManager.DONT_KILL_APP
+                PackageManager.DONT_KILL_APP,
             )
 
             val orangeClassName = "${baseConfig.appId.removeSuffix(".debug")}.activities.SplashActivity.Orange"
             packageManager.setComponentEnabledSetting(
                 ComponentName(baseConfig.appId, orangeClassName),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP
+                PackageManager.DONT_KILL_APP,
             )
 
             baseConfig.appIconColor = primaryColor
@@ -114,12 +116,13 @@ fun Activity.appLaunched(appId: String) {
     }
 }
 
-fun Activity.isAppInstalledOnSDCard(): Boolean = try {
-    val applicationInfo = packageManager.getPackageInfo(packageName, 0).applicationInfo
-    (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) == ApplicationInfo.FLAG_EXTERNAL_STORAGE
-} catch (e: Exception) {
-    false
-}
+fun Activity.isAppInstalledOnSDCard(): Boolean =
+    try {
+        val applicationInfo = packageManager.getPackageInfo(packageName, 0).applicationInfo
+        (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) == ApplicationInfo.FLAG_EXTERNAL_STORAGE
+    } catch (e: Exception) {
+        false
+    }
 
 fun BaseSimpleActivity.isShowingSAFDialog(path: String): Boolean {
     return if ((!isRPlus() && isPathOnSD(path) && !isSDCardSetAsDefaultStorage() && (baseConfig.sdTreeUri.isEmpty() || !hasProperStoredTreeUri(false)))) {
@@ -264,14 +267,13 @@ fun BaseSimpleActivity.isShowingAndroidSAFDialog(path: String): Boolean {
     }
 }
 
-fun BaseSimpleActivity.isShowingOTGDialog(path: String): Boolean {
-    return if (!isRPlus() && isPathOnOTG(path) && (baseConfig.OTGTreeUri.isEmpty() || !hasProperStoredTreeUri(true))) {
+fun BaseSimpleActivity.isShowingOTGDialog(path: String): Boolean =
+    if (!isRPlus() && isPathOnOTG(path) && (baseConfig.OTGTreeUri.isEmpty() || !hasProperStoredTreeUri(true))) {
         showOTGPermissionDialog(path)
         true
     } else {
         false
     }
-}
 
 fun BaseSimpleActivity.showOTGPermissionDialog(path: String) {
     runOnUiThread {
@@ -334,7 +336,10 @@ fun Activity.redirectToRateUs() {
     }
 }
 
-fun Activity.sharePathIntent(path: String, applicationId: String) {
+fun Activity.sharePathIntent(
+    path: String,
+    applicationId: String,
+) {
     ensureBackgroundThread {
         val newUri = getFinalUriFromPath(path, applicationId) ?: return@ensureBackgroundThread
         Intent().apply {
@@ -360,17 +365,21 @@ fun Activity.sharePathIntent(path: String, applicationId: String) {
     }
 }
 
-fun Activity.sharePathsIntent(paths: List<String>, applicationId: String) {
+fun Activity.sharePathsIntent(
+    paths: List<String>,
+    applicationId: String,
+) {
     ensureBackgroundThread {
         if (paths.size == 1) {
             sharePathIntent(paths.first(), applicationId)
         } else {
             val uriPaths = ArrayList<String>()
-            val newUris = paths.map {
-                val uri = getFinalUriFromPath(it, applicationId) ?: return@ensureBackgroundThread
-                uriPaths.add(uri.path!!)
-                uri
-            } as ArrayList<Uri>
+            val newUris =
+                paths.map {
+                    val uri = getFinalUriFromPath(it, applicationId) ?: return@ensureBackgroundThread
+                    uriPaths.add(uri.path!!)
+                    uri
+                } as ArrayList<Uri>
 
             var mimeType = uriPaths.getMimeType()
             if (mimeType.isEmpty() || mimeType == "*/*") {
@@ -425,7 +434,10 @@ fun Activity.shareTextIntent(text: String) {
     }
 }
 
-fun Activity.setAsIntent(path: String, applicationId: String) {
+fun Activity.setAsIntent(
+    path: String,
+    applicationId: String,
+) {
     ensureBackgroundThread {
         val newUri = getFinalUriFromPath(path, applicationId) ?: return@ensureBackgroundThread
         Intent().apply {
@@ -445,7 +457,11 @@ fun Activity.setAsIntent(path: String, applicationId: String) {
     }
 }
 
-fun Activity.openEditorIntent(path: String, forceChooser: Boolean, applicationId: String) {
+fun Activity.openEditorIntent(
+    path: String,
+    forceChooser: Boolean,
+    applicationId: String,
+) {
     ensureBackgroundThread {
         val newUri = getFinalUriFromPath(path, applicationId) ?: return@ensureBackgroundThread
         Intent().apply {
@@ -489,7 +505,7 @@ fun Activity.openPathIntent(
     forceChooser: Boolean,
     applicationId: String,
     forceMimeType: String = "",
-    extras: HashMap<String, Boolean> = HashMap()
+    extras: HashMap<String, Boolean> = HashMap(),
 ) {
     ensureBackgroundThread {
         val newUri = getFinalUriFromPath(path, applicationId) ?: return@ensureBackgroundThread
@@ -531,7 +547,10 @@ fun Activity.launchViewContactIntent(uri: Uri) {
     }
 }
 
-fun BaseSimpleActivity.launchCallIntent(recipient: String, handle: PhoneAccountHandle? = null) {
+fun BaseSimpleActivity.launchCallIntent(
+    recipient: String,
+    handle: PhoneAccountHandle? = null,
+) {
     handlePermission(PERMISSION_CALL_PHONE) {
         val action = if (it) Intent.ACTION_CALL else Intent.ACTION_DIAL
         Intent(action).apply {
@@ -561,13 +580,17 @@ fun Activity.showLocationOnMap(coordinates: String) {
     launchActivityIntent(intent)
 }
 
-fun Activity.getFinalUriFromPath(path: String, applicationId: String): Uri? {
-    val uri = try {
-        ensurePublicUri(path, applicationId)
-    } catch (e: Exception) {
-        showErrorToast(e)
-        return null
-    }
+fun Activity.getFinalUriFromPath(
+    path: String,
+    applicationId: String,
+): Uri? {
+    val uri =
+        try {
+            ensurePublicUri(path, applicationId)
+        } catch (e: Exception) {
+            showErrorToast(e)
+            return null
+        }
 
     if (uri == null) {
         toast(R.string.unknown_error_occurred)
@@ -577,7 +600,11 @@ fun Activity.getFinalUriFromPath(path: String, applicationId: String): Uri? {
     return uri
 }
 
-fun Activity.tryGenericMimeType(intent: Intent, mimeType: String, uri: Uri): Boolean {
+fun Activity.tryGenericMimeType(
+    intent: Intent,
+    mimeType: String,
+    uri: Uri,
+): Boolean {
     var genericMimeType = mimeType.getGenericMimeType()
     if (genericMimeType.isEmpty()) {
         genericMimeType = "*/*"
@@ -593,7 +620,11 @@ fun Activity.tryGenericMimeType(intent: Intent, mimeType: String, uri: Uri): Boo
     }
 }
 
-fun BaseSimpleActivity.deleteFoldersBg(folders: List<FileDirItem>, deleteMediaOnly: Boolean = true, callback: ((wasSuccess: Boolean) -> Unit)? = null) {
+fun BaseSimpleActivity.deleteFoldersBg(
+    folders: List<FileDirItem>,
+    deleteMediaOnly: Boolean = true,
+    callback: ((wasSuccess: Boolean) -> Unit)? = null,
+) {
     var wasSuccess = false
     var needPermissionForPath = ""
     for (folder in folders) {
@@ -610,8 +641,9 @@ fun BaseSimpleActivity.deleteFoldersBg(folders: List<FileDirItem>, deleteMediaOn
 
         folders.forEachIndexed { index, folder ->
             deleteFolderBg(folder, deleteMediaOnly) {
-                if (it)
+                if (it) {
                     wasSuccess = true
+                }
 
                 if (index == folders.size - 1) {
                     runOnUiThread {
@@ -623,13 +655,21 @@ fun BaseSimpleActivity.deleteFoldersBg(folders: List<FileDirItem>, deleteMediaOn
     }
 }
 
-fun BaseSimpleActivity.deleteFolder(folder: FileDirItem, deleteMediaOnly: Boolean = true, callback: ((wasSuccess: Boolean) -> Unit)? = null) {
+fun BaseSimpleActivity.deleteFolder(
+    folder: FileDirItem,
+    deleteMediaOnly: Boolean = true,
+    callback: ((wasSuccess: Boolean) -> Unit)? = null,
+) {
     ensureBackgroundThread {
         deleteFolderBg(folder, deleteMediaOnly, callback)
     }
 }
 
-fun BaseSimpleActivity.deleteFolderBg(fileDirItem: FileDirItem, deleteMediaOnly: Boolean = true, callback: ((wasSuccess: Boolean) -> Unit)? = null) {
+fun BaseSimpleActivity.deleteFolderBg(
+    fileDirItem: FileDirItem,
+    deleteMediaOnly: Boolean = true,
+    callback: ((wasSuccess: Boolean) -> Unit)? = null,
+) {
     val folder = File(fileDirItem.path)
     if (folder.exists()) {
         val filesArr = folder.listFiles()
@@ -654,17 +694,29 @@ fun BaseSimpleActivity.deleteFolderBg(fileDirItem: FileDirItem, deleteMediaOnly:
     }
 }
 
-fun BaseSimpleActivity.deleteFile(file: FileDirItem, allowDeleteFolder: Boolean = false, callback: ((wasSuccess: Boolean) -> Unit)? = null) {
+fun BaseSimpleActivity.deleteFile(
+    file: FileDirItem,
+    allowDeleteFolder: Boolean = false,
+    callback: ((wasSuccess: Boolean) -> Unit)? = null,
+) {
     deleteFiles(arrayListOf(file), allowDeleteFolder, callback)
 }
 
-fun BaseSimpleActivity.deleteFiles(files: List<FileDirItem>, allowDeleteFolder: Boolean = false, callback: ((wasSuccess: Boolean) -> Unit)? = null) {
+fun BaseSimpleActivity.deleteFiles(
+    files: List<FileDirItem>,
+    allowDeleteFolder: Boolean = false,
+    callback: ((wasSuccess: Boolean) -> Unit)? = null,
+) {
     ensureBackgroundThread {
         deleteFilesBg(files, allowDeleteFolder, callback)
     }
 }
 
-fun BaseSimpleActivity.deleteFilesBg(files: List<FileDirItem>, allowDeleteFolder: Boolean = false, callback: ((wasSuccess: Boolean) -> Unit)? = null) {
+fun BaseSimpleActivity.deleteFilesBg(
+    files: List<FileDirItem>,
+    allowDeleteFolder: Boolean = false,
+    callback: ((wasSuccess: Boolean) -> Unit)? = null,
+) {
     if (files.isEmpty()) {
         runOnUiThread {
             callback?.invoke(true)
@@ -717,7 +769,7 @@ fun BaseSimpleActivity.deleteFile(
     fileDirItem: FileDirItem,
     allowDeleteFolder: Boolean = false,
     isDeletingMultipleFiles: Boolean,
-    callback: ((wasSuccess: Boolean) -> Unit)? = null
+    callback: ((wasSuccess: Boolean) -> Unit)? = null,
 ) {
     ensureBackgroundThread {
         deleteFileBg(fileDirItem, allowDeleteFolder, isDeletingMultipleFiles, callback)
@@ -799,27 +851,45 @@ private fun deleteRecursively(file: File): Boolean {
     return file.delete()
 }
 
-fun Activity.scanFileRecursively(file: File, callback: (() -> Unit)? = null) {
+fun Activity.scanFileRecursively(
+    file: File,
+    callback: (() -> Unit)? = null,
+) {
     applicationContext.scanFileRecursively(file, callback)
 }
 
-fun Activity.scanPathRecursively(path: String, callback: (() -> Unit)? = null) {
+fun Activity.scanPathRecursively(
+    path: String,
+    callback: (() -> Unit)? = null,
+) {
     applicationContext.scanPathRecursively(path, callback)
 }
 
-fun Activity.scanFilesRecursively(files: List<File>, callback: (() -> Unit)? = null) {
+fun Activity.scanFilesRecursively(
+    files: List<File>,
+    callback: (() -> Unit)? = null,
+) {
     applicationContext.scanFilesRecursively(files, callback)
 }
 
-fun Activity.scanPathsRecursively(paths: List<String>, callback: (() -> Unit)? = null) {
+fun Activity.scanPathsRecursively(
+    paths: List<String>,
+    callback: (() -> Unit)? = null,
+) {
     applicationContext.scanPathsRecursively(paths, callback)
 }
 
-fun Activity.rescanPath(path: String, callback: (() -> Unit)? = null) {
+fun Activity.rescanPath(
+    path: String,
+    callback: (() -> Unit)? = null,
+) {
     applicationContext.rescanPath(path, callback)
 }
 
-fun Activity.rescanPaths(paths: List<String>, callback: (() -> Unit)? = null) {
+fun Activity.rescanPaths(
+    paths: List<String>,
+    callback: (() -> Unit)? = null,
+) {
     applicationContext.rescanPaths(paths, callback)
 }
 
@@ -827,7 +897,7 @@ fun BaseSimpleActivity.renameFile(
     oldPath: String,
     newPath: String,
     isRenamingMultipleFiles: Boolean,
-    callback: ((success: Boolean, android30RenameFormat: Android30RenameFormat) -> Unit)? = null
+    callback: ((success: Boolean, android30RenameFormat: Android30RenameFormat) -> Unit)? = null,
 ) {
     if (isRestrictedSAFOnlyRoot(oldPath)) {
         handleAndroidSAFDialog(oldPath) {
@@ -919,39 +989,41 @@ fun BaseSimpleActivity.renameFile(
     } else {
         val oldFile = File(oldPath)
         val newFile = File(newPath)
-        val tempFile = try {
-            createTempFile(oldFile) ?: return
-        } catch (exception: Exception) {
-            if (isRPlus() && exception is java.nio.file.FileSystemException) {
-                // if we are renaming multiple files at once, we should give the Android 30+ permission dialog all uris together, not one by one
-                if (isRenamingMultipleFiles) {
-                    callback?.invoke(false, Android30RenameFormat.CONTENT_RESOLVER)
-                } else {
-                    val fileUris = getFileUrisFromFileDirItems(arrayListOf(File(oldPath).toFileDirItem(this))).second
-                    updateSDK30Uris(fileUris) { success ->
-                        if (success) {
-                            val values = ContentValues().apply {
-                                put(MediaStore.Images.Media.DISPLAY_NAME, newPath.getFilenameFromPath())
-                            }
+        val tempFile =
+            try {
+                createTempFile(oldFile) ?: return
+            } catch (exception: Exception) {
+                if (isRPlus() && exception is java.nio.file.FileSystemException) {
+                    // if we are renaming multiple files at once, we should give the Android 30+ permission dialog all uris together, not one by one
+                    if (isRenamingMultipleFiles) {
+                        callback?.invoke(false, Android30RenameFormat.CONTENT_RESOLVER)
+                    } else {
+                        val fileUris = getFileUrisFromFileDirItems(arrayListOf(File(oldPath).toFileDirItem(this))).second
+                        updateSDK30Uris(fileUris) { success ->
+                            if (success) {
+                                val values =
+                                    ContentValues().apply {
+                                        put(MediaStore.Images.Media.DISPLAY_NAME, newPath.getFilenameFromPath())
+                                    }
 
-                            try {
-                                contentResolver.update(fileUris.first(), values, null, null)
-                                callback?.invoke(true, Android30RenameFormat.NONE)
-                            } catch (e: Exception) {
-                                showErrorToast(e)
+                                try {
+                                    contentResolver.update(fileUris.first(), values, null, null)
+                                    callback?.invoke(true, Android30RenameFormat.NONE)
+                                } catch (e: Exception) {
+                                    showErrorToast(e)
+                                    callback?.invoke(false, Android30RenameFormat.NONE)
+                                }
+                            } else {
                                 callback?.invoke(false, Android30RenameFormat.NONE)
                             }
-                        } else {
-                            callback?.invoke(false, Android30RenameFormat.NONE)
                         }
                     }
+                } else {
+                    showErrorToast(exception)
+                    callback?.invoke(false, Android30RenameFormat.NONE)
                 }
-            } else {
-                showErrorToast(exception)
-                callback?.invoke(false, Android30RenameFormat.NONE)
+                return
             }
-            return
-        }
 
         val oldToTempSucceeds = oldFile.renameTo(tempFile)
         val tempToNewSucceeds = tempFile.renameTo(newFile)
@@ -999,12 +1071,13 @@ fun BaseSimpleActivity.renameFile(
                             val sourceFile = File(oldPath).toFileDirItem(this)
 
                             if (oldPath.equals(newPath, true)) {
-                                val tempDestination = try {
-                                    createTempFile(File(sourceFile.path)) ?: return@updateSDK30Uris
-                                } catch (exception: Exception) {
-                                    callback?.invoke(false, Android30RenameFormat.NONE)
-                                    return@updateSDK30Uris
-                                }
+                                val tempDestination =
+                                    try {
+                                        createTempFile(File(sourceFile.path)) ?: return@updateSDK30Uris
+                                    } catch (exception: Exception) {
+                                        callback?.invoke(false, Android30RenameFormat.NONE)
+                                        return@updateSDK30Uris
+                                    }
 
                                 val copyTempSuccess = copySingleFileSdk30(sourceFile, tempDestination.toFileDirItem(this))
                                 if (copyTempSuccess) {
@@ -1023,14 +1096,15 @@ fun BaseSimpleActivity.renameFile(
                                     callback?.invoke(false, Android30RenameFormat.NONE)
                                 }
                             } else {
-                                val destinationFile = FileDirItem(
-                                    newPath,
-                                    newPath.getFilenameFromPath(),
-                                    sourceFile.isDirectory,
-                                    sourceFile.children,
-                                    sourceFile.size,
-                                    sourceFile.modified
-                                )
+                                val destinationFile =
+                                    FileDirItem(
+                                        newPath,
+                                        newPath.getFilenameFromPath(),
+                                        sourceFile.isDirectory,
+                                        sourceFile.children,
+                                        sourceFile.size,
+                                        sourceFile.modified,
+                                    )
                                 val copySuccessful = copySingleFileSdk30(sourceFile, destinationFile)
                                 if (copySuccessful) {
                                     if (!baseConfig.keepLastModified) {
@@ -1047,7 +1121,6 @@ fun BaseSimpleActivity.renameFile(
                                     callback?.invoke(false, Android30RenameFormat.NONE)
                                 }
                             }
-
                         } catch (e: Exception) {
                             showErrorToast(e)
                             callback?.invoke(false, Android30RenameFormat.NONE)
@@ -1061,18 +1134,19 @@ fun BaseSimpleActivity.renameFile(
     }
 }
 
-fun Activity.createTempFile(file: File): File? {
-    return if (file.isDirectory) {
+fun Activity.createTempFile(file: File): File? =
+    if (file.isDirectory) {
         createTempDir("temp", "${System.currentTimeMillis()}", file.parentFile)
     } else {
         if (isRPlus()) {
             // this can throw FileSystemException, lets catch and handle it at the place calling this function
-            kotlin.io.path.createTempFile(file.parentFile.toPath(), "temp", "${System.currentTimeMillis()}").toFile()
+            kotlin.io.path
+                .createTempFile(file.parentFile.toPath(), "temp", "${System.currentTimeMillis()}")
+                .toFile()
         } else {
             createTempFile("temp", "${System.currentTimeMillis()}", file.parentFile)
         }
     }
-}
 
 fun Activity.hideKeyboard() {
     if (isOnMainThread()) {
@@ -1102,7 +1176,11 @@ fun Activity.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun BaseSimpleActivity.getFileOutputStream(fileDirItem: FileDirItem, allowCreatingNewFile: Boolean = false, callback: (outputStream: OutputStream?) -> Unit) {
+fun BaseSimpleActivity.getFileOutputStream(
+    fileDirItem: FileDirItem,
+    allowCreatingNewFile: Boolean = false,
+    callback: (outputStream: OutputStream?) -> Unit,
+) {
     val targetFile = File(fileDirItem.path)
     when {
         isRestrictedSAFOnlyRoot(fileDirItem.path) -> {
@@ -1167,7 +1245,7 @@ fun BaseSimpleActivity.getFileOutputStream(fileDirItem: FileDirItem, allowCreati
                         applicationContext.contentResolver.openOutputStream(uri)
                     } catch (e: Exception) {
                         null
-                    } ?: createCasualFileOutputStream(this, targetFile)
+                    } ?: createCasualFileOutputStream(this, targetFile),
                 )
             }
         }
@@ -1178,7 +1256,7 @@ fun BaseSimpleActivity.getFileOutputStream(fileDirItem: FileDirItem, allowCreati
                     applicationContext.contentResolver.openOutputStream(fileUri.first())
                 } catch (e: Exception) {
                     null
-                } ?: createCasualFileOutputStream(this, targetFile)
+                } ?: createCasualFileOutputStream(this, targetFile),
             )
         }
         else -> {
@@ -1193,7 +1271,11 @@ fun BaseSimpleActivity.showFileCreateError(path: String) {
     showErrorToast(error)
 }
 
-fun BaseSimpleActivity.getFileOutputStreamSync(path: String, mimeType: String, parentDocumentFile: DocumentFile? = null): OutputStream? {
+fun BaseSimpleActivity.getFileOutputStreamSync(
+    path: String,
+    mimeType: String,
+    parentDocumentFile: DocumentFile? = null,
+): OutputStream? {
     val targetFile = File(path)
 
     return when {
@@ -1248,7 +1330,10 @@ fun BaseSimpleActivity.getFileOutputStreamSync(path: String, mimeType: String, p
     }
 }
 
-private fun createCasualFileOutputStream(activity: BaseSimpleActivity, targetFile: File): OutputStream? {
+private fun createCasualFileOutputStream(
+    activity: BaseSimpleActivity,
+    targetFile: File,
+): OutputStream? {
     if (targetFile.parentFile?.exists() == false) {
         targetFile.parentFile?.mkdirs()
     }
@@ -1263,18 +1348,26 @@ private fun createCasualFileOutputStream(activity: BaseSimpleActivity, targetFil
 
 fun Activity.showBiometricPrompt(
     successCallback: ((String, Int) -> Unit)? = null,
-    failureCallback: (() -> Unit)? = null
+    failureCallback: (() -> Unit)? = null,
 ) {
-    Class2BiometricAuthPrompt.Builder(getText(R.string.authenticate), getText(R.string.cancel))
+    Class2BiometricAuthPrompt
+        .Builder(getText(R.string.authenticate), getText(R.string.cancel))
         .build()
         .startAuthentication(
             AuthPromptHost(this as FragmentActivity),
             object : AuthPromptCallback() {
-                override fun onAuthenticationSucceeded(activity: FragmentActivity?, result: BiometricPrompt.AuthenticationResult) {
+                override fun onAuthenticationSucceeded(
+                    activity: FragmentActivity?,
+                    result: BiometricPrompt.AuthenticationResult,
+                ) {
                     successCallback?.invoke("", PROTECTION_FINGERPRINT)
                 }
 
-                override fun onAuthenticationError(activity: FragmentActivity?, errorCode: Int, errString: CharSequence) {
+                override fun onAuthenticationError(
+                    activity: FragmentActivity?,
+                    errorCode: Int,
+                    errString: CharSequence,
+                ) {
                     val isCanceledByUser = errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON || errorCode == BiometricPrompt.ERROR_USER_CANCELED
                     if (!isCanceledByUser) {
                         toast(errString.toString())
@@ -1286,7 +1379,7 @@ fun Activity.showBiometricPrompt(
                     toast(R.string.authentication_failed)
                     failureCallback?.invoke()
                 }
-            }
+            },
         )
 }
 
@@ -1327,7 +1420,7 @@ fun Activity.setupDialogStuff(
     titleId: Int = 0,
     titleText: String = "",
     cancelOnTouchOutside: Boolean = true,
-    callback: (() -> Unit)? = null
+    callback: (() -> Unit)? = null,
 ) {
     if (isDestroyed || isFinishing) {
         return
@@ -1341,7 +1434,6 @@ fun Activity.setupDialogStuff(
     } else if (view is MyTextView) {
         view.setColors(textColor, primaryColor, backgroundColor)
     }
-
 
     var title: TextView? = null
     if (titleId != 0 || titleText.isNotEmpty()) {
@@ -1359,11 +1451,12 @@ fun Activity.setupDialogStuff(
     }
 
     // if we use the same primary and background color, use the text color for dialog confirmation buttons
-    val dialogButtonColor = if (primaryColor == baseConfig.backgroundColor) {
-        textColor
-    } else {
-        primaryColor
-    }
+    val dialogButtonColor =
+        if (primaryColor == baseConfig.backgroundColor) {
+            textColor
+        } else {
+            primaryColor
+        }
 
     dialog.apply {
         setView(view)
@@ -1375,11 +1468,12 @@ fun Activity.setupDialogStuff(
         getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(dialogButtonColor)
         getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(dialogButtonColor)
 
-        val bgDrawable = when {
-            isBlackAndWhiteTheme() -> resources.getDrawable(R.drawable.black_dialog_background, theme)
-            baseConfig.isUsingSystemTheme -> resources.getDrawable(R.drawable.dialog_you_background, theme)
-            else -> resources.getColoredDrawableWithColor(R.drawable.dialog_bg, baseConfig.backgroundColor)
-        }
+        val bgDrawable =
+            when {
+                isBlackAndWhiteTheme() -> resources.getDrawable(R.drawable.black_dialog_background, theme)
+                baseConfig.isUsingSystemTheme -> resources.getDrawable(R.drawable.dialog_you_background, theme)
+                else -> resources.getColoredDrawableWithColor(R.drawable.dialog_bg, baseConfig.backgroundColor)
+            }
 
         window?.setBackgroundDrawable(bgDrawable)
     }
@@ -1387,16 +1481,24 @@ fun Activity.setupDialogStuff(
 }
 
 fun Activity.showPickSecondsDialogHelper(
-    curMinutes: Int, isSnoozePicker: Boolean = false, showSecondsAtCustomDialog: Boolean = false, showDuringDayOption: Boolean = false,
-    cancelCallback: (() -> Unit)? = null, callback: (seconds: Int) -> Unit
+    curMinutes: Int,
+    isSnoozePicker: Boolean = false,
+    showSecondsAtCustomDialog: Boolean = false,
+    showDuringDayOption: Boolean = false,
+    cancelCallback: (() -> Unit)? = null,
+    callback: (seconds: Int) -> Unit,
 ) {
     val seconds = if (curMinutes == -1) curMinutes else curMinutes * 60
     showPickSecondsDialog(seconds, isSnoozePicker, showSecondsAtCustomDialog, showDuringDayOption, cancelCallback, callback)
 }
 
 fun Activity.showPickSecondsDialog(
-    curSeconds: Int, isSnoozePicker: Boolean = false, showSecondsAtCustomDialog: Boolean = false, showDuringDayOption: Boolean = false,
-    cancelCallback: (() -> Unit)? = null, callback: (seconds: Int) -> Unit
+    curSeconds: Int,
+    isSnoozePicker: Boolean = false,
+    showSecondsAtCustomDialog: Boolean = false,
+    showDuringDayOption: Boolean = false,
+    cancelCallback: (() -> Unit)? = null,
+    callback: (seconds: Int) -> Unit,
 ) {
     hideKeyboard()
     val seconds = TreeSet<Int>()
@@ -1440,9 +1542,12 @@ fun Activity.showPickSecondsDialog(
             }
             -3 -> {
                 TimePickerDialog(
-                    this, getTimePickerDialogTheme(),
+                    this,
+                    getTimePickerDialogTheme(),
                     { view, hourOfDay, minute -> callback(hourOfDay * -3600 + minute * -60) },
-                    curSeconds / 3600, curSeconds % 3600, baseConfig.use24HourFormat
+                    curSeconds / 3600,
+                    curSeconds % 3600,
+                    baseConfig.use24HourFormat,
                 ).show()
             }
             else -> {
@@ -1452,7 +1557,10 @@ fun Activity.showPickSecondsDialog(
     }
 }
 
-fun BaseSimpleActivity.getAlarmSounds(type: Int, callback: (ArrayList<AlarmSound>) -> Unit) {
+fun BaseSimpleActivity.getAlarmSounds(
+    type: Int,
+    callback: (ArrayList<AlarmSound>) -> Unit,
+) {
     val alarms = ArrayList<AlarmSound>()
     val manager = RingtoneManager(this)
     manager.setType(type)
@@ -1493,11 +1601,12 @@ fun BaseSimpleActivity.getAlarmSounds(type: Int, callback: (ArrayList<AlarmSound
 }
 
 fun Activity.checkAppSideloading(): Boolean {
-    val isSideloaded = when (baseConfig.appSideloadingStatus) {
-        SIDELOADING_TRUE -> true
-        SIDELOADING_FALSE -> false
-        else -> isAppSideloaded()
-    }
+    val isSideloaded =
+        when (baseConfig.appSideloadingStatus) {
+            SIDELOADING_TRUE -> true
+            SIDELOADING_FALSE -> false
+            else -> isAppSideloaded()
+        }
 
     baseConfig.appSideloadingStatus = if (isSideloaded) SIDELOADING_TRUE else SIDELOADING_FALSE
     if (isSideloaded) {
@@ -1507,14 +1616,13 @@ fun Activity.checkAppSideloading(): Boolean {
     return isSideloaded
 }
 
-fun Activity.isAppSideloaded(): Boolean {
-    return try {
+fun Activity.isAppSideloaded(): Boolean =
+    try {
         getDrawable(R.drawable.ic_camera_vector)
         false
     } catch (e: Exception) {
         true
     }
-}
 
 fun Activity.showSideloadingDialog() {
     AppSideloadedDialog(this) {
@@ -1522,7 +1630,10 @@ fun Activity.showSideloadingDialog() {
     }
 }
 
-fun BaseSimpleActivity.getTempFile(folderName: String, fileName: String): File? {
+fun BaseSimpleActivity.getTempFile(
+    folderName: String,
+    fileName: String,
+): File? {
     val folder = File(cacheDir, folderName)
     if (!folder.exists()) {
         if (!folder.mkdir()) {

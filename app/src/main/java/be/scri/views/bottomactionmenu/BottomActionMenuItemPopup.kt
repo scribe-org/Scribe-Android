@@ -37,27 +37,31 @@ class BottomActionMenuItemPopup(
     val isShowing: Boolean
         get() = popup.isShowing
 
-    private val popupListAdapter = object : ArrayAdapter<BottomActionMenuItem>(context, R.layout.item_action_mode_popup, items) {
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val binding = ItemActionModePopupBinding.inflate(LayoutInflater.from(context), parent, false)
+    private val popupListAdapter =
+        object : ArrayAdapter<BottomActionMenuItem>(context, R.layout.item_action_mode_popup, items) {
+            override fun getView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup,
+            ): View {
+                val binding = ItemActionModePopupBinding.inflate(LayoutInflater.from(context), parent, false)
 
-            val item = items[position]
-            binding.cabItem.text = item.title
-            if (item.icon != View.NO_ID) {
-                val icon = ContextCompat.getDrawable(context, item.icon)
-                icon?.applyColorFilter(Color.WHITE)
-                binding.cabItem.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+                val item = items[position]
+                binding.cabItem.text = item.title
+                if (item.icon != View.NO_ID) {
+                    val icon = ContextCompat.getDrawable(context, item.icon)
+                    icon?.applyColorFilter(Color.WHITE)
+                    binding.cabItem.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+                }
+
+                binding.root.setOnClickListener {
+                    onSelect.invoke(item)
+                    popup.dismiss()
+                }
+
+                return binding.root
             }
-
-            binding.root.setOnClickListener {
-                onSelect.invoke(item)
-                popup.dismiss()
-            }
-
-            return binding.root
         }
-    }
-
 
     init {
         popup.isFocusable = true
@@ -85,7 +89,7 @@ class BottomActionMenuItemPopup(
         val windowH = windowRect.height()
         contentView.measure(
             makeDropDownMeasureSpec(dropDownWidth, windowW),
-            makeDropDownMeasureSpec(dropDownHeight, windowH)
+            makeDropDownMeasureSpec(dropDownHeight, windowH),
         )
 
         val anchorLocation = IntArray(2)
@@ -105,24 +109,27 @@ class BottomActionMenuItemPopup(
 
     private fun buildDropDown() {
         var otherHeights = 0
-        val dropDownList = ListView(context).apply {
-            adapter = popupListAdapter
-            isFocusable = true
-            divider = null
-            isFocusableInTouchMode = true
-            clipToPadding = false
-            isVerticalScrollBarEnabled = true
-            isHorizontalScrollBarEnabled = false
-            clipToOutline = true
-            elevation = 3f
-            setPaddingRelative(popupPaddingStart, popupPaddingTop, popupPaddingEnd, popupPaddingBottom)
-        }
+        val dropDownList =
+            ListView(context).apply {
+                adapter = popupListAdapter
+                isFocusable = true
+                divider = null
+                isFocusableInTouchMode = true
+                clipToPadding = false
+                isVerticalScrollBarEnabled = true
+                isHorizontalScrollBarEnabled = false
+                clipToOutline = true
+                elevation = 3f
+                setPaddingRelative(popupPaddingStart, popupPaddingTop, popupPaddingEnd, popupPaddingBottom)
+            }
 
-        val screenWidth = if (isRPlus()) {
-            context.windowManager.currentWindowMetrics.bounds.width()
-        } else {
-            context.windowManager.defaultDisplay.width
-        }
+        val screenWidth =
+            if (isRPlus()) {
+                context.windowManager.currentWindowMetrics.bounds
+                    .width()
+            } else {
+                context.windowManager.defaultDisplay.width
+            }
 
         val width = measureMenuSizeAndGetWidth((0.8 * screenWidth).toInt())
         updateContentWidth(width)
@@ -132,13 +139,14 @@ class BottomActionMenuItemPopup(
         // to get the available height for the whole window.
         val padding: Int
         val popupBackground = popup.background
-        padding = if (popupBackground != null) {
-            popupBackground.getPadding(tempRect)
-            tempRect.top + tempRect.bottom
-        } else {
-            tempRect.setEmpty()
-            0
-        }
+        padding =
+            if (popupBackground != null) {
+                popupBackground.getPadding(tempRect)
+                tempRect.top + tempRect.bottom
+            } else {
+                tempRect.setEmpty()
+                0
+            }
 
         val maxHeight = popup.getMaxAvailableHeight(anchorView!!, 0)
         val listContent = measureHeightOfChildrenCompat(maxHeight - otherHeights)
@@ -153,12 +161,13 @@ class BottomActionMenuItemPopup(
 
     private fun updateContentWidth(width: Int) {
         val popupBackground = popup.background
-        dropDownWidth = if (popupBackground != null) {
-            popupBackground.getPadding(tempRect)
-            tempRect.left + tempRect.right + width
-        } else {
-            width
-        }
+        dropDownWidth =
+            if (popupBackground != null) {
+                popupBackground.getPadding(tempRect)
+                tempRect.left + tempRect.right + width
+            } else {
+                width
+            }
     }
 
     /**
@@ -192,14 +201,15 @@ class BottomActionMenuItemPopup(
                 child.layoutParams = childLayoutParams
             }
 
-            heightMeasureSpec = if (childLayoutParams.height > 0) {
-                MeasureSpec.makeMeasureSpec(
-                    childLayoutParams.height,
-                    MeasureSpec.EXACTLY
-                )
-            } else {
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
-            }
+            heightMeasureSpec =
+                if (childLayoutParams.height > 0) {
+                    MeasureSpec.makeMeasureSpec(
+                        childLayoutParams.height,
+                        MeasureSpec.EXACTLY,
+                    )
+                } else {
+                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+                }
             child.measure(widthMeasureSpec, heightMeasureSpec)
             // Since this view was measured directly against the parent measure
             // spec, we must measure it again before reuse.
@@ -223,7 +233,6 @@ class BottomActionMenuItemPopup(
         // completely fit, so return the returnedHeight
         return returnedHeight
     }
-
 
     /**
      * @see androidx.appcompat.view.menu.MenuPopup.measureIndividualMenuWidth
@@ -254,24 +263,27 @@ class BottomActionMenuItemPopup(
         return maxWidth
     }
 
-    private fun makeDropDownMeasureSpec(measureSpec: Int, maxSize: Int): Int {
-        return MeasureSpec.makeMeasureSpec(
+    private fun makeDropDownMeasureSpec(
+        measureSpec: Int,
+        maxSize: Int,
+    ): Int =
+        MeasureSpec.makeMeasureSpec(
             getDropDownMeasureSpecSize(measureSpec, maxSize),
-            getDropDownMeasureSpecMode(measureSpec)
+            getDropDownMeasureSpecMode(measureSpec),
         )
-    }
 
-    private fun getDropDownMeasureSpecSize(measureSpec: Int, maxSize: Int): Int {
-        return when (measureSpec) {
+    private fun getDropDownMeasureSpecSize(
+        measureSpec: Int,
+        maxSize: Int,
+    ): Int =
+        when (measureSpec) {
             ViewGroup.LayoutParams.MATCH_PARENT -> maxSize
             else -> MeasureSpec.getSize(measureSpec)
         }
-    }
 
-    private fun getDropDownMeasureSpecMode(measureSpec: Int): Int {
-        return when (measureSpec) {
+    private fun getDropDownMeasureSpecMode(measureSpec: Int): Int =
+        when (measureSpec) {
             ViewGroup.LayoutParams.WRAP_CONTENT -> MeasureSpec.UNSPECIFIED
             else -> MeasureSpec.EXACTLY
         }
-    }
 }

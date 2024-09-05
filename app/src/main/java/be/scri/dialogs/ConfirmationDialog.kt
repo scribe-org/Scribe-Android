@@ -17,27 +17,34 @@ import be.scri.extensions.setupDialogStuff
  * @param callback an anonymous function
  */
 class ConfirmationDialog(
-    activity: Activity, message: String = "", messageId: Int = R.string.proceed_with_deletion, positive: Int = R.string.yes,
-    negative: Int = R.string.no, val cancelOnTouchOutside: Boolean = true, val callback: () -> Unit
+    activity: Activity,
+    message: String = "",
+    messageId: Int = R.string.proceed_with_deletion,
+    positive: Int = R.string.yes,
+    negative: Int = R.string.no,
+    val cancelOnTouchOutside: Boolean = true,
+    val callback: () -> Unit,
 ) {
     var dialog: AlertDialog
     private var binding: DialogMessageBinding = DialogMessageBinding.inflate(activity.layoutInflater)
-
 
     init {
         val view = binding.root
         binding.message.text = if (message.isEmpty()) activity.resources.getString(messageId) else message
 
-        val builder = AlertDialog.Builder(activity)
-            .setPositiveButton(positive) { dialog, which -> dialogConfirmed() }
+        val builder =
+            AlertDialog
+                .Builder(activity)
+                .setPositiveButton(positive) { dialog, which -> dialogConfirmed() }
 
         if (negative != 0) {
             builder.setNegativeButton(negative, null)
         }
 
-        dialog = builder.create().apply {
-            activity.setupDialogStuff(view, this, cancelOnTouchOutside = cancelOnTouchOutside)
-        }
+        dialog =
+            builder.create().apply {
+                activity.setupDialogStuff(view, this, cancelOnTouchOutside = cancelOnTouchOutside)
+            }
     }
 
     private fun dialogConfirmed() {

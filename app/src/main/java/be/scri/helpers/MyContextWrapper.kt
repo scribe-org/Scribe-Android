@@ -8,18 +8,23 @@ import android.os.Build
 import java.util.*
 
 // language forcing used at "Use english language", taken from https://stackoverflow.com/a/40704077/1967672
-class MyContextWrapper(context: Context) : ContextWrapper(context) {
-
-    fun wrap(context: Context, language: String): ContextWrapper {
+class MyContextWrapper(
+    context: Context,
+) : ContextWrapper(context) {
+    fun wrap(
+        context: Context,
+        language: String,
+    ): ContextWrapper {
         var newContext = context
         val config = newContext.resources.configuration
         val sysLocale: Locale?
 
-        sysLocale = if (isNougatPlus()) {
-            getSystemLocale(config)
-        } else {
-            getSystemLocaleLegacy(config)
-        }
+        sysLocale =
+            if (isNougatPlus()) {
+                getSystemLocale(config)
+            } else {
+                getSystemLocaleLegacy(config)
+            }
 
         if (language != "" && sysLocale!!.language != language) {
             val locale = Locale(language)
@@ -40,12 +45,18 @@ class MyContextWrapper(context: Context) : ContextWrapper(context) {
     @TargetApi(Build.VERSION_CODES.N)
     private fun getSystemLocale(config: Configuration) = config.locales.get(0)
 
-    private fun setSystemLocaleLegacy(config: Configuration, locale: Locale) {
+    private fun setSystemLocaleLegacy(
+        config: Configuration,
+        locale: Locale,
+    ) {
         config.locale = locale
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    private fun setSystemLocale(config: Configuration, locale: Locale) {
+    private fun setSystemLocale(
+        config: Configuration,
+        locale: Locale,
+    ) {
         config.setLocale(locale)
     }
 }

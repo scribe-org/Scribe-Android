@@ -12,13 +12,13 @@ import android.view.ViewPropertyAnimator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.IdRes
-import com.google.android.material.animation.AnimationUtils
 import be.scri.R
 import be.scri.extensions.applyColorFilter
 import be.scri.extensions.beVisibleIf
 import be.scri.extensions.toast
 import be.scri.extensions.windowManager
 import be.scri.helpers.isRPlus
+import com.google.android.material.animation.AnimationUtils
 
 class BottomActionMenuView : LinearLayout {
     companion object {
@@ -35,11 +35,16 @@ class BottomActionMenuView : LinearLayout {
     private val inflater = LayoutInflater.from(context)
     private val itemsLookup = LinkedHashMap<Int, BottomActionMenuItem>()
     private val items: List<BottomActionMenuItem>
-        get() = itemsLookup.values.toList().sortedWith(compareByDescending<BottomActionMenuItem> {
-            it.showAsAction
-        }.thenBy {
-            it.icon != View.NO_ID
-        }).filter { it.isVisible }
+        get() =
+            itemsLookup.values
+                .toList()
+                .sortedWith(
+                    compareByDescending<BottomActionMenuItem> {
+                        it.showAsAction
+                    }.thenBy {
+                        it.icon != View.NO_ID
+                    },
+                ).filter { it.isVisible }
 
     private var currentAnimator: ViewPropertyAnimator? = null
     private var callback: BottomActionMenuCallback? = null
@@ -78,22 +83,29 @@ class BottomActionMenuView : LinearLayout {
         animateChildTo(
             height + (layoutParams as MarginLayoutParams).bottomMargin,
             EXIT_ANIMATION_DURATION.toLong(),
-            AnimationUtils.FAST_OUT_LINEAR_IN_INTERPOLATOR
+            AnimationUtils.FAST_OUT_LINEAR_IN_INTERPOLATOR,
         )
     }
 
-    private fun animateChildTo(targetY: Int, duration: Long, interpolator: TimeInterpolator, visible: Boolean = false) {
-        currentAnimator = animate()
-            .translationY(targetY.toFloat())
-            .setInterpolator(interpolator)
-            .setDuration(duration)
-            .setListener(
-                object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        currentAnimator = null
-                        beVisibleIf(visible)
-                    }
-                })
+    private fun animateChildTo(
+        targetY: Int,
+        duration: Long,
+        interpolator: TimeInterpolator,
+        visible: Boolean = false,
+    ) {
+        currentAnimator =
+            animate()
+                .translationY(targetY.toFloat())
+                .setInterpolator(interpolator)
+                .setDuration(duration)
+                .setListener(
+                    object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            currentAnimator = null
+                            beVisibleIf(visible)
+                        }
+                    },
+                )
     }
 
     fun setup(items: List<BottomActionMenuItem>) {
@@ -115,7 +127,10 @@ class BottomActionMenuView : LinearLayout {
         }
     }
 
-    fun toggleItemVisibility(@IdRes itemId: Int, show: Boolean) {
+    fun toggleItemVisibility(
+        @IdRes itemId: Int,
+        show: Boolean,
+    ) {
         val item = itemsLookup[itemId]
         setItem(item?.copy(isVisible = show))
     }
@@ -138,16 +153,19 @@ class BottomActionMenuView : LinearLayout {
         val itemsToShowAsAction = items.filter { it.showAsAction && it.icon != View.NO_ID }
         val itemMinWidth = context.resources.getDimensionPixelSize(R.dimen.cab_item_min_width)
         val totalActionWidth = (itemsToShowAsAction.size + 1) * itemMinWidth
-        val screenWidth = if (isRPlus()) {
-            context.windowManager.currentWindowMetrics.bounds.width()
-        } else {
-            context.windowManager.defaultDisplay.width
-        }
-        val result = if (screenWidth > totalActionWidth) {
-            itemsToShowAsAction.size
-        } else {
-            screenWidth / itemMinWidth
-        }
+        val screenWidth =
+            if (isRPlus()) {
+                context.windowManager.currentWindowMetrics.bounds
+                    .width()
+            } else {
+                context.windowManager.defaultDisplay.width
+            }
+        val result =
+            if (screenWidth > totalActionWidth) {
+                itemsToShowAsAction.size
+            } else {
+                screenWidth / itemMinWidth
+            }
         return result - 1
     }
 
@@ -201,9 +219,8 @@ class BottomActionMenuView : LinearLayout {
         applyColorFilter(Color.WHITE)
     }
 
-    private fun getOverflowPopup(overFlowItems: List<BottomActionMenuItem>): BottomActionMenuItemPopup {
-        return BottomActionMenuItemPopup(context, overFlowItems) {
+    private fun getOverflowPopup(overFlowItems: List<BottomActionMenuItem>): BottomActionMenuItemPopup =
+        BottomActionMenuItemPopup(context, overFlowItems) {
             callback?.onItemClicked(it)
         }
-    }
 }

@@ -204,7 +204,7 @@ const val CREATE_DOCUMENT_SDK_30 = 1008
 
 // sorting
 const val SORT_ORDER = "sort_order"
-const val SORT_FOLDER_PREFIX = "sort_folder_"       // storing folder specific values at using "Use for this folder only"
+const val SORT_FOLDER_PREFIX = "sort_folder_" // storing folder specific values at using "Use for this folder only"
 const val SORT_BY_NAME = 1
 const val SORT_BY_DATE_MODIFIED = 2
 const val SORT_BY_SIZE = 4
@@ -320,42 +320,44 @@ const val DATE_FORMAT_FOURTEEN = "yy/MM/dd"
 const val TIME_FORMAT_12 = "hh:mm a"
 const val TIME_FORMAT_24 = "HH:mm"
 
-val appIconColorStrings = arrayListOf(
-    ".Red",
-    ".Pink",
-    ".Purple",
-    ".Deep_purple",
-    ".Indigo",
-    ".Blue",
-    ".Light_blue",
-    ".Cyan",
-    ".Teal",
-    ".Green",
-    ".Light_green",
-    ".Lime",
-    ".Yellow",
-    ".Amber",
-    ".Orange",
-    ".Deep_orange",
-    ".Brown",
-    ".Blue_grey",
-    ".Grey_black"
-)
+val appIconColorStrings =
+    arrayListOf(
+        ".Red",
+        ".Pink",
+        ".Purple",
+        ".Deep_purple",
+        ".Indigo",
+        ".Blue",
+        ".Light_blue",
+        ".Cyan",
+        ".Teal",
+        ".Green",
+        ".Light_green",
+        ".Lime",
+        ".Yellow",
+        ".Amber",
+        ".Orange",
+        ".Deep_orange",
+        ".Brown",
+        ".Blue_grey",
+        ".Grey_black",
+    )
 
 // most app icon colors from md_app_icon_colors with reduced alpha
 // used at showing contact placeholders without image
-val letterBackgroundColors = arrayListOf(
-    0xCCD32F2F,
-    0xCCC2185B,
-    0xCC1976D2,
-    0xCC0288D1,
-    0xCC0097A7,
-    0xCC00796B,
-    0xCC388E3C,
-    0xCC689F38,
-    0xCCF57C00,
-    0xCCE64A19
-)
+val letterBackgroundColors =
+    arrayListOf(
+        0xCCD32F2F,
+        0xCCC2185B,
+        0xCC1976D2,
+        0xCC0288D1,
+        0xCC0097A7,
+        0xCC00796B,
+        0xCC388E3C,
+        0xCC689F38,
+        0xCCF57C00,
+        0xCCE64A19,
+    )
 
 // view types
 const val VIEW_TYPE_GRID = 1
@@ -400,42 +402,46 @@ fun isRPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
 fun isSPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-fun getDateFormats() = arrayListOf(
-    "--MM-dd",
-    "yyyy-MM-dd",
-    "yyyyMMdd",
-    "yyyy.MM.dd",
-    "yy-MM-dd",
-    "yyMMdd",
-    "yy.MM.dd",
-    "yy/MM/dd",
-    "MM-dd",
-    "MMdd",
-    "MM/dd",
-    "MM.dd"
-)
+fun getDateFormats() =
+    arrayListOf(
+        "--MM-dd",
+        "yyyy-MM-dd",
+        "yyyyMMdd",
+        "yyyy.MM.dd",
+        "yy-MM-dd",
+        "yyMMdd",
+        "yy.MM.dd",
+        "yy/MM/dd",
+        "MM-dd",
+        "MMdd",
+        "MM/dd",
+        "MM.dd",
+    )
 
-fun getDateFormatsWithYear() = arrayListOf(
-    DATE_FORMAT_FOUR,
-    DATE_FORMAT_NINE,
-    DATE_FORMAT_TEN,
-    DATE_FORMAT_ELEVEN,
-    DATE_FORMAT_TWELVE,
-    DATE_FORMAT_THIRTEEN,
-    DATE_FORMAT_FOURTEEN,
-)
+fun getDateFormatsWithYear() =
+    arrayListOf(
+        DATE_FORMAT_FOUR,
+        DATE_FORMAT_NINE,
+        DATE_FORMAT_TEN,
+        DATE_FORMAT_ELEVEN,
+        DATE_FORMAT_TWELVE,
+        DATE_FORMAT_THIRTEEN,
+        DATE_FORMAT_FOURTEEN,
+    )
 
 val normalizeRegex = "\\p{InCombiningDiacriticalMarks}+".toRegex()
 
-fun getConflictResolution(resolutions: LinkedHashMap<String, Int>, path: String): Int {
-    return if (resolutions.size == 1 && resolutions.containsKey("")) {
+fun getConflictResolution(
+    resolutions: LinkedHashMap<String, Int>,
+    path: String,
+): Int =
+    if (resolutions.size == 1 && resolutions.containsKey("")) {
         resolutions[""]!!
     } else if (resolutions.containsKey(path)) {
         resolutions[path]!!
     } else {
         CONFLICT_SKIP
     }
-}
 
 val proPackages = arrayListOf("draw", "gallery", "filemanager", "contacts", "notes", "calendar")
 
