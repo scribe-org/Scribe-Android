@@ -2,7 +2,9 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'org.jlleitschuh.gradle.ktlint'
+    id("org.jmailen.kotlinter")
+
+
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -19,8 +21,10 @@ android {
     }
 
 
-
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     buildFeatures {
         viewBinding = true
         buildConfig true
@@ -81,25 +85,7 @@ android {
         buildUponDefaultConfig = true
         allRules = true
     }
-    ktlint {
-        version = "0.45.2"
-        debug = true
-        verbose = true
-        android = true
-        outputToConsole = true
-        outputColorName = "RED"
-        ignoreFailures = false
-        enableExperimentalRules = true
-        reporters {
-            reporter "plain"
-            reporter "checkstyle"
-            reporter "sarif"
-        }
-        filter {
-            exclude("**/generated/**")
-            include("**/kotlin/**")
-        }
-    }
+
 
     namespace 'be.scri'
 }
@@ -163,3 +149,4 @@ task moveFromi18n {
 tasks.named('preBuild').configure {
     dependsOn tasks.named('moveFromi18n')
 }
+
