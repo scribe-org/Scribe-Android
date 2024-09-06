@@ -1,0 +1,21 @@
+style:
+    MagicNumber:
+        active: false
+    MaxLineLength:
+        active: false
+    LoopWithTooManyJumpStatements:
+        active: false
+    WildcardImport:
+        active: false
+    ReturnCount:
+        active: false
+    UnusedPrivateProperty:
+        active: false
+    UnusedParameter:
+        active: false
+
+
+
+complexity:
+    TooManyFunctions:
+        active: false

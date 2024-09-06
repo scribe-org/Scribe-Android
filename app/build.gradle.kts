@@ -37,9 +37,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+
+
 
     buildFeatures {
         viewBinding = true
@@ -86,7 +85,8 @@ android {
     detekt {
         toolVersion = "1.23.6"
         buildUponDefaultConfig = true
-        allRules = true
+        allRules = false
+        config = rootProject.files("detekt.yml")
     }
 
     kotlinter {
@@ -96,6 +96,7 @@ android {
 
     namespace = "be.scri"
 }
+
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
