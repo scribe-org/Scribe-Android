@@ -1,8 +1,6 @@
 import java.util.Properties
 import java.io.FileInputStream
 
-
-
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties().apply {
     if (keystorePropertiesFile.exists()) {
@@ -36,9 +34,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
-
-
 
     buildFeatures {
         viewBinding = true
@@ -97,7 +92,6 @@ android {
     namespace = "be.scri"
 }
 
-
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.activity:activity-ktx:1.9.2")
@@ -125,7 +119,6 @@ dependencies {
     ksp("com.github.bumptech.glide:ksp:4.14.2")
 }
 
-
 tasks.register<Copy>("moveFromi18n") {
     val locales = listOf("de", "es", "sv", "en-US")
 
@@ -148,4 +141,3 @@ tasks.register<Copy>("moveFromi18n") {
 tasks.named("preBuild").configure {
     dependsOn(tasks.named("moveFromi18n"))
 }
-

@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-     val kotlin_version = "2.0.0"
+    val kotlin_version = "2.0.0"
 
     repositories {
         google()
@@ -21,8 +21,6 @@ buildscript {
 
     }
 }
-
-
 
 apply(plugin= "io.gitlab.arturbosch.detekt")
 apply(plugin =  "org.jmailen.kotlinter")
