@@ -1,0 +1,65 @@
+style:
+    MagicNumber:
+        active: false
+    MaxLineLength:
+        active: false
+    LoopWithTooManyJumpStatements:
+        active: false
+    WildcardImport:
+        active: false
+    ReturnCount:
+        active: false
+    UnusedPrivateProperty:
+        active: false
+    UnusedParameter:
+        active: false
+    FunctionOnlyReturningConstant:
+        active: false
+    UtilityClassWithPublicConstructor:
+        active: false
+
+complexity:
+    TooManyFunctions:
+        active: false
+    NestedBlockDepth:
+        active: false
+    ComplexCondition:
+        active: false
+    LongParameterList:
+        active: false
+    LongMethod:
+        active: false
+    CyclomaticComplexMethod:
+        active: false
+    LargeClass:
+        active: false
+
+naming:
+    VariableNaming:
+        active: false
+    InvalidPackageDeclaration:
+        active: false
+
+potential-bugs:
+    ImplicitDefaultLocale:
+        active: false
+
+exceptions:
+    TooGenericExceptionCaught:
+        active: false
+    SwallowedException:
+        active: false
+    InstanceOfCheckForException:
+        active: false
+
+empty-blocks:
+    EmptyCatchBlock:
+        active: false
+    EmptyFunctionBlock:
+        active: false
+
+performance:
+    ForEachOnRange:
+        active: false
+    SpreadOperator:
+        active: false

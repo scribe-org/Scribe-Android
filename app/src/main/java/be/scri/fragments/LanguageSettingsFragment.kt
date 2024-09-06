@@ -126,6 +126,7 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("period_on_double_tap_$language", true)
         editor.apply()
+        Toast.makeText(requireContext(), "$language Period on Double Tap of Space Bar on ", Toast.LENGTH_SHORT).show()
     }
 
     private fun disablePeriodOnSpaceBarDoubleTap(language: String) {
@@ -133,6 +134,7 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("period_on_double_tap_$language", false)
         editor.apply()
+        Toast.makeText(requireContext(), "$language Period on Double Tap of Space Bar on ", Toast.LENGTH_SHORT).show()
     }
 
     private fun enableEmojiAutosuggestions(language: String) {
