@@ -16,6 +16,7 @@ import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentLanguageSettingsBinding
 import be.scri.helpers.CustomAdapter
 import be.scri.models.SwitchItem
+import android.widget.Toast
 
 class LanguageSettingsFragment : Fragment() {
     private var _binding: FragmentLanguageSettingsBinding? = null
@@ -107,10 +108,17 @@ class LanguageSettingsFragment : Fragment() {
         return listOf(
             SwitchItem(
                 isChecked = sharedPref.getBoolean("period_on_double_tap_$language", false),
-                title = "Double space Periods",
+                title = "Double space periods",
                 action = { enablePeriodOnSpaceBarDoubleTap(language) },
                 action2 = { disablePeriodOnSpaceBarDoubleTap(language) },
             ),
+            SwitchItem(
+                isChecked = sharedPref.getBoolean("autosuggest_emojis_$language", true),
+                title = "Autosuggest emojis",
+                action = { enableEmojiAutosuggestions(language) },
+                action2 = { disableEmojiAutosuggestions(language) },
+            )
+
         )
     }
 
@@ -126,6 +134,22 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("period_on_double_tap_$language", false)
         editor.apply()
+    }
+
+    private fun enableEmojiAutosuggestions(language: String) {
+        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("emoji_suggestions_$language", true)
+        editor.apply()
+        Toast.makeText(requireContext() , "$language Emoji Autosuggestions on", Toast.LENGTH_SHORT).show();
+    }
+
+    private fun disableEmojiAutosuggestions(language: String) {
+        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("emoji_suggestions_$language", false)
+        editor.apply()
+        Toast.makeText(requireContext(), "$language Emoji Autosuggestions off", Toast.LENGTH_SHORT).show();
     }
 
     override fun onDestroyView() {
