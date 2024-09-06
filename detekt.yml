@@ -13,7 +13,10 @@ style:
         active: false
     UnusedParameter:
         active: false
-
+    FunctionOnlyReturningConstant:
+        active: false
+    UtilityClassWithPublicConstructor:
+        active: false
 
 
 complexity:
