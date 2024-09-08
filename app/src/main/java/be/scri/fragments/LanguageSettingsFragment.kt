@@ -109,12 +109,14 @@ class LanguageSettingsFragment : Fragment() {
             SwitchItem(
                 isChecked = sharedPref.getBoolean("period_on_double_tap_$language", false),
                 title = "Double space periods",
+                description = "Automatically insert a period when the space key is pressed twice.",
                 action = { enablePeriodOnSpaceBarDoubleTap(language) },
                 action2 = { disablePeriodOnSpaceBarDoubleTap(language) },
             ),
             SwitchItem(
                 isChecked = sharedPref.getBoolean("autosuggest_emojis_$language", true),
                 title = "Autosuggest emojis",
+                description = "Turn on emoji suggestions and completions for more expressive typing.",
                 action = { enableEmojiAutosuggestions(language) },
                 action2 = { disableEmojiAutosuggestions(language) },
             ),
