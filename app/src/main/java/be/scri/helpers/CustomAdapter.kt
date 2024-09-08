@@ -129,6 +129,12 @@ class CustomAdapter(
         holder.switchView.isChecked = item.isChecked
         holder.switchView.setOnCheckedChangeListener(null)
         holder.textView.text = item.title
+        if (item.description.isNullOrEmpty()) {
+            holder.descriptionTextView.visibility = View.GONE
+        } else {
+            holder.descriptionTextView.visibility = View.VISIBLE
+            holder.descriptionTextView.text = item.description
+        }
         holder.switchView.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 item.isChecked = isChecked
@@ -164,6 +170,7 @@ class CustomAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
         val switchView: Switch = itemView.findViewById(R.id.checkbox)
         val textView: TextView = itemView.findViewById(R.id.tvText)
+        val descriptionTextView: TextView = itemView.findViewById(R.id.tvSubTitle)
     }
 
     class TextViewHolder(
