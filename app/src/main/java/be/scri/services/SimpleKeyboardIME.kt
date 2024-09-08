@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
 import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import be.scri.R
+import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.*
 import be.scri.views.MyKeyboardView
@@ -26,6 +27,19 @@ abstract class SimpleKeyboardIME :
     MyKeyboardView.OnKeyboardActionListener {
     abstract fun getKeyboardLayoutXML(): Int
 
+    enum class ScribeState {
+        IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL , SELECT_VERB_CONJUNCTION , SELECT_CASE_DECLENSION , ALREADY_PLURAL, INVALID , DISPLAY_INFORMATION
+    }
+
+    private var currentState: ScribeState = ScribeState.IDLE
+    private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
+    private lateinit var commandBinding: KeyboardViewCommandOptionsBinding
+
+    private var SHIFT_PERM_TOGGLE_SPEED = 500 // how quickly do we have to doubletap shift to enable permanent caps lock
+    private val KEYBOARD_LETTERS = 0
+    private val KEYBOARD_SYMBOLS = 1
+    private val KEYBOARD_SYMBOLS_SHIFT = 2
+
     private var keyboard: MyKeyboard? = null
     private var keyboardView: MyKeyboardView? = null
     private var lastShiftPressTS = 0L
@@ -34,7 +48,7 @@ abstract class SimpleKeyboardIME :
     private var enterKeyType = IME_ACTION_NONE
     private var switchToLetters = false
     private var hasTextBeforeCursor = false
-    private lateinit var binding: KeyboardViewKeyboardBinding
+    private lateinit var binding: KeyboardViewCommandOptionsBinding
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()
@@ -59,14 +73,60 @@ abstract class SimpleKeyboardIME :
     }
 
     override fun onCreateInputView(): View {
-        binding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
+        binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
         keyboardView!!.mOnKeyboardActionListener = this
-        return keyboardHolder!!
+        updateUI()
+        return keyboardHolder
     }
+
+    private fun setupIdleView() {
+        binding.translateBtn.setBackgroundColor(getColor(R.color.you_keyboard_background_color))
+        binding.conjugateBtn.setBackgroundColor(getColor(R.color.you_keyboard_background_color))
+        binding.pluralBtn.setBackgroundColor(getColor(R.color.you_keyboard_background_color))
+        binding.translateBtn.text = ""
+        binding.conjugateBtn.text = ""
+        binding.pluralBtn.text = ""
+        binding.scribeKey.setOnClickListener{
+            currentState = ScribeState.SELECT_COMMAND
+            updateUI()
+        }
+    }
+
+    private fun setupSelectCommandView() {
+        binding.translateBtn.setBackgroundColor(getColor(R.color.light_scribe_color))
+        binding.conjugateBtn.setBackgroundColor(getColor(R.color.light_scribe_color))
+        binding.pluralBtn.setBackgroundColor(getColor(R.color.light_scribe_color))
+        binding.translateBtn.text = "Translate"
+        binding.conjugateBtn.text = "Conjugate"
+        binding.pluralBtn.text = "Plural"
+        binding.scribeKey.setOnClickListener {
+            currentState = ScribeState.IDLE
+            updateUI()
+        }
+    }
+
+    private fun  setupTranslateCommandView() {
+
+    }
+    private fun setupConjugateCommandView() {
+
+    }
+    private fun setupPluralCommandView() {
+
+    }
+
+    private fun updateUI() {
+        when (currentState) {
+            ScribeState.IDLE -> setupIdleView()
+            ScribeState.SELECT_COMMAND -> setupSelectCommandView()
+            else -> setupIdleView()
+        }
+    }
+
 
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) {
