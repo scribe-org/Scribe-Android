@@ -128,7 +128,7 @@ abstract class SimpleKeyboardIME :
             updateUI()
         }
     }
-    
+
     private fun switchToToolBar() {
         val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
         this.keyboardBinding = keyboardBinding
