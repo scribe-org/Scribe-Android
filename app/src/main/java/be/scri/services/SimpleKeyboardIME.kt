@@ -107,23 +107,56 @@ abstract class SimpleKeyboardIME :
             currentState = ScribeState.IDLE
             updateUI()
         }
+        binding.translateBtn.setOnClickListener {
+           currentState = ScribeState.TRANSLATE
+            updateUI()
+        }
+        binding.conjugateBtn.setOnClickListener {
+            currentState = ScribeState.CONJUGATE
+            updateUI()
+        }
+        binding.pluralBtn.setOnClickListener {
+            currentState = ScribeState.PLURAL
+            updateUI()
+        }
+    }
+    
+    private fun switchToToolBar() {
+        val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
+        this.keyboardBinding = keyboardBinding
+        val keyboardHolder = keyboardBinding.root
+        keyboardView = keyboardBinding.keyboardView
+        keyboardView!!.setKeyboard(keyboard!!)
+        keyboardView!!.mOnKeyboardActionListener = this
+        keyboardBinding.scribeKey.setOnClickListener {
+            currentState = ScribeState.IDLE
+            switchToCommandToolBar()
+            updateUI()
+        }
+        setInputView(keyboardHolder)
     }
 
-    private fun  setupTranslateCommandView() {
-
+    private fun switchToCommandToolBar() {
+        val binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
+        this.binding = binding
+        val keyboardHolder = binding.root
+        keyboardView = binding.keyboardView
+        keyboardView!!.setKeyboard(keyboard!!)
+        keyboardView!!.mOnKeyboardActionListener = this
+        keyboardBinding.scribeKey.setOnClickListener {
+            currentState = ScribeState.IDLE
+            setupSelectCommandView()
+            updateUI()
+        }
+        setInputView(keyboardHolder)
     }
-    private fun setupConjugateCommandView() {
 
-    }
-    private fun setupPluralCommandView() {
-
-    }
 
     private fun updateUI() {
         when (currentState) {
             ScribeState.IDLE -> setupIdleView()
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
-            else -> setupIdleView()
+            else -> switchToToolBar()
         }
     }
 
