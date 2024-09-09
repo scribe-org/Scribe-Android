@@ -19,11 +19,6 @@ class AboutFragment : Fragment() {
     private var appName = ""
     private var primaryColor = 0
 
-    private val EASTER_EGG_TIME_LIMIT = 3000L
-    private val EASTER_EGG_REQUIRED_CLICKS = 7
-    private val SWIPE_THRESHOLD = 100
-    private val SWIPE_VELOCITY_THRESHOLD = 100
-
     private lateinit var binding: FragmentAboutBinding
     private lateinit var gestureDetector: GestureDetector
 
@@ -230,5 +225,12 @@ class AboutFragment : Fragment() {
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
+    }
+
+    companion object {
+        private const val EASTER_EGG_TIME_LIMIT = 3000L
+        private const val EASTER_EGG_REQUIRED_CLICKS = 7
+        private const val SWIPE_THRESHOLD = 100
+        private const val SWIPE_VELOCITY_THRESHOLD = 100
     }
 }

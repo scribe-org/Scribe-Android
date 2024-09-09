@@ -44,16 +44,15 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     var checkedDocumentPath = ""
     var configItemsToExport = LinkedHashMap<String, Any>()
 
-    private val GENERIC_PERM_HANDLER = 100
-    private val DELETE_FILE_SDK_30_HANDLER = 300
-    private val RECOVERABLE_SECURITY_HANDLER = 301
-    private val UPDATE_FILE_SDK_30_HANDLER = 302
-
     companion object {
         var funAfterSAFPermission: ((success: Boolean) -> Unit)? = null
         var funAfterSdk30Action: ((success: Boolean) -> Unit)? = null
         var funAfterUpdate30File: ((success: Boolean) -> Unit)? = null
         var funRecoverableSecurity: ((success: Boolean) -> Unit)? = null
+        private const val GENERIC_PERM_HANDLER = 100
+        private const val DELETE_FILE_SDK_30_HANDLER = 300
+        private const val RECOVERABLE_SECURITY_HANDLER = 301
+        private const val UPDATE_FILE_SDK_30_HANDLER = 302
     }
 
     abstract fun getAppIconIDs(): ArrayList<Int>
@@ -393,12 +392,12 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             } else {
                 funAfterSAFPermission?.invoke(false)
             }
-        } else if (requestCode == DELETE_FILE_SDK_30_HANDLER) {
+        } else if (requestCode == Companion.DELETE_FILE_SDK_30_HANDLER) {
             funAfterSdk30Action?.invoke(resultCode == Activity.RESULT_OK)
-        } else if (requestCode == RECOVERABLE_SECURITY_HANDLER) {
+        } else if (requestCode == Companion.RECOVERABLE_SECURITY_HANDLER) {
             funRecoverableSecurity?.invoke(resultCode == Activity.RESULT_OK)
             funRecoverableSecurity = null
-        } else if (requestCode == UPDATE_FILE_SDK_30_HANDLER) {
+        } else if (requestCode == Companion.UPDATE_FILE_SDK_30_HANDLER) {
             funAfterUpdate30File?.invoke(resultCode == Activity.RESULT_OK)
         }
     }
@@ -576,7 +575,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             funAfterSdk30Action = callback
             try {
                 val deleteRequest = MediaStore.createDeleteRequest(contentResolver, uris).intentSender
-                startIntentSenderForResult(deleteRequest, DELETE_FILE_SDK_30_HANDLER, null, 0, 0, 0)
+                startIntentSenderForResult(deleteRequest, Companion.DELETE_FILE_SDK_30_HANDLER, null, 0, 0, 0)
             } catch (e: Exception) {
                 showErrorToast(e)
             }
@@ -595,7 +594,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             funAfterUpdate30File = callback
             try {
                 val writeRequest = MediaStore.createWriteRequest(contentResolver, uris).intentSender
-                startIntentSenderForResult(writeRequest, UPDATE_FILE_SDK_30_HANDLER, null, 0, 0, 0)
+                startIntentSenderForResult(writeRequest, Companion.UPDATE_FILE_SDK_30_HANDLER, null, 0, 0, 0)
             } catch (e: Exception) {
                 showErrorToast(e)
             }
@@ -613,7 +612,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
                 funRecoverableSecurity = callback
                 val recoverableSecurityException = securityException as? RecoverableSecurityException ?: throw securityException
                 val intentSender = recoverableSecurityException.userAction.actionIntent.intentSender
-                startIntentSenderForResult(intentSender, RECOVERABLE_SECURITY_HANDLER, null, 0, 0, 0)
+                startIntentSenderForResult(intentSender, Companion.RECOVERABLE_SECURITY_HANDLER, null, 0, 0, 0)
             } else {
                 callback(false)
             }
@@ -630,7 +629,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         } else {
             isAskingPermissions = true
             actionOnPermission = callback
-            ActivityCompat.requestPermissions(this, arrayOf(getPermissionString(permissionId)), GENERIC_PERM_HANDLER)
+            ActivityCompat.requestPermissions(this, arrayOf(getPermissionString(permissionId)), Companion.GENERIC_PERM_HANDLER)
         }
     }
 
@@ -641,7 +640,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         isAskingPermissions = false
-        if (requestCode == GENERIC_PERM_HANDLER && grantResults.isNotEmpty()) {
+        if (requestCode == Companion.GENERIC_PERM_HANDLER && grantResults.isNotEmpty()) {
             actionOnPermission?.invoke(grantResults[0] == 0)
         }
     }
