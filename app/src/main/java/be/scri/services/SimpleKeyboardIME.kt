@@ -26,15 +26,10 @@ abstract class SimpleKeyboardIME :
     MyKeyboardView.OnKeyboardActionListener {
     abstract fun getKeyboardLayoutXML(): Int
 
-    private var SHIFT_PERM_TOGGLE_SPEED = 500 // how quickly do we have to doubletap shift to enable permanent caps lock
-    private val KEYBOARD_LETTERS = 0
-    private val KEYBOARD_SYMBOLS = 1
-    private val KEYBOARD_SYMBOLS_SHIFT = 2
-
     private var keyboard: MyKeyboard? = null
     private var keyboardView: MyKeyboardView? = null
     private var lastShiftPressTS = 0L
-    private var keyboardMode = KEYBOARD_LETTERS
+    private var keyboardMode = Companion.KEYBOARD_LETTERS
     private var inputTypeClass = InputType.TYPE_CLASS_TEXT
     private var enterKeyType = IME_ACTION_NONE
     private var switchToLetters = false
@@ -92,11 +87,11 @@ abstract class SimpleKeyboardIME :
         val keyboardXml =
             when (inputTypeClass) {
                 TYPE_CLASS_NUMBER, TYPE_CLASS_DATETIME, TYPE_CLASS_PHONE -> {
-                    keyboardMode = KEYBOARD_SYMBOLS
+                    keyboardMode = Companion.KEYBOARD_SYMBOLS
                     R.xml.keys_symbols
                 }
                 else -> {
-                    keyboardMode = KEYBOARD_LETTERS
+                    keyboardMode = Companion.KEYBOARD_LETTERS
                     getKeyboardLayoutXML()
                 }
             }
@@ -107,7 +102,7 @@ abstract class SimpleKeyboardIME :
     }
 
     private fun updateShiftKeyState() {
-        if (keyboardMode == KEYBOARD_LETTERS) {
+        if (keyboardMode == Companion.KEYBOARD_LETTERS) {
             val editorInfo = currentInputEditorInfo
             if (editorInfo != null && editorInfo.inputType != InputType.TYPE_NULL && keyboard?.mShiftState != SHIFT_ON_PERMANENT) {
                 if (currentInputConnection.getCursorCapsMode(editorInfo.inputType) != 0) {
@@ -143,10 +138,10 @@ abstract class SimpleKeyboardIME :
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_SHIFT -> {
-                if (keyboardMode == KEYBOARD_LETTERS) {
+                if (keyboardMode == Companion.KEYBOARD_LETTERS) {
                     when {
                         keyboard!!.mShiftState == SHIFT_ON_PERMANENT -> keyboard!!.mShiftState = SHIFT_OFF
-                        System.currentTimeMillis() - lastShiftPressTS < SHIFT_PERM_TOGGLE_SPEED -> keyboard!!.mShiftState = SHIFT_ON_PERMANENT
+                        System.currentTimeMillis() - lastShiftPressTS < Companion.SHIFT_PERM_TOGGLE_SPEED -> keyboard!!.mShiftState = SHIFT_ON_PERMANENT
                         keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR -> keyboard!!.mShiftState = SHIFT_OFF
                         keyboard!!.mShiftState == SHIFT_OFF -> keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
                     }
@@ -154,11 +149,11 @@ abstract class SimpleKeyboardIME :
                     lastShiftPressTS = System.currentTimeMillis()
                 } else {
                     val keyboardXml =
-                        if (keyboardMode == KEYBOARD_SYMBOLS) {
-                            keyboardMode = KEYBOARD_SYMBOLS_SHIFT
+                        if (keyboardMode == Companion.KEYBOARD_SYMBOLS) {
+                            keyboardMode = Companion.KEYBOARD_SYMBOLS_SHIFT
                             R.xml.keys_symbols_shift
                         } else {
-                            keyboardMode = KEYBOARD_SYMBOLS
+                            keyboardMode = Companion.KEYBOARD_SYMBOLS
                             R.xml.keys_symbols
                         }
                     keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
@@ -177,11 +172,11 @@ abstract class SimpleKeyboardIME :
             }
             MyKeyboard.KEYCODE_MODE_CHANGE -> {
                 val keyboardXml =
-                    if (keyboardMode == KEYBOARD_LETTERS) {
-                        keyboardMode = KEYBOARD_SYMBOLS
+                    if (keyboardMode == Companion.KEYBOARD_LETTERS) {
+                        keyboardMode = Companion.KEYBOARD_SYMBOLS
                         R.xml.keys_symbols
                     } else {
-                        keyboardMode = KEYBOARD_LETTERS
+                        keyboardMode = Companion.KEYBOARD_LETTERS
                         getKeyboardLayoutXML()
                     }
                 keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
@@ -196,7 +191,7 @@ abstract class SimpleKeyboardIME :
                 // If the keyboard is set to symbols and the user presses space, we usually should switch back to the letters keyboard.
                 // However, avoid doing that in cases when the EditText for example requires numbers as the input.
                 // We can detect that by the text not changing on pressing Space.
-                if (keyboardMode != KEYBOARD_LETTERS && code == MyKeyboard.KEYCODE_SPACE) {
+                if (keyboardMode != Companion.KEYBOARD_LETTERS && code == MyKeyboard.KEYCODE_SPACE) {
                     val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                     inputConnection.commitText(codeChar.toString(), 1)
                     val newText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
@@ -205,7 +200,7 @@ abstract class SimpleKeyboardIME :
                     inputConnection.commitText(codeChar.toString(), 1)
                 }
 
-                if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == KEYBOARD_LETTERS) {
+                if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == Companion.KEYBOARD_LETTERS) {
                     keyboard!!.mShiftState = SHIFT_OFF
                     keyboardView!!.invalidateAllKeys()
                 }
@@ -219,7 +214,7 @@ abstract class SimpleKeyboardIME :
 
     override fun onActionUp() {
         if (switchToLetters) {
-            keyboardMode = KEYBOARD_LETTERS
+            keyboardMode = Companion.KEYBOARD_LETTERS
             keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
 
             val editorInfo = currentInputEditorInfo
@@ -265,4 +260,11 @@ abstract class SimpleKeyboardIME :
         } else {
             currentInputEditorInfo.imeOptions and IME_MASK_ACTION
         }
+
+    companion object {
+        private const val SHIFT_PERM_TOGGLE_SPEED = 500 // how quickly do we have to doubletap shift to enable permanent caps lock
+        private const val KEYBOARD_LETTERS = 0
+        private const val KEYBOARD_SYMBOLS = 1
+        private const val KEYBOARD_SYMBOLS_SHIFT = 2
+    }
 }

@@ -77,8 +77,8 @@ fun String.getFirstParentPath(
 }
 
 fun String.isAValidFilename(): Boolean {
-    val ILLEGAL_CHARACTERS = charArrayOf('/', '\n', '\r', '\t', '\u0000', '`', '?', '*', '\\', '<', '>', '|', '\"', ':')
-    ILLEGAL_CHARACTERS.forEach {
+    val illegalCharacters = charArrayOf('/', '\n', '\r', '\t', '\u0000', '`', '?', '*', '\\', '<', '>', '|', '\"', ':')
+    illegalCharacters.forEach {
         if (contains(it)) {
             return false
         }

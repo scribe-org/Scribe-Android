@@ -63,10 +63,10 @@ fun Context.getSDCardPath(): String {
     }
 
     if (sdCardPath.isEmpty()) {
-        val SDpattern = Pattern.compile(SD_OTG_SHORT)
+        val sdPattern = Pattern.compile(SD_OTG_SHORT)
         try {
             File("/storage").listFiles()?.forEach {
-                if (SDpattern.matcher(it.name).matches()) {
+                if (sdPattern.matcher(it.name).matches()) {
                     sdCardPath = "/storage/${it.name}"
                 }
             }
@@ -456,11 +456,12 @@ fun Context.deleteFromMediaStore(
     }
 }
 
+const val SCAN_FILE_MAX_DURATION = 1000L
+
 fun Context.rescanAndDeletePath(
     path: String,
     callback: () -> Unit,
 ) {
-    val SCAN_FILE_MAX_DURATION = 1000L
     val scanFileHandler = Handler(Looper.getMainLooper())
     scanFileHandler.postDelayed({
         callback()
@@ -524,10 +525,10 @@ fun Context.getOTGItems(
     callback: (ArrayList<FileDirItem>) -> Unit,
 ) {
     val items = ArrayList<FileDirItem>()
-    val OTGTreeUri = baseConfig.OTGTreeUri
+    val otgTreeUri = baseConfig.OTGTreeUri
     var rootUri =
         try {
-            DocumentFile.fromTreeUri(applicationContext, Uri.parse(OTGTreeUri))
+            DocumentFile.fromTreeUri(applicationContext, Uri.parse(otgTreeUri))
         } catch (e: Exception) {
             showErrorToast(e)
             baseConfig.OTGPath = ""
