@@ -7,7 +7,9 @@ import be.scri.extensions.getInternalStoragePath
 import be.scri.extensions.getSDCardPath
 import be.scri.extensions.getSharedPrefs
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.LinkedList
+import java.util.Locale
 
 open class BaseConfig(
     val context: Context,

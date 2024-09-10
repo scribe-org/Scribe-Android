@@ -1,7 +1,12 @@
 package be.scri.extensions
 
 import android.content.Context
-import be.scri.helpers.*
+import be.scri.helpers.MD5
+import be.scri.helpers.NOMEDIA
+import be.scri.helpers.audioExtensions
+import be.scri.helpers.photoExtensions
+import be.scri.helpers.rawExtensions
+import be.scri.helpers.videoExtensions
 import be.scri.models.FileDirItem
 import java.io.File
 

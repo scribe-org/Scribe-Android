@@ -16,7 +16,10 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import be.scri.R
 import be.scri.databinding.KeyboardViewKeyboardBinding
-import be.scri.helpers.*
+import be.scri.helpers.MyKeyboard
+import be.scri.helpers.SHIFT_OFF
+import be.scri.helpers.SHIFT_ON_ONE_CHAR
+import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.views.MyKeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/

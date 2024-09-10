@@ -9,7 +9,9 @@ import android.text.format.DateUtils
 import android.text.format.Time
 import be.scri.helpers.DARK_GREY
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import java.util.Random
 
 fun Int.getContrastColor(): Int {
     val y = (299 * Color.red(this) + 587 * Color.green(this) + 114 * Color.blue(this)) / 1000
