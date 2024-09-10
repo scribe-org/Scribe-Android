@@ -46,8 +46,10 @@ abstract class SimpleKeyboardIME :
     private var keyboardMode = Companion.KEYBOARD_LETTERS
     private var inputTypeClass = InputType.TYPE_CLASS_TEXT
     private var enterKeyType = IME_ACTION_NONE
+
     private var switchToLetters = false
     private var hasTextBeforeCursor = false
+    private var commandText: StringBuilder = StringBuilder()
     private lateinit var binding: KeyboardViewCommandOptionsBinding
 
     override fun onInitializeInterface() {
@@ -92,31 +94,37 @@ abstract class SimpleKeyboardIME :
         binding.pluralBtn.text = ""
         binding.scribeKey.setOnClickListener{
             currentState = ScribeState.SELECT_COMMAND
+            binding.scribeKey.foreground = getDrawable(R.drawable.close)
             updateUI()
         }
     }
 
     private fun setupSelectCommandView() {
-        binding.translateBtn.setBackgroundColor(getColor(R.color.light_scribe_color))
-        binding.conjugateBtn.setBackgroundColor(getColor(R.color.light_scribe_color))
-        binding.pluralBtn.setBackgroundColor(getColor(R.color.light_scribe_color))
+
+        binding.translateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
+        binding.conjugateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
+        binding.pluralBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
         binding.translateBtn.text = "Translate"
         binding.conjugateBtn.text = "Conjugate"
         binding.pluralBtn.text = "Plural"
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
+            binding.scribeKey.foreground = getDrawable(R.drawable.ic_scribe_icon_vector)
             updateUI()
         }
         binding.translateBtn.setOnClickListener {
            currentState = ScribeState.TRANSLATE
+            commandText.clear()
             updateUI()
         }
         binding.conjugateBtn.setOnClickListener {
             currentState = ScribeState.CONJUGATE
+            commandText.clear()
             updateUI()
         }
         binding.pluralBtn.setOnClickListener {
             currentState = ScribeState.PLURAL
+            commandText.clear()
             updateUI()
         }
     }
