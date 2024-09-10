@@ -8,7 +8,6 @@ buildscript {
         mavenCentral()
         gradlePluginPortal()
         maven("https://plugins.gradle.org/m2/")
-
     }
 
     dependencies {
@@ -18,12 +17,11 @@ buildscript {
         classpath("org.jlleitschuh.gradle:ktlint-gradle:12.1.1")
         classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.6")
         classpath("org.jmailen.gradle:kotlinter-gradle:4.4.1")
-
     }
 }
 
-apply(plugin= "io.gitlab.arturbosch.detekt")
-apply(plugin =  "org.jmailen.kotlinter")
+apply(plugin = "io.gitlab.arturbosch.detekt")
+apply(plugin = "org.jmailen.kotlinter")
 
 plugins {
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply false
@@ -37,6 +35,6 @@ allprojects {
     }
 }
 
-tasks.register("clean",Delete::class){
+tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
 }

@@ -21,7 +21,7 @@
             android:layout_marginStart="@dimen/small_margin"
             android:background="@drawable/scribe_key_background_left_rounded"
             android:contentDescription="@string/scribe_key"
-            android:foreground="@drawable/ic_scribe_icon_vector"
+            android:foreground="@drawable/close"
             android:foregroundGravity="center"
             android:foregroundTint="@color/light_key_text_color"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"

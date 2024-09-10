@@ -2,12 +2,11 @@ package be.scri.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.EditText
 import be.scri.extensions.adjustAlpha
 import be.scri.extensions.applyColorFilter
 import be.scri.helpers.MEDIUM_ALPHA
 
-class MyEditText : EditText {
+class MyEditText : androidx.appcompat.widget.AppCompatEditText {
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
