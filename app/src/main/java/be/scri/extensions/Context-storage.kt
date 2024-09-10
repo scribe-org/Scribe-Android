@@ -14,20 +14,32 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Document
-import android.provider.MediaStore.*
+import android.provider.MediaStore
+import android.provider.MediaStore.Audio
+import android.provider.MediaStore.Files
+import android.provider.MediaStore.Images
+import android.provider.MediaStore.MediaColumns
+import android.provider.MediaStore.Video
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import be.scri.R
-import be.scri.helpers.*
+import be.scri.helpers.EXTERNAL_STORAGE_PROVIDER_AUTHORITY
+import be.scri.helpers.ExternalStorageProviderHack
+import be.scri.helpers.SD_OTG_PATTERN
+import be.scri.helpers.SD_OTG_SHORT
+import be.scri.helpers.ensureBackgroundThread
+import be.scri.helpers.isMarshmallowPlus
+import be.scri.helpers.isNougatPlus
+import be.scri.helpers.isRPlus
 import be.scri.models.FileDirItem
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import java.net.URLDecoder
-import java.util.*
+import java.util.Collections
 import java.util.regex.Pattern
 
 private const val ANDROID_DATA_DIR = "/Android/data/"
@@ -428,7 +440,7 @@ fun getPaths(file: File): ArrayList<String> {
 
 fun Context.getFileUri(path: String) =
     when {
-        path.isImageSlow() -> Images.Media.EXTERNAL_CONTENT_URI
+        path.isImageSlow() -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         path.isVideoSlow() -> Video.Media.EXTERNAL_CONTENT_URI
         path.isAudioSlow() -> Audio.Media.EXTERNAL_CONTENT_URI
         else -> Files.getContentUri("external")

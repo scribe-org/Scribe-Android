@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 fun ExifInterface.copyTo(
     destination: ExifInterface,

@@ -4,7 +4,13 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import be.scri.R
-import be.scri.extensions.*
+import be.scri.extensions.baseConfig
+import be.scri.extensions.checkAppIconColor
+import be.scri.extensions.checkAppSideloading
+import be.scri.extensions.getSharedTheme
+import be.scri.extensions.isThankYouInstalled
+import be.scri.extensions.isUsingSystemDarkTheme
+import be.scri.extensions.showSideloadingDialog
 import be.scri.helpers.SIDELOADING_TRUE
 import be.scri.helpers.SIDELOADING_UNCHECKED
 

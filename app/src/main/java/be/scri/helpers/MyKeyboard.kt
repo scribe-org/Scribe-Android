@@ -12,7 +12,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import androidx.annotation.XmlRes
 import be.scri.R
-import java.util.*
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard consists of rows of keys.

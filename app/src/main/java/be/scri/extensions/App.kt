@@ -2,7 +2,7 @@ package be.scri.extensions
 
 import android.app.Application
 import be.scri.helpers.isNougatPlus
-import java.util.*
+import java.util.Locale
 
 fun Application.checkUseEnglish() {
     if (baseConfig.useEnglish && !isNougatPlus()) {

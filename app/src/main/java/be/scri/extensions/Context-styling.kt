@@ -8,7 +8,11 @@ import android.graphics.Color
 import android.view.ViewGroup
 import androidx.loader.content.CursorLoader
 import be.scri.R
-import be.scri.helpers.*
+import be.scri.helpers.DARK_GREY
+import be.scri.helpers.INVALID_NAVIGATION_BAR_COLOR
+import be.scri.helpers.MyContentProvider
+import be.scri.helpers.appIconColorStrings
+import be.scri.helpers.ensureBackgroundThread
 import be.scri.models.SharedTheme
 import be.scri.views.MyAppCompatCheckbox
 import be.scri.views.MyEditText

@@ -3,7 +3,8 @@ package be.scri.extensions
 import android.content.Context
 import android.text.format.DateFormat
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 fun Long.formatSize(): String {
     if (this <= 0) {

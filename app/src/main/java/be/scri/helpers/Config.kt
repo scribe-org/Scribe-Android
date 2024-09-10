@@ -1,7 +1,7 @@
 package be.scri.helpers
 
 import android.content.Context
-import java.util.*
+import java.util.Locale
 
 class Config(
     context: Context,

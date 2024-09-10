@@ -12,7 +12,13 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.widget.TextView
-import be.scri.helpers.*
+import be.scri.helpers.audioExtensions
+import be.scri.helpers.extensionsSupportingEXIF
+import be.scri.helpers.getDateFormats
+import be.scri.helpers.normalizeRegex
+import be.scri.helpers.photoExtensions
+import be.scri.helpers.rawExtensions
+import be.scri.helpers.videoExtensions
 import com.bumptech.glide.signature.ObjectKey
 import org.joda.time.DateTime
 import org.joda.time.Years
@@ -21,7 +27,7 @@ import java.io.File
 import java.text.DateFormat
 import java.text.Normalizer
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import java.util.regex.Pattern
 
 fun String.getFilenameFromPath() = substring(lastIndexOf("/") + 1)

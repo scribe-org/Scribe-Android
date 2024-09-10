@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.os.Build
-import java.util.*
+import java.util.Locale
 
 // language forcing used at "Use english language", taken from https://stackoverflow.com/a/40704077/1967672
 class MyContextWrapper(

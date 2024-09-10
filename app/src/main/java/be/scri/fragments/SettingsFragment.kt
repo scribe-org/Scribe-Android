@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
 import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate

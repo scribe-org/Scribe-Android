@@ -4,7 +4,11 @@ import android.app.Activity
 import androidx.appcompat.app.AlertDialog
 import be.scri.R
 import be.scri.databinding.DialogCustomIntervalPickerBinding
-import be.scri.extensions.*
+import be.scri.extensions.beVisibleIf
+import be.scri.extensions.hideKeyboard
+import be.scri.extensions.setupDialogStuff
+import be.scri.extensions.showKeyboard
+import be.scri.extensions.value
 import be.scri.helpers.DAY_SECONDS
 import be.scri.helpers.HOUR_SECONDS
 import be.scri.helpers.MINUTE_SECONDS

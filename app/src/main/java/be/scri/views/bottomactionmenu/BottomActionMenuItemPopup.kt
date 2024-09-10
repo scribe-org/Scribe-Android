@@ -3,8 +3,12 @@ package be.scri.views.bottomactionmenu
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.MeasureSpec
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.ListView
