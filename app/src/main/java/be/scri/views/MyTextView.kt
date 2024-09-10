@@ -2,9 +2,8 @@ package be.scri.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.TextView
 
-class MyTextView : TextView {
+class MyTextView : androidx.appcompat.widget.AppCompatTextView {
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)

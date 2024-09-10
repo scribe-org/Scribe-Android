@@ -28,18 +28,21 @@ abstract class SimpleKeyboardIME :
     abstract fun getKeyboardLayoutXML(): Int
 
     enum class ScribeState {
-        IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL , SELECT_VERB_CONJUNCTION , SELECT_CASE_DECLENSION , ALREADY_PLURAL, INVALID , DISPLAY_INFORMATION
+        IDLE,
+        SELECT_COMMAND,
+        TRANSLATE,
+        CONJUGATE,
+        PLURAL,
+        SELECT_VERB_CONJUNCTION,
+        SELECT_CASE_DECLENSION,
+        ALREADY_PLURAL,
+        INVALID,
+        DISPLAY_INFORMATION,
     }
 
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
     private lateinit var commandBinding: KeyboardViewCommandOptionsBinding
-
-    private var SHIFT_PERM_TOGGLE_SPEED = 500 // how quickly do we have to doubletap shift to enable permanent caps lock
-    private val KEYBOARD_LETTERS = 0
-    private val KEYBOARD_SYMBOLS = 1
-    private val KEYBOARD_SYMBOLS_SHIFT = 2
-
     private var keyboard: MyKeyboard? = null
     private var keyboardView: MyKeyboardView? = null
     private var lastShiftPressTS = 0L
@@ -92,7 +95,7 @@ abstract class SimpleKeyboardIME :
         binding.translateBtn.text = ""
         binding.conjugateBtn.text = ""
         binding.pluralBtn.text = ""
-        binding.scribeKey.setOnClickListener{
+        binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
             binding.scribeKey.foreground = getDrawable(R.drawable.close)
             updateUI()
@@ -100,7 +103,6 @@ abstract class SimpleKeyboardIME :
     }
 
     private fun setupSelectCommandView() {
-
         binding.translateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
         binding.conjugateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
         binding.pluralBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
@@ -113,7 +115,7 @@ abstract class SimpleKeyboardIME :
             updateUI()
         }
         binding.translateBtn.setOnClickListener {
-           currentState = ScribeState.TRANSLATE
+            currentState = ScribeState.TRANSLATE
             commandText.clear()
             updateUI()
         }
@@ -159,7 +161,6 @@ abstract class SimpleKeyboardIME :
         setInputView(keyboardHolder)
     }
 
-
     private fun updateUI() {
         when (currentState) {
             ScribeState.IDLE -> setupIdleView()
@@ -167,7 +168,6 @@ abstract class SimpleKeyboardIME :
             else -> switchToToolBar()
         }
     }
-
 
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) {

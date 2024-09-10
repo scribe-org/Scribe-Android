@@ -14,10 +14,19 @@ import be.scri.views.MyKeyboardView
 class RussianKeyboardIME : SimpleKeyboardIME() {
     override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_russian
 
-
     enum class ScribeState {
-        IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL , SELECT_VERB_CONJUNCTION , SELECT_CASE_DECLENSION , ALREADY_PLURAL, INVALID , DISPLAY_INFORMATION
+        IDLE,
+        SELECT_COMMAND,
+        TRANSLATE,
+        CONJUGATE,
+        PLURAL,
+        SELECT_VERB_CONJUNCTION,
+        SELECT_CASE_DECLENSION,
+        ALREADY_PLURAL,
+        INVALID,
+        DISPLAY_INFORMATION,
     }
+
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
     private lateinit var commandBinding: KeyboardViewCommandOptionsBinding
@@ -30,7 +39,6 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         super.onInitializeInterface()
         keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
     }
-
 
     private var lastSpaceTime: Long = 0
     private val doubleTapThreshold: Long = 300
@@ -51,7 +59,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         val keyboardHolder = binding.root
-        Log.i("MY-TAG","From Russian Keyboard IME")
+        Log.i("MY-TAG", "From Russian Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
@@ -60,7 +68,6 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         return keyboardHolder
     }
 
-
     private fun setupIdleView() {
         binding.translateBtn.setBackgroundColor(getColor(R.color.you_keyboard_background_color))
         binding.conjugateBtn.setBackgroundColor(getColor(R.color.you_keyboard_background_color))
@@ -68,16 +75,15 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         binding.translateBtn.text = ""
         binding.conjugateBtn.text = ""
         binding.pluralBtn.text = ""
-        binding.scribeKey.setOnClickListener{
+        binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
-            Log.i("MY-TAG","SELECT COMMAND STATE")
+            Log.i("MY-TAG", "SELECT COMMAND STATE")
             binding.scribeKey.foreground = getDrawable(R.drawable.close)
             updateUI()
         }
     }
 
     private fun setupSelectCommandView() {
-
         binding.translateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
         binding.conjugateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
         binding.pluralBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
@@ -86,22 +92,22 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         binding.pluralBtn.text = "Plural"
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
-            Log.i("MY-TAG","IDLE STATE")
+            Log.i("MY-TAG", "IDLE STATE")
             binding.scribeKey.foreground = getDrawable(R.drawable.ic_scribe_icon_vector)
             updateUI()
         }
         binding.translateBtn.setOnClickListener {
             currentState = ScribeState.TRANSLATE
-            Log.i("MY-TAG","TRANSLATE STATE")
+            Log.i("MY-TAG", "TRANSLATE STATE")
             updateUI()
         }
         binding.conjugateBtn.setOnClickListener {
-            Log.i("MY-TAG","CONJUGATE STATE")
+            Log.i("MY-TAG", "CONJUGATE STATE")
             currentState = ScribeState.CONJUGATE
             updateUI()
         }
         binding.pluralBtn.setOnClickListener {
-            Log.i("MY-TAG","PLURAL STATE")
+            Log.i("MY-TAG", "PLURAL STATE")
             currentState = ScribeState.PLURAL
             updateUI()
         }
@@ -137,7 +143,6 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         setInputView(keyboardHolder)
     }
 
-
     private fun updateUI() {
         when (currentState) {
             ScribeState.IDLE -> setupIdleView()
@@ -145,5 +150,4 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
             else -> switchToToolBar()
         }
     }
-
 }
