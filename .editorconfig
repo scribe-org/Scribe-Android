@@ -20,7 +20,6 @@ continuation_indent_size = 4
 wildcard_import_limit = 999
 ij_kotlin_name_count_to_use_star_import = 999
 ij_kotlin_name_count_to_use_star_import_for_members = 999
-ktlint_standard_filename = disabled
 
 ktlint_code_style = ktlint_official
 ktlint_standard = enabled
