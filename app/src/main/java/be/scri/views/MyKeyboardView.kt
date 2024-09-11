@@ -208,7 +208,7 @@ class MyKeyboardView
         }
 
         private var _popupBinding: KeyboardPopupKeyboardBinding? = null
-        private val popupBinding: KeyboardPopupKeyboardBinding
+        val popupBinding: KeyboardPopupKeyboardBinding
             get() {
                 if (_popupBinding == null) {
                     _popupBinding = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
@@ -217,7 +217,7 @@ class MyKeyboardView
             }
 
         private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
-        private val keyboardBinding: KeyboardViewKeyboardBinding
+        val keyboardBinding: KeyboardViewKeyboardBinding
             get() {
                 if (_keyboardBinding == null) {
                     _keyboardBinding = KeyboardViewKeyboardBinding.inflate(LayoutInflater.from(context))
