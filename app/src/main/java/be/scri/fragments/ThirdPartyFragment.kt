@@ -26,7 +26,7 @@ class ThirdPartyFragment : Fragment() {
                 (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
             }
         (requireActivity() as MainActivity).setActionBarButtonFunction(2, R.string.app_about_title)
-        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_thirdParty)
+        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_privacy_policy)
         (requireActivity() as MainActivity).setActionBarButtonVisible()
         (requireActivity() as MainActivity).setActionBarLayoutMargin()
         (requireActivity() as MainActivity)
@@ -44,7 +44,7 @@ class ThirdPartyFragment : Fragment() {
     ): View? {
         binding = FragmentThirdPartyBinding.inflate(inflater, container, false)
         (requireActivity() as MainActivity).showFragmentContainer()
-        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_thirdParty)
+        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_third_party)
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {

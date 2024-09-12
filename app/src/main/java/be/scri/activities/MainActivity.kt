@@ -53,17 +53,24 @@ class MainActivity : SimpleActivity() {
                     when (position) {
                         0 -> {
                             binding.fragmentContainer.visibility = View.GONE
+
                             setActionBarTitle(R.string.app_launcher_name)
+                            setActionBarButtonInvisible()
+                            unsetActionBarLayoutMargin()
                         }
 
                         1 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_settings_title)
+                            setActionBarButtonInvisible()
+                            unsetActionBarLayoutMargin()
                         }
 
                         2 -> {
                             binding.fragmentContainer.visibility = View.GONE
+                            setActionBarButtonInvisible()
                             setActionBarTitle(R.string.app_about_title)
+                            unsetActionBarLayoutMargin()
                         }
 
                         else -> {
@@ -80,6 +87,7 @@ class MainActivity : SimpleActivity() {
                     viewPager.setCurrentItem(0, true)
                     binding.fragmentContainer.visibility = View.GONE
                     setActionBarTitle(R.string.app_launcher_name)
+
                     true
                 }
 

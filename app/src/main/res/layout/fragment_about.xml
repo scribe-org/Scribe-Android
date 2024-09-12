@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:paddingTop="10dp"
-                android:text="@string/app.about.community"
+                android:text="@string/app.about.community.title"
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
-                android:text="@string/app.about.feedback"
+                android:text="@string/app.about.feedback.title"
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
-                android:text="@string/app.about.legal"
+                android:text="@string/app.about.legal.title"
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
                 android:textStyle="bold" />

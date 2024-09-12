@@ -16,7 +16,7 @@
                 android:layout_width="303dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="@string/app.about.privacyPolicy.caption"
+                android:text="@string/app.about.legal.privacy_policy.caption"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/app_text_color"
                 android:textSize="20sp"
@@ -48,7 +48,7 @@
                             android:layout_width="304dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity=""
-                            android:text="@string/app.about.privacyPolicy.body"
+                            android:text="@string/app.about.legal.privacy_policy.text"
                             android:textSize="16sp" />
 
                     </LinearLayout>
@@ -58,7 +58,7 @@
                         android:layout_height="76dp"
                         android:layout_gravity="top|end"
                         android:alpha="0.9"
-                        android:contentDescription="@string/app.about.privacyPolicy"
+                        android:contentDescription="@string/app.about.legal.privacy_policy"
                         android:src="@drawable/corner_polygon" />
 
                     <ImageView
@@ -67,7 +67,7 @@
                         android:layout_gravity="top|end"
                         android:layout_margin="8dp"
 
-                        android:contentDescription="@string/app.about.privacyPolicy"
+                        android:contentDescription="@string/app.about.legal.privacy_policy"
                         android:src="@drawable/shield_check" />
                 </androidx.cardview.widget.CardView>
             </FrameLayout>

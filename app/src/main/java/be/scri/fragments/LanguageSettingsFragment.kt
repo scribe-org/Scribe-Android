@@ -108,15 +108,15 @@ class LanguageSettingsFragment : Fragment() {
         return listOf(
             SwitchItem(
                 isChecked = sharedPref.getBoolean("period_on_double_tap_$language", false),
-                title = "Double space periods",
-                description = "Automatically insert a period when the space key is pressed twice.",
+                title = getString(R.string.app_settings_keyboard_functionality_double_space_period),
+                description = getString(R.string.app_settings_keyboard_functionality_double_space_period_description),
                 action = { enablePeriodOnSpaceBarDoubleTap(language) },
                 action2 = { disablePeriodOnSpaceBarDoubleTap(language) },
             ),
             SwitchItem(
                 isChecked = sharedPref.getBoolean("autosuggest_emojis_$language", true),
-                title = "Autosuggest emojis",
-                description = "Turn on emoji suggestions and completions for more expressive typing.",
+                title = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji),
+                description = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description),
                 action = { enableEmojiAutosuggestions(language) },
                 action2 = { disableEmojiAutosuggestions(language) },
             ),
@@ -162,14 +162,14 @@ class LanguageSettingsFragment : Fragment() {
 
     fun getLanguageStringFromi18n(language: String): Int {
         when (language) {
-            "German" -> return R.string._global_german
-            "French" -> return R.string._global_french
-            "Spanish" -> return R.string._global_spanish
-            "Italian" -> return R.string._global_italian
-            "Russian" -> return R.string._global_russian
-            "Portuguese" -> return R.string._global_portuguese
-            "Swedish" -> return R.string._global_swedish
-            else -> return R.string._global_english
+            "German" -> return R.string.app__global_german
+            "French" -> return R.string.app__global_french
+            "Spanish" -> return R.string.app__global_spanish
+            "Italian" -> return R.string.app__global_italian
+            "Russian" -> return R.string.app__global_russian
+            "Portuguese" -> return R.string.app__global_portuguese
+            "Swedish" -> return R.string.app__global_swedish
+            else -> return R.string.app__global_english
         }
     }
 }

@@ -24,7 +24,7 @@
                 android:paddingStart="12dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="10dp"
-                android:text="@string/app.settings.appSettings"
+                android:text="@string/app.settings.menu.title"
                 android:textColor="@color/app_text_color"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -43,7 +43,7 @@
                 android:paddingEnd="12dp"
                 android:paddingStart="10dp"
                 android:paddingBottom="10dp"
-                android:text="@string/app.settings.installedKeyboards"
+                android:text="@string/app.settings.keyboard.title"
                 android:textColor="@color/app_text_color"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -60,7 +60,7 @@
                     android:layout_margin="10dp"
                     android:background="@color/corner_polygon_color"
                     android:padding="10dp"
-                    android:text="@string/app.install" />
+                    android:text="@string/app.installation.title" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView2"
