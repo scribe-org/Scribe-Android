@@ -16,7 +16,7 @@
                 android:layout_width="303dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="19dp"
-                android:text="@string/app.about.wikimedia.caption"
+                android:text="@string/app.about.community.wikimedia.caption"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/app_text_color"
                 android:textSize="20sp"
@@ -48,7 +48,7 @@
                             android:layout_width="304dp"
                             android:layout_height="161dp"
                             android:layout_gravity=""
-                            android:text="@string/app.about.wikimedia.text1"
+                            android:text="@string/app.about.community.wikimedia.text_1"
                             android:textSize="16sp" />
 
                         <ImageView
@@ -62,7 +62,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/app.about.wikimedia.text2"
+                            android:text="@string/app.about.community.wikimedia.text_2"
                             android:textSize="16sp" />
 
                         <ImageView
@@ -75,7 +75,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/app.about.wikimedia.text3"
+                            android:text="@string/app.about.community.wikimedia.text_3"
                             android:textSize="16sp" />
 
                     </LinearLayout>
@@ -85,7 +85,7 @@
                         android:layout_height="76dp"
                         android:layout_gravity="top|end"
                         android:alpha="0.9"
-                        android:contentDescription="@string/app.about.wikimedia"
+                        android:contentDescription="@string/app.about.community.wikimedia"
                         android:src="@drawable/corner_polygon" />
 
                     <ImageView
@@ -94,7 +94,7 @@
                         android:layout_gravity="top|end"
                         android:layout_margin="8dp"
 
-                        android:contentDescription="@string/app.about.wikimedia"
+                        android:contentDescription="@string/app.about.community.wikimedia"
                         android:src="@drawable/wikimedia_logo_black" />
                 </androidx.cardview.widget.CardView>
             </FrameLayout>

@@ -28,7 +28,7 @@ class PrivacyPolicyFragment : Fragment() {
                 (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
             }
         (requireActivity() as MainActivity).setActionBarButtonVisible()
-        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_privacyPolicy)
+        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_privacy_policy)
         (requireActivity() as MainActivity).setActionBarLayoutMargin()
         val textView = (requireActivity() as MainActivity).supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         (requireActivity() as MainActivity)
@@ -53,7 +53,7 @@ class PrivacyPolicyFragment : Fragment() {
     ): View? {
         binding = FragmentPrivacyPolicyBinding.inflate(inflater, container, false)
         (requireActivity() as MainActivity).showFragmentContainer()
-        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_privacyPolicy)
+        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_privacy_policy)
         (requireActivity() as MainActivity).setActionBarButtonFunction(2, R.string.app_about_title)
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,

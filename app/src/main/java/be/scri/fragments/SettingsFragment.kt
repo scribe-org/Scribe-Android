@@ -79,10 +79,11 @@ class SettingsFragment : Fragment() {
     private fun getFirstRecyclerViewData(): List<Any> {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return listOf(
-            TextItem(R.string.app_settings_appSettings_appLanguage, image = R.drawable.right_arrow, action = ::selectLanguage),
+            TextItem(R.string.app_settings_menu_app_language, image = R.drawable.right_arrow, action = ::selectLanguage),
             SwitchItem("Dark mode", isChecked = sharedPref.getBoolean("dark_mode", false), action = ::darkMode, action2 = ::lightMode),
             SwitchItem(
-                "Vibrate on Keypress",
+                getString(R.string.app_settings_keyboard_keypress_vibration),
+                description = getString(R.string.app_settings_keyboard_keypress_vibration_description),
                 isChecked = requireContext().config.vibrateOnKeypress,
                 action = ::enableVibrateOnKeypress,
                 action2 = ::disableVibrateOnKeypress,
@@ -135,13 +136,13 @@ class SettingsFragment : Fragment() {
         for (language in languages) {
             val localizeLanguage: Int =
                 when (language) {
-                    "English" -> R.string._global_english
-                    "French" -> R.string._global_french
-                    "German" -> R.string._global_german
-                    "Russian" -> R.string._global_russian
-                    "Spanish" -> R.string._global_spanish
-                    "Italian" -> R.string._global_italian
-                    "Portuguese" -> R.string._global_portuguese
+                    "English" -> R.string.app__global_english
+                    "French" -> R.string.app__global_french
+                    "German" -> R.string.app__global_german
+                    "Russian" -> R.string.app__global_russian
+                    "Spanish" -> R.string.app__global_spanish
+                    "Italian" -> R.string.app__global_italian
+                    "Portuguese" -> R.string.app__global_portuguese
                     else -> 0
                 }
             list.add(

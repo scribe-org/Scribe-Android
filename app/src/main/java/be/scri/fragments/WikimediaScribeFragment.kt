@@ -25,7 +25,7 @@ class WikimediaScribeFragment : Fragment() {
                 viewpager.setCurrentItem(2, true)
                 (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
             }
-        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_wikimedia)
+        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_community_wikimedia)
         (requireActivity() as MainActivity).setActionBarButtonVisible()
         (requireActivity() as MainActivity).setActionBarButtonFunction(2, R.string.app_about_title)
         (requireActivity() as MainActivity).setActionBarLayoutMargin()

@@ -17,7 +17,7 @@
                 android:layout_width="303dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="@string/app.about.thirdParty.caption"
+                android:text="@string/app.about.legal.third_party"
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/app_text_color"
                 android:textSize="20sp"
@@ -55,7 +55,7 @@
                         android:layout_height="76dp"
                         android:layout_gravity="top|end"
                         android:alpha="0.9"
-                        android:contentDescription="@string/app.about.thirdParty"
+                        android:contentDescription="@string/app.about.legal.third_party"
                         android:src="@drawable/corner_polygon" />
                     <ImageView
                         android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
                         android:layout_gravity="top|end"
                         android:layout_margin="8dp"
 
-                        android:contentDescription="@string/app.about.thirdParty"
+                        android:contentDescription="@string/app.about.legal.third_party"
                         android:src="@drawable/doc" />
                 </androidx.cardview.widget.CardView>
             </FrameLayout>
