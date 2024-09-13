@@ -97,6 +97,10 @@
                         android:contentDescription="@string/app.about.community.wikimedia"
                         android:src="@drawable/wikimedia_logo_black" />
                 </androidx.cardview.widget.CardView>
+                <View
+                    android:layout_width="100dp"
+                    android:layout_height="900dp">
+                </View>
             </FrameLayout>
         </LinearLayout>
     </ScrollView>

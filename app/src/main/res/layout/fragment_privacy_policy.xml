@@ -71,6 +71,10 @@
                         android:src="@drawable/shield_check" />
                 </androidx.cardview.widget.CardView>
             </FrameLayout>
+            <View
+                android:layout_width="100dp"
+                android:layout_height="50dp">
+            </View>
         </LinearLayout>
     </ScrollView>
 

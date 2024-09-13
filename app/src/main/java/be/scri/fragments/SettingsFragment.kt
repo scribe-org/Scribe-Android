@@ -80,7 +80,12 @@ class SettingsFragment : Fragment() {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return listOf(
             TextItem(R.string.app_settings_menu_app_language, image = R.drawable.right_arrow, action = ::selectLanguage),
-            SwitchItem("Dark mode", isChecked = sharedPref.getBoolean("dark_mode", false), action = ::darkMode, action2 = ::lightMode),
+            SwitchItem(
+                getString(R.string.app_settings_menu_app_color_mode),
+                description = getString(R.string.app_settings_menu_app_color_mode_description),
+                isChecked = sharedPref.getBoolean("dark_mode", false),
+                action = ::darkMode,
+                action2 = ::lightMode),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_keypress_vibration),
                 description = getString(R.string.app_settings_keyboard_keypress_vibration_description),
@@ -89,7 +94,8 @@ class SettingsFragment : Fragment() {
                 action2 = ::disableVibrateOnKeypress,
             ),
             SwitchItem(
-                "Show a popup on keypress",
+                getString(R.string.app_settings_keyboard_functionality_popup_on_keypress),
+                description = getString(R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
                 isChecked = requireContext().config.showPopupOnKeypress,
                 action = ::enableShowPopupOnKeypress,
                 action2 = ::disableShowPopupOnKeypress,

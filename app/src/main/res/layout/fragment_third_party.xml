@@ -46,7 +46,13 @@
                             android:layout_width="304dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity=""
-                            android:text="@string/third_party_licenses_body"
+                            android:text="@string/app.about.legal.third_party.text"
+                            android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="304dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity=""
+                            android:text="@string/app.about.legal.third_party.entry_simple_keyboard"
                             android:textSize="16sp" />
 
                     </LinearLayout>
@@ -66,6 +72,11 @@
                         android:contentDescription="@string/app.about.legal.third_party"
                         android:src="@drawable/doc" />
                 </androidx.cardview.widget.CardView>
+                <View
+                    android:layout_width="100dp"
+                    android:layout_height="900dp">
+                </View>
             </FrameLayout>
         </LinearLayout>
+
     </ScrollView>
