@@ -85,7 +85,8 @@ class SettingsFragment : Fragment() {
                 description = getString(R.string.app_settings_menu_app_color_mode_description),
                 isChecked = sharedPref.getBoolean("dark_mode", false),
                 action = ::darkMode,
-                action2 = ::lightMode),
+                action2 = ::lightMode,
+            ),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_keypress_vibration),
                 description = getString(R.string.app_settings_keyboard_keypress_vibration_description),
