@@ -164,7 +164,7 @@ class AboutFragment : Fragment() {
             ),
             ItemsViewModel(
                 image = R.drawable.license_icon,
-                R.string.app_about_legal_third_party_license,
+                R.string.app_about_legal_third_party,
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
