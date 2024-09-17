@@ -2,12 +2,8 @@
   <a href="https://github.com/scribe-org/Scribe-Android"><img src="https://raw.githubusercontent.com/scribe-org/Organization/main/logo/ScribeGitHubOrgBanner.png" width=1024 alt="Scribe Logo"></a>
 </div>
 
-<!---
-[![ci](https://img.shields.io/github/workflow/status/scribe-org/Scribe-Android/CI?logo=github)](https://github.com/scribe-org/Scribe-Android/actions?query=workflow%3ACI)
---->
-<!-- [![version](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?color=%2300550&sort=semver)](https://github.com/scribe-org/Scribe-Android/releases/) -->
-
 [![platforms](https://img.shields.io/static/v1?message=Android&logo=android&color=32DE84&logoColor=white&label=%20)](https://github.com/scribe-org/Scribe-Android)
+[![version](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
 [![issues](https://img.shields.io/github/issues/scribe-org/Scribe-Android?label=%20&logo=github)](https://github.com/scribe-org/Scribe-Android/issues)
 [![language](https://img.shields.io/badge/Kotlin%201-A97AFE.svg?logo=kotlin&logoColor=ffffff)](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md)
 [![license](https://img.shields.io/github/license/scribe-org/Scribe-Android.svg?label=%20)](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt)
@@ -27,9 +23,9 @@
 </p>
 </details>
 
-## Android app with keyboards for language learners
+### Android app with keyboards for language learners
 
-### WIP port of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
+#### WIP port of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
 
 **Scribe-Android** is a pack of Android keyboards for language learners. Features include translation **`(beta)`**, verb conjugation and word annotation that give users the tools needed to communicate with confidence.
 
@@ -57,7 +53,7 @@ Check out Scribe's [architecture diagrams](https://github.com/scribe-org/Organiz
 
 # Preview Images [`⇧`](#contents)
 
-#### Current WIP status
+### Current WIP status
 
 <div align="center">
   <br>
