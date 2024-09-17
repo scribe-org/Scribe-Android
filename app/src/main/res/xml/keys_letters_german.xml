@@ -119,9 +119,6 @@
         Not having these causes the ?123 key to instead trigger a space instead of switching the view.
         -->
         <Key
-            app:keyLabel=""
-            app:keyWidth="0%p" />
-        <Key
             app:horizontalGap="3.325%"
             app:keyLabel="y"
             app:keyWidth="9.05%p" />
@@ -145,9 +142,6 @@
         <Key
             app:keyLabel="m"
             app:keyWidth="9.05%p" />
-        <Key
-            app:keyLabel=""
-            app:keyWidth="0%p" />
         <Key
             app:code="-5"
             app:horizontalGap="3.325%"

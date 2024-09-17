@@ -1,6 +1,7 @@
 package be.scri.services
 
 import android.content.Context
+import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
@@ -8,7 +9,6 @@ import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.MyKeyboard
-import be.scri.services.EnglishKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class GermanKeyboardIME : SimpleKeyboardIME() {
@@ -30,10 +30,19 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
     private lateinit var commandBinding: KeyboardViewCommandOptionsBinding
-    private lateinit var binding: KeyboardViewCommandOptionsBinding
-    private var keyboardView: MyKeyboardView? = null
-    private var keyboard: MyKeyboard? = null
-    private var enterKeyType = IME_ACTION_NONE
+    override lateinit var binding: KeyboardViewCommandOptionsBinding
+    override var keyboardView: MyKeyboardView? = null
+    override var keyboard: MyKeyboard? = null
+    override var enterKeyType = IME_ACTION_NONE
+    override var shiftPermToggleSpeed = 500
+    override val keyboardLetters = 0
+    override val keyboardSymbols = 1
+    override val keyboardSymbolShift = 2
+    override var lastShiftPressTS = 0L
+    override var keyboardMode = keyboardLetters
+    override var inputTypeClass = InputType.TYPE_CLASS_TEXT
+    override var switchToLetters = false
+    override var hasTextBeforeCursor = false
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()
@@ -80,6 +89,41 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
             Log.i("MY-TAG", "SELECT COMMAND STATE")
             binding.scribeKey.foreground = getDrawable(R.drawable.close)
             updateUI()
+        }
+    }
+
+    override fun onKey(code: Int) {
+        val inputConnection = currentInputConnection
+        if (keyboard == null || inputConnection == null) {
+            return
+        }
+
+        if (code != MyKeyboard.KEYCODE_SHIFT) {
+            lastShiftPressTS = 0
+        }
+
+        when (code) {
+            MyKeyboard.KEYCODE_DELETE -> {
+                super.handleDelete()
+                keyboardView!!.invalidateAllKeys()
+            }
+            MyKeyboard.KEYCODE_SHIFT -> {
+                super.handleKeyboardLetters(keyboardMode, keyboardView, this)
+                keyboardView!!.invalidateAllKeys()
+            }
+            MyKeyboard.KEYCODE_ENTER -> {
+                super.handleKeycodeEnter()
+            }
+            MyKeyboard.KEYCODE_MODE_CHANGE -> {
+                handleModeChange(keyboardMode, keyboardView, this)
+            }
+            else -> {
+                super.handleElseCondition(code, keyboardMode)
+            }
+        }
+
+        if (code != MyKeyboard.KEYCODE_SHIFT) {
+            super.updateShiftKeyState()
         }
     }
 
