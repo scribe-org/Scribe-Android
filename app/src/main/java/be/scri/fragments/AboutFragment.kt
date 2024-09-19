@@ -2,7 +2,6 @@ package be.scri.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +15,7 @@ import be.scri.helpers.CustomAdapter
 import be.scri.models.ItemsViewModel
 
 class AboutFragment : Fragment() {
-
-
     private lateinit var binding: FragmentAboutBinding
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -217,6 +213,4 @@ class AboutFragment : Fragment() {
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
-
-
 }

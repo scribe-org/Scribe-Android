@@ -14,8 +14,6 @@ import be.scri.views.MyKeyboardView
 class FrenchKeyboardIME : SimpleKeyboardIME() {
     override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_french
 
-
-
     enum class ScribeState {
         IDLE,
         SELECT_COMMAND,

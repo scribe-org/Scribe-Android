@@ -48,8 +48,6 @@ class PortugueseKeyboardIME : SimpleKeyboardIME() {
         keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
-
-
     private fun shouldCommitPeriodAfterSpace(language: String): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return sharedPref.getBoolean("period_on_double_tap_$language", false)
