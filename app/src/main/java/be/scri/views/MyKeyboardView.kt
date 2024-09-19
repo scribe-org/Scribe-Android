@@ -506,7 +506,6 @@ class MyKeyboardView
             val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
             val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
             val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
-            val changeKeyColor = sharedPref.getBoolean("pref_key_change_key_color", false)
             val keyBackgroundColor =
                 if (isUserDarkMode) {
                     Color.DKGRAY
