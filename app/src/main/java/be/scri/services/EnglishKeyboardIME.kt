@@ -44,7 +44,6 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
 
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
-    private lateinit var commandBinding: KeyboardViewCommandOptionsBinding
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()

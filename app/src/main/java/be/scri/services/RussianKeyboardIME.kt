@@ -29,7 +29,6 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
 
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
-    private lateinit var commandBinding: KeyboardViewCommandOptionsBinding
     override lateinit var binding: KeyboardViewCommandOptionsBinding
     override var keyboardView: MyKeyboardView? = null
     override var keyboard: MyKeyboard? = null
@@ -48,9 +47,6 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         super.onInitializeInterface()
         keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
     }
-
-    private var lastSpaceTime: Long = 0
-    private val doubleTapThreshold: Long = 300
 
     private fun shouldCommitPeriodAfterSpace(language: String): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)

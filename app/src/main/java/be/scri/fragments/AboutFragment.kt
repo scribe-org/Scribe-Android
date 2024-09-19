@@ -2,7 +2,6 @@ package be.scri.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,11 +15,7 @@ import be.scri.helpers.CustomAdapter
 import be.scri.models.ItemsViewModel
 
 class AboutFragment : Fragment() {
-    private var appName = ""
-    private var primaryColor = 0
-
     private lateinit var binding: FragmentAboutBinding
-    private lateinit var gestureDetector: GestureDetector
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -217,12 +212,5 @@ class AboutFragment : Fragment() {
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-    }
-
-    companion object {
-        private const val EASTER_EGG_TIME_LIMIT = 3000L
-        private const val EASTER_EGG_REQUIRED_CLICKS = 7
-        private const val SWIPE_THRESHOLD = 100
-        private const val SWIPE_VELOCITY_THRESHOLD = 100
     }
 }

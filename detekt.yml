@@ -10,7 +10,7 @@ style:
     ReturnCount:
         active: false
     UnusedPrivateProperty:
-        active: false
+        active: true
     UnusedParameter:
         active: false
     FunctionOnlyReturningConstant:

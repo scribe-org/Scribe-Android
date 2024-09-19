@@ -14,9 +14,6 @@ import be.scri.views.MyKeyboardView
 class FrenchKeyboardIME : SimpleKeyboardIME() {
     override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_french
 
-    private var lastSpaceTime: Long = 0
-    private val doubleTapThreshold: Long = 300
-
     enum class ScribeState {
         IDLE,
         SELECT_COMMAND,
@@ -32,7 +29,6 @@ class FrenchKeyboardIME : SimpleKeyboardIME() {
 
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
-    private lateinit var commandBinding: KeyboardViewCommandOptionsBinding
     override lateinit var binding: KeyboardViewCommandOptionsBinding
     override var keyboardView: MyKeyboardView? = null
     override var keyboard: MyKeyboard? = null

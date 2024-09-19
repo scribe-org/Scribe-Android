@@ -29,7 +29,6 @@ class SwedishKeyboardIME : SimpleKeyboardIME() {
 
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
-    private lateinit var commandBinding: KeyboardViewCommandOptionsBinding
     override lateinit var binding: KeyboardViewCommandOptionsBinding
     override var keyboardView: MyKeyboardView? = null
     override var keyboard: MyKeyboard? = null
