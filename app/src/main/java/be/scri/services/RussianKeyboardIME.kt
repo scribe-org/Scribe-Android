@@ -1,14 +1,17 @@
 package be.scri.services
 
 import android.content.Context
+import android.graphics.Color
 import android.text.InputType
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.MyKeyboard
+import be.scri.services.EnglishKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class RussianKeyboardIME : SimpleKeyboardIME() {
@@ -48,6 +51,14 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
+    override fun onStartInputView(
+        editorInfo: EditorInfo?,
+        restarting: Boolean,
+    ) {
+        super.onStartInputView(editorInfo, restarting)
+        setupCommandBarTheme(binding)
+    }
+
     private fun shouldCommitPeriodAfterSpace(language: String): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return sharedPref.getBoolean("period_on_double_tap_$language", false)
@@ -67,6 +78,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         Log.i("MY-TAG", "From Russian Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
         keyboardView!!.mOnKeyboardActionListener = this
         updateUI()
@@ -74,9 +86,22 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
     }
 
     private fun setupIdleView() {
-        binding.translateBtn.setBackgroundColor(getColor(R.color.you_keyboard_background_color))
-        binding.conjugateBtn.setBackgroundColor(getColor(R.color.you_keyboard_background_color))
-        binding.pluralBtn.setBackgroundColor(getColor(R.color.you_keyboard_background_color))
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        when (isUserDarkMode) {
+            true -> {
+                binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
+                binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
+                binding.pluralBtn.setBackgroundColor(getColor(R.color.transparent))
+            }
+            else -> {
+                binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
+                binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
+                binding.pluralBtn.setBackgroundColor(getColor(R.color.transparent))
+            }
+        }
+
+        setupCommandBarTheme(binding)
         binding.translateBtn.text = ""
         binding.conjugateBtn.text = ""
         binding.pluralBtn.text = ""
@@ -127,6 +152,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         binding.translateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
         binding.conjugateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
         binding.pluralBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
+        setupCommandBarTheme(binding)
         binding.translateBtn.text = "Translate"
         binding.conjugateBtn.text = "Conjugate"
         binding.pluralBtn.text = "Plural"
@@ -159,6 +185,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         val keyboardHolder = keyboardBinding.root
         keyboardView = keyboardBinding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        super.setupToolBarTheme(keyboardBinding)
         keyboardView!!.mOnKeyboardActionListener = this
         keyboardBinding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
@@ -172,6 +199,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         val binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         this.binding = binding
         val keyboardHolder = binding.root
+        setupCommandBarTheme(binding)
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
@@ -183,11 +211,27 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         setInputView(keyboardHolder)
     }
 
+    private fun updateEnterKeyColor() {
+        when (currentState) {
+            ScribeState.IDLE -> keyboardView?.setEnterKeyColor(Color.TRANSPARENT)
+            ScribeState.SELECT_COMMAND -> keyboardView?.setEnterKeyColor(Color.TRANSPARENT)
+            else -> keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+        onCreateInputView()
+        setupCommandBarTheme(binding)
+    }
+
     private fun updateUI() {
         when (currentState) {
             ScribeState.IDLE -> setupIdleView()
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }
+        updateEnterKeyColor()
     }
 }
