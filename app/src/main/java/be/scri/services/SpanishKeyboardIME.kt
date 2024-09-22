@@ -60,6 +60,10 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
         editorInfo: EditorInfo?,
         restarting: Boolean,
     ) {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        updateEnterKeyColor(isUserDarkMode)
+        setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
     }
@@ -93,18 +97,24 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
                 binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.pluralBtn.setBackgroundColor(getColor(R.color.transparent))
+                binding.translateBtn.setTextColor(Color.WHITE)
+                binding.conjugateBtn.setTextColor(Color.WHITE)
+                binding.pluralBtn.setTextColor(Color.WHITE)
             }
             else -> {
                 binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.pluralBtn.setBackgroundColor(getColor(R.color.transparent))
+                binding.translateBtn.setTextColor(Color.BLACK)
+                binding.conjugateBtn.setTextColor(Color.BLACK)
+                binding.pluralBtn.setTextColor(Color.BLACK)
             }
         }
 
         setupCommandBarTheme(binding)
-        binding.translateBtn.text = ""
-        binding.conjugateBtn.text = ""
-        binding.pluralBtn.text = ""
+        binding.translateBtn.text = "Suggestion"
+        binding.conjugateBtn.text = "Suggestion"
+        binding.pluralBtn.text = "Suggestion"
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
             Log.i("MY-TAG", "SELECT COMMAND STATE")
@@ -179,10 +189,10 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
         }
     }
 
-    private fun updateEnterKeyColor() {
+    private fun updateEnterKeyColor(isDarkMode: Boolean? = null) {
         when (currentState) {
-            ScribeState.IDLE -> keyboardView?.setEnterKeyColor(Color.TRANSPARENT)
-            ScribeState.SELECT_COMMAND -> keyboardView?.setEnterKeyColor(Color.TRANSPARENT)
+            ScribeState.IDLE -> keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
+            ScribeState.SELECT_COMMAND -> keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
             else -> keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
         }
     }
@@ -232,6 +242,8 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }
-        updateEnterKeyColor()
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        updateEnterKeyColor(isUserDarkMode)
     }
 }

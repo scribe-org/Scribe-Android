@@ -57,6 +57,10 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         editorInfo: EditorInfo?,
         restarting: Boolean,
     ) {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        updateEnterKeyColor(isUserDarkMode)
+        setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
     }
@@ -76,7 +80,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         when (currentState) {
-            ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(0)
+            ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
             else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
         }
 
@@ -94,18 +98,24 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
                 binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.pluralBtn.setBackgroundColor(getColor(R.color.transparent))
+                binding.translateBtn.setTextColor(Color.WHITE)
+                binding.conjugateBtn.setTextColor(Color.WHITE)
+                binding.pluralBtn.setTextColor(Color.WHITE)
             }
             else -> {
                 binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.pluralBtn.setBackgroundColor(getColor(R.color.transparent))
+                binding.translateBtn.setTextColor(Color.BLACK)
+                binding.conjugateBtn.setTextColor(Color.BLACK)
+                binding.pluralBtn.setTextColor(Color.BLACK)
             }
         }
 
         setupCommandBarTheme(binding)
-        binding.translateBtn.text = ""
-        binding.conjugateBtn.text = ""
-        binding.pluralBtn.text = ""
+        binding.translateBtn.text = "Suggestion"
+        binding.conjugateBtn.text = "Suggestion"
+        binding.pluralBtn.text = "Suggestion"
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
             Log.i("MY-TAG", "SELECT COMMAND STATE FROM English IME")
@@ -126,7 +136,6 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
             currentState = ScribeState.IDLE
             Log.i("MY-TAG", "IDLE STATE")
             binding.scribeKey.foreground = getDrawable(R.drawable.ic_scribe_icon_vector)
-
             updateUI()
         }
         binding.translateBtn.setOnClickListener {
@@ -146,10 +155,10 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         }
     }
 
-    private fun updateEnterKeyColor() {
+    private fun updateEnterKeyColor(isDarkMode: Boolean? = null) {
         when (currentState) {
-            ScribeState.IDLE -> keyboardView?.setEnterKeyColor(Color.TRANSPARENT)
-            ScribeState.SELECT_COMMAND -> keyboardView?.setEnterKeyColor(Color.TRANSPARENT)
+            ScribeState.IDLE -> keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
+            ScribeState.SELECT_COMMAND -> keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
             else -> keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
         }
     }
@@ -194,6 +203,16 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         this.keyboardBinding = keyboardBinding
         val keyboardHolder = keyboardBinding.root
         super.setupToolBarTheme(keyboardBinding)
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        when (isUserDarkMode) {
+            true -> {
+                keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_dark))
+            }
+            false -> {
+                keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_light))
+            }
+        }
         keyboardView = keyboardBinding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
@@ -230,11 +249,13 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
     }
 
     private fun updateUI() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
         when (currentState) {
             ScribeState.IDLE -> setupIdleView()
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }
-        updateEnterKeyColor()
+        updateEnterKeyColor(isUserDarkMode)
     }
 }

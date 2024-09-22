@@ -198,6 +198,17 @@ class MyKeyboardView
 
         private var mKeyboardBackgroundColor = 0
 
+        val alpha = 255
+        private val redDark = (0.180 * 255).toInt()
+        private val greenDark = (0.180 * 255).toInt()
+        private val blueDark = (0.180 * 255).toInt()
+        private val darkSpecialKey = Color.argb(alpha, redDark, greenDark, blueDark)
+
+        private val red = (0.682 * 255).toInt()
+        private val green = (0.702 * 255).toInt()
+        private val blue = (0.745 * 255).toInt()
+        private val lightSpecialKey = Color.argb(alpha, red, green, blue)
+
         companion object {
             private const val NOT_A_KEY = -1
             private val LONG_PRESSABLE_STATE_SET = intArrayOf(R.attr.state_long_pressable)
@@ -229,9 +240,25 @@ class MyKeyboardView
                 return _popupBinding!!
             }
 
-        fun setEnterKeyColor(color: Int) {
-            mEnterKeyColor = color
-            invalidateAllKeys()
+        fun setEnterKeyColor(
+            color: Int? = null,
+            isDarkMode: Boolean? = null,
+        ) {
+            if (color != null) {
+                mEnterKeyColor = color
+                invalidateAllKeys()
+            } else {
+                when (isDarkMode) {
+                    true -> {
+                        mEnterKeyColor = darkSpecialKey
+                        invalidateAllKeys()
+                    }
+                    else -> {
+                        mEnterKeyColor = lightSpecialKey
+                        invalidateAllKeys()
+                    }
+                }
+            }
         }
 
         private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
@@ -604,6 +631,8 @@ class MyKeyboardView
                 val label = adjustCase(key.label)?.toString()
 
                 if (key.focused || code == KEYCODE_ENTER) {
+                    keyBackgroundPaint.color = Color.DKGRAY
+                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
                     keyBackgroundPaint.color = mEnterKeyColor
                     canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
                     keyBackgroundPaint.color = keyBackgroundColor
