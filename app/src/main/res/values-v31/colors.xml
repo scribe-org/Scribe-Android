@@ -3,11 +3,11 @@
     <color name="you_keyboard_background_color">#99FFFFFF</color>
     <color name="you_keyboard_toolbar_color">@color/you_background_color</color>
     <color name="app_text_color">@color/light_text_color</color>
-    <color name="nav_bar_color">#FFFFFFFF</color>">
+    <color name="nav_bar_color">#FFFFFFFF</color>
     <color name="nav_bar_focus_color">#000</color>
-    <color name="nav_bar_selected_color">@color/you_background_color</color>
+    <color name="nav_bar_selected_color">@color/nav_bar_selected_color_light</color>
     <color name = "you_border_color">#FFFFFFFF</color>
-    <color name = "background_color">#5EB5E8</color>">
+    <color name = "background_color">#5EB5E8</color>
     <color name="text_color">#000</color>
     <color name="icon_color">#000</color>
     <color name = "card_view_color">#FFF</color>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dark_scribe_color">#5EB5E8</color>
-    <color name="light_scribe_color">#235270</color>
+    <color name="dark_scribe_color">#235270</color>
+    <color name="light_scribe_color">#5EB5E8</color>
     <color name="dark_text_color">#FFF</color>
     <color name="light_text_color">#000</color>
     <color name="light_tutorial_button_color">#FDAD0D</color>
@@ -11,7 +11,8 @@
     <color name="light_scribe_blue">#FF75CEFA</color>
     <color name="dark_scribe_blue">#FF4CADE6</color>
     <color name="white">#ffffff</color>
-
+    <color name="nav_bar_selected_color_light">@color/dark_scribe_blue</color>
+    <color name="nav_bar_selected_color_dark">@color/light_scribe_blue</color>
 
     <!-- Light theme -->
     <color name="light_key_color">#FFFFFFFF</color>
