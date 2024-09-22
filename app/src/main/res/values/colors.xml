@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dark_scribe_color">#5EB5E8</color>
-    <color name="light_scribe_color">#235270</color>
-    <color name="dark_text_color">#FFF</color>
-    <color name="light_text_color">#000</color>
-    <color name="light_tutorial_button_color">#FDAD0D</color>
-    <color name="dark_tutorial_button_color">#D17B0F</color>
-    <color name="dark_icon_color">#fff</color>
-    <color name="light_icon_color">#000</color>
+    <color name = "dark_scribe_color">#235270</color>
+    <color name = "light_scribe_color">#5EB5E8</color>
+    <color name = "dark_text_color">#FFF</color>
+    <color name ="light_text_color">#000</color>
+    <color name = "light_tutorial_button_color">#FDAD0D</color>
+    <color name = "dark_tutorial_button_color">#D17B0F</color>
+    <color name = "dark_icon_color">#fff</color>
+    <color name = "light_icon_color">#000</color>
     <color name="light_scribe_blue">#FF75CEFA</color>
     <color name="dark_scribe_blue">#FF4CADE6</color>
-    <color name="white">#ffffff</color>
+    <color name= "white">#ffffff</color>
+    <color name= "light_keyboard">#99FFFFFF</color>
+    <color name = "transparent">@android:color/transparent</color>
+    <color name="special_key_light">#B0B2BD</color>
+    <color name="special_key_dark">#2D2D2D</color>
 
 
     <!-- Light theme -->

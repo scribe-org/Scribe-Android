@@ -18,12 +18,12 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
+import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.MyKeyboard
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.views.MyKeyboardView
-
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
 abstract class SimpleKeyboardIME :
@@ -75,7 +75,7 @@ abstract class SimpleKeyboardIME :
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
         keyboardView!!.mOnKeyboardActionListener = this
-        return keyboardHolder!!
+        return keyboardHolder
     }
 
     override fun onPress(primaryCode: Int) {
@@ -89,6 +89,7 @@ abstract class SimpleKeyboardIME :
         restarting: Boolean,
     ) {
         super.onStartInput(attribute, restarting)
+
         inputTypeClass = attribute!!.inputType and TYPE_MASK_CLASS
         enterKeyType = attribute.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         val inputConnection = currentInputConnection
@@ -108,7 +109,6 @@ abstract class SimpleKeyboardIME :
 
         keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
-        updateShiftKeyState()
     }
 
     fun updateShiftKeyState() {
@@ -168,8 +168,10 @@ abstract class SimpleKeyboardIME :
     private fun getImeOptionsActionId(): Int =
         if (currentInputEditorInfo.imeOptions and IME_FLAG_NO_ENTER_ACTION != 0) {
             IME_ACTION_NONE
+            Log.i("MYT-TAG", "Hello from ime")
         } else {
             currentInputEditorInfo.imeOptions and IME_MASK_ACTION
+            Log.i("MYT-TAG", "Hello from ime")
         }
 
     fun handleKeycodeEnter() {
@@ -233,7 +235,6 @@ abstract class SimpleKeyboardIME :
         val inputConnection = currentInputConnection
         if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR) {
             keyboard!!.mShiftState = SHIFT_OFF
-            Log.i("MY-TAG", "From English Keyboard IME")
         }
 
         val selectedText = inputConnection.getSelectedText(0)
@@ -269,6 +270,32 @@ abstract class SimpleKeyboardIME :
         if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
             keyboard!!.mShiftState = SHIFT_OFF
             keyboardView!!.invalidateAllKeys()
+        }
+    }
+
+    fun setupToolBarTheme(binding: KeyboardViewKeyboardBinding) {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        when (isUserDarkMode) {
+            true -> {
+                binding.commandField.setBackgroundColor(getColor(R.color.md_grey_black_dark))
+            }
+            else -> {
+                binding.commandField.setBackgroundColor(getColor(R.color.light_cmd_bar_border_color))
+            }
+        }
+    }
+
+    fun setupCommandBarTheme(binding: KeyboardViewCommandOptionsBinding) {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        when (isUserDarkMode) {
+            true -> {
+                binding.commandField.setBackgroundColor(getColor(R.color.md_grey_black_dark))
+            }
+            else -> {
+                binding.commandField.setBackgroundColor(getColor(R.color.light_cmd_bar_border_color))
+            }
         }
     }
 }
