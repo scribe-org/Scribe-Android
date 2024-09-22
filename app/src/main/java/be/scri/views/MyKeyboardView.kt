@@ -30,6 +30,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import be.scri.R
 import be.scri.databinding.KeyboardPopupKeyboardBinding
+import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.extensions.adjustAlpha
 import be.scri.extensions.applyColorFilter
@@ -162,6 +163,10 @@ class MyKeyboardView
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
 
+        private var mEnterKeyColor: Int = 0
+
+        private var mSpecialKeyColor: Int? = null
+
         private var mKeyBackground: Drawable? = null
 
         private var mToolbarHolder: View? = null
@@ -193,6 +198,17 @@ class MyKeyboardView
 
         private var mKeyboardBackgroundColor = 0
 
+        val alpha = 255
+        private val redDark = (0.180 * 255).toInt()
+        private val greenDark = (0.180 * 255).toInt()
+        private val blueDark = (0.180 * 255).toInt()
+        private val darkSpecialKey = Color.argb(alpha, redDark, greenDark, blueDark)
+
+        private val red = (0.682 * 255).toInt()
+        private val green = (0.702 * 255).toInt()
+        private val blue = (0.745 * 255).toInt()
+        private val lightSpecialKey = Color.argb(alpha, red, green, blue)
+
         companion object {
             private const val NOT_A_KEY = -1
             private val LONG_PRESSABLE_STATE_SET = intArrayOf(R.attr.state_long_pressable)
@@ -207,6 +223,14 @@ class MyKeyboardView
             private const val DOUBLE_TAP_DELAY = 300L
         }
 
+        private var _keyboardCommandBinding: KeyboardViewCommandOptionsBinding? = null
+        val keyboardCommandBinding: KeyboardViewCommandOptionsBinding
+            get() {
+                if (_keyboardCommandBinding == null) {
+                    _keyboardCommandBinding = KeyboardViewCommandOptionsBinding.inflate(LayoutInflater.from(context))
+                }
+                return _keyboardCommandBinding!!
+            }
         private var _popupBinding: KeyboardPopupKeyboardBinding? = null
         val popupBinding: KeyboardPopupKeyboardBinding
             get() {
@@ -215,6 +239,27 @@ class MyKeyboardView
                 }
                 return _popupBinding!!
             }
+
+        fun setEnterKeyColor(
+            color: Int? = null,
+            isDarkMode: Boolean? = null,
+        ) {
+            if (color != null) {
+                mEnterKeyColor = color
+                invalidateAllKeys()
+            } else {
+                when (isDarkMode) {
+                    true -> {
+                        mEnterKeyColor = darkSpecialKey
+                        invalidateAllKeys()
+                    }
+                    else -> {
+                        mEnterKeyColor = lightSpecialKey
+                        invalidateAllKeys()
+                    }
+                }
+            }
+        }
 
         private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
         val keyboardBinding: KeyboardViewKeyboardBinding
@@ -314,7 +359,7 @@ class MyKeyboardView
                     if (context.config.isUsingSystemTheme) {
                         resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
                     } else {
-                        mBackgroundColor
+                        resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
                     }
 
                 val darkerColor =
@@ -331,7 +376,7 @@ class MyKeyboardView
                         mBackgroundColor
                     }
 
-                if (changedView == _popupBinding?.miniKeyboardView) {
+                if (changedView == popupBinding.miniKeyboardView) {
                     val previewBackground = background as LayerDrawable
                     previewBackground.findDrawableByLayerId(R.id.button_background_shape).applyColorFilter(miniKeyboardBackgroundColor)
                     previewBackground.findDrawableByLayerId(R.id.button_background_stroke).applyColorFilter(strokeColor)
@@ -342,7 +387,7 @@ class MyKeyboardView
 
                 val wasDarkened = mBackgroundColor != mBackgroundColor.darkenColor()
                 mToolbarHolder?.apply {
-                    _keyboardBinding?.apply {
+                    keyboardBinding?.apply {
                         topKeyboardDivider.beGoneIf(wasDarkened)
                         topKeyboardDivider.background = ColorDrawable(strokeColor)
 
@@ -378,10 +423,10 @@ class MyKeyboardView
 
         /** Sets the top row above the keyboard containing Scribe command buttons **/
         fun setKeyboardHolder(keyboardHolder: View) {
-            mToolbarHolder = _keyboardBinding?.commandField
+            mToolbarHolder = keyboardBinding.commandField
 
             mToolbarHolder?.let { toolbarHolder ->
-                _keyboardBinding?.let { binding ->
+                keyboardBinding.let { binding ->
                 }
             }
         }
@@ -518,13 +563,19 @@ class MyKeyboardView
                 } else {
                     Color.WHITE
                 }
+
+            mSpecialKeyColor =
+                if (isUserDarkMode) {
+                    R.color.special_key_dark
+                } else {
+                    R.color.special_key_light
+                }
             paint.color = mTextColor
             val keyBackgroundPaint =
                 Paint().apply {
                     color = keyBackgroundColor
                     style = Paint.Style.FILL
                 }
-
             val smallLetterPaint =
                 Paint().apply {
                     set(paint)
@@ -546,7 +597,6 @@ class MyKeyboardView
                 } else {
                     Color.LTGRAY
                 }
-
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
             canvas.drawColor(mKeyboardBackgroundColor)
 
@@ -581,7 +631,15 @@ class MyKeyboardView
                 val label = adjustCase(key.label)?.toString()
 
                 if (key.focused || code == KEYCODE_ENTER) {
-                    keyBackgroundPaint.color = mPrimaryColor
+                    keyBackgroundPaint.color = Color.DKGRAY
+                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                    keyBackgroundPaint.color = mEnterKeyColor
+                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                    keyBackgroundPaint.color = keyBackgroundColor
+                }
+
+                if ((code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_MODE_CHANGE)) {
+                    keyBackgroundPaint.color = resources.getColor(mSpecialKeyColor!!)
                     canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
                     keyBackgroundPaint.color = keyBackgroundColor
                 }
