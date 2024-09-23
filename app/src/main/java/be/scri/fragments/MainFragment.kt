@@ -30,6 +30,10 @@ class MainFragment : Fragment() {
 //        binding.scribeKey.setOnClickListener {
 //            (requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
 //        }
+        binding.keyboardSettings.setOnClickListener {
+            openKeyboardSettings()
+        }
+
         (requireActivity() as MainActivity).supportActionBar?.hide()
         (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         applyUserDarkModePreference()
@@ -95,6 +99,13 @@ class MainFragment : Fragment() {
                     requireActivity().finish()
                 }
             }
+        }
+    }
+
+    private fun openKeyboardSettings() {
+        Intent(Settings.ACTION_INPUT_METHOD_SETTINGS).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(this)
         }
     }
 
