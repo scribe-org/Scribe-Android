@@ -16,7 +16,6 @@ class MyAppCompatCheckbox : AppCompatCheckBox {
     fun setColors(
         textColor: Int,
         accentColor: Int,
-        backgroundColor: Int,
     ) {
         setTextColor(textColor)
         val colorStateList =

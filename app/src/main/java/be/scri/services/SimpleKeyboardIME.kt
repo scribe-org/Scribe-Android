@@ -73,7 +73,7 @@ abstract class SimpleKeyboardIME :
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
+        keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         return keyboardHolder!!
     }
@@ -204,7 +204,6 @@ abstract class SimpleKeyboardIME :
     fun handleKeyboardLetters(
         keyboardMode: Int,
         keyboardView: MyKeyboardView?,
-        context: Context,
     ) {
         if (keyboardMode == keyboardLetters) {
             when {

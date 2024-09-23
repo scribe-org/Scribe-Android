@@ -67,7 +67,7 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
         Log.i("MY-TAG", "From Spanish Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
+        keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         updateUI()
         return keyboardHolder
@@ -104,7 +104,7 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_SHIFT -> {
-                super.handleKeyboardLetters(keyboardMode, keyboardView, this)
+                super.handleKeyboardLetters(keyboardMode, keyboardView)
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_ENTER -> {

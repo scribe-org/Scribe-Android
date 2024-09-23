@@ -71,10 +71,10 @@ fun Context.updateTextColors(viewGroup: ViewGroup) {
     val cnt = viewGroup.childCount
     (0 until cnt).map { viewGroup.getChildAt(it) }.forEach {
         when (it) {
-            is MyTextView -> it.setColors(textColor, accentColor, backgroundColor)
-            is MyAppCompatCheckbox -> it.setColors(textColor, accentColor, backgroundColor)
-            is MyEditText -> it.setColors(textColor, accentColor, backgroundColor)
-            is MyFloatingActionButton -> it.setColors(textColor, accentColor, backgroundColor)
+            is MyTextView -> it.setColors(textColor, accentColor)
+            is MyAppCompatCheckbox -> it.setColors(textColor, accentColor)
+            is MyEditText -> it.setColors(textColor, accentColor)
+            is MyFloatingActionButton -> it.setColors(textColor)
             is ViewGroup -> updateTextColors(it)
         }
     }

@@ -13,7 +13,6 @@ class MyTextView : androidx.appcompat.widget.AppCompatTextView {
     fun setColors(
         textColor: Int,
         accentColor: Int,
-        backgroundColor: Int,
     ) {
         setTextColor(textColor)
         setLinkTextColor(accentColor)

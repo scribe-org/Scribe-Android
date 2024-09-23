@@ -377,7 +377,7 @@ class MyKeyboardView
         }
 
         /** Sets the top row above the keyboard containing Scribe command buttons **/
-        fun setKeyboardHolder(keyboardHolder: View) {
+        fun setKeyboardHolder() {
             mToolbarHolder = _keyboardBinding?.commandField
 
             mToolbarHolder?.let { toolbarHolder ->
