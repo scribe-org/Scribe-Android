@@ -6,13 +6,13 @@
     <color name="nav_bar_color">#000</color>
     <color name="nav_bar_focus_color">#FFF</color>
     <color name="nav_bar_selected_color">@color/nav_bar_selected_color_dark</color>
-    <color name = "you_border_color">#FFFFFFFF</color>
+    <color name="you_border_color">#FFFFFFFF</color>
     <color name="background_color">#235270</color>
     <color name="text_color">#FFF</color>
     <color name="icon_color">#FFF</color>
-    <color name = "card_view_color">#000</color>
-    <color name = "menu_option_color">#878472</color>
-    <color name = "corner_polygon_color">@color/dark_tutorial_button_color</color>
+    <color name="card_view_color">#000</color>
+    <color name="menu_option_color">#878472</color>
+    <color name="corner_polygon_color">@color/dark_tutorial_button_color</color>
     <!-- Commons colors -->
     <color name="you_status_bar_color">@android:color/system_accent2_800</color>
     <color name="you_contextual_status_bar_color">@android:color/system_accent1_700</color>
