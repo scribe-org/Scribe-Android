@@ -71,7 +71,7 @@
                         android:layout_width="304dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity=""
-                        android:text="@string/app.installation.keyboard.scribe_settings"
+                        android:text="@string/app.installation.keyboard.keyboard_settings"
                         android:textStyle="bold"
                         android:textColor="@color/dark_scribe_blue"
                         android:textSize="16sp" />
@@ -86,32 +86,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity=""
                         android:text="2."
-                        android:textSize="16sp" />
-                    <TextView
-                        android:layout_marginEnd="4dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity=""
-                        android:text="@string/app.installation.keyboard.text_1"
-                        android:textSize="16sp" />
-                    <TextView
-                        android:layout_width="304dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity=""
-                        android:text="@string/app.installation.keyboard.keyboards_bold"
-                        android:textStyle="bold"
-                        android:textSize="16sp" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_marginEnd="4dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity=""
-                        android:text="3."
                         android:textSize="16sp" />
                     <TextView
                         android:layout_width="304dp"
@@ -129,7 +103,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity=""
-                        android:text="4."
+                        android:text="3."
                         android:textSize="16sp" />
                     <TextView
                         android:layout_width="wrap_content"
@@ -137,13 +111,14 @@
                         android:layout_gravity=""
                         android:text="@string/app.installation.keyboard.text_3"
                         android:textSize="16sp" />
+
                     <ImageView
-                        android:layout_marginStart="4dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="32dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="2dp"
                         android:alpha="0.9"
-                        android:src="@drawable/earth" />
+                        android:src="@drawable/keyboard" />
                     <TextView
                         android:layout_width="304dp"
                         android:layout_height="wrap_content"

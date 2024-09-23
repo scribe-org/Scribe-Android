@@ -30,6 +30,7 @@ class MainFragment : Fragment() {
 //        binding.scribeKey.setOnClickListener {
 //            (requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
 //        }
+        (requireActivity() as MainActivity).supportActionBar?.hide()
         (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         applyUserDarkModePreference()
         if (!isKeyboardEnabled()) {
