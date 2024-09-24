@@ -67,6 +67,7 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
         Log.i("MY-TAG", "From Spanish Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         updateUI()

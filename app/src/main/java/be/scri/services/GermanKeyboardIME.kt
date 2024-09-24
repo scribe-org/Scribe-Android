@@ -67,6 +67,7 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
         Log.i("MY-TAG", "From German Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         updateUI()

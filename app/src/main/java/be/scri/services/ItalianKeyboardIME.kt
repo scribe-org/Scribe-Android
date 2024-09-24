@@ -68,6 +68,7 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setKeyboardHolder()
+        setupCommandBarTheme(binding)
         keyboardView!!.mOnKeyboardActionListener = this
         updateUI()
         return keyboardHolder

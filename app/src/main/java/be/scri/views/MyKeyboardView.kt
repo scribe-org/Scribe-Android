@@ -378,10 +378,10 @@ class MyKeyboardView
 
         /** Sets the top row above the keyboard containing Scribe command buttons **/
         fun setKeyboardHolder() {
-            mToolbarHolder = _keyboardBinding?.commandField
+            mToolbarHolder = keyboardBinding?.commandField
 
             mToolbarHolder?.let { toolbarHolder ->
-                _keyboardBinding?.let { binding ->
+                keyboardBinding?.let { binding ->
                 }
             }
         }

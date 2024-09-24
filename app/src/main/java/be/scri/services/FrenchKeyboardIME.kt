@@ -102,6 +102,7 @@ class FrenchKeyboardIME : SimpleKeyboardIME() {
         Log.i("MY-TAG", "From French Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         updateUI()

@@ -69,6 +69,10 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         Log.i("MY-TAG", "From English Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        when (currentState) {
+            ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
+            else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
+        }
         keyboardView!!.setKeyboardHolder()
         keyboardView?.mOnKeyboardActionListener = this
         updateUI()
