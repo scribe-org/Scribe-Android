@@ -92,7 +92,7 @@ class SwedishKeyboardIME : SimpleKeyboardIME() {
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_SHIFT -> {
-                super.handleKeyboardLetters(keyboardMode, keyboardView, this)
+                super.handleKeyboardLetters(keyboardMode, keyboardView)
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_ENTER -> {
@@ -118,7 +118,7 @@ class SwedishKeyboardIME : SimpleKeyboardIME() {
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         setupCommandBarTheme(binding)
-        keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
+        keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         updateUI()
         return keyboardHolder

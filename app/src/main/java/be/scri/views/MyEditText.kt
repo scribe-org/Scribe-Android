@@ -16,7 +16,6 @@ class MyEditText : androidx.appcompat.widget.AppCompatEditText {
     fun setColors(
         textColor: Int,
         accentColor: Int,
-        backgroundColor: Int,
     ) {
         background?.mutate()?.applyColorFilter(accentColor)
 

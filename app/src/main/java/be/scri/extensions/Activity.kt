@@ -1466,7 +1466,7 @@ fun Activity.setupDialogStuff(
     if (view is ViewGroup) {
         updateTextColors(view)
     } else if (view is MyTextView) {
-        view.setColors(textColor, primaryColor, backgroundColor)
+        view.setColors(textColor, primaryColor)
     }
 
     var title: TextView? = null

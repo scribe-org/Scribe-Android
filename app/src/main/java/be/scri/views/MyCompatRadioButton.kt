@@ -16,7 +16,6 @@ class MyCompatRadioButton : AppCompatRadioButton {
     fun setColors(
         textColor: Int,
         accentColor: Int,
-        backgroundColor: Int,
     ) {
         setTextColor(textColor)
         val colorStateList =

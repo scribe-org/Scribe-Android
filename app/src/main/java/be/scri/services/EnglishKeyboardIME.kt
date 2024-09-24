@@ -83,8 +83,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
             ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
             else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
         }
-
-        keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
+        keyboardView!!.setKeyboardHolder()
         keyboardView?.mOnKeyboardActionListener = this
         updateUI()
         return keyboardHolder
@@ -179,7 +178,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_SHIFT -> {
-                super.handleKeyboardLetters(keyboardMode, keyboardView, this)
+                super.handleKeyboardLetters(keyboardMode, keyboardView)
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_ENTER -> {

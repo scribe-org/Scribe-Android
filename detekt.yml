@@ -12,7 +12,7 @@ style:
     UnusedPrivateProperty:
         active: true
     UnusedParameter:
-        active: false
+        active: true
     FunctionOnlyReturningConstant:
         active: false
     UtilityClassWithPublicConstructor:

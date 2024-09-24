@@ -82,7 +82,7 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
         Log.i("MY-TAG", "From Italian Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.setKeyboardHolder(binding.keyboardHolder)
+        keyboardView!!.setKeyboardHolder()
         setupCommandBarTheme(binding)
         keyboardView!!.mOnKeyboardActionListener = this
         updateUI()
@@ -139,7 +139,7 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_SHIFT -> {
-                super.handleKeyboardLetters(keyboardMode, keyboardView, this)
+                super.handleKeyboardLetters(keyboardMode, keyboardView)
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_ENTER -> {
