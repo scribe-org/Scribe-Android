@@ -19,14 +19,15 @@ import be.scri.databinding.FragmentMainBinding
 import be.scri.dialogs.ConfirmationAdvancedDialog
 
 class MainFragment : Fragment() {
-    private lateinit var binding: FragmentMainBinding
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
 //        binding.scribeKey.setOnClickListener {
 //            (requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
 //        }
@@ -34,7 +35,6 @@ class MainFragment : Fragment() {
             openKeyboardSettings()
         }
 
-        (requireActivity() as MainActivity).supportActionBar?.hide()
         (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         applyUserDarkModePreference()
         if (!isKeyboardEnabled()) {
@@ -115,5 +115,9 @@ class MainFragment : Fragment() {
         return enabledKeyboards.any {
             it.packageName == requireContext().packageName
         }
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -53,7 +53,6 @@ class MainActivity : SimpleActivity() {
                     when (position) {
                         0 -> {
                             binding.fragmentContainer.visibility = View.GONE
-
                             setActionBarTitle(R.string.app_launcher_name)
                             setActionBarButtonInvisible()
                             unsetActionBarLayoutMargin()
