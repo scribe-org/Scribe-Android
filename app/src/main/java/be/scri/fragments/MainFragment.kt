@@ -76,6 +76,11 @@ class MainFragment : Fragment() {
                 AppCompatDelegate.MODE_NIGHT_NO
             },
         )
+        if (isUserDarkMode) {
+            binding.keyboardMode.setImageResource(R.drawable.keyboard_dark)
+        } else {
+            binding.keyboardMode.setImageResource(R.drawable.keyboard_light)
+        }
         if (isUserDarkMode != (currentNightMode == Configuration.UI_MODE_NIGHT_YES)) {
             requireActivity().recreate()
         }

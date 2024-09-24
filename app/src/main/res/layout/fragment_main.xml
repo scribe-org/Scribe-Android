@@ -93,12 +93,13 @@
                     android:text="@string/app.installation.keyboard.text_3"
                     android:textSize="16sp" />
                 <ImageView
-                    android:layout_width="32dp"
+                    android:id="@+id/keyboard_mode"
+                    android:layout_width="25dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"
                     android:alpha="0.9"
-                    android:src="@drawable/keyboard" />
+                    android:src="@drawable/keyboard_light" />
                 <TextView
                     android:layout_width="304dp"
                     android:layout_height="wrap_content"
