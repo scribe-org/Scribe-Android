@@ -20,7 +20,7 @@ import be.scri.dialogs.ConfirmationAdvancedDialog
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -116,6 +116,7 @@ class MainFragment : Fragment() {
             it.packageName == requireContext().packageName
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
