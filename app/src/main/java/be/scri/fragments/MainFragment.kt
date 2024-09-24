@@ -19,17 +19,22 @@ import be.scri.databinding.FragmentMainBinding
 import be.scri.dialogs.ConfirmationAdvancedDialog
 
 class MainFragment : Fragment() {
-    private lateinit var binding: FragmentMainBinding
+    private var _binding: FragmentMainBinding? = null
+    val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
-        binding.scribeKey.setOnClickListener {
-            (requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
+//        binding.scribeKey.setOnClickListener {
+//            (requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
+//        }
+        binding.keyboardSettings.setOnClickListener {
+            openKeyboardSettings()
         }
+
         (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         applyUserDarkModePreference()
         if (!isKeyboardEnabled()) {
@@ -71,6 +76,11 @@ class MainFragment : Fragment() {
                 AppCompatDelegate.MODE_NIGHT_NO
             },
         )
+        if (isUserDarkMode) {
+            binding.keyboardMode.setImageResource(R.drawable.keyboard_dark)
+        } else {
+            binding.keyboardMode.setImageResource(R.drawable.keyboard_light)
+        }
         if (isUserDarkMode != (currentNightMode == Configuration.UI_MODE_NIGHT_YES)) {
             requireActivity().recreate()
         }
@@ -97,11 +107,23 @@ class MainFragment : Fragment() {
         }
     }
 
+    private fun openKeyboardSettings() {
+        Intent(Settings.ACTION_INPUT_METHOD_SETTINGS).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(this)
+        }
+    }
+
     private fun isKeyboardEnabled(): Boolean {
         val inputMethodManager = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         val enabledKeyboards = inputMethodManager.enabledInputMethodList
         return enabledKeyboards.any {
             it.packageName == requireContext().packageName
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
