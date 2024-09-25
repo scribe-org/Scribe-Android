@@ -1,10 +1,13 @@
 package be.scri.activities
 
+import android.app.UiModeManager
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.adapters.ViewPagerAdapter
@@ -29,6 +32,7 @@ class MainActivity : SimpleActivity() {
         setActionBarTitle(R.string.app_launcher_name)
         val mButton = supportActionBar?.customView?.findViewById<Button>(R.id.button)
         val mImage = getDrawable(R.drawable.chevron)
+        applyUserDarkModePreference(this)
         mButton?.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
         mButton?.compoundDrawablePadding = 2
         mButton?.visibility = View.GONE
@@ -160,5 +164,23 @@ class MainActivity : SimpleActivity() {
         params.topMargin = 50
         params.bottomMargin = 0
         textView.layoutParams = params
+    }
+
+    private fun applyUserDarkModePreference(context: Context) {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isSystemDarkTheme = isDarkMode(context)
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isUserDarkMode) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            },
+        )
+    }
+
+    fun isDarkMode(context: Context): Boolean {
+        val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
+        return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
     }
 }

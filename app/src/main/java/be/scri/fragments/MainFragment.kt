@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,9 +67,14 @@ class MainFragment : Fragment() {
     private fun applyUserDarkModePreference() {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isSystemDarkMode =
+            resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        Log.i("my-tag", currentNightMode.toString())
+        Log.i("my-tag", Configuration.UI_MODE_NIGHT_YES.toString())
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
-
+        Log.i("my-tag", isSystemDarkMode.toString())
+        Log.i("my-tag", isUserDarkMode.toString())
         AppCompatDelegate.setDefaultNightMode(
             if (isUserDarkMode) {
                 AppCompatDelegate.MODE_NIGHT_YES
