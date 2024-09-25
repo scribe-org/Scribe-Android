@@ -1,6 +1,7 @@
 package be.scri.services
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.text.InputType
 import android.util.Log
@@ -55,7 +56,9 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
         restarting: Boolean,
     ) {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)

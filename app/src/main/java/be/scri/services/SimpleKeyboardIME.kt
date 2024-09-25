@@ -1,6 +1,7 @@
 package be.scri.services
 
 import android.content.Context
+import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
@@ -274,7 +275,9 @@ abstract class SimpleKeyboardIME :
 
     fun setupToolBarTheme(binding: KeyboardViewKeyboardBinding) {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         when (isUserDarkMode) {
             true -> {
                 binding.commandField.setBackgroundColor(getColor(R.color.md_grey_black_dark))
@@ -287,7 +290,9 @@ abstract class SimpleKeyboardIME :
 
     fun setupCommandBarTheme(binding: KeyboardViewCommandOptionsBinding) {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         when (isUserDarkMode) {
             true -> {
                 binding.commandField.setBackgroundColor(getColor(R.color.md_grey_black_dark))

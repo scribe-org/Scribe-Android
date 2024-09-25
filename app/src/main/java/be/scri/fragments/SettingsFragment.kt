@@ -2,6 +2,7 @@ package be.scri.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -78,12 +79,15 @@ class SettingsFragment : Fragment() {
 
     private fun getFirstRecyclerViewData(): List<Any> {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         return listOf(
             TextItem(R.string.app_settings_menu_app_language, image = R.drawable.right_arrow, action = ::selectLanguage),
             SwitchItem(
                 getString(R.string.app_settings_menu_app_color_mode),
                 description = getString(R.string.app_settings_menu_app_color_mode_description),
-                isChecked = sharedPref.getBoolean("dark_mode", false),
+                isChecked = sharedPref.getBoolean("dark_mode", isUserDarkMode),
                 action = ::darkMode,
                 action2 = ::lightMode,
             ),
