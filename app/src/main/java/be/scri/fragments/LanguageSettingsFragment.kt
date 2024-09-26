@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -17,11 +18,13 @@ import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentLanguageSettingsBinding
 import be.scri.helpers.CustomAdapter
+import be.scri.helpers.EmojiButtonController
 import be.scri.models.SwitchItem
 
 class LanguageSettingsFragment : Fragment() {
     private var _binding: FragmentLanguageSettingsBinding? = null
     val binding get() = _binding!!
+    private lateinit var emojiButtonController: EmojiButtonController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +99,8 @@ class LanguageSettingsFragment : Fragment() {
                 .commit()
         }
         setupRecyclerView(language)
+        emojiButtonController = EmojiButtonController(requireContext())
+        emojiButtonController.initializeViews(requireActivity() as AppCompatActivity)
     }
 
     private fun setupRecyclerView(language: String) {
@@ -217,6 +222,7 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("emoji_suggestions_$language", true)
         editor.apply()
+        emojiButtonController.updateButtonVisibility(true)
         Toast.makeText(requireContext(), "$language Emoji Autosuggestions on", Toast.LENGTH_SHORT).show()
     }
 
@@ -225,6 +231,7 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("emoji_suggestions_$language", false)
         editor.apply()
+        emojiButtonController.updateButtonVisibility(false)
         Toast.makeText(requireContext(), "$language Emoji Autosuggestions off", Toast.LENGTH_SHORT).show()
     }
 
