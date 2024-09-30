@@ -211,10 +211,8 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
                 } else {
                     handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
                 }
-                }
-
             }
-
+        }
 
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
@@ -222,7 +220,6 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
     }
 
     private fun switchToToolBar() {
-
         this.keyboardBinding = initializeKeyboardBinding()
         val keyboardHolder = keyboardBinding.root
         super.setupToolBarTheme(keyboardBinding)
@@ -285,6 +282,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         }
         updateEnterKeyColor(isUserDarkMode)
     }
+
     private fun initializeKeyboardBinding(): KeyboardViewKeyboardBinding {
         val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
         return keyboardBinding
