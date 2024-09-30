@@ -139,7 +139,11 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
 
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
-                super.handleDelete()
+                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                    handleDelete(false, keyboardBinding)
+                } else {
+                    handleDelete(true, keyboardBinding)
+                }
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_SHIFT -> {
@@ -147,13 +151,24 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_ENTER -> {
-                super.handleKeycodeEnter()
+                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                    handleKeycodeEnter(keyboardBinding, false)
+                } else {
+                    handleKeycodeEnter(keyboardBinding, true)
+                    currentState = ScribeState.IDLE
+                    switchToCommandToolBar()
+                    updateUI()
+                }
             }
             MyKeyboard.KEYCODE_MODE_CHANGE -> {
                 handleModeChange(keyboardMode, keyboardView, this)
             }
             else -> {
-                super.handleElseCondition(code, keyboardMode)
+                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                    handleElseCondition(code, keyboardMode, binding = null)
+                } else {
+                    handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
+                }
             }
         }
 

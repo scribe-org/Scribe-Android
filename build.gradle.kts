@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    val kotlin_version = "2.0.0"
+    val kotlinVersion = "2.0.0"
 
     repositories {
         google()
@@ -12,7 +12,7 @@ buildscript {
 
     dependencies {
         classpath("com.android.tools.build:gradle:8.6.0")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.6")
         classpath("org.jlleitschuh.gradle:ktlint-gradle:12.1.1")
         classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.6")
