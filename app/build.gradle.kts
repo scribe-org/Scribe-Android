@@ -16,7 +16,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
 }
-val kotlin_version by extra("2.0.0")
+val kotlinVersion by extra("2.0.0")
 
 android {
     compileSdk = 34
