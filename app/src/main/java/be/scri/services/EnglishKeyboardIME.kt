@@ -13,6 +13,7 @@ import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.MyKeyboard
 import be.scri.helpers.MyKeyboard.Companion.KEYCODE_ENTER
+import be.scri.services.ItalianKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class EnglishKeyboardIME : SimpleKeyboardIME() {
@@ -63,6 +64,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
+
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
@@ -179,23 +181,40 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
 
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
-                super.handleDelete()
+                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                    handleDelete(false, keyboardBinding)
+                } else {
+                    handleDelete(true, keyboardBinding)
+                }
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_SHIFT -> {
                 super.handleKeyboardLetters(keyboardMode, keyboardView)
                 keyboardView!!.invalidateAllKeys()
             }
-            MyKeyboard.KEYCODE_ENTER -> {
-                super.handleKeycodeEnter()
+            KEYCODE_ENTER -> {
+                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                    handleKeycodeEnter(keyboardBinding, false)
+                } else {
+                    handleKeycodeEnter(keyboardBinding, true)
+                    currentState = ScribeState.IDLE
+                    switchToCommandToolBar()
+                    updateUI()
+                }
             }
             MyKeyboard.KEYCODE_MODE_CHANGE -> {
                 handleModeChange(keyboardMode, keyboardView, this)
             }
             else -> {
-                super.handleElseCondition(code, keyboardMode)
+                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                    handleElseCondition(code, keyboardMode, binding = null)
+                } else {
+                    handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
+                }
+                }
+
             }
-        }
+
 
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
@@ -203,8 +222,8 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
     }
 
     private fun switchToToolBar() {
-        val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
-        this.keyboardBinding = keyboardBinding
+
+        this.keyboardBinding = initializeKeyboardBinding()
         val keyboardHolder = keyboardBinding.root
         super.setupToolBarTheme(keyboardBinding)
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -265,5 +284,9 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
             else -> switchToToolBar()
         }
         updateEnterKeyColor(isUserDarkMode)
+    }
+    private fun initializeKeyboardBinding(): KeyboardViewKeyboardBinding {
+        val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
+        return keyboardBinding
     }
 }

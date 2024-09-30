@@ -9,7 +9,6 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -46,6 +45,7 @@ abstract class SimpleKeyboardIME :
     abstract var switchToLetters: Boolean
     abstract var hasTextBeforeCursor: Boolean
     abstract var binding: KeyboardViewCommandOptionsBinding
+//    abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()
@@ -169,20 +169,27 @@ abstract class SimpleKeyboardIME :
     private fun getImeOptionsActionId(): Int =
         if (currentInputEditorInfo.imeOptions and IME_FLAG_NO_ENTER_ACTION != 0) {
             IME_ACTION_NONE
-            Log.i("MYT-TAG", "Hello from ime")
         } else {
             currentInputEditorInfo.imeOptions and IME_MASK_ACTION
-            Log.i("MYT-TAG", "Hello from ime")
         }
 
-    fun handleKeycodeEnter() {
+    fun handleKeycodeEnter(
+        binding: KeyboardViewKeyboardBinding? = null,
+        commandBarState: Boolean? = false,
+    ) {
         val inputConnection = currentInputConnection
         val imeOptionsActionId = getImeOptionsActionId()
-        if (imeOptionsActionId != IME_ACTION_NONE) {
-            inputConnection.performEditorAction(imeOptionsActionId)
+
+        if (commandBarState == true) {
+            inputConnection.commitText(binding?.commandBar?.text.toString(), 1)
+            binding?.commandBar?.text = ""
         } else {
-            inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
-            inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
+            if (imeOptionsActionId != IME_ACTION_NONE) {
+                inputConnection.performEditorAction(imeOptionsActionId)
+            } else {
+                inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
+                inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
+            }
         }
     }
 
@@ -231,45 +238,65 @@ abstract class SimpleKeyboardIME :
         }
     }
 
-    fun handleDelete() {
+    fun handleDelete(
+        currentState: Boolean? = false,
+        binding: KeyboardViewKeyboardBinding? = null,
+    ) {
         val inputConnection = currentInputConnection
         if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR) {
             keyboard!!.mShiftState = SHIFT_OFF
         }
 
-        val selectedText = inputConnection.getSelectedText(0)
-        if (TextUtils.isEmpty(selectedText)) {
-            inputConnection.deleteSurroundingText(1, 0)
+        if (currentState == true) {
+            binding?.commandBar?.let { commandBar ->
+                val newText = "${commandBar.text.trim().dropLast(1)}"
+                commandBar.text = newText
+            }
         } else {
-            inputConnection.commitText("", 1)
+            val selectedText = inputConnection.getSelectedText(0)
+            if (TextUtils.isEmpty(selectedText)) {
+                inputConnection.deleteSurroundingText(1, 0)
+            } else {
+                inputConnection.commitText("", 1)
+            }
         }
     }
 
     fun handleElseCondition(
         code: Int,
         keyboardMode: Int,
+        binding: KeyboardViewKeyboardBinding?,
+        commandBarState: Boolean = false,
     ) {
-        val inputConnection = currentInputConnection
+        val inputConnection = currentInputConnection ?: return
         var codeChar = code.toChar()
+
         if (Character.isLetter(codeChar) && keyboard!!.mShiftState > SHIFT_OFF) {
             codeChar = Character.toUpperCase(codeChar)
         }
 
-        // If the keyboard is set to symbols and the user presses space, we usually should switch back to the letters keyboard.
-        // However, avoid doing that in cases when the EditText for example requires numbers as the input.
-        // We can detect that by the text not changing on pressing Space.
-        if (keyboardMode != keyboardLetters && code == MyKeyboard.KEYCODE_SPACE) {
-            val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
-            inputConnection.commitText(codeChar.toString(), 1)
-            val newText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
-            switchToLetters = originalText != newText
+        if (commandBarState) {
+            binding?.commandBar?.let { commandBar ->
+                val newText = "${commandBar.text}$codeChar"
+                commandBar.text = newText
+            }
         } else {
-            inputConnection.commitText(codeChar.toString(), 1)
-        }
+            // Handling space key logic
+            if (keyboardMode != keyboardLetters && code == MyKeyboard.KEYCODE_SPACE) {
+                binding?.commandBar?.text = " "
+                val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
+                inputConnection.commitText(codeChar.toString(), 1)
+                val newText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
+                switchToLetters = originalText != newText
+            } else {
+                binding?.commandBar?.append(codeChar.toString())
+                inputConnection.commitText(codeChar.toString(), 1)
+            }
 
-        if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
-            keyboard!!.mShiftState = SHIFT_OFF
-            keyboardView!!.invalidateAllKeys()
+            if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
+                keyboard!!.mShiftState = SHIFT_OFF
+                keyboardView!!.invalidateAllKeys()
+            }
         }
     }
 
