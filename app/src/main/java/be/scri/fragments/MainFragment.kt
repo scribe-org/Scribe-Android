@@ -38,23 +38,6 @@ class MainFragment : Fragment() {
 
         (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         applyUserDarkModePreference()
-        if (!isKeyboardEnabled()) {
-            ConfirmationAdvancedDialog(
-                requireActivity(),
-                messageId = R.string.redirection_note,
-                positive = R.string.ok,
-                negative = 0,
-            ) { success ->
-                if (success) {
-                    Intent(Settings.ACTION_INPUT_METHOD_SETTINGS).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(this)
-                    }
-                } else {
-                    requireActivity().finish()
-                }
-            }
-        }
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 getParentFragmentManager().popBackStack()
@@ -92,26 +75,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (!isKeyboardEnabled()) {
-            ConfirmationAdvancedDialog(
-                requireActivity(),
-                messageId = R.string.redirection_note,
-                positive = R.string.ok,
-                negative = 0,
-            ) { success ->
-                if (success) {
-                    Intent(Settings.ACTION_INPUT_METHOD_SETTINGS).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(this)
-                    }
-                } else {
-                    requireActivity().finish()
-                }
-            }
-        }
-    }
 
     private fun openKeyboardSettings() {
         Intent(Settings.ACTION_INPUT_METHOD_SETTINGS).apply {
@@ -120,13 +83,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun isKeyboardEnabled(): Boolean {
-        val inputMethodManager = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        val enabledKeyboards = inputMethodManager.enabledInputMethodList
-        return enabledKeyboards.any {
-            it.packageName == requireContext().packageName
-        }
-    }
+ 
 
     override fun onDestroyView() {
         super.onDestroyView()
