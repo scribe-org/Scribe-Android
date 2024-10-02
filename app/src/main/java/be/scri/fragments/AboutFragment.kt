@@ -21,7 +21,7 @@ class AboutFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         binding = FragmentAboutBinding.inflate(inflater, container, false)
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {

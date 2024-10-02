@@ -13,7 +13,6 @@ import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.MyKeyboard
 import be.scri.helpers.MyKeyboard.Companion.KEYCODE_ENTER
-import be.scri.services.ItalianKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class EnglishKeyboardIME : SimpleKeyboardIME() {

@@ -387,7 +387,7 @@ class MyKeyboardView
 
                 val wasDarkened = mBackgroundColor != mBackgroundColor.darkenColor()
                 mToolbarHolder?.apply {
-                    keyboardBinding?.apply {
+                    keyboardBinding.apply {
                         topKeyboardDivider.beGoneIf(wasDarkened)
                         topKeyboardDivider.background = ColorDrawable(strokeColor)
 

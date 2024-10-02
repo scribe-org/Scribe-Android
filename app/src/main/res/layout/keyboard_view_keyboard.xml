@@ -38,6 +38,7 @@
             android:layout_marginEnd="@dimen/tiny_margin"
             android:background="@drawable/cmd_bar_background_right_rounded"
             android:contentDescription="@string/command_bar"
+            android:textAlignment="textStart"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
             app:layout_constraintEnd_toEndOf="@+id/command_field"
             app:layout_constraintHorizontal_bias="0"
