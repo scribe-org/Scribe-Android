@@ -60,10 +60,11 @@
                     android:layout_height="80dp"
                     android:layout_marginStart="13dp"
                     android:textStyle="bold"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textColor="@color/app_text_color"
                     android:background="@drawable/rounded_button"
                     android:padding="10dp"
+                    android:textAllCaps="false"
                     android:text="@string/app.settings.button_install_keyboards" />
 
                 <androidx.recyclerview.widget.RecyclerView

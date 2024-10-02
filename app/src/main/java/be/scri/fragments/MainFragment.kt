@@ -1,7 +1,6 @@
 package be.scri.fragments
 
 import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -10,14 +9,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentMainBinding
-import be.scri.dialogs.ConfirmationAdvancedDialog
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
@@ -75,15 +72,12 @@ class MainFragment : Fragment() {
         }
     }
 
-
     private fun openKeyboardSettings() {
         Intent(Settings.ACTION_INPUT_METHOD_SETTINGS).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(this)
         }
     }
-
- 
 
     override fun onDestroyView() {
         super.onDestroyView()
