@@ -112,8 +112,8 @@ class LanguageSettingsFragment : Fragment() {
                     isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
                     title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
                     description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
-                    action = { disableAccentCharacter(language)},
-                    action2 = { enableAccentCharacters(language) },
+                    action = { enableAccentCharacters(language) },
+                    action2 = { disableAccentCharacter(language) },
                 ))
             }
             "Swedish" -> {
@@ -121,8 +121,8 @@ class LanguageSettingsFragment : Fragment() {
                     isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
                     title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
                     description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
-                     action = { disableAccentCharacter(language)},
-                     action2 = { enableAccentCharacters(language) },
+                    action = { enableAccentCharacters(language) },
+                    action2 = { disableAccentCharacters(language) },
                 ))
             }
             "Spanish" -> {
@@ -130,8 +130,8 @@ class LanguageSettingsFragment : Fragment() {
                     isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
                     title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
                     description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
-                    action = { disableAccentCharacter(language)},
-                    action2 = { enableAccentCharacters(language) },
+                    action = { enableAccentCharacters(language) },
+                    action2 = { disableAccentCharacter(language) },
                 ))
             }
         }
