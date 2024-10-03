@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import be.scri.BuildConfig
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentAboutBinding
@@ -63,7 +64,7 @@ class AboutFragment : Fragment() {
         listOf(
             ItemsViewModel(
                 image = R.drawable.github_logo,
-                textResId = R.string.app_about_community_github,
+                text = ItemsViewModel.Text(R.string.app_about_community_github),
                 image2 = R.drawable.external_link,
                 url = "https://github.com/scribe-org/Scribe-Android",
                 activity = null,
@@ -71,7 +72,7 @@ class AboutFragment : Fragment() {
             ),
             ItemsViewModel(
                 image = R.drawable.matrix_icon,
-                textResId = R.string.app_about_community_matrix,
+                text = ItemsViewModel.Text(R.string.app_about_community_matrix),
                 image2 = R.drawable.external_link,
                 url = "https://matrix.to/%23/%23scribe_community:matrix.org",
                 activity = null,
@@ -79,7 +80,7 @@ class AboutFragment : Fragment() {
             ),
             ItemsViewModel(
                 image = R.drawable.mastodon_svg_icon,
-                textResId = R.string.app_about_community_mastodon,
+                text = ItemsViewModel.Text(R.string.app_about_community_mastodon),
                 image2 = R.drawable.external_link,
                 url = "https://wikis.world/@scribe",
                 activity = null,
@@ -87,7 +88,7 @@ class AboutFragment : Fragment() {
             ),
             ItemsViewModel(
                 image = R.drawable.share_icon,
-                textResId = R.string.app_about_community_share_scribe,
+                text = ItemsViewModel.Text(R.string.app_about_community_share_scribe),
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
@@ -95,7 +96,7 @@ class AboutFragment : Fragment() {
             ),
             ItemsViewModel(
                 image = R.drawable.wikimedia_logo_black,
-                textResId = R.string.app_about_community_wikimedia,
+                text = ItemsViewModel.Text(R.string.app_about_community_wikimedia),
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
@@ -107,7 +108,7 @@ class AboutFragment : Fragment() {
         listOf(
             ItemsViewModel(
                 image = R.drawable.star,
-                textResId = R.string.app_about_feedback_rate_scribe,
+                text = ItemsViewModel.Text(R.string.app_about_feedback_rate_scribe),
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
@@ -115,7 +116,7 @@ class AboutFragment : Fragment() {
             ),
             ItemsViewModel(
                 image = R.drawable.bug_report_icon,
-                textResId = R.string.app_about_feedback_bug_report,
+                text = ItemsViewModel.Text(R.string.app_about_feedback_bug_report),
                 image2 = R.drawable.external_link,
                 url = "https://github.com/scribe-org/Scribe-Android/issues",
                 activity = null,
@@ -123,7 +124,7 @@ class AboutFragment : Fragment() {
             ),
             ItemsViewModel(
                 image = R.drawable.mail_icon,
-                textResId = R.string.app_about_feedback_email,
+                text = ItemsViewModel.Text(R.string.app_about_feedback_email),
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
@@ -131,15 +132,15 @@ class AboutFragment : Fragment() {
             ),
             ItemsViewModel(
                 image = R.drawable.bookmark_icon,
-                textResId = R.string.app_about_feedback_version,
-                image2 = R.drawable.right_arrow,
-                url = null,
+                text = ItemsViewModel.Text(R.string.app_about_feedback_version, BuildConfig.VERSION_NAME),
+                image2 = R.drawable.external_link,
+                url = "https://github.com/scribe-org/Scribe-Android/releases/",
                 activity = null,
                 action = null,
             ),
             ItemsViewModel(
                 image = R.drawable.light_bulb_icon,
-                textResId = R.string.app_about_feedback_app_hints,
+                text = ItemsViewModel.Text(R.string.app_about_feedback_app_hints),
                 image2 = R.drawable.counter_clockwise_icon,
                 url = null,
                 activity = null,
@@ -151,7 +152,7 @@ class AboutFragment : Fragment() {
         listOf(
             ItemsViewModel(
                 image = R.drawable.shield_lock,
-                R.string.app_about_legal_privacy_policy,
+                text = ItemsViewModel.Text(R.string.app_about_legal_privacy_policy),
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
@@ -159,7 +160,7 @@ class AboutFragment : Fragment() {
             ),
             ItemsViewModel(
                 image = R.drawable.license_icon,
-                R.string.app_about_legal_third_party,
+                text = ItemsViewModel.Text(R.string.app_about_legal_third_party),
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
@@ -184,10 +185,6 @@ class AboutFragment : Fragment() {
                 type = "message/rfc822"
             }
         startActivity(Intent.createChooser(intent, "Choose an Email client:"))
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     private fun loadWikimediaScribeFragment() {
