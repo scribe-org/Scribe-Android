@@ -83,9 +83,10 @@ class CustomAdapter(
     ) {
         val item = mList[position] as ItemsViewModel
         holder.imageView.setImageResource(item.image)
-        holder.textView.text = with(item.text) {
-            context.getString(resId, *formatArgs)
-        }
+        holder.textView.text =
+            with(item.text) {
+                context.getString(resId, *formatArgs)
+            }
         holder.imageView2.setImageResource(item.image2)
 
         holder.itemView.setOnClickListener {
