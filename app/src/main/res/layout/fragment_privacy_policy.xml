@@ -66,6 +66,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="top|end"
                         android:layout_margin="8dp"
+                        app:tint="@color/button_text_color"
                         android:contentDescription="@string/app.about.legal.privacy_policy"
                         android:src="@drawable/shield_check" />
                 </androidx.cardview.widget.CardView>

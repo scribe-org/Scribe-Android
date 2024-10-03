@@ -93,9 +93,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="top|end"
                         android:layout_margin="8dp"
-
                         android:contentDescription="@string/app.about.community.wikimedia"
-                        android:src="@drawable/wikimedia_logo_black" />
+                        android:src="@drawable/wikimedia_logo_black"
+                        app:tint="@color/button_text_color" />
                 </androidx.cardview.widget.CardView>
                 <View
                     android:layout_width="100dp"
