@@ -5,7 +5,8 @@
     <color name="dark_text_color">#FFF</color>
     <color name="light_text_color">#000</color>
     <color name="light_tutorial_button_color">#FDAD0D</color>
-    <color name="dark_tutorial_button_color">#D17B0F</color>
+    <color name="dark_tutorial_button_color">#2A1903</color>
+    <color name="dark_button_outline_color">#D17B0F</color>"
     <color name="dark_icon_color">#fff</color>
     <color name="light_icon_color">#000</color>
     <color name="light_scribe_blue">#FF75CEFA</color>
