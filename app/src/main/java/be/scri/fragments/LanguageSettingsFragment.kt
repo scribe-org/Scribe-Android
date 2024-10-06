@@ -25,7 +25,6 @@ class LanguageSettingsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
-        val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
         (requireActivity() as MainActivity).setActionBarButtonFunction(3, R.string.app_settings_title)
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -113,8 +112,8 @@ class LanguageSettingsFragment : Fragment() {
                     isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
                     title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
                     description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
-                    action = { enableAccentCharacters(language) },
-                    action2 = { disableAccentCharacter(language) },
+                    action = { disableAccentCharacter(language)},
+                    action2 = { enableAccentCharacters(language) },
                 ))
             }
             "Swedish" -> {
@@ -122,8 +121,8 @@ class LanguageSettingsFragment : Fragment() {
                     isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
                     title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
                     description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
-                    action = { enableAccentCharacters(language) },
-                    action2 = { disableAccentCharacters(language) },
+                     action = { disableAccentCharacter(language)},
+                     action2 = { enableAccentCharacters(language) },
                 ))
             }
             "Spanish" -> {
@@ -131,8 +130,8 @@ class LanguageSettingsFragment : Fragment() {
                     isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
                     title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
                     description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
-                    action = { enableAccentCharacters(language) },
-                    action2 = { disableAccentCharacter(language) },
+                    action = { disableAccentCharacter(language)},
+                    action2 = { enableAccentCharacters(language) },
                 ))
             }
         }
