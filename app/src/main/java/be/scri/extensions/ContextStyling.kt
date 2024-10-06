@@ -68,7 +68,7 @@ fun Context.updateTextColors(viewGroup: ViewGroup) {
         }
 
     for (i in 0 until viewGroup.childCount) {
-        when(val view = viewGroup.getChildAt(i)) {
+        when (val view = viewGroup.getChildAt(i)) {
             is MyTextView -> view.setColors(textColor, accentColor)
             is MyAppCompatCheckbox -> view.setColors(textColor, accentColor)
             is MyEditText -> view.setColors(textColor, accentColor)
