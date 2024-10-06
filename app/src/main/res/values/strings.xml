@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Scribe - Language Keyboards</string>
     <string name="app_launcher_name">Scribe</string>
+    <string name="app.about.feedback.version_new">Version %1$s</string>
     <string name="redirection_note">Thanks for downloading Scribe! Please enable keyboards on the
         next screen, and press \'Back\' when finished.</string>
     <string name="change_keyboard">Enable Keyboard</string>
