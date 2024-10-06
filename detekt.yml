@@ -60,6 +60,6 @@ empty-blocks:
 
 performance:
     ForEachOnRange:
-        active: false
+        active: true
     SpreadOperator:
         active: false
