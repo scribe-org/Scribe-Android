@@ -24,7 +24,7 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
 
     private fun getIsAccentCharacter(): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_German", true)
+        val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_German", false)
         return isAccentCharacter
     }
 
