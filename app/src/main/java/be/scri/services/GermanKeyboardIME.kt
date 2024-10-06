@@ -12,6 +12,7 @@ import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.MyKeyboard
+import be.scri.services.EnglishKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class GermanKeyboardIME : SimpleKeyboardIME() {
@@ -64,15 +65,7 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_German", true)
-
-        if (isAccentCharacter) {
-            Log.i("MY-TAG", "I am in onInitializeInterface() inside Accent Character")
-            keyboard = MyKeyboard(this, R.xml.keys_letters_german, enterKeyType)
-        } else {
-            keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
-        }
+        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
     override fun onStartInputView(
@@ -109,6 +102,10 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
         Log.i("MY-TAG", "From German Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        when (currentState) {
+            ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
+            else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
+        }
         setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
@@ -273,28 +270,22 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
 
     override fun onCreate() {
         super.onCreate()
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_German", false)
-        if (isAccentCharacter) {
-            Log.i("MY-TAG", "I am in OnCreate inside Accent Character")
-            keyboard = MyKeyboard(this, R.xml.keys_letters_german, enterKeyType)
-        } else {
-            keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
-        }
-
+        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
         onCreateInputView()
         setupCommandBarTheme(binding)
     }
 
 
     private fun updateUI() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         when (currentState) {
             ScribeState.IDLE -> setupIdleView()
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
         updateEnterKeyColor(isUserDarkMode)
     }
 }
