@@ -18,9 +18,9 @@ import be.scri.views.MyKeyboardView
 class SpanishKeyboardIME : SimpleKeyboardIME() {
     override fun getKeyboardLayoutXML(): Int =
         if (getIsAccentCharacter()) {
-            R.xml.keys_letters_spanish
-        } else {
             R.xml.keys_letter_spanish_without_accent_character
+        } else {
+            R.xml.keys_letters_spanish
         }
 
     private fun getIsAccentCharacter(): Boolean {

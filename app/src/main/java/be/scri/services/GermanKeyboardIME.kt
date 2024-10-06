@@ -17,9 +17,9 @@ import be.scri.views.MyKeyboardView
 class GermanKeyboardIME : SimpleKeyboardIME() {
     override fun getKeyboardLayoutXML(): Int =
         if (getIsAccentCharacter()) {
-            R.xml.keys_letters_german
-        } else {
             R.xml.keys_letter_german_without_accent_character
+        } else {
+            R.xml.keys_letters_german
         }
 
     private fun getIsAccentCharacter(): Boolean {

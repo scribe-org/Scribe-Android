@@ -18,9 +18,11 @@ import be.scri.views.MyKeyboardView
 class SwedishKeyboardIME : SimpleKeyboardIME() {
     override fun getKeyboardLayoutXML(): Int =
         if (getIsAccentCharacter()) {
-            R.xml.keys_letters_swedish
-        } else {
+            Log.i("MY-TAG",getIsAccentCharacter().toString())
             R.xml.keys_letter_swedish_without_accent_characters
+        } else {
+            Log.i("MY-TAG",getIsAccentCharacter().toString())
+            R.xml.keys_letters_swedish
         }
 
     private fun getIsAccentCharacter(): Boolean {

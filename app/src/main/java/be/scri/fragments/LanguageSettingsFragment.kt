@@ -164,7 +164,7 @@ class LanguageSettingsFragment : Fragment() {
     private fun enableAccentCharacters(language: String) {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("disable_accent_character_$language", true)
+        editor.putBoolean("disable_accent_character_$language", false)
         editor.apply()
         Toast.makeText(requireContext(), "$language Accent Character Enabled", Toast.LENGTH_SHORT).show()
     }
@@ -188,7 +188,7 @@ class LanguageSettingsFragment : Fragment() {
     private fun disableAccentCharacter(language: String) {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("disable_accent_character_$language", false)
+        editor.putBoolean("disable_accent_character_$language", true)
         editor.apply()
         Toast.makeText(requireContext(), "$language Accent Characters Disabled", Toast.LENGTH_SHORT).show()
     }
