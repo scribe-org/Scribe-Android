@@ -16,20 +16,18 @@ import be.scri.services.EnglishKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class SpanishKeyboardIME : SimpleKeyboardIME() {
+    override fun getKeyboardLayoutXML(): Int =
+        if (getIsAccentCharacter()) {
+            R.xml.keys_letters_spanish
+        } else {
+            R.xml.keys_letter_spanish_without_accent_character
+        }
 
-    override fun getKeyboardLayoutXML(): Int = if (getIsAccentCharacter()) {
-        R.xml.keys_letters_spanish
-    } else {
-        R.xml.keys_letter_spanish_without_accent_character
-    }
-
-
-    private fun getIsAccentCharacter(): Boolean{
+    private fun getIsAccentCharacter(): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_Spanish", true)
         return isAccentCharacter
     }
-
 
     enum class ScribeState {
         IDLE,

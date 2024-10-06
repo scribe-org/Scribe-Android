@@ -129,10 +129,6 @@ class CustomAdapter(
         holder: SwitchViewHolder,
         position: Int,
     ) {
-
-
-
-
         val item = mList[position] as? SwitchItem
 
         holder.switchView.isChecked = item!!.isChecked
@@ -158,14 +154,13 @@ class CustomAdapter(
 
     override fun getItemCount(): Int = mList.size
 
-    override fun getItemViewType(position: Int): Int {
-        return when (mList[position])  {
+    override fun getItemViewType(position: Int): Int =
+        when (mList[position]) {
             is ItemsViewModel -> VIEW_TYPE_IMAGE
             is SwitchItem -> VIEW_TYPE_SWITCH
             is TextItem -> VIEW_TYPE_TEXT
             else -> throw IllegalArgumentException("Invalid item type")
         }
-    }
 
     class ImageViewHolder(
         itemView: View,
