@@ -82,6 +82,7 @@ class CustomAdapter(
         position: Int,
     ) {
         val item = mList[position] as ItemsViewModel
+
         holder.imageView.setImageResource(item.image)
         holder.textView.text =
             with(item.text) {
@@ -128,8 +129,9 @@ class CustomAdapter(
         holder: SwitchViewHolder,
         position: Int,
     ) {
-        val item = mList[position] as SwitchItem
-        holder.switchView.isChecked = item.isChecked
+        val item = mList[position] as? SwitchItem
+
+        holder.switchView.isChecked = item!!.isChecked
         holder.switchView.setOnCheckedChangeListener(null)
         holder.textView.text = item.title
         if (item.description.isNullOrEmpty()) {

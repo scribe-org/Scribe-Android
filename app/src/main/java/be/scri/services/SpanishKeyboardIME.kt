@@ -16,7 +16,18 @@ import be.scri.services.EnglishKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class SpanishKeyboardIME : SimpleKeyboardIME() {
-    override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_spanish
+    override fun getKeyboardLayoutXML(): Int =
+        if (getIsAccentCharacter()) {
+            R.xml.keys_letter_spanish_without_accent_character
+        } else {
+            R.xml.keys_letters_spanish
+        }
+
+    private fun getIsAccentCharacter(): Boolean {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_Spanish", false)
+        return isAccentCharacter
+    }
 
     enum class ScribeState {
         IDLE,
@@ -141,7 +152,7 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleDelete(false, keyboardBinding)
+                    handleDelete(false, binding = null)
                 } else {
                     handleDelete(true, keyboardBinding)
                 }
@@ -166,7 +177,7 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
             }
             else -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleElseCondition(code, keyboardMode, keyboardBinding)
+                    handleElseCondition(code, keyboardMode, binding = null)
                 } else {
                     handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
                 }
@@ -218,8 +229,7 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
     }
 
     private fun switchToToolBar() {
-        val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
-        this.keyboardBinding = keyboardBinding
+        val keyboardBinding = initializeKeyboardBinding()
         val keyboardHolder = keyboardBinding.root
         keyboardView = keyboardBinding.keyboardView
         super.setupToolBarTheme(keyboardBinding)
@@ -267,5 +277,10 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
+    }
+
+    private fun initializeKeyboardBinding(): KeyboardViewKeyboardBinding {
+        val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
+        return keyboardBinding
     }
 }
