@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Keyboard xmlns:app="http://schemas.android.com/apk/res-auto">
+<Keyboard xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <Row>
         <Key
             app:keyEdgeFlags="left"
@@ -63,13 +64,13 @@
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="0" />
         <Key
+
             app:keyEdgeFlags="right"
             app:keyLabel="ü"
             app:keyWidth="9.05%p" />
     </Row>
     <Row>
         <Key
-            app:keyEdgeFlags="left"
             app:keyLabel="a"
             app:keyWidth="9.05%p"
             app:popupCharacters="âàáæãåā"
@@ -101,9 +102,11 @@
             app:keyLabel="l"
             app:keyWidth="9.05%p" />
         <Key
+            app:code="1"
             app:keyLabel="ö"
             app:keyWidth="9.05%p" />
         <Key
+            app:code = "2"
             app:keyEdgeFlags="right"
             app:keyLabel="ä"
             app:keyWidth="9.05%p" />

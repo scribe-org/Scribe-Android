@@ -114,11 +114,12 @@
             android:alpha="0.9"
             android:src="@drawable/corner_polygon" />
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="26dp"
+            android:layout_height="25dp"
             android:layout_gravity="top|end"
             android:layout_margin="8dp"
-            android:src="@drawable/cog" />
+            android:src="@drawable/cog"
+            app:tint="@color/button_text_color" />
     </androidx.cardview.widget.CardView>
     <TextView
         android:id="@+id/textView2"
@@ -176,7 +177,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -185,8 +186,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/corner_polygon_color"
         app:cardBackgroundColor="@color/corner_polygon_color"
+        app:strokeColor="@color/button_outline_color"
+        app:strokeWidth="@dimen/tiny_margin"
         app:cardCornerRadius="20dp">
         <TextView
             android:layout_width="wrap_content"
@@ -195,6 +197,7 @@
             android:paddingVertical="20sp"
             android:text="@string/app.installation.button_quick_tutorial"
             android:textStyle="bold"
-            android:textSize="20sp" />
-    </androidx.cardview.widget.CardView>
+            android:textSize="20sp"
+            android:textColor="@color/button_text_color"/>
+    </com.google.android.material.card.MaterialCardView>
 </RelativeLayout>

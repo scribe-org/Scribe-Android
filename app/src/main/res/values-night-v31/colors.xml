@@ -13,6 +13,8 @@
     <color name="card_view_color">#000</color>
     <color name="menu_option_color">#878472</color>
     <color name="corner_polygon_color">@color/dark_tutorial_button_color</color>
+    <color name="button_outline_color">@color/dark_button_outline_color</color>
+    <color name="button_text_color">#D17B0F</color>
     <!-- Commons colors -->
     <color name="you_status_bar_color">@android:color/system_accent2_800</color>
     <color name="you_contextual_status_bar_color">@android:color/system_accent1_700</color>

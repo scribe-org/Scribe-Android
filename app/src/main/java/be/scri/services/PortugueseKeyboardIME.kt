@@ -1,6 +1,7 @@
 package be.scri.services
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.text.InputType
 import android.util.Log
@@ -61,7 +62,9 @@ class PortugueseKeyboardIME : SimpleKeyboardIME() {
         restarting: Boolean,
     ) {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
@@ -91,7 +94,9 @@ class PortugueseKeyboardIME : SimpleKeyboardIME() {
 
     private fun setupIdleView() {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         when (isUserDarkMode) {
             true -> {
                 binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
@@ -166,7 +171,11 @@ class PortugueseKeyboardIME : SimpleKeyboardIME() {
 
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
-                super.handleDelete()
+                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                    handleDelete(false, keyboardBinding)
+                } else {
+                    handleDelete(true, keyboardBinding)
+                }
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_SHIFT -> {
@@ -174,13 +183,24 @@ class PortugueseKeyboardIME : SimpleKeyboardIME() {
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_ENTER -> {
-                super.handleKeycodeEnter()
+                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                    handleKeycodeEnter(keyboardBinding, false)
+                } else {
+                    handleKeycodeEnter(keyboardBinding, true)
+                    currentState = ScribeState.IDLE
+                    switchToCommandToolBar()
+                    updateUI()
+                }
             }
             MyKeyboard.KEYCODE_MODE_CHANGE -> {
                 handleModeChange(keyboardMode, keyboardView, this)
             }
             else -> {
-                super.handleElseCondition(code, keyboardMode)
+                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                    handleElseCondition(code, keyboardMode, binding = null)
+                } else {
+                    handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
+                }
             }
         }
 
@@ -243,7 +263,9 @@ class PortugueseKeyboardIME : SimpleKeyboardIME() {
             else -> switchToToolBar()
         }
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
     }
 }

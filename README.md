@@ -57,7 +57,7 @@ Check out Scribe's [architecture diagrams](https://github.com/scribe-org/Organiz
 
 <div align="center">
   <br>
-  <a href="https://github.com/scribe-org/Scribe-Android/blob/main/.github/resources/images/android_preview.png"><img height="512" src="https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/.github/resources/images/android_preview.png" alt="Android Preview"></a>
+  <a href="https://github.com/scribe-org/Scribe-Android/blob/main/.github/resources/images/android_preview.png"><img width="548" height="auto" src="https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/.github/resources/images/android_preview.png" alt="Android Preview"></a>
   <br>
 </div>
 
