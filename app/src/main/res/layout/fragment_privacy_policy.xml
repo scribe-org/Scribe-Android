@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginBottom="16dp"
                     android:background="@color/card_view_color"
                     app:cardBackgroundColor="@color/card_view_color"
@@ -45,11 +45,14 @@
                         android:padding="16dp">
 
                         <TextView
-                            android:layout_width="304dp"
+                            android:id="@+id/privacyPolicyTextView"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
                             android:layout_gravity=""
                             android:text="@string/app.about.legal.privacy_policy.text"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:layout_marginEnd="6dp"/>
 
                     </LinearLayout>
 
@@ -66,6 +69,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="top|end"
                         android:layout_margin="8dp"
+                        app:tint="@color/button_text_color"
                         android:contentDescription="@string/app.about.legal.privacy_policy"
                         android:src="@drawable/shield_check" />
                 </androidx.cardview.widget.CardView>

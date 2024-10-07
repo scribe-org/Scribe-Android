@@ -12,10 +12,22 @@ import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.MyKeyboard
+import be.scri.services.EnglishKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class GermanKeyboardIME : SimpleKeyboardIME() {
-    override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_german
+    override fun getKeyboardLayoutXML(): Int =
+        if (getIsAccentCharacter()) {
+            R.xml.keys_letter_german_without_accent_character
+        } else {
+            R.xml.keys_letters_german
+        }
+
+    private fun getIsAccentCharacter(): Boolean {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_German", false)
+        return isAccentCharacter
+    }
 
     enum class ScribeState {
         IDLE,
@@ -62,6 +74,7 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
         updateEnterKeyColor(isUserDarkMode)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
+        onInitializeInterface()
         setupCommandBarTheme(binding)
     }
 
@@ -84,6 +97,10 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
         Log.i("MY-TAG", "From German Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        when (currentState) {
+            ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
+            else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
+        }
         setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
@@ -138,7 +155,7 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleDelete(false, keyboardBinding)
+                    handleDelete(false, binding = null)
                 } else {
                     handleDelete(true, keyboardBinding)
                 }
@@ -150,7 +167,7 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
             }
             MyKeyboard.KEYCODE_ENTER -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleKeycodeEnter(keyboardBinding, false)
+                    handleKeycodeEnter(binding = null, false)
                 } else {
                     handleKeycodeEnter(keyboardBinding, true)
                     currentState = ScribeState.IDLE
@@ -254,13 +271,15 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
     }
 
     private fun updateUI() {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         when (currentState) {
             ScribeState.IDLE -> setupIdleView()
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", true)
         updateEnterKeyColor(isUserDarkMode)
     }
 }
