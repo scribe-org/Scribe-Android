@@ -13,8 +13,6 @@ style:
         active: true
     UnusedParameter:
         active: true
-    FunctionOnlyReturningConstant:
-        active: false
     UtilityClassWithPublicConstructor:
         active: false
 
@@ -32,12 +30,6 @@ complexity:
     CyclomaticComplexMethod:
         active: false
     LargeClass:
-        active: false
-
-naming:
-    VariableNaming:
-        active: false
-    InvalidPackageDeclaration:
         active: false
 
 potential-bugs:

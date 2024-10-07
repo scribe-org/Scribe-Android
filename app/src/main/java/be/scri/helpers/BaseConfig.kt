@@ -56,15 +56,15 @@ open class BaseConfig(
         get() = prefs.getString(SD_TREE_URI, "")!!
         set(uri) = prefs.edit().putString(SD_TREE_URI, uri).apply()
 
-    var OTGTreeUri: String
+    var otgTreeUri: String
         get() = prefs.getString(OTG_TREE_URI, "")!!
         set(OTGTreeUri) = prefs.edit().putString(OTG_TREE_URI, OTGTreeUri).apply()
 
-    var OTGPartition: String
+    var otgPartition: String
         get() = prefs.getString(OTG_PARTITION, "")!!
         set(OTGPartition) = prefs.edit().putString(OTG_PARTITION, OTGPartition).apply()
 
-    var OTGPath: String
+    var otgPath: String
         get() = prefs.getString(OTG_REAL_PATH, "")!!
         set(OTGPath) = prefs.edit().putString(OTG_REAL_PATH, OTGPath).apply()
 
