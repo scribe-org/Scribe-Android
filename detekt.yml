@@ -59,7 +59,5 @@ empty-blocks:
         active: false
 
 performance:
-    ForEachOnRange:
-        active: false
     SpreadOperator:
         active: false

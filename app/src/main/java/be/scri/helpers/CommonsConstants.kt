@@ -447,4 +447,4 @@ val proPackages = arrayListOf("draw", "gallery", "filemanager", "contacts", "not
 
 fun mydebug(message: String) = Log.e("DEBUG", message)
 
-fun getQuestionMarks(size: Int) = ("?," * size).trimEnd(',')
+fun getQuestionMarks(size: Int) = Array(size) { "?" }.joinToString(separator = ",")
