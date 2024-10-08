@@ -118,7 +118,7 @@
         Not having these causes the ?123 key to instead trigger a space instead of switching the view.
         -->
         <Key
-            app:horizontalGap="3.325%"
+            app:horizontalGap="1.725%"
             app:keyLabel="z"
             app:keyWidth="9.75%p"
             app:popupCharacters="żźž"
@@ -147,11 +147,11 @@
             app:keyWidth="9.75%p" />
         <Key
             app:code="-5"
-            app:horizontalGap="3.325%"
             app:isRepeatable="true"
             app:keyEdgeFlags="right"
             app:keyIcon="@drawable/ic_clear_outline_vector"
-            app:keyWidth="9.75%p" />
+            app:keyWidth="15%p"
+            />
     </Row>
     <Row>
         <Key
