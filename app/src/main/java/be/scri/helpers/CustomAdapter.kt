@@ -123,6 +123,12 @@ class CustomAdapter(
                 else -> item.action.invoke()
             }
         }
+        if (item.description.isNullOrEmpty()) {
+            holder.descriptionTextView.visibility = View.GONE
+        } else {
+            holder.descriptionTextView.visibility = View.VISIBLE
+            holder.descriptionTextView.text = item.description
+        }
     }
 
     private fun bindSwitchViewHolder(
@@ -183,5 +189,6 @@ class CustomAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.tvText)
         val imageView: ImageView = itemView.findViewById(R.id.imgView2)
+        val descriptionTextView: TextView = itemView.findViewById(R.id.tvSubTitle)
     }
 }
