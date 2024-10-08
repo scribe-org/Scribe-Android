@@ -36,11 +36,13 @@
                 android:text="Title"
                 android:textStyle="normal" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end" />
+                android:checked="true"
+                android:thumb="@drawable/thumb_selector"
+                app:track="@drawable/track_selector"/>
         </LinearLayout>
 
         <TextView

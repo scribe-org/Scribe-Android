@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
@@ -179,7 +179,7 @@ class CustomAdapter(
     class SwitchViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
-        val switchView: Switch = itemView.findViewById(R.id.checkbox)
+        val switchView: SwitchCompat = itemView.findViewById(R.id.checkbox)
         val textView: TextView = itemView.findViewById(R.id.tvText)
         val descriptionTextView: TextView = itemView.findViewById(R.id.tvSubTitle)
     }
