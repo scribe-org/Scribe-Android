@@ -16,19 +16,18 @@ import be.scri.services.EnglishKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class SwedishKeyboardIME : SimpleKeyboardIME() {
-    override fun getKeyboardLayoutXML(): Int = if (getIsAccentCharacter()) {
-        R.xml.keys_letters_swedish
-    } else {
-        R.xml.keys_letter_swedish_without_accent_characters
-    }
+    override fun getKeyboardLayoutXML(): Int =
+        if (getIsAccentCharacter()) {
+            R.xml.keys_letters_swedish
+        } else {
+            R.xml.keys_letter_swedish_without_accent_characters
+        }
 
-
-    private fun getIsAccentCharacter(): Boolean{
+    private fun getIsAccentCharacter(): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_Swedish", true)
         return isAccentCharacter
     }
-
 
     enum class ScribeState {
         IDLE,
@@ -129,7 +128,7 @@ class SwedishKeyboardIME : SimpleKeyboardIME() {
             }
             else -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleElseCondition(code, keyboardMode,  binding = null)
+                    handleElseCondition(code, keyboardMode, binding = null)
                 } else {
                     handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
                 }

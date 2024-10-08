@@ -15,17 +15,19 @@ import be.scri.helpers.MyKeyboard
 import be.scri.views.MyKeyboardView
 
 class GermanKeyboardIME : SimpleKeyboardIME() {
-    override fun getKeyboardLayoutXML(): Int = if (getIsAccentCharacter()) {
-        R.xml.keys_letters_german
-    } else {
-        R.xml.keys_letter_german_without_accent_character
-    }
+    override fun getKeyboardLayoutXML(): Int =
+        if (getIsAccentCharacter()) {
+            R.xml.keys_letters_german
+        } else {
+            R.xml.keys_letter_german_without_accent_character
+        }
 
-    private fun getIsAccentCharacter(): Boolean{
+    private fun getIsAccentCharacter(): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_German", true)
         return isAccentCharacter
     }
+
     enum class ScribeState {
         IDLE,
         SELECT_COMMAND,
@@ -61,13 +63,11 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
         val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_German", true)
 
         if (isAccentCharacter) {
-            Log.i("MY-TAG","I am in onInitializeInterface() inside Accent Character")
+            Log.i("MY-TAG", "I am in onInitializeInterface() inside Accent Character")
             keyboard = MyKeyboard(this, R.xml.keys_letters_german, enterKeyType)
-        }
-        else {
+        } else {
             keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
         }
-
     }
 
     override fun onStartInputView(
@@ -271,17 +271,15 @@ class GermanKeyboardIME : SimpleKeyboardIME() {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_German", false)
         if (isAccentCharacter) {
-            Log.i("MY-TAG","I am in OnCreate inside Accent Character")
+            Log.i("MY-TAG", "I am in OnCreate inside Accent Character")
             keyboard = MyKeyboard(this, R.xml.keys_letters_german, enterKeyType)
-        }
-        else {
+        } else {
             keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
         }
 
         onCreateInputView()
         setupCommandBarTheme(binding)
     }
-
 
     private fun updateUI() {
         when (currentState) {
