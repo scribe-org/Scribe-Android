@@ -9,6 +9,7 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -16,6 +17,8 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
 import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
@@ -45,6 +48,12 @@ abstract class SimpleKeyboardIME :
     abstract var switchToLetters: Boolean
     abstract var hasTextBeforeCursor: Boolean
     abstract var binding: KeyboardViewCommandOptionsBinding
+
+    private var pluralBtn: Button? = null
+    private var emojiBtnPhone1: Button? = null
+    private var emojiSpacePhone: View? = null
+    private var emojiBtnPhone2: Button? = null
+    private val tagDebug = "EmojiButtonController"
 //    abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     override fun onInitializeInterface() {
@@ -76,7 +85,26 @@ abstract class SimpleKeyboardIME :
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
+        initializeEmojiButtons()
         return keyboardHolder
+    }
+
+    private fun initializeEmojiButtons() {
+        val activity = this as AppCompatActivity
+        pluralBtn = activity.findViewById(R.id.plural_btn)
+        emojiBtnPhone1 = activity.findViewById(R.id.emoji_btn_phone_1)
+        emojiSpacePhone = activity.findViewById(R.id.emoji_space_phone)
+        emojiBtnPhone2 = activity.findViewById(R.id.emoji_btn_phone_2)
+
+        Log.d(tagDebug, "pluralBtn initialized: $pluralBtn")
+        Log.d(tagDebug, "pluralBtn visibility: ${pluralBtn?.visibility}")
+    }
+
+    fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
+        pluralBtn?.visibility = if (isAutoSuggestEnabled) View.INVISIBLE else View.VISIBLE
+        emojiBtnPhone1?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+        emojiSpacePhone?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+        emojiBtnPhone2?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
     }
 
     override fun onPress(primaryCode: Int) {
