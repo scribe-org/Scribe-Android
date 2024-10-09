@@ -15,6 +15,7 @@
     <color name="corner_polygon_color">@color/light_tutorial_button_color</color>
     <color name="button_outline_color">@color/light_tutorial_button_color</color>
     <color name="button_text_color">#000000</color>
+    <color name="rv_divider">#d7d7d9</color>
 
     <!-- Commons colors -->
     <color name="you_status_bar_color">@android:color/system_accent2_50</color>

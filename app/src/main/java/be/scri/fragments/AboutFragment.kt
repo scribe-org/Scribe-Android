@@ -1,13 +1,16 @@
 package be.scri.fragments
 
+import CustomDividerItemDecoration
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import be.scri.BuildConfig
 import be.scri.R
 import be.scri.activities.MainActivity
@@ -48,16 +51,34 @@ class AboutFragment : Fragment() {
         recyclerView1.layoutManager = LinearLayoutManager(context)
         recyclerView1.adapter = CustomAdapter(getFirstRecyclerViewData(), requireContext())
         recyclerView1.suppressLayout(true)
-
+        recyclerView1.apply {
+            addCustomItemDecoration()
+        }
         val recyclerView2 = binding.recycleView
         recyclerView2.layoutManager = LinearLayoutManager(context)
         recyclerView2.adapter = CustomAdapter(getSecondRecyclerViewData(), requireContext())
         recyclerView2.suppressLayout(true)
-
+        recyclerView2.apply {
+            addCustomItemDecoration()
+        }
         val recyclerView3 = binding.recycleView3
         recyclerView3.layoutManager = LinearLayoutManager(context)
         recyclerView3.adapter = CustomAdapter(getThirdRecyclerViewData(), requireContext())
         recyclerView3.suppressLayout(true)
+        recyclerView3.apply {
+            addCustomItemDecoration()
+        }
+    }
+
+    private fun RecyclerView.addCustomItemDecoration() {
+        val itemDecoration = CustomDividerItemDecoration(
+            context = requireContext(),
+            drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
+            width = 1,
+            marginLeft = 50,
+            marginRight = 50
+        )
+        addItemDecoration(itemDecoration)
     }
 
     private fun getFirstRecyclerViewData(): List<Any> =

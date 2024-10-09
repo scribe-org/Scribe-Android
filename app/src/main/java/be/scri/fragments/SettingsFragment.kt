@@ -1,5 +1,6 @@
 package be.scri.fragments
 
+import CustomDividerItemDecoration
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -16,6 +17,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.scri.R
@@ -140,6 +142,16 @@ class SettingsFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
         recyclerView.suppressLayout(true)
+        recyclerView.apply {
+            val itemDecoration = CustomDividerItemDecoration(
+                context = requireContext(),
+                drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
+                width = 1,
+                marginLeft = 50,
+                marginRight = 50
+            )
+            addItemDecoration(itemDecoration)
+        }
     }
 
     private fun getRecyclerViewElements(): MutableList<TextItem> {
