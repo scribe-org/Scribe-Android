@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.adapters.ViewPagerAdapter
 import be.scri.databinding.ActivityMainBinding
+import be.scri.services.SimpleKeyboardIME
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : SimpleActivity() {
@@ -19,6 +20,9 @@ class MainActivity : SimpleActivity() {
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPagerAdapter
     private lateinit var binding: ActivityMainBinding
+    private var simpleKeyboardIME: SimpleKeyboardIME? = null
+
+    fun getSimpleKeyboardIME(): SimpleKeyboardIME? = simpleKeyboardIME
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
