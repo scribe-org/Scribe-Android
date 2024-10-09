@@ -119,6 +119,8 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         binding.translateBtn.text = "Suggestion"
         binding.conjugateBtn.text = "Suggestion"
         binding.pluralBtn.text = "Suggestion"
+        binding.separator2.visibility = View.VISIBLE
+        binding.separator3.visibility = View.VISIBLE
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
             Log.i("MY-TAG", "SELECT COMMAND STATE")
@@ -185,6 +187,8 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         binding.translateBtn.text = "Translate"
         binding.conjugateBtn.text = "Conjugate"
         binding.pluralBtn.text = "Plural"
+        binding.separator2.visibility = View.GONE
+        binding.separator3.visibility = View.GONE
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             Log.i("MY-TAG", "IDLE STATE")
