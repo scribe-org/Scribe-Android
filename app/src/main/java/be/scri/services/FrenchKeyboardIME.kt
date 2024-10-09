@@ -212,7 +212,6 @@ class FrenchKeyboardIME : SimpleKeyboardIME() {
         }
     }
 
-
     private fun switchToToolBar() {
         val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
         this.keyboardBinding = keyboardBinding
