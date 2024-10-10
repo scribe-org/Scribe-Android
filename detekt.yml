@@ -41,8 +41,6 @@ exceptions:
         active: false
 
 empty-blocks:
-    EmptyCatchBlock:
-        active: false
     EmptyFunctionBlock:
         active: false
 
