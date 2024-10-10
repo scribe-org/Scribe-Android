@@ -116,6 +116,8 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
                 binding.translateBtn.setTextColor(Color.WHITE)
                 binding.conjugateBtn.setTextColor(Color.WHITE)
                 binding.pluralBtn.setTextColor(Color.WHITE)
+                binding.separator2.setBackgroundColor(getColor(R.color.special_key_dark))
+                binding.separator3.setBackgroundColor(getColor(R.color.special_key_dark))
             }
             else -> {
                 binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
@@ -124,6 +126,8 @@ class SpanishKeyboardIME : SimpleKeyboardIME() {
                 binding.translateBtn.setTextColor(Color.BLACK)
                 binding.conjugateBtn.setTextColor(Color.BLACK)
                 binding.pluralBtn.setTextColor(Color.BLACK)
+                binding.separator2.setBackgroundColor(getColor(R.color.special_key_light))
+                binding.separator3.setBackgroundColor(getColor(R.color.special_key_light))
             }
         }
 
