@@ -217,7 +217,7 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("emoji_suggestions_$language", true)
         editor.apply()
-        (requireActivity() as MainActivity).getSimpleKeyboardIME()?.updateButtonVisibility(true)
+        (requireActivity() as MainActivity).getEnglishKeyboardIME()?.updateButtonVisibility(true)
         Toast.makeText(requireContext(), "$language Emoji Autosuggestions on", Toast.LENGTH_SHORT).show()
     }
 
@@ -226,7 +226,7 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("emoji_suggestions_$language", false)
         editor.apply()
-        (requireActivity() as MainActivity).getSimpleKeyboardIME()?.updateButtonVisibility(false)
+        (requireActivity() as MainActivity).getEnglishKeyboardIME()?.updateButtonVisibility(false)
         Toast.makeText(requireContext(), "$language Emoji Autosuggestions off", Toast.LENGTH_SHORT).show()
     }
 

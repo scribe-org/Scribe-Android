@@ -63,7 +63,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
-
+        initializeEmojiButtons()
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
@@ -89,6 +89,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         }
         keyboardView!!.setKeyboardHolder()
         keyboardView?.mOnKeyboardActionListener = this
+        initializeEmojiButtons()
         updateUI()
         return keyboardHolder
     }
