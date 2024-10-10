@@ -148,12 +148,13 @@ class SettingsFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.suppressLayout(true)
         recyclerView.apply {
-            val itemDecoration = CustomDividerItemDecoration(
-                drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
-                width = 1,
-                marginLeft = 50,
-                marginRight = 50
-            )
+            val itemDecoration =
+                CustomDividerItemDecoration(
+                    drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
+                    width = 1,
+                    marginLeft = 50,
+                    marginRight = 50,
+                )
             addItemDecoration(itemDecoration)
         }
     }

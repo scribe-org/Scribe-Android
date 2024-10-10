@@ -1,4 +1,3 @@
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -10,10 +9,13 @@ class CustomDividerItemDecoration(
     private val drawable: Drawable,
     private val width: Int,
     private val marginLeft: Int,
-    private val marginRight: Int
+    private val marginRight: Int,
 ) : RecyclerView.ItemDecoration() {
-
-    override fun onDraw(@NonNull canvas: Canvas, @NonNull parent: RecyclerView, @NonNull state: RecyclerView.State) {
+    override fun onDraw(
+        @NonNull canvas: Canvas,
+        @NonNull parent: RecyclerView,
+        @NonNull state: RecyclerView.State,
+    ) {
         val left = parent.paddingLeft + marginLeft
         val right = parent.width - parent.paddingRight - marginRight
 
@@ -29,7 +31,12 @@ class CustomDividerItemDecoration(
         }
     }
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State,
+    ) {
         outRect.set(0, 0, 0, width)
     }
 }
