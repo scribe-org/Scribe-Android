@@ -13,8 +13,6 @@ style:
         active: true
     UnusedParameter:
         active: true
-    FunctionOnlyReturningConstant:
-        active: false
     UtilityClassWithPublicConstructor:
         active: false
 
@@ -34,12 +32,6 @@ complexity:
     LargeClass:
         active: false
 
-naming:
-    VariableNaming:
-        active: false
-    InvalidPackageDeclaration:
-        active: false
-
 potential-bugs:
     ImplicitDefaultLocale:
         active: false
@@ -57,7 +49,5 @@ empty-blocks:
         active: false
 
 performance:
-    ForEachOnRange:
-        active: false
     SpreadOperator:
         active: false

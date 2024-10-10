@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
 import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -83,7 +84,12 @@ class SettingsFragment : Fragment() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         return listOf(
-            TextItem(R.string.app_settings_menu_app_language, image = R.drawable.right_arrow, action = ::selectLanguage),
+            TextItem(
+                R.string.app_settings_menu_app_language,
+                image = R.drawable.right_arrow,
+                description = getString(R.string.app_settings_menu_app_language_description),
+                action = ::selectLanguage,
+            ),
             SwitchItem(
                 getString(R.string.app_settings_menu_app_color_mode),
                 description = getString(R.string.app_settings_menu_app_color_mode_description),
@@ -154,6 +160,7 @@ class SettingsFragment : Fragment() {
                     "Spanish" -> R.string.app__global_spanish
                     "Italian" -> R.string.app__global_italian
                     "Portuguese" -> R.string.app__global_portuguese
+                    "Swedish" -> R.string.app__global_swedish
                     else -> 0
                 }
             list.add(
@@ -188,6 +195,7 @@ class SettingsFragment : Fragment() {
         val result = mutableListOf<String>()
 
         for (inputMethod in enabledInputMethods) {
+            Log.i("MY-TAG", inputMethod.serviceName)
             when (inputMethod.serviceName) {
                 "be.scri.services.EnglishKeyboardIME" -> result.add("English")
                 "be.scri.services.GermanKeyboardIME" -> result.add("German")
@@ -196,6 +204,7 @@ class SettingsFragment : Fragment() {
                 "be.scri.services.FrenchKeyboardIME" -> result.add("French")
                 "be.scri.services.ItalianKeyboardIME" -> result.add("Italian")
                 "be.scri.services.PortugueseKeyboardIME" -> result.add("Portuguese")
+                "be.scri.services.SwedishKeyboardIME" -> result.add("Swedish")
             }
         }
         return result

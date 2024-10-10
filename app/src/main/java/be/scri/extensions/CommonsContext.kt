@@ -162,7 +162,7 @@ fun Context.showErrorToast(
 val Context.baseConfig: BaseConfig get() = BaseConfig.newInstance(this)
 val Context.sdCardPath: String get() = baseConfig.sdCardPath
 val Context.internalStoragePath: String get() = baseConfig.internalStoragePath
-val Context.otgPath: String get() = baseConfig.OTGPath
+val Context.otgPath: String get() = baseConfig.otgPath
 
 val Context.targetSdkVersion: Int get() = applicationInfo.targetSdkVersion
 
@@ -721,8 +721,6 @@ fun Context.getLaunchIntent() = packageManager.getLaunchIntentForPackage(baseCon
 fun Context.getCanAppBeUpgraded() = proPackages.contains(baseConfig.appId.removeSuffix(".debug").removePrefix("com.simplemobiletools."))
 
 fun Context.getProUrl() = "https://play.google.com/store/apps/details?id=${baseConfig.appId.removeSuffix(".debug")}.pro"
-
-fun Context.getStoreUrl() = "https://play.google.com/store/apps/"
 
 fun Context.getTimeFormat() = if (baseConfig.use24HourFormat) TIME_FORMAT_24 else TIME_FORMAT_12
 

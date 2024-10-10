@@ -61,21 +61,19 @@ fun Context.updateTextColors(viewGroup: ViewGroup) {
             else -> baseConfig.textColor
         }
 
-    val backgroundColor = baseConfig.backgroundColor
     val accentColor =
         when {
             isWhiteTheme() || isBlackAndWhiteTheme() -> baseConfig.accentColor
             else -> getProperPrimaryColor()
         }
 
-    val cnt = viewGroup.childCount
-    (0 until cnt).map { viewGroup.getChildAt(it) }.forEach {
-        when (it) {
-            is MyTextView -> it.setColors(textColor, accentColor)
-            is MyAppCompatCheckbox -> it.setColors(textColor, accentColor)
-            is MyEditText -> it.setColors(textColor, accentColor)
-            is MyFloatingActionButton -> it.setColors(textColor)
-            is ViewGroup -> updateTextColors(it)
+    for (i in 0 until viewGroup.childCount) {
+        when (val view = viewGroup.getChildAt(i)) {
+            is MyTextView -> view.setColors(textColor, accentColor)
+            is MyAppCompatCheckbox -> view.setColors(textColor, accentColor)
+            is MyEditText -> view.setColors(textColor, accentColor)
+            is MyFloatingActionButton -> view.setColors(textColor)
+            is ViewGroup -> updateTextColors(view)
         }
     }
 }

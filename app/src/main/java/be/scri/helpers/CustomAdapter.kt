@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
@@ -82,8 +82,12 @@ class CustomAdapter(
         position: Int,
     ) {
         val item = mList[position] as ItemsViewModel
+
         holder.imageView.setImageResource(item.image)
-        holder.textView.text = getString(context, item.textResId)
+        holder.textView.text =
+            with(item.text) {
+                context.getString(resId, *formatArgs)
+            }
         holder.imageView2.setImageResource(item.image2)
 
         holder.itemView.setOnClickListener {
@@ -119,14 +123,21 @@ class CustomAdapter(
                 else -> item.action.invoke()
             }
         }
+        if (item.description.isNullOrEmpty()) {
+            holder.descriptionTextView.visibility = View.GONE
+        } else {
+            holder.descriptionTextView.visibility = View.VISIBLE
+            holder.descriptionTextView.text = item.description
+        }
     }
 
     private fun bindSwitchViewHolder(
         holder: SwitchViewHolder,
         position: Int,
     ) {
-        val item = mList[position] as SwitchItem
-        holder.switchView.isChecked = item.isChecked
+        val item = mList[position] as? SwitchItem
+
+        holder.switchView.isChecked = item!!.isChecked
         holder.switchView.setOnCheckedChangeListener(null)
         holder.textView.text = item.title
         if (item.description.isNullOrEmpty()) {
@@ -168,7 +179,7 @@ class CustomAdapter(
     class SwitchViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
-        val switchView: Switch = itemView.findViewById(R.id.checkbox)
+        val switchView: SwitchCompat = itemView.findViewById(R.id.checkbox)
         val textView: TextView = itemView.findViewById(R.id.tvText)
         val descriptionTextView: TextView = itemView.findViewById(R.id.tvSubTitle)
     }
@@ -178,5 +189,6 @@ class CustomAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.tvText)
         val imageView: ImageView = itemView.findViewById(R.id.imgView2)
+        val descriptionTextView: TextView = itemView.findViewById(R.id.tvSubTitle)
     }
 }

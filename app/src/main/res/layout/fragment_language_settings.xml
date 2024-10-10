@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app.settings.keyboard.functionality.title"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="3dp"
         android:textColor="@color/app_text_color"
         android:textSize="20sp"
         android:textStyle="bold"

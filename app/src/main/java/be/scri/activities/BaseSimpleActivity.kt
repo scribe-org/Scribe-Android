@@ -336,7 +336,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         } else if (requestCode == OPEN_DOCUMENT_TREE_FOR_ANDROID_DATA_OR_OBB) {
             if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
                 if (isProperAndroidRoot(checkedDocumentPath, resultData.data!!)) {
-                    if (resultData.dataString == baseConfig.OTGTreeUri || resultData.dataString == baseConfig.sdTreeUri) {
+                    if (resultData.dataString == baseConfig.otgTreeUri || resultData.dataString == baseConfig.sdTreeUri) {
                         val pathToSelect = createAndroidDataOrObbPath(checkedDocumentPath)
                         toast(getString(R.string.wrong_folder_selected, pathToSelect))
                         return
@@ -378,7 +378,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
                                 resultData.dataString!!.contains(partition)
                         )
                 if (isProperSDRootFolder(resultData.data!!) && isProperPartition) {
-                    if (resultData.dataString == baseConfig.OTGTreeUri) {
+                    if (resultData.dataString == baseConfig.otgTreeUri) {
                         toast(R.string.sd_card_usb_same)
                         return
                     }
@@ -416,9 +416,9 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
                         toast(R.string.sd_card_usb_same)
                         return
                     }
-                    baseConfig.OTGTreeUri = resultData.dataString!!
-                    baseConfig.OTGPartition =
-                        baseConfig.OTGTreeUri
+                    baseConfig.otgTreeUri = resultData.dataString!!
+                    baseConfig.otgPartition =
+                        baseConfig.otgTreeUri
                             .removeSuffix("%3A")
                             .substringAfterLast('/')
                             .trimEnd('/')
@@ -589,7 +589,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
 
     fun handleOTGPermission(callback: (success: Boolean) -> Unit) {
         hideKeyboard()
-        if (baseConfig.OTGTreeUri.isNotEmpty()) {
+        if (baseConfig.otgTreeUri.isNotEmpty()) {
             callback(true)
             return
         }

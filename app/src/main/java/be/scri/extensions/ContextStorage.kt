@@ -56,7 +56,7 @@ fun Context.getSDCardPath(): String {
                     "/storage/emulated/0",
                     true,
                 ) &&
-                (baseConfig.OTGPartition.isEmpty() || !it.endsWith(baseConfig.OTGPartition))
+                (baseConfig.otgPartition.isEmpty() || !it.endsWith(baseConfig.otgPartition))
         }
 
     val fullSDpattern = Pattern.compile(SD_OTG_PATTERN)
@@ -186,11 +186,11 @@ fun Context.needsStupidWritePermissions(path: String) = !isRPlus() && (isPathOnS
 fun Context.isSDCardSetAsDefaultStorage() = sdCardPath.isNotEmpty() && Environment.getExternalStorageDirectory().absolutePath.equals(sdCardPath, true)
 
 fun Context.hasProperStoredTreeUri(isOTG: Boolean): Boolean {
-    val uri = if (isOTG) baseConfig.OTGTreeUri else baseConfig.sdTreeUri
+    val uri = if (isOTG) baseConfig.otgTreeUri else baseConfig.sdTreeUri
     val hasProperUri = contentResolver.persistedUriPermissions.any { it.uri.toString() == uri }
     if (!hasProperUri) {
         if (isOTG) {
-            baseConfig.OTGTreeUri = ""
+            baseConfig.otgTreeUri = ""
         } else {
             baseConfig.sdTreeUri = ""
         }
@@ -318,14 +318,14 @@ fun Context.getOTGFastDocumentFile(
     path: String,
     otgPathToUse: String? = null,
 ): DocumentFile? {
-    if (baseConfig.OTGTreeUri.isEmpty()) {
+    if (baseConfig.otgTreeUri.isEmpty()) {
         return null
     }
 
-    val otgPath = otgPathToUse ?: baseConfig.OTGPath
-    if (baseConfig.OTGPartition.isEmpty()) {
-        baseConfig.OTGPartition =
-            baseConfig.OTGTreeUri
+    val otgPath = otgPathToUse ?: baseConfig.otgPath
+    if (baseConfig.otgPartition.isEmpty()) {
+        baseConfig.otgPartition =
+            baseConfig.otgTreeUri
                 .removeSuffix("%3A")
                 .substringAfterLast('/')
                 .trimEnd('/')
@@ -333,7 +333,7 @@ fun Context.getOTGFastDocumentFile(
     }
 
     val relativePath = Uri.encode(path.substring(otgPath.length).trim('/'))
-    val fullUri = "${baseConfig.OTGTreeUri}/document/${baseConfig.OTGPartition}%3A$relativePath"
+    val fullUri = "${baseConfig.otgTreeUri}/document/${baseConfig.otgPartition}%3A$relativePath"
     return DocumentFile.fromSingleUri(this, Uri.parse(fullUri))
 }
 
@@ -345,7 +345,7 @@ fun Context.getDocumentFile(path: String): DocumentFile? {
     }
 
     return try {
-        val treeUri = Uri.parse(if (isOTG) baseConfig.OTGTreeUri else baseConfig.sdTreeUri)
+        val treeUri = Uri.parse(if (isOTG) baseConfig.otgTreeUri else baseConfig.sdTreeUri)
         var document = DocumentFile.fromTreeUri(applicationContext, treeUri)
         val parts = relativePath.split("/").filter { it.isNotEmpty() }
         for (part in parts) {
@@ -537,15 +537,15 @@ fun Context.getOTGItems(
     callback: (ArrayList<FileDirItem>) -> Unit,
 ) {
     val items = ArrayList<FileDirItem>()
-    val otgTreeUri = baseConfig.OTGTreeUri
+    val otgTreeUri = baseConfig.otgTreeUri
     var rootUri =
         try {
             DocumentFile.fromTreeUri(applicationContext, Uri.parse(otgTreeUri))
         } catch (e: Exception) {
             showErrorToast(e)
-            baseConfig.OTGPath = ""
-            baseConfig.OTGTreeUri = ""
-            baseConfig.OTGPartition = ""
+            baseConfig.otgPath = ""
+            baseConfig.otgTreeUri = ""
+            baseConfig.otgPartition = ""
             null
         }
 
@@ -572,7 +572,7 @@ fun Context.getOTGItems(
 
     val files = rootUri!!.listFiles().filter { it.exists() }
 
-    val basePath = "${baseConfig.OTGTreeUri}/document/${baseConfig.OTGPartition}%3A"
+    val basePath = "${baseConfig.otgTreeUri}/document/${baseConfig.otgPartition}%3A"
     for (file in files) {
         val name = file.name ?: continue
         if (!shouldShowHidden && name.startsWith(".")) {
@@ -960,12 +960,12 @@ fun Context.getFileInputStreamSync(path: String): InputStream? =
     }
 
 fun Context.updateOTGPathFromPartition() {
-    val otgPath = "/storage/${baseConfig.OTGPartition}"
-    baseConfig.OTGPath =
+    val otgPath = "/storage/${baseConfig.otgPartition}"
+    baseConfig.otgPath =
         if (getOTGFastDocumentFile(otgPath, otgPath)?.exists() == true) {
-            "/storage/${baseConfig.OTGPartition}"
+            "/storage/${baseConfig.otgPartition}"
         } else {
-            "/mnt/media_rw/${baseConfig.OTGPartition}"
+            "/mnt/media_rw/${baseConfig.otgPartition}"
         }
 }
 
@@ -973,7 +973,7 @@ fun Context.getDoesFilePathExist(
     path: String,
     otgPathToUse: String? = null,
 ): Boolean {
-    val otgPath = otgPathToUse ?: baseConfig.OTGPath
+    val otgPath = otgPathToUse ?: baseConfig.otgPath
     return when {
         isRestrictedSAFOnlyRoot(path) -> getFastAndroidSAFDocument(path)?.exists() ?: false
         otgPath.isNotEmpty() && path.startsWith(otgPath) -> getOTGFastDocumentFile(path)?.exists() ?: false

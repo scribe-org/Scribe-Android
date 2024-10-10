@@ -67,6 +67,7 @@ import be.scri.helpers.REQUEST_SET_AS
 import be.scri.helpers.SIDELOADING_FALSE
 import be.scri.helpers.SIDELOADING_TRUE
 import be.scri.helpers.SILENT
+import be.scri.helpers.STORE_URL
 import be.scri.helpers.ensureBackgroundThread
 import be.scri.helpers.isMarshmallowPlus
 import be.scri.helpers.isOnMainThread
@@ -302,7 +303,7 @@ fun BaseSimpleActivity.isShowingAndroidSAFDialog(path: String): Boolean {
 }
 
 fun BaseSimpleActivity.isShowingOTGDialog(path: String): Boolean =
-    if (!isRPlus() && isPathOnOTG(path) && (baseConfig.OTGTreeUri.isEmpty() || !hasProperStoredTreeUri(true))) {
+    if (!isRPlus() && isPathOnOTG(path) && (baseConfig.otgTreeUri.isEmpty() || !hasProperStoredTreeUri(true))) {
         showOTGPermissionDialog(path)
         true
     } else {
@@ -348,7 +349,7 @@ fun Activity.launchUpgradeToProIntent() {
     try {
         launchViewIntent("market://details?id=${baseConfig.appId.removeSuffix(".debug")}.pro")
     } catch (ignored: Exception) {
-        launchViewIntent(getStoreUrl())
+        launchViewIntent(STORE_URL)
     }
 }
 
@@ -366,7 +367,7 @@ fun Activity.redirectToRateUs() {
     try {
         launchViewIntent("market://details?id=${packageName.removeSuffix(".debug")}")
     } catch (ignored: ActivityNotFoundException) {
-        launchViewIntent(getStoreUrl())
+        launchViewIntent(STORE_URL)
     }
 }
 
