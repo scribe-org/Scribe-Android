@@ -16,6 +16,10 @@
     <color name="button_outline_color">@color/dark_button_outline_color</color>
     <color name="button_text_color">#D17B0F</color>
     <color name="rv_divider">#b2aeae</color>
+    <color name="switch_thumb_selector_color_true">#D17B0F</color>
+    <color name="switch_thumb_selector_color_false">@android:color/darker_gray</color>
+    <color name="switch_selector_color">@color/corner_polygon_color</color>
+    <color name="switch_selector_color_false">@color/md_grey_800_dark</color>
 
     <!-- Commons colors -->
     <color name="you_status_bar_color">@android:color/system_accent2_800</color>

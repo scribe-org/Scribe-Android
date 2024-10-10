@@ -86,7 +86,12 @@ class SettingsFragment : Fragment() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         return listOf(
-            TextItem(R.string.app_settings_menu_app_language, image = R.drawable.right_arrow, action = ::selectLanguage),
+            TextItem(
+                R.string.app_settings_menu_app_language,
+                image = R.drawable.right_arrow,
+                description = getString(R.string.app_settings_menu_app_language_description),
+                action = ::selectLanguage,
+            ),
             SwitchItem(
                 getString(R.string.app_settings_menu_app_color_mode),
                 description = getString(R.string.app_settings_menu_app_color_mode_description),
