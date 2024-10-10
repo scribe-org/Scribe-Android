@@ -7,7 +7,6 @@ import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 
 class CustomDividerItemDecoration(
-    context: Context,
     private val drawable: Drawable,
     private val width: Int,
     private val marginLeft: Int,

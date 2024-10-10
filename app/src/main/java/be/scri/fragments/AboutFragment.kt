@@ -72,7 +72,6 @@ class AboutFragment : Fragment() {
 
     private fun RecyclerView.addCustomItemDecoration() {
         val itemDecoration = CustomDividerItemDecoration(
-            context = requireContext(),
             drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
             width = 1,
             marginLeft = 50,
