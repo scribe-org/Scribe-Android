@@ -29,8 +29,6 @@ complexity:
         active: false
     CyclomaticComplexMethod:
         active: false
-    LargeClass:
-        active: false
 
 potential-bugs:
     ImplicitDefaultLocale:
