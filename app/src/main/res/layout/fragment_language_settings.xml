@@ -8,7 +8,7 @@
     android:background="@color/you_background_color">
 
     <TextView
-        android:id="@+id/languageSettingsTitle"
+        android:id="@+id/functionalitySettingsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app.settings.keyboard.functionality.title"
@@ -24,7 +24,7 @@
         app:layout_constraintVertical_bias="0.022" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/functionalityRecyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
@@ -33,5 +33,36 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/layoutSettingsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app.settings.keyboard.layout.title"
+        android:layout_marginStart="3dp"
+        android:textColor="@color/app_text_color"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/functionalityRecyclerView"
+        app:layout_constraintBottom_toTopOf="@id/layoutRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintVertical_bias="0.022" />
+
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/layoutRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/functionalityRecyclerView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
