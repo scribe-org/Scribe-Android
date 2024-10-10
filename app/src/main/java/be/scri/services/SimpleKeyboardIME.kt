@@ -85,16 +85,14 @@ abstract class SimpleKeyboardIME :
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
-        initializeEmojiButtons()
         return keyboardHolder
     }
 
-    private fun initializeEmojiButtons() {
-        val activity = this as AppCompatActivity
-        pluralBtn = activity.findViewById(R.id.plural_btn)
-        emojiBtnPhone1 = activity.findViewById(R.id.emoji_btn_phone_1)
-        emojiSpacePhone = activity.findViewById(R.id.emoji_space_phone)
-        emojiBtnPhone2 = activity.findViewById(R.id.emoji_btn_phone_2)
+    fun initializeEmojiButtons() {
+        pluralBtn = binding.pluralBtn
+        emojiBtnPhone1 = binding.emojiBtnPhone1
+        emojiSpacePhone = binding.emojiSpacePhone
+        emojiBtnPhone2 = binding.emojiBtnPhone2
 
         Log.d(tagDebug, "pluralBtn initialized: $pluralBtn")
         Log.d(tagDebug, "pluralBtn visibility: ${pluralBtn?.visibility}")
@@ -105,6 +103,10 @@ abstract class SimpleKeyboardIME :
         emojiBtnPhone1?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
         emojiSpacePhone?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
         emojiBtnPhone2?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+
+        Log.d(tagDebug, "Function called")
+        Log.d(tagDebug, "pluralBtn initialized: $pluralBtn")
+        Log.d(tagDebug, "pluralBtn visibility: ${pluralBtn?.visibility}")
     }
 
     override fun onPress(primaryCode: Int) {
