@@ -1,6 +1,5 @@
 package be.scri.fragments
 
-import android.content.Context
 import android.net.Uri
 import android.content.Intent
 import android.os.Bundle
@@ -227,9 +226,10 @@ class AboutFragment : Fragment() {
 
     private fun rateScribe() {
         val context = requireContext()
-       // var installSource = getInstallSource(context)
+        // var installSource = getInstallSource(context)
         val url = null
-        //To be added later
+        // To be added later
+
         /*var url = when (installSource) {
            "com.android.vending" -> "https://play.google.com/store/apps/details?id=${context.packageName}"
            "org.fdroid.fdroid" -> "https://f-droid.org/packages/${context.packageName}"
@@ -245,6 +245,5 @@ class AboutFragment : Fragment() {
         } else {
             Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
         }
-
     }
 }
