@@ -1,7 +1,7 @@
 package be.scri.fragments
 
-import android.net.Uri
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -243,7 +243,11 @@ class AboutFragment : Fragment() {
             }
             context.startActivity(intent)
         } else {
-            Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                "Unknown installation source",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }
