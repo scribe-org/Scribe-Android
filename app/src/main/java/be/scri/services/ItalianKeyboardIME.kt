@@ -61,6 +61,9 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
+        initializeEmojiButtons()
+        val isAutoSuggestEnabled = sharedPref.getBoolean("emoji_suggestions_Italian", true)
+        updateButtonVisibility(isAutoSuggestEnabled)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
@@ -88,6 +91,7 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
         keyboardView!!.setKeyboardHolder()
         setupCommandBarTheme(binding)
         keyboardView!!.mOnKeyboardActionListener = this
+        initializeEmojiButtons()
         updateUI()
         return keyboardHolder
     }
