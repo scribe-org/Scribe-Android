@@ -215,14 +215,15 @@ class AboutFragment : Fragment() {
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
-    private fun getInstallSource(context: Context): String? {
+
+    /*private fun getInstallSource(context: Context): String? {
         return try {
             val packageManager = context.packageManager
             packageManager.getInstallerPackageName(context.packageName)
         } catch (e: Exception) {
             null
         }
-    }
+    }*/
 
     private fun rateScribe() {
         val context = requireContext()
