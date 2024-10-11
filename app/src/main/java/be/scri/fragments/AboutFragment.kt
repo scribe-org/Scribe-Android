@@ -1,10 +1,13 @@
 package be.scri.fragments
 
+import android.content.Context
+import android.net.Uri
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -104,15 +107,16 @@ class AboutFragment : Fragment() {
             ),
         )
 
-    private fun getSecondRecyclerViewData(): List<Any> =
-        listOf(
+    private fun getSecondRecyclerViewData(): List<Any> {
+        val context = requireContext()
+        return listOf(
             ItemsViewModel(
                 image = R.drawable.star,
                 text = ItemsViewModel.Text(R.string.app_about_feedback_rate_scribe),
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
-                action = null,
+                action = ::rateScribe,
             ),
             ItemsViewModel(
                 image = R.drawable.bug_report_icon,
@@ -147,6 +151,7 @@ class AboutFragment : Fragment() {
                 action = null,
             ),
         )
+    }
 
     private fun getThirdRecyclerViewData(): List<ItemsViewModel> =
         listOf(
@@ -210,4 +215,37 @@ class AboutFragment : Fragment() {
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
+    private fun getInstallSource(context: Context): String? {
+        return try {
+            val packageManager = context.packageManager
+            packageManager.getInstallerPackageName(context.packageName)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun rateScribe() {
+        val context = requireContext()
+        var installSource = getInstallSource(context)
+        val url = null
+        //To be added later
+        /*var url = when (installSource) {
+           "com.android.vending" -> "https://play.google.com/store/apps/details?id=${context.packageName}"
+           "org.fdroid.fdroid" -> "https://f-droid.org/packages/${context.packageName}"
+            else -> null
+        } */
+
+        if (url != null) {
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(url)
+                setPackage("com.android.chrome")
+            }
+            context.startActivity(intent)
+        } else {
+            Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
+        }
+
+
+    }
+
 }
