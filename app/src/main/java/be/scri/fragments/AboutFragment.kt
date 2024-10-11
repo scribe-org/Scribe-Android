@@ -226,7 +226,7 @@ class AboutFragment : Fragment() {
 
     private fun rateScribe() {
         val context = requireContext()
-        var installSource = getInstallSource(context)
+       // var installSource = getInstallSource(context)
         val url = null
         //To be added later
         /*var url = when (installSource) {
