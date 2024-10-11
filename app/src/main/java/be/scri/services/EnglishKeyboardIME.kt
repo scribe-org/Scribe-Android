@@ -191,7 +191,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
 
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
-                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                if (keyboardBinding == null || currentState == ScribeState.SELECT_COMMAND) {
                     handleDelete(false, keyboardBinding)
                 } else {
                     handleDelete(true, keyboardBinding)
@@ -203,7 +203,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
                 keyboardView!!.invalidateAllKeys()
             }
             KEYCODE_ENTER -> {
-                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+                if (keyboardBinding == null || currentState == ScribeState.SELECT_COMMAND) {
                     handleKeycodeEnter(keyboardBinding, false)
                 } else {
                     handleKeycodeEnter(keyboardBinding, true)
@@ -212,6 +212,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
                     updateUI()
                 }
             }
+
             MyKeyboard.KEYCODE_MODE_CHANGE -> {
                 handleModeChange(keyboardMode, keyboardView, this)
             }
