@@ -246,7 +246,5 @@ class AboutFragment : Fragment() {
             Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
         }
 
-
     }
-
 }
