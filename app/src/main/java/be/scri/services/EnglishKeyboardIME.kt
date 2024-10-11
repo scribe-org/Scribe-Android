@@ -64,6 +64,8 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
         initializeEmojiButtons()
+        val isAutoSuggestEnabled = sharedPref.getBoolean("emoji_suggestions_English", true)
+        updateButtonVisibility(isAutoSuggestEnabled)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
