@@ -18,7 +18,6 @@ import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
 import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
