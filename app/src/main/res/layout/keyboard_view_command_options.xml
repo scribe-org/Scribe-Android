@@ -43,6 +43,7 @@
             android:id="@+id/translate_btn"
             android:layout_width="0dp"
             android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginEnd="@dimen/small_margin"
             android:background="@drawable/cmd_key_background_rounded"
             android:contentDescription="@string/command_bar"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
@@ -54,17 +55,24 @@
 
         <View
             android:id="@+id/separator_2"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintVertical_bias="0.5"
+            android:background="@color/special_key_light"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintTop_toTopOf="@+id/command_field"
             app:layout_constraintEnd_toStartOf="@+id/conjugate_btn"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/translate_btn" />
+            app:layout_constraintStart_toEndOf="@+id/translate_btn"
+            android:visibility="gone" />
+
 
         <Button
             android:id="@+id/conjugate_btn"
             android:layout_width="0dp"
             android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginEnd="@dimen/small_margin"
             android:background="@drawable/cmd_key_background_rounded"
             android:contentDescription="@string/command_bar"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
@@ -74,14 +82,19 @@
             app:layout_constraintStart_toEndOf="@+id/separator_2"
             app:layout_constraintTop_toTopOf="@+id/command_field" />
 
-        <View
+            <View
             android:id="@+id/separator_3"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintVertical_bias="0.5"
+            android:background="@color/special_key_light"
+            app:layout_constraintTop_toTopOf="@+id/command_field"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
             app:layout_constraintEnd_toStartOf="@+id/plural_btn"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@+id/conjugate_btn" />
+            app:layout_constraintStart_toEndOf="@+id/conjugate_btn"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/plural_btn"
