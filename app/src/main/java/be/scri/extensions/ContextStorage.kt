@@ -83,6 +83,8 @@ fun Context.getSDCardPath(): String {
                 }
             }
         } catch (e: Exception) {
+            Log.e("FileError", "Error accessing storage files: ${e.message}", e)
+            Toast.makeText(context, "Failed to access storage.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -462,7 +464,9 @@ fun Context.deleteFromMediaStore(
             val args = arrayOf(path)
             val success = contentResolver.delete(getFileUri(path), where, args) != 1
             callback?.invoke(success)
-        } catch (ignored: Exception) {
+        } catch (e: Exception) {
+            Log.e("FileDeleteError", "Error deleting file at path: $path. Exception: ${e.message}", e)
+            Toast.makeText(context, "Failed to delete file.", Toast.LENGTH_SHORT).show()
         }
         callback?.invoke(true)
     }
@@ -484,6 +488,8 @@ fun Context.rescanAndDeletePath(
         try {
             applicationContext.contentResolver.delete(uri, null, null)
         } catch (e: Exception) {
+            Log.e("FileDeleteError", "Error deleting scanned file at path: $path. Exception: ${e.message}", e)
+            Toast.makeText(applicationContext, "Failed to delete scanned file.", Toast.LENGTH_SHORT).show()
         }
         callback()
     }
@@ -1012,12 +1018,16 @@ fun Context.getFolderLastModifieds(folder: String): HashMap<String, Long> {
                             lastModifieds["$folder/$name"] = lastModified
                         }
                     } catch (e: Exception) {
+                        Log.e("CursorError", "Error processing file data: ${e.message}", e)
                     }
                 } while (cursor.moveToNext())
             }
         }
     } catch (e: Exception) {
+        Log.e("QueryError", "Error querying media content: ${e.message}", e)
+        Toast.makeText(context, "Failed to retrieve media information.", Toast.LENGTH_SHORT).show()
     }
+
 
     return lastModifieds
 }
@@ -1089,10 +1099,13 @@ fun getMediaStoreIds(context: Context): HashMap<String, Long> {
                     ids[path] = id
                 }
             } catch (e: Exception) {
+                Log.e("CursorProcessingError", "Error processing cursor data: ${e.message}", e)
             }
         }
     } catch (e: Exception) {
+        Log.e("QueryError", "Error querying media content: ${e.message}", e)
     }
+
 
     return ids
 }
