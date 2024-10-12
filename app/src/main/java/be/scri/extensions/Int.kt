@@ -18,7 +18,7 @@ fun Int.getContrastColor(): Int {
     return if (y >= 149 && this != Color.BLACK) DARK_GREY else Color.WHITE
 }
 
-fun Int.toHex() = String.format("#%06X", 0xFFFFFF and this).toUpperCase()
+fun Int.toHex() = "#%06X".format(0xFFFFFF and this).uppercase()
 
 fun Int.adjustAlpha(factor: Float): Int {
     val alpha = Math.round(Color.alpha(this) * factor)
