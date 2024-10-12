@@ -241,7 +241,7 @@ class MyKeyboard {
                     (x < this.x + width || rightEdge && x >= this.x) &&
                     (y >= this.y && y <= this.y + height) &&
                     (y < this.y + height && y >= this.y)
-            )
+                )
         }
     }
 
@@ -357,6 +357,7 @@ class MyKeyboard {
                             currentRow = createRowFromXml(res, parser)
                             mRows.add(currentRow)
                         }
+
                         TAG_KEY -> {
                             inKey = true
                             key = createKeyFromXml(res, currentRow!!, x, y, parser)
@@ -373,6 +374,7 @@ class MyKeyboard {
                             }
                             currentRow.mKeys.add(key)
                         }
+
                         TAG_KEYBOARD -> {
                             parseKeyboardAttributes(res, parser)
                         }
@@ -394,17 +396,18 @@ class MyKeyboard {
         } catch (e: Exception) {
             Log.e("MyKeyboard", "Error parsing XML: ${e.message}", e)
             Toast.makeText(context, "Error parsing keyboard layout.", Toast.LENGTH_SHORT).show()
-        mHeight = y
-    }
+            mHeight = y
+        }
 
-    private fun parseKeyboardAttributes(
-        res: Resources,
-        parser: XmlResourceParser,
-    ) {
-        val a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.MyKeyboard)
-        mDefaultWidth = getDimensionOrFraction(a, R.styleable.MyKeyboard_keyWidth, mDisplayWidth, mDisplayWidth / 10)
-        mDefaultHeight = res.getDimension(R.dimen.key_height).toInt()
-        mDefaultHorizontalGap = getDimensionOrFraction(a, R.styleable.MyKeyboard_horizontalGap, mDisplayWidth, 0)
-        a.recycle()
+        fun parseKeyboardAttributes(
+            res: Resources,
+            parser: XmlResourceParser,
+        ) {
+            val a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.MyKeyboard)
+            mDefaultWidth = getDimensionOrFraction(a, R.styleable.MyKeyboard_keyWidth, mDisplayWidth, mDisplayWidth / 10)
+            mDefaultHeight = res.getDimension(R.dimen.key_height).toInt()
+            mDefaultHorizontalGap = getDimensionOrFraction(a, R.styleable.MyKeyboard_horizontalGap, mDisplayWidth, 0)
+            a.recycle()
+        }
     }
 }
