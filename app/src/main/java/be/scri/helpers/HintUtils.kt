@@ -38,9 +38,9 @@ class HintUtils {
                 putBoolean("hint_shown_about", false)
                 apply()
             }
-            Log.d("HintUtils", "hint_shown_main: ${sharedPref.getBoolean("hint_shown_main", false)}")
-            Log.d("HintUtils", "hint_shown_settings: ${sharedPref.getBoolean("hint_shown_settings", false)}")
-            Log.d("HintUtils", "hint_shown_about: ${sharedPref.getBoolean("hint_shown_about", false)}")
+//            Log.d("HintUtils", "hint_shown_main: ${sharedPref.getBoolean("hint_shown_main", false)}")
+//            Log.d("HintUtils", "hint_shown_settings: ${sharedPref.getBoolean("hint_shown_settings", false)}")
+//            Log.d("HintUtils", "hint_shown_about: ${sharedPref.getBoolean("hint_shown_about", false)}")
         }
     }
 }

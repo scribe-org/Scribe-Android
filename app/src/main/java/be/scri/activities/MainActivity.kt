@@ -187,7 +187,7 @@ class MainActivity : SimpleActivity() {
 
     fun showHint(
         sharedPrefsKey: String,
-        hintMessageResId: Int
+        hintMessageResId: Int,
     ) {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val allEntries = sharedPref.all
