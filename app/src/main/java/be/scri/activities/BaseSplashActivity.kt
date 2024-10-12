@@ -8,7 +8,6 @@ import be.scri.extensions.baseConfig
 import be.scri.extensions.checkAppIconColor
 import be.scri.extensions.checkAppSideloading
 import be.scri.extensions.getSharedTheme
-import be.scri.extensions.isThankYouInstalled
 import be.scri.extensions.isUsingSystemDarkTheme
 import be.scri.extensions.showSideloadingDialog
 import be.scri.helpers.SIDELOADING_TRUE
@@ -39,7 +38,7 @@ abstract class BaseSplashActivity : AppCompatActivity() {
             }
         }
 
-        if (!baseConfig.isUsingAutoTheme && !baseConfig.isUsingSystemTheme && isThankYouInstalled()) {
+        if (!baseConfig.isUsingAutoTheme && !baseConfig.isUsingSystemTheme) {
             getSharedTheme {
                 if (it != null) {
                     baseConfig.apply {

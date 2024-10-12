@@ -1,8 +1,6 @@
 package be.scri.helpers
 
-import android.content.ContentValues
 import android.net.Uri
-import be.scri.models.SharedTheme
 
 class MyContentProvider {
     companion object {
@@ -20,15 +18,5 @@ class MyContentProvider {
         const val COL_NAVIGATION_BAR_COLOR = "navigation_bar_color"
         const val COL_LAST_UPDATED_TS = "last_updated_ts"
 
-        fun fillThemeContentValues(sharedTheme: SharedTheme) =
-            ContentValues().apply {
-                put(COL_TEXT_COLOR, sharedTheme.textColor)
-                put(COL_BACKGROUND_COLOR, sharedTheme.backgroundColor)
-                put(COL_PRIMARY_COLOR, sharedTheme.primaryColor)
-                put(COL_ACCENT_COLOR, sharedTheme.accentColor)
-                put(COL_APP_ICON_COLOR, sharedTheme.appIconColor)
-                put(COL_NAVIGATION_BAR_COLOR, sharedTheme.navigationBarColor)
-                put(COL_LAST_UPDATED_TS, System.currentTimeMillis() / 1000)
-            }
     }
 }

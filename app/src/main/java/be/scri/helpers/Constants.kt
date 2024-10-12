@@ -10,14 +10,9 @@ const val MAX_KEYS_PER_MINI_ROW = 9
 // shared prefs
 const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
 const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
-const val LAST_EXPORTED_CLIPS_FOLDER = "last_exported_clips_folder"
-const val KEYBOARD_LANGUAGE = "keyboard_language"
 const val DARK_THEME = "dark_theme"
 const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
 
-// differentiate current and pinned clips at the keyboards' Clipboard section
-const val ITEM_SECTION_LABEL = 0
-const val ITEM_CLIP = 1
 
 const val LANGUAGE_ENGLISH_QWERTY = 0
 const val LANGUAGE_FRENCH = 1

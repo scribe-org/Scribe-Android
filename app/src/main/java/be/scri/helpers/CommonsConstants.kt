@@ -3,7 +3,6 @@ package be.scri.helpers
 import android.graphics.Color
 import android.os.Build
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.ChecksSdkIntAtLeast
 
 const val EXTERNAL_STORAGE_PROVIDER_AUTHORITY = "com.android.externalstorage.documents"
@@ -18,7 +17,6 @@ const val APP_ID = "app_id"
 const val APP_LAUNCHER_NAME = "app_launcher_name"
 const val REAL_FILE_PATH = "real_file_path_2"
 const val IS_FROM_GALLERY = "is_from_gallery"
-const val BROADCAST_REFRESH_MEDIA = "com.simplemobiletools.REFRESH_MEDIA"
 const val REFRESH_PATH = "refresh_path"
 const val IS_CUSTOMIZING_COLORS = "is_customizing_colors"
 const val BLOCKED_NUMBERS_EXPORT_DELIMITER = ","
@@ -383,20 +381,8 @@ fun isMarshmallowPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.N)
 fun isNougatPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
 
-@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.N_MR1)
-fun isNougatMR1Plus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
-
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
 fun isOreoPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-
-@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O_MR1)
-fun isOreoMr1Plus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1
-
-@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.P)
-fun isPiePlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-
-@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
-fun isQPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.R)
 fun isRPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
@@ -404,49 +390,4 @@ fun isRPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
 fun isSPlus() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-fun getDateFormats() =
-    arrayListOf(
-        "--MM-dd",
-        "yyyy-MM-dd",
-        "yyyyMMdd",
-        "yyyy.MM.dd",
-        "yy-MM-dd",
-        "yyMMdd",
-        "yy.MM.dd",
-        "yy/MM/dd",
-        "MM-dd",
-        "MMdd",
-        "MM/dd",
-        "MM.dd",
-    )
-
-fun getDateFormatsWithYear() =
-    arrayListOf(
-        DATE_FORMAT_FOUR,
-        DATE_FORMAT_NINE,
-        DATE_FORMAT_TEN,
-        DATE_FORMAT_ELEVEN,
-        DATE_FORMAT_TWELVE,
-        DATE_FORMAT_THIRTEEN,
-        DATE_FORMAT_FOURTEEN,
-    )
-
 val normalizeRegex = "\\p{InCombiningDiacriticalMarks}+".toRegex()
-
-fun getConflictResolution(
-    resolutions: LinkedHashMap<String, Int>,
-    path: String,
-): Int =
-    if (resolutions.size == 1 && resolutions.containsKey("")) {
-        resolutions[""]!!
-    } else if (resolutions.containsKey(path)) {
-        resolutions[path]!!
-    } else {
-        CONFLICT_SKIP
-    }
-
-val proPackages = arrayListOf("draw", "gallery", "filemanager", "contacts", "notes", "calendar")
-
-fun mydebug(message: String) = Log.e("DEBUG", message)
-
-fun getQuestionMarks(size: Int) = Array(size) { "?" }.joinToString(separator = ",")

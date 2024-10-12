@@ -14,9 +14,6 @@ import be.scri.helpers.MyContentProvider
 import be.scri.helpers.appIconColorStrings
 import be.scri.helpers.ensureBackgroundThread
 import be.scri.models.SharedTheme
-import be.scri.views.MyAppCompatCheckbox
-import be.scri.views.MyEditText
-import be.scri.views.MyFloatingActionButton
 import be.scri.views.MyTextView
 
 // handle system default theme (Material You) specially as the color is taken from the system, not hardcoded by us
@@ -70,20 +67,10 @@ fun Context.updateTextColors(viewGroup: ViewGroup) {
     for (i in 0 until viewGroup.childCount) {
         when (val view = viewGroup.getChildAt(i)) {
             is MyTextView -> view.setColors(textColor, accentColor)
-            is MyAppCompatCheckbox -> view.setColors(textColor, accentColor)
-            is MyEditText -> view.setColors(textColor, accentColor)
-            is MyFloatingActionButton -> view.setColors(textColor)
             is ViewGroup -> updateTextColors(view)
         }
     }
 }
-
-fun Context.getLinkTextColor(): Int =
-    if (baseConfig.primaryColor == resources.getColor(R.color.color_primary)) {
-        baseConfig.primaryColor
-    } else {
-        baseConfig.textColor
-    }
 
 fun Context.isBlackAndWhiteTheme() = baseConfig.textColor == Color.WHITE && baseConfig.primaryColor == Color.BLACK && baseConfig.backgroundColor == Color.BLACK
 
@@ -91,33 +78,10 @@ fun Context.isWhiteTheme() = baseConfig.textColor == DARK_GREY && baseConfig.pri
 
 fun Context.isUsingSystemDarkTheme() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES != 0
 
-fun Context.getTimePickerDialogTheme() =
-    when {
-        baseConfig.isUsingSystemTheme ->
-            if (isUsingSystemDarkTheme()) {
-                R.style.MyTimePickerMaterialTheme_Dark
-            } else {
-                R.style.MyDateTimePickerMaterialTheme
-            }
-        baseConfig.backgroundColor.getContrastColor() == Color.WHITE -> R.style.MyDialogTheme_Dark
-        else -> R.style.MyDialogTheme
-    }
-
-fun Context.getDatePickerDialogTheme() =
-    when {
-        baseConfig.isUsingSystemTheme -> R.style.MyDateTimePickerMaterialTheme
-        baseConfig.backgroundColor.getContrastColor() == Color.WHITE -> R.style.MyDialogTheme_Dark
-        else -> R.style.MyDialogTheme
-    }
-
 fun Context.getSharedTheme(callback: (sharedTheme: SharedTheme?) -> Unit) {
-    if (!isThankYouInstalled()) {
-        callback(null)
-    } else {
-        val cursorLoader = getMyContentProviderCursorLoader()
-        ensureBackgroundThread {
-            callback(getSharedThemeSync(cursorLoader))
-        }
+    val cursorLoader = getMyContentProviderCursorLoader()
+    ensureBackgroundThread {
+        callback(getSharedThemeSync(cursorLoader))
     }
 }
 
