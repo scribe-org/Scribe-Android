@@ -390,7 +390,8 @@ class MyKeyboard {
                 }
             }
         } catch (e: Exception) {
-        }
+            Log.e("MyKeyboard", "Error parsing XML: ${e.message}", e)
+            Toast.makeText(context, "Error parsing keyboard layout.", Toast.LENGTH_SHORT).show()
         mHeight = y
     }
 
