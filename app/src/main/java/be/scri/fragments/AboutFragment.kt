@@ -1,5 +1,6 @@
 package be.scri.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -215,39 +216,40 @@ class AboutFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
-    /*private fun getInstallSource(context: Context): String? {
-        return try {
+    private fun getInstallSource(context: Context): String? =
+        try {
             val packageManager = context.packageManager
             packageManager.getInstallerPackageName(context.packageName)
         } catch (e: Exception) {
             null
         }
-    }*/
 
     private fun rateScribe() {
         val context = requireContext()
-        // var installSource = getInstallSource(context)
-        val url = null
-        // To be added later
+        var installSource = getInstallSource(context)
 
-        /*var url = when (installSource) {
-           "com.android.vending" -> "https://play.google.com/store/apps/details?id=${context.packageName}"
-           "org.fdroid.fdroid" -> "https://f-droid.org/packages/${context.packageName}"
-            else -> null
-        } */
+        var url =
+            when (installSource) {
+                "com.android.vending" -> "https://play.google.com/store/apps/details?id=${context.packageName}"
+                "org.fdroid.fdroid" -> "https://f-droid.org/packages/${context.packageName}"
+                else -> null
+            }
 
         if (url != null) {
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(url)
-                setPackage("com.android.chrome")
-            }
+            val intent =
+                Intent(Intent.ACTION_VIEW)
+                    .apply {
+                        data = Uri.parse(url)
+                        setPackage("com.android.chrome")
+                    }
             context.startActivity(intent)
         } else {
-            Toast.makeText(
-                context,
-                "Unknown installation source",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast
+                .makeText(
+                    context,
+                    "Unknown installation source",
+                    Toast.LENGTH_SHORT,
+                ).show()
         }
     }
 }
