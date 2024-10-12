@@ -2,6 +2,7 @@ package be.scri.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -98,11 +99,38 @@ class LanguageSettingsFragment : Fragment() {
     }
 
     private fun setupRecyclerView(language: String) {
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        binding.recyclerView.adapter = CustomAdapter(getRecyclerViewData(language), requireContext())
+        binding.functionalityRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.functionalityRecyclerView.adapter = CustomAdapter(getFunctionalityRecyclerViewData(language), requireContext())
+
+        binding.layoutRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.layoutRecyclerView.adapter = CustomAdapter(getLayoutRecyclerViewData(language), requireContext())
     }
 
-    private fun getRecyclerViewData(language: String): List<SwitchItem> {
+    private fun getFunctionalityRecyclerViewData(language: String): List<SwitchItem> {
+        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val list = mutableListOf<SwitchItem>()
+        list.add(
+            SwitchItem(
+                isChecked = sharedPref.getBoolean("period_on_double_tap_$language", false),
+                title = getString(R.string.app_settings_keyboard_functionality_double_space_period),
+                description = getString(R.string.app_settings_keyboard_functionality_double_space_period_description),
+                action = { enablePeriodOnSpaceBarDoubleTap(language) },
+                action2 = { disablePeriodOnSpaceBarDoubleTap(language) },
+            ),
+        )
+        list.add(
+            SwitchItem(
+                isChecked = sharedPref.getBoolean("autosuggest_emojis_$language", true),
+                title = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji),
+                description = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description),
+                action = { enableEmojiAutosuggestions(language) },
+                action2 = { disableEmojiAutosuggestions(language) },
+            ),
+        )
+        return list
+    }
+
+    private fun getLayoutRecyclerViewData(language: String): List<SwitchItem> {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val list = mutableListOf<SwitchItem>()
         when (language) {
@@ -142,20 +170,11 @@ class LanguageSettingsFragment : Fragment() {
         }
         list.add(
             SwitchItem(
-                isChecked = sharedPref.getBoolean("period_on_double_tap_$language", false),
-                title = getString(R.string.app_settings_keyboard_functionality_double_space_period),
-                description = getString(R.string.app_settings_keyboard_functionality_double_space_period_description),
-                action = { enablePeriodOnSpaceBarDoubleTap(language) },
-                action2 = { disablePeriodOnSpaceBarDoubleTap(language) },
-            ),
-        )
-        list.add(
-            SwitchItem(
-                isChecked = sharedPref.getBoolean("autosuggest_emojis_$language", true),
-                title = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji),
-                description = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description),
-                action = { enableEmojiAutosuggestions(language) },
-                action2 = { disableEmojiAutosuggestions(language) },
+                isChecked = sharedPref.getBoolean("period_and_comma_$language", false),
+                title = getString(R.string.app_settings_keyboard_layout_period_and_comma),
+                description = getString(R.string.app_settings_keyboard_layout_period_and_comma_description),
+                action = { enableCommaAndPeriod() },
+                action2 = { disableCommaAndPeriod() },
             ),
         )
         return list
@@ -207,6 +226,14 @@ class LanguageSettingsFragment : Fragment() {
         editor.putBoolean("emoji_suggestions_$language", false)
         editor.apply()
         Toast.makeText(requireContext(), "$language Emoji Autosuggestions off", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun enableCommaAndPeriod() {
+        Log.d("LanguageSettingsFragment", "This enableCommaAndPeriod-function is to be implemented later")
+    }
+
+    private fun disableCommaAndPeriod() {
+        Log.d("LanguageSettingsFragment", "This disableCommaAndPeriod-function is to be implemented later")
     }
 
     override fun onDestroyView() {
