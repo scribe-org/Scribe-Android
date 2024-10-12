@@ -135,6 +135,7 @@ fun Context.getSharedThemeSync(cursorLoader: CursorLoader): SharedTheme? {
                 val lastUpdatedTS = cursor.getIntValue(MyContentProvider.COL_LAST_UPDATED_TS)
                 return SharedTheme(textColor, backgroundColor, primaryColor, appIconColor, navigationBarColor, lastUpdatedTS, accentColor)
             } catch (e: Exception) {
+                Log.e("ThemeError", "Error retrieving theme data: ${e.message}", e)
             }
         }
     }
@@ -170,6 +171,8 @@ fun Context.toggleAppIconColor(
             baseConfig.lastIconColor = color
         }
     } catch (e: Exception) {
+        Log.e("ComponentToggleError", "Error changing component state: ${e.message}", e)
+        Toast.makeText(context, "Failed to change app component state.", Toast.LENGTH_SHORT).show()
     }
 }
 
