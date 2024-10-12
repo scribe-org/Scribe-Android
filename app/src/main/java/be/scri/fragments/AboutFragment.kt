@@ -13,6 +13,7 @@ import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentAboutBinding
 import be.scri.helpers.CustomAdapter
+import be.scri.helpers.HintUtils
 import be.scri.models.ItemsViewModel
 
 class AboutFragment : Fragment() {
@@ -144,7 +145,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.counter_clockwise_icon,
                 url = null,
                 activity = null,
-                action = null,
+                action = ::resetHints,
             ),
         )
 
@@ -167,6 +168,11 @@ class AboutFragment : Fragment() {
                 action = ::loadThirdPartyLicensesFragment,
             ),
         )
+
+    private fun resetHints() {
+        HintUtils.resetHints(requireContext())
+        (activity as MainActivity).showHint("hint_shown_about", R.string.about_hint_message)
+    }
 
     private fun shareScribe() {
         val sharingIntent =
@@ -209,5 +215,15 @@ class AboutFragment : Fragment() {
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).showHint("hint_shown_about", R.string.about_hint_message)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as MainActivity).hideHint()
     }
 }

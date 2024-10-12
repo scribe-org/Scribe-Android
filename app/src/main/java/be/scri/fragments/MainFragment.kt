@@ -32,7 +32,7 @@ class MainFragment : Fragment() {
         binding.keyboardSettings.setOnClickListener {
             openKeyboardSettings()
         }
-
+//        clearAllHints(requireContext())
         (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         applyUserDarkModePreference()
         val callback =
@@ -43,6 +43,17 @@ class MainFragment : Fragment() {
         callback.isEnabled = true
         return binding.root
     }
+
+//    fun clearAllHints(context: Context) {
+//        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+//        val editor = sharedPref.edit()
+//        for (key in sharedPref.all.keys) {
+//            if (key.startsWith("hint_shown")) { // Check if key is hint-related
+//                editor.remove(key)
+//            }
+//        }
+//        editor.apply() // or editor.commit()
+//    }
 
     private fun applyUserDarkModePreference() {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -82,5 +93,15 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).showHint("hint_shown_main", R.string.main_hint_message)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as MainActivity).hideHint()
     }
 }
