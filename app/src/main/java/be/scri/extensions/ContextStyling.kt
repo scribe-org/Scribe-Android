@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
+import android.util.Log
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.loader.content.CursorLoader
 import be.scri.R
 import be.scri.helpers.DARK_GREY
@@ -172,7 +174,7 @@ fun Context.toggleAppIconColor(
         }
     } catch (e: Exception) {
         Log.e("ComponentToggleError", "Error changing component state: ${e.message}", e)
-        Toast.makeText(context, "Failed to change app component state.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Failed to change app component state.", Toast.LENGTH_SHORT).show()
     }
 }
 
