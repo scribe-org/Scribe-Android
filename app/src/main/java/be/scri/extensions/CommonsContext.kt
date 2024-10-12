@@ -128,6 +128,7 @@ fun Context.toast(
             }
         }
     } catch (e: Exception) {
+        Log.e("ToastError", "Error displaying toast message: ${e.message}", e)
     }
 }
 
@@ -273,6 +274,8 @@ fun Context.getDataColumn(
             }
         }
     } catch (e: Exception) {
+        Log.e("FileQueryError", "Error querying file data: ${e.message}", e)
+        Toast.makeText(context, "Failed to retrieve file data.", Toast.LENGTH_SHORT).show()
     }
     return null
 }
@@ -362,6 +365,8 @@ fun Context.getMediaContent(
             }
         }
     } catch (e: Exception) {
+        Log.e("MediaQueryError", "Error querying media content: ${e.message}", e)
+        Toast.makeText(context, "Failed to retrieve media URI.", Toast.LENGTH_SHORT).show()
     }
     return null
 }
@@ -404,6 +409,8 @@ fun Context.getMimeTypeFromUri(uri: Uri): String {
         try {
             mimetype = contentResolver.getType(uri) ?: ""
         } catch (e: IllegalStateException) {
+            Log.e("MimeTypeError", "Error retrieving MIME type for URI: ${uri.toString()}. Exception: ${e.message}", e)
+            Toast.makeText(context, "Failed to retrieve MIME type.", Toast.LENGTH_SHORT).show()
         }
     }
     return mimetype
@@ -460,6 +467,8 @@ fun Context.getFilenameFromContentUri(uri: Uri): String? {
             }
         }
     } catch (e: Exception) {
+        Log.e("DisplayNameQueryError", "Error querying display name for URI: ${uri.toString()}. Exception: ${e.message}", e)
+        Toast.makeText(context, "Failed to retrieve display name.", Toast.LENGTH_SHORT).show()
     }
     return null
 }
@@ -474,6 +483,8 @@ fun Context.getSizeFromContentUri(uri: Uri): Long {
             }
         }
     } catch (e: Exception) {
+        Log.e("FileSizeQueryError", "Error querying file size for URI: ${uri.toString()}. Exception: ${e.message}", e)
+        Toast.makeText(context, "Failed to retrieve file size.", Toast.LENGTH_SHORT).show()
     }
     return 0L
 }
