@@ -39,6 +39,7 @@ import android.provider.OpenableColumns
 import android.provider.Settings
 import android.telecom.TelecomManager
 import android.telephony.PhoneNumberUtils
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -48,6 +49,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.loader.content.CursorLoader
+import androidx.media3.common.util.Log
 import be.scri.R
 import be.scri.helpers.BaseConfig
 import be.scri.helpers.DAY_SECONDS
@@ -275,7 +277,7 @@ fun Context.getDataColumn(
         }
     } catch (e: Exception) {
         Log.e("FileQueryError", "Error querying file data: ${e.message}", e)
-        Toast.makeText(context, "Failed to retrieve file data.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Failed to retrieve file data.", Toast.LENGTH_SHORT).show()
     }
     return null
 }
@@ -366,7 +368,7 @@ fun Context.getMediaContent(
         }
     } catch (e: Exception) {
         Log.e("MediaQueryError", "Error querying media content: ${e.message}", e)
-        Toast.makeText(context, "Failed to retrieve media URI.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Failed to retrieve media URI.", Toast.LENGTH_SHORT).show()
     }
     return null
 }
@@ -410,7 +412,7 @@ fun Context.getMimeTypeFromUri(uri: Uri): String {
             mimetype = contentResolver.getType(uri) ?: ""
         } catch (e: IllegalStateException) {
             Log.e("MimeTypeError", "Error retrieving MIME type for URI: ${uri.toString()}. Exception: ${e.message}", e)
-            Toast.makeText(context, "Failed to retrieve MIME type.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to retrieve MIME type.", Toast.LENGTH_SHORT).show()
         }
     }
     return mimetype
@@ -468,7 +470,7 @@ fun Context.getFilenameFromContentUri(uri: Uri): String? {
         }
     } catch (e: Exception) {
         Log.e("DisplayNameQueryError", "Error querying display name for URI: ${uri.toString()}. Exception: ${e.message}", e)
-        Toast.makeText(context, "Failed to retrieve display name.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Failed to retrieve display name.", Toast.LENGTH_SHORT).show()
     }
     return null
 }
