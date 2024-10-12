@@ -6,10 +6,12 @@ import android.content.res.Resources
 import android.content.res.TypedArray
 import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.util.TypedValue
 import android.util.Xml
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
+import android.widget.Toast
 import androidx.annotation.XmlRes
 import be.scri.R
 
