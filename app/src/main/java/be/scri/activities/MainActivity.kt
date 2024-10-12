@@ -185,7 +185,10 @@ class MainActivity : SimpleActivity() {
         return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
     }
 
-    fun showHint(sharedPrefsKey: String, hintMessageResId: Int) {
+    fun showHint(
+        sharedPrefsKey: String,
+        hintMessageResId: Int
+    ) {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val allEntries = sharedPref.all
         for ((key, value) in allEntries) {
