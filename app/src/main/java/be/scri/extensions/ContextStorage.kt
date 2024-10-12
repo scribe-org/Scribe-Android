@@ -21,6 +21,8 @@ import android.provider.MediaStore.Images
 import android.provider.MediaStore.MediaColumns
 import android.provider.MediaStore.Video
 import android.text.TextUtils
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
@@ -84,7 +86,7 @@ fun Context.getSDCardPath(): String {
             }
         } catch (e: Exception) {
             Log.e("FileError", "Error accessing storage files: ${e.message}", e)
-            Toast.makeText(context, "Failed to access storage.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to access storage.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -466,7 +468,7 @@ fun Context.deleteFromMediaStore(
             callback?.invoke(success)
         } catch (e: Exception) {
             Log.e("FileDeleteError", "Error deleting file at path: $path. Exception: ${e.message}", e)
-            Toast.makeText(context, "Failed to delete file.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to delete file.", Toast.LENGTH_SHORT).show()
         }
         callback?.invoke(true)
     }
@@ -1025,7 +1027,7 @@ fun Context.getFolderLastModifieds(folder: String): HashMap<String, Long> {
         }
     } catch (e: Exception) {
         Log.e("QueryError", "Error querying media content: ${e.message}", e)
-        Toast.makeText(context, "Failed to retrieve media information.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Failed to retrieve media information.", Toast.LENGTH_SHORT).show()
     }
 
 
