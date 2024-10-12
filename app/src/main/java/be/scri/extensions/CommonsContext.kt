@@ -49,7 +49,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.loader.content.CursorLoader
-import androidx.media3.common.util.Log
 import be.scri.R
 import be.scri.helpers.BaseConfig
 import be.scri.helpers.DAY_SECONDS
@@ -486,7 +485,7 @@ fun Context.getSizeFromContentUri(uri: Uri): Long {
         }
     } catch (e: Exception) {
         Log.e("FileSizeQueryError", "Error querying file size for URI: ${uri.toString()}. Exception: ${e.message}", e)
-        Toast.makeText(context, "Failed to retrieve file size.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Failed to retrieve file size.", Toast.LENGTH_SHORT).show()
     }
     return 0L
 }
