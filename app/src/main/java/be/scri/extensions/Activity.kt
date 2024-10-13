@@ -619,17 +619,15 @@ fun Activity.getFinalUriFromPath(
     path: String,
     applicationId: String,
 ): Uri? {
-    val uri =
-        try {
-            ensurePublicUri(path, applicationId)
-        } catch (e: Exception) {
-            showErrorToast(e)
-            return null
-        }
+    val uri = try {
+        ensurePublicUri(path, applicationId)
+    } catch (e: Exception) {
+        showErrorToast(e)
+        null // Assign null if there's an exception
+    }
 
     if (uri == null) {
         toast(R.string.unknown_error_occurred)
-        return null
     }
 
     return uri
@@ -1312,8 +1310,9 @@ fun BaseSimpleActivity.getFileOutputStreamSync(
     parentDocumentFile: DocumentFile? = null,
 ): OutputStream? {
     val targetFile = File(path)
+    var outputStream: OutputStream? = null
 
-    return when {
+    outputStream = when {
         isRestrictedSAFOnlyRoot(path) -> {
             val uri = getAndroidSAFUri(path)
             if (!getDoesFilePathExist(path)) {
@@ -1324,30 +1323,29 @@ fun BaseSimpleActivity.getFileOutputStreamSync(
         needsStupidWritePermissions(path) -> {
             var documentFile = parentDocumentFile
             if (documentFile == null) {
-                if (getDoesFilePathExist(targetFile.parentFile.absolutePath)) {
-                    documentFile = getDocumentFile(targetFile.parent)
+                documentFile = if (getDoesFilePathExist(targetFile.parentFile.absolutePath)) {
+                    getDocumentFile(targetFile.parent)
                 } else {
-                    documentFile = getDocumentFile(targetFile.parentFile.parent)
-                    documentFile = documentFile!!.createDirectory(targetFile.parentFile.name) ?: getDocumentFile(targetFile.parentFile.absolutePath)
+                    getDocumentFile(targetFile.parentFile.parent)
+                        ?.createDirectory(targetFile.parentFile.name)
+                        ?: getDocumentFile(targetFile.parentFile.absolutePath)
                 }
             }
 
             if (documentFile == null) {
                 val casualOutputStream = createCasualFileOutputStream(this, targetFile)
-                return if (casualOutputStream == null) {
+                if (casualOutputStream == null) {
                     showFileCreateError(targetFile.parent)
-                    null
-                } else {
-                    casualOutputStream
                 }
-            }
-
-            try {
-                val newDocument = getDocumentFile(path) ?: documentFile.createFile(mimeType, path.getFilenameFromPath())
-                applicationContext.contentResolver.openOutputStream(newDocument!!.uri)
-            } catch (e: Exception) {
-                showErrorToast(e)
-                null
+                casualOutputStream
+            } else {
+                try {
+                    val newDocument = getDocumentFile(path) ?: documentFile.createFile(mimeType, path.getFilenameFromPath())
+                    applicationContext.contentResolver.openOutputStream(newDocument!!.uri)
+                } catch (e: Exception) {
+                    showErrorToast(e)
+                    null
+                }
             }
         }
         isAccessibleWithSAFSdk30(path) -> {
@@ -1361,8 +1359,10 @@ fun BaseSimpleActivity.getFileOutputStreamSync(
                 null
             } ?: createCasualFileOutputStream(this, targetFile)
         }
-        else -> return createCasualFileOutputStream(this, targetFile)
+        else -> createCasualFileOutputStream(this, targetFile)
     }
+
+    return outputStream
 }
 
 private fun createCasualFileOutputStream(
@@ -1419,25 +1419,19 @@ fun Activity.showBiometricPrompt(
 }
 
 fun BaseSimpleActivity.createDirectorySync(directory: String): Boolean {
-    if (getDoesFilePathExist(directory)) {
-        return true
+    val result = when {
+        getDoesFilePathExist(directory) -> true
+        needsStupidWritePermissions(directory) -> {
+            val documentFile = getDocumentFile(directory.getParentPath())
+            val newDir = documentFile?.createDirectory(directory.getFilenameFromPath()) ?: getDocumentFile(directory)
+            newDir != null
+        }
+        isRestrictedSAFOnlyRoot(directory) -> createAndroidSAFDirectory(directory)
+        isAccessibleWithSAFSdk30(directory) -> createSAFDirectorySdk30(directory)
+        else -> File(directory).mkdirs()
     }
 
-    if (needsStupidWritePermissions(directory)) {
-        val documentFile = getDocumentFile(directory.getParentPath()) ?: return false
-        val newDir = documentFile.createDirectory(directory.getFilenameFromPath()) ?: getDocumentFile(directory)
-        return newDir != null
-    }
-
-    if (isRestrictedSAFOnlyRoot(directory)) {
-        return createAndroidSAFDirectory(directory)
-    }
-
-    if (isAccessibleWithSAFSdk30(directory)) {
-        return createSAFDirectorySdk30(directory)
-    }
-
-    return File(directory).mkdirs()
+    return result
 }
 
 fun Activity.updateSharedTheme(sharedTheme: SharedTheme) {
