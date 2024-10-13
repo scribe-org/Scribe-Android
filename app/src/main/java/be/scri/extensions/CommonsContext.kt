@@ -39,6 +39,7 @@ import android.provider.OpenableColumns
 import android.provider.Settings
 import android.telecom.TelecomManager
 import android.telephony.PhoneNumberUtils
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -128,6 +129,7 @@ fun Context.toast(
             }
         }
     } catch (e: Exception) {
+        Log.e("ToastError", "Error displaying toast message: ${e.message}", e)
     }
 }
 
@@ -214,46 +216,39 @@ fun Context.getLatestMediaByDateId(uri: Uri = Files.getContentUri("external")): 
 
 // some helper functions were taken from https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
 fun Context.getRealPathFromURI(uri: Uri): String? {
-    if (uri.scheme == "file") {
-        return uri.path
-    }
+    var path: String? = null
 
-    if (isDownloadsDocument(uri)) {
+    if (uri.scheme == "file") {
+        path = uri.path
+    } else if (isDownloadsDocument(uri)) {
         val id = DocumentsContract.getDocumentId(uri)
         if (id.areDigitsOnly()) {
             val newUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), id.toLong())
-            val path = getDataColumn(newUri)
-            if (path != null) {
-                return path
-            }
+            path = getDataColumn(newUri)
         }
     } else if (isExternalStorageDocument(uri)) {
         val documentId = DocumentsContract.getDocumentId(uri)
         val parts = documentId.split(":")
         if (parts[0].equals("primary", true)) {
-            return "${Environment.getExternalStorageDirectory().absolutePath}/${parts[1]}"
+            path = "${Environment.getExternalStorageDirectory().absolutePath}/${parts[1]}"
         }
     } else if (isMediaDocument(uri)) {
         val documentId = DocumentsContract.getDocumentId(uri)
         val split = documentId.split(":").dropLastWhile { it.isEmpty() }.toTypedArray()
         val type = split[0]
 
-        val contentUri =
-            when (type) {
-                "video" -> Video.Media.EXTERNAL_CONTENT_URI
-                "audio" -> Audio.Media.EXTERNAL_CONTENT_URI
-                else -> Images.Media.EXTERNAL_CONTENT_URI
-            }
+        val contentUri = when (type) {
+            "video" -> Video.Media.EXTERNAL_CONTENT_URI
+            "audio" -> Audio.Media.EXTERNAL_CONTENT_URI
+            else -> Images.Media.EXTERNAL_CONTENT_URI
+        }
 
         val selection = "_id=?"
         val selectionArgs = arrayOf(split[1])
-        val path = getDataColumn(contentUri, selection, selectionArgs)
-        if (path != null) {
-            return path
-        }
+        path = getDataColumn(contentUri, selection, selectionArgs)
     }
 
-    return getDataColumn(uri)
+    return path ?: getDataColumn(uri)
 }
 
 fun Context.getDataColumn(
@@ -273,6 +268,8 @@ fun Context.getDataColumn(
             }
         }
     } catch (e: Exception) {
+        Log.e("FileQueryError", "Error querying file data: ${e.message}", e)
+        Toast.makeText(this, "Failed to retrieve file data.", Toast.LENGTH_SHORT).show()
     }
     return null
 }
@@ -362,6 +359,8 @@ fun Context.getMediaContent(
             }
         }
     } catch (e: Exception) {
+        Log.e("MediaQueryError", "Error querying media content: ${e.message}", e)
+        Toast.makeText(this, "Failed to retrieve media URI.", Toast.LENGTH_SHORT).show()
     }
     return null
 }
@@ -404,6 +403,8 @@ fun Context.getMimeTypeFromUri(uri: Uri): String {
         try {
             mimetype = contentResolver.getType(uri) ?: ""
         } catch (e: IllegalStateException) {
+            Log.e("MimeTypeError", "Error retrieving MIME type for URI: ${uri.toString()}. Exception: ${e.message}", e)
+            Toast.makeText(this, "Failed to retrieve MIME type.", Toast.LENGTH_SHORT).show()
         }
     }
     return mimetype
@@ -460,6 +461,8 @@ fun Context.getFilenameFromContentUri(uri: Uri): String? {
             }
         }
     } catch (e: Exception) {
+        Log.e("DisplayNameQueryError", "Error querying display name for URI: ${uri.toString()}. Exception: ${e.message}", e)
+        Toast.makeText(this, "Failed to retrieve display name.", Toast.LENGTH_SHORT).show()
     }
     return null
 }
@@ -474,6 +477,8 @@ fun Context.getSizeFromContentUri(uri: Uri): Long {
             }
         }
     } catch (e: Exception) {
+        Log.e("FileSizeQueryError", "Error querying file size for URI: ${uri.toString()}. Exception: ${e.message}", e)
+        Toast.makeText(this, "Failed to retrieve file size.", Toast.LENGTH_SHORT).show()
     }
     return 0L
 }
@@ -691,19 +696,22 @@ fun Context.saveImageRotation(
     path: String,
     degrees: Int,
 ): Boolean {
+    var success = false
+
     if (!needsStupidWritePermissions(path)) {
         saveExifRotation(ExifInterface(path), degrees)
-        return true
+        success = true
     } else if (isNougatPlus()) {
         val documentFile = getSomeDocumentFile(path)
         if (documentFile != null) {
             val parcelFileDescriptor = contentResolver.openFileDescriptor(documentFile.uri, "rw")
             val fileDescriptor = parcelFileDescriptor!!.fileDescriptor
             saveExifRotation(ExifInterface(fileDescriptor), degrees)
-            return true
+            success = true
         }
     }
-    return false
+
+    return success
 }
 
 fun Context.saveExifRotation(
