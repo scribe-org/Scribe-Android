@@ -262,8 +262,13 @@ fun Context.getDataColumn(
     uri: Uri,
     selection: String? = null,
     selectionArgs: Array<String>? = null,
+<<<<<<< HEAD
 ): String? {
     return try {
+=======
+): String? =
+    try {
+>>>>>>> 831485a (fix:Linting issues due to generic exception statements)
         val projection = arrayOf(Files.FileColumns.DATA)
         val cursor: Cursor? = contentResolver.query(uri, projection, selection, selectionArgs, null)
 
@@ -291,7 +296,10 @@ fun Context.getDataColumn(
         Log.e("GetDataColumn", "IllegalArgumentException: ${e.message}", e)
         null
     }
+<<<<<<< HEAD
 }
+=======
+>>>>>>> 831485a (fix:Linting issues due to generic exception statements)
 
 
 private fun isMediaDocument(uri: Uri) = uri.authority == "com.android.providers.media.documents"
@@ -368,6 +376,32 @@ fun Context.getMediaContent(
     val projection = arrayOf(Images.Media._ID)
     val selection = "${Images.Media.DATA} = ?"
     val selectionArgs = arrayOf(path)
+<<<<<<< HEAD
+=======
+
+    return try {
+        val cursor: Cursor? = contentResolver.query(uri, projection, selection, selectionArgs, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val id = it.getInt(it.getColumnIndexOrThrow(Images.Media._ID)).toString()
+                Uri.withAppendedPath(uri, id)
+            } else {
+                Log.w("GetMediaContent", "No media found for path: $path")
+                null
+            }
+        } ?: run {
+            Log.w("GetMediaContent", "Cursor is null for URI: $uri")
+            null
+        }
+    } catch (e: SecurityException) {
+        Log.e("GetMediaContent", "SecurityException while querying URI: $uri", e)
+        null
+    } catch (e: IllegalArgumentException) {
+        Log.e("GetMediaContent", "IllegalArgumentException: ${e.message}", e)
+        null
+    }
+}
+>>>>>>> 831485a (fix:Linting issues due to generic exception statements)
 
     return try {
         val cursor: Cursor? = contentResolver.query(uri, projection, selection, selectionArgs, null)

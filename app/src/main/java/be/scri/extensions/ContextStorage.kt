@@ -1,18 +1,12 @@
 package be.scri.extensions
 
 import android.content.ContentUris
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.CursorIndexOutOfBoundsException
-import android.hardware.usb.UsbConstants
-import android.hardware.usb.UsbManager
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.Document
 import android.provider.MediaStore
@@ -23,8 +17,6 @@ import android.provider.MediaStore.MediaColumns
 import android.provider.MediaStore.Video
 import android.text.TextUtils
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import be.scri.R
@@ -34,7 +26,6 @@ import be.scri.helpers.SD_OTG_PATTERN
 import be.scri.helpers.SD_OTG_SHORT
 import be.scri.helpers.ensureBackgroundThread
 import be.scri.helpers.isMarshmallowPlus
-import be.scri.helpers.isNougatPlus
 import be.scri.helpers.isRPlus
 import be.scri.models.FileDirItem
 import java.io.File
@@ -42,7 +33,6 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
-import java.net.URLDecoder
 import java.util.Collections
 import java.util.regex.Pattern
 
@@ -543,7 +533,6 @@ fun Context.getFastAndroidSAFDocument(path: String): DocumentFile? {
     return DocumentFile.fromSingleUri(this, uri)
 }
 
-
 fun Context.createAndroidSAFDirectory(path: String): Boolean =
     try {
         val treeUri = getAndroidTreeUri(path).toUri()
@@ -626,7 +615,6 @@ fun Context.getAndroidSAFLastModified(path: String): Long {
         }
     } ?: 0L
 }
-
 
 fun Context.getFileInputStreamSync(path: String): InputStream? =
     when {
@@ -715,8 +703,6 @@ fun Context.getIsPathDirectory(path: String): Boolean =
         isPathOnOTG(path) -> getOTGFastDocumentFile(path)?.isDirectory ?: false
         else -> File(path).isDirectory
     }
-
-
 
 // avoid these being set as SD card paths
 private val physicalPaths =

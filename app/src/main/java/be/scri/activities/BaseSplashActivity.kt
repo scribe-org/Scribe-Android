@@ -16,7 +16,10 @@ abstract class BaseSplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 831485a (fix:Linting issues due to generic exception statements)
         baseConfig.apply {
             if (isUsingAutoTheme) {
                 val isUsingSystemDarkTheme = isUsingSystemDarkTheme()

@@ -8,19 +8,16 @@ import android.text.Html
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import be.scri.R
 import be.scri.activities.BaseSimpleActivity
 import be.scri.helpers.isOnMainThread
-
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-
 
 fun AppCompatActivity.updateActionBarTitle(
     text: String,
@@ -35,11 +32,6 @@ fun AppCompatActivity.updateActionBarTitle(
 
     supportActionBar?.title = Html.fromHtml("<font color='${colorToUse.toHex()}'>$text</font>")
 }
-
-
-
-
-
 
 fun Activity.hideKeyboard() {
     if (isOnMainThread()) {
@@ -80,15 +72,16 @@ fun BaseSimpleActivity.getFileOutputStreamSync(
             applicationContext.contentResolver.openOutputStream(uri)
         }
         needsStupidWritePermissions(path) -> {
-            var documentFile = parentDocumentFile ?: run {
-                if (getDoesFilePathExist(targetFile.parentFile.absolutePath)) {
-                    getDocumentFile(targetFile.parent)
-                } else {
-                    getDocumentFile(targetFile.parentFile.parent)
-                        ?.createDirectory(targetFile.parentFile.name)
-                        ?: getDocumentFile(targetFile.parentFile.absolutePath)
+            var documentFile =
+                parentDocumentFile ?: run {
+                    if (getDoesFilePathExist(targetFile.parentFile.absolutePath)) {
+                        getDocumentFile(targetFile.parent)
+                    } else {
+                        getDocumentFile(targetFile.parentFile.parent)
+                            ?.createDirectory(targetFile.parentFile.name)
+                            ?: getDocumentFile(targetFile.parentFile.absolutePath)
+                    }
                 }
-            }
 
             if (documentFile == null) {
                 val casualOutputStream = createCasualFileOutputStream(this, targetFile)
@@ -146,7 +139,6 @@ private fun createCasualFileOutputStream(
     }
 }
 
-
 fun BaseSimpleActivity.createDirectorySync(directory: String): Boolean {
     if (getDoesFilePathExist(directory)) {
         return true
@@ -168,4 +160,3 @@ fun BaseSimpleActivity.createDirectorySync(directory: String): Boolean {
 
     return File(directory).mkdirs()
 }
-

@@ -16,13 +16,11 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.provider.Settings
 import android.telecom.TelecomManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -278,12 +276,13 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         resultData: Intent?,
     ) {
         super.onActivityResult(requestCode, resultCode, resultData)
-        val partition: String = if (checkedDocumentPath.length >= 18) {
-            checkedDocumentPath.substring(9, 18)
-        } else {
-            showErrorToast("An unexpected error occurred while extracting the substring.")
-            ""
-        }
+        val partition: String =
+            if (checkedDocumentPath.length >= 18) {
+                checkedDocumentPath.substring(9, 18)
+            } else {
+                showErrorToast("An unexpected error occurred while extracting the substring.")
+                ""
+            }
 
         val sdOtgPattern = Pattern.compile(SD_OTG_SHORT)
         if (requestCode == CREATE_DOCUMENT_SDK_30) {
@@ -513,9 +512,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-
-
-
     fun handleOTGPermission(callback: (success: Boolean) -> Unit) {
         hideKeyboard()
         if (baseConfig.otgTreeUri.isNotEmpty()) {
@@ -524,7 +520,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
 
         funAfterSAFPermission = callback
-
     }
 
     @SuppressLint("NewApi")
@@ -611,7 +606,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             actionOnPermission?.invoke(grantResults[0] == 0)
         }
     }
-
 
     @SuppressLint("InlinedApi")
     protected fun launchSetDefaultDialerIntent() {

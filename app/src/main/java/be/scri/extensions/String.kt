@@ -1,34 +1,14 @@
 package be.scri.extensions
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Point
-import android.os.StatFs
 import android.provider.MediaStore
-import android.telephony.PhoneNumberUtils
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextUtils
-import android.text.style.ForegroundColorSpan
-import android.widget.TextView
 import be.scri.helpers.audioExtensions
-import be.scri.helpers.extensionsSupportingEXIF
-import be.scri.helpers.getDateFormats
 import be.scri.helpers.normalizeRegex
 import be.scri.helpers.photoExtensions
 import be.scri.helpers.rawExtensions
 import be.scri.helpers.videoExtensions
-import com.bumptech.glide.signature.ObjectKey
-import org.joda.time.DateTime
-import org.joda.time.Years
-import org.joda.time.format.DateTimeFormat
 import java.io.File
-import java.text.DateFormat
 import java.text.Normalizer
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.regex.Pattern
 
 fun String.getFilenameFromPath() = substring(lastIndexOf("/") + 1)
 
@@ -149,7 +129,6 @@ fun String.trimToComparableNumber(): String {
     val startIndex = Math.max(0, normalizedNumber.length - 9)
     return normalizedNumber.substring(startIndex)
 }
-
 
 fun String.getMimeType(): String {
     val typesMap =

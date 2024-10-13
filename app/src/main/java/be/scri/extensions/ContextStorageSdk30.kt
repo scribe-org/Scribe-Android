@@ -86,7 +86,6 @@ fun Context.isInAndroidDir(path: String): Boolean {
     return firstParentDir.equals(ANDROID_DIR, true)
 }
 
-
 fun isExternalStorageManager(): Boolean = isRPlus() && Environment.isExternalStorageManager()
 
 fun Context.createFirstParentTreeUriUsingRootTree(fullPath: String): Uri {

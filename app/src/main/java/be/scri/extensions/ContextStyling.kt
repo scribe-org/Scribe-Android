@@ -175,7 +175,11 @@ fun Context.toggleAppIconColor(
         packageManager.setComponentEnabledSetting(
             ComponentName(appId, className),
             state,
+<<<<<<< HEAD
             PackageManager.DONT_KILL_APP
+=======
+            PackageManager.DONT_KILL_APP,
+>>>>>>> 831485a (fix:Linting issues due to generic exception statements)
         )
         if (enable) {
             baseConfig.lastIconColor = color
