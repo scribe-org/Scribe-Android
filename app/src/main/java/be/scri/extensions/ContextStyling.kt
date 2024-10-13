@@ -4,8 +4,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.database.CursorIndexOutOfBoundsException
 import android.graphics.Color
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.loader.content.CursorLoader
 import be.scri.R
 import be.scri.helpers.DARK_GREY
@@ -133,9 +135,14 @@ fun Context.getSharedThemeSync(cursorLoader: CursorLoader): SharedTheme? {
                 val appIconColor = cursor.getIntValue(MyContentProvider.COL_APP_ICON_COLOR)
                 val navigationBarColor = cursor.getIntValueOrNull(MyContentProvider.COL_NAVIGATION_BAR_COLOR) ?: INVALID_NAVIGATION_BAR_COLOR
                 val lastUpdatedTS = cursor.getIntValue(MyContentProvider.COL_LAST_UPDATED_TS)
+
                 return SharedTheme(textColor, backgroundColor, primaryColor, appIconColor, navigationBarColor, lastUpdatedTS, accentColor)
-            } catch (e: Exception) {
+            } catch (e: IllegalArgumentException) {
+                Toast.makeText(this, "Invalid column index", Toast.LENGTH_SHORT).show()
+            } catch (e: CursorIndexOutOfBoundsException) {
+                Toast.makeText(this, "Cursor is not in a valid state", Toast.LENGTH_SHORT).show()
             }
+
         }
     }
     return null
@@ -165,12 +172,20 @@ fun Context.toggleAppIconColor(
     val className = "${appId.removeSuffix(".debug")}.activities.SplashActivity${appIconColorStrings[colorIndex]}"
     val state = if (enable) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED
     try {
-        packageManager.setComponentEnabledSetting(ComponentName(appId, className), state, PackageManager.DONT_KILL_APP)
+        packageManager.setComponentEnabledSetting(
+            ComponentName(appId, className),
+            state,
+            PackageManager.DONT_KILL_APP
+        )
         if (enable) {
             baseConfig.lastIconColor = color
         }
-    } catch (e: Exception) {
+    } catch (e: IllegalArgumentException) {
+        Toast.makeText(this, "Invalid component settings", Toast.LENGTH_SHORT).show()
+    } catch (e: SecurityException) {
+        Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
     }
+
 }
 
 fun Context.getAppIconColors() = resources.getIntArray(R.array.md_app_icon_colors).toCollection(ArrayList())

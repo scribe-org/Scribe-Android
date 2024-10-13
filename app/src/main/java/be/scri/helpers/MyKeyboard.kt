@@ -6,12 +6,15 @@ import android.content.res.Resources
 import android.content.res.TypedArray
 import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.util.TypedValue
 import android.util.Xml
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import androidx.annotation.XmlRes
 import be.scri.R
+import org.xmlpull.v1.XmlPullParserException
+import java.io.IOException
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard consists of rows of keys.
@@ -360,13 +363,12 @@ class MyKeyboard {
                             key = createKeyFromXml(res, currentRow!!, x, y, parser)
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
-                                val enterResourceId =
-                                    when (mEnterKeyType) {
-                                        EditorInfo.IME_ACTION_SEARCH -> R.drawable.ic_search_vector
-                                        EditorInfo.IME_ACTION_NEXT, EditorInfo.IME_ACTION_GO -> R.drawable.ic_arrow_right_vector
-                                        EditorInfo.IME_ACTION_SEND -> R.drawable.ic_send_vector
-                                        else -> R.drawable.ic_enter_vector
-                                    }
+                                val enterResourceId = when (mEnterKeyType) {
+                                    EditorInfo.IME_ACTION_SEARCH -> R.drawable.ic_search_vector
+                                    EditorInfo.IME_ACTION_NEXT, EditorInfo.IME_ACTION_GO -> R.drawable.ic_arrow_right_vector
+                                    EditorInfo.IME_ACTION_SEND -> R.drawable.ic_send_vector
+                                    else -> R.drawable.ic_enter_vector
+                                }
                                 key.icon = context.resources.getDrawable(enterResourceId, context.theme)
                             }
                             currentRow.mKeys.add(key)
@@ -389,10 +391,14 @@ class MyKeyboard {
                     }
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: XmlPullParserException) {
+            Log.e("MyKeyboard", "XML Parsing error: ${e.message}")
+        } catch (e: IOException) {
+            Log.e("MyKeyboard", "I/O error: ${e.message}")
         }
         mHeight = y
     }
+
 
     private fun parseKeyboardAttributes(
         res: Resources,

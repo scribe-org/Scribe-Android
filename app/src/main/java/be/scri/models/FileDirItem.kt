@@ -38,6 +38,8 @@ import be.scri.helpers.SORT_USE_NUMERIC_VALUE
 import be.scri.helpers.isNougatPlus
 import com.bumptech.glide.signature.ObjectKey
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 
 open class FileDirItem(
     val path: String,
@@ -121,9 +123,12 @@ open class FileDirItem(
                         .openInputStream(Uri.parse(path))
                         ?.available()
                         ?.toLong() ?: 0L
-                } catch (e: Exception) {
+                } catch (e: FileNotFoundException) {
+                    context.getSizeFromContentUri(Uri.parse(path))
+                } catch (e: IOException) {
                     context.getSizeFromContentUri(Uri.parse(path))
                 }
+
             }
             else -> File(path).getProperSize(countHidden)
         }

@@ -16,6 +16,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ShortcutManager
 import android.content.res.Configuration
 import android.database.Cursor
+import android.database.sqlite.SQLiteException
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.media.MediaMetadataRetriever
@@ -39,6 +40,7 @@ import android.provider.OpenableColumns
 import android.provider.Settings
 import android.telecom.TelecomManager
 import android.telephony.PhoneNumberUtils
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -120,14 +122,14 @@ fun Context.toast(
     length: Int = Toast.LENGTH_SHORT,
 ) {
     try {
+        val showToast = { doToast(this, msg, length) }
         if (isOnMainThread()) {
-            doToast(this, msg, length)
+            showToast()
         } else {
-            Handler(Looper.getMainLooper()).post {
-                doToast(this, msg, length)
-            }
+            Handler(Looper.getMainLooper()).post(showToast)
         }
-    } catch (e: Exception) {
+    } catch (e: IllegalArgumentException) {
+        Log.e("ToastError", "Invalid argument while showing toast: ${e.message}", e)
     }
 }
 
@@ -261,21 +263,36 @@ fun Context.getDataColumn(
     selection: String? = null,
     selectionArgs: Array<String>? = null,
 ): String? {
-    try {
+    return try {
         val projection = arrayOf(Files.FileColumns.DATA)
-        val cursor = contentResolver.query(uri, projection, selection, selectionArgs, null)
+        val cursor: Cursor? = contentResolver.query(uri, projection, selection, selectionArgs, null)
+
         cursor?.use {
-            if (cursor.moveToFirst()) {
-                val data = cursor.getStringValue(Files.FileColumns.DATA)
+            if (it.moveToFirst()) {
+                val data = it.getString(it.getColumnIndexOrThrow(Files.FileColumns.DATA))
                 if (data != "null") {
-                    return data
+                    data
+                } else {
+                    Log.w("GetDataColumn", "Data column returned 'null' for URI: $uri")
+                    null
                 }
+            } else {
+                Log.w("GetDataColumn", "Cursor is empty for URI: $uri")
+                null
             }
+        } ?: run {
+            Log.w("GetDataColumn", "Cursor is null for URI: $uri")
+            null
         }
-    } catch (e: Exception) {
+    } catch (e: SecurityException) {
+        Log.e("GetDataColumn", "SecurityException while querying URI: $uri", e)
+        null
+    } catch (e: IllegalArgumentException) {
+        Log.e("GetDataColumn", "IllegalArgumentException: ${e.message}", e)
+        null
     }
-    return null
 }
+
 
 private fun isMediaDocument(uri: Uri) = uri.authority == "com.android.providers.media.documents"
 
@@ -310,8 +327,6 @@ fun Context.launchActivityIntent(intent: Intent) {
         startActivity(intent)
     } catch (e: ActivityNotFoundException) {
         toast(R.string.no_app_found)
-    } catch (e: Exception) {
-        showErrorToast(e)
     }
 }
 
@@ -351,21 +366,31 @@ fun Context.getMediaContent(
     uri: Uri,
 ): Uri? {
     val projection = arrayOf(Images.Media._ID)
-    val selection = Images.Media.DATA + "= ?"
+    val selection = "${Images.Media.DATA} = ?"
     val selectionArgs = arrayOf(path)
-    try {
-        val cursor = contentResolver.query(uri, projection, selection, selectionArgs, null)
-        cursor?.use {
-            if (cursor.moveToFirst()) {
-                val id = cursor.getIntValue(Images.Media._ID).toString()
-                return Uri.withAppendedPath(uri, id)
-            }
-        }
-    } catch (e: Exception) {
-    }
-    return null
-}
 
+    return try {
+        val cursor: Cursor? = contentResolver.query(uri, projection, selection, selectionArgs, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val id = it.getInt(it.getColumnIndexOrThrow(Images.Media._ID)).toString()
+                Uri.withAppendedPath(uri, id)
+            } else {
+                Log.w("GetMediaContent", "No media found for path: $path")
+                null
+            }
+        } ?: run {
+            Log.w("GetMediaContent", "Cursor is null for URI: $uri")
+            null
+        }
+    } catch (e: SecurityException) {
+        Log.e("GetMediaContent", "SecurityException while querying URI: $uri", e)
+        null
+    } catch (e: IllegalArgumentException) {
+        Log.e("GetMediaContent", "IllegalArgumentException: ${e.message}", e)
+        null
+    }
+}
 fun Context.queryCursor(
     uri: Uri,
     projection: Array<String>,
@@ -376,20 +401,31 @@ fun Context.queryCursor(
     callback: (cursor: Cursor) -> Unit,
 ) {
     try {
-        val cursor = contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+        val cursor: Cursor? = contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
         cursor?.use {
-            if (cursor.moveToFirst()) {
+            if (it.moveToFirst()) {
                 do {
-                    callback(cursor)
-                } while (cursor.moveToNext())
+                    callback(it)
+                } while (it.moveToNext())
+            } else {
+                Log.w("QueryCursor", "Cursor is empty for URI: $uri")
             }
+        } ?: run {
+            Log.w("QueryCursor", "Cursor is null for URI: $uri")
         }
-    } catch (e: Exception) {
+    } catch (e: SecurityException) {
+        Log.e("QueryCursor", "SecurityException while querying URI: $uri", e)
+        if (showErrors) {
+            showErrorToast(e)
+        }
+    } catch (e: IllegalArgumentException) {
+        Log.e("QueryCursor", "IllegalArgumentException: ${e.message}", e)
         if (showErrors) {
             showErrorToast(e)
         }
     }
 }
+
 
 fun Context.getFilenameFromUri(uri: Uri): String =
     if (uri.scheme == "file") {
@@ -447,36 +483,53 @@ fun Context.ensurePublicUri(
     }
 
 fun Context.getFilenameFromContentUri(uri: Uri): String? {
-    val projection =
-        arrayOf(
-            OpenableColumns.DISPLAY_NAME,
-        )
+    val projection = arrayOf(OpenableColumns.DISPLAY_NAME)
 
-    try {
-        val cursor = contentResolver.query(uri, projection, null, null, null)
+    return try {
+        val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
         cursor?.use {
-            if (cursor.moveToFirst()) {
-                return cursor.getStringValue(OpenableColumns.DISPLAY_NAME)
+            if (it.moveToFirst()) {
+                it.getString(it.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+            } else {
+                Log.w("ContentUriFilename", "Cursor is empty for URI: $uri")
+                null
             }
+        } ?: run {
+            Log.w("ContentUriFilename", "Cursor is null for URI: $uri")
+            null
         }
-    } catch (e: Exception) {
+    } catch (e: SecurityException) {
+        Log.e("ContentUriFilename", "SecurityException while accessing URI: $uri", e)
+        null
+    } catch (e: IllegalArgumentException) {
+        Log.e("ContentUriFilename", "IllegalArgumentException: ${e.message}", e)
+        null
     }
-    return null
 }
-
 fun Context.getSizeFromContentUri(uri: Uri): Long {
     val projection = arrayOf(OpenableColumns.SIZE)
-    try {
-        val cursor = contentResolver.query(uri, projection, null, null, null)
+    return try {
+        val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
         cursor?.use {
             if (cursor.moveToFirst()) {
-                return cursor.getLongValue(OpenableColumns.SIZE)
+                cursor.getLong(cursor.getColumnIndexOrThrow(OpenableColumns.SIZE))
+            } else {
+                Log.w("ContentUriSize", "Cursor is empty for URI: $uri")
+                0L
             }
+        } ?: run {
+            Log.w("ContentUriSize", "Cursor is null for URI: $uri")
+            0L
         }
-    } catch (e: Exception) {
+    } catch (e: SecurityException) {
+        Log.e("ContentUriSize", "SecurityException while accessing URI: $uri", e)
+        0L
+    } catch (e: IllegalArgumentException) {
+        Log.e("ContentUriSize", "IllegalArgumentException: ${e.message}", e)
+        0L
     }
-    return 0L
 }
+
 
 fun Context.getMyContentProviderCursorLoader() = CursorLoader(this, MyContentProvider.MY_CONTENT_URI, null, null, null, null)
 
@@ -535,7 +588,8 @@ fun Context.isPackageInstalled(pkgName: String): Boolean =
     try {
         packageManager.getPackageInfo(pkgName, 0)
         true
-    } catch (e: Exception) {
+    } catch (e: PackageManager.NameNotFoundException) {
+        Log.e("PackageCheck", "Package not found: $pkgName", e)
         false
     }
 
@@ -646,7 +700,11 @@ fun Context.getDefaultAlarmTitle(type: Int): String {
     val alarmString = getString(R.string.alarm)
     return try {
         RingtoneManager.getRingtone(this, RingtoneManager.getDefaultUri(type))?.getTitle(this) ?: alarmString
-    } catch (e: Exception) {
+    } catch (e: SecurityException) {
+        Log.e("RingtoneError", "SecurityException: ${e.message}", e)
+        alarmString
+    } catch (e: IllegalArgumentException) {
+        Log.e("RingtoneError", "IllegalArgumentException: ${e.message}", e)
         alarmString
     }
 }
@@ -1050,9 +1108,12 @@ fun Context.addBlockedNumber(number: String) {
         put(BlockedNumbers.COLUMN_E164_NUMBER, PhoneNumberUtils.normalizeNumber(number))
         try {
             contentResolver.insert(BlockedNumbers.CONTENT_URI, this)
-        } catch (e: Exception) {
-            showErrorToast(e)
+        } catch (e: SecurityException) {
+            showErrorToast("Permission denied: ${e.message}")
+        } catch (e: SQLiteException) {
+            showErrorToast("Database error: ${e.message}")
         }
+
     }
 }
 
