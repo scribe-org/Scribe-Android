@@ -7,8 +7,6 @@ style:
         active: false
     WildcardImport:
         active: false
-    ReturnCount:
-        active: false
     UnusedPrivateProperty:
         active: true
     UnusedParameter:
