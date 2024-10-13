@@ -15,8 +15,12 @@ plugins {
     id("org.jmailen.kotlinter")
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
+    id("de.mannodermaus.android-junit5") version "1.11.2.0"
 }
+
 val kotlinVersion by extra("2.0.0")
+val junit5Version by extra("5.11.2")
+val mockkVersion by extra("1.13.13")
 
 android {
     compileSdk = 34
@@ -87,6 +91,7 @@ android {
         buildUponDefaultConfig = true
         allRules = false
         config = rootProject.files("detekt.yml")
+
     }
 
     kotlinter {
@@ -114,6 +119,11 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation("com.google.android.play:core:1.10.0")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
 
     api("joda-time:joda-time:2.10.13")
     api("com.github.tibbi:RecyclerView-FastScroller:e7d3e150c4")

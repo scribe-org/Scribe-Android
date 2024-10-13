@@ -1,6 +1,5 @@
 package be.scri.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -109,15 +108,16 @@ class AboutFragment : Fragment() {
             ),
         )
 
-    private fun getSecondRecyclerViewData(): List<Any> =
-        listOf(
+    private fun getSecondRecyclerViewData(): List<Any> {
+        val context = requireContext()
+        return listOf(
             ItemsViewModel(
                 image = R.drawable.star,
                 text = ItemsViewModel.Text(R.string.app_about_feedback_rate_scribe),
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
-                action = null,
+                action = ::rateScribe,
             ),
             ItemsViewModel(
                 image = R.drawable.bug_report_icon,
@@ -152,6 +152,7 @@ class AboutFragment : Fragment() {
                 action = ::resetHints,
             ),
         )
+    }
 
     private fun getThirdRecyclerViewData(): List<ItemsViewModel> =
         listOf(
@@ -221,16 +222,6 @@ class AboutFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (activity as MainActivity).hideHint()
-    }
-
     private fun getInstallSource(context: Context): String? =
         try {
             val packageManager = context.packageManager
@@ -270,5 +261,15 @@ class AboutFragment : Fragment() {
         } else {
             Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as MainActivity).hideHint()
     }
 }
