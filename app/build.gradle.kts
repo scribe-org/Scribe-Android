@@ -91,7 +91,6 @@ android {
         buildUponDefaultConfig = true
         allRules = false
         config = rootProject.files("detekt.yml")
-
     }
 
     kotlinter {
