@@ -5,7 +5,6 @@ import android.util.Log
 
 class HintUtils {
     companion object {
-
         fun resetHints(context: Context) {
             val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
             Log.d("HintUtils", "Resetting hints")
