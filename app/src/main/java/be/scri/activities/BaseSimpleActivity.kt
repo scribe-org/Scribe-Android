@@ -282,59 +282,61 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        resultData: Intent?,
-    ) {
-        super.onActivityResult(requestCode, resultCode, resultData)
-        val partition =
-            try {
-                checkedDocumentPath.substring(9, 18)
-            } catch (e: Exception) {
-                ""
-            }
+    requestCode: Int,
+    resultCode: Int,
+    resultData: Intent?,
+) {
+    super.onActivityResult(requestCode, resultCode, resultData)
+    val partition = try {
+        checkedDocumentPath.substring(9, 18)
+    } catch (e: Exception) {
+        ""
+    }
 
-        val sdOtgPattern = Pattern.compile(SD_OTG_SHORT)
-        if (requestCode == CREATE_DOCUMENT_SDK_30) {
-            if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
+    val sdOtgPattern = Pattern.compile(SD_OTG_SHORT)
+
+    val handleSuccess = { takeFlags: Int, treeUri: Uri?, funAfter: (() -> Unit)?, successFlag: Boolean ->
+        treeUri?.let {
+            applicationContext.contentResolver.takePersistableUriPermission(it, takeFlags)
+        }
+        funAfter?.invoke(successFlag)
+    }
+
+    val handleFailure = { toast(getString(R.string.wrong_folder_selected, checkedDocumentPath)) }
+
+    when (requestCode) {
+        CREATE_DOCUMENT_SDK_30 -> {
+            if (resultCode == Activity.RESULT_OK && resultData?.data != null) {
                 val treeUri = resultData.data
                 val checkedUri = buildDocumentUriSdk30(checkedDocumentPath)
-
                 if (treeUri != checkedUri) {
-                    toast(getString(R.string.wrong_folder_selected, checkedDocumentPath))
-                    return
+                    handleFailure()
+                } else {
+                    val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    handleSuccess(takeFlags, treeUri, funAfterSdk30Action?.let { { it.invoke(true) } }, true)
                 }
-
-                val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                applicationContext.contentResolver.takePersistableUriPermission(treeUri, takeFlags)
-                val funAfter = funAfterSdk30Action
-                funAfterSdk30Action = null
-                funAfter?.invoke(true)
             } else {
                 funAfterSdk30Action?.invoke(false)
             }
-        } else if (requestCode == OPEN_DOCUMENT_TREE_FOR_SDK_30) {
-            if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
+        }
+        OPEN_DOCUMENT_TREE_FOR_SDK_30 -> {
+            if (resultCode == Activity.RESULT_OK && resultData?.data != null) {
                 val treeUri = resultData.data
                 val checkedUri = createFirstParentTreeUri(checkedDocumentPath)
-
                 if (treeUri != checkedUri) {
                     val level = getFirstParentLevel(checkedDocumentPath)
                     val firstParentPath = checkedDocumentPath.getFirstParentPath(this, level)
                     toast(getString(R.string.wrong_folder_selected, humanizePath(firstParentPath)))
                     return
                 }
-
                 val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                applicationContext.contentResolver.takePersistableUriPermission(treeUri, takeFlags)
-                val funAfter = funAfterSdk30Action
-                funAfterSdk30Action = null
-                funAfter?.invoke(true)
+                handleSuccess(takeFlags, treeUri, funAfterSdk30Action?.let { { it.invoke(true) } }, true)
             } else {
                 funAfterSdk30Action?.invoke(false)
             }
-        } else if (requestCode == OPEN_DOCUMENT_TREE_FOR_ANDROID_DATA_OR_OBB) {
-            if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
+        }
+        OPEN_DOCUMENT_TREE_FOR_ANDROID_DATA_OR_OBB -> {
+            if (resultCode == Activity.RESULT_OK && resultData?.data != null) {
                 if (isProperAndroidRoot(checkedDocumentPath, resultData.data!!)) {
                     if (resultData.dataString == baseConfig.otgTreeUri || resultData.dataString == baseConfig.sdTreeUri) {
                         val pathToSelect = createAndroidDataOrObbPath(checkedDocumentPath)
@@ -346,9 +348,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
                     storeAndroidTreeUri(checkedDocumentPath, treeUri.toString())
 
                     val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    applicationContext.contentResolver.takePersistableUriPermission(treeUri!!, takeFlags)
-                    funAfterSAFPermission?.invoke(true)
-                    funAfterSAFPermission = null
+                    handleSuccess(takeFlags, treeUri, funAfterSAFPermission?.let { { it.invoke(true) } }, true)
                 } else {
                     toast(getString(R.string.wrong_folder_selected, createAndroidDataOrObbPath(checkedDocumentPath)))
                     Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
@@ -366,91 +366,40 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             } else {
                 funAfterSAFPermission?.invoke(false)
             }
-        } else if (requestCode == OPEN_DOCUMENT_TREE_SD) {
-            if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
+        }
+        OPEN_DOCUMENT_TREE_SD, OPEN_DOCUMENT_TREE_OTG -> {
+            if (resultCode == Activity.RESULT_OK && resultData?.data != null) {
                 val isProperPartition =
-                    partition.isEmpty() ||
-                        !sdOtgPattern.matcher(partition).matches() ||
-                        (
-                            sdOtgPattern
-                                .matcher(partition)
-                                .matches() &&
-                                resultData.dataString!!.contains(partition)
-                        )
-                if (isProperSDRootFolder(resultData.data!!) && isProperPartition) {
-                    if (resultData.dataString == baseConfig.otgTreeUri) {
-                        toast(R.string.sd_card_usb_same)
-                        return
-                    }
+                    partition.isEmpty() || !sdOtgPattern.matcher(partition).matches() || resultData.dataString!!.contains(partition)
 
-                    saveTreeUri(resultData)
-                    funAfterSAFPermission?.invoke(true)
-                    funAfterSAFPermission = null
-                } else {
-                    toast(R.string.wrong_root_selected)
-                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-
-                    try {
-                        startActivityForResult(intent, requestCode)
-                    } catch (e: Exception) {
-                        showErrorToast(e)
-                    }
-                }
-            } else {
-                funAfterSAFPermission?.invoke(false)
-            }
-        } else if (requestCode == OPEN_DOCUMENT_TREE_OTG) {
-            if (resultCode == Activity.RESULT_OK && resultData != null && resultData.data != null) {
-                val isProperPartition =
-                    partition.isEmpty() ||
-                        !sdOtgPattern.matcher(partition).matches() ||
-                        (
-                            sdOtgPattern
-                                .matcher(partition)
-                                .matches() &&
-                                resultData.dataString!!.contains(partition)
-                        )
                 if (isProperOTGRootFolder(resultData.data!!) && isProperPartition) {
                     if (resultData.dataString == baseConfig.sdTreeUri) {
-                        funAfterSAFPermission?.invoke(false)
                         toast(R.string.sd_card_usb_same)
-                        return
+                        funAfterSAFPermission?.invoke(false)
+                    } else {
+                        baseConfig.otgTreeUri = resultData.dataString!!
+                        baseConfig.otgPartition =
+                            baseConfig.otgTreeUri.removeSuffix("%3A").substringAfterLast('/').trimEnd('/')
+                        updateOTGPathFromPartition()
+
+                        val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        handleSuccess(takeFlags, resultData.data, funAfterSAFPermission?.let { { it.invoke(true) } }, true)
                     }
-                    baseConfig.otgTreeUri = resultData.dataString!!
-                    baseConfig.otgPartition =
-                        baseConfig.otgTreeUri
-                            .removeSuffix("%3A")
-                            .substringAfterLast('/')
-                            .trimEnd('/')
-                    updateOTGPathFromPartition()
-
-                    val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    applicationContext.contentResolver.takePersistableUriPermission(resultData.data!!, takeFlags)
-
-                    funAfterSAFPermission?.invoke(true)
-                    funAfterSAFPermission = null
                 } else {
                     toast(R.string.wrong_root_selected_usb)
-                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-
-                    try {
-                        startActivityForResult(intent, requestCode)
-                    } catch (e: Exception) {
-                        showErrorToast(e)
-                    }
                 }
             } else {
                 funAfterSAFPermission?.invoke(false)
             }
-        } else if (requestCode == Companion.DELETE_FILE_SDK_30_HANDLER) {
-            funAfterSdk30Action?.invoke(resultCode == Activity.RESULT_OK)
-        } else if (requestCode == Companion.RECOVERABLE_SECURITY_HANDLER) {
+        }
+        Companion.DELETE_FILE_SDK_30_HANDLER -> funAfterSdk30Action?.invoke(resultCode == Activity.RESULT_OK)
+        Companion.RECOVERABLE_SECURITY_HANDLER -> {
             funRecoverableSecurity?.invoke(resultCode == Activity.RESULT_OK)
             funRecoverableSecurity = null
-        } else if (requestCode == Companion.UPDATE_FILE_SDK_30_HANDLER) {
-            funAfterUpdate30File?.invoke(resultCode == Activity.RESULT_OK)
         }
+        Companion.UPDATE_FILE_SDK_30_HANDLER -> funAfterUpdate30File?.invoke(resultCode == Activity.RESULT_OK)
     }
+}
 
     private fun saveTreeUri(resultData: Intent) {
         val treeUri = resultData.data
