@@ -16,6 +16,7 @@ import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentAboutBinding
 import be.scri.helpers.CustomAdapter
+import be.scri.helpers.HintUtils
 import be.scri.models.ItemsViewModel
 import com.google.android.play.core.review.ReviewManagerFactory
 
@@ -149,7 +150,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.counter_clockwise_icon,
                 url = null,
                 activity = null,
-                action = null,
+                action = ::resetHints,
             ),
         )
     }
@@ -173,6 +174,11 @@ class AboutFragment : Fragment() {
                 action = ::loadThirdPartyLicensesFragment,
             ),
         )
+
+    private fun resetHints() {
+        HintUtils.resetHints(requireContext())
+        (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
+    }
 
     private fun shareScribe() {
         val sharingIntent =
@@ -256,5 +262,15 @@ class AboutFragment : Fragment() {
         } else {
             Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as MainActivity).hideHint()
     }
 }
