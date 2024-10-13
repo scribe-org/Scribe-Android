@@ -11,6 +11,7 @@ class AlphanumericComparator {
         var thatMarker = 0
         val s1Length = string1.length
         val s2Length = string2.length
+        var result = 0 // Initialize result variable
 
         while (thisMarker < s1Length && thatMarker < s2Length) {
             val thisChunk = getChunk(string1, s1Length, thisMarker)
@@ -20,7 +21,6 @@ class AlphanumericComparator {
             thatMarker += thatChunk.length
 
             // If both chunks contain numeric characters, sort them numerically.
-            var result: Int
             if (isDigit(thisChunk[0]) && isDigit(thatChunk[0])) {
                 // Simple chunk comparison by length.
                 val thisChunkLength = thisChunk.length
@@ -30,7 +30,7 @@ class AlphanumericComparator {
                     for (i in 0 until thisChunkLength) {
                         result = thisChunk[i] - thatChunk[i]
                         if (result != 0) {
-                            return result
+                            break // Exit loop if a difference is found
                         }
                     }
                 }
@@ -39,12 +39,18 @@ class AlphanumericComparator {
             }
 
             if (result != 0) {
-                return result
+                break // Exit the loop if the result is not zero
             }
         }
 
-        return s1Length - s2Length
+        // Return the final comparison result
+        return if (result != 0) {
+            result
+        } else {
+            s1Length - s2Length
+        }
     }
+
 
     private fun getChunk(
         string: String,
