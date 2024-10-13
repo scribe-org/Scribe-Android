@@ -21,6 +21,8 @@ import android.provider.MediaStore.Images
 import android.provider.MediaStore.MediaColumns
 import android.provider.MediaStore.Video
 import android.text.TextUtils
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
@@ -83,6 +85,8 @@ fun Context.getSDCardPath(): String {
                 }
             }
         } catch (e: Exception) {
+            Log.e("FileError", "Error accessing storage files: ${e.message}", e)
+            Toast.makeText(this, "Failed to access storage.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -296,22 +300,23 @@ fun Context.tryFastDocumentDelete(
 }
 
 fun Context.getFastDocumentFile(path: String): DocumentFile? {
+    val documentFile: DocumentFile?
+
     if (isPathOnOTG(path)) {
-        return getOTGFastDocumentFile(path)
-    }
-
-    if (baseConfig.sdCardPath.isEmpty()) {
-        return null
-    }
-
-    val relativePath = Uri.encode(path.substring(baseConfig.sdCardPath.length).trim('/'))
-    val externalPathPart =
-        baseConfig.sdCardPath
+        documentFile = getOTGFastDocumentFile(path)
+    } else if (baseConfig.sdCardPath.isEmpty()) {
+        documentFile = null
+    } else {
+        val relativePath = Uri.encode(path.substring(baseConfig.sdCardPath.length).trim('/'))
+        val externalPathPart = baseConfig.sdCardPath
             .split("/")
             .lastOrNull(String::isNotEmpty)
             ?.trim('/') ?: return null
-    val fullUri = "${baseConfig.sdTreeUri}/document/$externalPathPart%3A$relativePath"
-    return DocumentFile.fromSingleUri(this, Uri.parse(fullUri))
+        val fullUri = "${baseConfig.sdTreeUri}/document/$externalPathPart%3A$relativePath"
+        documentFile = DocumentFile.fromSingleUri(this, Uri.parse(fullUri))
+    }
+
+    return documentFile
 }
 
 fun Context.getOTGFastDocumentFile(
@@ -462,7 +467,9 @@ fun Context.deleteFromMediaStore(
             val args = arrayOf(path)
             val success = contentResolver.delete(getFileUri(path), where, args) != 1
             callback?.invoke(success)
-        } catch (ignored: Exception) {
+        } catch (e: Exception) {
+            Log.e("FileDeleteError", "Error deleting file at path: $path. Exception: ${e.message}", e)
+            Toast.makeText(this, "Failed to delete file.", Toast.LENGTH_SHORT).show()
         }
         callback?.invoke(true)
     }
@@ -484,6 +491,8 @@ fun Context.rescanAndDeletePath(
         try {
             applicationContext.contentResolver.delete(uri, null, null)
         } catch (e: Exception) {
+            Log.e("FileDeleteError", "Error deleting scanned file at path: $path. Exception: ${e.message}", e)
+            Toast.makeText(applicationContext, "Failed to delete scanned file.", Toast.LENGTH_SHORT).show()
         }
         callback()
     }
@@ -1012,12 +1021,16 @@ fun Context.getFolderLastModifieds(folder: String): HashMap<String, Long> {
                             lastModifieds["$folder/$name"] = lastModified
                         }
                     } catch (e: Exception) {
+                        Log.e("CursorError", "Error processing file data: ${e.message}", e)
                     }
                 } while (cursor.moveToNext())
             }
         }
     } catch (e: Exception) {
+        Log.e("QueryError", "Error querying media content: ${e.message}", e)
+        Toast.makeText(this, "Failed to retrieve media information.", Toast.LENGTH_SHORT).show()
     }
+
 
     return lastModifieds
 }
@@ -1089,10 +1102,13 @@ fun getMediaStoreIds(context: Context): HashMap<String, Long> {
                     ids[path] = id
                 }
             } catch (e: Exception) {
+                Log.e("CursorProcessingError", "Error processing cursor data: ${e.message}", e)
             }
         }
     } catch (e: Exception) {
+        Log.e("QueryError", "Error querying media content: ${e.message}", e)
     }
+
 
     return ids
 }
