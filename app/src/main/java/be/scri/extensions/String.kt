@@ -218,10 +218,7 @@ fun String.highlightTextPart(
     var startIndex = normalizeString().indexOf(textToHighlight, 0, true)
     val indexes = ArrayList<Int>()
     while (startIndex >= 0) {
-        if (startIndex != -1) {
-            indexes.add(startIndex)
-        }
-
+        indexes.add(startIndex)
         startIndex = normalizeString().indexOf(textToHighlight, startIndex + textToHighlight.length, true)
         if (!highlightAll) {
             break
@@ -238,16 +235,16 @@ fun String.highlightTextPart(
                 spannableString.setSpan(ForegroundColorSpan(color), result.start(), result.end(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
             }
         } catch (ignored: Exception) {
+            // Ignored exceptions
         }
-
-        return spannableString
-    }
-
-    indexes.forEach {
-        val endIndex = Math.min(it + textToHighlight.length, length)
-        try {
-            spannableString.setSpan(ForegroundColorSpan(color), it, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-        } catch (ignored: IndexOutOfBoundsException) {
+    } else {
+        indexes.forEach {
+            val endIndex = Math.min(it + textToHighlight.length, length)
+            try {
+                spannableString.setSpan(ForegroundColorSpan(color), it, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+            } catch (ignored: IndexOutOfBoundsException) {
+                // Ignored exceptions
+            }
         }
     }
 
