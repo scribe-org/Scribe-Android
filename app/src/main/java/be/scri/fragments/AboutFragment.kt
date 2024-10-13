@@ -262,6 +262,7 @@ class AboutFragment : Fragment() {
             Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
         }
     }
+
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
