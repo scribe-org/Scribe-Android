@@ -267,7 +267,7 @@ class SettingsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).showHint("hint_shown_settings", R.string.settings_hint_message)
+        (activity as MainActivity).showHint("hint_shown_settings", R.string.app_settings_app_hint)
         setupRecyclerView2()
     }
 

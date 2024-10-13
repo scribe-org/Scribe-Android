@@ -85,7 +85,7 @@ class MainFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).showHint("hint_shown_main", R.string.main_hint_message)
+        (activity as MainActivity).showHint("hint_shown_main", R.string.app_installation_app_hint)
     }
 
     override fun onPause() {

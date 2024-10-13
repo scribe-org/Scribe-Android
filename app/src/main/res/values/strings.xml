@@ -10,12 +10,6 @@
     <string name="scribe_key">Scribe Key</string>
     <string name="command_bar">Command Bar</string>
 
-    <!-- Hints -->
-    <string name="hint_ok_button_text">OK</string>
-    <string name="settings_hint_message">Settings for the app and installed language keyboards are found here.</string>
-    <string name="main_hint_message">Follow the directions below to install Scribe keyboards on your device.</string>
-    <string name="about_hint_message">Here’s where you can learn more about Scribe and its community.</string>
-
     <!-- Clipboard -->
     <string name="manage_clipboard_items">Manage clipboard items</string>
     <string name="manage_clipboard_empty">Your clipboard is empty.</string>

@@ -171,7 +171,7 @@ class AboutFragment : Fragment() {
 
     private fun resetHints() {
         HintUtils.resetHints(requireContext())
-        (activity as MainActivity).showHint("hint_shown_about", R.string.about_hint_message)
+        (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
     }
 
     private fun shareScribe() {
@@ -219,7 +219,7 @@ class AboutFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).showHint("hint_shown_about", R.string.about_hint_message)
+        (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
     }
 
     override fun onPause() {
