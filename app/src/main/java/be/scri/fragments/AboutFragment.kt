@@ -1,10 +1,13 @@
 package be.scri.fragments
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +18,7 @@ import be.scri.databinding.FragmentAboutBinding
 import be.scri.helpers.CustomAdapter
 import be.scri.helpers.HintUtils
 import be.scri.models.ItemsViewModel
+import com.google.android.play.core.review.ReviewManagerFactory
 
 class AboutFragment : Fragment() {
     private lateinit var binding: FragmentAboutBinding
@@ -225,5 +229,46 @@ class AboutFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         (activity as MainActivity).hideHint()
+    }
+
+    private fun getInstallSource(context: Context): String? =
+        try {
+            val packageManager = context.packageManager
+            packageManager.getInstallerPackageName(context.packageName)
+        } catch (e: Exception) {
+            null
+        }
+
+    private fun rateScribe() {
+        val context = requireContext()
+        var installSource = getInstallSource(context)
+
+        if (installSource == "com.android.vending") {
+            val reviewManager = ReviewManagerFactory.create(context)
+            val request = reviewManager.requestReviewFlow()
+
+            request.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val reviewInfo = task.result
+                    val activity = requireActivity()
+                    reviewManager
+                        .launchReviewFlow(activity, reviewInfo)
+                        .addOnCompleteListener { _ ->
+                        }
+                } else {
+                    Toast.makeText(context, "Failed to launch review flow", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else if (installSource == "org.fdroid.fdroid") {
+            val url = "https://f-droid.org/packages/${context.packageName}"
+            val intent =
+                Intent(Intent.ACTION_VIEW)
+                    .apply {
+                        data = Uri.parse(url)
+                    }
+            context.startActivity(intent)
+        } else {
+            Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
+        }
     }
 }
