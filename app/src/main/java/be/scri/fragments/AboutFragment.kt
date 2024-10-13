@@ -3,6 +3,7 @@ package be.scri.fragments
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -247,7 +248,7 @@ class AboutFragment : Fragment() {
         try {
             val packageManager = context.packageManager
             packageManager.getInstallerPackageName(context.packageName)
-        } catch (e: Exception) {
+        } catch (e: PackageManager.NameNotFoundException) {
             null
         }
 
