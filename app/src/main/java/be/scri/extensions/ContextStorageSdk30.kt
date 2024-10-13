@@ -214,7 +214,6 @@ fun Context.deleteDocumentWithSAFSdk30(
         callback?.invoke(false)
         showErrorToast("I/O error: ${e.message}")
     }
-
 }
 
 fun Context.renameDocumentSdk30(

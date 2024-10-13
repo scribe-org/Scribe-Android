@@ -121,7 +121,6 @@ fun BaseSimpleActivity.getFileOutputStreamSync(
     }
 }
 
-
 private fun createCasualFileOutputStream(
     activity: BaseSimpleActivity,
     targetFile: File,

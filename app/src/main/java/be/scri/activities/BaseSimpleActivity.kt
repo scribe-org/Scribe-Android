@@ -23,7 +23,6 @@ import android.view.View
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import be.scri.R
 import be.scri.extensions.addBit
 import be.scri.extensions.baseConfig
@@ -36,11 +35,9 @@ import be.scri.extensions.getColoredDrawableWithColor
 import be.scri.extensions.getContrastColor
 import be.scri.extensions.getFirstParentLevel
 import be.scri.extensions.getFirstParentPath
-import be.scri.extensions.getPermissionString
 import be.scri.extensions.getProperStatusBarColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getThemeId
-import be.scri.extensions.hasPermission
 import be.scri.extensions.hideKeyboard
 import be.scri.extensions.humanizePath
 import be.scri.extensions.isPathOnOTG
@@ -393,7 +390,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
                     } catch (e: IllegalArgumentException) {
                         showErrorToast("Invalid argument provided: ${e.message}")
                     }
-
                 }
             } else {
                 funAfterSAFPermission?.invoke(false)
@@ -559,7 +555,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             } catch (e: IllegalArgumentException) {
                 showErrorToast("Illegal argument: ${e.message}")
             }
-
         } else {
             callback(false)
         }
@@ -578,20 +573,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             } else {
                 callback(false)
             }
-        }
-    }
-
-    fun handlePermission(
-        permissionId: Int,
-        callback: (granted: Boolean) -> Unit,
-    ) {
-        actionOnPermission = null
-        if (hasPermission(permissionId)) {
-            callback(true)
-        } else {
-            isAskingPermissions = true
-            actionOnPermission = callback
-            ActivityCompat.requestPermissions(this, arrayOf(getPermissionString(permissionId)), Companion.GENERIC_PERM_HANDLER)
         }
     }
 
@@ -622,7 +603,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
                 } catch (e: ActivityNotFoundException) {
                     toast(R.string.no_app_found)
                 }
-
             }
         }
     }

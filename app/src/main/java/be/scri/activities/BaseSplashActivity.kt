@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import be.scri.R
 import be.scri.extensions.baseConfig
-import be.scri.extensions.checkAppIconColor
 import be.scri.extensions.getSharedTheme
 import be.scri.extensions.isThankYouInstalled
 import be.scri.extensions.isUsingSystemDarkTheme
@@ -16,10 +15,6 @@ abstract class BaseSplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 831485a (fix:Linting issues due to generic exception statements)
         baseConfig.apply {
             if (isUsingAutoTheme) {
                 val isUsingSystemDarkTheme = isUsingSystemDarkTheme()
@@ -43,11 +38,6 @@ abstract class BaseSplashActivity : AppCompatActivity() {
                         primaryColor = it.primaryColor
                         navigationBarColor = it.navigationBarColor
                         accentColor = it.accentColor
-                    }
-
-                    if (baseConfig.appIconColor != it.appIconColor) {
-                        baseConfig.appIconColor = it.appIconColor
-                        checkAppIconColor()
                     }
                 }
                 initActivity()

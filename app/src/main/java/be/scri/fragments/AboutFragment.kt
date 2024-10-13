@@ -1,9 +1,11 @@
 package be.scri.fragments
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -175,46 +177,70 @@ class AboutFragment : Fragment() {
         )
 
     private fun shareScribe() {
-        val sharingIntent =
-            Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
-            }
-        startActivity(Intent.createChooser(sharingIntent, "Share via"))
+        try {
+            val sharingIntent =
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
+                }
+            startActivity(Intent.createChooser(sharingIntent, "Share via"))
+        } catch (e: ActivityNotFoundException) {
+            Log.e("AboutFragment", "No application found to share content", e)
+        } catch (e: IllegalArgumentException) {
+            Log.e("AboutFragment", "Invalid argument for sharing", e)
+        }
     }
 
     private fun sendEmail() {
-        val intent =
-            Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
-                putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
-                type = "message/rfc822"
-            }
-        startActivity(Intent.createChooser(intent, "Choose an Email client:"))
+        try {
+            val intent =
+                Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
+                    putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
+                    type = "message/rfc822"
+                }
+            startActivity(Intent.createChooser(intent, "Choose an Email client:"))
+        } catch (e: ActivityNotFoundException) {
+            Log.e("AboutFragment", "No email client found", e)
+        } catch (e: IllegalArgumentException) {
+            Log.e("AboutFragment", "Invalid argument for sending email", e)
+        }
     }
 
     private fun loadWikimediaScribeFragment() {
-        val fragment = WikimediaScribeFragment()
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment, "WikimediaScribePage")
-        fragmentTransaction.addToBackStack("WikimediaScribePage")
-        fragmentTransaction.commit()
+        try {
+            val fragment = WikimediaScribeFragment()
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_container, fragment, "WikimediaScribePage")
+            fragmentTransaction.addToBackStack("WikimediaScribePage")
+            fragmentTransaction.commit()
+        } catch (e: IllegalStateException) {
+            Log.e("AboutFragment", "Failed to load fragment", e)
+        }
     }
 
     private fun loadPrivacyPolicyFragment() {
-        val fragment = PrivacyPolicyFragment()
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        try {
+            val fragment = PrivacyPolicyFragment()
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_container, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        } catch (e: IllegalStateException) {
+            Log.e("AboutFragment", "Failed to load fragment", e)
+        }
     }
 
     private fun loadThirdPartyLicensesFragment() {
-        val fragment = ThirdPartyFragment()
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        try {
+            val fragment = ThirdPartyFragment()
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_container, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        } catch (e: IllegalStateException) {
+            Log.e("AboutFragment", "Failed to load fragment", e)
+        }
     }
 
     private fun getInstallSource(context: Context): String? =

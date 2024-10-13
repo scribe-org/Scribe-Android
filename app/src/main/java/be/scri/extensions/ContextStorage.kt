@@ -85,6 +85,7 @@ fun Context.getSDCardPath(): String {
     baseConfig.sdCardPath = finalPath
     return finalPath
 }
+
 fun Context.getStorageDirectories(): Array<String> {
     val paths = HashSet<String>()
     val rawExternalStorage = System.getenv("EXTERNAL_STORAGE")
@@ -674,7 +675,6 @@ fun Context.getFileInputStreamSync(path: String): InputStream? =
         }
     }
 
-
 fun Context.updateOTGPathFromPartition() {
     val otgPath = "/storage/${baseConfig.otgPartition}"
     baseConfig.otgPath =
@@ -754,10 +754,11 @@ fun Context.getFileUrisFromFileDirItems(fileDirItems: List<FileDirItem>): Pair<A
 
 fun getMediaStoreIds(context: Context): HashMap<String, Long> {
     val ids = HashMap<String, Long>()
-    val projection = arrayOf(
-        Images.Media.DATA,
-        Images.Media._ID,
-    )
+    val projection =
+        arrayOf(
+            Images.Media.DATA,
+            Images.Media._ID,
+        )
 
     val uri = Files.getContentUri("external")
 

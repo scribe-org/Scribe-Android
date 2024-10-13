@@ -363,12 +363,13 @@ class MyKeyboard {
                             key = createKeyFromXml(res, currentRow!!, x, y, parser)
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
-                                val enterResourceId = when (mEnterKeyType) {
-                                    EditorInfo.IME_ACTION_SEARCH -> R.drawable.ic_search_vector
-                                    EditorInfo.IME_ACTION_NEXT, EditorInfo.IME_ACTION_GO -> R.drawable.ic_arrow_right_vector
-                                    EditorInfo.IME_ACTION_SEND -> R.drawable.ic_send_vector
-                                    else -> R.drawable.ic_enter_vector
-                                }
+                                val enterResourceId =
+                                    when (mEnterKeyType) {
+                                        EditorInfo.IME_ACTION_SEARCH -> R.drawable.ic_search_vector
+                                        EditorInfo.IME_ACTION_NEXT, EditorInfo.IME_ACTION_GO -> R.drawable.ic_arrow_right_vector
+                                        EditorInfo.IME_ACTION_SEND -> R.drawable.ic_send_vector
+                                        else -> R.drawable.ic_enter_vector
+                                    }
                                 key.icon = context.resources.getDrawable(enterResourceId, context.theme)
                             }
                             currentRow.mKeys.add(key)
@@ -398,7 +399,6 @@ class MyKeyboard {
         }
         mHeight = y
     }
-
 
     private fun parseKeyboardAttributes(
         res: Resources,

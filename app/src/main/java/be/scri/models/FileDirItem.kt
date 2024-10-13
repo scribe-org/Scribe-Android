@@ -128,7 +128,6 @@ open class FileDirItem(
                 } catch (e: IOException) {
                     context.getSizeFromContentUri(Uri.parse(path))
                 }
-
             }
             else -> File(path).getProperSize(countHidden)
         }

@@ -1,14 +1,11 @@
 package be.scri.extensions
 
-import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.NotificationManager
 import android.app.role.RoleManager
-import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -23,19 +20,14 @@ import android.media.MediaMetadataRetriever
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.BaseColumns
 import android.provider.BlockedNumberContract.BlockedNumbers
 import android.provider.ContactsContract.CommonDataKinds.BaseTypes
 import android.provider.ContactsContract.CommonDataKinds.Phone
-import android.provider.DocumentsContract
 import android.provider.MediaStore.Audio
-import android.provider.MediaStore.Files
-import android.provider.MediaStore.Images
 import android.provider.MediaStore.MediaColumns
-import android.provider.MediaStore.Video
 import android.provider.OpenableColumns
 import android.provider.Settings
 import android.telecom.TelecomManager
@@ -45,9 +37,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.biometric.BiometricManager
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.loader.content.CursorLoader
 import be.scri.R
@@ -62,21 +51,6 @@ import be.scri.helpers.MINUTE_SECONDS
 import be.scri.helpers.MONDAY_BIT
 import be.scri.helpers.MONTH_SECONDS
 import be.scri.helpers.MyContentProvider
-import be.scri.helpers.PERMISSION_CALL_PHONE
-import be.scri.helpers.PERMISSION_CAMERA
-import be.scri.helpers.PERMISSION_GET_ACCOUNTS
-import be.scri.helpers.PERMISSION_READ_CALENDAR
-import be.scri.helpers.PERMISSION_READ_CALL_LOG
-import be.scri.helpers.PERMISSION_READ_CONTACTS
-import be.scri.helpers.PERMISSION_READ_PHONE_STATE
-import be.scri.helpers.PERMISSION_READ_SMS
-import be.scri.helpers.PERMISSION_READ_STORAGE
-import be.scri.helpers.PERMISSION_RECORD_AUDIO
-import be.scri.helpers.PERMISSION_SEND_SMS
-import be.scri.helpers.PERMISSION_WRITE_CALENDAR
-import be.scri.helpers.PERMISSION_WRITE_CALL_LOG
-import be.scri.helpers.PERMISSION_WRITE_CONTACTS
-import be.scri.helpers.PERMISSION_WRITE_STORAGE
 import be.scri.helpers.PREFS_KEY
 import be.scri.helpers.SATURDAY_BIT
 import be.scri.helpers.SUNDAY_BIT
@@ -96,7 +70,6 @@ import be.scri.helpers.isQPlus
 import be.scri.helpers.proPackages
 import be.scri.models.AlarmSound
 import be.scri.models.BlockedNumber
-import com.github.ajalt.reprint.core.Reprint
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.File
@@ -166,265 +139,6 @@ val Context.sdCardPath: String get() = baseConfig.sdCardPath
 val Context.internalStoragePath: String get() = baseConfig.internalStoragePath
 val Context.otgPath: String get() = baseConfig.otgPath
 
-val Context.targetSdkVersion: Int get() = applicationInfo.targetSdkVersion
-
-fun Context.isTargetSdkVersion30Plus(): Boolean = targetSdkVersion >= Build.VERSION_CODES.R
-
-fun Context.isFingerPrintSensorAvailable() = isMarshmallowPlus() && Reprint.isHardwarePresent()
-
-fun Context.isBiometricIdAvailable(): Boolean =
-    when (BiometricManager.from(this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
-        BiometricManager.BIOMETRIC_SUCCESS, BiometricManager.BIOMETRIC_STATUS_UNKNOWN -> true
-        else -> false
-    }
-
-fun Context.getLatestMediaId(uri: Uri = Files.getContentUri("external")): Long {
-    val projection =
-        arrayOf(
-            BaseColumns._ID,
-        )
-    val sortOrder = "${BaseColumns._ID} DESC LIMIT 1"
-    try {
-        val cursor = contentResolver.query(uri, projection, null, null, sortOrder)
-        cursor?.use {
-            if (cursor.moveToFirst()) {
-                return cursor.getLongValue(BaseColumns._ID)
-            }
-        }
-    } catch (ignored: Exception) {
-    }
-    return 0
-}
-
-fun Context.getLatestMediaByDateId(uri: Uri = Files.getContentUri("external")): Long {
-    val projection =
-        arrayOf(
-            BaseColumns._ID,
-        )
-    val sortOrder = "${Images.ImageColumns.DATE_TAKEN} DESC LIMIT 1"
-    try {
-        val cursor = contentResolver.query(uri, projection, null, null, sortOrder)
-        cursor?.use {
-            if (cursor.moveToFirst()) {
-                return cursor.getLongValue(BaseColumns._ID)
-            }
-        }
-    } catch (ignored: Exception) {
-    }
-    return 0
-}
-
-// some helper functions were taken from https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
-fun Context.getRealPathFromURI(uri: Uri): String? {
-    if (uri.scheme == "file") {
-        return uri.path
-    }
-
-    if (isDownloadsDocument(uri)) {
-        val id = DocumentsContract.getDocumentId(uri)
-        if (id.areDigitsOnly()) {
-            val newUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), id.toLong())
-            val path = getDataColumn(newUri)
-            if (path != null) {
-                return path
-            }
-        }
-    } else if (isExternalStorageDocument(uri)) {
-        val documentId = DocumentsContract.getDocumentId(uri)
-        val parts = documentId.split(":")
-        if (parts[0].equals("primary", true)) {
-            return "${Environment.getExternalStorageDirectory().absolutePath}/${parts[1]}"
-        }
-    } else if (isMediaDocument(uri)) {
-        val documentId = DocumentsContract.getDocumentId(uri)
-        val split = documentId.split(":").dropLastWhile { it.isEmpty() }.toTypedArray()
-        val type = split[0]
-
-        val contentUri =
-            when (type) {
-                "video" -> Video.Media.EXTERNAL_CONTENT_URI
-                "audio" -> Audio.Media.EXTERNAL_CONTENT_URI
-                else -> Images.Media.EXTERNAL_CONTENT_URI
-            }
-
-        val selection = "_id=?"
-        val selectionArgs = arrayOf(split[1])
-        val path = getDataColumn(contentUri, selection, selectionArgs)
-        if (path != null) {
-            return path
-        }
-    }
-
-    return getDataColumn(uri)
-}
-
-fun Context.getDataColumn(
-    uri: Uri,
-    selection: String? = null,
-    selectionArgs: Array<String>? = null,
-<<<<<<< HEAD
-): String? {
-    return try {
-=======
-): String? =
-    try {
->>>>>>> 831485a (fix:Linting issues due to generic exception statements)
-        val projection = arrayOf(Files.FileColumns.DATA)
-        val cursor: Cursor? = contentResolver.query(uri, projection, selection, selectionArgs, null)
-
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val data = it.getString(it.getColumnIndexOrThrow(Files.FileColumns.DATA))
-                if (data != "null") {
-                    data
-                } else {
-                    Log.w("GetDataColumn", "Data column returned 'null' for URI: $uri")
-                    null
-                }
-            } else {
-                Log.w("GetDataColumn", "Cursor is empty for URI: $uri")
-                null
-            }
-        } ?: run {
-            Log.w("GetDataColumn", "Cursor is null for URI: $uri")
-            null
-        }
-    } catch (e: SecurityException) {
-        Log.e("GetDataColumn", "SecurityException while querying URI: $uri", e)
-        null
-    } catch (e: IllegalArgumentException) {
-        Log.e("GetDataColumn", "IllegalArgumentException: ${e.message}", e)
-        null
-    }
-<<<<<<< HEAD
-}
-=======
->>>>>>> 831485a (fix:Linting issues due to generic exception statements)
-
-
-private fun isMediaDocument(uri: Uri) = uri.authority == "com.android.providers.media.documents"
-
-private fun isDownloadsDocument(uri: Uri) = uri.authority == "com.android.providers.downloads.documents"
-
-private fun isExternalStorageDocument(uri: Uri) = uri.authority == "com.android.externalstorage.documents"
-
-fun Context.hasPermission(permId: Int) = ContextCompat.checkSelfPermission(this, getPermissionString(permId)) == PackageManager.PERMISSION_GRANTED
-
-fun Context.getPermissionString(id: Int) =
-    when (id) {
-        PERMISSION_READ_STORAGE -> Manifest.permission.READ_EXTERNAL_STORAGE
-        PERMISSION_WRITE_STORAGE -> Manifest.permission.WRITE_EXTERNAL_STORAGE
-        PERMISSION_CAMERA -> Manifest.permission.CAMERA
-        PERMISSION_RECORD_AUDIO -> Manifest.permission.RECORD_AUDIO
-        PERMISSION_READ_CONTACTS -> Manifest.permission.READ_CONTACTS
-        PERMISSION_WRITE_CONTACTS -> Manifest.permission.WRITE_CONTACTS
-        PERMISSION_READ_CALENDAR -> Manifest.permission.READ_CALENDAR
-        PERMISSION_WRITE_CALENDAR -> Manifest.permission.WRITE_CALENDAR
-        PERMISSION_CALL_PHONE -> Manifest.permission.CALL_PHONE
-        PERMISSION_READ_CALL_LOG -> Manifest.permission.READ_CALL_LOG
-        PERMISSION_WRITE_CALL_LOG -> Manifest.permission.WRITE_CALL_LOG
-        PERMISSION_GET_ACCOUNTS -> Manifest.permission.GET_ACCOUNTS
-        PERMISSION_READ_SMS -> Manifest.permission.READ_SMS
-        PERMISSION_SEND_SMS -> Manifest.permission.SEND_SMS
-        PERMISSION_READ_PHONE_STATE -> Manifest.permission.READ_PHONE_STATE
-        else -> ""
-    }
-
-fun Context.launchActivityIntent(intent: Intent) {
-    try {
-        startActivity(intent)
-    } catch (e: ActivityNotFoundException) {
-        toast(R.string.no_app_found)
-    }
-}
-
-fun Context.getFilePublicUri(
-    file: File,
-    applicationId: String,
-): Uri {
-    // for images/videos/gifs try getting a media content uri first, like content://media/external/images/media/438
-    // if media content uri is null, get our custom uri like content://com.simplemobiletools.gallery.provider/external_files/emulated/0/DCIM/IMG_20171104_233915.jpg
-    var uri =
-        if (file.isMediaFile()) {
-            getMediaContentUri(file.absolutePath)
-        } else {
-            getMediaContent(file.absolutePath, Files.getContentUri("external"))
-        }
-
-    if (uri == null) {
-        uri = FileProvider.getUriForFile(this, "$applicationId.provider", file)
-    }
-
-    return uri!!
-}
-
-fun Context.getMediaContentUri(path: String): Uri? {
-    val uri =
-        when {
-            path.isImageFast() -> Images.Media.EXTERNAL_CONTENT_URI
-            path.isVideoFast() -> Video.Media.EXTERNAL_CONTENT_URI
-            else -> Files.getContentUri("external")
-        }
-
-    return getMediaContent(path, uri)
-}
-
-fun Context.getMediaContent(
-    path: String,
-    uri: Uri,
-): Uri? {
-    val projection = arrayOf(Images.Media._ID)
-    val selection = "${Images.Media.DATA} = ?"
-    val selectionArgs = arrayOf(path)
-<<<<<<< HEAD
-=======
-
-    return try {
-        val cursor: Cursor? = contentResolver.query(uri, projection, selection, selectionArgs, null)
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val id = it.getInt(it.getColumnIndexOrThrow(Images.Media._ID)).toString()
-                Uri.withAppendedPath(uri, id)
-            } else {
-                Log.w("GetMediaContent", "No media found for path: $path")
-                null
-            }
-        } ?: run {
-            Log.w("GetMediaContent", "Cursor is null for URI: $uri")
-            null
-        }
-    } catch (e: SecurityException) {
-        Log.e("GetMediaContent", "SecurityException while querying URI: $uri", e)
-        null
-    } catch (e: IllegalArgumentException) {
-        Log.e("GetMediaContent", "IllegalArgumentException: ${e.message}", e)
-        null
-    }
-}
->>>>>>> 831485a (fix:Linting issues due to generic exception statements)
-
-    return try {
-        val cursor: Cursor? = contentResolver.query(uri, projection, selection, selectionArgs, null)
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val id = it.getInt(it.getColumnIndexOrThrow(Images.Media._ID)).toString()
-                Uri.withAppendedPath(uri, id)
-            } else {
-                Log.w("GetMediaContent", "No media found for path: $path")
-                null
-            }
-        } ?: run {
-            Log.w("GetMediaContent", "Cursor is null for URI: $uri")
-            null
-        }
-    } catch (e: SecurityException) {
-        Log.e("GetMediaContent", "SecurityException while querying URI: $uri", e)
-        null
-    } catch (e: IllegalArgumentException) {
-        Log.e("GetMediaContent", "IllegalArgumentException: ${e.message}", e)
-        null
-    }
-}
 fun Context.queryCursor(
     uri: Uri,
     projection: Array<String>,
@@ -460,7 +174,6 @@ fun Context.queryCursor(
     }
 }
 
-
 fun Context.getFilenameFromUri(uri: Uri): String =
     if (uri.scheme == "file") {
         File(uri.toString()).name
@@ -478,43 +191,6 @@ fun Context.getMimeTypeFromUri(uri: Uri): String {
     }
     return mimetype
 }
-
-fun Context.ensurePublicUri(
-    path: String,
-    applicationId: String,
-): Uri? =
-    when {
-        hasProperStoredAndroidTreeUri(path) && isRestrictedSAFOnlyRoot(path) -> {
-            getAndroidSAFUri(path)
-        }
-        hasProperStoredDocumentUriSdk30(path) && isAccessibleWithSAFSdk30(path) -> {
-            createDocumentUriUsingFirstParentTreeUri(path)
-        }
-        isPathOnOTG(path) -> {
-            getDocumentFile(path)?.uri
-        }
-        else -> {
-            val uri = Uri.parse(path)
-            if (uri.scheme == "content") {
-                uri
-            } else {
-                val newPath = if (uri.toString().startsWith("/")) uri.toString() else uri.path
-                val file = File(newPath)
-                getFilePublicUri(file, applicationId)
-            }
-        }
-    }
-
-fun Context.ensurePublicUri(
-    uri: Uri,
-    applicationId: String,
-): Uri =
-    if (uri.scheme == "content") {
-        uri
-    } else {
-        val file = File(uri.path)
-        getFilePublicUri(file, applicationId)
-    }
 
 fun Context.getFilenameFromContentUri(uri: Uri): String? {
     val projection = arrayOf(OpenableColumns.DISPLAY_NAME)
@@ -540,6 +216,7 @@ fun Context.getFilenameFromContentUri(uri: Uri): String? {
         null
     }
 }
+
 fun Context.getSizeFromContentUri(uri: Uri): Long {
     val projection = arrayOf(OpenableColumns.SIZE)
     return try {
@@ -563,7 +240,6 @@ fun Context.getSizeFromContentUri(uri: Uri): Long {
         0L
     }
 }
-
 
 fun Context.getMyContentProviderCursorLoader() = CursorLoader(this, MyContentProvider.MY_CONTENT_URI, null, null, null, null)
 
@@ -1147,7 +823,6 @@ fun Context.addBlockedNumber(number: String) {
         } catch (e: SQLiteException) {
             showErrorToast("Database error: ${e.message}")
         }
-
     }
 }
 
