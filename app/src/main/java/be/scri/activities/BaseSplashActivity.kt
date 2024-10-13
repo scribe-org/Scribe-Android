@@ -5,29 +5,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import be.scri.R
 import be.scri.extensions.baseConfig
-import be.scri.extensions.checkAppIconColor
-import be.scri.extensions.checkAppSideloading
 import be.scri.extensions.getSharedTheme
 import be.scri.extensions.isThankYouInstalled
 import be.scri.extensions.isUsingSystemDarkTheme
-import be.scri.extensions.showSideloadingDialog
-import be.scri.helpers.SIDELOADING_TRUE
-import be.scri.helpers.SIDELOADING_UNCHECKED
 
 abstract class BaseSplashActivity : AppCompatActivity() {
     abstract fun initActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (baseConfig.appSideloadingStatus == SIDELOADING_UNCHECKED) {
-            if (checkAppSideloading()) {
-                return
-            }
-        } else if (baseConfig.appSideloadingStatus == SIDELOADING_TRUE) {
-            showSideloadingDialog()
-            return
-        }
 
         baseConfig.apply {
             if (isUsingAutoTheme) {
@@ -52,11 +38,6 @@ abstract class BaseSplashActivity : AppCompatActivity() {
                         primaryColor = it.primaryColor
                         navigationBarColor = it.navigationBarColor
                         accentColor = it.accentColor
-                    }
-
-                    if (baseConfig.appIconColor != it.appIconColor) {
-                        baseConfig.appIconColor = it.appIconColor
-                        checkAppIconColor()
                     }
                 }
                 initActivity()

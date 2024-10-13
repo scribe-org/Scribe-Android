@@ -32,7 +32,6 @@ class MainFragment : Fragment() {
         binding.keyboardSettings.setOnClickListener {
             openKeyboardSettings()
         }
-
         (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
         applyUserDarkModePreference()
         val callback =
@@ -82,5 +81,15 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).showHint("hint_shown_main", R.string.app_installation_app_hint)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as MainActivity).hideHint()
     }
 }

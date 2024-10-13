@@ -1,11 +1,17 @@
 package be.scri.fragments
 
 import CustomDividerItemDecoration
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
@@ -16,7 +22,9 @@ import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentAboutBinding
 import be.scri.helpers.CustomAdapter
+import be.scri.helpers.HintUtils
 import be.scri.models.ItemsViewModel
+import com.google.android.play.core.review.ReviewManagerFactory
 
 class AboutFragment : Fragment() {
     private lateinit var binding: FragmentAboutBinding
@@ -125,15 +133,16 @@ class AboutFragment : Fragment() {
             ),
         )
 
-    private fun getSecondRecyclerViewData(): List<Any> =
-        listOf(
+    private fun getSecondRecyclerViewData(): List<Any> {
+        val context = requireContext()
+        return listOf(
             ItemsViewModel(
                 image = R.drawable.star,
                 text = ItemsViewModel.Text(R.string.app_about_feedback_rate_scribe),
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
-                action = null,
+                action = ::rateScribe,
             ),
             ItemsViewModel(
                 image = R.drawable.bug_report_icon,
@@ -165,9 +174,10 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.counter_clockwise_icon,
                 url = null,
                 activity = null,
-                action = null,
+                action = ::resetHints,
             ),
         )
+    }
 
     private fun getThirdRecyclerViewData(): List<ItemsViewModel> =
         listOf(
@@ -189,46 +199,126 @@ class AboutFragment : Fragment() {
             ),
         )
 
+    private fun resetHints() {
+        HintUtils.resetHints(requireContext())
+        (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
+    }
+
     private fun shareScribe() {
-        val sharingIntent =
-            Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
-            }
-        startActivity(Intent.createChooser(sharingIntent, "Share via"))
+        try {
+            val sharingIntent =
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
+                }
+            startActivity(Intent.createChooser(sharingIntent, "Share via"))
+        } catch (e: ActivityNotFoundException) {
+            Log.e("AboutFragment", "No application found to share content", e)
+        } catch (e: IllegalArgumentException) {
+            Log.e("AboutFragment", "Invalid argument for sharing", e)
+        }
     }
 
     private fun sendEmail() {
-        val intent =
-            Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
-                putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
-                type = "message/rfc822"
-            }
-        startActivity(Intent.createChooser(intent, "Choose an Email client:"))
+        try {
+            val intent =
+                Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
+                    putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
+                    type = "message/rfc822"
+                }
+            startActivity(Intent.createChooser(intent, "Choose an Email client:"))
+        } catch (e: ActivityNotFoundException) {
+            Log.e("AboutFragment", "No email client found", e)
+        } catch (e: IllegalArgumentException) {
+            Log.e("AboutFragment", "Invalid argument for sending email", e)
+        }
     }
 
     private fun loadWikimediaScribeFragment() {
-        val fragment = WikimediaScribeFragment()
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment, "WikimediaScribePage")
-        fragmentTransaction.addToBackStack("WikimediaScribePage")
-        fragmentTransaction.commit()
+        try {
+            val fragment = WikimediaScribeFragment()
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_container, fragment, "WikimediaScribePage")
+            fragmentTransaction.addToBackStack("WikimediaScribePage")
+            fragmentTransaction.commit()
+        } catch (e: IllegalStateException) {
+            Log.e("AboutFragment", "Failed to load fragment", e)
+        }
     }
 
     private fun loadPrivacyPolicyFragment() {
-        val fragment = PrivacyPolicyFragment()
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        try {
+            val fragment = PrivacyPolicyFragment()
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_container, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        } catch (e: IllegalStateException) {
+            Log.e("AboutFragment", "Failed to load fragment", e)
+        }
     }
 
     private fun loadThirdPartyLicensesFragment() {
-        val fragment = ThirdPartyFragment()
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        try {
+            val fragment = ThirdPartyFragment()
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_container, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        } catch (e: IllegalStateException) {
+            Log.e("AboutFragment", "Failed to load fragment", e)
+        }
+    }
+
+    private fun getInstallSource(context: Context): String? =
+        try {
+            val packageManager = context.packageManager
+            packageManager.getInstallerPackageName(context.packageName)
+        } catch (e: PackageManager.NameNotFoundException) {
+            null
+        }
+
+    private fun rateScribe() {
+        val context = requireContext()
+        var installSource = getInstallSource(context)
+
+        if (installSource == "com.android.vending") {
+            val reviewManager = ReviewManagerFactory.create(context)
+            val request = reviewManager.requestReviewFlow()
+
+            request.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val reviewInfo = task.result
+                    val activity = requireActivity()
+                    reviewManager
+                        .launchReviewFlow(activity, reviewInfo)
+                        .addOnCompleteListener { _ ->
+                        }
+                } else {
+                    Toast.makeText(context, "Failed to launch review flow", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else if (installSource == "org.fdroid.fdroid") {
+            val url = "https://f-droid.org/packages/${context.packageName}"
+            val intent =
+                Intent(Intent.ACTION_VIEW)
+                    .apply {
+                        data = Uri.parse(url)
+                    }
+            context.startActivity(intent)
+        } else {
+            Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as MainActivity).hideHint()
     }
 }

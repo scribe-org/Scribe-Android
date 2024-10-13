@@ -10,6 +10,7 @@ import be.scri.helpers.isRPlus
 import be.scri.helpers.isSPlus
 import be.scri.models.FileDirItem
 import java.io.File
+import java.io.IOException
 
 private const val DOWNLOAD_DIR = "Download"
 private const val ANDROID_DIR = "Android"
@@ -62,14 +63,6 @@ fun Context.isRestrictedWithSAFSdk30(path: String): Boolean {
     return isInvalidName || (isDirectory && isARestrictedDirectory)
 }
 
-fun Context.isInDownloadDir(path: String): Boolean {
-    if (path.startsWith(recycleBinPath)) {
-        return false
-    }
-    val firstParentDir = path.getFirstParentDirName(this, 0)
-    return firstParentDir.equals(DOWNLOAD_DIR, true)
-}
-
 fun Context.isInSubFolderInDownloadDir(path: String): Boolean {
     if (path.startsWith(recycleBinPath)) {
         return false
@@ -92,8 +85,6 @@ fun Context.isInAndroidDir(path: String): Boolean {
     val firstParentDir = path.getFirstParentDirName(this, 0)
     return firstParentDir.equals(ANDROID_DIR, true)
 }
-
-fun isNotExternalStorageManager(): Boolean = isRPlus() && !Environment.isExternalStorageManager()
 
 fun isExternalStorageManager(): Boolean = isRPlus() && Environment.isExternalStorageManager()
 
@@ -171,8 +162,6 @@ fun Context.getDoesFilePathExistSdk30(path: String): Boolean =
         else -> File(path).exists()
     }
 
-fun Context.getSomeDocumentSdk30(path: String): DocumentFile? = getFastDocumentSdk30(path) ?: getDocumentSdk30(path)
-
 fun Context.getFastDocumentSdk30(path: String): DocumentFile? {
     val uri = createDocumentUriUsingFirstParentTreeUri(path)
     return DocumentFile.fromSingleUri(this, uri)
@@ -215,9 +204,15 @@ fun Context.deleteDocumentWithSAFSdk30(
             deleteFromMediaStore(fileDirItem.path)
             callback?.invoke(true)
         }
-    } catch (e: Exception) {
+    } catch (e: SecurityException) {
         callback?.invoke(false)
-        showErrorToast(e)
+        showErrorToast("Permission denied: ${e.message}")
+    } catch (e: IllegalArgumentException) {
+        callback?.invoke(false)
+        showErrorToast("Invalid arguments: ${e.message}")
+    } catch (e: IOException) {
+        callback?.invoke(false)
+        showErrorToast("I/O error: ${e.message}")
     }
 }
 
@@ -251,9 +246,4 @@ fun Context.buildDocumentUriSdk30(fullPath: String): Uri {
 
     val documentId = "$storageId:$relativePath"
     return DocumentsContract.buildDocumentUri(EXTERNAL_STORAGE_PROVIDER_AUTHORITY, documentId)
-}
-
-fun Context.getPicturesDirectoryPath(fullPath: String): String {
-    val basePath = fullPath.getBasePath(this)
-    return File(basePath, Environment.DIRECTORY_PICTURES).absolutePath
 }

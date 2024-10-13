@@ -6,12 +6,15 @@ import android.content.res.Resources
 import android.content.res.TypedArray
 import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.util.TypedValue
 import android.util.Xml
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import androidx.annotation.XmlRes
 import be.scri.R
+import org.xmlpull.v1.XmlPullParserException
+import java.io.IOException
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard consists of rows of keys.
@@ -389,7 +392,10 @@ class MyKeyboard {
                     }
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: XmlPullParserException) {
+            Log.e("MyKeyboard", "XML Parsing error: ${e.message}")
+        } catch (e: IOException) {
+            Log.e("MyKeyboard", "I/O error: ${e.message}")
         }
         mHeight = y
     }

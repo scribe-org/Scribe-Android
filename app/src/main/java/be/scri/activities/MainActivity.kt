@@ -3,6 +3,7 @@ package be.scri.activities
 import android.app.UiModeManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -182,5 +183,39 @@ class MainActivity : SimpleActivity() {
     fun isDarkMode(context: Context): Boolean {
         val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
         return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
+    }
+
+    fun showHint(
+        sharedPrefsKey: String,
+        hintMessageResId: Int,
+    ) {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val allEntries = sharedPref.all
+        for ((key, value) in allEntries) {
+            Log.i("hint", "$key = $value")
+        }
+        val isHintShown = sharedPref.getBoolean(sharedPrefsKey, false)
+        Log.i("hint", isHintShown.toString())
+        if (!isHintShown) {
+            val hintLayout = findViewById<View>(R.id.hint_layout)
+            val hintText = findViewById<TextView>(R.id.hint_text)
+            hintText.text = getString(hintMessageResId)
+
+            hintLayout.visibility = View.VISIBLE
+
+            val okButton = findViewById<Button>(R.id.hint_ok_button)
+            okButton.setOnClickListener {
+                with(sharedPref.edit()) {
+                    putBoolean(sharedPrefsKey, true)
+                    apply()
+                }
+                hideHint()
+            }
+        }
+    }
+
+    fun hideHint() {
+        val hintLayout = findViewById<View>(R.id.hint_layout)
+        hintLayout.visibility = View.GONE
     }
 }
