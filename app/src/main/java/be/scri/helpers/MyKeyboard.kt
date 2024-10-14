@@ -14,6 +14,8 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import android.widget.Toast
 import androidx.annotation.XmlRes
 import be.scri.R
+import org.xmlpull.v1.XmlPullParserException
+import java.io.IOException
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard consists of rows of keys.
@@ -393,10 +395,6 @@ class MyKeyboard {
                     }
                 }
             }
-        } catch (e: Exception) {
-            Log.e("MyKeyboard", "Error parsing XML: ${e.message}", e)
-            Toast.makeText(context, "Error parsing keyboard layout.", Toast.LENGTH_SHORT).show()
-            mHeight = y
         }
 
         fun parseKeyboardAttributes(

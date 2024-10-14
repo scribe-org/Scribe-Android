@@ -16,20 +16,14 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.provider.Settings
 import android.telecom.TelecomManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import be.scri.R
-import be.scri.dialogs.ConfirmationDialog
-import be.scri.dialogs.WritePermissionDialog
-import be.scri.dialogs.WritePermissionDialog.Mode
 import be.scri.extensions.addBit
 import be.scri.extensions.baseConfig
 import be.scri.extensions.buildDocumentUriSdk30
@@ -41,21 +35,13 @@ import be.scri.extensions.getColoredDrawableWithColor
 import be.scri.extensions.getContrastColor
 import be.scri.extensions.getFirstParentLevel
 import be.scri.extensions.getFirstParentPath
-import be.scri.extensions.getPermissionString
 import be.scri.extensions.getProperStatusBarColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getThemeId
-import be.scri.extensions.hasPermission
 import be.scri.extensions.hideKeyboard
 import be.scri.extensions.humanizePath
-import be.scri.extensions.isAppInstalledOnSDCard
 import be.scri.extensions.isPathOnOTG
 import be.scri.extensions.isPathOnSD
-import be.scri.extensions.isShowingAndroidSAFDialog
-import be.scri.extensions.isShowingOTGDialog
-import be.scri.extensions.isShowingSAFCreateDocumentDialogSdk30
-import be.scri.extensions.isShowingSAFDialog
-import be.scri.extensions.isShowingSAFDialogSdk30
 import be.scri.extensions.removeBit
 import be.scri.extensions.showErrorToast
 import be.scri.extensions.storeAndroidTreeUri
@@ -287,10 +273,11 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         resultData: Intent?,
     ) {
         super.onActivityResult(requestCode, resultCode, resultData)
-        val partition =
-            try {
+        val partition: String =
+            if (checkedDocumentPath.length >= 18) {
                 checkedDocumentPath.substring(9, 18)
-            } catch (e: Exception) {
+            } else {
+                showErrorToast("An unexpected error occurred while extracting the substring.")
                 ""
             }
 
@@ -358,8 +345,12 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
 
                         try {
                             startActivityForResult(this, requestCode)
-                        } catch (e: Exception) {
-                            showErrorToast(e)
+                        } catch (e: ActivityNotFoundException) {
+                            showErrorToast("No application found to handle this request.")
+                        } catch (e: SecurityException) {
+                            showErrorToast("Security exception: ${e.message}")
+                        } catch (e: IllegalArgumentException) {
+                            showErrorToast("Invalid argument provided: ${e.message}")
                         }
                     }
                 }
@@ -392,8 +383,12 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
 
                     try {
                         startActivityForResult(intent, requestCode)
-                    } catch (e: Exception) {
-                        showErrorToast(e)
+                    } catch (e: ActivityNotFoundException) {
+                        showErrorToast("No application found to handle this request.")
+                    } catch (e: SecurityException) {
+                        showErrorToast("Security exception: ${e.message}")
+                    } catch (e: IllegalArgumentException) {
+                        showErrorToast("Invalid argument provided: ${e.message}")
                     }
                 }
             } else {
@@ -435,8 +430,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
 
                     try {
                         startActivityForResult(intent, requestCode)
-                    } catch (e: Exception) {
-                        showErrorToast(e)
+                    } catch (e: ActivityNotFoundException) {
+                        showErrorToast("No application found to handle this request.")
+                    } catch (e: SecurityException) {
+                        showErrorToast("Security exception: ${e.message}")
                     }
                 }
             } else {
@@ -511,82 +508,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun launchCustomizeNotificationsIntent() {
-        Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-            putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-            startActivity(this)
-        }
-    }
-
-    // synchronous return value determines only if we are showing the SAF dialog, callback result tells if the SD or OTG permission has been granted
-    fun handleSAFDialog(
-        path: String,
-        callback: (success: Boolean) -> Unit,
-    ): Boolean {
-        hideKeyboard()
-        return if (!packageName.startsWith("be.scri")) {
-            callback(true)
-            false
-        } else if (isShowingSAFDialog(path) || isShowingOTGDialog(path)) {
-            funAfterSAFPermission = callback
-            true
-        } else {
-            callback(true)
-            false
-        }
-    }
-
-    fun handleSAFDialogSdk30(
-        path: String,
-        callback: (success: Boolean) -> Unit,
-    ): Boolean {
-        hideKeyboard()
-        return if (!packageName.startsWith("be.scri")) {
-            callback(true)
-            false
-        } else if (isShowingSAFDialogSdk30(path)) {
-            funAfterSdk30Action = callback
-            true
-        } else {
-            callback(true)
-            false
-        }
-    }
-
-    fun handleSAFCreateDocumentDialogSdk30(
-        path: String,
-        callback: (success: Boolean) -> Unit,
-    ): Boolean {
-        hideKeyboard()
-        return if (!packageName.startsWith("be.scri")) {
-            callback(true)
-            false
-        } else if (isShowingSAFCreateDocumentDialogSdk30(path)) {
-            funAfterSdk30Action = callback
-            true
-        } else {
-            callback(true)
-            false
-        }
-    }
-
-    fun handleAndroidSAFDialog(
-        path: String,
-        callback: (success: Boolean) -> Unit,
-    ): Boolean {
-        hideKeyboard()
-        return if (!packageName.startsWith("be.scri")) {
-            callback(true)
-            false
-        } else if (isShowingAndroidSAFDialog(path)) {
-            funAfterSAFPermission = callback
-            true
-        } else {
-            callback(true)
-            false
-        }
-    }
-
     fun handleOTGPermission(callback: (success: Boolean) -> Unit) {
         hideKeyboard()
         if (baseConfig.otgTreeUri.isNotEmpty()) {
@@ -595,24 +516,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
 
         funAfterSAFPermission = callback
-        WritePermissionDialog(this, Mode.Otg) {
-            Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-                try {
-                    startActivityForResult(this, OPEN_DOCUMENT_TREE_OTG)
-                    return@apply
-                } catch (e: Exception) {
-                    type = "*/*"
-                }
-
-                try {
-                    startActivityForResult(this, OPEN_DOCUMENT_TREE_OTG)
-                } catch (e: ActivityNotFoundException) {
-                    toast(R.string.system_service_disabled, Toast.LENGTH_LONG)
-                } catch (e: Exception) {
-                    toast(R.string.unknown_error_occurred)
-                }
-            }
-        }
     }
 
     @SuppressLint("NewApi")
@@ -626,8 +529,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             try {
                 val deleteRequest = MediaStore.createDeleteRequest(contentResolver, uris).intentSender
                 startIntentSenderForResult(deleteRequest, Companion.DELETE_FILE_SDK_30_HANDLER, null, 0, 0, 0)
-            } catch (e: Exception) {
-                showErrorToast(e)
+            } catch (e: SecurityException) {
+                showErrorToast("Security exception: ${e.message}")
+            } catch (e: IllegalArgumentException) {
+                showErrorToast("Illegal argument: ${e.message}")
             }
         } else {
             callback(false)
@@ -645,8 +550,10 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
             try {
                 val writeRequest = MediaStore.createWriteRequest(contentResolver, uris).intentSender
                 startIntentSenderForResult(writeRequest, Companion.UPDATE_FILE_SDK_30_HANDLER, null, 0, 0, 0)
-            } catch (e: Exception) {
-                showErrorToast(e)
+            } catch (e: SecurityException) {
+                showErrorToast("Security exception: ${e.message}")
+            } catch (e: IllegalArgumentException) {
+                showErrorToast("Illegal argument: ${e.message}")
             }
         } else {
             callback(false)
@@ -669,20 +576,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
     }
 
-    fun handlePermission(
-        permissionId: Int,
-        callback: (granted: Boolean) -> Unit,
-    ) {
-        actionOnPermission = null
-        if (hasPermission(permissionId)) {
-            callback(true)
-        } else {
-            isAskingPermissions = true
-            actionOnPermission = callback
-            ActivityCompat.requestPermissions(this, arrayOf(getPermissionString(permissionId)), Companion.GENERIC_PERM_HANDLER)
-        }
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -692,13 +585,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         isAskingPermissions = false
         if (requestCode == Companion.GENERIC_PERM_HANDLER && grantResults.isNotEmpty()) {
             actionOnPermission?.invoke(grantResults[0] == 0)
-        }
-    }
-
-    fun checkAppOnSDCard() {
-        if (!baseConfig.wasAppOnSDShown && isAppInstalledOnSDCard()) {
-            baseConfig.wasAppOnSDShown = true
-            ConfirmationDialog(this, "", R.string.app_on_sd_card, R.string.ok, 0) {}
         }
     }
 
@@ -716,8 +602,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
                     startActivityForResult(this, REQUEST_CODE_SET_DEFAULT_DIALER)
                 } catch (e: ActivityNotFoundException) {
                     toast(R.string.no_app_found)
-                } catch (e: Exception) {
-                    showErrorToast(e)
                 }
             }
         }

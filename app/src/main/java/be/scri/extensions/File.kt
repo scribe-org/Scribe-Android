@@ -9,6 +9,8 @@ import be.scri.helpers.rawExtensions
 import be.scri.helpers.videoExtensions
 import be.scri.models.FileDirItem
 import java.io.File
+import java.io.IOException
+import java.security.NoSuchAlgorithmException
 
 fun File.isMediaFile() = absolutePath.isMediaFile()
 
@@ -171,7 +173,9 @@ fun File.doesParentHaveNoMedia(): Boolean {
 fun File.getDigest(algorithm: String): String? =
     try {
         inputStream().getDigest(algorithm)
-    } catch (e: Exception) {
+    } catch (e: IOException) {
+        null
+    } catch (e: NoSuchAlgorithmException) {
         null
     }
 

@@ -9,8 +9,7 @@
 
     <string name="scribe_key">Scribe Key</string>
     <string name="command_bar">Command Bar</string>
-
-
+    <string name="hint_ok_button_text">OK</string>
     <!-- Clipboard -->
     <string name="manage_clipboard_items">Manage clipboard items</string>
     <string name="manage_clipboard_empty">Your clipboard is empty.</string>

@@ -1,9 +1,8 @@
 package be.scri.extensions
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.database.CursorIndexOutOfBoundsException
 import android.graphics.Color
 import android.util.Log
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import be.scri.R
 import be.scri.helpers.DARK_GREY
 import be.scri.helpers.INVALID_NAVIGATION_BAR_COLOR
 import be.scri.helpers.MyContentProvider
-import be.scri.helpers.appIconColorStrings
 import be.scri.helpers.ensureBackgroundThread
 import be.scri.models.SharedTheme
 import be.scri.views.MyAppCompatCheckbox
@@ -135,47 +133,12 @@ fun Context.getSharedThemeSync(cursorLoader: CursorLoader): SharedTheme? {
                 val appIconColor = cursor.getIntValue(MyContentProvider.COL_APP_ICON_COLOR)
                 val navigationBarColor = cursor.getIntValueOrNull(MyContentProvider.COL_NAVIGATION_BAR_COLOR) ?: INVALID_NAVIGATION_BAR_COLOR
                 val lastUpdatedTS = cursor.getIntValue(MyContentProvider.COL_LAST_UPDATED_TS)
+
                 return SharedTheme(textColor, backgroundColor, primaryColor, appIconColor, navigationBarColor, lastUpdatedTS, accentColor)
-            } catch (e: Exception) {
-                Log.e("ThemeError", "Error retrieving theme data: ${e.message}", e)
             }
         }
     }
     return null
-}
-
-fun Context.checkAppIconColor() {
-    val appId = baseConfig.appId
-    if (appId.isNotEmpty() && baseConfig.lastIconColor != baseConfig.appIconColor) {
-        getAppIconColors().forEachIndexed { index, color ->
-            toggleAppIconColor(appId, index, color, false)
-        }
-
-        getAppIconColors().forEachIndexed { index, color ->
-            if (baseConfig.appIconColor == color) {
-                toggleAppIconColor(appId, index, color, true)
-            }
-        }
-    }
-}
-
-fun Context.toggleAppIconColor(
-    appId: String,
-    colorIndex: Int,
-    color: Int,
-    enable: Boolean,
-) {
-    val className = "${appId.removeSuffix(".debug")}.activities.SplashActivity${appIconColorStrings[colorIndex]}"
-    val state = if (enable) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-    try {
-        packageManager.setComponentEnabledSetting(ComponentName(appId, className), state, PackageManager.DONT_KILL_APP)
-        if (enable) {
-            baseConfig.lastIconColor = color
-        }
-    } catch (e: Exception) {
-        Log.e("ComponentToggleError", "Error changing component state: ${e.message}", e)
-        Toast.makeText(this, "Failed to change app component state.", Toast.LENGTH_SHORT).show()
-    }
 }
 
 fun Context.getAppIconColors() = resources.getIntArray(R.array.md_app_icon_colors).toCollection(ArrayList())
