@@ -100,7 +100,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
-                action = ::loadWikimediaScribeFragment,
+                action = ({ loadOtherFragment(WikimediaScribeFragment(), "WikimediaScribePage") }),
             ),
         )
 
@@ -156,7 +156,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
-                action = ::loadPrivacyPolicyFragment,
+                action = ({ loadOtherFragment(PrivacyPolicyFragment(), null) }),
             ),
             ItemsViewModel(
                 image = R.drawable.license_icon,
@@ -164,7 +164,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
-                action = ::loadThirdPartyLicensesFragment,
+                action = ({ loadOtherFragment(ThirdPartyFragment(), null) }),
             ),
         )
 
@@ -187,27 +187,14 @@ class AboutFragment : Fragment() {
         startActivity(Intent.createChooser(intent, "Choose an Email client:"))
     }
 
-    private fun loadWikimediaScribeFragment() {
-        val fragment = WikimediaScribeFragment()
+    private fun loadOtherFragment(fragment: Fragment, pageName: String?) {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment, "WikimediaScribePage")
-        fragmentTransaction.addToBackStack("WikimediaScribePage")
-        fragmentTransaction.commit()
-    }
-
-    private fun loadPrivacyPolicyFragment() {
-        val fragment = PrivacyPolicyFragment()
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-    }
-
-    private fun loadThirdPartyLicensesFragment() {
-        val fragment = ThirdPartyFragment()
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-        fragmentTransaction.addToBackStack(null)
+        if (pageName != null) {
+            fragmentTransaction.replace(R.id.fragment_container, fragment, pageName)
+        } else {
+            fragmentTransaction.replace(R.id.fragment_container, fragment)
+        }
+        fragmentTransaction.addToBackStack(pageName)
         fragmentTransaction.commit()
     }
 }
