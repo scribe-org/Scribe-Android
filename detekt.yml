@@ -31,8 +31,6 @@ complexity:
         active: false
 
 exceptions:
-    TooGenericExceptionCaught:
-        active: false
     SwallowedException:
         active: false
     InstanceOfCheckForException:

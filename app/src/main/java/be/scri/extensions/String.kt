@@ -1,34 +1,14 @@
 package be.scri.extensions
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Point
-import android.os.StatFs
 import android.provider.MediaStore
-import android.telephony.PhoneNumberUtils
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextUtils
-import android.text.style.ForegroundColorSpan
-import android.widget.TextView
 import be.scri.helpers.audioExtensions
-import be.scri.helpers.extensionsSupportingEXIF
-import be.scri.helpers.getDateFormats
 import be.scri.helpers.normalizeRegex
 import be.scri.helpers.photoExtensions
 import be.scri.helpers.rawExtensions
 import be.scri.helpers.videoExtensions
-import com.bumptech.glide.signature.ObjectKey
-import org.joda.time.DateTime
-import org.joda.time.Years
-import org.joda.time.format.DateTimeFormat
 import java.io.File
-import java.text.DateFormat
 import java.text.Normalizer
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.regex.Pattern
 
 fun String.getFilenameFromPath() = substring(lastIndexOf("/") + 1)
 
@@ -82,30 +62,9 @@ fun String.getFirstParentPath(
     }
 }
 
-fun String.isAValidFilename(): Boolean {
-    val illegalCharacters = charArrayOf('/', '\n', '\r', '\t', '\u0000', '`', '?', '*', '\\', '<', '>', '|', '\"', ':')
-    illegalCharacters.forEach {
-        if (contains(it)) {
-            return false
-        }
-    }
-    return true
-}
-
-fun String.getOTGPublicPath(context: Context) =
-    "${context.baseConfig.otgTreeUri}/document/${context.baseConfig.otgPartition}%3A${substring(context.baseConfig.otgPath.length).replace("/", "%2F")}"
-
 fun String.isMediaFile() = isImageFast() || isVideoFast() || isGif() || isRawFast() || isSvg() || isPortrait()
 
-fun String.isWebP() = endsWith(".webp", true)
-
 fun String.isGif() = endsWith(".gif", true)
-
-fun String.isPng() = endsWith(".png", true)
-
-fun String.isApng() = endsWith(".apng", true)
-
-fun String.isJpg() = endsWith(".jpg", true) or endsWith(".jpeg", true)
 
 fun String.isSvg() = endsWith(".svg", true)
 
@@ -144,18 +103,7 @@ fun String.isAudioSlow() =
                 .toString(),
         )
 
-fun String.canModifyEXIF() = extensionsSupportingEXIF.any { endsWith(it, true) }
-
-fun String.getCompressionFormat() =
-    when (getFilenameExtension().toLowerCase()) {
-        "png" -> Bitmap.CompressFormat.PNG
-        "webp" -> Bitmap.CompressFormat.WEBP
-        else -> Bitmap.CompressFormat.JPEG
-    }
-
 fun String.areDigitsOnly() = matches(Regex("[0-9]+"))
-
-fun String.areLettersOnly() = matches(Regex("[a-zA-Z]+"))
 
 fun String.getGenericMimeType(): String {
     if (!contains("/")) {
@@ -167,132 +115,6 @@ fun String.getGenericMimeType(): String {
 }
 
 fun String.getParentPath() = removeSuffix("/${getFilenameFromPath()}")
-
-fun String.relativizeWith(path: String) = this.substring(path.length)
-
-fun String.containsNoMedia() = File(this).containsNoMedia()
-
-fun String.doesThisOrParentHaveNoMedia(
-    folderNoMediaStatuses: HashMap<String, Boolean>,
-    callback: ((path: String, hasNoMedia: Boolean) -> Unit)?,
-) = File(this).doesThisOrParentHaveNoMedia(folderNoMediaStatuses, callback)
-
-fun String.getImageResolution(context: Context): Point? {
-    val options = BitmapFactory.Options()
-    options.inJustDecodeBounds = true
-    if (context.isRestrictedSAFOnlyRoot(this)) {
-        BitmapFactory.decodeStream(context.contentResolver.openInputStream(context.getAndroidSAFUri(this)), null, options)
-    } else {
-        BitmapFactory.decodeFile(this, options)
-    }
-
-    val width = options.outWidth
-    val height = options.outHeight
-    return if (width > 0 && height > 0) {
-        Point(options.outWidth, options.outHeight)
-    } else {
-        null
-    }
-}
-
-fun String.getPublicUri(context: Context) = context.getDocumentFile(this)?.uri ?: ""
-
-fun String.substringTo(cnt: Int): String =
-    if (isEmpty()) {
-        ""
-    } else {
-        substring(0, Math.min(length, cnt))
-    }
-
-fun String.highlightTextPart(
-    textToHighlight: String,
-    color: Int,
-    highlightAll: Boolean = false,
-    ignoreCharsBetweenDigits: Boolean = false,
-): SpannableString {
-    val spannableString = SpannableString(this)
-    if (textToHighlight.isEmpty()) {
-        return spannableString
-    }
-
-    var startIndex = normalizeString().indexOf(textToHighlight, 0, true)
-    val indexes = ArrayList<Int>()
-    while (startIndex >= 0) {
-        indexes.add(startIndex)
-        startIndex = normalizeString().indexOf(textToHighlight, startIndex + textToHighlight.length, true)
-        if (!highlightAll) {
-            break
-        }
-    }
-
-    // handle cases when we search for 643, but in reality the string contains it like 6-43
-    if (ignoreCharsBetweenDigits && indexes.isEmpty()) {
-        try {
-            val regex = TextUtils.join("(\\D*)", textToHighlight.toCharArray().toTypedArray())
-            val pattern = Pattern.compile(regex)
-            val result = pattern.matcher(normalizeString())
-            if (result.find()) {
-                spannableString.setSpan(ForegroundColorSpan(color), result.start(), result.end(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-            }
-        } catch (ignored: Exception) {
-            // Ignored exceptions
-        }
-    } else {
-        indexes.forEach {
-            val endIndex = Math.min(it + textToHighlight.length, length)
-            try {
-                spannableString.setSpan(ForegroundColorSpan(color), it, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-            } catch (ignored: IndexOutOfBoundsException) {
-                // Ignored exceptions
-            }
-        }
-    }
-
-    return spannableString
-}
-
-fun String.searchMatches(textToHighlight: String): ArrayList<Int> {
-    val indexes = arrayListOf<Int>()
-    var indexOf = indexOf(textToHighlight, 0, true)
-
-    var offset = 0
-    while (offset < length && indexOf != -1) {
-        indexOf = indexOf(textToHighlight, offset, true)
-
-        if (indexOf == -1) {
-            break
-        } else {
-            indexes.add(indexOf)
-        }
-
-        offset = indexOf + 1
-    }
-
-    return indexes
-}
-
-fun String.getFileSignature(lastModified: Long? = null) = ObjectKey(getFileKey(lastModified))
-
-fun String.getFileKey(lastModified: Long? = null): String {
-    val file = File(this)
-    val modified =
-        if (lastModified != null && lastModified > 0) {
-            lastModified
-        } else {
-            file.lastModified()
-        }
-
-    return "${file.absolutePath}$modified"
-}
-
-fun String.getAvailableStorageB(): Long =
-    try {
-        val stat = StatFs(this)
-        val bytesAvailable = stat.blockSizeLong * stat.availableBlocksLong
-        bytesAvailable
-    } catch (e: Exception) {
-        -1L
-    }
 
 // remove diacritics, for example č -> c
 fun String.normalizeString() =
@@ -306,66 +128,6 @@ fun String.trimToComparableNumber(): String {
     val normalizedNumber = this.normalizeString()
     val startIndex = Math.max(0, normalizedNumber.length - 9)
     return normalizedNumber.substring(startIndex)
-}
-
-// get the contact names first letter at showing the placeholder without image
-fun String.getNameLetter() =
-    normalizeString()
-        .toCharArray()
-        .getOrNull(0)
-        ?.toString()
-        ?.toUpperCase(Locale.getDefault()) ?: "A"
-
-fun String.normalizePhoneNumber() = PhoneNumberUtils.normalizeNumber(this)
-
-fun String.highlightTextFromNumbers(
-    textToHighlight: String,
-    primaryColor: Int,
-): SpannableString {
-    val spannableString = SpannableString(this)
-    val digits = PhoneNumberUtils.convertKeypadLettersToDigits(this)
-    if (digits.contains(textToHighlight)) {
-        val startIndex = digits.indexOf(textToHighlight, 0, true)
-        val endIndex = Math.min(startIndex + textToHighlight.length, length)
-        try {
-            spannableString.setSpan(ForegroundColorSpan(primaryColor), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
-        } catch (ignored: IndexOutOfBoundsException) {
-        }
-    }
-
-    return spannableString
-}
-
-fun String.getDateTimeFromDateString(
-    showYearsSince: Boolean,
-    viewToUpdate: TextView? = null,
-): DateTime {
-    val dateFormats = getDateFormats()
-    var date = DateTime()
-    for (format in dateFormats) {
-        try {
-            date = DateTime.parse(this, DateTimeFormat.forPattern(format))
-
-            val formatter = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-            var localPattern = (formatter as SimpleDateFormat).toLocalizedPattern()
-
-            val hasYear = format.contains("y")
-            if (!hasYear) {
-                localPattern = localPattern.replace("y", "").replace(",", "").trim()
-                date = date.withYear(DateTime().year)
-            }
-
-            var formattedString = date.toString(localPattern)
-            if (showYearsSince && hasYear) {
-                formattedString += " (${Years.yearsBetween(date, DateTime.now()).years})"
-            }
-
-            viewToUpdate?.text = formattedString
-            break
-        } catch (ignored: Exception) {
-        }
-    }
-    return date
 }
 
 fun String.getMimeType(): String {

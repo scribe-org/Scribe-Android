@@ -11,10 +11,12 @@
     <color name="text_color">#000</color>
     <color name="icon_color">#000</color>
     <color name="card_view_color">#FFF</color>
+    <color name="hint_text_color">#FDAD0D</color>
     <color name="menu_option_color">#878472</color>
     <color name="corner_polygon_color">@color/light_tutorial_button_color</color>
     <color name="button_outline_color">@color/light_tutorial_button_color</color>
     <color name="button_text_color">#000000</color>
+    <color name="rv_divider">#d7d7d9</color>
     <color name="switch_thumb_selector_color_true">#FDAD0D</color>
     <color name="switch_thumb_selector_color_false">@android:color/darker_gray</color>
     <color name="switch_selector_color">#FEDE9E</color>
