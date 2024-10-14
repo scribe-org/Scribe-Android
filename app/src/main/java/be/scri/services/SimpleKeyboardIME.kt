@@ -9,7 +9,6 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -57,7 +56,6 @@ abstract class SimpleKeyboardIME :
     private var emojiBtnTablet2: Button? = null
     private var emojiSpaceTablet2: View? = null
     private var emojiBtnTablet3: Button? = null
-    private val tagDebug = "EmojiButtonController"
 //    abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     override fun onInitializeInterface() {
@@ -102,9 +100,6 @@ abstract class SimpleKeyboardIME :
         emojiBtnTablet2 = binding.emojiBtnTablet2
         emojiSpaceTablet2 = binding.emojiSpaceTablet2
         emojiBtnTablet3 = binding.emojiBtnTablet3
-
-        Log.d(tagDebug, "pluralBtn initialized: $pluralBtn")
-        Log.d(tagDebug, "pluralBtn visibility: ${pluralBtn?.visibility}")
     }
 
     fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
@@ -122,10 +117,6 @@ abstract class SimpleKeyboardIME :
             emojiSpacePhone?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
             emojiBtnPhone2?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
         }
-
-        Log.d(tagDebug, "Function called")
-        Log.d(tagDebug, "pluralBtn initialized: $pluralBtn")
-        Log.d(tagDebug, "pluralBtn visibility: ${pluralBtn?.visibility}")
     }
 
     override fun onPress(primaryCode: Int) {
