@@ -20,7 +20,6 @@ import be.scri.extensions.buildDocumentUriSdk30
 import be.scri.extensions.createAndroidDataOrObbPath
 import be.scri.extensions.createAndroidDataOrObbUri
 import be.scri.extensions.createFirstParentTreeUri
-import be.scri.extensions.getAppIconColors
 import be.scri.extensions.getContrastColor
 import be.scri.extensions.getFirstParentLevel
 import be.scri.extensions.getFirstParentPath
@@ -92,7 +91,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
                     baseConfig.backgroundColor
                 }
 
-            updateBackgroundColor(backgroundColor)
+            window.decorView.setBackgroundColor(backgroundColor)
         }
 
         if (showTransparentTop) {
@@ -135,10 +134,6 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         } else {
             super.attachBaseContext(newBase)
         }
-    }
-
-    fun updateBackgroundColor(color: Int = baseConfig.backgroundColor) {
-        window.decorView.setBackgroundColor(color)
     }
 
     fun updateStatusbarColor(color: Int) {
@@ -197,7 +192,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
 
     private fun getCurrentAppIconColorIndex(): Int {
         val appIconColor = baseConfig.appIconColor
-        getAppIconColors().forEachIndexed { index, color ->
+        resources.getIntArray(R.array.md_app_icon_colors).toCollection(ArrayList()).forEachIndexed { index, color ->
             if (color == appIconColor) {
                 return index
             }

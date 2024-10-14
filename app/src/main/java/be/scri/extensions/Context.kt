@@ -15,7 +15,7 @@ fun Context.getStrokeColor(): Int =
             resources.getColor(R.color.md_grey_400, theme)
         }
     } else {
-        val lighterColor = getProperBackgroundColor().lightenColor()
+        val lighterColor = getColorWithDefault(R.color.you_background_color, baseConfig.backgroundColor).lightenColor()
         if (lighterColor == Color.WHITE || lighterColor == Color.BLACK) {
             resources.getColor(R.color.divider_grey, theme)
         } else {

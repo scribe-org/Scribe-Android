@@ -34,14 +34,13 @@ import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.extensions.adjustAlpha
 import be.scri.extensions.applyColorFilter
+import be.scri.extensions.baseConfig
 import be.scri.extensions.beGoneIf
 import be.scri.extensions.config
 import be.scri.extensions.darkenColor
+import be.scri.extensions.getColorWithDefault
 import be.scri.extensions.getContrastColor
-import be.scri.extensions.getProperBackgroundColor
-import be.scri.extensions.getProperKeyColor
 import be.scri.extensions.getProperPrimaryColor
-import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
 import be.scri.extensions.performHapticFeedback
 import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
@@ -270,57 +269,57 @@ class MyKeyboardView
                 return _keyboardBinding!!
             }
 
-        init {
-            val attributes = context.obtainStyledAttributes(attrs, R.styleable.MyKeyboardView, 0, defStyleRes)
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val keyTextSize = 0
-            val indexCnt = attributes.indexCount
+    init {
+        val attributes = context.obtainStyledAttributes(attrs, R.styleable.MyKeyboardView, 0, defStyleRes)
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val keyTextSize = 0
+        val indexCnt = attributes.indexCount
 
-            try {
-                for (i in 0 until indexCnt) {
+        try {
+            for (i in 0 until indexCnt) {
 
-                    val attr = attributes.getIndex(i)
-                    when (attr) {
-                        R.styleable.MyKeyboardView_keyTextSize -> mKeyTextSize = attributes.getDimensionPixelSize(attr, 18)
-                    }
+                val attr = attributes.getIndex(i)
+                when (attr) {
+                    R.styleable.MyKeyboardView_keyTextSize -> mKeyTextSize = attributes.getDimensionPixelSize(attr, 18)
                 }
-            } finally {
-                attributes.recycle()
             }
-
-            mPopupLayout = R.layout.keyboard_popup_keyboard
-            mKeyBackground = resources.getDrawable(R.drawable.keyboard_key_selector, context.theme)
-            mVerticalCorrection = resources.getDimension(R.dimen.vertical_correction).toInt()
-            mLabelTextSize = resources.getDimension(R.dimen.label_text_size).toInt()
-            mPreviewHeight = resources.getDimension(R.dimen.key_height).toInt()
-            mSpaceMoveThreshold = resources.getDimension(R.dimen.medium_margin).toInt()
-            mTextColor = context.getProperTextColor()
-            mBackgroundColor = context.getProperBackgroundColor()
-            mPrimaryColor = context.getProperPrimaryColor()
-            mKeyColor = context.getProperKeyColor()
-
-            mPreviewPopup = PopupWindow(context)
-            mPreviewText = inflater.inflate(resources.getLayout(R.layout.keyboard_key_preview), null) as TextView
-            mPreviewTextSizeLarge = context.resources.getDimension(R.dimen.preview_text_size).toInt()
-            mPreviewPopup.contentView = mPreviewText
-            mPreviewPopup.setBackgroundDrawable(null)
-
-            mPreviewPopup.isTouchable = false
-            mPopupKeyboard = PopupWindow(context)
-            mPopupKeyboard.setBackgroundDrawable(null)
-            mPopupParent = this
-            mPaint = Paint()
-            mPaint.isAntiAlias = true
-            mPaint.textSize = keyTextSize.toFloat()
-            mPaint.textAlign = Align.CENTER
-            mPaint.alpha = 255
-            mMiniKeyboardCache = HashMap()
-            mAccessibilityManager = (context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager)
-            mPopupMaxMoveDistance = resources.getDimension(R.dimen.popup_max_move_distance)
-            mTopSmallNumberSize = resources.getDimension(R.dimen.small_text_size)
-            mTopSmallNumberMarginWidth = resources.getDimension(R.dimen.top_small_number_margin_width)
-            mTopSmallNumberMarginHeight = resources.getDimension(R.dimen.top_small_number_margin_height)
+        } finally {
+            attributes.recycle()
         }
+
+        mPopupLayout = R.layout.keyboard_popup_keyboard
+        mKeyBackground = resources.getDrawable(R.drawable.keyboard_key_selector, context.theme)
+        mVerticalCorrection = resources.getDimension(R.dimen.vertical_correction).toInt()
+        mLabelTextSize = resources.getDimension(R.dimen.label_text_size).toInt()
+        mPreviewHeight = resources.getDimension(R.dimen.key_height).toInt()
+        mSpaceMoveThreshold = resources.getDimension(R.dimen.medium_margin).toInt()
+        mTextColor = context.getColorWithDefault(R.color.you_neutral_text_color, context.baseConfig.textColor)
+        mBackgroundColor = context.getColorWithDefault(R.color.you_background_color, context.baseConfig.backgroundColor)
+        mPrimaryColor = context.getProperPrimaryColor()
+        mKeyColor = context.getColorWithDefault(R.color.you_neutral_text_color, context.baseConfig.textColor)
+
+        mPreviewPopup = PopupWindow(context)
+        mPreviewText = inflater.inflate(resources.getLayout(R.layout.keyboard_key_preview), null) as TextView
+        mPreviewTextSizeLarge = context.resources.getDimension(R.dimen.preview_text_size).toInt()
+        mPreviewPopup.contentView = mPreviewText
+        mPreviewPopup.setBackgroundDrawable(null)
+
+        mPreviewPopup.isTouchable = false
+        mPopupKeyboard = PopupWindow(context)
+        mPopupKeyboard.setBackgroundDrawable(null)
+        mPopupParent = this
+        mPaint = Paint()
+        mPaint.isAntiAlias = true
+        mPaint.textSize = keyTextSize.toFloat()
+        mPaint.textAlign = Align.CENTER
+        mPaint.alpha = 255
+        mMiniKeyboardCache = HashMap()
+        mAccessibilityManager = (context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager)
+        mPopupMaxMoveDistance = resources.getDimension(R.dimen.popup_max_move_distance)
+        mTopSmallNumberSize = resources.getDimension(R.dimen.small_text_size)
+        mTopSmallNumberMarginWidth = resources.getDimension(R.dimen.top_small_number_margin_width)
+        mTopSmallNumberMarginHeight = resources.getDimension(R.dimen.top_small_number_margin_height)
+    }
 
         @SuppressLint("HandlerLeak")
         override fun onAttachedToWindow() {
@@ -350,8 +349,8 @@ class MyKeyboardView
             super.onVisibilityChanged(changedView, visibility)
 
             if (visibility == VISIBLE) {
-                mTextColor = context.getProperTextColor()
-                mBackgroundColor = context.getProperBackgroundColor()
+                mTextColor = context.getColorWithDefault(R.color.you_neutral_text_color, context.baseConfig.textColor)
+                mBackgroundColor = context.getColorWithDefault(R.color.you_background_color, context.baseConfig.backgroundColor)
                 mPrimaryColor = context.getProperPrimaryColor()
                 val strokeColor = context.getStrokeColor()
 

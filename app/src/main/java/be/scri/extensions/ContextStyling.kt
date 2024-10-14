@@ -16,26 +16,11 @@ import be.scri.helpers.ensureBackgroundThread
 import be.scri.models.SharedTheme
 import be.scri.views.MyTextView
 
-// handle system default theme (Material You) specially as the color is taken from the system, not hardcoded by us
-fun Context.getProperTextColor() =
+fun Context.getColorWithDefault(color: Int, defaultColor: Int) =
     if (baseConfig.isUsingSystemTheme) {
-        resources.getColor(R.color.you_neutral_text_color, theme)
+        resources.getColor(color, theme)
     } else {
-        baseConfig.textColor
-    }
-
-fun Context.getProperKeyColor() =
-    if (baseConfig.isUsingSystemTheme) {
-        resources.getColor(R.color.you_neutral_text_color, theme)
-    } else {
-        baseConfig.keyColor
-    }
-
-fun Context.getProperBackgroundColor() =
-    if (baseConfig.isUsingSystemTheme) {
-        resources.getColor(R.color.you_background_color, theme)
-    } else {
-        baseConfig.backgroundColor
+        defaultColor
     }
 
 fun Context.getProperPrimaryColor() =
@@ -54,7 +39,7 @@ fun Context.getProperStatusBarColor() =
 fun Context.updateTextColors(viewGroup: ViewGroup) {
     val textColor =
         when {
-            baseConfig.isUsingSystemTheme -> getProperTextColor()
+            baseConfig.isUsingSystemTheme -> getColorWithDefault(R.color.you_neutral_text_color, baseConfig.textColor)
             else -> baseConfig.textColor
         }
 
@@ -108,11 +93,11 @@ fun Context.getSharedThemeSync(cursorLoader: CursorLoader): SharedTheme? {
 fun Context.checkAppIconColor() {
     val appId = baseConfig.appId
     if (appId.isNotEmpty() && baseConfig.lastIconColor != baseConfig.appIconColor) {
-        getAppIconColors().forEachIndexed { index, color ->
+        resources.getIntArray(R.array.md_app_icon_colors).toCollection(ArrayList()).forEachIndexed { index, color ->
             toggleAppIconColor(appId, index, color, false)
         }
 
-        getAppIconColors().forEachIndexed { index, color ->
+        resources.getIntArray(R.array.md_app_icon_colors).toCollection(ArrayList()).forEachIndexed { index, color ->
             if (baseConfig.appIconColor == color) {
                 toggleAppIconColor(appId, index, color, true)
             }
@@ -136,5 +121,3 @@ fun Context.toggleAppIconColor(
     } catch (e: Exception) {
     }
 }
-
-fun Context.getAppIconColors() = resources.getIntArray(R.array.md_app_icon_colors).toCollection(ArrayList())

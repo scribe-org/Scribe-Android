@@ -32,7 +32,7 @@ fun AppCompatActivity.updateActionBarTitle(
 ) {
     val colorToUse =
         if (baseConfig.isUsingSystemTheme) {
-            getProperTextColor()
+            getColorWithDefault(R.color.you_neutral_text_color, baseConfig.textColor)
         } else {
             color.getContrastColor()
         }
@@ -77,8 +77,7 @@ fun Activity.setupDialogStuff(
         return
     }
     binding = DialogTitleBinding.inflate(layoutInflater)
-    val textColor = getProperTextColor()
-    val backgroundColor = getProperBackgroundColor()
+    val textColor = getColorWithDefault(R.color.you_neutral_text_color, baseConfig.textColor)
     val primaryColor = getProperPrimaryColor()
     if (view is ViewGroup) {
         updateTextColors(view)
