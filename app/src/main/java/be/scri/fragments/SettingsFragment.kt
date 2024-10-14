@@ -58,7 +58,8 @@ class SettingsFragment : Fragment() {
         val enabledInputMethods = imm.enabledInputMethodList
         for (inputMethod in enabledInputMethods) {
             if (inputMethod.packageName == "be.scri.debug") {
-                setupItemVisibility()
+                binding.btnInstall.visibility = View.INVISIBLE
+                binding.selectLanguage.visibility = View.VISIBLE
             }
         }
 
@@ -94,22 +95,22 @@ class SettingsFragment : Fragment() {
                 getString(R.string.app_settings_menu_app_color_mode),
                 description = getString(R.string.app_settings_menu_app_color_mode_description),
                 isChecked = sharedPref.getBoolean("dark_mode", isUserDarkMode),
-                action = ::darkMode,
-                action2 = ::lightMode,
+                action = ({ setLightDarkMode(isDarkMode = true) }),
+                action2 = ({ setLightDarkMode(isDarkMode = false) }),
             ),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_keypress_vibration),
                 description = getString(R.string.app_settings_keyboard_keypress_vibration_description),
                 isChecked = requireContext().config.vibrateOnKeypress,
-                action = ::enableVibrateOnKeypress,
-                action2 = ::disableVibrateOnKeypress,
+                action = ({ setVibrateOnKeypress(shouldVibrateOnKeypress = true) }),
+                action2 = ({ setVibrateOnKeypress(shouldVibrateOnKeypress = false) }),
             ),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_functionality_popup_on_keypress),
                 description = getString(R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
                 isChecked = requireContext().config.showPopupOnKeypress,
-                action = ::enableShowPopupOnKeypress,
-                action2 = ::disableShowPopupOnKeypress,
+                action = ({ setShowPopupOnKeypress(shouldShowPopupOnKeypress = true) }),
+                action2 = ({ setShowPopupOnKeypress(shouldShowPopupOnKeypress = false) }),
             ),
         )
     }
@@ -136,7 +137,8 @@ class SettingsFragment : Fragment() {
         val enabledInputMethods = imm.enabledInputMethodList
         for (inputMethod in enabledInputMethods) {
             if (inputMethod.packageName == "be.scri.debug") {
-                setupItemVisibility()
+                binding.btnInstall.visibility = View.INVISIBLE
+                binding.selectLanguage.visibility = View.VISIBLE
             }
         }
 
@@ -210,59 +212,31 @@ class SettingsFragment : Fragment() {
         return result
     }
 
-    private fun lightMode() {
+    private fun setLightDarkMode(isDarkMode: Boolean) {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("dark_mode", false)
+        editor.putBoolean("dark_mode", isDarkMode)
         editor.apply()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
         requireActivity().recreate()
     }
 
-    private fun darkMode() {
+    private fun setVibrateOnKeypress(shouldVibrateOnKeypress: Boolean) {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("dark_mode", true)
+        editor.putBoolean("vibrate_on_keypress", shouldVibrateOnKeypress)
         editor.apply()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        requireActivity().recreate()
+        requireActivity().config.vibrateOnKeypress = shouldVibrateOnKeypress
     }
 
-    private fun enableVibrateOnKeypress() {
+    private fun setShowPopupOnKeypress(shouldShowPopupOnKeypress: Boolean) {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("vibrate_on_keypress", true)
+        editor.putBoolean("show_popup_on_keypress", shouldShowPopupOnKeypress)
         editor.apply()
-        requireActivity().config.vibrateOnKeypress = true
-    }
-
-    private fun disableVibrateOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("vibrate_on_keypress", false)
-        editor.apply()
-        requireActivity().config.vibrateOnKeypress = false
-    }
-
-    private fun enableShowPopupOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("show_popup_on_keypress", true)
-        editor.apply()
-        requireActivity().config.showPopupOnKeypress = true
-    }
-
-    private fun disableShowPopupOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("show_popup_on_keypress", false)
-        editor.apply()
-        requireActivity().config.showPopupOnKeypress = false
-    }
-
-    private fun setupItemVisibility() {
-        binding.btnInstall.visibility = View.INVISIBLE
-        binding.selectLanguage.visibility = View.VISIBLE
+        requireActivity().config.showPopupOnKeypress = shouldShowPopupOnKeypress
     }
 
     override fun onResume() {
