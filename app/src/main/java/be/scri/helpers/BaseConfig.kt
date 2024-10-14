@@ -31,10 +31,6 @@ open class BaseConfig(
         get() = prefs.getString(PRIMARY_ANDROID_OBB_TREE_URI, "")!!
         set(uri) = prefs.edit().putString(PRIMARY_ANDROID_OBB_TREE_URI, uri).apply()
 
-    var sdAndroidObbTreeUri: String
-        get() = prefs.getString(SD_ANDROID_OBB_TREE_URI, "")!!
-        set(uri) = prefs.edit().putString(SD_ANDROID_OBB_TREE_URI, uri).apply()
-
     var otgAndroidObbTreeUri: String
         get() = prefs.getString(OTG_ANDROID_OBB_TREE_URI, "")!!
         set(uri) = prefs.edit().putString(OTG_ANDROID_OBB_TREE_URI, uri).apply()

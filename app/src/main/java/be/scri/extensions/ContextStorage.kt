@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.text.TextUtils
-import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import be.scri.R
 import be.scri.helpers.EXTERNAL_STORAGE_PROVIDER_AUTHORITY
@@ -18,7 +17,6 @@ import java.util.regex.Pattern
 
 private const val ANDROID_DATA_DIR = "/Android/data/"
 private const val ANDROID_OBB_DIR = "/Android/obb/"
-val DIRS_ACCESSIBLE_ONLY_WITH_SAF = listOf(ANDROID_DATA_DIR, ANDROID_OBB_DIR)
 val Context.recycleBinPath: String get() = filesDir.absolutePath
 
 // http://stackoverflow.com/a/40582634/1967672

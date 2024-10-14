@@ -6,40 +6,12 @@ import android.os.Looper
 import androidx.annotation.ChecksSdkIntAtLeast
 
 const val EXTERNAL_STORAGE_PROVIDER_AUTHORITY = "com.android.externalstorage.documents"
-const val EXTRA_SHOW_ADVANCED = "android.content.extra.SHOW_ADVANCED"
 
-const val APP_NAME = "app_name"
-const val APP_LICENSES = "app_licenses"
-const val APP_FAQ = "app_faq"
-const val APP_VERSION_NAME = "app_version_name"
-const val APP_ICON_IDS = "app_icon_ids"
 const val APP_ID = "app_id"
-const val APP_LAUNCHER_NAME = "app_launcher_name"
-const val REAL_FILE_PATH = "real_file_path_2"
-const val IS_FROM_GALLERY = "is_from_gallery"
-const val REFRESH_PATH = "refresh_path"
-const val IS_CUSTOMIZING_COLORS = "is_customizing_colors"
-const val BLOCKED_NUMBERS_EXPORT_DELIMITER = ","
-const val BLOCKED_NUMBERS_EXPORT_EXTENSION = ".txt"
-const val NOMEDIA = ".nomedia"
-const val YOUR_ALARM_SOUNDS_MIN_ID = 1000
-const val SHOW_FAQ_BEFORE_MAIL = "show_faq_before_mail"
 const val INVALID_NAVIGATION_BAR_COLOR = -1
-const val CHOPPED_LIST_DEFAULT_SIZE = 50
-const val SAVE_DISCARD_PROMPT_INTERVAL = 1000L
-val DEFAULT_WIDGET_BG_COLOR = Color.parseColor("#AA000000")
 const val SD_OTG_PATTERN = "^/storage/[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$"
 const val SD_OTG_SHORT = "^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$"
-const val KEY_PHONE = "phone"
-const val CONTACT_ID = "contact_id"
-const val IS_PRIVATE = "is_private"
-const val MD5 = "MD5"
-const val SHORT_ANIMATION_DURATION = 150L
 val DARK_GREY = 0xFF333333.toInt()
-
-const val LOWER_ALPHA = 0.25f
-const val MEDIUM_ALPHA = 0.5f
-const val HIGHER_ALPHA = 0.75f
 
 const val HOUR_MINUTES = 60
 const val DAY_MINUTES = 24 * HOUR_MINUTES
@@ -47,17 +19,8 @@ const val WEEK_MINUTES = DAY_MINUTES * 7
 const val MONTH_MINUTES = DAY_MINUTES * 30
 const val YEAR_MINUTES = DAY_MINUTES * 365
 
-const val MINUTE_SECONDS = 60
-const val HOUR_SECONDS = HOUR_MINUTES * 60
-const val DAY_SECONDS = DAY_MINUTES * 60
-const val WEEK_SECONDS = WEEK_MINUTES * 60
-const val MONTH_SECONDS = MONTH_MINUTES * 60
-const val YEAR_SECONDS = YEAR_MINUTES * 60
-
 // shared preferences
 const val PREFS_KEY = "Prefs"
-const val APP_RUN_COUNT = "app_run_count"
-const val LAST_VERSION = "last_version"
 const val SD_TREE_URI = "tree_uri_2"
 const val PRIMARY_ANDROID_DATA_TREE_URI = "primary_android_data_tree_uri_2"
 const val OTG_ANDROID_DATA_TREE_URI = "otg_android_data_tree__uri_2"
