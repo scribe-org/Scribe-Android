@@ -112,8 +112,8 @@ class LanguageSettingsFragment : Fragment() {
                         isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
                         title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
                         description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
-                        action = { disableAccentCharacter(language) },
-                        action2 = { enableAccentCharacters(language) },
+                        action = { setAccentCharacterPreference(language, true) },
+                        action2 = { setAccentCharacterPreference(language, false) },
                     ),
                 )
             }
@@ -123,8 +123,8 @@ class LanguageSettingsFragment : Fragment() {
                         isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
                         title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
                         description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
-                        action = { disableAccentCharacter(language) },
-                        action2 = { enableAccentCharacters(language) },
+                        action = { setAccentCharacterPreference(language, true)  },
+                        action2 = { setAccentCharacterPreference(language, false) },
                     ),
                 )
             }
@@ -134,8 +134,8 @@ class LanguageSettingsFragment : Fragment() {
                         isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
                         title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
                         description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
-                        action = { disableAccentCharacter(language) },
-                        action2 = { enableAccentCharacters(language) },
+                        action = { setAccentCharacterPreference(language, true) },
+                        action2 = { setAccentCharacterPreference(language, false) },
                     ),
                 )
             }
@@ -145,8 +145,8 @@ class LanguageSettingsFragment : Fragment() {
                 isChecked = sharedPref.getBoolean("period_on_double_tap_$language", false),
                 title = getString(R.string.app_settings_keyboard_functionality_double_space_period),
                 description = getString(R.string.app_settings_keyboard_functionality_double_space_period_description),
-                action = { enablePeriodOnSpaceBarDoubleTap(language) },
-                action2 = { disablePeriodOnSpaceBarDoubleTap(language) },
+                action = { setPeriodOnSpaceBarDoubleTapPreference(language, true) },
+                action2 = { setPeriodOnSpaceBarDoubleTapPreference(language, false) },
             ),
         )
         list.add(
@@ -154,57 +154,33 @@ class LanguageSettingsFragment : Fragment() {
                 isChecked = sharedPref.getBoolean("autosuggest_emojis_$language", true),
                 title = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji),
                 description = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description),
-                action = { enableEmojiAutosuggestions(language) },
-                action2 = { disableEmojiAutosuggestions(language) },
+                action = { setEmojiAutoSuggestions(language, true) },
+                action2 = { setEmojiAutoSuggestions(language, false) },
             ),
         )
         return list
     }
 
-    private fun enableAccentCharacters(language: String) {
+    private fun setPeriodOnSpaceBarDoubleTapPreference(language: String, shouldEnablePeriodOnSpaceBarDoubleTap: Boolean) {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("disable_accent_character_$language", false)
+        editor.putBoolean("period_on_double_tap_$language", shouldEnablePeriodOnSpaceBarDoubleTap)
         editor.apply()
-        Toast.makeText(requireContext(), "$language Accent Character Enabled", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "$language Period on Double Tap of Space Bar ${if (shouldEnablePeriodOnSpaceBarDoubleTap) "on" else "off"} ", Toast.LENGTH_SHORT).show()
     }
 
-    private fun enablePeriodOnSpaceBarDoubleTap(language: String) {
+    private fun setAccentCharacterPreference(language: String, shouldDisableAccentCharacter: Boolean) {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("period_on_double_tap_$language", true)
-        editor.apply()
-        Toast.makeText(requireContext(), "$language Period on Double Tap of Space Bar on ", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun disablePeriodOnSpaceBarDoubleTap(language: String) {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("period_on_double_tap_$language", false)
-        editor.apply()
-        Toast.makeText(requireContext(), "$language Period on Double Tap of Space Bar on ", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun disableAccentCharacter(language: String) {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("disable_accent_character_$language", true)
+        editor.putBoolean("disable_accent_character_$language", shouldDisableAccentCharacter)
         editor.apply()
         Toast.makeText(requireContext(), "$language Accent Characters Disabled", Toast.LENGTH_SHORT).show()
     }
 
-    private fun enableEmojiAutosuggestions(language: String) {
+    private fun setEmojiAutoSuggestions(language: String, shouldShowEmojiSuggestions: Boolean) {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("emoji_suggestions_$language", true)
-        editor.apply()
-        Toast.makeText(requireContext(), "$language Emoji Autosuggestions on", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun disableEmojiAutosuggestions(language: String) {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("emoji_suggestions_$language", false)
+        editor.putBoolean("emoji_suggestions_$language", shouldShowEmojiSuggestions)
         editor.apply()
         Toast.makeText(requireContext(), "$language Emoji Autosuggestions off", Toast.LENGTH_SHORT).show()
     }
