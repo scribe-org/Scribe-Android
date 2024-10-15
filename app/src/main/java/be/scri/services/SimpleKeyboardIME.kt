@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
 import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
+import android.widget.Button
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
@@ -45,6 +46,16 @@ abstract class SimpleKeyboardIME :
     abstract var switchToLetters: Boolean
     abstract var hasTextBeforeCursor: Boolean
     abstract var binding: KeyboardViewCommandOptionsBinding
+
+    private var pluralBtn: Button? = null
+    private var emojiBtnPhone1: Button? = null
+    private var emojiSpacePhone: View? = null
+    private var emojiBtnPhone2: Button? = null
+    private var emojiBtnTablet1: Button? = null
+    private var emojiSpaceTablet1: View? = null
+    private var emojiBtnTablet2: Button? = null
+    private var emojiSpaceTablet2: View? = null
+    private var emojiBtnTablet3: Button? = null
 //    abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     override fun onInitializeInterface() {
@@ -77,6 +88,35 @@ abstract class SimpleKeyboardIME :
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         return keyboardHolder
+    }
+
+    fun initializeEmojiButtons() {
+        pluralBtn = binding.pluralBtn
+        emojiBtnPhone1 = binding.emojiBtnPhone1
+        emojiSpacePhone = binding.emojiSpacePhone
+        emojiBtnPhone2 = binding.emojiBtnPhone2
+        emojiBtnTablet1 = binding.emojiBtnTablet1
+        emojiSpaceTablet1 = binding.emojiSpaceTablet1
+        emojiBtnTablet2 = binding.emojiBtnTablet2
+        emojiSpaceTablet2 = binding.emojiSpaceTablet2
+        emojiBtnTablet3 = binding.emojiBtnTablet3
+    }
+
+    fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
+        val isTablet = (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
+        if (isTablet) {
+            pluralBtn?.visibility = if (isAutoSuggestEnabled) View.INVISIBLE else View.VISIBLE
+            emojiBtnTablet1?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+            emojiSpaceTablet1?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+            emojiBtnTablet2?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+            emojiSpaceTablet2?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+            emojiBtnTablet3?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+        } else {
+            pluralBtn?.visibility = if (isAutoSuggestEnabled) View.INVISIBLE else View.VISIBLE
+            emojiBtnPhone1?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+            emojiSpacePhone?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+            emojiBtnPhone2?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
+        }
     }
 
     override fun onPress(primaryCode: Int) {

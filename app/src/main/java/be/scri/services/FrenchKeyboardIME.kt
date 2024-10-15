@@ -12,6 +12,7 @@ import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.MyKeyboard
+import be.scri.services.EnglishKeyboardIME.ScribeState
 import be.scri.views.MyKeyboardView
 
 class FrenchKeyboardIME : SimpleKeyboardIME() {
@@ -30,6 +31,7 @@ class FrenchKeyboardIME : SimpleKeyboardIME() {
         DISPLAY_INFORMATION,
     }
 
+    private var isAutoSuggestEnabled: Boolean = false
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
     override lateinit var binding: KeyboardViewCommandOptionsBinding
@@ -73,6 +75,9 @@ class FrenchKeyboardIME : SimpleKeyboardIME() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
+        initializeEmojiButtons()
+        isAutoSuggestEnabled = sharedPref.getBoolean("emoji_suggestions_French", true)
+        updateButtonVisibility(isAutoSuggestEnabled)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
@@ -137,6 +142,7 @@ class FrenchKeyboardIME : SimpleKeyboardIME() {
         setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
+        initializeEmojiButtons()
         updateUI()
         return keyboardHolder
     }
@@ -177,6 +183,7 @@ class FrenchKeyboardIME : SimpleKeyboardIME() {
         binding.separator3.visibility = View.VISIBLE
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
+            updateButtonVisibility(false)
             Log.i("MY-TAG", "SELECT COMMAND STATE")
             binding.scribeKey.foreground = getDrawable(R.drawable.close)
             updateUI()
@@ -265,7 +272,11 @@ class FrenchKeyboardIME : SimpleKeyboardIME() {
 
     private fun updateUI() {
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView()
+            ScribeState.IDLE -> {
+                setupIdleView()
+                initializeEmojiButtons()
+                updateButtonVisibility(isAutoSuggestEnabled)
+            }
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }

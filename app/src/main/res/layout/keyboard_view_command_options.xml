@@ -103,13 +103,100 @@
             android:layout_marginEnd="@dimen/tiny_margin"
             android:background="@drawable/cmd_key_background_rounded"
             android:contentDescription="@string/command_bar"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
             app:layout_constraintEnd_toEndOf="@+id/command_field"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_weight="27"
             app:layout_constraintStart_toEndOf="@+id/separator_3"
             app:layout_constraintTop_toTopOf="@+id/command_field" />
 
+        <Button
+            android:id="@+id/emoji_btn_phone_1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_phone"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/plural_btn" />
+
+        <TextView
+            android:id="@+id/emoji_space_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:text=" "
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_phone_1"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_btn_phone_2"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <Button
+            android:id="@+id/emoji_btn_phone_2"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toEndOf="@+id/plural_btn"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/emoji_space_phone" />
+
+        <Button
+            android:id="@+id/emoji_btn_tablet_1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_tablet_background_rounded"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_tablet_1"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/plural_btn" />
+
+        <TextView
+            android:id="@+id/emoji_space_tablet_1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:text="  "
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_tablet_1"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_btn_tablet_2"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <Button
+            android:id="@+id/emoji_btn_tablet_2"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_tablet_background_rounded"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_tablet_2"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/emoji_space_tablet_1" />
+
+        <TextView
+            android:id="@+id/emoji_space_tablet_2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:text="  "
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_tablet_2"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_btn_tablet_3"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <Button
+            android:id="@+id/emoji_btn_tablet_3"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_tablet_background_rounded"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toEndOf="@+id/plural_btn"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/emoji_space_tablet_2" />
 
         <ImageView
             android:id="@+id/top_keyboard_divider"

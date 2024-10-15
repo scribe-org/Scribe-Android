@@ -31,6 +31,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         DISPLAY_INFORMATION,
     }
 
+    private var isAutoSuggestEnabled: Boolean = false
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
     override lateinit var binding: KeyboardViewCommandOptionsBinding
@@ -61,6 +62,9 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
+        initializeEmojiButtons()
+        isAutoSuggestEnabled = sharedPref.getBoolean("emoji_suggestions_Russian", true)
+        updateButtonVisibility(isAutoSuggestEnabled)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
@@ -88,6 +92,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
+        initializeEmojiButtons()
         updateUI()
         return keyboardHolder
     }
@@ -128,6 +133,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
             Log.i("MY-TAG", "SELECT COMMAND STATE")
+            updateButtonVisibility(false)
             binding.scribeKey.foreground = getDrawable(R.drawable.close)
             updateUI()
         }
@@ -265,7 +271,11 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
 
     private fun updateUI() {
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView()
+            ScribeState.IDLE -> {
+                setupIdleView()
+                initializeEmojiButtons()
+                updateButtonVisibility(isAutoSuggestEnabled)
+            }
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }
