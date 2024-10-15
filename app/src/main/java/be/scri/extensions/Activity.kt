@@ -56,6 +56,7 @@ fun BaseSimpleActivity.showFileCreateError(path: String) {
     showErrorToast(error)
 }
 
+@Suppress("UnusedParameter")
 fun BaseSimpleActivity.getFileOutputStreamSync(
     path: String,
     mimeType: String,
