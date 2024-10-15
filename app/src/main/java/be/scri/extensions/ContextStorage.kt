@@ -76,8 +76,6 @@ fun Context.getSDCardPath(): String {
                     sdCardPath = "/storage/${it.name}"
                 }
             }
-        } catch (e: SecurityException) {
-            Log.e("StorageAccess", "Permission denied: ${e.message}")
         }
     }
 
@@ -259,22 +257,23 @@ fun Context.tryFastDocumentDelete(
 }
 
 fun Context.getFastDocumentFile(path: String): DocumentFile? {
+    val documentFile: DocumentFile?
+
     if (isPathOnOTG(path)) {
-        return getOTGFastDocumentFile(path)
-    }
-
-    if (baseConfig.sdCardPath.isEmpty()) {
-        return null
-    }
-
-    val relativePath = Uri.encode(path.substring(baseConfig.sdCardPath.length).trim('/'))
-    val externalPathPart =
-        baseConfig.sdCardPath
+        documentFile = getOTGFastDocumentFile(path)
+    } else if (baseConfig.sdCardPath.isEmpty()) {
+        documentFile = null
+    } else {
+        val relativePath = Uri.encode(path.substring(baseConfig.sdCardPath.length).trim('/'))
+        val externalPathPart = baseConfig.sdCardPath
             .split("/")
             .lastOrNull(String::isNotEmpty)
             ?.trim('/') ?: return null
-    val fullUri = "${baseConfig.sdTreeUri}/document/$externalPathPart%3A$relativePath"
-    return DocumentFile.fromSingleUri(this, Uri.parse(fullUri))
+        val fullUri = "${baseConfig.sdTreeUri}/document/$externalPathPart%3A$relativePath"
+        documentFile = DocumentFile.fromSingleUri(this, Uri.parse(fullUri))
+    }
+
+    return documentFile
 }
 
 fun Context.getOTGFastDocumentFile(
@@ -425,7 +424,9 @@ fun Context.deleteFromMediaStore(
             val args = arrayOf(path)
             val success = contentResolver.delete(getFileUri(path), where, args) != 1
             callback?.invoke(success)
-        } catch (ignored: Exception) {
+        } catch (e: Exception) {
+            Log.e("FileDeleteError", "Error deleting file at path: $path. Exception: ${e.message}", e)
+            Toast.makeText(this, "Failed to delete file.", Toast.LENGTH_SHORT).show()
         }
         callback?.invoke(true)
     }
@@ -770,17 +771,6 @@ fun getMediaStoreIds(context: Context): HashMap<String, Long> {
                     val path = cursor.getStringValue(Images.Media.DATA)
                     ids[path] = id
                 }
-            } catch (e: CursorIndexOutOfBoundsException) {
-                Log.e("GetMediaStoreIds", "Cursor index error: ${e.message}")
-            } catch (e: SecurityException) {
-                Log.e("GetMediaStoreIds", "Permission denied: ${e.message}")
-            }
-        }
-    } catch (e: SecurityException) {
-        Log.e("GetMediaStoreIds", "Permission denied while querying: ${e.message}")
-    } catch (e: IllegalArgumentException) {
-        Log.e("GetMediaStoreIds", "Invalid URI or projection: ${e.message}")
     }
-
     return ids
 }

@@ -36,73 +36,49 @@ object ExternalStorageProviderHack {
         cursor: Cursor,
     ): Cursor {
         val documentId = DocumentsContract.getDocumentId(uri)
+
+        // If the URI matches the external storage provider and documentId is the expected one
         if (uri.authority == EXTERNAL_STORAGE_PROVIDER_AUTHORITY && documentId == getAndroidDocumentId(rootDocId)) {
             var hasDataRow = false
             var hasObbRow = false
             try {
                 while (cursor.moveToNext()) {
                     when (cursor.getStringValue(DocumentsContract.Document.COLUMN_DOCUMENT_ID)) {
-                        getAndroidDataDocumentId(rootDocId) ->
-                            hasDataRow = true
-                        getAndroidObbDocumentId(rootDocId) ->
-                            hasObbRow = true
+                        getAndroidDataDocumentId(rootDocId) -> hasDataRow = true
+                        getAndroidObbDocumentId(rootDocId) -> hasObbRow = true
                     }
-                    if (hasDataRow && hasObbRow) {
-                        break
-                    }
+                    if (hasDataRow && hasObbRow) break
                 }
             } finally {
                 cursor.moveToPosition(-1)
             }
 
-            if (hasDataRow && hasObbRow) {
-                return cursor
-            }
+            // Create an extraCursor if needed
+            if (!hasDataRow || !hasObbRow) {
+                val extraCursor = MatrixCursor(CHILD_DOCUMENTS_CURSOR_COLUMN_NAMES)
+                if (!hasDataRow) {
+                    extraCursor
+                        .newRow()
+                        .add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, getAndroidDataDocumentId(rootDocId))
+                        .add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, ANDROID_DATA_DISPLAY_NAME)
+                        .add(DocumentsContract.Document.COLUMN_MIME_TYPE, DocumentsContract.Document.MIME_TYPE_DIR)
+                        .add(DocumentsContract.Document.COLUMN_LAST_MODIFIED, System.currentTimeMillis())
+                        .add(DocumentsContract.Document.COLUMN_SIZE, 0L)
+                }
 
-            val extraCursor = MatrixCursor(CHILD_DOCUMENTS_CURSOR_COLUMN_NAMES)
-            if (!hasDataRow) {
-                extraCursor
-                    .newRow()
-                    .add(
-                        DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                        getAndroidDataDocumentId(rootDocId),
-                    ).add(
-                        DocumentsContract.Document.COLUMN_DISPLAY_NAME,
-                        ANDROID_DATA_DISPLAY_NAME,
-                    ).add(
-                        DocumentsContract.Document.COLUMN_MIME_TYPE,
-                        DocumentsContract.Document.MIME_TYPE_DIR,
-                    ).add(
-                        DocumentsContract.Document.COLUMN_LAST_MODIFIED,
-                        System.currentTimeMillis(),
-                    ).add(
-                        DocumentsContract.Document.COLUMN_SIZE,
-                        0L,
-                    )
+                if (!hasObbRow) {
+                    extraCursor
+                        .newRow()
+                        .add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, getAndroidObbDocumentId(rootDocId))
+                        .add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, ANDROID_OBB_DISPLAY_NAME)
+                        .add(DocumentsContract.Document.COLUMN_MIME_TYPE, DocumentsContract.Document.MIME_TYPE_DIR)
+                        .add(DocumentsContract.Document.COLUMN_LAST_MODIFIED, System.currentTimeMillis())
+                        .add(DocumentsContract.Document.COLUMN_SIZE, 0L)
+                }
+                return MergeCursor(arrayOf(cursor, extraCursor)) // First return
             }
-
-            if (!hasObbRow) {
-                extraCursor
-                    .newRow()
-                    .add(
-                        DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                        getAndroidObbDocumentId(rootDocId),
-                    ).add(
-                        DocumentsContract.Document.COLUMN_DISPLAY_NAME,
-                        ANDROID_OBB_DISPLAY_NAME,
-                    ).add(
-                        DocumentsContract.Document.COLUMN_MIME_TYPE,
-                        DocumentsContract.Document.MIME_TYPE_DIR,
-                    ).add(
-                        DocumentsContract.Document.COLUMN_LAST_MODIFIED,
-                        System.currentTimeMillis(),
-                    ).add(
-                        DocumentsContract.Document.COLUMN_SIZE,
-                        0L,
-                    )
-            }
-            return MergeCursor(arrayOf(cursor, extraCursor))
         }
-        return cursor
+
+        return cursor // Second return
     }
 }

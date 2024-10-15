@@ -56,14 +56,16 @@ fun BaseSimpleActivity.showFileCreateError(path: String) {
     showErrorToast(error)
 }
 
+@Suppress("UnusedParameter")
 fun BaseSimpleActivity.getFileOutputStreamSync(
     path: String,
     mimeType: String,
     parentDocumentFile: DocumentFile? = null,
 ): OutputStream? {
     val targetFile = File(path)
+    var outputStream: OutputStream? = null
 
-    return when {
+    outputStream = when {
         isRestrictedSAFOnlyRoot(path) -> {
             val uri = getAndroidSAFUri(path)
             if (!getDoesFilePathExist(path)) {
@@ -72,34 +74,20 @@ fun BaseSimpleActivity.getFileOutputStreamSync(
             applicationContext.contentResolver.openOutputStream(uri)
         }
         needsStupidWritePermissions(path) -> {
-            var documentFile =
-                parentDocumentFile ?: run {
-                    if (getDoesFilePathExist(targetFile.parentFile.absolutePath)) {
-                        getDocumentFile(targetFile.parent)
-                    } else {
-                        getDocumentFile(targetFile.parentFile.parent)
-                            ?.createDirectory(targetFile.parentFile.name)
-                            ?: getDocumentFile(targetFile.parentFile.absolutePath)
-                    }
                 }
-
             if (documentFile == null) {
                 val casualOutputStream = createCasualFileOutputStream(this, targetFile)
-                return casualOutputStream ?: run {
                     showFileCreateError(targetFile.parent)
+                }
+                casualOutputStream
+            } else {
+                try {
+                    val newDocument = getDocumentFile(path) ?: documentFile.createFile(mimeType, path.getFilenameFromPath())
+                    applicationContext.contentResolver.openOutputStream(newDocument!!.uri)
+                } catch (e: Exception) {
+                    showErrorToast(e)
                     null
                 }
-            }
-
-            try {
-                val newDocument = getDocumentFile(path) ?: documentFile.createFile(mimeType, path.getFilenameFromPath())
-                applicationContext.contentResolver.openOutputStream(newDocument!!.uri)
-            } catch (e: FileNotFoundException) {
-                showErrorToast("File not found: ${e.message}")
-                null
-            } catch (e: IOException) {
-                showErrorToast("I/O error: ${e.message}")
-                null
             }
         }
         isAccessibleWithSAFSdk30(path) -> {
@@ -119,6 +107,8 @@ fun BaseSimpleActivity.getFileOutputStreamSync(
         }
         else -> createCasualFileOutputStream(this, targetFile)
     }
+
+    return outputStream
 }
 
 private fun createCasualFileOutputStream(
@@ -139,23 +129,16 @@ private fun createCasualFileOutputStream(
 }
 
 fun BaseSimpleActivity.createDirectorySync(directory: String): Boolean {
-    if (getDoesFilePathExist(directory)) {
-        return true
+    val result = when {
+        getDoesFilePathExist(directory) -> true
+        needsStupidWritePermissions(directory) -> {
+            val documentFile = getDocumentFile(directory.getParentPath())
+            val newDir = documentFile?.createDirectory(directory.getFilenameFromPath()) ?: getDocumentFile(directory)
+            newDir != null
+        }
+        isRestrictedSAFOnlyRoot(directory) -> createAndroidSAFDirectory(directory)
+        isAccessibleWithSAFSdk30(directory) -> createSAFDirectorySdk30(directory)
+        else -> File(directory).mkdirs()
     }
-
-    if (needsStupidWritePermissions(directory)) {
-        val documentFile = getDocumentFile(directory.getParentPath()) ?: return false
-        val newDir = documentFile.createDirectory(directory.getFilenameFromPath()) ?: getDocumentFile(directory)
-        return newDir != null
-    }
-
-    if (isRestrictedSAFOnlyRoot(directory)) {
-        return createAndroidSAFDirectory(directory)
-    }
-
-    if (isAccessibleWithSAFSdk30(directory)) {
-        return createSAFDirectorySdk30(directory)
-    }
-
-    return File(directory).mkdirs()
+    return result
 }
