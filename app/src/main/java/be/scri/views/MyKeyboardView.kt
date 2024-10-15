@@ -55,6 +55,7 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import java.util.Arrays
+import java.util.Locale
 
 @SuppressLint("UseCompatLoadingForDrawables")
 class MyKeyboardView
@@ -279,8 +280,7 @@ class MyKeyboardView
             try {
                 for (i in 0 until indexCnt) {
 
-                    val attr = attributes.getIndex(i)
-                    when (attr) {
+                    when (val attr = attributes.getIndex(i)) {
                         R.styleable.MyKeyboardView_keyTextSize -> mKeyTextSize = attributes.getDimensionPixelSize(attr, 18)
                     }
                 }
@@ -468,7 +468,7 @@ class MyKeyboardView
         private fun adjustCase(label: CharSequence): CharSequence? {
             var newLabel: CharSequence? = label
             if (newLabel != null && newLabel.isNotEmpty() && mKeyboard!!.mShiftState > SHIFT_OFF && newLabel.length < 3 && Character.isLowerCase(newLabel[0])) {
-                newLabel = newLabel.toString().toUpperCase()
+                newLabel = newLabel.toString().uppercase(Locale.getDefault())
             }
             return newLabel
         }

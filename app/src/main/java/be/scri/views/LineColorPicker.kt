@@ -41,7 +41,7 @@ class LineColorPicker(
                 updateItemMargin(lastColorIndex, false)
             }
         }
-        orientation = LinearLayout.HORIZONTAL
+        orientation = HORIZONTAL
 
         setOnTouchListener { view, motionEvent ->
             when (motionEvent.action) {
@@ -106,7 +106,7 @@ class LineColorPicker(
         addMargin: Boolean,
     ) {
         getChildAt(index)?.apply {
-            (layoutParams as LinearLayout.LayoutParams).apply {
+            (layoutParams as LayoutParams).apply {
                 topMargin = if (addMargin) unselectedMargin else 0
                 bottomMargin = if (addMargin) unselectedMargin else 0
             }

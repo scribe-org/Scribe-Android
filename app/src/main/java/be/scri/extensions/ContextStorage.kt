@@ -34,6 +34,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.util.Collections
+import java.util.Locale
 import java.util.regex.Pattern
 
 private const val ANDROID_DATA_DIR = "/Android/data/"
@@ -56,7 +57,7 @@ fun Context.getSDCardPath(): String {
     val fullSDpattern = Pattern.compile(SD_OTG_PATTERN)
     var sdCardPath =
         directories.firstOrNull { fullSDpattern.matcher(it).matches() }
-            ?: directories.firstOrNull { !physicalPaths.contains(it.toLowerCase()) } ?: ""
+            ?: directories.firstOrNull { !physicalPaths.contains(it.lowercase(Locale.getDefault())) } ?: ""
 
     // on some devices no method retrieved any SD card path, so test if its not sdcard1 by any chance. It happened on an Android 5.1
     if (sdCardPath.trimEnd('/').isEmpty()) {
@@ -142,8 +143,7 @@ fun Context.getHumanReadablePath(path: String): String =
 
 fun Context.humanizePath(path: String): String {
     val trimmedPath = path.trimEnd('/')
-    val basePath = path.getBasePath(this)
-    return when (basePath) {
+    return when (val basePath = path.getBasePath(this)) {
         "/" -> "${getHumanReadablePath(basePath)}$trimmedPath"
         else -> trimmedPath.replaceFirst(basePath, getHumanReadablePath(basePath))
     }
@@ -403,7 +403,7 @@ fun getPaths(file: File): ArrayList<String> {
 
 fun Context.getFileUri(path: String) =
     when {
-        path.isImageSlow() -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        path.isImageSlow() -> Images.Media.EXTERNAL_CONTENT_URI
         path.isVideoSlow() -> Video.Media.EXTERNAL_CONTENT_URI
         path.isAudioSlow() -> Audio.Media.EXTERNAL_CONTENT_URI
         else -> Files.getContentUri("external")

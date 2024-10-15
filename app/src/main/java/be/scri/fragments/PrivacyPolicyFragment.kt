@@ -21,7 +21,6 @@ class PrivacyPolicyFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
-        val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 viewpager.setCurrentItem(2, true)
@@ -50,7 +49,7 @@ class PrivacyPolicyFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         binding = FragmentPrivacyPolicyBinding.inflate(inflater, container, false)
         (requireActivity() as MainActivity).showFragmentContainer()
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_privacy_policy)
@@ -62,7 +61,6 @@ class PrivacyPolicyFragment : Fragment() {
                     val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
                     val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
                     (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
-                    val textView = (requireActivity() as MainActivity).supportActionBar?.customView?.findViewById<TextView>(R.id.name)
                     (requireActivity() as MainActivity).setActionBarButtonInvisible()
                     (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
                     if (viewpager.currentItem == 2) {

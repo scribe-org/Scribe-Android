@@ -292,17 +292,17 @@ open class BaseConfig(
         if (path.isEmpty()) {
             sorting = value
         } else {
-            prefs.edit().putInt(SORT_FOLDER_PREFIX + path.toLowerCase(), value).apply()
+            prefs.edit().putInt(SORT_FOLDER_PREFIX + path.lowercase(Locale.getDefault()), value).apply()
         }
     }
 
-    fun getFolderSorting(path: String) = prefs.getInt(SORT_FOLDER_PREFIX + path.toLowerCase(), sorting)
+    fun getFolderSorting(path: String) = prefs.getInt(SORT_FOLDER_PREFIX + path.lowercase(Locale.getDefault()), sorting)
 
     fun removeCustomSorting(path: String) {
-        prefs.edit().remove(SORT_FOLDER_PREFIX + path.toLowerCase()).apply()
+        prefs.edit().remove(SORT_FOLDER_PREFIX + path.lowercase(Locale.getDefault())).apply()
     }
 
-    fun hasCustomSorting(path: String) = prefs.contains(SORT_FOLDER_PREFIX + path.toLowerCase())
+    fun hasCustomSorting(path: String) = prefs.contains(SORT_FOLDER_PREFIX + path.lowercase(Locale.getDefault()))
 
     var hadThankYouInstalled: Boolean
         get() = prefs.getBoolean(HAD_THANK_YOU_INSTALLED, false)
@@ -418,7 +418,7 @@ open class BaseConfig(
     private fun getDefaultDateFormat(): String {
         val format = DateFormat.getDateFormat(context)
         val pattern = (format as SimpleDateFormat).toLocalizedPattern()
-        return when (pattern.toLowerCase().replace(" ", "")) {
+        return when (pattern.lowercase(Locale.getDefault()).replace(" ", "")) {
             "d.M.y" -> DATE_FORMAT_ONE
             "dd/mm/y" -> DATE_FORMAT_TWO
             "mm/dd/y" -> DATE_FORMAT_THREE

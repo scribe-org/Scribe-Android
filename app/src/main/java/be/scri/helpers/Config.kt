@@ -38,7 +38,7 @@ class Config(
         val conf = context.resources.configuration
         return if (conf.locale
                 .toString()
-                .toLowerCase(Locale.getDefault())
+                .lowercase(Locale.getDefault())
                 .startsWith("ru_")
         ) {
             LANGUAGE_RUSSIAN

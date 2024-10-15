@@ -9,6 +9,7 @@ import be.scri.helpers.rawExtensions
 import be.scri.helpers.videoExtensions
 import java.io.File
 import java.text.Normalizer
+import java.util.Locale
 
 fun String.getFilenameFromPath() = substring(lastIndexOf("/") + 1)
 
@@ -734,5 +735,5 @@ fun String.getMimeType(): String {
             put("zip", "application/zip")
         }
 
-    return typesMap[getFilenameExtension().toLowerCase()] ?: ""
+    return typesMap[getFilenameExtension().lowercase(Locale.getDefault())] ?: ""
 }

@@ -41,7 +41,7 @@ class WikimediaScribeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         binding = FragmentWikimediaScribeBinding.inflate(inflater, container, false)
         (requireActivity() as MainActivity).showFragmentContainer()
         requireActivity().onBackPressedDispatcher.addCallback(
