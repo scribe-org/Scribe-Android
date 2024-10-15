@@ -27,8 +27,6 @@ complexity:
         active: false
     CyclomaticComplexMethod:
         active: false
-    LargeClass:
-        active: false
 
 exceptions:
     SwallowedException:

@@ -57,6 +57,7 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import java.util.Arrays
 
 @SuppressLint("UseCompatLoadingForDrawables")
+@Suppress("LargeClass")
 class MyKeyboardView
     @JvmOverloads
     constructor(
