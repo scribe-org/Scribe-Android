@@ -26,7 +26,7 @@ complexity:
     LongParameterList:
         active: false
     LongMethod:
-        active: false
+        active: true
     CyclomaticComplexMethod:
         active: false
 
