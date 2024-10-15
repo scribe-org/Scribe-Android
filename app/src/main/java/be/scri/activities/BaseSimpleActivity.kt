@@ -381,6 +381,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 }
 
+    @Suppress("UnusedPrivateMember")
     private fun saveTreeUri(resultData: Intent) {
         val treeUri = resultData.data
         baseConfig.sdTreeUri = treeUri.toString()
@@ -389,6 +390,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         applicationContext.contentResolver.takePersistableUriPermission(treeUri!!, takeFlags)
     }
 
+    @Suppress("UnusedPrivateMember")
     private fun isProperSDRootFolder(uri: Uri) = isExternalStorageDocument(uri) && isRootUri(uri) && !isInternalStorage(uri)
 
     private fun isProperSDFolder(uri: Uri) = isExternalStorageDocument(uri) && !isInternalStorage(uri)
