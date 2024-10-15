@@ -64,6 +64,7 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
         updateEnterKeyColor(isUserDarkMode)
         initializeEmojiButtons()
         isAutoSuggestEnabled = sharedPref.getBoolean("emoji_suggestions_Italian", true)
+        updateButtonVisibility(isAutoSuggestEnabled)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
@@ -132,8 +133,7 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
         binding.separator3.visibility = View.VISIBLE
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
-            initializeEmojiButtons()
-            updateButtonVisibility(isAutoSuggestEnabled)
+            updateButtonVisibility(false)
             Log.i("MY-TAG", "SELECT COMMAND STATE")
             binding.scribeKey.foreground = getDrawable(R.drawable.close)
             updateUI()
@@ -201,7 +201,6 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
         binding.separator2.visibility = View.GONE
         binding.separator3.visibility = View.GONE
         binding.scribeKey.setOnClickListener {
-            updateButtonVisibility(false)
             currentState = ScribeState.IDLE
             Log.i("MY-TAG", "IDLE STATE")
             binding.scribeKey.foreground = getDrawable(R.drawable.ic_scribe_icon_vector)
@@ -273,7 +272,11 @@ class ItalianKeyboardIME : SimpleKeyboardIME() {
 
     private fun updateUI() {
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView()
+            ScribeState.IDLE -> {
+                setupIdleView()
+                initializeEmojiButtons()
+                updateButtonVisibility(isAutoSuggestEnabled)
+            }
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }

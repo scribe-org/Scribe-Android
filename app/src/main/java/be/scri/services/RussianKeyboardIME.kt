@@ -64,6 +64,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         updateEnterKeyColor(isUserDarkMode)
         initializeEmojiButtons()
         isAutoSuggestEnabled = sharedPref.getBoolean("emoji_suggestions_Russian", true)
+        updateButtonVisibility(isAutoSuggestEnabled)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
@@ -132,8 +133,7 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
             Log.i("MY-TAG", "SELECT COMMAND STATE")
-            initializeEmojiButtons()
-            updateButtonVisibility(isAutoSuggestEnabled)
+            updateButtonVisibility(false)
             binding.scribeKey.foreground = getDrawable(R.drawable.close)
             updateUI()
         }
@@ -200,7 +200,6 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
         binding.separator2.visibility = View.GONE
         binding.separator3.visibility = View.GONE
         binding.scribeKey.setOnClickListener {
-            updateButtonVisibility(false)
             currentState = ScribeState.IDLE
             Log.i("MY-TAG", "IDLE STATE")
             binding.scribeKey.foreground = getDrawable(R.drawable.ic_scribe_icon_vector)
@@ -272,7 +271,11 @@ class RussianKeyboardIME : SimpleKeyboardIME() {
 
     private fun updateUI() {
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView()
+            ScribeState.IDLE -> {
+                setupIdleView()
+                initializeEmojiButtons()
+                updateButtonVisibility(isAutoSuggestEnabled)
+            }
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }
