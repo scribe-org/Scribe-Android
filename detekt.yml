@@ -22,7 +22,7 @@ complexity:
     NestedBlockDepth:
         active: false
     ComplexCondition:
-        active: false
+        active: true
     LongParameterList:
         active: false
     LongMethod:
