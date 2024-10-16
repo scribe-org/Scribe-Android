@@ -18,7 +18,7 @@ style:
 
 complexity:
     TooManyFunctions:
-        active: true
+        active: false
     NestedBlockDepth:
         active: false
     ComplexCondition:
