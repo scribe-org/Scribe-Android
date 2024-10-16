@@ -42,7 +42,6 @@ class EnglishKeyboardIME : ScribeKeyboardIME() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
-
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
