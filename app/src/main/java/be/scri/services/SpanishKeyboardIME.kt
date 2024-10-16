@@ -164,8 +164,7 @@ class SpanishKeyboardIME : ScribeKeyboardIME() {
     }
 
     private fun switchToToolBar() {
-        val keyboardBinding1 = KeyboardViewKeyboardBinding.inflate(layoutInflater)
-        val keyboardBinding = keyboardBinding1
+        val keyboardBinding = keyboardBinding
         val keyboardHolder = keyboardBinding.root
         keyboardView = keyboardBinding.keyboardView
         super.setupToolBarTheme(keyboardBinding)

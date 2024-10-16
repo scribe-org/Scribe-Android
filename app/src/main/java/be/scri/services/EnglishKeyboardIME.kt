@@ -158,10 +158,6 @@ class EnglishKeyboardIME : ScribeKeyboardIME() {
     }
 
     private fun switchToToolBar() {
-        this.keyboardBinding = run {
-            val keyboardBinding1 = KeyboardViewKeyboardBinding.inflate(layoutInflater)
-            keyboardBinding1
-        }
         val keyboardHolder = keyboardBinding.root
         super.setupToolBarTheme(keyboardBinding)
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
