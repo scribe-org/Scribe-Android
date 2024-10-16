@@ -27,7 +27,6 @@ import be.scri.helpers.SD_OTG_SHORT
 import be.scri.helpers.ensureBackgroundThread
 import be.scri.helpers.isMarshmallowPlus
 import be.scri.helpers.isRPlus
-import be.scri.models.FileDirItem
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -729,58 +728,3 @@ private val physicalPaths =
         "/storage/usbdisk1",
         "/storage/usbdisk2",
     )
-
-// Convert paths like /storage/emulated/0/Pictures/Screenshots/first.jpg to content://media/external/images/media/131799
-// so that we can refer to the file in the MediaStore.
-// If we found no mediastore uri for a given file, do not return its path either to avoid some mismatching
-fun Context.getFileUrisFromFileDirItems(fileDirItems: List<FileDirItem>): Pair<ArrayList<String>, ArrayList<Uri>> {
-    val fileUris = ArrayList<Uri>()
-    val successfulFilePaths = ArrayList<String>()
-    val allIds = getMediaStoreIds(this)
-    val filePaths = fileDirItems.map { it.path }
-    filePaths.forEach { path ->
-        for ((filePath, mediaStoreId) in allIds) {
-            if (filePath.lowercase() == path.lowercase()) {
-                val baseUri = getFileUri(filePath)
-                val uri = ContentUris.withAppendedId(baseUri, mediaStoreId)
-                fileUris.add(uri)
-                successfulFilePaths.add(path)
-            }
-        }
-    }
-
-    return Pair(successfulFilePaths, fileUris)
-}
-
-fun getMediaStoreIds(context: Context): HashMap<String, Long> {
-    val ids = HashMap<String, Long>()
-    val projection =
-        arrayOf(
-            Images.Media.DATA,
-            Images.Media._ID,
-        )
-
-    val uri = Files.getContentUri("external")
-
-    try {
-        context.queryCursor(uri, projection) { cursor ->
-            try {
-                val id = cursor.getLongValue(Images.Media._ID)
-                if (id != 0L) {
-                    val path = cursor.getStringValue(Images.Media.DATA)
-                    ids[path] = id
-                }
-            } catch (e: CursorIndexOutOfBoundsException) {
-                Log.e("GetMediaStoreIds", "Cursor index error: ${e.message}")
-            } catch (e: SecurityException) {
-                Log.e("GetMediaStoreIds", "Permission denied: ${e.message}")
-            }
-        }
-    } catch (e: SecurityException) {
-        Log.e("GetMediaStoreIds", "Permission denied while querying: ${e.message}")
-    } catch (e: IllegalArgumentException) {
-        Log.e("GetMediaStoreIds", "Invalid URI or projection: ${e.message}")
-    }
-
-    return ids
-}
