@@ -9,10 +9,6 @@ style:
         active: false
     ReturnCount:
         active: false
-    # UnusedPrivateProperty:
-    #     active: true
-    # UnusedParameter:
-    #     active: true
     UtilityClassWithPublicConstructor:
         active: false
 
@@ -25,8 +21,6 @@ complexity:
         active: false
     LongParameterList:
         active: false
-    LongMethod:
-        active: true
     CyclomaticComplexMethod:
         active: false
 
@@ -39,8 +33,8 @@ exceptions:
 empty-blocks:
     EmptyCatchBlock:
         active: false
-    # EmptyFunctionBlock:
-    #     active: false
+    EmptyFunctionBlock:
+        active: false
 
 performance:
     SpreadOperator:
