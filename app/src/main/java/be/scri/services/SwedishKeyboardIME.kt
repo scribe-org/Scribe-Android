@@ -236,7 +236,6 @@ class SwedishKeyboardIME : SimpleKeyboardIME() {
     }
 
     private fun switchToToolBar() {
-        val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
         this.keyboardBinding = keyboardBinding
         val keyboardHolder = keyboardBinding.root
         keyboardView = keyboardBinding.keyboardView

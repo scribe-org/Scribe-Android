@@ -37,6 +37,7 @@ abstract class ScribeKeyboardIME : SimpleKeyboardIME() {
         keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
         onCreateInputView()
         setupCommandBarTheme(binding)
+        keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
     }
 
     protected fun shouldCommitPeriodAfterSpace(language: String): Boolean {
