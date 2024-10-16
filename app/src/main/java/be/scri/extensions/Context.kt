@@ -1,25 +1,11 @@
 package be.scri.extensions
 
-import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import be.scri.R
-import be.scri.databases.ClipsDatabase
 import be.scri.helpers.Config
-import be.scri.interfaces.ClipsDao
 
 val Context.config: Config get() = Config.newInstance(applicationContext)
-
-val Context.clipsDB: ClipsDao get() = ClipsDatabase.getInstance(applicationContext).ClipsDao()
-
-fun Context.getCurrentClip(): String? {
-    val clipboardManager = (getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-    return clipboardManager.primaryClip
-        ?.getItemAt(0)
-        ?.text
-        ?.trim()
-        ?.toString()
-}
 
 fun Context.getStrokeColor(): Int =
     if (config.isUsingSystemTheme) {
