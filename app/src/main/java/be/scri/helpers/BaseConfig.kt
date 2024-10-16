@@ -1,13 +1,8 @@
 package be.scri.helpers
 
 import android.content.Context
-import android.text.format.DateFormat
 import be.scri.R
 import be.scri.extensions.getSharedPrefs
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.LinkedList
-import java.util.Locale
 
 open class BaseConfig(
     val context: Context,
@@ -38,7 +33,6 @@ open class BaseConfig(
         get() = prefs.getInt(ACCENT_COLOR, context.resources.getColor(R.color.color_primary))
         set(accentColor) = prefs.edit().putInt(ACCENT_COLOR, accentColor).apply()
 
-
     var useEnglish: Boolean
         get() = prefs.getBoolean(USE_ENGLISH, false)
         set(useEnglish) {
@@ -53,5 +47,4 @@ open class BaseConfig(
     var isUsingSystemTheme: Boolean
         get() = prefs.getBoolean(IS_USING_SYSTEM_THEME, false)
         set(isUsingSystemTheme) = prefs.edit().putBoolean(IS_USING_SYSTEM_THEME, isUsingSystemTheme).apply()
-
 }
