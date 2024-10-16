@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import be.scri.R
 import be.scri.extensions.isRTLLayout
 import be.scri.extensions.onGlobalLayout
-import be.scri.interfaces.LineColorPickerListener
 
 class LineColorPicker(
     context: Context,
@@ -22,7 +21,6 @@ class LineColorPicker(
     private var wasInit = false
     private var colors = ArrayList<Int>()
 
-    var listener: LineColorPickerListener? = null
 
     init {
         unselectedMargin = context.resources.getDimension(R.dimen.line_color_picker_margin).toInt()
@@ -97,7 +95,6 @@ class LineColorPicker(
             updateItemMargin(lastColorIndex, true)
             lastColorIndex = index
             updateItemMargin(index, false)
-            listener?.colorChanged(index, colors[index])
         }
     }
 
