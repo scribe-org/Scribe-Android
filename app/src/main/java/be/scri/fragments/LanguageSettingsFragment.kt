@@ -203,7 +203,7 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("period_on_double_tap_$language", shouldEnablePeriodOnSpaceBarDoubleTap)
         editor.apply()
-        Toast.makeText(requireContext(), "$language Period on Double Tap of Space Bar ${if (shouldEnablePeriodOnSpaceBarDoubleTap) "on" else "off"} ", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "$language Period on Double Tap of Space Bar ${if (shouldEnablePeriodOnSpaceBarDoubleTap) "on" else "off"}", Toast.LENGTH_SHORT).show()
     }
 
     private fun setAccentCharacterPreference(language: String, shouldDisableAccentCharacter: Boolean) {
@@ -211,7 +211,7 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("disable_accent_character_$language", shouldDisableAccentCharacter)
         editor.apply()
-        Toast.makeText(requireContext(), "$language Accent Characters Disabled", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "$language Accent Characters ${if (shouldDisableAccentCharacter) "off" else "on"}", Toast.LENGTH_SHORT).show()
     }
 
     private fun setEmojiAutoSuggestions(language: String, shouldShowEmojiSuggestions: Boolean) {
@@ -219,7 +219,7 @@ class LanguageSettingsFragment : Fragment() {
         val editor = sharedPref.edit()
         editor.putBoolean("emoji_suggestions_$language", shouldShowEmojiSuggestions)
         editor.apply()
-        Toast.makeText(requireContext(), "$language Emoji Autosuggestions off", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "$language Emoji Autosuggestions ${if (shouldShowEmojiSuggestions) "on" else "off"}", Toast.LENGTH_SHORT).show()
     }
 
     private fun enableCommaAndPeriod() {
