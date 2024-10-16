@@ -101,8 +101,6 @@ fun Context.toast(
         } else {
             Handler(Looper.getMainLooper()).post(showToast)
         }
-    } catch (e: IllegalArgumentException) {
-        Log.e("ToastError", "Invalid argument while showing toast: ${e.message}", e)
     }
 }
 
@@ -187,6 +185,8 @@ fun Context.getMimeTypeFromUri(uri: Uri): String {
         try {
             mimetype = contentResolver.getType(uri) ?: ""
         } catch (e: IllegalStateException) {
+            Log.e("MimeTypeError", "Error retrieving MIME type for URI: ${uri.toString()}. Exception: ${e.message}", e)
+            Toast.makeText(this, "Failed to retrieve MIME type.", Toast.LENGTH_SHORT).show()
         }
     }
     return mimetype
@@ -208,12 +208,6 @@ fun Context.getFilenameFromContentUri(uri: Uri): String? {
             Log.w("ContentUriFilename", "Cursor is null for URI: $uri")
             null
         }
-    } catch (e: SecurityException) {
-        Log.e("ContentUriFilename", "SecurityException while accessing URI: $uri", e)
-        null
-    } catch (e: IllegalArgumentException) {
-        Log.e("ContentUriFilename", "IllegalArgumentException: ${e.message}", e)
-        null
     }
 }
 
@@ -232,12 +226,6 @@ fun Context.getSizeFromContentUri(uri: Uri): Long {
             Log.w("ContentUriSize", "Cursor is null for URI: $uri")
             0L
         }
-    } catch (e: SecurityException) {
-        Log.e("ContentUriSize", "SecurityException while accessing URI: $uri", e)
-        0L
-    } catch (e: IllegalArgumentException) {
-        Log.e("ContentUriSize", "IllegalArgumentException: ${e.message}", e)
-        0L
     }
 }
 

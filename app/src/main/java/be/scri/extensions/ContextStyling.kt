@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.database.CursorIndexOutOfBoundsException
 import android.graphics.Color
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.loader.content.CursorLoader
@@ -134,10 +135,6 @@ fun Context.getSharedThemeSync(cursorLoader: CursorLoader): SharedTheme? {
                 val lastUpdatedTS = cursor.getIntValue(MyContentProvider.COL_LAST_UPDATED_TS)
 
                 return SharedTheme(textColor, backgroundColor, primaryColor, appIconColor, navigationBarColor, lastUpdatedTS, accentColor)
-            } catch (e: IllegalArgumentException) {
-                Toast.makeText(this, "Invalid column index", Toast.LENGTH_SHORT).show()
-            } catch (e: CursorIndexOutOfBoundsException) {
-                Toast.makeText(this, "Cursor is not in a valid state", Toast.LENGTH_SHORT).show()
             }
         }
     }
