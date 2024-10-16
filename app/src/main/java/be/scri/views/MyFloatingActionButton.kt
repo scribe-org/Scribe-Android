@@ -14,8 +14,4 @@ class MyFloatingActionButton : FloatingActionButton {
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
-    fun setColors(accentColor: Int) {
-        backgroundTintList = ColorStateList.valueOf(accentColor)
-        applyColorFilter(accentColor.getContrastColor())
-    }
 }

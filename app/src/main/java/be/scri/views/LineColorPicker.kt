@@ -2,7 +2,6 @@ package be.scri.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import be.scri.R
@@ -21,7 +20,6 @@ class LineColorPicker(
     private var wasInit = false
     private var colors = ArrayList<Int>()
 
-
     init {
         unselectedMargin = context.resources.getDimension(R.dimen.line_color_picker_margin).toInt()
         onGlobalLayout {
@@ -35,7 +33,6 @@ class LineColorPicker(
 
             if (!wasInit) {
                 wasInit = true
-                initColorPicker()
                 updateItemMargin(lastColorIndex, false)
             }
         }
@@ -50,38 +47,6 @@ class LineColorPicker(
                 }
             }
             true
-        }
-    }
-
-    fun updateColors(
-        colors: ArrayList<Int>,
-        selectColorIndex: Int = -1,
-    ) {
-        this.colors = colors
-        colorsCount = colors.size
-        if (pickerWidth != 0) {
-            stripeWidth = pickerWidth / colorsCount
-        }
-
-        if (selectColorIndex != -1) {
-            lastColorIndex = selectColorIndex
-        }
-
-        initColorPicker()
-        updateItemMargin(lastColorIndex, false)
-    }
-
-    // do not remove ": Int", it causes "NoSuchMethodError" for some reason
-    fun getCurrentColor(): Int = colors[lastColorIndex]
-
-    private fun initColorPicker() {
-        removeAllViews()
-        val inflater = LayoutInflater.from(context)
-        colors.forEach {
-            inflater.inflate(R.layout.empty_image_view, this, false).apply {
-                setBackgroundColor(it)
-                addView(this)
-            }
         }
     }
 

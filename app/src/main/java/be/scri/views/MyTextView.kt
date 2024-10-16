@@ -10,11 +10,4 @@ class MyTextView : androidx.appcompat.widget.AppCompatTextView {
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
-    fun setColors(
-        textColor: Int,
-        accentColor: Int,
-    ) {
-        setTextColor(textColor)
-        setLinkTextColor(accentColor)
-    }
 }

@@ -7,8 +7,6 @@ import be.scri.helpers.Config
 
 val Context.config: Config get() = Config.newInstance(applicationContext)
 
-
-
 fun Context.getStrokeColor(): Int =
     if (config.isUsingSystemTheme) {
         if (isUsingSystemDarkTheme()) {
