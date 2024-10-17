@@ -2,6 +2,7 @@ package be.scri.services
 
 import android.content.Context
 import android.util.Log
+import android.view.View
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
@@ -67,10 +68,12 @@ abstract class ScribeKeyboardIME : SimpleKeyboardIME() {
         binding.translateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
         binding.conjugateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
         binding.pluralBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
-        setupCommandBarTheme(binding)
         binding.translateBtn.text = "Translate"
         binding.conjugateBtn.text = "Conjugate"
         binding.pluralBtn.text = "Plural"
+        binding.separator2.visibility = View.GONE
+        binding.separator3.visibility = View.GONE
+        super.setupCommandBarTheme(binding)
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             Log.i("MY-TAG", "IDLE STATE")
@@ -92,6 +95,11 @@ abstract class ScribeKeyboardIME : SimpleKeyboardIME() {
             currentState = ScribeState.PLURAL
             updateUI()
         }
+    }
+
+    protected fun initializeKeyboardBinding(): KeyboardViewKeyboardBinding {
+        val keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
+        return keyboardBinding
     }
 
 }
