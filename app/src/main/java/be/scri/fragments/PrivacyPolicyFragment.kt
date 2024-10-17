@@ -24,11 +24,11 @@ class PrivacyPolicyFragment : Fragment() {
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 viewpager.setCurrentItem(2, true)
-                (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+                (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
             }
         (requireActivity() as MainActivity).setActionBarButtonVisible()
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_privacy_policy)
-        (requireActivity() as MainActivity).setActionBarLayoutMargin()
+        (requireActivity() as MainActivity).setActionBarLayoutMargin(false)
         val textView = (requireActivity() as MainActivity).supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         (requireActivity() as MainActivity)
             .supportActionBar
@@ -62,7 +62,7 @@ class PrivacyPolicyFragment : Fragment() {
                     val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
                     (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
                     (requireActivity() as MainActivity).setActionBarButtonInvisible()
-                    (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+                    (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
                     if (viewpager.currentItem == 2) {
                         viewpager.setCurrentItem(2, true)
                         frameLayout.visibility = View.GONE
