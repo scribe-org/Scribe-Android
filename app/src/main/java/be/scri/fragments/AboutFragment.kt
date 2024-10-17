@@ -1,7 +1,6 @@
 package be.scri.fragments
 
 import CustomDividerItemDecoration
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -23,6 +22,7 @@ import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentAboutBinding
 import be.scri.helpers.CustomAdapter
 import be.scri.helpers.HintUtils
+import be.scri.helpers.ShareHelper
 import be.scri.models.ItemsViewModel
 import com.google.android.play.core.review.ReviewManagerFactory
 
@@ -121,7 +121,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
-                action = ::shareScribe,
+                action = ({ ShareHelper.shareScribe(requireContext()) }),
             ),
             ItemsViewModel(
                 image = R.drawable.wikimedia_logo_black,
@@ -134,7 +134,6 @@ class AboutFragment : Fragment() {
         )
 
     private fun getSecondRecyclerViewData(): List<Any> {
-        val context = requireContext()
         return listOf(
             ItemsViewModel(
                 image = R.drawable.star,
@@ -158,7 +157,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
-                action = ::sendEmail,
+                action = ({ ShareHelper.sendEmail(requireContext()) }),
             ),
             ItemsViewModel(
                 image = R.drawable.bookmark_icon,
@@ -202,37 +201,6 @@ class AboutFragment : Fragment() {
     private fun resetHints() {
         HintUtils.resetHints(requireContext())
         (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
-    }
-
-    private fun shareScribe() {
-        try {
-            val sharingIntent =
-                Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
-                }
-            startActivity(Intent.createChooser(sharingIntent, "Share via"))
-        } catch (e: ActivityNotFoundException) {
-            Log.e("AboutFragment", "No application found to share content", e)
-        } catch (e: IllegalArgumentException) {
-            Log.e("AboutFragment", "Invalid argument for sharing", e)
-        }
-    }
-
-    private fun sendEmail() {
-        try {
-            val intent =
-                Intent(Intent.ACTION_SEND).apply {
-                    putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
-                    putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
-                    type = "message/rfc822"
-                }
-            startActivity(Intent.createChooser(intent, "Choose an Email client:"))
-        } catch (e: ActivityNotFoundException) {
-            Log.e("AboutFragment", "No email client found", e)
-        } catch (e: IllegalArgumentException) {
-            Log.e("AboutFragment", "Invalid argument for sending email", e)
-        }
     }
 
     private fun loadOtherFragment(fragment: Fragment, pageName: String?) {
