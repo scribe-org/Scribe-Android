@@ -23,12 +23,12 @@ class WikimediaScribeFragment : Fragment() {
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 viewpager.setCurrentItem(2, true)
-                (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+                (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
             }
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_community_wikimedia)
         (requireActivity() as MainActivity).setActionBarButtonVisible()
         (requireActivity() as MainActivity).setActionBarButtonFunction(2, R.string.app_about_title)
-        (requireActivity() as MainActivity).setActionBarLayoutMargin()
+        (requireActivity() as MainActivity).setActionBarLayoutMargin(false)
         (requireActivity() as MainActivity)
             .supportActionBar
             ?.customView
@@ -49,10 +49,11 @@ class WikimediaScribeFragment : Fragment() {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
-                    val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
+                    val frameLayout =
+                        requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
                     (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
                     (requireActivity() as MainActivity).setActionBarButtonInvisible()
-                    (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+                    (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
                     if (viewpager.currentItem == 2) {
                         viewpager.setCurrentItem(2, true)
                         frameLayout.visibility = View.GONE

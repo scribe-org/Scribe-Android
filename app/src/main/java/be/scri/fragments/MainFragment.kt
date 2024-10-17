@@ -32,7 +32,7 @@ class MainFragment : Fragment() {
         binding.keyboardSettings.setOnClickListener {
             openKeyboardSettings()
         }
-        (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+        (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
         applyUserDarkModePreference()
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -90,6 +90,7 @@ class MainFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        (activity as MainActivity).hideHint()
+        val hintLayout = (activity as MainActivity).findViewById<View>(R.id.hint_layout)
+        hintLayout.visibility = View.GONE
     }
 }

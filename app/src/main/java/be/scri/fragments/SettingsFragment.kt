@@ -43,7 +43,7 @@ class SettingsFragment : Fragment() {
                 getParentFragmentManager().popBackStack()
             }
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_settings_title)
-        (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+        (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
         (requireActivity() as MainActivity).setActionBarButtonInvisible()
         callback.isEnabled = true
         (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_settings_title)

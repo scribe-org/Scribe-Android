@@ -31,9 +31,9 @@ class LanguageSettingsFragment : Fragment() {
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 viewpager.setCurrentItem(3, true)
                 (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+                (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
             }
-        (requireActivity() as MainActivity).setActionBarLayoutMargin()
+        (requireActivity() as MainActivity).setActionBarLayoutMargin(false)
         (requireActivity() as MainActivity)
             .supportActionBar
             ?.customView
@@ -54,11 +54,11 @@ class LanguageSettingsFragment : Fragment() {
                 override fun handleOnBackPressed() {
                     val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
                     val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
-                    (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+                    (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
                     if (viewpager.currentItem == 3) {
                         viewpager.setCurrentItem(3, true)
                         frameLayout.visibility = View.GONE
-                        (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+                        (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
                     } else {
                         if (parentFragmentManager.backStackEntryCount > 0) {
                             parentFragmentManager.popBackStack()

@@ -41,7 +41,7 @@ class AboutFragment : Fragment() {
             }
         callback.isEnabled = true
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
-        (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+        (requireActivity() as MainActivity).setActionBarLayoutMargin(true)
         (requireActivity() as MainActivity).setActionBarButtonInvisible()
         return binding.root
     }
@@ -266,6 +266,7 @@ class AboutFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        (activity as MainActivity).hideHint()
+        val hintLayout = (activity as MainActivity).findViewById<View>(R.id.hint_layout)
+        hintLayout.visibility = View.GONE
     }
 }

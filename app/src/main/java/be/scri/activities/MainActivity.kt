@@ -67,21 +67,21 @@ class MainActivity : AppCompatActivity() {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_launcher_name)
                             setActionBarButtonInvisible()
-                            unsetActionBarLayoutMargin()
+                            setActionBarLayoutMargin(true)
                         }
 
                         1 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_settings_title)
                             setActionBarButtonInvisible()
-                            unsetActionBarLayoutMargin()
+                            setActionBarLayoutMargin(true)
                         }
 
                         2 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarButtonInvisible()
                             setActionBarTitle(R.string.app_about_title)
-                            unsetActionBarLayoutMargin()
+                            setActionBarLayoutMargin(true)
                         }
 
                         else -> {
@@ -152,31 +152,29 @@ class MainActivity : AppCompatActivity() {
                 viewpager.setCurrentItem(page, true)
             }
             frameLayout.visibility = View.GONE
-            unsetActionBarLayoutMargin()
+            setActionBarLayoutMargin(true)
             setActionBarTitle(title)
             button.visibility = View.GONE
         }
     }
 
-    fun setActionBarLayoutMargin() {
+    fun setActionBarLayoutMargin(shouldShowOnScreen: Boolean) {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
-        params.topMargin = -50
-        params.bottomMargin = 30
-        textView.layoutParams = params
-    }
-
-    fun unsetActionBarLayoutMargin() {
-        val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
-        val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
-        params.topMargin = 50
-        params.bottomMargin = 0
+        if (shouldShowOnScreen) {
+            params.topMargin = 50
+            params.bottomMargin = 0
+        } else {
+            params.topMargin = -50
+            params.bottomMargin = 30
+        }
         textView.layoutParams = params
     }
 
     private fun applyUserDarkModePreference(context: Context) {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isSystemDarkTheme = isDarkMode(context)
+        val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
+        val isSystemDarkTheme = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
         AppCompatDelegate.setDefaultNightMode(
             if (isUserDarkMode) {
@@ -185,11 +183,6 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.MODE_NIGHT_NO
             },
         )
-    }
-
-    fun isDarkMode(context: Context): Boolean {
-        val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
-        return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
     }
 
     fun showHint(
@@ -216,13 +209,10 @@ class MainActivity : AppCompatActivity() {
                     putBoolean(sharedPrefsKey, true)
                     apply()
                 }
-                hideHint()
+                val hintLayout1 = findViewById<View>(R.id.hint_layout)
+                hintLayout1.visibility = View.GONE
             }
         }
     }
 
-    fun hideHint() {
-        val hintLayout = findViewById<View>(R.id.hint_layout)
-        hintLayout.visibility = View.GONE
-    }
 }
