@@ -16,30 +16,11 @@ import be.scri.views.MyKeyboardView
 
 class SpanishKeyboardIME : ScribeKeyboardIME() {
     override fun getKeyboardLayoutXML(): Int =
-        if (getIsAccentCharacter()) {
+        if (PreferencesHelper.getIsAccentCharacter(baseContext, "Spanish")) {
             R.xml.keys_letter_spanish_without_accent_character
         } else {
             R.xml.keys_letters_spanish
         }
-
-    private fun getIsAccentCharacter(): Boolean {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_Spanish", false)
-        return isAccentCharacter
-    }
-
-    enum class ScribeState {
-        IDLE,
-        SELECT_COMMAND,
-        TRANSLATE,
-        CONJUGATE,
-        PLURAL,
-        SELECT_VERB_CONJUNCTION,
-        SELECT_CASE_DECLENSION,
-        ALREADY_PLURAL,
-        INVALID,
-        DISPLAY_INFORMATION,
-    }
 
     private var isAutoSuggestEnabled: Boolean = false
     override lateinit var binding: KeyboardViewCommandOptionsBinding
