@@ -204,15 +204,6 @@ class AboutFragment : Fragment() {
     }
 
     private fun loadOtherFragment(fragment: Fragment, pageName: String?) {
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        if (pageName != null) {
-            fragmentTransaction.replace(R.id.fragment_container, fragment, pageName)
-        } else {
-            fragmentTransaction.replace(R.id.fragment_container, fragment)
-        }
-        fragmentTransaction.addToBackStack(pageName)
-        fragmentTransaction.commit()
-    private fun loadOtherFragment(fragment: Fragment, pageName: String?) {
         try {
             val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
             if (pageName != null) {

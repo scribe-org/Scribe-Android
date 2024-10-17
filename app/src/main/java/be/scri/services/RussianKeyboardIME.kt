@@ -190,7 +190,6 @@ class RussianKeyboardIME : ScribeKeyboardIME() {
     }
 
     override fun updateUI() {
-    override fun updateUI() {
         when (currentState) {
             ScribeState.IDLE -> {
                 setupIdleView()
