@@ -19,6 +19,7 @@ import be.scri.databinding.FragmentLanguageSettingsBinding
 import be.scri.helpers.CustomAdapter
 import be.scri.models.SwitchItem
 
+@Suppress("LongMethod")
 class LanguageSettingsFragment : Fragment() {
     private var _binding: FragmentLanguageSettingsBinding? = null
     val binding get() = _binding!!

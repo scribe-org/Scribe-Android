@@ -58,7 +58,7 @@ import java.util.Arrays
 import java.util.Locale
 
 @SuppressLint("UseCompatLoadingForDrawables")
-@Suppress("LargeClass")
+@Suppress("LargeClass", "LongMethod")
 class MyKeyboardView
     @JvmOverloads
     constructor(
