@@ -25,6 +25,7 @@ import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentSettingsBinding
 import be.scri.extensions.config
 import be.scri.helpers.CustomAdapter
+import be.scri.helpers.PreferencesHelper
 import be.scri.models.SwitchItem
 import be.scri.models.TextItem
 
@@ -104,15 +105,23 @@ class SettingsFragment : Fragment() {
                 getString(R.string.app_settings_keyboard_keypress_vibration),
                 description = getString(R.string.app_settings_keyboard_keypress_vibration_description),
                 isChecked = requireContext().config.vibrateOnKeypress,
-                action = ({ setVibrateOnKeypress(shouldVibrateOnKeypress = true) }),
-                action2 = ({ setVibrateOnKeypress(shouldVibrateOnKeypress = false) }),
+                action = ({
+                    PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = true)
+                }),
+                action2 = ({
+                    PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = false)
+                }),
             ),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_functionality_popup_on_keypress),
                 description = getString(R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
                 isChecked = requireContext().config.showPopupOnKeypress,
-                action = ({ setShowPopupOnKeypress(shouldShowPopupOnKeypress = true) }),
-                action2 = ({ setShowPopupOnKeypress(shouldShowPopupOnKeypress = false) }),
+                action = ({
+                    PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = true)
+                }),
+                action2 = ({
+                    PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = false)
+                }),
             ),
         )
     }
@@ -225,30 +234,11 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setLightDarkMode(isDarkMode: Boolean) {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("dark_mode", isDarkMode)
-        editor.apply()
+        PreferencesHelper.setLightDarkModePreference(requireContext(), isDarkMode)
         AppCompatDelegate.setDefaultNightMode(
             if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         )
         requireActivity().recreate()
-    }
-
-    private fun setVibrateOnKeypress(shouldVibrateOnKeypress: Boolean) {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("vibrate_on_keypress", shouldVibrateOnKeypress)
-        editor.apply()
-        requireActivity().config.vibrateOnKeypress = shouldVibrateOnKeypress
-    }
-
-    private fun setShowPopupOnKeypress(shouldShowPopupOnKeypress: Boolean) {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("show_popup_on_keypress", shouldShowPopupOnKeypress)
-        editor.apply()
-        requireActivity().config.showPopupOnKeypress = shouldShowPopupOnKeypress
     }
 
     override fun onResume() {
@@ -259,6 +249,7 @@ class SettingsFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        (activity as MainActivity).hideHint()
+        val hintLayout = (activity as MainActivity).findViewById<View>(R.id.hint_layout)
+        hintLayout.visibility = View.GONE
     }
 }
