@@ -219,6 +219,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (viewPager.currentItem == 0) {
+            if (binding.fragmentContainer.visibility == View.VISIBLE) {
+                binding.fragmentContainer.visibility = View.GONE
+            } else {
+                finish()
+            }
+        } else {
+            viewPager.currentItem = viewPager.currentItem - 1
+        }
+    }
+
     fun hideHint() {
         val hintLayout = findViewById<View>(R.id.hint_layout)
         hintLayout.visibility = View.GONE
