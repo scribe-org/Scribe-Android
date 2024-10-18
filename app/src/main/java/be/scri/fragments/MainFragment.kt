@@ -29,7 +29,7 @@ class MainFragment : Fragment() {
 //        binding.scribeKey.setOnClickListener {
 //            (requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
 //        }
-        binding.keyboardSettings.setOnClickListener {
+        binding.cardView.setOnClickListener {
             openKeyboardSettings()
         }
         (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
