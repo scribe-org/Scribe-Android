@@ -220,7 +220,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    
+
     override fun onBackPressed() {
         super.onBackPressed()
         if (viewPager.currentItem == 0) {
