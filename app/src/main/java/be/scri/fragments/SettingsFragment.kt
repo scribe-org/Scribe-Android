@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentSettingsBinding
@@ -30,6 +31,7 @@ import be.scri.models.TextItem
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
+    private var isDecorationSet: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -141,22 +143,29 @@ class SettingsFragment : Fragment() {
                 setupItemVisibility()
             }
         }
-
         val recyclerView = binding.recyclerView2
         val adapter = CustomAdapter(getRecyclerViewElements(), requireContext())
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
         recyclerView.suppressLayout(true)
-        recyclerView.apply {
-            val itemDecoration =
-                CustomDividerItemDecoration(
-                    drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
-                    width = 1,
-                    marginLeft = 50,
-                    marginRight = 50,
-                )
-            addItemDecoration(itemDecoration)
+
+        if (!isDecorationSet) {
+            isDecorationSet = true
+            recyclerView.apply {
+                addCustomItemDecoration()
+            }
         }
+    }
+
+    private fun RecyclerView.addCustomItemDecoration() {
+        val itemDecoration =
+            CustomDividerItemDecoration(
+                drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
+                width = 1,
+                marginLeft = 50,
+                marginRight = 50,
+            )
+        addItemDecoration(itemDecoration)
     }
 
     private fun getRecyclerViewElements(): MutableList<TextItem> {

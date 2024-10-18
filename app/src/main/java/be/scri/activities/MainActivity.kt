@@ -24,8 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var englishKeyboardIME: EnglishKeyboardIME? = null
 
-    fun getEnglishKeyboardIME(): EnglishKeyboardIME? = englishKeyboardIME
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.displayOptions = androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM
