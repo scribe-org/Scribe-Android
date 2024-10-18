@@ -20,7 +20,7 @@ class CustomDividerItemDecoration(
         val right = parent.width - parent.paddingRight - marginRight
 
         val childCount = parent.childCount
-        for (i in 0 until childCount - 1) { // Exclude the last item
+        for (i in 0 until childCount - 1) {
             val child = parent.getChildAt(i)
             val params = child.layoutParams as RecyclerView.LayoutParams
             val top = child.bottom + params.bottomMargin
