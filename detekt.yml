@@ -1,8 +1,8 @@
 style:
     MagicNumber:
         active: false
-    MaxLineLength:
-        active: false
+#    MaxLineLength:
+#        active: false
     LoopWithTooManyJumpStatements:
         active: false
     WildcardImport:
@@ -38,7 +38,7 @@ exceptions:
 
 empty-blocks:
     EmptyCatchBlock:
-        active: false
+        active: true
     EmptyFunctionBlock:
         active: false
 

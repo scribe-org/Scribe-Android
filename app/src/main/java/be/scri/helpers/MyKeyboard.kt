@@ -81,7 +81,9 @@ class MyKeyboard {
     }
 
     /**
-     * Container for keys in the keyboard. All keys in a row are at the same Y-coordinate. Some of the key size defaults can be overridden per row from
+     * Container for keys in the keyboard.
+     * All keys in a row are at the same Y-coordinate.
+     * Some of the key size defaults can be overridden per row from
      * what the [MyKeyboard] defines.
      * @attr ref android.R.styleable#Keyboard_keyWidth
      * @attr ref android.R.styleable#Keyboard_horizontalGap

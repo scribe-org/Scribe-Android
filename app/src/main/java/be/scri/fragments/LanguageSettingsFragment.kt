@@ -101,7 +101,11 @@ class LanguageSettingsFragment : Fragment() {
 
     private fun setupRecyclerView(language: String) {
         binding.functionalityRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.functionalityRecyclerView.adapter = CustomAdapter(getFunctionalityRecyclerViewData(language), requireContext())
+        binding.functionalityRecyclerView.adapter =
+            CustomAdapter(
+                getFunctionalityRecyclerViewData(language),
+                requireContext()
+            )
 
         binding.layoutRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.layoutRecyclerView.adapter = CustomAdapter(getLayoutRecyclerViewData(language), requireContext())
@@ -138,9 +142,16 @@ class LanguageSettingsFragment : Fragment() {
             "German" -> {
                 list.add(
                     SwitchItem(
-                        isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
-                        title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
-                        description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
+                        isChecked = sharedPref.getBoolean(
+                            "disable_accent_character_$language",
+                            false
+                        ),
+                        title = getString(
+                            R.string.app_settings_keyboard_layout_disable_accent_characters
+                        ),
+                        description = getString(
+                            R.string.app_settings_keyboard_layout_disable_accent_characters_description
+                        ),
                         action = { disableAccentCharacter(language) },
                         action2 = { enableAccentCharacters(language) },
                     ),
@@ -149,9 +160,16 @@ class LanguageSettingsFragment : Fragment() {
             "Swedish" -> {
                 list.add(
                     SwitchItem(
-                        isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
-                        title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
-                        description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
+                        isChecked = sharedPref.getBoolean(
+                            "disable_accent_character_$language",
+                            false
+                        ),
+                        title = getString(
+                            R.string.app_settings_keyboard_layout_disable_accent_characters
+                        ),
+                        description = getString(
+                            R.string.app_settings_keyboard_layout_disable_accent_characters_description
+                        ),
                         action = { disableAccentCharacter(language) },
                         action2 = { enableAccentCharacters(language) },
                     ),
@@ -160,14 +178,21 @@ class LanguageSettingsFragment : Fragment() {
             "Spanish" -> {
                 list.add(
                     SwitchItem(
-                        isChecked = sharedPref.getBoolean("disable_accent_character_$language", false),
-                        title = getString(R.string.app_settings_keyboard_layout_disable_accent_characters),
-                        description = getString(R.string.app_settings_keyboard_layout_disable_accent_characters_description),
+                        isChecked = sharedPref.getBoolean(
+                            "disable_accent_character_$language",
+                            false
+                        ),
+                        title = getString(
+                            R.string.app_settings_keyboard_layout_disable_accent_characters
+                        ),
+                        description = getString(
+                            R.string.app_settings_keyboard_layout_disable_accent_characters_description
+                        ),
                         action = { disableAccentCharacter(language) },
                         action2 = { enableAccentCharacters(language) },
                     ),
                 )
-            }
+        }
         }
         list.add(
             SwitchItem(
