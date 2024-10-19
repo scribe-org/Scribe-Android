@@ -6,7 +6,7 @@ on:
         types: [opened, reopened, synchronize]
 
 jobs:
-    ktlint:
+    unit-test:
         runs-on: ubuntu-latest
         name: Run unit tests
 
