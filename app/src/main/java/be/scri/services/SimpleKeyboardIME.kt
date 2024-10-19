@@ -65,18 +65,8 @@ abstract class SimpleKeyboardIME :
 
     override fun hasTextBeforeCursor(): Boolean {
         val inputConnection = currentInputConnection ?: return false
-        val textBeforeCursor = inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0)
-
-        // Initialize result variable
-        var hasText = false
-
-        if (!textBeforeCursor.isNullOrBlank()) {
-            val trimmedText = textBeforeCursor.trim()
-            val lastChar = trimmedText.lastOrNull()
-            hasText = lastChar != '.'
-        }
-
-        return hasText // Return the final result
+        val textBeforeCursor = inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0).orEmpty().trim()
+        return textBeforeCursor.isNotEmpty() && textBeforeCursor.lastOrNull() != '.'
     }
 
     override fun commitPeriodAfterSpace() {
