@@ -48,6 +48,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
 
     private var currentState: ScribeState = ScribeState.IDLE
     private lateinit var keyboardBinding: KeyboardViewKeyboardBinding
+    private var isAutoSuggestEnabled: Boolean = false
 
     private fun shouldCommitPeriodAfterSpace(language: String): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -63,7 +64,9 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         updateEnterKeyColor(isUserDarkMode)
-
+        initializeEmojiButtons()
+        isAutoSuggestEnabled = sharedPref.getBoolean("emoji_suggestions_English", true)
+        updateButtonVisibility(isAutoSuggestEnabled)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
         setupCommandBarTheme(binding)
@@ -89,6 +92,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         }
         keyboardView!!.setKeyboardHolder()
         keyboardView?.mOnKeyboardActionListener = this
+        initializeEmojiButtons()
         updateUI()
         return keyboardHolder
     }
@@ -120,7 +124,6 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
                 binding.separator3.setBackgroundColor(getColor(R.color.special_key_light))
             }
         }
-
         setupCommandBarTheme(binding)
         binding.translateBtn.text = "Suggestion"
         binding.conjugateBtn.text = "Suggestion"
@@ -128,6 +131,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         binding.separator2.visibility = View.VISIBLE
         binding.separator3.visibility = View.VISIBLE
         binding.scribeKey.setOnClickListener {
+            updateButtonVisibility(false)
             currentState = ScribeState.SELECT_COMMAND
             Log.i("MY-TAG", "SELECT COMMAND STATE FROM English IME")
             binding.scribeKey.foreground = getDrawable(R.drawable.close)
@@ -189,7 +193,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleDelete(false, keyboardBinding)
+                    handleDelete(false, binding = null)
                 } else {
                     handleDelete(true, keyboardBinding)
                 }
@@ -201,7 +205,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
             }
             KEYCODE_ENTER -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleKeycodeEnter(keyboardBinding, false)
+                    handleKeycodeEnter(binding = null, false)
                 } else {
                     handleKeycodeEnter(keyboardBinding, true)
                     currentState = ScribeState.IDLE
@@ -250,7 +254,6 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
             switchToCommandToolBar()
             updateUI()
         }
-
         setInputView(keyboardHolder)
     }
 
@@ -283,7 +286,11 @@ class EnglishKeyboardIME : SimpleKeyboardIME() {
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView()
+            ScribeState.IDLE -> {
+                setupIdleView()
+                initializeEmojiButtons()
+                updateButtonVisibility(isAutoSuggestEnabled)
+            }
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }

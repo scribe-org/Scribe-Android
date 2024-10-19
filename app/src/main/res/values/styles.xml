@@ -25,7 +25,6 @@
     </style>
 
     <style name="OverflowMenuIconStyle">
-        <item name="srcCompat">@drawable/ic_three_dots_vector</item>
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
         <item name="android:paddingStart">@dimen/activity_margin</item>
         <item name="android:paddingTop">@dimen/normal_margin</item>
@@ -215,7 +214,6 @@
     </style>
 
     <style name="Base.Widget.AppCompat.ActionMode" parent="">
-        <item name="background">@drawable/actionmenu_background</item>
         <item name="backgroundSplit">?attr/actionModeSplitBackground</item>
         <item name="height">?attr/actionBarSize</item>
         <item name="titleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionMode.Title</item>

@@ -21,6 +21,7 @@ import java.io.IOException
  * @attr ref android.R.styleable#Keyboard_keyWidth
  * @attr ref android.R.styleable#Keyboard_horizontalGap
  */
+@Suppress("LongMethod")
 class MyKeyboard {
     /** Horizontal gap default for all rows  */
     private var mDefaultHorizontalGap = 0
@@ -212,7 +213,7 @@ class MyKeyboard {
             topSmallNumber = a.getString(R.styleable.MyKeyboard_Key_topSmallNumber) ?: ""
 
             if (label.isNotEmpty() && code != KEYCODE_MODE_CHANGE && code != KEYCODE_SHIFT) {
-                code = label[0].toInt()
+                code = label[0].code
             }
             a.recycle()
         }
@@ -299,7 +300,7 @@ class MyKeyboard {
             key.x = x
             key.y = y
             key.label = character.toString()
-            key.code = character.toInt()
+            key.code = character.code
             column++
             x += key.width + key.gap
             mKeys!!.add(key)

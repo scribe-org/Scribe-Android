@@ -133,9 +133,8 @@ class AboutFragment : Fragment() {
             ),
         )
 
-    private fun getSecondRecyclerViewData(): List<Any> {
-        val context = requireContext()
-        return listOf(
+    private fun getSecondRecyclerViewData(): List<Any> =
+        listOf(
             ItemsViewModel(
                 image = R.drawable.star,
                 text = ItemsViewModel.Text(R.string.app_about_feedback_rate_scribe),
@@ -177,7 +176,6 @@ class AboutFragment : Fragment() {
                 action = ::resetHints,
             ),
         )
-    }
 
     private fun getThirdRecyclerViewData(): List<ItemsViewModel> =
         listOf(
