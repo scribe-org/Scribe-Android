@@ -51,7 +51,6 @@ class AlphanumericComparator {
         }
     }
 
-
     private fun getChunk(
         string: String,
         length: Int,
