@@ -261,17 +261,15 @@ class LanguageSettingsFragment : Fragment() {
     }
 
     fun getLanguageStringFromi18n(language: String): Int {
-        val languageStringResource = when (language) {
-            "German" -> R.string.app__global_german
-            "French" -> R.string.app__global_french
-            "Spanish" -> R.string.app__global_spanish
-            "Italian" -> R.string.app__global_italian
-            "Russian" -> R.string.app__global_russian
-            "Portuguese" -> R.string.app__global_portuguese
-            "Swedish" -> R.string.app__global_swedish
-            else -> R.string.app__global_english
-        }
-        return languageStringResource
+        val languageMap = mapOf(
+            "German" to R.string.app__global_german,
+            "French" to R.string.app__global_french,
+            "Spanish" to R.string.app__global_spanish,
+            "Italian" to R.string.app__global_italian,
+            "Russian" to R.string.app__global_russian,
+            "Portuguese" to R.string.app__global_portuguese,
+            "Swedish" to R.string.app__global_swedish
+        )
+        return languageMap[language] ?: R.string.app__global_english
     }
-
 }
