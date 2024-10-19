@@ -925,14 +925,12 @@ class MyKeyboardView
         }
 
     private fun openPopupIfRequired(me: MotionEvent): Boolean {
-        // Check if there's no popup layout or if mCurrentKey is out of bounds
-        if (mPopupLayout == 0 || mCurrentKey < 0 || mCurrentKey >= mKeys.size) {
+        if (mPopupLayout == 0 || mCurrentKey !in mKeys.indices) {
             return false
         }
 
         val popupKey = mKeys[mCurrentKey]
         val result = onLongPress(popupKey, me)
-
         if (result) {
             mAbortKey = true
             showPreview(NOT_A_KEY)
@@ -1138,6 +1136,7 @@ class MyKeyboardView
             return onModifiedTouchEvent(me)
         }
 
+    @Suppress("ReturnCount")
     private fun onModifiedTouchEvent(me: MotionEvent): Boolean {
         var touchX = me.x.toInt()
         var touchY = me.y.toInt()
