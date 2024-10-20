@@ -4,46 +4,46 @@ package be.scri.helpers
 // make IMG_5.jpg come before IMG_10.jpg
 class AlphanumericComparator {
     fun compare(
-    string1: String,
-    string2: String,
-): Int {
-    var thisMarker = 0
-    var thatMarker = 0
-    val s1Length = string1.length
-    val s2Length = string2.length
+        string1: String,
+        string2: String,
+    ): Int {
+        var thisMarker = 0
+        var thatMarker = 0
+        val s1Length = string1.length
+        val s2Length = string2.length
 
-    while (thisMarker < s1Length && thatMarker < s2Length) {
-        val thisChunk = getChunk(string1, s1Length, thisMarker)
-        thisMarker += thisChunk.length
+        while (thisMarker < s1Length && thatMarker < s2Length) {
+            val thisChunk = getChunk(string1, s1Length, thisMarker)
+            thisMarker += thisChunk.length
 
-        val thatChunk = getChunk(string2, s2Length, thatMarker)
-        thatMarker += thatChunk.length
+            val thatChunk = getChunk(string2, s2Length, thatMarker)
+            thatMarker += thatChunk.length
 
-        // If both chunks contain numeric characters, sort them numerically.
-        var result: Int
-        if (isDigit(thisChunk[0]) && isDigit(thatChunk[0])) {
-            // Simple chunk comparison by length.
-            val thisChunkLength = thisChunk.length
-            result = thisChunkLength - thatChunk.length
-            // If equal, the first different number counts.
-            if (result == 0) {
-                for (i in 0 until thisChunkLength) {
-                    result = thisChunk[i] - thatChunk[i]
-                    if (result != 0) break
+            // If both chunks contain numeric characters, sort them numerically.
+            var result: Int
+            if (isDigit(thisChunk[0]) && isDigit(thatChunk[0])) {
+                // Simple chunk comparison by length.
+                val thisChunkLength = thisChunk.length
+                result = thisChunkLength - thatChunk.length
+                // If equal, the first different number counts.
+                if (result == 0) {
+                    for (i in 0 until thisChunkLength) {
+                        result = thisChunk[i] - thatChunk[i]
+                        if (result != 0) break
+                    }
                 }
+            } else {
+                result = thisChunk.compareTo(thatChunk)
             }
-        } else {
-            result = thisChunk.compareTo(thatChunk)
+
+            if (result != 0) {
+                return result
+            }
         }
 
-        if (result != 0) {
-            return result
-        }
+        return s1Length - s2Length
     }
 
-    return s1Length - s2Length
-}
-    
     private fun getChunk(
         string: String,
         length: Int,
