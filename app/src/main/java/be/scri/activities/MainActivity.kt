@@ -1,4 +1,3 @@
-
 package be.scri.activities
 
 import android.app.UiModeManager

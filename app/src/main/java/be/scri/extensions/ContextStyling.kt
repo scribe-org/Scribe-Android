@@ -1,4 +1,3 @@
-
 package be.scri.extensions
 
 import android.content.Context
