@@ -7,6 +7,8 @@ Thank you for your pull request! 🚀
 <!-- Please replace the empty checkboxes [] below with checked ones [x] accordingly. -->
 
 -   [] This pull request is on a [separate branch](https://docs.github.com/en/get-started/quickstart/github-flow) and not the main branch
+-   [] I have tested my code with the `./gradlew lintKotlin detekt` command as directed in the [testing section of the contributing guide](https://github.com/scribe-org/Scribe-Data/blob/main/CONTRIBUTING.md#testing)
+-   [] I have built the project in Android studio or via `./gradlew build` and it has completed successfully
 
 ---
 

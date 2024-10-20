@@ -35,8 +35,14 @@ fun Context.getProperPrimaryColor() =
         else -> baseConfig.primaryColor
     }
 
-fun Context.isBlackAndWhiteTheme() = baseConfig.textColor == Color.WHITE && baseConfig.primaryColor == Color.BLACK && baseConfig.backgroundColor == Color.BLACK
+fun Context.isBlackAndWhiteTheme() =
+    baseConfig.textColor == Color.WHITE &&
+        baseConfig.primaryColor == Color.BLACK &&
+        baseConfig.backgroundColor == Color.BLACK
 
-fun Context.isWhiteTheme() = baseConfig.textColor == DARK_GREY && baseConfig.primaryColor == Color.WHITE && baseConfig.backgroundColor == Color.WHITE
+fun Context.isWhiteTheme() =
+    baseConfig.textColor == DARK_GREY &&
+        baseConfig.primaryColor == Color.WHITE &&
+        baseConfig.backgroundColor == Color.WHITE
 
 fun Context.isUsingSystemDarkTheme() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES != 0
