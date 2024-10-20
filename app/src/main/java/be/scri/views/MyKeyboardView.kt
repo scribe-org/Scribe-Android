@@ -383,14 +383,15 @@ class MyKeyboardView
                 if (changedView == popupBinding.miniKeyboardView) {
                     val previewBackground = background as LayerDrawable
 
-                    previewBackground.findDrawableByLayerId(R.id.button_background_shape)
+                    previewBackground
+                        .findDrawableByLayerId(R.id.button_background_shape)
                         .applyColorFilter(miniKeyboardBackgroundColor)
 
-                    previewBackground.findDrawableByLayerId(R.id.button_background_stroke)
+                    previewBackground
+                        .findDrawableByLayerId(R.id.button_background_stroke)
                         .applyColorFilter(strokeColor)
 
                     background = previewBackground
-
                 } else {
                     background.applyColorFilter(darkerColor)
                 }
@@ -692,7 +693,7 @@ class MyKeyboardView
                             key.topSmallNumber,
                             key.width - mTopSmallNumberMarginWidth,
                             mTopSmallNumberMarginHeight,
-                            smallLetterPaint
+                            smallLetterPaint,
                         )
                     }
 
@@ -771,7 +772,7 @@ class MyKeyboardView
                     val keyCode = oldKey.code
                     sendAccessibilityEventForUnicodeCharacter(
                         AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED,
-                        keyCode
+                        keyCode,
                     )
                 }
 
@@ -845,10 +846,12 @@ class MyKeyboardView
                 }
 
             val previewBackground = mPreviewText!!.background as LayerDrawable
-            previewBackground.findDrawableByLayerId(R.id.button_background_shape)
+            previewBackground
+                .findDrawableByLayerId(R.id.button_background_shape)
                 .applyColorFilter(previewBackgroundColor)
 
-            previewBackground.findDrawableByLayerId(R.id.button_background_stroke)
+            previewBackground
+                .findDrawableByLayerId(R.id.button_background_stroke)
                 .applyColorFilter(context.getStrokeColor())
 
             mPreviewText!!.background = previewBackground
@@ -856,7 +859,7 @@ class MyKeyboardView
             mPreviewText!!.setTextColor(mTextColor)
             mPreviewText!!.measure(
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
             )
             val popupWidth = Math.max(mPreviewText!!.measuredWidth, key.width)
             val popupHeight = mPreviewHeight

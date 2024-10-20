@@ -103,9 +103,10 @@ abstract class SimpleKeyboardIME :
     }
 
     fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
-        val isTablet = (
-            resources.configuration.screenLayout and
-                Configuration.SCREENLAYOUT_SIZE_MASK
+        val isTablet =
+            (
+                resources.configuration.screenLayout and
+                    Configuration.SCREENLAYOUT_SIZE_MASK
             ) >= Configuration.SCREENLAYOUT_SIZE_LARGE
         if (isTablet) {
             pluralBtn?.visibility = if (isAutoSuggestEnabled) View.INVISIBLE else View.VISIBLE
@@ -170,7 +171,6 @@ abstract class SimpleKeyboardIME :
             }
         }
     }
-
 
     override fun onActionUp() {
         if (switchToLetters) {
@@ -283,7 +283,7 @@ abstract class SimpleKeyboardIME :
                 }
             }
 
-        lastShiftPressTS = System.currentTimeMillis()
+            lastShiftPressTS = System.currentTimeMillis()
         } else {
             val keyboardXml =
                 if (keyboardMode == keyboardSymbols) {

@@ -109,23 +109,26 @@ class MyKeyboard {
         constructor(res: Resources, parent: MyKeyboard, parser: XmlResourceParser?) {
             this.parent = parent
             val a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.MyKeyboard)
-            defaultWidth = getDimensionOrFraction(
-                a,
-                R.styleable.MyKeyboard_keyWidth,
-                parent.mDisplayWidth,
-                parent.mDefaultWidth
-            )
+            defaultWidth =
+                getDimensionOrFraction(
+                    a,
+                    R.styleable.MyKeyboard_keyWidth,
+                    parent.mDisplayWidth,
+                    parent.mDefaultWidth,
+                )
 
-            defaultHeight = res
-                .getDimension(R.dimen.key_height)
-                .toInt()
+            defaultHeight =
+                res
+                    .getDimension(R.dimen.key_height)
+                    .toInt()
 
-            defaultHorizontalGap = getDimensionOrFraction(
-                a,
-                R.styleable.MyKeyboard_horizontalGap,
-                parent.mDisplayWidth,
-                parent.mDefaultHorizontalGap
-            )
+            defaultHorizontalGap =
+                getDimensionOrFraction(
+                    a,
+                    R.styleable.MyKeyboard_horizontalGap,
+                    parent.mDisplayWidth,
+                    parent.mDefaultHorizontalGap,
+                )
             a.recycle()
         }
     }
@@ -209,26 +212,29 @@ class MyKeyboard {
         constructor(res: Resources, parent: Row, x: Int, y: Int, parser: XmlResourceParser?) : this(parent) {
             this.x = x
             this.y = y
-            var a = res.obtainAttributes(
-                Xml.asAttributeSet(parser),
-                R.styleable.MyKeyboard
-            )
+            var a =
+                res.obtainAttributes(
+                    Xml.asAttributeSet(parser),
+                    R.styleable.MyKeyboard,
+                )
 
-            width = getDimensionOrFraction(
-                a,
-                R.styleable.MyKeyboard_keyWidth,
-                keyboard.mDisplayWidth,
-                parent.defaultWidth
-            )
+            width =
+                getDimensionOrFraction(
+                    a,
+                    R.styleable.MyKeyboard_keyWidth,
+                    keyboard.mDisplayWidth,
+                    parent.defaultWidth,
+                )
 
             height = parent.defaultHeight
 
-            gap = getDimensionOrFraction(
-                a,
-                R.styleable.MyKeyboard_horizontalGap,
-                keyboard.mDisplayWidth,
-                parent.defaultHorizontalGap
-            )
+            gap =
+                getDimensionOrFraction(
+                    a,
+                    R.styleable.MyKeyboard_horizontalGap,
+                    keyboard.mDisplayWidth,
+                    parent.defaultHorizontalGap,
+                )
             this.x += gap
 
             a.recycle()
@@ -401,17 +407,19 @@ class MyKeyboard {
                             key = createKeyFromXml(res, currentRow!!, x, y, parser)
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
-                                val enterResourceId = when (mEnterKeyType) {
-                                    EditorInfo.IME_ACTION_SEARCH ->
-                                        R.drawable.ic_search_vector
-                                    EditorInfo.IME_ACTION_NEXT,
-                                    EditorInfo.IME_ACTION_GO ->
-                                        R.drawable.ic_arrow_right_vector
-                                    EditorInfo.IME_ACTION_SEND ->
-                                        R.drawable.ic_send_vector
-                                    else ->
-                                        R.drawable.ic_enter_vector
-                                }
+                                val enterResourceId =
+                                    when (mEnterKeyType) {
+                                        EditorInfo.IME_ACTION_SEARCH ->
+                                            R.drawable.ic_search_vector
+                                        EditorInfo.IME_ACTION_NEXT,
+                                        EditorInfo.IME_ACTION_GO,
+                                        ->
+                                            R.drawable.ic_arrow_right_vector
+                                        EditorInfo.IME_ACTION_SEND ->
+                                            R.drawable.ic_send_vector
+                                        else ->
+                                            R.drawable.ic_enter_vector
+                                    }
                                 key.icon = context.resources.getDrawable(enterResourceId, context.theme)
                             }
                             currentRow.mKeys.add(key)
