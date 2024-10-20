@@ -1,8 +1,8 @@
 style:
     MagicNumber:
         active: false
-#    MaxLineLength:
-#        active: false
+    MaxLineLength:
+        active: true
     LoopWithTooManyJumpStatements:
         active: false
     WildcardImport:

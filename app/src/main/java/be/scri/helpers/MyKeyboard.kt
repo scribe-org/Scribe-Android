@@ -109,9 +109,23 @@ class MyKeyboard {
         constructor(res: Resources, parent: MyKeyboard, parser: XmlResourceParser?) {
             this.parent = parent
             val a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.MyKeyboard)
-            defaultWidth = getDimensionOrFraction(a, R.styleable.MyKeyboard_keyWidth, parent.mDisplayWidth, parent.mDefaultWidth)
-            defaultHeight = res.getDimension(R.dimen.key_height).toInt()
-            defaultHorizontalGap = getDimensionOrFraction(a, R.styleable.MyKeyboard_horizontalGap, parent.mDisplayWidth, parent.mDefaultHorizontalGap)
+            defaultWidth = getDimensionOrFraction(
+                a,
+                R.styleable.MyKeyboard_keyWidth,
+                parent.mDisplayWidth,
+                parent.mDefaultWidth
+            )
+
+            defaultHeight = res
+                .getDimension(R.dimen.key_height)
+                .toInt()
+
+            defaultHorizontalGap = getDimensionOrFraction(
+                a,
+                R.styleable.MyKeyboard_horizontalGap,
+                parent.mDisplayWidth,
+                parent.mDefaultHorizontalGap
+            )
             a.recycle()
         }
     }
@@ -170,7 +184,8 @@ class MyKeyboard {
         var popupCharacters: CharSequence? = null
 
         /**
-         * Flags that specify the anchoring to edges of the keyboard for detecting touch events that are just out of the boundary of the key.
+         * Flags that specify the anchoring to edges of the keyboard for detecting touch events,
+         * that are just out of the boundary of the key.
          * This is a bit mask of [MyKeyboard.EDGE_LEFT], [MyKeyboard.EDGE_RIGHT].
          */
         private var edgeFlags = 0
@@ -194,10 +209,26 @@ class MyKeyboard {
         constructor(res: Resources, parent: Row, x: Int, y: Int, parser: XmlResourceParser?) : this(parent) {
             this.x = x
             this.y = y
-            var a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.MyKeyboard)
-            width = getDimensionOrFraction(a, R.styleable.MyKeyboard_keyWidth, keyboard.mDisplayWidth, parent.defaultWidth)
+            var a = res.obtainAttributes(
+                Xml.asAttributeSet(parser),
+                R.styleable.MyKeyboard
+            )
+
+            width = getDimensionOrFraction(
+                a,
+                R.styleable.MyKeyboard_keyWidth,
+                keyboard.mDisplayWidth,
+                parent.defaultWidth
+            )
+
             height = parent.defaultHeight
-            gap = getDimensionOrFraction(a, R.styleable.MyKeyboard_horizontalGap, keyboard.mDisplayWidth, parent.defaultHorizontalGap)
+
+            gap = getDimensionOrFraction(
+                a,
+                R.styleable.MyKeyboard_horizontalGap,
+                keyboard.mDisplayWidth,
+                parent.defaultHorizontalGap
+            )
             this.x += gap
 
             a.recycle()
@@ -231,7 +262,8 @@ class MyKeyboard {
          * Detects if a point falls inside this key.
          * @param x the x-coordinate of the point
          * @param y the y-coordinate of the point
-         * @return whether or not the point falls inside the key. If the key is attached to an edge, it will assume that all points between the key and
+         * @return whether or not the point falls inside the key.
+         * If the key is attached to an edge, it will assume that all points between the key and
          * the edge are considered to be inside the key.
          */
         fun isInside(
@@ -250,7 +282,8 @@ class MyKeyboard {
     }
 
     /**
-     * Creates a keyboard from the given xml key layout file. Weeds out rows that have a keyboard mode defined but don't match the specified mode.
+     * Creates a keyboard from the given xml key layout file.
+     * Weeds out rows that have a keyboard mode defined but don't match the specified mode.
      * @param context the application or service context
      * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
      * @param enterKeyType determines what icon should we show on Enter key
@@ -271,8 +304,10 @@ class MyKeyboard {
     }
 
     /**
-     * Creates a blank keyboard from the given resource file and populates it with the specified characters in left-to-right, top-to-bottom fashion,
-     * using the specified number of columns. If the specified number of columns is -1, then the keyboard will fit as many keys as possible in each row.
+     * Creates a blank keyboard from the given resource file and
+     * populates it with the specified characters in left-to-right, top-to-bottom fashion,
+     * using the specified number of columns. If the specified number of columns is -1,
+     * then the keyboard will fit as many keys as possible in each row.
      * @param context the application or service context
      * @param layoutTemplateResId the layout template file, containing no keys.
      * @param characters the list of characters to display on the keyboard. One key will be created for each character.
@@ -366,13 +401,17 @@ class MyKeyboard {
                             key = createKeyFromXml(res, currentRow!!, x, y, parser)
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
-                                val enterResourceId =
-                                    when (mEnterKeyType) {
-                                        EditorInfo.IME_ACTION_SEARCH -> R.drawable.ic_search_vector
-                                        EditorInfo.IME_ACTION_NEXT, EditorInfo.IME_ACTION_GO -> R.drawable.ic_arrow_right_vector
-                                        EditorInfo.IME_ACTION_SEND -> R.drawable.ic_send_vector
-                                        else -> R.drawable.ic_enter_vector
-                                    }
+                                val enterResourceId = when (mEnterKeyType) {
+                                    EditorInfo.IME_ACTION_SEARCH ->
+                                        R.drawable.ic_search_vector
+                                    EditorInfo.IME_ACTION_NEXT,
+                                    EditorInfo.IME_ACTION_GO ->
+                                        R.drawable.ic_arrow_right_vector
+                                    EditorInfo.IME_ACTION_SEND ->
+                                        R.drawable.ic_send_vector
+                                    else ->
+                                        R.drawable.ic_enter_vector
+                                }
                                 key.icon = context.resources.getDrawable(enterResourceId, context.theme)
                             }
                             currentRow.mKeys.add(key)
