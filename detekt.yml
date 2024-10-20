@@ -2,7 +2,7 @@ style:
     MagicNumber:
         active: false
     MaxLineLength:
-        active: false
+        active: true
     LoopWithTooManyJumpStatements:
         active: false
     WildcardImport:
