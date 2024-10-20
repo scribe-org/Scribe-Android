@@ -29,9 +29,7 @@ class AlphanumericComparator {
                 if (result == 0) {
                     for (i in 0 until thisChunkLength) {
                         result = thisChunk[i] - thatChunk[i]
-                        if (result != 0) {
-                            return result
-                        }
+                        if (result != 0) break
                     }
                 }
             } else {
