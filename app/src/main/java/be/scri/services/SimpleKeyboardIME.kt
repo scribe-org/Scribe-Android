@@ -94,7 +94,8 @@ abstract class SimpleKeyboardIME(
     }
 
     override fun commitPeriodAfterSpace() {
-        if (getSharedPreferences("app_preferences", Context.MODE_PRIVATE).getBoolean("period_on_double_tap_$language", true)) {
+        if (getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+            .getBoolean("period_on_double_tap_$language", true)) {
             val inputConnection = currentInputConnection ?: return
             inputConnection.deleteSurroundingText(1, 0)
             inputConnection.commitText(". ", 1)
