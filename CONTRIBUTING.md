@@ -15,6 +15,7 @@ If you have questions or would like to communicate with the team, please [join u
 -   [First steps as a contributor](#first-steps)
 -   [Learning the tech stack](#learning-the-tech)
 -   [Development environment](#dev-env)
+-   [Testing](#testing)
 -   [Issues and projects](#issues-projects)
 -   [Bug reports](#bug-reports)
 -   [Feature requests](#feature-requests)
@@ -118,6 +119,24 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
 
 > [!NOTE]
 > Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
+
+<a id="testing"></a>
+
+## Testing [`⇧`](#contents)
+
+Scribe-Android includes a testing suite that should be ran before all pull requests and subsequent commits. Please run the following in the project root:
+
+```bash
+# Run ktlint and detekt:
+./gradlew lintKotlin detekt
+./gradlew test
+```
+
+If you see that there are linting errors above, then please run the following command to hopefully fix them automatically:
+
+```bash
+ktlint --format
+```
 
 <a id="issues-projects"></a>
 

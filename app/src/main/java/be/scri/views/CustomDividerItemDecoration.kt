@@ -2,7 +2,6 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.View
-import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 
 class CustomDividerItemDecoration(
@@ -12,15 +11,15 @@ class CustomDividerItemDecoration(
     private val marginRight: Int,
 ) : RecyclerView.ItemDecoration() {
     override fun onDraw(
-        @NonNull canvas: Canvas,
-        @NonNull parent: RecyclerView,
-        @NonNull state: RecyclerView.State,
+        canvas: Canvas,
+        parent: RecyclerView,
+        state: RecyclerView.State,
     ) {
         val left = parent.paddingLeft + marginLeft
         val right = parent.width - parent.paddingRight - marginRight
 
         val childCount = parent.childCount
-        for (i in 0 until childCount - 1) { // Exclude the last item
+        for (i in 0 until childCount - 1) {
             val child = parent.getChildAt(i)
             val params = child.layoutParams as RecyclerView.LayoutParams
             val top = child.bottom + params.bottomMargin

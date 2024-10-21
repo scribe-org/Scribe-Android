@@ -291,8 +291,12 @@ abstract class SimpleKeyboardIME(
         emojiBtnTablet3 = binding.emojiBtnTablet3
     }
 
-    private fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
-        val isTablet = (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
+    fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
+        val isTablet =
+            (
+                resources.configuration.screenLayout and
+                    Configuration.SCREENLAYOUT_SIZE_MASK
+            ) >= Configuration.SCREENLAYOUT_SIZE_LARGE
         if (isTablet) {
             pluralBtn?.visibility = if (isAutoSuggestEnabled) View.INVISIBLE else View.VISIBLE
             emojiBtnTablet1?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
@@ -345,7 +349,11 @@ abstract class SimpleKeyboardIME(
     fun updateShiftKeyState() {
         if (keyboardMode == keyboardLetters) {
             val editorInfo = currentInputEditorInfo
-            if (editorInfo != null && editorInfo.inputType != InputType.TYPE_NULL && keyboard?.mShiftState != SHIFT_ON_PERMANENT) {
+            if (
+                editorInfo != null &&
+                editorInfo.inputType != InputType.TYPE_NULL &&
+                keyboard?.mShiftState != SHIFT_ON_PERMANENT
+            ) {
                 if (currentInputConnection.getCursorCapsMode(editorInfo.inputType) != 0) {
                     keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
                     keyboardView?.invalidateAllKeys()
@@ -360,7 +368,11 @@ abstract class SimpleKeyboardIME(
             keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
 
             val editorInfo = currentInputEditorInfo
-            if (editorInfo != null && editorInfo.inputType != InputType.TYPE_NULL && keyboard?.mShiftState != SHIFT_ON_PERMANENT) {
+            if (
+                editorInfo != null &&
+                editorInfo.inputType != InputType.TYPE_NULL &&
+                keyboard?.mShiftState != SHIFT_ON_PERMANENT
+            ) {
                 if (currentInputConnection.getCursorCapsMode(editorInfo.inputType) != 0) {
                     keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
                 }
@@ -447,10 +459,18 @@ abstract class SimpleKeyboardIME(
     ) {
         if (keyboardMode == keyboardLetters) {
             when {
-                keyboard!!.mShiftState == SHIFT_ON_PERMANENT -> keyboard!!.mShiftState = SHIFT_OFF
-                System.currentTimeMillis() - lastShiftPressTS < shiftPermToggleSpeed -> keyboard!!.mShiftState = SHIFT_ON_PERMANENT
-                keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR -> keyboard!!.mShiftState = SHIFT_OFF
-                keyboard!!.mShiftState == SHIFT_OFF -> keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
+                keyboard!!.mShiftState == SHIFT_ON_PERMANENT -> {
+                    keyboard!!.mShiftState = SHIFT_OFF
+                }
+                System.currentTimeMillis() - lastShiftPressTS < shiftPermToggleSpeed -> {
+                    keyboard!!.mShiftState = SHIFT_ON_PERMANENT
+                }
+                keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR -> {
+                    keyboard!!.mShiftState = SHIFT_OFF
+                }
+                keyboard!!.mShiftState == SHIFT_OFF -> {
+                    keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
+                }
             }
 
             lastShiftPressTS = System.currentTimeMillis()

@@ -94,10 +94,11 @@
                     android:textSize="16sp" />
                 <ImageView
                     android:id="@+id/keyboard_mode"
-                    android:layout_width="25dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"
+                    android:paddingTop="8dp"
                     android:alpha="0.9"
                     android:src="@drawable/keyboard_light" />
                 <TextView
