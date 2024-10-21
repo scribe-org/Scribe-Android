@@ -27,12 +27,13 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.views.MyKeyboardView
+
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
-abstract class SimpleKeyboardIME(var language: String) :
-    InputMethodService(),
+abstract class SimpleKeyboardIME(
+    var language: String,
+) : InputMethodService(),
     MyKeyboardView.OnKeyboardActionListener {
-
     abstract fun getKeyboardLayoutXML(): Int
 
     abstract var shiftPermToggleSpeed: Int // how quickly do we have to doubletap shift to enable permanent caps lock
@@ -135,6 +136,7 @@ abstract class SimpleKeyboardIME(var language: String) :
                 initializeEmojiButtons()
                 updateButtonVisibility(isAutoSuggestEnabled)
             }
+
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }
@@ -153,6 +155,7 @@ abstract class SimpleKeyboardIME(var language: String) :
             true -> {
                 keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_dark))
             }
+
             false -> {
                 keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_light))
             }
@@ -167,7 +170,6 @@ abstract class SimpleKeyboardIME(var language: String) :
         }
         setInputView(keyboardHolder)
     }
-
 
     private fun setupIdleView() {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -185,6 +187,7 @@ abstract class SimpleKeyboardIME(var language: String) :
                 binding.separator2.setBackgroundColor(getColor(R.color.special_key_dark))
                 binding.separator3.setBackgroundColor(getColor(R.color.special_key_dark))
             }
+
             else -> {
                 binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
@@ -328,6 +331,7 @@ abstract class SimpleKeyboardIME(var language: String) :
                     keyboardMode = keyboardSymbols
                     R.xml.keys_symbols
                 }
+
                 else -> {
                     keyboardMode = keyboardLetters
                     getKeyboardLayoutXML()
@@ -552,6 +556,7 @@ abstract class SimpleKeyboardIME(var language: String) :
             true -> {
                 binding.commandField.setBackgroundColor(getColor(R.color.md_grey_black_dark))
             }
+
             else -> {
                 binding.commandField.setBackgroundColor(getColor(R.color.light_cmd_bar_border_color))
             }
@@ -567,6 +572,7 @@ abstract class SimpleKeyboardIME(var language: String) :
             true -> {
                 binding.commandField.setBackgroundColor(getColor(R.color.md_grey_black_dark))
             }
+
             else -> {
                 binding.commandField.setBackgroundColor(getColor(R.color.light_cmd_bar_border_color))
             }
