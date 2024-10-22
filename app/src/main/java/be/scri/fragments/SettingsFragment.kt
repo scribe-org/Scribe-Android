@@ -26,6 +26,7 @@ import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentSettingsBinding
 import be.scri.extensions.config
 import be.scri.helpers.CustomAdapter
+import be.scri.helpers.PreferencesHelper
 import be.scri.models.SwitchItem
 import be.scri.models.TextItem
 
@@ -98,22 +99,30 @@ class SettingsFragment : Fragment() {
                 getString(R.string.app_settings_menu_app_color_mode),
                 description = getString(R.string.app_settings_menu_app_color_mode_description),
                 isChecked = sharedPref.getBoolean("dark_mode", isUserDarkMode),
-                action = ::darkMode,
-                action2 = ::lightMode,
+                action = ({ setLightDarkMode(isDarkMode = true) }),
+                action2 = ({ setLightDarkMode(isDarkMode = false) }),
             ),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_keypress_vibration),
                 description = getString(R.string.app_settings_keyboard_keypress_vibration_description),
                 isChecked = requireContext().config.vibrateOnKeypress,
-                action = ::enableVibrateOnKeypress,
-                action2 = ::disableVibrateOnKeypress,
+                action = ({
+                    PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = true)
+                }),
+                action2 = ({
+                    PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = false)
+                }),
             ),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_functionality_popup_on_keypress),
                 description = getString(R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
                 isChecked = requireContext().config.showPopupOnKeypress,
-                action = ::enableShowPopupOnKeypress,
-                action2 = ::disableShowPopupOnKeypress,
+                action = ({
+                    PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = true)
+                }),
+                action2 = ({
+                    PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = false)
+                }),
             ),
         )
     }
@@ -231,54 +240,12 @@ class SettingsFragment : Fragment() {
         return result
     }
 
-    private fun lightMode() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("dark_mode", false)
-        editor.apply()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    private fun setLightDarkMode(isDarkMode: Boolean) {
+        PreferencesHelper.setLightDarkModePreference(requireContext(), isDarkMode)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
         requireActivity().recreate()
-    }
-
-    private fun darkMode() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("dark_mode", true)
-        editor.apply()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        requireActivity().recreate()
-    }
-
-    private fun enableVibrateOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("vibrate_on_keypress", true)
-        editor.apply()
-        requireActivity().config.vibrateOnKeypress = true
-    }
-
-    private fun disableVibrateOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("vibrate_on_keypress", false)
-        editor.apply()
-        requireActivity().config.vibrateOnKeypress = false
-    }
-
-    private fun enableShowPopupOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("show_popup_on_keypress", true)
-        editor.apply()
-        requireActivity().config.showPopupOnKeypress = true
-    }
-
-    private fun disableShowPopupOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("show_popup_on_keypress", false)
-        editor.apply()
-        requireActivity().config.showPopupOnKeypress = false
     }
 
     private fun setupItemVisibility() {

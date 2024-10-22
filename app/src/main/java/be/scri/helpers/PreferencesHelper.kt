@@ -40,5 +40,28 @@ class PreferencesHelper {
         fun setCommaAndPeriodPreference() {
             Log.d("PreferencesHelper", "This setCommaAndPeriodPreference-function is to be implemented later")
         }
+
+        fun setVibrateOnKeypress(context: Context, shouldVibrateOnKeypress: Boolean) {
+            val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.putBoolean("vibrate_on_keypress", shouldVibrateOnKeypress)
+            editor.apply()
+            context.config.vibrateOnKeypress = shouldVibrateOnKeypress
+        }
+
+        fun setShowPopupOnKeypress(context: Context, shouldShowPopupOnKeypress: Boolean) {
+            val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.putBoolean("show_popup_on_keypress", shouldShowPopupOnKeypress)
+            editor.apply()
+            context.config.showPopupOnKeypress = shouldShowPopupOnKeypress
+        }
+
+        fun setLightDarkModePreference(context: Context, darkMode: Boolean) {
+            val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.putBoolean("dark_mode", darkMode)
+            editor.apply()
+        }
     }
 }
