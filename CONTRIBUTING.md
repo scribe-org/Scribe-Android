@@ -139,27 +139,11 @@ Scribe-Android uses pre-commit hooks to maintain a clean and consistent codebase
 
 3. When you make a commit, the hooks will automatically run to check for any code quality issues. If any issues are found, they will either be fixed automatically or will need to be resolved manually.
 
-## Testing [`⇧`](#contents)
-
-Scribe-Android includes a testing suite that should be ran before all pull requests and subsequent commits. Please run the following in the project root:
-
-```bash
-# Run ktlint and detekt:
-./gradlew lintKotlin detekt
-./gradlew test
-```
-
-If you see that there are linting errors above, then please run the following command to hopefully fix them automatically:
-
-```bash
-ktlint --format
-```
-
 <a id="testing"></a>
 
 ## Testing [`⇧`](#contents)
 
-Scribe-Android includes a testing suite that should be ran before all pull requests and subsequent commits. Please run the following in the project root:
+In addition to the [pre-commit](https://pre-commit.com/) hooks that are set up during the [development environment section](#dev-env), Scribe-Android includes a testing suite that should be ran before all pull requests and subsequent commits. Please run the following in the project root:
 
 ```bash
 # Run ktlint and detekt:

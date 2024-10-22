@@ -156,6 +156,15 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
     - Press the play button marked "Run App"
     - From here code edits that are made will be reflected in the app each time it is ran.
 
+After activating your emulator, consider setting up [pre-commit](https://pre-commit.com/) to fix common errors in the codebase before they're committed by running:
+
+```bash
+pip install --upgrade pip  # make sure that pip is at the latest version
+pip install pre-commit
+pre-commit install  # install pre-commit hooks
+# pre-commit run --all-files  # lint and fix common problems in the codebase
+```
+
 > [!NOTE]
 > Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
 
