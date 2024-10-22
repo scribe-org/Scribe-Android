@@ -5,6 +5,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
+import be.scri.databinding.KeyboardViewKeyboardBinding
+import be.scri.helpers.DatabaseHelper
 import be.scri.helpers.MyKeyboard
 import be.scri.helpers.MyKeyboard.Companion.KEYCODE_ENTER
 import be.scri.views.MyKeyboardView
@@ -27,6 +29,11 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
     override var hasTextBeforeCursor = false
     override lateinit var binding: KeyboardViewCommandOptionsBinding
 
+    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var emojiKeywords: HashMap<String, MutableList<String>>
+    private var lastWord: String? = null
+    private var autosuggestEmojis: MutableList<String>? = null
+
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         setupCommandBarTheme(binding)
@@ -42,6 +49,9 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
         initializeEmojiButtons()
         updateUI()
         return keyboardHolder
+        dbHelper = DatabaseHelper(this)
+        dbHelper.loadDatabase("EN")
+        emojiKeywords = dbHelper.getEmojiKeywords("EN")
     }
 
     override fun onKey(code: Int) {
@@ -88,6 +98,13 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
                 }
             }
         }
+
+        lastWord = getLastWordBeforeCursor()
+        Log.d("Debug", "Last word before cursor: $lastWord")
+
+        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+
+        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
 
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
