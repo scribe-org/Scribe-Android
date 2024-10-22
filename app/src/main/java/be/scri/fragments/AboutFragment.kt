@@ -60,33 +60,22 @@ class AboutFragment : Fragment() {
         recyclerView1.adapter = CustomAdapter(getFirstRecyclerViewData(), requireContext())
         recyclerView1.suppressLayout(true)
         recyclerView1.apply {
-            addCustomItemDecoration()
+            addCustomItemDecoration(requireContext())
         }
         val recyclerView2 = binding.recycleView
         recyclerView2.layoutManager = LinearLayoutManager(context)
         recyclerView2.adapter = CustomAdapter(getSecondRecyclerViewData(), requireContext())
         recyclerView2.suppressLayout(true)
         recyclerView2.apply {
-            addCustomItemDecoration()
+            addCustomItemDecoration(requireContext())
         }
         val recyclerView3 = binding.recycleView3
         recyclerView3.layoutManager = LinearLayoutManager(context)
         recyclerView3.adapter = CustomAdapter(getThirdRecyclerViewData(), requireContext())
         recyclerView3.suppressLayout(true)
         recyclerView3.apply {
-            addCustomItemDecoration()
+            addCustomItemDecoration(requireContext())
         }
-    }
-
-    private fun RecyclerView.addCustomItemDecoration() {
-        val itemDecoration =
-            CustomDividerItemDecoration(
-                drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
-                width = 1,
-                marginLeft = 50,
-                marginRight = 50,
-            )
-        addItemDecoration(itemDecoration)
     }
 
     private fun getFirstRecyclerViewData(): List<Any> =
