@@ -6,13 +6,6 @@ repos:
           - id: end-of-file-fixer
           - id: check-yaml
 
-    - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: v0.3.0
-      hooks:
-          - id: ruff
-            args: [--fix, --exit-non-zero-on-fix]
-          - id: ruff-format
-
     - repo: local
       hooks:
           - id: ktlint
