@@ -118,7 +118,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
-                action = ::loadWikimediaScribeFragment,
+                action = ({ loadOtherFragment(WikimediaScribeFragment(), "WikimediaScribePage") }),
             ),
         )
 
@@ -174,7 +174,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
-                action = ::loadPrivacyPolicyFragment,
+                action = ({ loadOtherFragment(PrivacyPolicyFragment(), null) }),
             ),
             ItemsViewModel(
                 image = R.drawable.license_icon,
@@ -182,7 +182,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
-                action = ::loadThirdPartyLicensesFragment,
+                action = ({ loadOtherFragment(ThirdPartyFragment(), null) }),
             ),
         )
 
@@ -222,36 +222,15 @@ class AboutFragment : Fragment() {
         }
     }
 
-    private fun loadWikimediaScribeFragment() {
+    private fun loadOtherFragment(fragment: Fragment, pageName: String?) {
         try {
-            val fragment = WikimediaScribeFragment()
             val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_container, fragment, "WikimediaScribePage")
-            fragmentTransaction.addToBackStack("WikimediaScribePage")
-            fragmentTransaction.commit()
-        } catch (e: IllegalStateException) {
-            Log.e("AboutFragment", "Failed to load fragment", e)
-        }
-    }
-
-    private fun loadPrivacyPolicyFragment() {
-        try {
-            val fragment = PrivacyPolicyFragment()
-            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_container, fragment)
-            fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.commit()
-        } catch (e: IllegalStateException) {
-            Log.e("AboutFragment", "Failed to load fragment", e)
-        }
-    }
-
-    private fun loadThirdPartyLicensesFragment() {
-        try {
-            val fragment = ThirdPartyFragment()
-            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_container, fragment)
-            fragmentTransaction.addToBackStack(null)
+            if (pageName != null) {
+                fragmentTransaction.replace(R.id.fragment_container, fragment, pageName)
+            } else {
+                fragmentTransaction.replace(R.id.fragment_container, fragment)
+            }
+            fragmentTransaction.addToBackStack(pageName)
             fragmentTransaction.commit()
         } catch (e: IllegalStateException) {
             Log.e("AboutFragment", "Failed to load fragment", e)
