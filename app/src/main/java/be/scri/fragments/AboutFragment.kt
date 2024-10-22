@@ -1,22 +1,15 @@
 package be.scri.fragments
 
-import CustomDividerItemDecoration
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import be.scri.BuildConfig
 import be.scri.R
 import be.scri.activities.MainActivity
@@ -25,8 +18,8 @@ import be.scri.extensions.addCustomItemDecoration
 import be.scri.helpers.CustomAdapter
 import be.scri.helpers.HintUtils
 import be.scri.helpers.ShareHelper
+import be.scri.helpers.RatingHelper
 import be.scri.models.ItemsViewModel
-import com.google.android.play.core.review.ReviewManagerFactory
 
 class AboutFragment : Fragment() {
     private lateinit var binding: FragmentAboutBinding
@@ -132,7 +125,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
-                action = ::rateScribe,
+                action = ({ RatingHelper.rateScribe(requireContext(), activity as MainActivity) }),
             ),
             ItemsViewModel(
                 image = R.drawable.bug_report_icon,
@@ -205,47 +198,6 @@ class AboutFragment : Fragment() {
             fragmentTransaction.commit()
         } catch (e: IllegalStateException) {
             Log.e("AboutFragment", "Failed to load fragment", e)
-        }
-    }
-
-    private fun getInstallSource(context: Context): String? =
-        try {
-            val packageManager = context.packageManager
-            packageManager.getInstallerPackageName(context.packageName)
-        } catch (e: PackageManager.NameNotFoundException) {
-            null
-        }
-
-    private fun rateScribe() {
-        val context = requireContext()
-        var installSource = getInstallSource(context)
-
-        if (installSource == "com.android.vending") {
-            val reviewManager = ReviewManagerFactory.create(context)
-            val request = reviewManager.requestReviewFlow()
-
-            request.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val reviewInfo = task.result
-                    val activity = requireActivity()
-                    reviewManager
-                        .launchReviewFlow(activity, reviewInfo)
-                        .addOnCompleteListener { _ ->
-                        }
-                } else {
-                    Toast.makeText(context, "Failed to launch review flow", Toast.LENGTH_SHORT).show()
-                }
-            }
-        } else if (installSource == "org.fdroid.fdroid") {
-            val url = "https://f-droid.org/packages/${context.packageName}"
-            val intent =
-                Intent(Intent.ACTION_VIEW)
-                    .apply {
-                        data = Uri.parse(url)
-                    }
-            context.startActivity(intent)
-        } else {
-            Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
         }
     }
 
