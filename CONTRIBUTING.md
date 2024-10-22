@@ -116,8 +116,56 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
     - Press the play button marked "Run App"
     - From here code edits that are made will be reflected in the app each time it is ran
 
-> [!NOTE]
-> Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
+[!NOTE] Feel free to contact the team in the Android room on Matrix if you're having problems getting your environment set up!
+
+## Pre-commit Hooks [`⇧`](#contents)
+
+To maintain a clean and consistent codebase, Scribe-Android uses **pre-commit hooks**. These hooks help automatically check for issues such as formatting, trailing whitespace, and linting errors. Here's how to set up pre-commit for Scribe-Android:
+
+1. Install `pre-commit` by running:
+
+    ```bash
+    pip install pre-commit
+    ```
+
+2. After cloning the repository, install the hooks by running the following command in the project root:
+
+    ```bash
+    pre-commit install
+    ```
+
+3. When you make a commit, the hooks will automatically run to check for any code quality issues. If any issues are found, they will either be fixed automatically or will need to be resolved manually.
+
+### List of pre-commit hooks
+
+Here are some of the pre-commit hooks configured for this project:
+
+- **trailing-whitespace**: Removes any trailing whitespaces in the code.
+- **end-of-file-fixer**: Ensures that files end with a newline.
+- **ruff**: Lints Python code (for any Python scripts used in the project).
+
+If you want to run these checks manually, use the following command:
+
+```bash
+pre-commit run --all-files
+
+```
+
+## Testing [`⇧`](#contents)
+
+Scribe-Android includes a testing suite that should be ran before all pull requests and subsequent commits. Please run the following in the project root:
+
+```bash
+# Run ktlint and detekt:
+./gradlew lintKotlin detekt
+./gradlew test
+```
+
+If you see that there are linting errors above, then please run the following command to hopefully fix them automatically:
+
+```bash
+ktlint --format
+```
 
 <a id="issues-projects"></a>
 
