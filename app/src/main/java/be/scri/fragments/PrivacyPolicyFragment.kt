@@ -29,7 +29,12 @@ class PrivacyPolicyFragment : Fragment() {
         (requireActivity() as MainActivity).setActionBarButtonVisible()
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_privacy_policy)
         (requireActivity() as MainActivity).setActionBarLayoutMargin()
-        val textView = (requireActivity() as MainActivity).supportActionBar?.customView?.findViewById<TextView>(R.id.name)
+        val textView =
+            (requireActivity() as MainActivity)
+                .supportActionBar
+                ?.customView
+                ?.findViewById<TextView>(R.id.name)
+
         (requireActivity() as MainActivity)
             .supportActionBar
             ?.customView
