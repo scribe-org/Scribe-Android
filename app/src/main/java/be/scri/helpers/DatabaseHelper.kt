@@ -3,23 +3,25 @@ package be.scri.helpers
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
-class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, null, null, DATABASE_VERSION) {
-
+class DatabaseHelper(
+    private val context: Context,
+) : SQLiteOpenHelper(context, null, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_VERSION = 1
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-
+    override fun onUpgrade(
+        db: SQLiteDatabase,
+        oldVersion: Int,
+        newVersion: Int,
+    ) {
     }
 
     fun loadDatabase(language: String) {

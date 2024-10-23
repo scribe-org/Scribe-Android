@@ -326,7 +326,10 @@ abstract class SimpleKeyboardIME(
         return lastWord
     }
 
-    fun findEmojisForLastWord(emojiKeywords: HashMap<String, MutableList<String>>, lastWord: String?): MutableList<String>? {
+    fun findEmojisForLastWord(
+        emojiKeywords: HashMap<String, MutableList<String>>,
+        lastWord: String?,
+    ): MutableList<String>? {
         lastWord?.let { word ->
             val lowerCaseWord = word.lowercase()
             val emojis = emojiKeywords[lowerCaseWord]
@@ -340,7 +343,10 @@ abstract class SimpleKeyboardIME(
         return null
     }
 
-    fun updateButtonText(isAutoSuggestEnabled: Boolean, autosuggestEmojis: MutableList<String>?) {
+    fun updateButtonText(
+        isAutoSuggestEnabled: Boolean,
+        autosuggestEmojis: MutableList<String>?,
+    ) {
         if (isAutoSuggestEnabled) {
             emojiBtnTablet1?.text = autosuggestEmojis?.get(0)
             emojiBtnTablet2?.text = autosuggestEmojis?.get(1)
