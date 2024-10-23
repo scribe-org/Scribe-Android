@@ -314,20 +314,48 @@ abstract class SimpleKeyboardIME(
         }
     }
 
+    fun getLastWordBeforeCursor(): String? {
+        val inputConnection = currentInputConnection ?: return null
+
+        val textBeforeCursor = inputConnection.getTextBeforeCursor(50, 0) ?: return null
+
+        val trimmedText = textBeforeCursor.trim().toString()
+
+        val lastWord = trimmedText.split("\\s+".toRegex()).lastOrNull()
+
+        return lastWord
+    }
+
+    fun findEmojisForLastWord(emojiKeywords: HashMap<String, MutableList<String>>, lastWord: String?): MutableList<String>? {
+        lastWord?.let { word ->
+            val lowerCaseWord = word.lowercase()
+            val emojis = emojiKeywords[lowerCaseWord]
+            if (emojis != null) {
+                Log.d("Debug", "Emojis for '$word': $emojis")
+                return emojis
+            } else {
+                Log.d("Debug", "No emojis found for '$word'")
+            }
+        }
+        return null
+    }
+
     fun updateButtonText(isAutoSuggestEnabled: Boolean, autosuggestEmojis: MutableList<String>?) {
-        emojiBtnTablet1?.text = autosuggestEmojis?.get(0)
-        emojiBtnTablet2?.text = autosuggestEmojis?.get(1)
-        emojiBtnTablet3?.text = autosuggestEmojis?.get(2)
+        if (isAutoSuggestEnabled) {
+            emojiBtnTablet1?.text = autosuggestEmojis?.get(0)
+            emojiBtnTablet2?.text = autosuggestEmojis?.get(1)
+            emojiBtnTablet3?.text = autosuggestEmojis?.get(2)
 
-        emojiBtnPhone1?.text = autosuggestEmojis?.get(0)
-        emojiBtnPhone2?.text = autosuggestEmojis?.get(1)
+            emojiBtnPhone1?.text = autosuggestEmojis?.get(0)
+            emojiBtnPhone2?.text = autosuggestEmojis?.get(1)
 
-        binding.emojiBtnTablet1.setOnClickListener { insertEmoji(emojiBtnTablet1?.text.toString()) }
-        binding.emojiBtnTablet2.setOnClickListener { insertEmoji(emojiBtnTablet2?.text.toString()) }
-        binding.emojiBtnTablet3.setOnClickListener { insertEmoji(emojiBtnTablet3?.text.toString()) }
+            binding.emojiBtnTablet1.setOnClickListener { insertEmoji(emojiBtnTablet1?.text.toString()) }
+            binding.emojiBtnTablet2.setOnClickListener { insertEmoji(emojiBtnTablet2?.text.toString()) }
+            binding.emojiBtnTablet3.setOnClickListener { insertEmoji(emojiBtnTablet3?.text.toString()) }
 
-        binding.emojiBtnPhone1.setOnClickListener { insertEmoji(emojiBtnPhone1?.text.toString()) }
-        binding.emojiBtnPhone2.setOnClickListener { insertEmoji(emojiBtnPhone2?.text.toString()) }
+            binding.emojiBtnPhone1.setOnClickListener { insertEmoji(emojiBtnPhone1?.text.toString()) }
+            binding.emojiBtnPhone2.setOnClickListener { insertEmoji(emojiBtnPhone2?.text.toString()) }
+        }
     }
 
     private fun insertEmoji(emoji: String) {

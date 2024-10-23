@@ -8,10 +8,9 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
-class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, null, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_NAME = "ENLanguageData.sqlite"
         private const val DATABASE_VERSION = 1
     }
 
@@ -23,10 +22,11 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
 
     }
 
-    fun loadDatabase() {
-        val dbFile = context.getDatabasePath(DATABASE_NAME)
+    fun loadDatabase(language: String) {
+        val databaseName = "${language}LanguageData.sqlite"
+        val dbFile = context.getDatabasePath(databaseName)
         if (!dbFile.exists()) {
-            val inputStream: InputStream = context.assets.open("data/$DATABASE_NAME")
+            val inputStream: InputStream = context.assets.open("data/$databaseName")
             val outputStream: OutputStream = FileOutputStream(dbFile)
 
             inputStream.copyTo(outputStream)
@@ -37,9 +37,10 @@ class DatabaseHelper(private val context: Context) : SQLiteOpenHelper(context, D
         }
     }
 
-    fun getEmojiKeywords(): HashMap<String, MutableList<String>> {
+    fun getEmojiKeywords(language: String): HashMap<String, MutableList<String>> {
         val hashMap = HashMap<String, MutableList<String>>()
-        val db = readableDatabase
+        val dbFile = context.getDatabasePath("${language}LanguageData.sqlite")
+        val db = SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY)
         val cursor = db.rawQuery("SELECT * FROM emoji_keywords", null)
 
         cursor.use {
