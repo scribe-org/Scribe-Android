@@ -55,9 +55,10 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import java.util.Arrays
+import java.util.Locale
 
 @SuppressLint("UseCompatLoadingForDrawables")
-@Suppress("LargeClass")
+@Suppress("LargeClass", "LongMethod")
 class MyKeyboardView
     @JvmOverloads
     constructor(
@@ -67,8 +68,10 @@ class MyKeyboardView
     ) : View(context, attrs, defStyleRes) {
         interface OnKeyboardActionListener {
             /**
-             * Called when the user presses a key. This is sent before the [.onKey] is called. For keys that repeat, this is only called once.
-             * @param primaryCode the unicode of the key being pressed. If the touch is not on a valid key, the value will be zero.
+             * Called when the user presses a key. This is sent before the [.onKey] is called.
+             * For keys that repeat, this is only called once.
+             * @param primaryCode the unicode of the key being pressed.
+             * If the touch is not on a valid key, the value will be zero.
              */
             fun onPress(primaryCode: Int)
 
@@ -279,10 +282,10 @@ class MyKeyboardView
 
             try {
                 for (i in 0 until indexCnt) {
-
-                    val attr = attributes.getIndex(i)
-                    when (attr) {
-                        R.styleable.MyKeyboardView_keyTextSize -> mKeyTextSize = attributes.getDimensionPixelSize(attr, 18)
+                    when (val attr = attributes.getIndex(i)) {
+                        R.styleable.MyKeyboardView_keyTextSize -> {
+                            mKeyTextSize = attributes.getDimensionPixelSize(attr, 18)
+                        }
                     }
                 }
             } finally {
@@ -379,8 +382,15 @@ class MyKeyboardView
 
                 if (changedView == popupBinding.miniKeyboardView) {
                     val previewBackground = background as LayerDrawable
-                    previewBackground.findDrawableByLayerId(R.id.button_background_shape).applyColorFilter(miniKeyboardBackgroundColor)
-                    previewBackground.findDrawableByLayerId(R.id.button_background_stroke).applyColorFilter(strokeColor)
+
+                    previewBackground
+                        .findDrawableByLayerId(R.id.button_background_shape)
+                        .applyColorFilter(miniKeyboardBackgroundColor)
+
+                    previewBackground
+                        .findDrawableByLayerId(R.id.button_background_stroke)
+                        .applyColorFilter(strokeColor)
+
                     background = previewBackground
                 } else {
                     background.applyColorFilter(darkerColor)
@@ -399,7 +409,8 @@ class MyKeyboardView
         }
 
         /**
-         * Attaches a keyboard to this view. The keyboard can be switched at any time and the view will re-layout itself to accommodate the keyboard.
+         * Attaches a keyboard to this view.
+         * The keyboard can be switched at any time and the view will re-layout itself to accommodate the keyboard.
          * @param keyboard the keyboard to display in this view
          */
         fun setKeyboard(keyboard: MyKeyboard) {
@@ -469,7 +480,7 @@ class MyKeyboardView
         private fun adjustCase(label: CharSequence?): CharSequence? =
             label?.takeIf { it.length in 1..2 }?.let {
                 if (mKeyboard?.mShiftState?.let { state -> state > SHIFT_OFF } == true) {
-                    label.toString().uppercase()
+                    label.toString().uppercase(Locale.getDefault())
                 } else {
                     label
                 }
@@ -491,8 +502,9 @@ class MyKeyboardView
         }
 
         /**
-         * Compute the average distance between adjacent keys (horizontally and vertically) and square it to get the proximity threshold. We use a square here and
-         * in computing the touch distance from a key's center to avoid taking a square root.
+         * Compute the average distance between adjacent keys (horizontally and vertically)
+         * and square it to get the proximity threshold.
+         * We use a square here and in computing the touch distance from a key's center to avoid taking a square root.
          * @param keyboard
          */
         private fun computeProximityThreshold(keyboard: MyKeyboard?) {
@@ -672,7 +684,12 @@ class MyKeyboardView
                     )
 
                     if (key.topSmallNumber.isNotEmpty()) {
-                        canvas.drawText(key.topSmallNumber, key.width - mTopSmallNumberMarginWidth, mTopSmallNumberMarginHeight, smallLetterPaint)
+                        canvas.drawText(
+                            key.topSmallNumber,
+                            key.width - mTopSmallNumberMarginWidth,
+                            mTopSmallNumberMarginHeight,
+                            smallLetterPaint,
+                        )
                     }
 
                     // Turn off drop shadow.
@@ -748,14 +765,25 @@ class MyKeyboardView
                     oldKey.pressed = false
                     invalidateKey(oldKeyIndex)
                     val keyCode = oldKey.code
-                    sendAccessibilityEventForUnicodeCharacter(AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED, keyCode)
+                    sendAccessibilityEventForUnicodeCharacter(
+                        AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED,
+                        keyCode,
+                    )
                 }
 
                 if (mCurrentKeyIndex != NOT_A_KEY && keys.size > mCurrentKeyIndex) {
                     val newKey = keys[mCurrentKeyIndex]
                     val code = newKey.code
+                    val pressedKeys =
+                        listOf(
+                            KEYCODE_SHIFT,
+                            KEYCODE_MODE_CHANGE,
+                            KEYCODE_DELETE,
+                            KEYCODE_ENTER,
+                            KEYCODE_SPACE,
+                        )
 
-                    newKey.pressed = code in listOf(KEYCODE_SHIFT, KEYCODE_MODE_CHANGE, KEYCODE_DELETE, KEYCODE_ENTER, KEYCODE_SPACE)
+                    newKey.pressed = code in pressedKeys
 
                     invalidateKey(mCurrentKeyIndex)
                     sendAccessibilityEventForUnicodeCharacter(AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED, code)
@@ -813,12 +841,21 @@ class MyKeyboardView
                 }
 
             val previewBackground = mPreviewText!!.background as LayerDrawable
-            previewBackground.findDrawableByLayerId(R.id.button_background_shape).applyColorFilter(previewBackgroundColor)
-            previewBackground.findDrawableByLayerId(R.id.button_background_stroke).applyColorFilter(context.getStrokeColor())
+            previewBackground
+                .findDrawableByLayerId(R.id.button_background_shape)
+                .applyColorFilter(previewBackgroundColor)
+
+            previewBackground
+                .findDrawableByLayerId(R.id.button_background_stroke)
+                .applyColorFilter(context.getStrokeColor())
+
             mPreviewText!!.background = previewBackground
 
             mPreviewText!!.setTextColor(mTextColor)
-            mPreviewText!!.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
+            mPreviewText!!.measure(
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+            )
             val popupWidth = Math.max(mPreviewText!!.measuredWidth, key.width)
             val popupHeight = mPreviewHeight
             val lp = mPreviewText!!.layoutParams
@@ -888,7 +925,8 @@ class MyKeyboardView
         }
 
         /**
-         * Requests a redraw of the entire keyboard. Calling [.invalidate] is not sufficient because the keyboard renders the keys to an off-screen buffer and
+         * Requests a redraw of the entire keyboard.
+         * Calling [.invalidate] is not sufficient because the keyboard renders the keys to an off-screen buffer and
          * an invalidate() only draws the cached buffer.
          */
         fun invalidateAllKeys() {
@@ -898,7 +936,8 @@ class MyKeyboardView
         }
 
         /**
-         * Invalidates a key so that it will be redrawn on the next repaint. Use this method if only one key is changing it's content. Any changes that
+         * Invalidates a key so that it will be redrawn on the next repaint.
+         * Use this method if only one key is changing it's content. Any changes that
          * affect the position or size of the key may not be honored.
          * @param keyIndex the index of the key in the attached [MyKeyboard].
          */
@@ -944,10 +983,12 @@ class MyKeyboardView
         }
 
         /**
-         * Called when a key is long pressed. By default this will open any popup keyboard associated with this key through the attributes
+         * Called when a key is long pressed.
+         * By default this will open any popup keyboard associated with this key through the attributes
          * popupLayout and popupCharacters.
          * @param popupKey the key that was long pressed
-         * @return true if the long press is handled, false otherwise. Subclasses should call the method on the base class if the subclass doesn't wish to
+         * @return true if the long press is handled, false otherwise.
+         * Subclasses should call the method on the base class if the subclass doesn't wish to
          * handle the call.
          */
         private fun onLongPress(
@@ -960,7 +1001,10 @@ class MyKeyboardView
                 if (mMiniKeyboardContainer == null) {
                     val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     mMiniKeyboardContainer = inflater.inflate(mPopupLayout, null)
-                    mMiniKeyboard = mMiniKeyboardContainer!!.findViewById<View>(R.id.mini_keyboard_view) as MyKeyboardView
+                    mMiniKeyboard =
+                        mMiniKeyboardContainer!!
+                            .findViewById<View>(R.id.mini_keyboard_view)
+                            as MyKeyboardView
 
                     mMiniKeyboard!!.mOnKeyboardActionListener =
                         object : OnKeyboardActionListener {
@@ -989,7 +1033,9 @@ class MyKeyboardView
                                 mOnKeyboardActionListener!!.onText(text)
                             }
 
-                            override fun hasTextBeforeCursor(): Boolean = mOnKeyboardActionListener!!.hasTextBeforeCursor()
+                            override fun hasTextBeforeCursor(): Boolean =
+                                mOnKeyboardActionListener!!
+                                    .hasTextBeforeCursor()
 
                             override fun commitPeriodAfterSpace() {
                                 mOnKeyboardActionListener!!.commitPeriodAfterSpace()
@@ -1011,14 +1057,19 @@ class MyKeyboardView
                     )
                     mMiniKeyboardCache[popupKey] = mMiniKeyboardContainer
                 } else {
-                    mMiniKeyboard = mMiniKeyboardContainer!!.findViewById<View>(R.id.mini_keyboard_view) as MyKeyboardView
+                    mMiniKeyboard =
+                        mMiniKeyboardContainer!!
+                            .findViewById<View>(R.id.mini_keyboard_view) as MyKeyboardView
                 }
 
                 getLocationInWindow(mCoordinates)
                 mPopupX = popupKey.x
                 mPopupY = popupKey.y
 
-                val widthToUse = mMiniKeyboardContainer!!.measuredWidth - (popupKey.popupCharacters!!.length / 2) * popupKey.width
+                val widthToUse =
+                    mMiniKeyboardContainer!!.measuredWidth -
+                        (popupKey.popupCharacters!!.length / 2) *
+                        popupKey.width
                 mPopupX = mPopupX + popupKey.width - widthToUse
                 mPopupY -= mMiniKeyboardContainer!!.measuredHeight
                 val x = mPopupX + mCoordinates[0]
@@ -1026,7 +1077,8 @@ class MyKeyboardView
                 val xOffset = Math.max(0, x)
                 mMiniKeyboard!!.setPopupOffset(xOffset, y)
 
-                // make sure we highlight the proper key right after long pressing it, before any ACTION_MOVE event occurs
+                // make sure we highlight the proper key right after long pressing it,
+                // before any ACTION_MOVE event occurs
                 val miniKeyboardX =
                     if (xOffset + mMiniKeyboard!!.measuredWidth <= measuredWidth) {
                         xOffset
@@ -1163,7 +1215,8 @@ class MyKeyboardView
 
             when (action) {
                 MotionEvent.ACTION_POINTER_DOWN -> {
-                    // if the user presses a key while still holding down the previous, type in both chars and ignore the later gestures
+                    // if the user presses a key while still holding down the previous,
+                    // type in both chars and ignore the later gestures
                     // can happen at fast typing, easier to reproduce by increasing LONGPRESS_TIMEOUT
                     ignoreTouches = true
                     mHandler!!.removeMessages(MSG_LONGPRESS)

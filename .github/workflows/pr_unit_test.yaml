@@ -1,4 +1,4 @@
-name: pr_ktlint_detekt
+name: pr_unit_test
 on:
     pull_request:
         branches:
@@ -6,9 +6,9 @@ on:
         types: [opened, reopened, synchronize]
 
 jobs:
-    ktlint:
+    unit-test:
         runs-on: ubuntu-latest
-        name: Run ktlint and detekt
+        name: Run unit tests
 
         steps:
             - name: Checkout repository
@@ -24,9 +24,5 @@ jobs:
             - name: Setup Gradle
               uses: gradle/actions/setup-gradle@v4
 
-            - name: Run ktlint
-              run: ./gradlew lintKotlin
-
-            - name: Run detekt
-              if: always()
-              run: ./gradlew detekt
+            - name: Run tests
+              run: ./gradlew test

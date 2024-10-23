@@ -2,7 +2,7 @@ style:
     MagicNumber:
         active: false
     MaxLineLength:
-        active: false
+        active: true
     LoopWithTooManyJumpStatements:
         active: false
     WildcardImport:
@@ -26,7 +26,7 @@ complexity:
     LongParameterList:
         active: false
     LongMethod:
-        active: false
+        active: true
     CyclomaticComplexMethod:
         active: false
 
@@ -38,7 +38,7 @@ exceptions:
 
 empty-blocks:
     EmptyCatchBlock:
-        active: false
+        active: true
     EmptyFunctionBlock:
         active: false
 

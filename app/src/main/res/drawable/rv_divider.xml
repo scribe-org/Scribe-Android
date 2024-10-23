@@ -1,7 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <size android:height="1dp" />
-    <corners android:radius="10dp" />
-    <solid android:color="@color/rv_divider" />
-</shape>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="1023dp"
+    android:height="1dp"
+    android:viewportWidth="1023"
+    android:viewportHeight="1">
+  <path
+      android:pathData="M0,0h1023v1h-1023z"
+      android:fillColor="@color/rv_divider"
+      android:fillAlpha="0.5"/>
+</vector>

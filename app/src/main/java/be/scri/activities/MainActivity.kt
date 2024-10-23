@@ -8,18 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.adapters.ViewPagerAdapter
 import be.scri.databinding.ActivityMainBinding
+import be.scri.services.EnglishKeyboardIME
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : SimpleActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPagerAdapter
     private lateinit var binding: ActivityMainBinding
+    private var englishKeyboardIME: EnglishKeyboardIME? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +43,8 @@ class MainActivity : SimpleActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        englishKeyboardIME = EnglishKeyboardIME()
 
         viewPager = findViewById(R.id.view_pager)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -211,6 +216,19 @@ class MainActivity : SimpleActivity() {
                 }
                 hideHint()
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (viewPager.currentItem == 0) {
+            if (binding.fragmentContainer.visibility == View.VISIBLE) {
+                binding.fragmentContainer.visibility = View.GONE
+            } else {
+                finish()
+            }
+        } else {
+            viewPager.currentItem = viewPager.currentItem - 1
         }
     }
 

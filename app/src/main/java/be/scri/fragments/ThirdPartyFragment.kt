@@ -41,7 +41,7 @@ class ThirdPartyFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         binding = FragmentThirdPartyBinding.inflate(inflater, container, false)
         (requireActivity() as MainActivity).showFragmentContainer()
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_third_party)
