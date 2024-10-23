@@ -104,23 +104,23 @@ class SettingsFragment : Fragment() {
                 getString(R.string.app_settings_keyboard_keypress_vibration),
                 description = getString(R.string.app_settings_keyboard_keypress_vibration_description),
                 isChecked = requireContext().config.vibrateOnKeypress,
-                action = ({
-                    PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = true)
-                }),
-                action2 = ({
-                    PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = false)
-                }),
+                action = (
+                    { PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = true) }
+                ),
+                action2 = (
+                    { PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = false) }
+                ),
             ),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_functionality_popup_on_keypress),
                 description = getString(R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
                 isChecked = requireContext().config.showPopupOnKeypress,
-                action = ({
-                    PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = true)
-                }),
-                action2 = ({
-                    PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = false)
-                }),
+                action2 = (
+                    { PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = false) }
+                ),
+                action = (
+                    { PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = true) }
+                ),
             ),
         )
     }
@@ -230,7 +230,7 @@ class SettingsFragment : Fragment() {
     private fun setLightDarkMode(isDarkMode: Boolean) {
         PreferencesHelper.setLightDarkModePreference(requireContext(), isDarkMode)
         AppCompatDelegate.setDefaultNightMode(
-            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO,
         )
         requireActivity().recreate()
     }

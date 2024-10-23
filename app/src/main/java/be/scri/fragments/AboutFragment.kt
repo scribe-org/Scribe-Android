@@ -15,8 +15,8 @@ import be.scri.databinding.FragmentAboutBinding
 import be.scri.extensions.addCustomItemDecoration
 import be.scri.helpers.CustomAdapter
 import be.scri.helpers.HintUtils
-import be.scri.helpers.ShareHelper
 import be.scri.helpers.RatingHelper
+import be.scri.helpers.ShareHelper
 import be.scri.models.ItemsViewModel
 
 class AboutFragment : Fragment() {
@@ -184,7 +184,10 @@ class AboutFragment : Fragment() {
         (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
     }
 
-    private fun loadOtherFragment(fragment: Fragment, pageName: String?) {
+    private fun loadOtherFragment(
+        fragment: Fragment,
+        pageName: String?,
+    ) {
         try {
             val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
             if (pageName != null) {
