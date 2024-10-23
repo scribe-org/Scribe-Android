@@ -9,7 +9,6 @@ import be.scri.activities.MainActivity
 import com.google.android.play.core.review.ReviewManagerFactory
 
 class RatingHelper {
-
     companion object {
         private fun getInstallSource(context: Context): String? =
             try {
@@ -19,7 +18,10 @@ class RatingHelper {
                 null
             }
 
-        fun rateScribe(context: Context, activity: MainActivity) {
+        fun rateScribe(
+            context: Context,
+            activity: MainActivity,
+        ) {
             val installSource = getInstallSource(context)
 
             if (installSource == "com.android.vending") {
