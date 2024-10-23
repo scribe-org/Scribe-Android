@@ -321,6 +321,18 @@ abstract class SimpleKeyboardIME(
 
         emojiBtnPhone1?.text = autosuggestEmojis?.get(0)
         emojiBtnPhone2?.text = autosuggestEmojis?.get(1)
+
+        binding.emojiBtnTablet1.setOnClickListener { insertEmoji(emojiBtnTablet1?.text.toString()) }
+        binding.emojiBtnTablet2.setOnClickListener { insertEmoji(emojiBtnTablet2?.text.toString()) }
+        binding.emojiBtnTablet3.setOnClickListener { insertEmoji(emojiBtnTablet3?.text.toString()) }
+
+        binding.emojiBtnPhone1.setOnClickListener { insertEmoji(emojiBtnPhone1?.text.toString()) }
+        binding.emojiBtnPhone2.setOnClickListener { insertEmoji(emojiBtnPhone2?.text.toString()) }
+    }
+
+    private fun insertEmoji(emoji: String) {
+        val inputConnection = currentInputConnection ?: return
+        inputConnection.commitText(emoji, 1)
     }
 
     override fun onPress(primaryCode: Int) {
