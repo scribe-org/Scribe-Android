@@ -314,6 +314,15 @@ abstract class SimpleKeyboardIME(
         }
     }
 
+    fun updateButtonText(isAutoSuggestEnabled: Boolean, autosuggestEmojis: MutableList<String>?) {
+        emojiBtnTablet1?.text = autosuggestEmojis?.get(0)
+        emojiBtnTablet2?.text = autosuggestEmojis?.get(1)
+        emojiBtnTablet3?.text = autosuggestEmojis?.get(2)
+
+        emojiBtnPhone1?.text = autosuggestEmojis?.get(0)
+        emojiBtnPhone2?.text = autosuggestEmojis?.get(1)
+    }
+
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) {
             keyboardView?.vibrateIfNeeded()
