@@ -1,12 +1,10 @@
 package be.scri.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.scri.BuildConfig
 import be.scri.R
@@ -19,7 +17,7 @@ import be.scri.helpers.RatingHelper
 import be.scri.helpers.ShareHelper
 import be.scri.models.ItemsViewModel
 
-class AboutFragment : Fragment() {
+class AboutFragment : ScribeFragment("About") {
     private lateinit var binding: FragmentAboutBinding
 
     override fun onCreateView(
@@ -184,31 +182,8 @@ class AboutFragment : Fragment() {
         (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
     }
 
-    private fun loadOtherFragment(
-        fragment: Fragment,
-        pageName: String?,
-    ) {
-        try {
-            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-            if (pageName != null) {
-                fragmentTransaction.replace(R.id.fragment_container, fragment, pageName)
-            } else {
-                fragmentTransaction.replace(R.id.fragment_container, fragment)
-            }
-            fragmentTransaction.addToBackStack(pageName)
-            fragmentTransaction.commit()
-        } catch (e: IllegalStateException) {
-            Log.e("AboutFragment", "Failed to load fragment", e)
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (activity as MainActivity).hideHint()
     }
 }

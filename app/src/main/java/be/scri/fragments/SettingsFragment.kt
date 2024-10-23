@@ -16,7 +16,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.scri.R
 import be.scri.activities.MainActivity
@@ -28,7 +27,7 @@ import be.scri.helpers.PreferencesHelper
 import be.scri.models.SwitchItem
 import be.scri.models.TextItem
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : ScribeFragment("Settings") {
     private lateinit var binding: FragmentSettingsBinding
     private var isDecorationSet: Boolean = false
 
@@ -61,7 +60,8 @@ class SettingsFragment : Fragment() {
         val enabledInputMethods = imm.enabledInputMethodList
         for (inputMethod in enabledInputMethods) {
             if (inputMethod.packageName == "be.scri.debug") {
-                setupItemVisibility()
+                binding.btnInstall.visibility = View.INVISIBLE
+                binding.selectLanguage.visibility = View.VISIBLE
             }
         }
 
@@ -147,7 +147,8 @@ class SettingsFragment : Fragment() {
         val enabledInputMethods = imm.enabledInputMethodList
         for (inputMethod in enabledInputMethods) {
             if (inputMethod.packageName == "be.scri.debug") {
-                setupItemVisibility()
+                binding.btnInstall.visibility = View.INVISIBLE
+                binding.selectLanguage.visibility = View.VISIBLE
             }
         }
         val recyclerView = binding.recyclerView2
@@ -184,26 +185,22 @@ class SettingsFragment : Fragment() {
                 TextItem(
                     text = localizeLanguage,
                     image = R.drawable.right_arrow,
-                    action = { loadLanguageSettingsFragment(language) },
+                    action = {
+                        loadOtherFragment(
+                            LanguageSettingsFragment().apply {
+                                arguments =
+                                    Bundle().apply {
+                                        putString("LANGUAGE_EXTRA", language)
+                                    }
+                            },
+                            "LanguageFragment",
+                        )
+                    },
                     language = language,
                 ),
             )
         }
         return list
-    }
-
-    private fun loadLanguageSettingsFragment(language: String) {
-        val fragment =
-            LanguageSettingsFragment().apply {
-                arguments =
-                    Bundle().apply {
-                        putString("LANGUAGE_EXTRA", language)
-                    }
-            }
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment, "LanguageFragment")
-        fragmentTransaction.addToBackStack("LanguageFragment")
-        fragmentTransaction.commit()
     }
 
     private fun setupKeyboardLanguage(): MutableList<String> {
@@ -235,19 +232,9 @@ class SettingsFragment : Fragment() {
         requireActivity().recreate()
     }
 
-    private fun setupItemVisibility() {
-        binding.btnInstall.visibility = View.INVISIBLE
-        binding.selectLanguage.visibility = View.VISIBLE
-    }
-
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).showHint("hint_shown_settings", R.string.app_settings_app_hint)
         setupRecyclerView2()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (activity as MainActivity).hideHint()
     }
 }
