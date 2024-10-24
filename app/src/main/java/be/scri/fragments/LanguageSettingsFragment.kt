@@ -171,6 +171,7 @@ class LanguageSettingsFragment : Fragment() {
                     ),
                 )
             }
+
             "Swedish" -> {
                 list.add(
                     SwitchItem(
@@ -196,6 +197,7 @@ class LanguageSettingsFragment : Fragment() {
                     ),
                 )
             }
+
             "Spanish" -> {
                 list.add(
                     SwitchItem(
