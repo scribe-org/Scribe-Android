@@ -33,7 +33,7 @@ class AboutFragment : ScribeFragment("About") {
         callback.isEnabled = true
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
         (requireActivity() as MainActivity).setActionBarVisibility(false)
-        (requireActivity() as MainActivity).setActionBarButtonInvisible()
+        (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
         return binding.root
     }
 

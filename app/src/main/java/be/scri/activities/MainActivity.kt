@@ -64,20 +64,20 @@ class MainActivity : AppCompatActivity() {
                         0 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_launcher_name)
-                            setActionBarButtonInvisible()
+                            setActionBarButtonVisibility(false)
                             setActionBarVisibility(false)
                         }
 
                         1 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_settings_title)
-                            setActionBarButtonInvisible()
+                            setActionBarButtonVisibility(false)
                             setActionBarVisibility(false)
                         }
 
                         2 -> {
                             binding.fragmentContainer.visibility = View.GONE
-                            setActionBarButtonInvisible()
+                            setActionBarButtonVisibility(false)
                             setActionBarTitle(R.string.app_about_title)
                             setActionBarVisibility(false)
                         }
@@ -129,12 +129,12 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.customView?.findViewById<TextView>(R.id.name)?.text = getString(title)
     }
 
-    fun setActionBarButtonVisible() {
-        supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.VISIBLE
-    }
-
-    fun setActionBarButtonInvisible() {
-        supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.GONE
+    fun setActionBarButtonVisibility(visible: Boolean) {
+        if (visible) {
+            supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.VISIBLE
+        } else {
+            supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.GONE
+        }
     }
 
     fun setActionBarButtonFunction(

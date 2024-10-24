@@ -27,7 +27,7 @@ class ThirdPartyFragment : Fragment() {
             }
         (requireActivity() as MainActivity).setActionBarButtonFunction(2, R.string.app_about_title)
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_privacy_policy)
-        (requireActivity() as MainActivity).setActionBarButtonVisible()
+        (requireActivity() as MainActivity).setActionBarButtonVisibility(true)
         (requireActivity() as MainActivity).setActionBarVisibility(true)
         (requireActivity() as MainActivity)
             .supportActionBar
@@ -52,7 +52,7 @@ class ThirdPartyFragment : Fragment() {
                     val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
                     val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
                     (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
-                    (requireActivity() as MainActivity).setActionBarButtonInvisible()
+                    (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
                     (requireActivity() as MainActivity).setActionBarVisibility(false)
 
                     if (viewpager.currentItem == 2) {

@@ -85,10 +85,10 @@ class LanguageSettingsFragment : Fragment() {
         val titleInt = getLanguageStringFromi18n(language)
         (requireActivity() as MainActivity).setActionBarTitle(titleInt)
         (requireActivity() as MainActivity).showFragmentContainer()
-        (requireActivity() as MainActivity).setActionBarButtonVisible()
+        (requireActivity() as MainActivity).setActionBarButtonVisibility(true)
         (requireActivity() as MainActivity).setActionBarButtonFunction(3, R.string.app_settings_title)
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            (requireActivity() as MainActivity).setActionBarButtonInvisible()
+            (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
             parentFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container, SettingsFragment())

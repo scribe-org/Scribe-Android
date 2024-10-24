@@ -37,7 +37,7 @@ class MainFragment : ScribeFragment("Main") {
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 getParentFragmentManager().popBackStack()
             }
-        (requireActivity() as MainActivity).setActionBarButtonInvisible()
+        (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
         callback.isEnabled = true
         return binding.root
     }

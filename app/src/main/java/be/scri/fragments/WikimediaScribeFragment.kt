@@ -26,7 +26,7 @@ class WikimediaScribeFragment : Fragment() {
                 (requireActivity() as MainActivity).setActionBarVisibility(false)
             }
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_community_wikimedia)
-        (requireActivity() as MainActivity).setActionBarButtonVisible()
+        (requireActivity() as MainActivity).setActionBarButtonVisibility(true)
         (requireActivity() as MainActivity).setActionBarButtonFunction(2, R.string.app_about_title)
         (requireActivity() as MainActivity).setActionBarVisibility(true)
         (requireActivity() as MainActivity)
@@ -51,7 +51,7 @@ class WikimediaScribeFragment : Fragment() {
                     val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
                     val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
                     (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
-                    (requireActivity() as MainActivity).setActionBarButtonInvisible()
+                    (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
                     (requireActivity() as MainActivity).setActionBarVisibility(false)
                     if (viewpager.currentItem == 2) {
                         viewpager.setCurrentItem(2, true)

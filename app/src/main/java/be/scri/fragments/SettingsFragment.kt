@@ -43,7 +43,7 @@ class SettingsFragment : ScribeFragment("Settings") {
             }
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_settings_title)
         (requireActivity() as MainActivity).setActionBarVisibility(false)
-        (requireActivity() as MainActivity).setActionBarButtonInvisible()
+        (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
         callback.isEnabled = true
         (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_settings_title)
         return binding.root
