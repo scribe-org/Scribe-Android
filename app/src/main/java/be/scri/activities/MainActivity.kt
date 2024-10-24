@@ -1,6 +1,5 @@
 package be.scri.activities
 
-import android.app.UiModeManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -66,21 +65,21 @@ class MainActivity : AppCompatActivity() {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_launcher_name)
                             setActionBarButtonInvisible()
-                            unsetActionBarLayoutMargin()
+                            setActionBarVisibility(false)
                         }
 
                         1 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_settings_title)
                             setActionBarButtonInvisible()
-                            unsetActionBarLayoutMargin()
+                            setActionBarVisibility(false)
                         }
 
                         2 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarButtonInvisible()
                             setActionBarTitle(R.string.app_about_title)
-                            unsetActionBarLayoutMargin()
+                            setActionBarVisibility(false)
                         }
 
                         else -> {
@@ -151,25 +150,22 @@ class MainActivity : AppCompatActivity() {
                 viewpager.setCurrentItem(page, true)
             }
             frameLayout.visibility = View.GONE
-            unsetActionBarLayoutMargin()
+            setActionBarVisibility(false)
             setActionBarTitle(title)
             button.visibility = View.GONE
         }
     }
 
-    fun setActionBarLayoutMargin() {
+    fun setActionBarVisibility(shouldShowOnScreen: Boolean) {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
-        params.topMargin = -50
-        params.bottomMargin = 30
-        textView.layoutParams = params
-    }
-
-    fun unsetActionBarLayoutMargin() {
-        val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
-        val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
-        params.topMargin = 50
-        params.bottomMargin = 0
+        if (shouldShowOnScreen) {
+            params.topMargin = 50
+            params.bottomMargin = 0
+        } else {
+            params.topMargin = -50
+            params.bottomMargin = 30
+        }
         textView.layoutParams = params
     }
 

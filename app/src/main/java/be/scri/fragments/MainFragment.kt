@@ -31,7 +31,7 @@ class MainFragment : ScribeFragment("Main") {
         binding.cardView.setOnClickListener {
             openKeyboardSettings()
         }
-        (requireActivity() as MainActivity).setActionBarLayoutMargin(false)
+        (requireActivity() as MainActivity).setActionBarVisibility(false)
         applyUserDarkModePreference()
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
