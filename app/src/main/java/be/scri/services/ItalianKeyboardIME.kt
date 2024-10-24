@@ -85,6 +85,12 @@ class ItalianKeyboardIME : SimpleKeyboardIME("Italian") {
             }
         }
 
+        lastWord = getLastWordBeforeCursor()
+        Log.d("Debug", "$lastWord")
+        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        Log.d("Debug", "$autosuggestEmojis")
+        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }
