@@ -7,7 +7,6 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.MyKeyboard
-import be.scri.helpers.MyKeyboard.Companion.KEYCODE_ENTER
 import be.scri.views.MyKeyboardView
 
 class EnglishKeyboardIME : SimpleKeyboardIME("English") {
@@ -68,7 +67,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
                 super.handleKeyboardLetters(keyboardMode, keyboardView)
                 keyboardView!!.invalidateAllKeys()
             }
-            KEYCODE_ENTER -> {
+            MyKeyboard.KEYCODE_ENTER -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
                     handleKeycodeEnter(binding = null, false)
                 } else {
