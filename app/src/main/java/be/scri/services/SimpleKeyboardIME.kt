@@ -22,6 +22,7 @@ import android.widget.Button
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
+import be.scri.helpers.DatabaseHelper
 import be.scri.helpers.MyKeyboard
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
@@ -60,11 +61,15 @@ abstract class SimpleKeyboardIME(
     private var emojiBtnTablet2: Button? = null
     private var emojiSpaceTablet2: View? = null
     private var emojiBtnTablet3: Button? = null
+    private lateinit var dbHelper: DatabaseHelper
+    lateinit var emojiKeywords: HashMap<String, MutableList<String>>
+    var isAutoSuggestEnabled: Boolean = false
+    var lastWord: String? = null
+    var autosuggestEmojis: MutableList<String>? = null
     //    abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     protected var currentState: ScribeState = ScribeState.IDLE
     protected lateinit var keyboardBinding: KeyboardViewKeyboardBinding
-    private var isAutoSuggestEnabled: Boolean = false
 
     enum class ScribeState {
         IDLE,
@@ -137,6 +142,7 @@ abstract class SimpleKeyboardIME(
                 setupIdleView()
                 initializeEmojiButtons()
                 updateButtonVisibility(isAutoSuggestEnabled)
+                updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
             }
 
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
@@ -399,9 +405,27 @@ abstract class SimpleKeyboardIME(
                 }
             }
 
+        val languageAlias = getLanguageAlias(language)
+        dbHelper = DatabaseHelper(this)
+        dbHelper.loadDatabase(languageAlias)
+        emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
+
         keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
     }
+
+    private fun getLanguageAlias(language: String): String =
+        when (language) {
+            "English" -> "EN"
+            "French" -> "FR"
+            "German" -> "DE"
+            "Italian" -> "IT"
+            "Portuguese" -> "PT"
+            "Russian" -> "RU"
+            "Spanish" -> "ES"
+            "Swedish" -> "SV"
+            else -> ""
+        }
 
     fun updateShiftKeyState() {
         if (keyboardMode == keyboardLetters) {
