@@ -477,19 +477,14 @@ class MyKeyboardView
             }
         }
 
-        private fun adjustCase(label: CharSequence): CharSequence? {
-            var newLabel: CharSequence? = label
-            if (
-                newLabel != null &&
-                newLabel.isNotEmpty() &&
-                mKeyboard!!.mShiftState > SHIFT_OFF &&
-                newLabel.length < 3 &&
-                Character.isLowerCase(newLabel[0])
-            ) {
-                newLabel = newLabel.toString().uppercase(Locale.getDefault())
-            }
-            return newLabel
-        }
+        private fun adjustCase(label: CharSequence?): CharSequence? =
+            label?.takeIf { it.length in 1..2 }?.let {
+                if (mKeyboard?.mShiftState?.let { state -> state > SHIFT_OFF } == true) {
+                    label.toString().uppercase(Locale.getDefault())
+                } else {
+                    label
+                }
+            } ?: label
 
         public override fun onMeasure(
             widthMeasureSpec: Int,
@@ -546,10 +541,10 @@ class MyKeyboardView
             val keyMargin = 8
             val shadowOffset = 3
             if (mBuffer == null || mKeyboardChanged) {
-                if (mBuffer == null || mKeyboardChanged && (mBuffer!!.width != width || mBuffer!!.height != height)) {
+                if (mBuffer?.let { buffer -> buffer.width != width || buffer.height != height } != false) {
                     // Make sure our bitmap is at least 1x1
-                    val width = Math.max(1, width)
-                    val height = Math.max(1, height)
+                    val width = 1.coerceAtLeast(width)
+                    val height = 1.coerceAtLeast(height)
                     mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
                     mCanvas = Canvas(mBuffer!!)
                 }
@@ -778,17 +773,17 @@ class MyKeyboardView
 
                 if (mCurrentKeyIndex != NOT_A_KEY && keys.size > mCurrentKeyIndex) {
                     val newKey = keys[mCurrentKeyIndex]
-
                     val code = newKey.code
-                    if (
-                        code == KEYCODE_SHIFT ||
-                        code == KEYCODE_MODE_CHANGE ||
-                        code == KEYCODE_DELETE ||
-                        code == KEYCODE_ENTER ||
-                        code == KEYCODE_SPACE
-                    ) {
-                        newKey.pressed = true
-                    }
+                    val pressedKeys =
+                        listOf(
+                            KEYCODE_SHIFT,
+                            KEYCODE_MODE_CHANGE,
+                            KEYCODE_DELETE,
+                            KEYCODE_ENTER,
+                            KEYCODE_SPACE,
+                        )
+
+                    newKey.pressed = code in pressedKeys
 
                     invalidateKey(mCurrentKeyIndex)
                     sendAccessibilityEventForUnicodeCharacter(AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED, code)
