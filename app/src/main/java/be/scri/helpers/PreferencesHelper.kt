@@ -1,8 +1,11 @@
 package be.scri.helpers
 
+import android.app.UiModeManager
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
+import androidx.appcompat.app.AppCompatDelegate
 import be.scri.extensions.config
 
 class PreferencesHelper {
@@ -95,6 +98,18 @@ class PreferencesHelper {
             val editor = sharedPref.edit()
             editor.putBoolean("dark_mode", darkMode)
             editor.apply()
+        }
+
+        fun getUserDarkModePreference(context: Context): Int {
+            val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+            val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
+            val isSystemDarkTheme = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
+            val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
+            return if (isUserDarkMode) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
         }
     }
 }

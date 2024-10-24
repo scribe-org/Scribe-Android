@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.adapters.ViewPagerAdapter
 import be.scri.databinding.ActivityMainBinding
+import be.scri.helpers.PreferencesHelper
 import be.scri.services.EnglishKeyboardIME
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         setActionBarTitle(R.string.app_launcher_name)
         val mButton = supportActionBar?.customView?.findViewById<Button>(R.id.button)
         val mImage = getDrawable(R.drawable.chevron)
-        applyUserDarkModePreference(this)
+        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
         mButton?.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
         mButton?.compoundDrawablePadding = 2
         mButton?.visibility = View.GONE
@@ -170,24 +171,6 @@ class MainActivity : AppCompatActivity() {
         params.topMargin = 50
         params.bottomMargin = 0
         textView.layoutParams = params
-    }
-
-    private fun applyUserDarkModePreference(context: Context) {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isSystemDarkTheme = isDarkMode(context)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
-        AppCompatDelegate.setDefaultNightMode(
-            if (isUserDarkMode) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            },
-        )
-    }
-
-    fun isDarkMode(context: Context): Boolean {
-        val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
-        return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
     }
 
     fun showHint(
