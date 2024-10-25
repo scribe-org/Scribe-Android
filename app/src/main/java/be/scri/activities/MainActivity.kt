@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         textView.layoutParams = params
     }
 
-    private fun applyUserDarkModePreference(context: Context) {
+    fun applyUserDarkModePreference(context: Context) {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val isSystemDarkTheme = isDarkMode(context)
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
