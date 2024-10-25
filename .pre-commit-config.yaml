@@ -3,19 +3,30 @@ repos:
       rev: v4.5.0
       hooks:
           - id: trailing-whitespace
+            files: \.kt$
           - id: end-of-file-fixer
+            files: \.kt$
           - id: check-yaml
 
     - repo: local
       hooks:
-          - id: ktlint
-            name: ktlint
-            entry: ./gradlew lintKotlin
+          - id: formatKotlin
+            name: formatKotlin
+            entry: sh -c './gradlew formatKotlin'
             language: system
             types: [kotlin]
+            files: \.kt$
+
+          - id: ktlint
+            name: ktlint
+            entry: sh -c './gradlew lintKotlin'
+            language: system
+            types: [kotlin]
+            files: \.kt$
 
           - id: detekt
             name: detekt
-            entry: ./gradlew detekt
+            entry: sh -c './gradlew detekt'
             language: system
             types: [kotlin]
+            files: \.kt$
