@@ -9,17 +9,17 @@ repos:
           - id: check-yaml
 
     - repo: local
-      hooks:        
+      hooks:
           - id: formatKotlin
             name: formatKotlin
-            entry: sh -c './gradlew formatKotlin' 
+            entry: sh -c './gradlew formatKotlin'
             language: system
             types: [kotlin]
             files: \.kt$
 
           - id: ktlint
             name: ktlint
-            entry: sh -c './gradlew lintKotlin' 
+            entry: sh -c './gradlew lintKotlin'
             language: system
             types: [kotlin]
             files: \.kt$
@@ -30,6 +30,3 @@ repos:
             language: system
             types: [kotlin]
             files: \.kt$
-            
-
-
