@@ -30,6 +30,7 @@ import be.scri.views.MyKeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
+@Suppress("TooManyFunctions")
 abstract class SimpleKeyboardIME(
     var language: String,
 ) : InputMethodService(),
