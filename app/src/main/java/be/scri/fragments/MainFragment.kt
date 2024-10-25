@@ -11,12 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.Fragment
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentMainBinding
 
-class MainFragment : Fragment() {
+class MainFragment : ScribeFragment("Main") {
     private var _binding: FragmentMainBinding? = null
     val binding get() = _binding!!
 
@@ -32,13 +31,13 @@ class MainFragment : Fragment() {
         binding.cardView.setOnClickListener {
             openKeyboardSettings()
         }
-        (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
+        (requireActivity() as MainActivity).setActionBarVisibility(false)
         applyUserDarkModePreference()
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 getParentFragmentManager().popBackStack()
             }
-        (requireActivity() as MainActivity).setActionBarButtonInvisible()
+        (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
         callback.isEnabled = true
         return binding.root
     }
@@ -86,10 +85,5 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).showHint("hint_shown_main", R.string.app_installation_app_hint)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (activity as MainActivity).hideHint()
     }
 }

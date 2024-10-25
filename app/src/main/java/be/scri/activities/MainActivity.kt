@@ -1,6 +1,5 @@
 package be.scri.activities
 
-import android.app.UiModeManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.adapters.ViewPagerAdapter
 import be.scri.databinding.ActivityMainBinding
+import be.scri.helpers.PreferencesHelper
 import be.scri.services.EnglishKeyboardIME
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         setActionBarTitle(R.string.app_launcher_name)
         val mButton = supportActionBar?.customView?.findViewById<Button>(R.id.button)
         val mImage = getDrawable(R.drawable.chevron)
-        applyUserDarkModePreference(this)
+        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
         mButton?.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
         mButton?.compoundDrawablePadding = 2
         mButton?.visibility = View.GONE
@@ -64,22 +64,22 @@ class MainActivity : AppCompatActivity() {
                         0 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_launcher_name)
-                            setActionBarButtonInvisible()
-                            unsetActionBarLayoutMargin()
+                            setActionBarButtonVisibility(false)
+                            setActionBarVisibility(false)
                         }
 
                         1 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_settings_title)
-                            setActionBarButtonInvisible()
-                            unsetActionBarLayoutMargin()
+                            setActionBarButtonVisibility(false)
+                            setActionBarVisibility(false)
                         }
 
                         2 -> {
                             binding.fragmentContainer.visibility = View.GONE
-                            setActionBarButtonInvisible()
+                            setActionBarButtonVisibility(false)
                             setActionBarTitle(R.string.app_about_title)
-                            unsetActionBarLayoutMargin()
+                            setActionBarVisibility(false)
                         }
 
                         else -> {
@@ -129,12 +129,12 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.customView?.findViewById<TextView>(R.id.name)?.text = getString(title)
     }
 
-    fun setActionBarButtonVisible() {
-        supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.VISIBLE
-    }
-
-    fun setActionBarButtonInvisible() {
-        supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.GONE
+    fun setActionBarButtonVisibility(visible: Boolean) {
+        if (visible) {
+            supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.VISIBLE
+        } else {
+            supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.GONE
+        }
     }
 
     fun setActionBarButtonFunction(
@@ -150,44 +150,23 @@ class MainActivity : AppCompatActivity() {
                 viewpager.setCurrentItem(page, true)
             }
             frameLayout.visibility = View.GONE
-            unsetActionBarLayoutMargin()
+            setActionBarVisibility(false)
             setActionBarTitle(title)
             button.visibility = View.GONE
         }
     }
 
-    fun setActionBarLayoutMargin() {
+    fun setActionBarVisibility(shouldShowOnScreen: Boolean) {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
-        params.topMargin = -50
-        params.bottomMargin = 30
+        if (shouldShowOnScreen) {
+            params.topMargin = -50
+            params.bottomMargin = 30
+        } else {
+            params.topMargin = 50
+            params.bottomMargin = 0
+        }
         textView.layoutParams = params
-    }
-
-    fun unsetActionBarLayoutMargin() {
-        val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
-        val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
-        params.topMargin = 50
-        params.bottomMargin = 0
-        textView.layoutParams = params
-    }
-
-    private fun applyUserDarkModePreference(context: Context) {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isSystemDarkTheme = isDarkMode(context)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
-        AppCompatDelegate.setDefaultNightMode(
-            if (isUserDarkMode) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            },
-        )
-    }
-
-    fun isDarkMode(context: Context): Boolean {
-        val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
-        return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
     }
 
     fun showHint(
