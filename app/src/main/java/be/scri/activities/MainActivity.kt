@@ -160,11 +160,11 @@ class MainActivity : AppCompatActivity() {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
         if (shouldShowOnScreen) {
-            params.topMargin = 50
-            params.bottomMargin = 0
-        } else {
             params.topMargin = -50
             params.bottomMargin = 30
+        } else {
+            params.topMargin = 50
+            params.bottomMargin = 0
         }
         textView.layoutParams = params
     }
