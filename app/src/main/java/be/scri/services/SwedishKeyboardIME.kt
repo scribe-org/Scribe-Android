@@ -31,6 +31,20 @@ class SwedishKeyboardIME : SimpleKeyboardIME("Swedish") {
     override var switchToLetters = false
     override var hasTextBeforeCursor = false
 
+    override fun onCreateInputView(): View {
+        binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
+        val keyboardHolder = binding.root
+        Log.i("MY-TAG", "From Swedish Keyboard IME")
+        keyboardView = binding.keyboardView
+        keyboardView!!.setKeyboard(keyboard!!)
+        setupCommandBarTheme(binding)
+        keyboardView!!.setKeyboardHolder()
+        keyboardView!!.mOnKeyboardActionListener = this
+        initializeEmojiButtons()
+        updateUI()
+        return keyboardHolder
+    }
+
     override fun onKey(code: Int) {
         val inputConnection = currentInputConnection
         if (keyboard == null || inputConnection == null) {
@@ -76,23 +90,15 @@ class SwedishKeyboardIME : SimpleKeyboardIME("Swedish") {
             }
         }
 
+        lastWord = getLastWordBeforeCursor()
+        Log.d("Debug", "$lastWord")
+        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        Log.d("Debug", "$autosuggestEmojis")
+        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }
-    }
-
-    override fun onCreateInputView(): View {
-        binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
-        val keyboardHolder = binding.root
-        Log.i("MY-TAG", "From Swedish Keyboard IME")
-        keyboardView = binding.keyboardView
-        keyboardView!!.setKeyboard(keyboard!!)
-        setupCommandBarTheme(binding)
-        keyboardView!!.setKeyboardHolder()
-        keyboardView!!.mOnKeyboardActionListener = this
-        initializeEmojiButtons()
-        updateUI()
-        return keyboardHolder
     }
 
     override fun onCreate() {
