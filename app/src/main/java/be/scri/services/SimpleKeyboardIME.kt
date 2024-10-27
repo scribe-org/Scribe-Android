@@ -590,8 +590,7 @@ abstract class SimpleKeyboardIME(
             if (TextUtils.isEmpty(selectedText)) {
                 if (isEmoji(wordBeforeCursor)) {
                     inputConnection.deleteSurroundingText(2, 0)
-                }
-                else {
+                } else {
                     inputConnection.deleteSurroundingText(1, 0)
                 }
             } else {
