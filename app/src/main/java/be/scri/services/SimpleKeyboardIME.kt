@@ -321,15 +321,15 @@ abstract class SimpleKeyboardIME(
         }
     }
 
-    fun getLastWordBeforeCursor(): String? {
+    fun getText(): String? {
         val inputConnection = currentInputConnection ?: return null
+        return inputConnection.getTextBeforeCursor(20, 0)?.toString()
+    }
 
-        val textBeforeCursor = inputConnection.getTextBeforeCursor(50, 0) ?: return null
-
+    fun getLastWordBeforeCursor(): String? {
+        val textBeforeCursor = getText() ?: return null
         val trimmedText = textBeforeCursor.trim().toString()
-
         val lastWord = trimmedText.split("\\s+".toRegex()).lastOrNull()
-
         return lastWord
     }
 
@@ -574,6 +574,7 @@ abstract class SimpleKeyboardIME(
         currentState: Boolean? = false,
         binding: KeyboardViewKeyboardBinding? = null,
     ) {
+        val wordBeforeCursor = getText()
         val inputConnection = currentInputConnection
         if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR) {
             keyboard!!.mShiftState = SHIFT_OFF
@@ -587,11 +588,25 @@ abstract class SimpleKeyboardIME(
         } else {
             val selectedText = inputConnection.getSelectedText(0)
             if (TextUtils.isEmpty(selectedText)) {
-                inputConnection.deleteSurroundingText(1, 0)
+                if (isEmoji(wordBeforeCursor)) {
+                    inputConnection.deleteSurroundingText(2, 0)
+                } else {
+                    inputConnection.deleteSurroundingText(1, 0)
+                }
             } else {
                 inputConnection.commitText("", 1)
             }
         }
+    }
+
+    private fun isEmoji(word: String?): Boolean {
+        if (word.isNullOrEmpty() || word.length < 2) {
+            return false
+        }
+
+        val lastTwoChars = word.substring(word.length - 2)
+        val emojiRegex = Regex("[\\uD83C\\uDF00-\\uD83E\\uDDFF]|[\\u2600-\\u26FF]|[\\u2700-\\u27BF]")
+        return emojiRegex.containsMatchIn(lastTwoChars)
     }
 
     fun handleElseCondition(
