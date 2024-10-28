@@ -37,3 +37,4 @@ jobs:
                   min-coverage-changed-files: 60
                   title: Code Coverage
                   update-comment: true
+                  debug-mode: true
