@@ -32,9 +32,9 @@ complexity:
 
 exceptions:
     SwallowedException:
-        active: false
+        active: true
     InstanceOfCheckForException:
-        active: false
+        active: true
 
 empty-blocks:
     EmptyCatchBlock:
