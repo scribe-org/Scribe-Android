@@ -6,7 +6,7 @@ style:
     LoopWithTooManyJumpStatements:
         active: false
     WildcardImport:
-        active: false
+        active: true
     ReturnCount:
         active: false
     UnusedPrivateProperty:
@@ -24,7 +24,7 @@ complexity:
     ComplexCondition:
         active: true
     LongParameterList:
-        active: false
+        active: true
     LongMethod:
         active: true
     CyclomaticComplexMethod:
