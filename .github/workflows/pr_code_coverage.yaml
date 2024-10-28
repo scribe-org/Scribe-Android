@@ -9,6 +9,8 @@ jobs:
     code-coverage:
         runs-on: ubuntu-latest
         name: Generate code coverage report
+        permissions:
+            pull-requests: write
 
         steps:
             - name: Checkout repository
