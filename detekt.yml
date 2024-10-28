@@ -40,7 +40,7 @@ empty-blocks:
     EmptyCatchBlock:
         active: true
     EmptyFunctionBlock:
-        active: false
+        active: true
 
 performance:
     SpreadOperator:
