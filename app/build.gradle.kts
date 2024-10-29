@@ -17,6 +17,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
     id("de.mannodermaus.android-junit5") version "1.11.2.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("jacoco")
 }
 
@@ -53,6 +54,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
     }
 
     signingConfigs {
@@ -167,6 +169,16 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("com.google.android.play:core:1.10.0")
+
+    val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.activity:activity-compose")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testImplementation("io.mockk:mockk:$mockkVersion")
