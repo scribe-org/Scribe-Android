@@ -69,7 +69,7 @@ abstract class SimpleKeyboardIME(
     var isAutoSuggestEnabled: Boolean = false
     var lastWord: String? = null
     var autosuggestEmojis: MutableList<String>? = null
-    //    abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
+    // abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     protected var currentState: ScribeState = ScribeState.IDLE
     protected lateinit var keyboardBinding: KeyboardViewKeyboardBinding

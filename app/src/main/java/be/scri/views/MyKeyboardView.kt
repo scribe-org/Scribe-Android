@@ -222,7 +222,7 @@ class MyKeyboardView
             private const val MSG_LONGPRESS = 3
             private const val DELAY_AFTER_PREVIEW = 100
             private const val DEBOUNCE_TIME = 70
-            private const val REPEAT_INTERVAL = 50  // ~20 keys per second
+            private const val REPEAT_INTERVAL = 50 // ~20 keys per second
             private const val REPEAT_START_DELAY = 400
             private const val DOUBLE_TAP_DELAY = 300L
             private const val NUMBER_OF_KEYS = 12
@@ -448,7 +448,7 @@ class MyKeyboardView
             // Not really necessary to do every time, but will free up views.
             // Switching to a different keyboard should abort any pending keys so that the key up
             // doesn't get delivered to the old or new keyboard.
-            mAbortKey = true  // until the next ACTION_DOWN
+            mAbortKey = true // until the next ACTION_DOWN
         }
 
         /** Sets the top row above the keyboard containing Scribe command buttons **/
@@ -543,7 +543,7 @@ class MyKeyboardView
             }
 
             mProximityThreshold = (dimensionSum * PROXIMITY_SCALING_FACTOR / length).toInt()
-            mProximityThreshold *= mProximityThreshold  // square it
+            mProximityThreshold *= mProximityThreshold // square it
         }
 
         public override fun onDraw(canvas: Canvas) {
@@ -885,8 +885,8 @@ class MyKeyboardView
 
             mHandler!!.removeMessages(MSG_REMOVE_PREVIEW)
             getLocationInWindow(mCoordinates)
-            mCoordinates[0] += mMiniKeyboardOffsetX  // offset may be zero
-            mCoordinates[1] += mMiniKeyboardOffsetY  // offset may be zero
+            mCoordinates[0] += mMiniKeyboardOffsetX // offset may be zero
+            mCoordinates[1] += mMiniKeyboardOffsetY // offset may be zero
 
             // Set the preview background state.
             mPreviewText!!.background.state =
@@ -1282,7 +1282,7 @@ class MyKeyboardView
 
                         val msg = mHandler!!.obtainMessage(MSG_REPEAT)
                         mHandler!!.sendMessageDelayed(msg, REPEAT_START_DELAY.toLong())
-                        // if the user long presses Space, move the cursor after swipine left/right.
+                        // If the user long presses Space, move the cursor after swipine left/right.
                         if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
                             mLastSpaceMoveX = -1
                         } else {
