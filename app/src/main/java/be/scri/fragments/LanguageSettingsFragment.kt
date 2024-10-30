@@ -29,7 +29,7 @@ class LanguageSettingsFragment : Fragment() {
         val mainActivity = requireActivity() as MainActivity
         mainActivity.setActionBarButtonFunction(
             ACTION_BAR_BUTTON_INDEX,
-            R.string.app_settings_title
+            R.string.app_settings_title,
         )
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -95,7 +95,7 @@ class LanguageSettingsFragment : Fragment() {
         val titleResId = R.string.app_settings_title
         mainActivity.setActionBarButtonFunction(
             actionBarButtonIndex,
-            titleResId
+            titleResId,
         )
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             (requireActivity() as MainActivity).setActionBarButtonVisibility(false)

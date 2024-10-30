@@ -61,6 +61,7 @@ abstract class SimpleKeyboardIME(
     private var emojiBtnTablet2: Button? = null
     private var emojiSpaceTablet2: View? = null
     private var emojiBtnTablet3: Button? = null
+
     // how quickly do we have to doubletap shift to enable permanent caps lock
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
     private lateinit var dbHelper: DatabaseHelper

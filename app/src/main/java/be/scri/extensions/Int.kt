@@ -11,9 +11,12 @@ private const val COEFFICIENT_SUM = 1000
 private const val Y_THRESHOLD = 149
 
 fun Int.getContrastColor(): Int {
-    val y = (RED_COEFFICIENT * Color.red(this) +
-        GREEN_COEFFICIENT * Color.green(this) +
-        BLUE_COEFFICIENT * Color.blue(this)) / COEFFICIENT_SUM
+    val y =
+        (
+            RED_COEFFICIENT * Color.red(this) +
+                GREEN_COEFFICIENT * Color.green(this) +
+                BLUE_COEFFICIENT * Color.blue(this)
+        ) / COEFFICIENT_SUM
     return if (y >= Y_THRESHOLD && this != Color.BLACK) DARK_GREY else Color.WHITE
 }
 
