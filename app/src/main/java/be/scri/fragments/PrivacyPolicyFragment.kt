@@ -43,7 +43,7 @@ class PrivacyPolicyFragment : Fragment() {
 
         textView?.let {
             val params = it.layoutParams as ViewGroup.MarginLayoutParams
-            params.topMargin = -50
+            params.topMargin = NEGATIVE_TOP_MARGIN
             it.layoutParams = params
         }
 
@@ -83,5 +83,9 @@ class PrivacyPolicyFragment : Fragment() {
             },
         )
         return binding.root
+    }
+
+    companion object {
+        private const val NEGATIVE_TOP_MARGIN = -50
     }
 }

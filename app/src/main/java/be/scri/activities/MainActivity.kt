@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setCustomView(R.layout.custom_action_bar_layout)
         supportActionBar?.elevation = 0F
         val layoutParams = supportActionBar?.customView?.layoutParams
-        layoutParams?.height = 1000
+        layoutParams?.height = DEFAULT_HEIGHT
         supportActionBar?.customView?.layoutParams = layoutParams
         setActionBarTitle(R.string.app_launcher_name)
         val mButton = supportActionBar?.customView?.findViewById<Button>(R.id.button)
@@ -160,11 +160,11 @@ class MainActivity : AppCompatActivity() {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
         if (shouldShowOnScreen) {
-            params.topMargin = -50
-            params.bottomMargin = 30
+            params.topMargin = ACTION_BAR_TOP_MARGIN_VISIBLE
+            params.bottomMargin = ACTION_BAR_BOTTOM_MARGIN_VISIBLE
         } else {
-            params.topMargin = 50
-            params.bottomMargin = 0
+            params.topMargin = ACTION_BAR_TOP_MARGIN_HIDDEN
+            params.bottomMargin = ACTION_BAR_BOTTOM_MARGIN_HIDDEN
         }
         textView.layoutParams = params
     }
@@ -214,5 +214,13 @@ class MainActivity : AppCompatActivity() {
     fun hideHint() {
         val hintLayout = findViewById<View>(R.id.hint_layout)
         hintLayout.visibility = View.GONE
+    }
+
+    companion object {
+        private const val DEFAULT_HEIGHT = 1000
+        private const val ACTION_BAR_TOP_MARGIN_VISIBLE = -50
+        private const val ACTION_BAR_TOP_MARGIN_HIDDEN = 50
+        private const val ACTION_BAR_BOTTOM_MARGIN_VISIBLE = 30
+        private const val ACTION_BAR_BOTTOM_MARGIN_HIDDEN = 0
     }
 }

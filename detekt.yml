@@ -1,6 +1,6 @@
 style:
     MagicNumber:
-        active: false
+        active: true
     MaxLineLength:
         active: true
     LoopWithTooManyJumpStatements:

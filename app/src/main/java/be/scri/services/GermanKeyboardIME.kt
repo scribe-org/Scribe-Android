@@ -21,7 +21,6 @@ class GermanKeyboardIME : SimpleKeyboardIME("German") {
     override var keyboardView: MyKeyboardView? = null
     override var keyboard: MyKeyboard? = null
     override var enterKeyType = IME_ACTION_NONE
-    override var shiftPermToggleSpeed = 500
     override val keyboardLetters = 0
     override val keyboardSymbols = 1
     override val keyboardSymbolShift = 2
