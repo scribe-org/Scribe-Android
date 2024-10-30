@@ -167,59 +167,56 @@ To maintain consistency and clarity in the Scribe Android codebase, we recommend
 
 #### 1. Project Structure for Unit Tests
 
-- **Location**: Place all unit tests in the `src/test/java` directory, mirroring the structure of the `src/main/java` directory. For new classes or features, ensure their corresponding test classes follow the same package structure.
-- **Class Files**: Each class in `src/main/java` should have a dedicated test file in `src/test/java`, named by appending `Test` to the class name (e.g., `UserManager` → `UserManagerTest`).
-- **New Classes for Testing**: When a new utility or helper class is needed specifically for testing, place it under `src/test/java/utils` or `src/test/java/helpers`.
+-   **Location**: Place all unit tests in the `src/test/java` directory to mirror the structure of the `src/main/java` directory. For new classes or features, ensure their corresponding test classes follow the same package structure.
+-   **Class Files**: Each class in `src/main/java` should have a dedicated test file in `src/test/java`, named by appending `Test` to the class name (e.g., `UserManager` → `UserManagerTest`).
+-   **New Classes for Testing**: When a new utility or helper class is needed specifically for testing, place it under `src/test/java/utils` or `src/test/java/helpers`.
 
 #### 2. Naming Conventions for Tests
 
-- **Test Methods**: Use descriptive names indicating expected behavior. Follow the format:
+-   **Test Methods**: Use descriptive names indicating expected behavior. Follow the format:
 
-  ```java
-  @Test
-  public void methodName_StateUnderTest_ExpectedBehavior() {
-      // Test code here
-  }
-  ```
-  
-  Example: `saveUser_WithValidData_SavesUserCorrectly()`.
+    ```kotlin
+    @Test
+    public void methodName_StateUnderTest_ExpectedBehavior() {
+        // Test code here
+    }
+    ```
 
-- **Descriptive Names**: Avoid generic names like `testMethod1`. Focus on what’s being tested and the expected outcome, such as `calculateTotal_WithDiscount_AppliesDiscountCorrectly`.
+    Example: `saveUser_WithValidData_SavesUserCorrectly()`.
 
 #### 3. Scope and Focus of Tests
 
-- **Single Responsibility**: Each test should cover only one behavior or scenario. For multiple behaviors, split them into separate test methods.
-- **Setup and Teardown**: Use `@Before` for initializing objects and `@After` for cleanup, ensuring tests run in isolation.
+-   **Single Responsibility**: Each test should cover only one behavior or scenario. For multiple behaviors, split them into separate test methods.
+-   **Setup and Teardown**: Use `@Before` for initializing objects and `@After` for cleanup, ensuring tests run in isolation.
 
-  ```java
-  @Before
-  public void setUp() {
-      // Initialize objects
-  }
+    ```kotlin
+    @Before
+    public void setUp() {
+        // Initialize objects
+    }
 
-  @After
-  public void tearDown() {
-      // Cleanup objects
-  }
-  ```
+    @After
+    public void tearDown() {
+        // Cleanup objects
+    }
+    ```
 
-- **Mocking**: Use mocks (e.g., Mockito) to isolate the unit under test, especially with dependencies like databases, network requests, or services.
+-   **Mocking**: Use mocks (e.g., MockK) to isolate the unit test, especially with dependencies like databases, network requests or services.
 
 #### 4. Writing Effective Tests
 
-- **AAA Pattern (Arrange, Act, Assert)**: Structure each test with three distinct parts:
-  - **Arrange**: Set up the conditions.
-  - **Act**: Execute the method under test.
-  - **Assert**: Verify the result.
+-   **AAA Pattern (Arrange, Act, Assert)**: Structure each test with three distinct parts:
 
-- **Coverage of Edge Cases**: Write tests for both typical cases and edge cases, like `null` values or invalid data.
+    -   **Arrange**: Set up the conditions.
+    -   **Act**: Execute the method under test.
+    -   **Assert**: Verify the result.
+
+-   **Coverage of Edge Cases**: Write tests for both typical cases and edge cases, like `null` values or invalid data.
 
 #### 5. Test Documentation
 
-- **Comments**: Add comments when test logic is complex or non-intuitive.
-- **Assertions**: Use descriptive assertion methods (`assertTrue`, `assertEquals`, etc.) for clarity and include failure messages for custom assertions if necessary.
-
-Following these conventions ensures consistent, readable, and reliable unit tests, enhancing the quality of the Scribe Android codebase.
+-   **Comments**: Add comments when test logic is complex or non-intuitive.
+-   **Assertions**: Use descriptive assertion methods (`assertTrue`, `assertEquals`, etc.) for clarity and include failure messages for custom assertions if necessary.
 
 # Issues and projects [`⇧`](#contents)
 
