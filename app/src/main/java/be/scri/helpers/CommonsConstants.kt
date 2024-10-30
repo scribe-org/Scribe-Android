@@ -2,7 +2,7 @@ package be.scri.helpers
 
 val DARK_GREY = 0xFF333333.toInt()
 
-// shared preferences
+// Shared preferences.
 const val PREFS_KEY = "Prefs"
 const val TEXT_COLOR = "text_color"
 const val KEY_COLOR = "key_color"

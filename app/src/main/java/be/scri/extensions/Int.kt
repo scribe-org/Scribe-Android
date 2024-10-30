@@ -30,7 +30,7 @@ fun Int.adjustAlpha(factor: Float): Int {
 
 fun ClosedRange<Int>.random() = Random().nextInt(endInclusive - start) + start
 
-// taken from https://stackoverflow.com/a/40964456/1967672
+// Taken from https://stackoverflow.com/a/40964456/1967672.
 private const val HSV_COMPONENT_COUNT = 3
 private const val DEFAULT_DARKEN_FACTOR = 8
 private const val FACTOR_DIVIDER = 100

@@ -62,7 +62,7 @@ abstract class SimpleKeyboardIME(
     private var emojiSpaceTablet2: View? = null
     private var emojiBtnTablet3: Button? = null
 
-    // how quickly do we have to doubletap shift to enable permanent caps lock
+    // How quickly do we have to doubletap shift to enable permanent caps lock.
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
@@ -630,7 +630,7 @@ abstract class SimpleKeyboardIME(
                 commandBar.text = newText
             }
         } else {
-            // Handling space key logic
+            // Handling space key logic.
             if (keyboardMode != keyboardLetters && code == MyKeyboard.KEYCODE_SPACE) {
                 binding?.commandBar?.text = " "
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text

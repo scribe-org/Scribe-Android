@@ -175,7 +175,7 @@ class MyKeyboardView
 
         private var mToolbarHolder: View? = null
 
-        // For multi-tap
+        // For multi-tap.
         private var mLastTapTime = 0L
 
         /** Whether the keyboard bitmap needs to be redrawn before it's blitted.  */
@@ -222,7 +222,7 @@ class MyKeyboardView
             private const val MSG_LONGPRESS = 3
             private const val DELAY_AFTER_PREVIEW = 100
             private const val DEBOUNCE_TIME = 70
-            private const val REPEAT_INTERVAL = 50 // ~20 keys per second
+            private const val REPEAT_INTERVAL = 50  // ~20 keys per second
             private const val REPEAT_START_DELAY = 400
             private const val DOUBLE_TAP_DELAY = 300L
             private const val NUMBER_OF_KEYS = 12
@@ -445,10 +445,10 @@ class MyKeyboardView
             invalidateAllKeys()
             computeProximityThreshold(keyboard)
             mMiniKeyboardCache.clear()
-            // Not really necessary to do every time, but will free up views
+            // Not really necessary to do every time, but will free up views.
             // Switching to a different keyboard should abort any pending keys so that the key up
-            // doesn't get delivered to the old or new keyboard
-            mAbortKey = true // Until the next ACTION_DOWN
+            // doesn't get delivered to the old or new keyboard.
+            mAbortKey = true  // until the next ACTION_DOWN
         }
 
         /** Sets the top row above the keyboard containing Scribe command buttons **/
@@ -543,7 +543,7 @@ class MyKeyboardView
             }
 
             mProximityThreshold = (dimensionSum * PROXIMITY_SCALING_FACTOR / length).toInt()
-            mProximityThreshold *= mProximityThreshold // Square it
+            mProximityThreshold *= mProximityThreshold  // square it
         }
 
         public override fun onDraw(canvas: Canvas) {
@@ -560,7 +560,7 @@ class MyKeyboardView
             val shadowOffset = SHADOW_OFFSET
             if (mBuffer == null || mKeyboardChanged) {
                 if (mBuffer?.let { buffer -> buffer.width != width || buffer.height != height } != false) {
-                    // Make sure our bitmap is at least 1x1
+                    // Make sure our bitmap is at least 1x1.
                     val width = 1.coerceAtLeast(width)
                     val height = 1.coerceAtLeast(height)
                     mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -659,7 +659,7 @@ class MyKeyboardView
                 canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
                 canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
 
-                // Switch the character to uppercase if shift is pressed
+                // Switch the character to uppercase if shift is pressed.
                 val label = adjustCase(key.label)?.toString()
 
                 if (key.focused || code == KEYCODE_ENTER) {
@@ -775,7 +775,7 @@ class MyKeyboardView
             val oldKeyIndex = mCurrentKeyIndex
             val previewPopup = mPreviewPopup
             mCurrentKeyIndex = keyIndex
-            // Release the old key and press the new key
+            // Release the old key and press the new key.
             val keys = mKeys
             if (oldKeyIndex != mCurrentKeyIndex) {
                 if (oldKeyIndex != NOT_A_KEY && keys.size > oldKeyIndex) {
@@ -808,7 +808,7 @@ class MyKeyboardView
                 }
             }
 
-            // If key changed and preview is on ...
+            // If key changed and preview is on.
             if (oldKeyIndex != mCurrentKeyIndex) {
                 if (previewPopup.isShowing) {
                     if (keyIndex == NOT_A_KEY) {
@@ -885,10 +885,10 @@ class MyKeyboardView
 
             mHandler!!.removeMessages(MSG_REMOVE_PREVIEW)
             getLocationInWindow(mCoordinates)
-            mCoordinates[0] += mMiniKeyboardOffsetX // Offset may be zero
-            mCoordinates[1] += mMiniKeyboardOffsetY // Offset may be zero
+            mCoordinates[0] += mMiniKeyboardOffsetX  // offset may be zero
+            mCoordinates[1] += mMiniKeyboardOffsetY  // offset may be zero
 
-            // Set the preview background state
+            // Set the preview background state.
             mPreviewText!!.background.state =
                 if (key.popupResId != 0) {
                     LONG_PRESSABLE_STATE_SET
@@ -899,7 +899,7 @@ class MyKeyboardView
             mPopupPreviewX += mCoordinates[0]
             mPopupPreviewY += mCoordinates[1]
 
-            // If the popup cannot be shown above the key, put it on the side
+            // If the popup cannot be shown above the key, put it on the side.
             getLocationOnScreen(mCoordinates)
             if (mPopupPreviewY + mCoordinates[1] < 0) {
                 // If the key you're pressing is on the left side of the keyboard, show the popup on
@@ -1095,8 +1095,8 @@ class MyKeyboardView
                 val xOffset = Math.max(0, x)
                 mMiniKeyboard!!.setPopupOffset(xOffset, y)
 
-                // make sure we highlight the proper key right after long pressing it,
-                // before any ACTION_MOVE event occurs
+                // Make sure we highlight the proper key right after long pressing it,
+                // before any ACTION_MOVE event occurs.
                 val miniKeyboardX =
                     if (xOffset + mMiniKeyboard!!.measuredWidth <= measuredWidth) {
                         xOffset
@@ -1138,7 +1138,7 @@ class MyKeyboardView
                 if (action == MotionEvent.ACTION_UP) {
                     ignoreTouches = false
 
-                    // fix a glitch with long pressing backspace, then clicking some letter
+                    // Fix a glitch with long pressing backspace, then clicking some letter.
                     if (mRepeatKeyIndex != NOT_A_KEY) {
                         val key = mKeys[mRepeatKeyIndex]
                         if (key.code == KEYCODE_DELETE) {
@@ -1150,7 +1150,7 @@ class MyKeyboardView
                 return true
             }
 
-            // handle moving between alternative popup characters by swiping
+            // Handle moving between alternative popup characters by swiping.
             if (mPopupKeyboard.isShowing) {
                 when (action) {
                     MotionEvent.ACTION_MOVE -> {
@@ -1226,16 +1226,16 @@ class MyKeyboardView
                 return true
             }
 
-            // Needs to be called after the gesture detector gets a turn, as it may have displayed the mini keyboard
+            // Needs to be called after the gesture detector gets a turn, as it may have displayed the mini keyboard.
             if (mMiniKeyboardOnScreen && action != MotionEvent.ACTION_CANCEL) {
                 return true
             }
 
             when (action) {
                 MotionEvent.ACTION_POINTER_DOWN -> {
-                    // if the user presses a key while still holding down the previous,
-                    // type in both chars and ignore the later gestures
-                    // can happen at fast typing, easier to reproduce by increasing LONGPRESS_TIMEOUT
+                    // If the user presses a key while still holding down the previous,
+                    // type in both chars and ignore the later gestures.
+                    // Can happen at fast typing, easier to reproduce by increasing LONGPRESS_TIMEOUT.
                     ignoreTouches = true
                     mHandler!!.removeMessages(MSG_LONGPRESS)
                     dismissPopupKeyboard()
@@ -1282,14 +1282,14 @@ class MyKeyboardView
 
                         val msg = mHandler!!.obtainMessage(MSG_REPEAT)
                         mHandler!!.sendMessageDelayed(msg, REPEAT_START_DELAY.toLong())
-                        // if the user long presses Space, move the cursor after swipine left/right
+                        // if the user long presses Space, move the cursor after swipine left/right.
                         if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
                             mLastSpaceMoveX = -1
                         } else {
                             repeatKey(true)
                         }
 
-                        // Delivering the key could have caused an abort
+                        // Delivering the key could have caused an abort.
                         if (mAbortKey) {
                             mRepeatKeyIndex = NOT_A_KEY
                             wasHandled = true
@@ -1344,9 +1344,9 @@ class MyKeyboardView
                             mLastSpaceMoveX = mLastX
                         }
                     } else if (!continueLongPress) {
-                        // Cancel old longpress
+                        // Cancel old longpress.
                         mHandler!!.removeMessages(MSG_LONGPRESS)
-                        // Start new longpress if key has changed
+                        // Start new longpress if key has changed.
                         if (keyIndex != NOT_A_KEY) {
                             val msg = mHandler!!.obtainMessage(MSG_LONGPRESS, me)
                             mHandler!!.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
@@ -1377,7 +1377,7 @@ class MyKeyboardView
                     }
                     showPreview(NOT_A_KEY)
                     Arrays.fill(mKeyIndices, NOT_A_KEY)
-                    // If we're not on a repeating key (which sends on a DOWN event)
+                    // If we're not on a repeating key (which sends on a DOWN event).
                     if (mRepeatKeyIndex == NOT_A_KEY && !mMiniKeyboardOnScreen && !mAbortKey) {
                         detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
                     }
