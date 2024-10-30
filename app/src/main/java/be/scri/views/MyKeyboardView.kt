@@ -214,8 +214,9 @@ class MyKeyboardView
         private val lightSpecialKey = Color.argb(alpha, red, green, blue)
 
         companion object {
-            private const val NOT_A_KEY = -1
+            private val LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout()
             private val LONG_PRESSABLE_STATE_SET = intArrayOf(R.attr.state_long_pressable)
+            private const val NOT_A_KEY = -1
             private const val MSG_REMOVE_PREVIEW = 1
             private const val MSG_REPEAT = 2
             private const val MSG_LONGPRESS = 3
@@ -223,7 +224,6 @@ class MyKeyboardView
             private const val DEBOUNCE_TIME = 70
             private const val REPEAT_INTERVAL = 50 // ~20 keys per second
             private const val REPEAT_START_DELAY = 400
-            private val LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout()
             private const val DOUBLE_TAP_DELAY = 300L
             private const val NUMBER_OF_KEYS = 12
             private const val FULL_ALPHA = 255
@@ -231,18 +231,18 @@ class MyKeyboardView
             private const val LIGHT_COLOR_RED_FACTOR = 0.682
             private const val LIGHT_COLOR_GREEN_FACTOR = 0.702
             private const val LIGHT_COLOR_BLUE_FACTOR = 0.745
-            const val DEFAULT_KEY_TEXT_SIZE = 18
-            const val MARGIN_ADJUSTMENT = 10
-            const val PROXIMITY_SCALING_FACTOR = 1.4f
-            const val KEY_MARGIN = 8
-            const val SHADOW_OFFSET = 3
-            const val ALPHA_ADJUSTMENT_FACTOR = 0.8f
-            const val SHADOW_ALPHA = 100
-            const val KEY_PADDING = 5
-            const val RECT_RADIUS = 15f
-            const val SHADOW_OFFSET_Y = 9f
-            const val POPUP_OFFSET_MULTIPLIER = 2.5
-            const val EXTRA_DELAY = 200L
+            private const val DEFAULT_KEY_TEXT_SIZE = 18
+            private const val MARGIN_ADJUSTMENT = 10
+            private const val PROXIMITY_SCALING_FACTOR = 1.4f
+            private const val KEY_MARGIN = 8
+            private const val SHADOW_OFFSET = 3
+            private const val ALPHA_ADJUSTMENT_FACTOR = 0.8f
+            private const val SHADOW_ALPHA = 100
+            private const val KEY_PADDING = 5
+            private const val RECT_RADIUS = 15f
+            private const val SHADOW_OFFSET_Y = 9f
+            private const val POPUP_OFFSET_MULTIPLIER = 2.5
+            private const val EXTRA_DELAY = 200L
         }
 
         private var _keyboardCommandBinding: KeyboardViewCommandOptionsBinding? = null
