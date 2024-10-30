@@ -143,7 +143,7 @@ Scribe-Android uses pre-commit hooks to maintain a clean and consistent codebase
 
 ## Testing [`⇧`](#contents)
 
-Writing unit tests is essential to guarantee the dependability, sustainability, and excellence of the Scribe Android codebase. Unit tests confirm that individual components of the application work as intended, detecting errors at an early stage, making the debugging process easier, and boosting assurance for upcoming modifications. An unchanging testing method helps new team members grasp project norms and anticipated actions.
+Writing unit tests is essential to guarantee the dependability and sustainability of the Scribe-Android codebase. Unit tests confirm that individual components of the application work as intended, detecting errors at an early stage, making the debugging process easier and boosting assurance for upcoming modifications. An unchanging testing method helps new team members grasp project norms and anticipated actions.
 
 In addition to the [pre-commit](https://pre-commit.com/) hooks that are set up during the [development environment section](#dev-env), Scribe-Android includes a testing suite that should be ran before all pull requests and subsequent commits. Please run the following in the project root:
 
@@ -161,9 +161,9 @@ ktlint --format
 
 <a id="issues-projects"></a>
 
-### Unit Testing Conventions for Scribe Android
+### Unit Testing Conventions for Scribe-Android
 
-To maintain consistency and clarity in the Scribe Android codebase, we recommend you to follow these conventions when writing unit tests. These guidelines cover the organization, naming conventions, scope, and structure for unit tests.
+To maintain consistency and clarity in the Scribe-Android codebase, we recommend you to follow these conventions when writing unit tests. These guidelines cover the organization, naming conventions, scope, and structure for unit tests.
 
 #### 1. Project Structure for Unit Tests
 
