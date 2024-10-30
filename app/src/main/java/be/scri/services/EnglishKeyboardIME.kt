@@ -12,7 +12,6 @@ import be.scri.views.MyKeyboardView
 class EnglishKeyboardIME : SimpleKeyboardIME("English") {
     override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_english
 
-    override var shiftPermToggleSpeed = 500
     override val keyboardLetters = 0
     override val keyboardSymbols = 1
     override val keyboardSymbolShift = 2
