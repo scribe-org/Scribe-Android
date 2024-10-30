@@ -224,32 +224,7 @@ class LanguageSettingsFragment : Fragment() {
                 )
             }
         }
-        list.add(
-            SwitchItem(
-                isChecked = sharedPref.getBoolean("period_on_double_tap_$language", false),
-                title = getString(R.string.app_settings_keyboard_functionality_double_space_period),
-                description = getString(R.string.app_settings_keyboard_functionality_double_space_period_description),
-                action = {
-                    PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(requireContext(), language, true)
-                },
-                action2 = {
-                    PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(requireContext(), language, false)
-                },
-            ),
-        )
-        list.add(
-            SwitchItem(
-                isChecked = sharedPref.getBoolean("emoji_suggestions_$language", true),
-                title = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji),
-                description = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description),
-                action = {
-                    PreferencesHelper.setEmojiAutoSuggestionsPreference(requireContext(), language, true)
-                },
-                action2 = {
-                    PreferencesHelper.setEmojiAutoSuggestionsPreference(requireContext(), language, false)
-                },
-            ),
-        )
+
         list.add(
             SwitchItem(
                 isChecked = sharedPref.getBoolean("period_and_comma_$language", false),
