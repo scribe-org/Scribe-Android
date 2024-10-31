@@ -108,8 +108,7 @@ abstract class SimpleKeyboardIME(
             val inputConnection = currentInputConnection ?: return
             inputConnection.deleteSurroundingText(1, 0)
             inputConnection.commitText(". ", 1)
-        }
-        else {
+        } else {
             val inputConnection = currentInputConnection ?: return
             inputConnection.deleteSurroundingText(1, 0)
             inputConnection.commitText("  ", 1)
