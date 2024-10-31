@@ -38,7 +38,6 @@ abstract class SimpleKeyboardIME(
     MyKeyboardView.OnKeyboardActionListener {
     abstract fun getKeyboardLayoutXML(): Int
 
-    abstract var shiftPermToggleSpeed: Int // how quickly do we have to doubletap shift to enable permanent caps lock
     abstract val keyboardLetters: Int
     abstract val keyboardSymbols: Int
     abstract val keyboardSymbolShift: Int
@@ -62,12 +61,15 @@ abstract class SimpleKeyboardIME(
     private var emojiBtnTablet2: Button? = null
     private var emojiSpaceTablet2: View? = null
     private var emojiBtnTablet3: Button? = null
+
+    // How quickly do we have to doubletap shift to enable permanent caps lock.
+    private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
     var isAutoSuggestEnabled: Boolean = false
     var lastWord: String? = null
     var autosuggestEmojis: MutableList<String>? = null
-    //    abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
+    // abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     protected var currentState: ScribeState = ScribeState.IDLE
     protected lateinit var keyboardBinding: KeyboardViewKeyboardBinding
@@ -323,7 +325,7 @@ abstract class SimpleKeyboardIME(
 
     fun getText(): String? {
         val inputConnection = currentInputConnection ?: return null
-        return inputConnection.getTextBeforeCursor(20, 0)?.toString()
+        return inputConnection.getTextBeforeCursor(TEXT_LENGTH, 0)?.toString()
     }
 
     fun getLastWordBeforeCursor(): String? {
@@ -628,7 +630,7 @@ abstract class SimpleKeyboardIME(
                 commandBar.text = newText
             }
         } else {
-            // Handling space key logic
+            // Handling space key logic.
             if (keyboardMode != keyboardLetters && code == MyKeyboard.KEYCODE_SPACE) {
                 binding?.commandBar?.text = " "
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
@@ -694,5 +696,10 @@ abstract class SimpleKeyboardIME(
                 binding.commandField.setBackgroundColor(getColor(R.color.light_cmd_bar_border_color))
             }
         }
+    }
+
+    private companion object {
+        const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
+        const val TEXT_LENGTH = 20
     }
 }

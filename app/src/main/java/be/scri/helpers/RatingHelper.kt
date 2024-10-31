@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import be.scri.activities.MainActivity
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -15,6 +16,7 @@ class RatingHelper {
                 val packageManager = context.packageManager
                 packageManager.getInstallerPackageName(context.packageName)
             } catch (e: PackageManager.NameNotFoundException) {
+                Log.e("RatingHelper", "Failed to get install source", e)
                 null
             }
 

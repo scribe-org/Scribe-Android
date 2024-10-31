@@ -26,10 +26,14 @@ class LanguageSettingsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
-        (requireActivity() as MainActivity).setActionBarButtonFunction(3, R.string.app_settings_title)
+        val mainActivity = requireActivity() as MainActivity
+        mainActivity.setActionBarButtonFunction(
+            ACTION_BAR_BUTTON_INDEX,
+            R.string.app_settings_title,
+        )
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
-                viewpager.setCurrentItem(3, true)
+                viewpager.setCurrentItem(ACTION_BAR_BUTTON_INDEX, true)
                 (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 (requireActivity() as MainActivity).setActionBarVisibility(false)
             }
@@ -55,8 +59,8 @@ class LanguageSettingsFragment : Fragment() {
                     val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
                     val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
                     (requireActivity() as MainActivity).setActionBarVisibility(false)
-                    if (viewpager.currentItem == 3) {
-                        viewpager.setCurrentItem(3, true)
+                    if (viewpager.currentItem == ACTION_BAR_BUTTON_INDEX) {
+                        viewpager.setCurrentItem(ACTION_BAR_BUTTON_INDEX, true)
                         frameLayout.visibility = View.GONE
                         (requireActivity() as MainActivity).setActionBarVisibility(false)
                     } else {
@@ -86,7 +90,13 @@ class LanguageSettingsFragment : Fragment() {
         (requireActivity() as MainActivity).setActionBarTitle(titleInt)
         (requireActivity() as MainActivity).showFragmentContainer()
         (requireActivity() as MainActivity).setActionBarButtonVisibility(true)
-        (requireActivity() as MainActivity).setActionBarButtonFunction(3, R.string.app_settings_title)
+        val mainActivity = requireActivity() as MainActivity
+        val actionBarButtonIndex = ACTION_BAR_BUTTON_INDEX
+        val titleResId = R.string.app_settings_title
+        mainActivity.setActionBarButtonFunction(
+            actionBarButtonIndex,
+            titleResId,
+        )
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
             parentFragmentManager
@@ -224,32 +234,7 @@ class LanguageSettingsFragment : Fragment() {
                 )
             }
         }
-        list.add(
-            SwitchItem(
-                isChecked = sharedPref.getBoolean("period_on_double_tap_$language", false),
-                title = getString(R.string.app_settings_keyboard_functionality_double_space_period),
-                description = getString(R.string.app_settings_keyboard_functionality_double_space_period_description),
-                action = {
-                    PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(requireContext(), language, true)
-                },
-                action2 = {
-                    PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(requireContext(), language, false)
-                },
-            ),
-        )
-        list.add(
-            SwitchItem(
-                isChecked = sharedPref.getBoolean("emoji_suggestions_$language", true),
-                title = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji),
-                description = getString(R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description),
-                action = {
-                    PreferencesHelper.setEmojiAutoSuggestionsPreference(requireContext(), language, true)
-                },
-                action2 = {
-                    PreferencesHelper.setEmojiAutoSuggestionsPreference(requireContext(), language, false)
-                },
-            ),
-        )
+
         list.add(
             SwitchItem(
                 isChecked = sharedPref.getBoolean("period_and_comma_$language", false),
@@ -278,5 +263,9 @@ class LanguageSettingsFragment : Fragment() {
             "Swedish" -> return R.string.app__global_swedish
             else -> return R.string.app__global_english
         }
+    }
+
+    companion object {
+        private const val ACTION_BAR_BUTTON_INDEX = 3
     }
 }

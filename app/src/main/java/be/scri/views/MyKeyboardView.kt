@@ -152,7 +152,7 @@ class MyKeyboardView
         private var mCurrentKey: Int = NOT_A_KEY
         private var mLastKeyTime = 0L
         private var mCurrentKeyTime = 0L
-        private val mKeyIndices = IntArray(12)
+        private val mKeyIndices = IntArray(NUMBER_OF_KEYS)
         private var mPopupX = 0
         private var mPopupY = 0
         private var mRepeatKeyIndex = NOT_A_KEY
@@ -175,7 +175,7 @@ class MyKeyboardView
 
         private var mToolbarHolder: View? = null
 
-        // For multi-tap
+        // For multi-tap.
         private var mLastTapTime = 0L
 
         /** Whether the keyboard bitmap needs to be redrawn before it's blitted.  */
@@ -202,20 +202,21 @@ class MyKeyboardView
 
         private var mKeyboardBackgroundColor = 0
 
-        val alpha = 255
-        private val redDark = (0.180 * 255).toInt()
-        private val greenDark = (0.180 * 255).toInt()
-        private val blueDark = (0.180 * 255).toInt()
-        private val darkSpecialKey = Color.argb(alpha, redDark, greenDark, blueDark)
+        private val alpha = FULL_ALPHA
+        private val redDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
+        private val greenDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
+        private val blueDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
+        private val darkSpecialKey = Color.argb(FULL_ALPHA, redDark, greenDark, blueDark)
 
-        private val red = (0.682 * 255).toInt()
-        private val green = (0.702 * 255).toInt()
-        private val blue = (0.745 * 255).toInt()
+        private val red = (LIGHT_COLOR_RED_FACTOR * FULL_ALPHA).toInt()
+        private val green = (LIGHT_COLOR_GREEN_FACTOR * FULL_ALPHA).toInt()
+        private val blue = (LIGHT_COLOR_BLUE_FACTOR * FULL_ALPHA).toInt()
         private val lightSpecialKey = Color.argb(alpha, red, green, blue)
 
         companion object {
-            private const val NOT_A_KEY = -1
+            private val LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout()
             private val LONG_PRESSABLE_STATE_SET = intArrayOf(R.attr.state_long_pressable)
+            private const val NOT_A_KEY = -1
             private const val MSG_REMOVE_PREVIEW = 1
             private const val MSG_REPEAT = 2
             private const val MSG_LONGPRESS = 3
@@ -223,8 +224,25 @@ class MyKeyboardView
             private const val DEBOUNCE_TIME = 70
             private const val REPEAT_INTERVAL = 50 // ~20 keys per second
             private const val REPEAT_START_DELAY = 400
-            private val LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout()
             private const val DOUBLE_TAP_DELAY = 300L
+            private const val NUMBER_OF_KEYS = 12
+            private const val FULL_ALPHA = 255
+            private const val DARK_COLOR_FACTOR = 0.180
+            private const val LIGHT_COLOR_RED_FACTOR = 0.682
+            private const val LIGHT_COLOR_GREEN_FACTOR = 0.702
+            private const val LIGHT_COLOR_BLUE_FACTOR = 0.745
+            private const val DEFAULT_KEY_TEXT_SIZE = 18
+            private const val MARGIN_ADJUSTMENT = 10
+            private const val PROXIMITY_SCALING_FACTOR = 1.4f
+            private const val KEY_MARGIN = 8
+            private const val SHADOW_OFFSET = 3
+            private const val ALPHA_ADJUSTMENT_FACTOR = 0.8f
+            private const val SHADOW_ALPHA = 100
+            private const val KEY_PADDING = 5
+            private const val RECT_RADIUS = 15f
+            private const val SHADOW_OFFSET_Y = 9f
+            private const val POPUP_OFFSET_MULTIPLIER = 2.5
+            private const val EXTRA_DELAY = 200L
         }
 
         private var _keyboardCommandBinding: KeyboardViewCommandOptionsBinding? = null
@@ -284,7 +302,7 @@ class MyKeyboardView
                 for (i in 0 until indexCnt) {
                     when (val attr = attributes.getIndex(i)) {
                         R.styleable.MyKeyboardView_keyTextSize -> {
-                            mKeyTextSize = attributes.getDimensionPixelSize(attr, 18)
+                            mKeyTextSize = attributes.getDimensionPixelSize(attr, DEFAULT_KEY_TEXT_SIZE)
                         }
                     }
                 }
@@ -317,7 +335,7 @@ class MyKeyboardView
             mPaint.isAntiAlias = true
             mPaint.textSize = keyTextSize.toFloat()
             mPaint.textAlign = Align.CENTER
-            mPaint.alpha = 255
+            mPaint.alpha = FULL_ALPHA
             mMiniKeyboardCache = HashMap()
             mAccessibilityManager = (context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager)
             mPopupMaxMoveDistance = resources.getDimension(R.dimen.popup_max_move_distance)
@@ -427,10 +445,10 @@ class MyKeyboardView
             invalidateAllKeys()
             computeProximityThreshold(keyboard)
             mMiniKeyboardCache.clear()
-            // Not really necessary to do every time, but will free up views
+            // Not really necessary to do every time, but will free up views.
             // Switching to a different keyboard should abort any pending keys so that the key up
-            // doesn't get delivered to the old or new keyboard
-            mAbortKey = true // Until the next ACTION_DOWN
+            // doesn't get delivered to the old or new keyboard.
+            mAbortKey = true // until the next ACTION_DOWN
         }
 
         /** Sets the top row above the keyboard containing Scribe command buttons **/
@@ -494,7 +512,7 @@ class MyKeyboardView
                 setMeasuredDimension(0, 0)
             } else {
                 var width = mKeyboard!!.mMinWidth
-                if (MeasureSpec.getSize(widthMeasureSpec) < width + 10) {
+                if (MeasureSpec.getSize(widthMeasureSpec) < width + MARGIN_ADJUSTMENT) {
                     width = MeasureSpec.getSize(widthMeasureSpec)
                 }
                 setMeasuredDimension(width, mKeyboard!!.mHeight)
@@ -524,8 +542,8 @@ class MyKeyboardView
                 return
             }
 
-            mProximityThreshold = (dimensionSum * 1.4f / length).toInt()
-            mProximityThreshold *= mProximityThreshold // Square it
+            mProximityThreshold = (dimensionSum * PROXIMITY_SCALING_FACTOR / length).toInt()
+            mProximityThreshold *= mProximityThreshold // square it
         }
 
         public override fun onDraw(canvas: Canvas) {
@@ -538,11 +556,11 @@ class MyKeyboardView
 
         @SuppressLint("UseCompatLoadingForDrawables")
         private fun onBufferDraw() {
-            val keyMargin = 8
-            val shadowOffset = 3
+            val keyMargin = KEY_MARGIN
+            val shadowOffset = SHADOW_OFFSET
             if (mBuffer == null || mKeyboardChanged) {
                 if (mBuffer?.let { buffer -> buffer.width != width || buffer.height != height } != false) {
-                    // Make sure our bitmap is at least 1x1
+                    // Make sure our bitmap is at least 1x1.
                     val width = 1.coerceAtLeast(width)
                     val height = 1.coerceAtLeast(height)
                     mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -593,7 +611,7 @@ class MyKeyboardView
             val smallLetterPaint =
                 Paint().apply {
                     set(paint)
-                    color = mTextColor.adjustAlpha(0.8f)
+                    color = mTextColor.adjustAlpha(ALPHA_ADJUSTMENT_FACTOR)
                     textSize = mTopSmallNumberSize
                     typeface = Typeface.DEFAULT
                 }
@@ -601,7 +619,7 @@ class MyKeyboardView
             val shadowPaint =
                 Paint().apply {
                     color = Color.GRAY
-                    alpha = 100
+                    alpha = SHADOW_ALPHA
                     style = Paint.Style.FILL
                 }
 
@@ -619,9 +637,9 @@ class MyKeyboardView
                 val key = keys[i]
                 val code = key.code
 
-                val padding = 5
-                val rectRadius = 15f
-                val shadowOffsetY = 9f
+                val padding = KEY_PADDING
+                val rectRadius = RECT_RADIUS
+                val shadowOffsetY = SHADOW_OFFSET_Y
 
                 val shadowRect =
                     RectF(
@@ -641,7 +659,7 @@ class MyKeyboardView
                 canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
                 canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
 
-                // Switch the character to uppercase if shift is pressed
+                // Switch the character to uppercase if shift is pressed.
                 val label = adjustCase(key.label)?.toString()
 
                 if (key.focused || code == KEYCODE_ENTER) {
@@ -757,7 +775,7 @@ class MyKeyboardView
             val oldKeyIndex = mCurrentKeyIndex
             val previewPopup = mPreviewPopup
             mCurrentKeyIndex = keyIndex
-            // Release the old key and press the new key
+            // Release the old key and press the new key.
             val keys = mKeys
             if (oldKeyIndex != mCurrentKeyIndex) {
                 if (oldKeyIndex != NOT_A_KEY && keys.size > oldKeyIndex) {
@@ -790,7 +808,7 @@ class MyKeyboardView
                 }
             }
 
-            // If key changed and preview is on ...
+            // If key changed and preview is on.
             if (oldKeyIndex != mCurrentKeyIndex) {
                 if (previewPopup.isShowing) {
                     if (keyIndex == NOT_A_KEY) {
@@ -867,10 +885,10 @@ class MyKeyboardView
 
             mHandler!!.removeMessages(MSG_REMOVE_PREVIEW)
             getLocationInWindow(mCoordinates)
-            mCoordinates[0] += mMiniKeyboardOffsetX // Offset may be zero
-            mCoordinates[1] += mMiniKeyboardOffsetY // Offset may be zero
+            mCoordinates[0] += mMiniKeyboardOffsetX // offset may be zero
+            mCoordinates[1] += mMiniKeyboardOffsetY // offset may be zero
 
-            // Set the preview background state
+            // Set the preview background state.
             mPreviewText!!.background.state =
                 if (key.popupResId != 0) {
                     LONG_PRESSABLE_STATE_SET
@@ -881,15 +899,15 @@ class MyKeyboardView
             mPopupPreviewX += mCoordinates[0]
             mPopupPreviewY += mCoordinates[1]
 
-            // If the popup cannot be shown above the key, put it on the side
+            // If the popup cannot be shown above the key, put it on the side.
             getLocationOnScreen(mCoordinates)
             if (mPopupPreviewY + mCoordinates[1] < 0) {
                 // If the key you're pressing is on the left side of the keyboard, show the popup on
                 // the right, offset by enough to see at least one key to the left/right.
                 if (key.x + key.width <= width / 2) {
-                    mPopupPreviewX += (key.width * 2.5).toInt()
+                    mPopupPreviewX += (key.width * POPUP_OFFSET_MULTIPLIER).toInt()
                 } else {
-                    mPopupPreviewX -= (key.width * 2.5).toInt()
+                    mPopupPreviewX -= (key.width * POPUP_OFFSET_MULTIPLIER).toInt()
                 }
                 mPopupPreviewY += popupHeight
             }
@@ -1077,8 +1095,8 @@ class MyKeyboardView
                 val xOffset = Math.max(0, x)
                 mMiniKeyboard!!.setPopupOffset(xOffset, y)
 
-                // make sure we highlight the proper key right after long pressing it,
-                // before any ACTION_MOVE event occurs
+                // Make sure we highlight the proper key right after long pressing it,
+                // before any ACTION_MOVE event occurs.
                 val miniKeyboardX =
                     if (xOffset + mMiniKeyboard!!.measuredWidth <= measuredWidth) {
                         xOffset
@@ -1120,7 +1138,7 @@ class MyKeyboardView
                 if (action == MotionEvent.ACTION_UP) {
                     ignoreTouches = false
 
-                    // fix a glitch with long pressing backspace, then clicking some letter
+                    // Fix a glitch with long pressing backspace, then clicking some letter.
                     if (mRepeatKeyIndex != NOT_A_KEY) {
                         val key = mKeys[mRepeatKeyIndex]
                         if (key.code == KEYCODE_DELETE) {
@@ -1132,7 +1150,7 @@ class MyKeyboardView
                 return true
             }
 
-            // handle moving between alternative popup characters by swiping
+            // Handle moving between alternative popup characters by swiping.
             if (mPopupKeyboard.isShowing) {
                 when (action) {
                     MotionEvent.ACTION_MOVE -> {
@@ -1208,16 +1226,16 @@ class MyKeyboardView
                 return true
             }
 
-            // Needs to be called after the gesture detector gets a turn, as it may have displayed the mini keyboard
+            // Needs to be called after the gesture detector gets a turn, as it may have displayed the mini keyboard.
             if (mMiniKeyboardOnScreen && action != MotionEvent.ACTION_CANCEL) {
                 return true
             }
 
             when (action) {
                 MotionEvent.ACTION_POINTER_DOWN -> {
-                    // if the user presses a key while still holding down the previous,
-                    // type in both chars and ignore the later gestures
-                    // can happen at fast typing, easier to reproduce by increasing LONGPRESS_TIMEOUT
+                    // If the user presses a key while still holding down the previous,
+                    // type in both chars and ignore the later gestures.
+                    // Can happen at fast typing, easier to reproduce by increasing LONGPRESS_TIMEOUT.
                     ignoreTouches = true
                     mHandler!!.removeMessages(MSG_LONGPRESS)
                     dismissPopupKeyboard()
@@ -1264,14 +1282,14 @@ class MyKeyboardView
 
                         val msg = mHandler!!.obtainMessage(MSG_REPEAT)
                         mHandler!!.sendMessageDelayed(msg, REPEAT_START_DELAY.toLong())
-                        // if the user long presses Space, move the cursor after swipine left/right
+                        // If the user long presses Space, move the cursor after swipine left/right.
                         if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
                             mLastSpaceMoveX = -1
                         } else {
                             repeatKey(true)
                         }
 
-                        // Delivering the key could have caused an abort
+                        // Delivering the key could have caused an abort.
                         if (mAbortKey) {
                             mRepeatKeyIndex = NOT_A_KEY
                             wasHandled = true
@@ -1326,9 +1344,9 @@ class MyKeyboardView
                             mLastSpaceMoveX = mLastX
                         }
                     } else if (!continueLongPress) {
-                        // Cancel old longpress
+                        // Cancel old longpress.
                         mHandler!!.removeMessages(MSG_LONGPRESS)
-                        // Start new longpress if key has changed
+                        // Start new longpress if key has changed.
                         if (keyIndex != NOT_A_KEY) {
                             val msg = mHandler!!.obtainMessage(MSG_LONGPRESS, me)
                             mHandler!!.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
@@ -1359,14 +1377,14 @@ class MyKeyboardView
                     }
                     showPreview(NOT_A_KEY)
                     Arrays.fill(mKeyIndices, NOT_A_KEY)
-                    // If we're not on a repeating key (which sends on a DOWN event)
+                    // If we're not on a repeating key (which sends on a DOWN event).
                     if (mRepeatKeyIndex == NOT_A_KEY && !mMiniKeyboardOnScreen && !mAbortKey) {
                         detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
                     }
 
                     if (mKeys.getOrNull(mCurrentKey)?.code == KEYCODE_SPACE && !mIsLongPressingSpace) {
                         val currentTime = System.currentTimeMillis()
-                        if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + 200 &&
+                        if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + EXTRA_DELAY &&
                             context.config.periodOnDoubleTap &&
                             mOnKeyboardActionListener!!.hasTextBeforeCursor()
                         ) {

@@ -15,6 +15,7 @@ class DatabaseHelper(
     }
 
     override fun onCreate(db: SQLiteDatabase) {
+        // No operation for now
     }
 
     override fun onUpgrade(
@@ -22,6 +23,7 @@ class DatabaseHelper(
         oldVersion: Int,
         newVersion: Int,
     ) {
+        // No operation for now
     }
 
     fun loadDatabase(language: String) {

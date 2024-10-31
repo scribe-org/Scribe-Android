@@ -1,12 +1,12 @@
 style:
     MagicNumber:
-        active: false
+        active: true
     MaxLineLength:
         active: true
     LoopWithTooManyJumpStatements:
         active: false
     WildcardImport:
-        active: false
+        active: true
     ReturnCount:
         active: false
     UnusedPrivateProperty:
@@ -24,7 +24,7 @@ complexity:
     ComplexCondition:
         active: true
     LongParameterList:
-        active: false
+        active: true
     LongMethod:
         active: true
     CyclomaticComplexMethod:
@@ -32,15 +32,15 @@ complexity:
 
 exceptions:
     SwallowedException:
-        active: false
+        active: true
     InstanceOfCheckForException:
-        active: false
+        active: true
 
 empty-blocks:
     EmptyCatchBlock:
         active: true
     EmptyFunctionBlock:
-        active: false
+        active: true
 
 performance:
     SpreadOperator:
