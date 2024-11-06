@@ -114,7 +114,7 @@ android {
         val androidTests = "connected${variantName}AndroidTest"
 
         val exclusions = listOf(
-            // data binding
+            // Data binding.
             "**/R.class",
             "**/R\$*.class",
             "**/BuildConfig.*",
@@ -130,9 +130,9 @@ android {
                 xml.required.set(true)
                 html.required.set(true)
             }
-            // Set source directories to the main source directory
+            // Set source directories to the main source directory.
             sourceDirectories.setFrom(layout.projectDirectory.dir("src/main"))
-            // Set class directories to compiled Java and Kotlin classes, excluding specified exclusions
+            // Set class directories to compiled Java and Kotlin classes, excluding specified exclusions.
             classDirectories.setFrom(files(
                 fileTree(layout.buildDirectory.dir("intermediates/javac/")) {
                     exclude(exclusions)
@@ -141,7 +141,7 @@ android {
                     exclude(exclusions)
                 }
             ))
-            // Collect execution data from .exec and .ec files generated during test execution
+            // Collect execution data from .exec and .ec files generated during test execution.
             executionData.setFrom(files(
                 fileTree(layout.buildDirectory) { include(listOf("**/*.exec", "**/*.ec")) }
             ))
