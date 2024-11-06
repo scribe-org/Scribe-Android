@@ -15,6 +15,7 @@ If you have questions or would like to communicate with the team, please [join u
 -   [First steps as a contributor](#first-steps)
 -   [Learning the tech stack](#learning-the-tech)
 -   [Development environment](#dev-env)
+-   [Testing](#testing)
 -   [Issues and projects](#issues-projects)
 -   [Bug reports](#bug-reports)
 -   [Feature requests](#feature-requests)
@@ -119,7 +120,103 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
 > [!NOTE]
 > Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
 
+## Pre-commit Hooks [`⇧`](#contents)
+
+Scribe-Android uses pre-commit hooks to maintain a clean and consistent codebase. These hooks help automatically check for issues such as formatting, trailing whitespace, and linting errors. Here's how to set up pre-commit for Scribe-Android:
+
+1. Install `pre-commit` by running:
+
+    ```bash
+    pip install pre-commit
+    ```
+
+2. After cloning the repository, install the hooks by running the following command in the project root:
+
+    ```bash
+    pre-commit install
+    pre-commit run --all-files  # to check
+    ```
+
+3. When you make a commit, the hooks will automatically run to check for any code quality issues. If any issues are found, they will either be fixed automatically or will need to be resolved manually.
+
+<a id="testing"></a>
+
+## Testing [`⇧`](#contents)
+
+Writing unit tests is essential to guarantee the dependability and sustainability of the Scribe-Android codebase. Unit tests confirm that individual components of the application work as intended, detecting errors at an early stage, making the debugging process easier and boosting assurance for upcoming modifications. An unchanging testing method helps new team members grasp project norms and anticipated actions.
+
+In addition to the [pre-commit](https://pre-commit.com/) hooks that are set up during the [development environment section](#dev-env), Scribe-Android includes a testing suite that should be ran before all pull requests and subsequent commits. Please run the following in the project root:
+
+```bash
+# Run ktlint and detekt:
+./gradlew lintKotlin detekt
+./gradlew test
+```
+
+If you see that there are linting errors above, then please run the following command to hopefully fix them automatically:
+
+```bash
+ktlint --format
+```
+
 <a id="issues-projects"></a>
+
+### Unit Testing Conventions for Scribe-Android
+
+To maintain consistency and clarity in the Scribe-Android codebase, we recommend you to follow these conventions when writing unit tests. These guidelines cover the organization, naming conventions, scope, and structure for unit tests.
+
+#### 1. Project Structure for Unit Tests
+
+-   **Location**: Place all unit tests in the `src/test/java` directory to mirror the structure of the `src/main/java` directory. For new classes or features, ensure their corresponding test classes follow the same package structure.
+-   **Class Files**: Each class in `src/main/java` should have a dedicated test file in `src/test/java`, named by appending `Test` to the class name (e.g., `UserManager` → `UserManagerTest`).
+-   **New Classes for Testing**: When a new utility or helper class is needed specifically for testing, place it under `src/test/java/utils` or `src/test/java/helpers`.
+
+#### 2. Naming Conventions for Tests
+
+-   **Test Methods**: Use descriptive names indicating expected behavior. Follow the format:
+
+    ```kotlin
+    @Test
+    public void methodName_StateUnderTest_ExpectedBehavior() {
+        // Test code here
+    }
+    ```
+
+    Example: `saveUser_WithValidData_SavesUserCorrectly()`.
+
+#### 3. Scope and Focus of Tests
+
+-   **Single Responsibility**: Each test should cover only one behavior or scenario. For multiple behaviors, split them into separate test methods.
+-   **Setup and Teardown**: Use `@Before` for initializing objects and `@After` for cleanup, ensuring tests run in isolation.
+
+    ```kotlin
+    @Before
+    public void setUp() {
+        // Initialize objects
+    }
+
+    @After
+    public void tearDown() {
+        // Cleanup objects
+    }
+    ```
+
+-   **Mocking**: Use mocks (e.g., MockK) to isolate the unit test, especially with dependencies like databases, network requests or services.
+
+#### 4. Writing Effective Tests
+
+-   **AAA Pattern (Arrange, Act, Assert)**: Structure each test with three distinct parts:
+
+    -   **Arrange**: Set up the conditions.
+    -   **Act**: Execute the method under test.
+    -   **Assert**: Verify the result.
+
+-   **Coverage of Edge Cases**: Write tests for both typical cases and edge cases, like `null` values or invalid data.
+
+#### 5. Test Documentation
+
+-   **Comments**: Add comments when test logic is complex or non-intuitive.
+-   **Assertions**: Use descriptive assertion methods (`assertTrue`, `assertEquals`, etc.) for clarity and include failure messages for custom assertions if necessary.
 
 # Issues and projects [`⇧`](#contents)
 

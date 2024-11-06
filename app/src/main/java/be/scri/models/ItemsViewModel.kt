@@ -2,7 +2,6 @@ package be.scri.models
 
 import android.app.Activity
 import androidx.annotation.StringRes
-import kotlin.reflect.KFunction0
 
 data class ItemsViewModel(
     val image: Int,
@@ -10,7 +9,7 @@ data class ItemsViewModel(
     val image2: Int,
     val url: String? = null,
     val activity: Class<out Activity>? = null,
-    val action: KFunction0<Unit>? = null,
+    val action: (() -> Unit)? = null,
 ) : Item() {
     class Text(
         @StringRes

@@ -1,6 +1,5 @@
 package be.scri.fragments
 
-import CustomDividerItemDecoration
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -17,19 +16,20 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentSettingsBinding
+import be.scri.extensions.addCustomItemDecoration
 import be.scri.extensions.config
 import be.scri.helpers.CustomAdapter
+import be.scri.helpers.PreferencesHelper
 import be.scri.models.SwitchItem
 import be.scri.models.TextItem
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : ScribeFragment("Settings") {
     private lateinit var binding: FragmentSettingsBinding
+    private var isDecorationSet: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,8 +42,8 @@ class SettingsFragment : Fragment() {
                 getParentFragmentManager().popBackStack()
             }
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_settings_title)
-        (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
-        (requireActivity() as MainActivity).setActionBarButtonInvisible()
+        (requireActivity() as MainActivity).setActionBarVisibility(false)
+        (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
         callback.isEnabled = true
         (requireActivity() as MainActivity).supportActionBar?.title = getString(R.string.app_settings_title)
         return binding.root
@@ -60,7 +60,8 @@ class SettingsFragment : Fragment() {
         val enabledInputMethods = imm.enabledInputMethodList
         for (inputMethod in enabledInputMethods) {
             if (inputMethod.packageName == "be.scri.debug") {
-                setupItemVisibility()
+                binding.btnInstall.visibility = View.INVISIBLE
+                binding.selectLanguage.visibility = View.VISIBLE
             }
         }
 
@@ -96,22 +97,30 @@ class SettingsFragment : Fragment() {
                 getString(R.string.app_settings_menu_app_color_mode),
                 description = getString(R.string.app_settings_menu_app_color_mode_description),
                 isChecked = sharedPref.getBoolean("dark_mode", isUserDarkMode),
-                action = ::darkMode,
-                action2 = ::lightMode,
+                action = ({ setLightDarkMode(isDarkMode = true) }),
+                action2 = ({ setLightDarkMode(isDarkMode = false) }),
             ),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_keypress_vibration),
                 description = getString(R.string.app_settings_keyboard_keypress_vibration_description),
                 isChecked = requireContext().config.vibrateOnKeypress,
-                action = ::enableVibrateOnKeypress,
-                action2 = ::disableVibrateOnKeypress,
+                action = (
+                    { PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = true) }
+                ),
+                action2 = (
+                    { PreferencesHelper.setVibrateOnKeypress(requireContext(), shouldVibrateOnKeypress = false) }
+                ),
             ),
             SwitchItem(
                 getString(R.string.app_settings_keyboard_functionality_popup_on_keypress),
                 description = getString(R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
                 isChecked = requireContext().config.showPopupOnKeypress,
-                action = ::enableShowPopupOnKeypress,
-                action2 = ::disableShowPopupOnKeypress,
+                action2 = (
+                    { PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = false) }
+                ),
+                action = (
+                    { PreferencesHelper.setShowPopupOnKeypress(requireContext(), shouldShowPopupOnKeypress = true) }
+                ),
             ),
         )
     }
@@ -138,24 +147,21 @@ class SettingsFragment : Fragment() {
         val enabledInputMethods = imm.enabledInputMethodList
         for (inputMethod in enabledInputMethods) {
             if (inputMethod.packageName == "be.scri.debug") {
-                setupItemVisibility()
+                binding.btnInstall.visibility = View.INVISIBLE
+                binding.selectLanguage.visibility = View.VISIBLE
             }
         }
-
         val recyclerView = binding.recyclerView2
         val adapter = CustomAdapter(getRecyclerViewElements(), requireContext())
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
         recyclerView.suppressLayout(true)
-        recyclerView.apply {
-            val itemDecoration =
-                CustomDividerItemDecoration(
-                    drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
-                    width = 1,
-                    marginLeft = 50,
-                    marginRight = 50,
-                )
-            addItemDecoration(itemDecoration)
+
+        if (!isDecorationSet) {
+            isDecorationSet = true
+            recyclerView.apply {
+                addCustomItemDecoration(requireContext())
+            }
         }
     }
 
@@ -179,26 +185,22 @@ class SettingsFragment : Fragment() {
                 TextItem(
                     text = localizeLanguage,
                     image = R.drawable.right_arrow,
-                    action = { loadLanguageSettingsFragment(language) },
+                    action = {
+                        loadOtherFragment(
+                            LanguageSettingsFragment().apply {
+                                arguments =
+                                    Bundle().apply {
+                                        putString("LANGUAGE_EXTRA", language)
+                                    }
+                            },
+                            "LanguageFragment",
+                        )
+                    },
                     language = language,
                 ),
             )
         }
         return list
-    }
-
-    private fun loadLanguageSettingsFragment(language: String) {
-        val fragment =
-            LanguageSettingsFragment().apply {
-                arguments =
-                    Bundle().apply {
-                        putString("LANGUAGE_EXTRA", language)
-                    }
-            }
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, fragment, "LanguageFragment")
-        fragmentTransaction.addToBackStack("LanguageFragment")
-        fragmentTransaction.commit()
     }
 
     private fun setupKeyboardLanguage(): MutableList<String> {
@@ -222,69 +224,17 @@ class SettingsFragment : Fragment() {
         return result
     }
 
-    private fun lightMode() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("dark_mode", false)
-        editor.apply()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    private fun setLightDarkMode(isDarkMode: Boolean) {
+        PreferencesHelper.setLightDarkModePreference(requireContext(), isDarkMode)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO,
+        )
         requireActivity().recreate()
-    }
-
-    private fun darkMode() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("dark_mode", true)
-        editor.apply()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        requireActivity().recreate()
-    }
-
-    private fun enableVibrateOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("vibrate_on_keypress", true)
-        editor.apply()
-        requireActivity().config.vibrateOnKeypress = true
-    }
-
-    private fun disableVibrateOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("vibrate_on_keypress", false)
-        editor.apply()
-        requireActivity().config.vibrateOnKeypress = false
-    }
-
-    private fun enableShowPopupOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("show_popup_on_keypress", true)
-        editor.apply()
-        requireActivity().config.showPopupOnKeypress = true
-    }
-
-    private fun disableShowPopupOnKeypress() {
-        val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("show_popup_on_keypress", false)
-        editor.apply()
-        requireActivity().config.showPopupOnKeypress = false
-    }
-
-    private fun setupItemVisibility() {
-        binding.btnInstall.visibility = View.INVISIBLE
-        binding.selectLanguage.visibility = View.VISIBLE
     }
 
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).showHint("hint_shown_settings", R.string.app_settings_app_hint)
         setupRecyclerView2()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (activity as MainActivity).hideHint()
     }
 }

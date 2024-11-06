@@ -1,6 +1,5 @@
 package be.scri.activities
 
-import android.app.UiModeManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -8,18 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.adapters.ViewPagerAdapter
 import be.scri.databinding.ActivityMainBinding
+import be.scri.helpers.PreferencesHelper
+import be.scri.services.EnglishKeyboardIME
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : SimpleActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPagerAdapter
     private lateinit var binding: ActivityMainBinding
+    private var englishKeyboardIME: EnglishKeyboardIME? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,18 +31,20 @@ class MainActivity : SimpleActivity() {
         supportActionBar?.setCustomView(R.layout.custom_action_bar_layout)
         supportActionBar?.elevation = 0F
         val layoutParams = supportActionBar?.customView?.layoutParams
-        layoutParams?.height = 1000
+        layoutParams?.height = DEFAULT_HEIGHT
         supportActionBar?.customView?.layoutParams = layoutParams
         setActionBarTitle(R.string.app_launcher_name)
         val mButton = supportActionBar?.customView?.findViewById<Button>(R.id.button)
         val mImage = getDrawable(R.drawable.chevron)
-        applyUserDarkModePreference(this)
+        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
         mButton?.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
         mButton?.compoundDrawablePadding = 2
         mButton?.visibility = View.GONE
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        englishKeyboardIME = EnglishKeyboardIME()
 
         viewPager = findViewById(R.id.view_pager)
         bottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -59,22 +64,22 @@ class MainActivity : SimpleActivity() {
                         0 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_launcher_name)
-                            setActionBarButtonInvisible()
-                            unsetActionBarLayoutMargin()
+                            setActionBarButtonVisibility(false)
+                            setActionBarVisibility(false)
                         }
 
                         1 -> {
                             binding.fragmentContainer.visibility = View.GONE
                             setActionBarTitle(R.string.app_settings_title)
-                            setActionBarButtonInvisible()
-                            unsetActionBarLayoutMargin()
+                            setActionBarButtonVisibility(false)
+                            setActionBarVisibility(false)
                         }
 
                         2 -> {
                             binding.fragmentContainer.visibility = View.GONE
-                            setActionBarButtonInvisible()
+                            setActionBarButtonVisibility(false)
                             setActionBarTitle(R.string.app_about_title)
-                            unsetActionBarLayoutMargin()
+                            setActionBarVisibility(false)
                         }
 
                         else -> {
@@ -124,12 +129,12 @@ class MainActivity : SimpleActivity() {
         supportActionBar?.customView?.findViewById<TextView>(R.id.name)?.text = getString(title)
     }
 
-    fun setActionBarButtonVisible() {
-        supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.VISIBLE
-    }
-
-    fun setActionBarButtonInvisible() {
-        supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.GONE
+    fun setActionBarButtonVisibility(visible: Boolean) {
+        if (visible) {
+            supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.VISIBLE
+        } else {
+            supportActionBar?.customView?.findViewById<Button>(R.id.button)?.visibility = View.GONE
+        }
     }
 
     fun setActionBarButtonFunction(
@@ -145,44 +150,23 @@ class MainActivity : SimpleActivity() {
                 viewpager.setCurrentItem(page, true)
             }
             frameLayout.visibility = View.GONE
-            unsetActionBarLayoutMargin()
+            setActionBarVisibility(false)
             setActionBarTitle(title)
             button.visibility = View.GONE
         }
     }
 
-    fun setActionBarLayoutMargin() {
+    fun setActionBarVisibility(shouldShowOnScreen: Boolean) {
         val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
         val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
-        params.topMargin = -50
-        params.bottomMargin = 30
+        if (shouldShowOnScreen) {
+            params.topMargin = ACTION_BAR_TOP_MARGIN_VISIBLE
+            params.bottomMargin = ACTION_BAR_BOTTOM_MARGIN_VISIBLE
+        } else {
+            params.topMargin = ACTION_BAR_TOP_MARGIN_HIDDEN
+            params.bottomMargin = ACTION_BAR_BOTTOM_MARGIN_HIDDEN
+        }
         textView.layoutParams = params
-    }
-
-    fun unsetActionBarLayoutMargin() {
-        val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
-        val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
-        params.topMargin = 50
-        params.bottomMargin = 0
-        textView.layoutParams = params
-    }
-
-    private fun applyUserDarkModePreference(context: Context) {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isSystemDarkTheme = isDarkMode(context)
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
-        AppCompatDelegate.setDefaultNightMode(
-            if (isUserDarkMode) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            },
-        )
-    }
-
-    fun isDarkMode(context: Context): Boolean {
-        val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
-        return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
     }
 
     fun showHint(
@@ -214,8 +198,29 @@ class MainActivity : SimpleActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (viewPager.currentItem == 0) {
+            if (binding.fragmentContainer.visibility == View.VISIBLE) {
+                binding.fragmentContainer.visibility = View.GONE
+            } else {
+                finish()
+            }
+        } else {
+            viewPager.currentItem = viewPager.currentItem - 1
+        }
+    }
+
     fun hideHint() {
         val hintLayout = findViewById<View>(R.id.hint_layout)
         hintLayout.visibility = View.GONE
+    }
+
+    companion object {
+        private const val DEFAULT_HEIGHT = 1000
+        private const val ACTION_BAR_TOP_MARGIN_VISIBLE = -50
+        private const val ACTION_BAR_TOP_MARGIN_HIDDEN = 50
+        private const val ACTION_BAR_BOTTOM_MARGIN_VISIBLE = 30
+        private const val ACTION_BAR_BOTTOM_MARGIN_HIDDEN = 0
     }
 }

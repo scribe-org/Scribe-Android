@@ -2,7 +2,6 @@ package be.scri
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import be.scri.extensions.checkUseEnglish
 import be.scri.extensions.config
 
 class App : Application() {
@@ -15,6 +14,5 @@ class App : Application() {
             },
         )
         super.onCreate()
-        checkUseEnglish()
     }
 }

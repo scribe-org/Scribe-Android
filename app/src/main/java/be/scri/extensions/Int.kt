@@ -1,24 +1,24 @@
 package be.scri.extensions
 
-import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Color
-import android.media.ExifInterface
-import android.text.format.DateFormat
-import android.text.format.DateUtils
-import android.text.format.Time
 import be.scri.helpers.DARK_GREY
-import java.text.DecimalFormat
-import java.util.Calendar
-import java.util.Locale
 import java.util.Random
 
-fun Int.getContrastColor(): Int {
-    val y = (299 * Color.red(this) + 587 * Color.green(this) + 114 * Color.blue(this)) / 1000
-    return if (y >= 149 && this != Color.BLACK) DARK_GREY else Color.WHITE
-}
+private const val RED_COEFFICIENT = 299
+private const val GREEN_COEFFICIENT = 587
+private const val BLUE_COEFFICIENT = 114
+private const val COEFFICIENT_SUM = 1000
+private const val Y_THRESHOLD = 149
 
-fun Int.toHex() = "#%06X".format(0xFFFFFF and this).uppercase()
+fun Int.getContrastColor(): Int {
+    val y =
+        (
+            RED_COEFFICIENT * Color.red(this) +
+                GREEN_COEFFICIENT * Color.green(this) +
+                BLUE_COEFFICIENT * Color.blue(this)
+        ) / COEFFICIENT_SUM
+    return if (y >= Y_THRESHOLD && this != Color.BLACK) DARK_GREY else Color.WHITE
+}
 
 fun Int.adjustAlpha(factor: Float): Int {
     val alpha = Math.round(Color.alpha(this) * factor)
@@ -28,114 +28,23 @@ fun Int.adjustAlpha(factor: Float): Int {
     return Color.argb(alpha, red, green, blue)
 }
 
-fun Int.getFormattedDuration(forceShowHours: Boolean = false): String {
-    val sb = StringBuilder(8)
-    val hours = this / 3600
-    val minutes = this % 3600 / 60
-    val seconds = this % 60
-
-    if (this >= 3600) {
-        sb.append(String.format(Locale.getDefault(), "%02d", hours)).append(":")
-    } else if (forceShowHours) {
-        sb.append("0:")
-    }
-
-    sb.append(String.format(Locale.getDefault(), "%02d", minutes))
-    sb.append(":").append(String.format(Locale.getDefault(), "%02d", seconds))
-    return sb.toString()
-}
-
-fun Int.formatSize(): String {
-    if (this <= 0) {
-        return "0 B"
-    }
-
-    val units = arrayOf("B", "kB", "MB", "GB", "TB")
-    val digitGroups = (Math.log10(toDouble()) / Math.log10(1024.0)).toInt()
-    return "${DecimalFormat("#,##0.#").format(this / Math.pow(1024.0, digitGroups.toDouble()))} ${units[digitGroups]}"
-}
-
-fun Int.formatDate(
-    context: Context,
-    dateFormat: String? = null,
-    timeFormat: String? = null,
-): String {
-    val useDateFormat = dateFormat ?: context.baseConfig.dateFormat
-    val useTimeFormat = timeFormat ?: context.getTimeFormat()
-    val cal = Calendar.getInstance(Locale.ENGLISH)
-    cal.timeInMillis = this * 1000L
-    return DateFormat.format("$useDateFormat, $useTimeFormat", cal).toString()
-}
-
-// if the given date is today, we show only the time. Else we show the date and optionally the time too
-fun Int.formatDateOrTime(
-    context: Context,
-    hideTimeAtOtherDays: Boolean,
-    showYearEvenIfCurrent: Boolean,
-): String {
-    val cal = Calendar.getInstance(Locale.ENGLISH)
-    cal.timeInMillis = this * 1000L
-
-    return if (DateUtils.isToday(this * 1000L)) {
-        DateFormat.format(context.getTimeFormat(), cal).toString()
-    } else {
-        var format = context.baseConfig.dateFormat
-        if (!showYearEvenIfCurrent && isThisYear()) {
-            format =
-                format
-                    .replace("y", "")
-                    .trim()
-                    .trim('-')
-                    .trim('.')
-                    .trim('/')
-        }
-
-        if (!hideTimeAtOtherDays) {
-            format += ", ${context.getTimeFormat()}"
-        }
-
-        DateFormat.format(format, cal).toString()
-    }
-}
-
-fun Int.isThisYear(): Boolean {
-    val time = Time()
-    time.set(this * 1000L)
-
-    val thenYear = time.year
-    time.set(System.currentTimeMillis())
-
-    return (thenYear == time.year)
-}
-
-fun Int.addBitIf(
-    add: Boolean,
-    bit: Int,
-) = if (add) {
-    addBit(bit)
-} else {
-    removeBit(bit)
-}
-
-fun Int.removeBit(bit: Int) = addBit(bit) - bit
-
-fun Int.addBit(bit: Int) = this or bit
-
-fun Int.flipBit(bit: Int) = if (this and bit == 0) addBit(bit) else removeBit(bit)
-
 fun ClosedRange<Int>.random() = Random().nextInt(endInclusive - start) + start
 
-// taken from https://stackoverflow.com/a/40964456/1967672
-fun Int.darkenColor(factor: Int = 8): Int {
+// Taken from https://stackoverflow.com/a/40964456/1967672.
+private const val HSV_COMPONENT_COUNT = 3
+private const val DEFAULT_DARKEN_FACTOR = 8
+private const val FACTOR_DIVIDER = 100
+
+fun Int.darkenColor(factor: Int = DEFAULT_DARKEN_FACTOR): Int {
     if (this == Color.WHITE || this == Color.BLACK) {
         return this
     }
 
     val darkFactor = factor
-    var hsv = FloatArray(3)
+    var hsv = FloatArray(HSV_COMPONENT_COUNT)
     Color.colorToHSV(this, hsv)
     val hsl = hsv2hsl(hsv)
-    hsl[2] -= darkFactor / 100f
+    hsl[2] -= darkFactor / FACTOR_DIVIDER.toFloat()
     if (hsl[2] < 0) {
         hsl[2] = 0f
     }
@@ -149,10 +58,10 @@ fun Int.lightenColor(factor: Int = 8): Int {
     }
 
     val lightFactor = factor
-    var hsv = FloatArray(3)
+    var hsv = FloatArray(HSV_COMPONENT_COUNT)
     Color.colorToHSV(this, hsv)
     val hsl = hsv2hsl(hsv)
-    hsl[2] += lightFactor / 100f
+    hsl[2] += lightFactor / FACTOR_DIVIDER.toFloat()
     if (hsl[2] < 0) {
         hsl[2] = 0f
     }
@@ -160,11 +69,13 @@ fun Int.lightenColor(factor: Int = 8): Int {
     return Color.HSVToColor(hsv)
 }
 
+private const val LIGHTNESS_THRESHOLD = 0.5f
+
 private fun hsl2hsv(hsl: FloatArray): FloatArray {
     val hue = hsl[0]
     var sat = hsl[1]
     val light = hsl[2]
-    sat *= if (light < .5) light else 1 - light
+    sat *= if (light < LIGHTNESS_THRESHOLD) light else 1 - light
     return floatArrayOf(hue, 2f * sat / (light + sat), light + sat)
 }
 
@@ -180,39 +91,4 @@ private fun hsv2hsl(hsv: FloatArray): FloatArray {
     }
 
     return floatArrayOf(hue, newSat, newHue / 2f)
-}
-
-fun Int.orientationFromDegrees() =
-    when (this) {
-        270 -> ExifInterface.ORIENTATION_ROTATE_270
-        180 -> ExifInterface.ORIENTATION_ROTATE_180
-        90 -> ExifInterface.ORIENTATION_ROTATE_90
-        else -> ExifInterface.ORIENTATION_NORMAL
-    }.toString()
-
-fun Int.degreesFromOrientation() =
-    when (this) {
-        ExifInterface.ORIENTATION_ROTATE_270 -> 270
-        ExifInterface.ORIENTATION_ROTATE_180 -> 180
-        ExifInterface.ORIENTATION_ROTATE_90 -> 90
-        else -> 0
-    }
-
-fun Int.ensureTwoDigits(): String =
-    if (toString().length == 1) {
-        "0$this"
-    } else {
-        toString()
-    }
-
-fun Int.getColorStateList(): ColorStateList {
-    val states =
-        arrayOf(
-            intArrayOf(android.R.attr.state_enabled),
-            intArrayOf(-android.R.attr.state_enabled),
-            intArrayOf(-android.R.attr.state_checked),
-            intArrayOf(android.R.attr.state_pressed),
-        )
-    val colors = intArrayOf(this, this, this, this)
-    return ColorStateList(states, colors)
 }
