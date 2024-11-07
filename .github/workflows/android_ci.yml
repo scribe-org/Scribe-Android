@@ -51,6 +51,7 @@ jobs:
     build:
       runs-on: ubuntu-latest
       name: build app
+      needs: code-quality
       steps: 
             - name: Checkout repository
               uses: actions/checkout@v4
