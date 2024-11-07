@@ -52,5 +52,17 @@ jobs:
       runs-on: ubuntu-latest
       name: build app
       steps: 
-         - name: checkout 
-           run: ./gradlew assembleDebug
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup JDK environment
+              uses: actions/setup-java@v4
+              with:
+                  distribution: "zulu"
+                  java-version: 17
+
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@v4    
+              
+            - name: build app  
+              run: ./gradlew assembleDebug
