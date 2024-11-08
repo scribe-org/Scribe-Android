@@ -178,7 +178,7 @@ To maintain consistency and clarity in the Scribe-Android codebase, we recommend
     ```kotlin
     @Test
     public void methodName_StateUnderTest_ExpectedBehavior() {
-        // Test code here
+        // Test code here.
     }
     ```
 
@@ -192,12 +192,12 @@ To maintain consistency and clarity in the Scribe-Android codebase, we recommend
     ```kotlin
     @Before
     public void setUp() {
-        // Initialize objects
+        // Initialize objects.
     }
 
     @After
     public void tearDown() {
-        // Cleanup objects
+        // Cleanup objects.
     }
     ```
 
