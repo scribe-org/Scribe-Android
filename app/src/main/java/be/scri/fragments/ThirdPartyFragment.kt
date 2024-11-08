@@ -7,19 +7,20 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.databinding.FragmentThirdPartyBinding
+import be.scri.helpers.PreferencesHelper
+import be.scri.ui.components.ThirdPartyScreen
+import be.scri.ui.theme.ScribeTheme
 
 class ThirdPartyFragment : Fragment() {
-    private lateinit var binding: FragmentThirdPartyBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
-        val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 viewpager.setCurrentItem(2, true)
@@ -42,7 +43,6 @@ class ThirdPartyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentThirdPartyBinding.inflate(inflater, container, false)
         (requireActivity() as MainActivity).showFragmentContainer()
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_third_party)
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -69,6 +69,16 @@ class ThirdPartyFragment : Fragment() {
                 }
             },
         )
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                ScribeTheme(
+                    useDarkTheme =
+                        PreferencesHelper.getUserDarkModePreference(requireContext())
+                            == AppCompatDelegate.MODE_NIGHT_YES,
+                ) {
+                    ThirdPartyScreen()
+                }
+            }
+        }
     }
 }
