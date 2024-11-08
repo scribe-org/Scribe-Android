@@ -44,6 +44,6 @@ fun ScribeTheme(
     MaterialTheme(
         colorScheme = colors,
         content = content,
-        typography = ScribeTypography
+        typography = ScribeTypography,
     )
 }

@@ -34,10 +34,11 @@ fun ThirdPartyScreen() {
                 text = stringResource(id = R.string.app_about_legal_third_party_caption),
                 modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
                 fontSize = ScribeTypography.headlineMedium.fontSize,
-                style = TextStyle.Default.copy(
-                    fontStyle = ScribeTypography.headlineMedium.fontStyle,
-                    fontWeight = FontWeight.Bold
-                )
+                style =
+                    TextStyle.Default.copy(
+                        fontStyle = ScribeTypography.headlineMedium.fontStyle,
+                        fontWeight = FontWeight.Bold,
+                    ),
             )
             Card(
                 colors =
@@ -49,16 +50,18 @@ fun ThirdPartyScreen() {
                     Text(
                         text = stringResource(id = R.string.app_about_legal_third_party_text),
                         fontSize = ScribeTypography.bodyMedium.fontSize,
-                        style = TextStyle.Default.copy(
-                            fontStyle = ScribeTypography.bodyMedium.fontStyle
-                        )
+                        style =
+                            TextStyle.Default.copy(
+                                fontStyle = ScribeTypography.bodyMedium.fontStyle,
+                            ),
                     )
                     Text(
                         text = stringResource(id = R.string.app_about_legal_third_party_entry_simple_keyboard),
                         fontSize = ScribeTypography.bodyMedium.fontSize,
-                        style = TextStyle.Default.copy(
-                            fontStyle = ScribeTypography.bodyMedium.fontStyle
-                        )
+                        style =
+                            TextStyle.Default.copy(
+                                fontStyle = ScribeTypography.bodyMedium.fontStyle,
+                            ),
                     )
                 }
             }
