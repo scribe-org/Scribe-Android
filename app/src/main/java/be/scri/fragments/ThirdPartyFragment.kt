@@ -14,7 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.helpers.PreferencesHelper
-import be.scri.ui.components.ThirdPartyScreen
+import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.theme.ScribeTheme
 
 class ThirdPartyFragment : Fragment() {

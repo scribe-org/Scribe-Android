@@ -1,4 +1,4 @@
-package be.scri.ui.components
+package be.scri.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
