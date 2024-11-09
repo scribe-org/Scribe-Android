@@ -30,9 +30,8 @@ private val DarkColors =
 @Composable
 fun ScribeTheme(
     useDarkTheme: Boolean,
-    content:
-        @Composable()
-        () -> Unit,
+    @Suppress("ktlint:standard:annotation")
+    content: @Composable() () -> Unit,
 ) {
     val colors =
         if (!useDarkTheme) {
