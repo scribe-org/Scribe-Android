@@ -14,7 +14,7 @@ style:
   UnusedParameter:
     active: true
   UtilityClassWithPublicConstructor:
-    active: false
+    active: true
 
 complexity:
   TooManyFunctions:
