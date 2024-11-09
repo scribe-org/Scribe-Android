@@ -113,14 +113,15 @@ android {
         val unitTests = "test${variantName}UnitTest"
         val androidTests = "connected${variantName}AndroidTest"
 
-        val exclusions = listOf(
-            // Data binding.
-            "**/R.class",
-            "**/R\$*.class",
-            "**/BuildConfig.*",
-            "**/Manifest*.*",
-            "**/*Test*.*"
-        )
+        val exclusions =
+            listOf(
+                // Data binding.
+                "**/R.class",
+                "**/R\$*.class",
+                "**/BuildConfig.*",
+                "**/Manifest*.*",
+                "**/*Test*.*",
+            )
 
         tasks.register<JacocoReport>("jacoco${variantName}CodeCoverage") {
             dependsOn(listOf(unitTests, androidTests))
@@ -133,18 +134,22 @@ android {
             // Set source directories to the main source directory.
             sourceDirectories.setFrom(layout.projectDirectory.dir("src/main"))
             // Set class directories to compiled Java and Kotlin classes, excluding specified exclusions.
-            classDirectories.setFrom(files(
-                fileTree(layout.buildDirectory.dir("intermediates/javac/")) {
-                    exclude(exclusions)
-                },
-                fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/")) {
-                    exclude(exclusions)
-                }
-            ))
+            classDirectories.setFrom(
+                files(
+                    fileTree(layout.buildDirectory.dir("intermediates/javac/")) {
+                        exclude(exclusions)
+                    },
+                    fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/")) {
+                        exclude(exclusions)
+                    },
+                ),
+            )
             // Collect execution data from .exec and .ec files generated during test execution.
-            executionData.setFrom(files(
-                fileTree(layout.buildDirectory) { include(listOf("**/*.exec", "**/*.ec")) }
-            ))
+            executionData.setFrom(
+                files(
+                    fileTree(layout.buildDirectory) { include(listOf("**/*.exec", "**/*.ec")) },
+                ),
+            )
         }
     }
 }
