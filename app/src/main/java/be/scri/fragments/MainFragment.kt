@@ -42,7 +42,7 @@ class MainFragment : ScribeFragment("Main") {
         return binding.root
     }
 
-    private fun applyUserDarkModePreference() {
+    fun applyUserDarkModePreference() {
         val sharedPref = requireActivity().getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode =
