@@ -86,8 +86,9 @@ class CustomAdapter(
         holder.imageView.setImageResource(item.image)
         holder.textView.text =
             with(item.text) {
-                context.getString(resId, *formatArgs)
+                context.resources.getString(resId, formatArgs.toList())
             }
+
         holder.imageView2.setImageResource(item.image2)
 
         holder.itemView.setOnClickListener {
