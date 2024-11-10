@@ -1,5 +1,3 @@
-package be.scri.activities
-
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class MainActivityTest {
-
     @Test
     fun testApplyUserDarkModePreference_darkModeEnabled() {
         val context = mockk<Context>(relaxed = true)
