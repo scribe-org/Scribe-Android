@@ -1,47 +1,47 @@
 style:
-  MagicNumber:
-    active: true
-  MaxLineLength:
-    active: true
-  LoopWithTooManyJumpStatements:
-    active: true
-  WildcardImport:
-    active: true
-  ReturnCount:
-    active: false
-  UnusedPrivateProperty:
-    active: true
-  UnusedParameter:
-    active: true
-  UtilityClassWithPublicConstructor:
-    active: true
+    MagicNumber:
+        active: true
+    MaxLineLength:
+        active: true
+    LoopWithTooManyJumpStatements:
+        active: true
+    WildcardImport:
+        active: true
+    ReturnCount:
+        active: true
+    UnusedPrivateProperty:
+        active: true
+    UnusedParameter:
+        active: true
+    UtilityClassWithPublicConstructor:
+        active: true
 
 complexity:
-  TooManyFunctions:
-    active: true
-  NestedBlockDepth:
-    active: false
-  ComplexCondition:
-    active: true
-  LongParameterList:
-    active: true
-  LongMethod:
-    active: true
-  CyclomaticComplexMethod:
-    active: false
+    TooManyFunctions:
+        active: true
+    NestedBlockDepth:
+        active: false
+    ComplexCondition:
+        active: true
+    LongParameterList:
+        active: true
+    LongMethod:
+        active: true
+    CyclomaticComplexMethod:
+        active: false
 
 exceptions:
-  SwallowedException:
-    active: true
-  InstanceOfCheckForException:
-    active: true
+    SwallowedException:
+        active: true
+    InstanceOfCheckForException:
+        active: true
 
 empty-blocks:
-  EmptyCatchBlock:
-    active: true
-  EmptyFunctionBlock:
-    active: true
+    EmptyCatchBlock:
+        active: true
+    EmptyFunctionBlock:
+        active: true
 
 performance:
-  SpreadOperator:
-    active: true
+    SpreadOperator:
+        active: true
