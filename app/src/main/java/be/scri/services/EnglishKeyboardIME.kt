@@ -1,18 +1,17 @@
 package be.scri.services
 
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.MyKeyboard
-import be.scri.helpers.MyKeyboard.Companion.KEYCODE_ENTER
 import be.scri.views.MyKeyboardView
 
 class EnglishKeyboardIME : SimpleKeyboardIME("English") {
     override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_english
 
-    override var shiftPermToggleSpeed = 500
     override val keyboardLetters = 0
     override val keyboardSymbols = 1
     override val keyboardSymbolShift = 2
@@ -67,7 +66,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
                 super.handleKeyboardLetters(keyboardMode, keyboardView)
                 keyboardView!!.invalidateAllKeys()
             }
-            KEYCODE_ENTER -> {
+            MyKeyboard.KEYCODE_ENTER -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
                     handleKeycodeEnter(binding = null, false)
                 } else {
@@ -88,6 +87,12 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
                 }
             }
         }
+
+        lastWord = getLastWordBeforeCursor()
+        Log.d("Debug", "$lastWord")
+        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        Log.d("Debug", "$autosuggestEmojis")
+        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
 
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()

@@ -16,7 +16,6 @@ class ItalianKeyboardIME : SimpleKeyboardIME("Italian") {
     override var keyboardView: MyKeyboardView? = null
     override var keyboard: MyKeyboard? = null
     override var enterKeyType = IME_ACTION_NONE
-    override var shiftPermToggleSpeed = 500
     override val keyboardLetters = 0
     override val keyboardSymbols = 1
     override val keyboardSymbolShift = 2
@@ -84,6 +83,12 @@ class ItalianKeyboardIME : SimpleKeyboardIME("Italian") {
                 }
             }
         }
+
+        lastWord = getLastWordBeforeCursor()
+        Log.d("Debug", "$lastWord")
+        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        Log.d("Debug", "$autosuggestEmojis")
+        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
 
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()

@@ -1,4 +1,5 @@
 import java.io.FileInputStream
+import java.util.Locale
 import java.util.Properties
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -16,6 +17,11 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
     id("de.mannodermaus.android-junit5") version "1.11.2.0"
+    id("jacoco")
+}
+
+jacoco {
+    toolVersion = "0.8.12"
 }
 
 val kotlinVersion by extra("2.0.0")
@@ -63,6 +69,8 @@ android {
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debug"
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
         getByName("release") {
             isMinifyEnabled = true
@@ -99,6 +107,51 @@ android {
     }
 
     namespace = "be.scri"
+
+    applicationVariants.all {
+        val variantName = this.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+        val unitTests = "test${variantName}UnitTest"
+        val androidTests = "connected${variantName}AndroidTest"
+
+        val exclusions =
+            listOf(
+                // Data binding.
+                "**/R.class",
+                "**/R\$*.class",
+                "**/BuildConfig.*",
+                "**/Manifest*.*",
+                "**/*Test*.*",
+            )
+
+        tasks.register<JacocoReport>("jacoco${variantName}CodeCoverage") {
+            dependsOn(listOf(unitTests, androidTests))
+            group = "Reporting"
+            description = "Generate Jacoco coverage reports for the $variantName build"
+            reports {
+                xml.required.set(true)
+                html.required.set(true)
+            }
+            // Set source directories to the main source directory.
+            sourceDirectories.setFrom(layout.projectDirectory.dir("src/main"))
+            // Set class directories to compiled Java and Kotlin classes, excluding specified exclusions.
+            classDirectories.setFrom(
+                files(
+                    fileTree(layout.buildDirectory.dir("intermediates/javac/")) {
+                        exclude(exclusions)
+                    },
+                    fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/")) {
+                        exclude(exclusions)
+                    },
+                ),
+            )
+            // Collect execution data from .exec and .ec files generated during test execution.
+            executionData.setFrom(
+                files(
+                    fileTree(layout.buildDirectory) { include(listOf("**/*.exec", "**/*.ec")) },
+                ),
+            )
+        }
+    }
 }
 
 dependencies {
@@ -154,4 +207,11 @@ tasks.register<Copy>("moveFromi18n") {
 
 tasks.named("preBuild").configure {
     dependsOn(tasks.named("moveFromi18n"))
+}
+
+tasks.withType(Test::class) {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
 }

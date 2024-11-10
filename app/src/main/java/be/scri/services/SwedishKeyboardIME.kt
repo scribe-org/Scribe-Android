@@ -21,7 +21,6 @@ class SwedishKeyboardIME : SimpleKeyboardIME("Swedish") {
     override var keyboardView: MyKeyboardView? = null
     override var keyboard: MyKeyboard? = null
     override var enterKeyType = IME_ACTION_NONE
-    override var shiftPermToggleSpeed = 500
     override val keyboardLetters = 0
     override val keyboardSymbols = 1
     override val keyboardSymbolShift = 2
@@ -30,6 +29,20 @@ class SwedishKeyboardIME : SimpleKeyboardIME("Swedish") {
     override var inputTypeClass = InputType.TYPE_CLASS_TEXT
     override var switchToLetters = false
     override var hasTextBeforeCursor = false
+
+    override fun onCreateInputView(): View {
+        binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
+        val keyboardHolder = binding.root
+        Log.i("MY-TAG", "From Swedish Keyboard IME")
+        keyboardView = binding.keyboardView
+        keyboardView!!.setKeyboard(keyboard!!)
+        setupCommandBarTheme(binding)
+        keyboardView!!.setKeyboardHolder()
+        keyboardView!!.mOnKeyboardActionListener = this
+        initializeEmojiButtons()
+        updateUI()
+        return keyboardHolder
+    }
 
     override fun onKey(code: Int) {
         val inputConnection = currentInputConnection
@@ -76,23 +89,15 @@ class SwedishKeyboardIME : SimpleKeyboardIME("Swedish") {
             }
         }
 
+        lastWord = getLastWordBeforeCursor()
+        Log.d("Debug", "$lastWord")
+        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        Log.d("Debug", "$autosuggestEmojis")
+        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }
-    }
-
-    override fun onCreateInputView(): View {
-        binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
-        val keyboardHolder = binding.root
-        Log.i("MY-TAG", "From Swedish Keyboard IME")
-        keyboardView = binding.keyboardView
-        keyboardView!!.setKeyboard(keyboard!!)
-        setupCommandBarTheme(binding)
-        keyboardView!!.setKeyboardHolder()
-        keyboardView!!.mOnKeyboardActionListener = this
-        initializeEmojiButtons()
-        updateUI()
-        return keyboardHolder
     }
 
     override fun onCreate() {

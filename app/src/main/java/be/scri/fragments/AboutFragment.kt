@@ -1,32 +1,23 @@
 package be.scri.fragments
 
-import CustomDividerItemDecoration
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import be.scri.BuildConfig
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentAboutBinding
+import be.scri.extensions.addCustomItemDecoration
 import be.scri.helpers.CustomAdapter
 import be.scri.helpers.HintUtils
+import be.scri.helpers.RatingHelper
+import be.scri.helpers.ShareHelper
 import be.scri.models.ItemsViewModel
-import com.google.android.play.core.review.ReviewManagerFactory
 
-class AboutFragment : Fragment() {
+class AboutFragment : ScribeFragment("About") {
     private lateinit var binding: FragmentAboutBinding
 
     override fun onCreateView(
@@ -41,8 +32,8 @@ class AboutFragment : Fragment() {
             }
         callback.isEnabled = true
         (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
-        (requireActivity() as MainActivity).unsetActionBarLayoutMargin()
-        (requireActivity() as MainActivity).setActionBarButtonInvisible()
+        (requireActivity() as MainActivity).setActionBarVisibility(false)
+        (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
         return binding.root
     }
 
@@ -60,33 +51,22 @@ class AboutFragment : Fragment() {
         recyclerView1.adapter = CustomAdapter(getFirstRecyclerViewData(), requireContext())
         recyclerView1.suppressLayout(true)
         recyclerView1.apply {
-            addCustomItemDecoration()
+            addCustomItemDecoration(requireContext())
         }
         val recyclerView2 = binding.recycleView
         recyclerView2.layoutManager = LinearLayoutManager(context)
         recyclerView2.adapter = CustomAdapter(getSecondRecyclerViewData(), requireContext())
         recyclerView2.suppressLayout(true)
         recyclerView2.apply {
-            addCustomItemDecoration()
+            addCustomItemDecoration(requireContext())
         }
         val recyclerView3 = binding.recycleView3
         recyclerView3.layoutManager = LinearLayoutManager(context)
         recyclerView3.adapter = CustomAdapter(getThirdRecyclerViewData(), requireContext())
         recyclerView3.suppressLayout(true)
         recyclerView3.apply {
-            addCustomItemDecoration()
+            addCustomItemDecoration(requireContext())
         }
-    }
-
-    private fun RecyclerView.addCustomItemDecoration() {
-        val itemDecoration =
-            CustomDividerItemDecoration(
-                drawable = getDrawable(requireContext(), R.drawable.rv_divider)!!,
-                width = 1,
-                marginLeft = 50,
-                marginRight = 50,
-            )
-        addItemDecoration(itemDecoration)
     }
 
     private fun getFirstRecyclerViewData(): List<Any> =
@@ -121,7 +101,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
-                action = ::shareScribe,
+                action = ({ ShareHelper.shareScribe(requireContext()) }),
             ),
             ItemsViewModel(
                 image = R.drawable.wikimedia_logo_black,
@@ -129,7 +109,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
-                action = ::loadWikimediaScribeFragment,
+                action = ({ loadOtherFragment(WikimediaScribeFragment(), "WikimediaScribePage") }),
             ),
         )
 
@@ -141,7 +121,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
-                action = ::rateScribe,
+                action = ({ RatingHelper.rateScribe(requireContext(), activity as MainActivity) }),
             ),
             ItemsViewModel(
                 image = R.drawable.bug_report_icon,
@@ -157,7 +137,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.external_link,
                 url = null,
                 activity = null,
-                action = ::sendEmail,
+                action = ({ ShareHelper.sendEmail(requireContext()) }),
             ),
             ItemsViewModel(
                 image = R.drawable.bookmark_icon,
@@ -185,7 +165,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
-                action = ::loadPrivacyPolicyFragment,
+                action = ({ loadOtherFragment(PrivacyPolicyFragment(), null) }),
             ),
             ItemsViewModel(
                 image = R.drawable.license_icon,
@@ -193,7 +173,7 @@ class AboutFragment : Fragment() {
                 image2 = R.drawable.right_arrow,
                 url = null,
                 activity = null,
-                action = ::loadThirdPartyLicensesFragment,
+                action = ({ loadOtherFragment(ThirdPartyFragment(), null) }),
             ),
         )
 
@@ -202,121 +182,8 @@ class AboutFragment : Fragment() {
         (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
     }
 
-    private fun shareScribe() {
-        try {
-            val sharingIntent =
-                Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
-                }
-            startActivity(Intent.createChooser(sharingIntent, "Share via"))
-        } catch (e: ActivityNotFoundException) {
-            Log.e("AboutFragment", "No application found to share content", e)
-        } catch (e: IllegalArgumentException) {
-            Log.e("AboutFragment", "Invalid argument for sharing", e)
-        }
-    }
-
-    private fun sendEmail() {
-        try {
-            val intent =
-                Intent(Intent.ACTION_SEND).apply {
-                    putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
-                    putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
-                    type = "message/rfc822"
-                }
-            startActivity(Intent.createChooser(intent, "Choose an Email client:"))
-        } catch (e: ActivityNotFoundException) {
-            Log.e("AboutFragment", "No email client found", e)
-        } catch (e: IllegalArgumentException) {
-            Log.e("AboutFragment", "Invalid argument for sending email", e)
-        }
-    }
-
-    private fun loadWikimediaScribeFragment() {
-        try {
-            val fragment = WikimediaScribeFragment()
-            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_container, fragment, "WikimediaScribePage")
-            fragmentTransaction.addToBackStack("WikimediaScribePage")
-            fragmentTransaction.commit()
-        } catch (e: IllegalStateException) {
-            Log.e("AboutFragment", "Failed to load fragment", e)
-        }
-    }
-
-    private fun loadPrivacyPolicyFragment() {
-        try {
-            val fragment = PrivacyPolicyFragment()
-            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_container, fragment)
-            fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.commit()
-        } catch (e: IllegalStateException) {
-            Log.e("AboutFragment", "Failed to load fragment", e)
-        }
-    }
-
-    private fun loadThirdPartyLicensesFragment() {
-        try {
-            val fragment = ThirdPartyFragment()
-            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_container, fragment)
-            fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.commit()
-        } catch (e: IllegalStateException) {
-            Log.e("AboutFragment", "Failed to load fragment", e)
-        }
-    }
-
-    private fun getInstallSource(context: Context): String? =
-        try {
-            val packageManager = context.packageManager
-            packageManager.getInstallerPackageName(context.packageName)
-        } catch (e: PackageManager.NameNotFoundException) {
-            null
-        }
-
-    private fun rateScribe() {
-        val context = requireContext()
-        var installSource = getInstallSource(context)
-
-        if (installSource == "com.android.vending") {
-            val reviewManager = ReviewManagerFactory.create(context)
-            val request = reviewManager.requestReviewFlow()
-
-            request.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val reviewInfo = task.result
-                    val activity = requireActivity()
-                    reviewManager
-                        .launchReviewFlow(activity, reviewInfo)
-                        .addOnCompleteListener { _ ->
-                        }
-                } else {
-                    Toast.makeText(context, "Failed to launch review flow", Toast.LENGTH_SHORT).show()
-                }
-            }
-        } else if (installSource == "org.fdroid.fdroid") {
-            val url = "https://f-droid.org/packages/${context.packageName}"
-            val intent =
-                Intent(Intent.ACTION_VIEW)
-                    .apply {
-                        data = Uri.parse(url)
-                    }
-            context.startActivity(intent)
-        } else {
-            Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (activity as MainActivity).hideHint()
     }
 }
