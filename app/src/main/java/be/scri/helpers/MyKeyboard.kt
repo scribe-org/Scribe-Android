@@ -59,6 +59,7 @@ class MyKeyboard {
         private const val TAG_KEY = "Key"
         private const val EDGE_LEFT = 0x01
         private const val EDGE_RIGHT = 0x02
+        private const val WIDTH_DIVIDER = 10
         const val KEYCODE_SHIFT = -1
         const val KEYCODE_MODE_CHANGE = -2
         const val KEYCODE_ENTER = -4
@@ -302,7 +303,7 @@ class MyKeyboard {
     ) {
         mDisplayWidth = context.resources.displayMetrics.widthPixels
         mDefaultHorizontalGap = 0
-        mDefaultWidth = mDisplayWidth / 10
+        mDefaultWidth = mDisplayWidth / WIDTH_DIVIDER
         mDefaultHeight = mDefaultWidth
         mKeys = ArrayList()
         mEnterKeyType = enterKeyType
@@ -455,7 +456,9 @@ class MyKeyboard {
         parser: XmlResourceParser,
     ) {
         val a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.MyKeyboard)
-        mDefaultWidth = getDimensionOrFraction(a, R.styleable.MyKeyboard_keyWidth, mDisplayWidth, mDisplayWidth / 10)
+        val keyWidthResId = R.styleable.MyKeyboard_keyWidth
+        val defaultWidth = mDisplayWidth / WIDTH_DIVIDER
+        mDefaultWidth = getDimensionOrFraction(a, keyWidthResId, mDisplayWidth, defaultWidth)
         mDefaultHeight = res.getDimension(R.dimen.key_height).toInt()
         mDefaultHorizontalGap = getDimensionOrFraction(a, R.styleable.MyKeyboard_horizontalGap, mDisplayWidth, 0)
         a.recycle()

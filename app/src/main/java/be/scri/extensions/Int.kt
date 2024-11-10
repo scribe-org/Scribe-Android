@@ -4,9 +4,20 @@ import android.graphics.Color
 import be.scri.helpers.DARK_GREY
 import java.util.Random
 
+private const val RED_COEFFICIENT = 299
+private const val GREEN_COEFFICIENT = 587
+private const val BLUE_COEFFICIENT = 114
+private const val COEFFICIENT_SUM = 1000
+private const val Y_THRESHOLD = 149
+
 fun Int.getContrastColor(): Int {
-    val y = (299 * Color.red(this) + 587 * Color.green(this) + 114 * Color.blue(this)) / 1000
-    return if (y >= 149 && this != Color.BLACK) DARK_GREY else Color.WHITE
+    val y =
+        (
+            RED_COEFFICIENT * Color.red(this) +
+                GREEN_COEFFICIENT * Color.green(this) +
+                BLUE_COEFFICIENT * Color.blue(this)
+        ) / COEFFICIENT_SUM
+    return if (y >= Y_THRESHOLD && this != Color.BLACK) DARK_GREY else Color.WHITE
 }
 
 fun Int.adjustAlpha(factor: Float): Int {
@@ -19,17 +30,21 @@ fun Int.adjustAlpha(factor: Float): Int {
 
 fun ClosedRange<Int>.random() = Random().nextInt(endInclusive - start) + start
 
-// taken from https://stackoverflow.com/a/40964456/1967672
-fun Int.darkenColor(factor: Int = 8): Int {
+// Taken from https://stackoverflow.com/a/40964456/1967672.
+private const val HSV_COMPONENT_COUNT = 3
+private const val DEFAULT_DARKEN_FACTOR = 8
+private const val FACTOR_DIVIDER = 100
+
+fun Int.darkenColor(factor: Int = DEFAULT_DARKEN_FACTOR): Int {
     if (this == Color.WHITE || this == Color.BLACK) {
         return this
     }
 
     val darkFactor = factor
-    var hsv = FloatArray(3)
+    var hsv = FloatArray(HSV_COMPONENT_COUNT)
     Color.colorToHSV(this, hsv)
     val hsl = hsv2hsl(hsv)
-    hsl[2] -= darkFactor / 100f
+    hsl[2] -= darkFactor / FACTOR_DIVIDER.toFloat()
     if (hsl[2] < 0) {
         hsl[2] = 0f
     }
@@ -43,10 +58,10 @@ fun Int.lightenColor(factor: Int = 8): Int {
     }
 
     val lightFactor = factor
-    var hsv = FloatArray(3)
+    var hsv = FloatArray(HSV_COMPONENT_COUNT)
     Color.colorToHSV(this, hsv)
     val hsl = hsv2hsl(hsv)
-    hsl[2] += lightFactor / 100f
+    hsl[2] += lightFactor / FACTOR_DIVIDER.toFloat()
     if (hsl[2] < 0) {
         hsl[2] = 0f
     }
@@ -54,11 +69,13 @@ fun Int.lightenColor(factor: Int = 8): Int {
     return Color.HSVToColor(hsv)
 }
 
+private const val LIGHTNESS_THRESHOLD = 0.5f
+
 private fun hsl2hsv(hsl: FloatArray): FloatArray {
     val hue = hsl[0]
     var sat = hsl[1]
     val light = hsl[2]
-    sat *= if (light < .5) light else 1 - light
+    sat *= if (light < LIGHTNESS_THRESHOLD) light else 1 - light
     return floatArrayOf(hue, 2f * sat / (light + sat), light + sat)
 }
 

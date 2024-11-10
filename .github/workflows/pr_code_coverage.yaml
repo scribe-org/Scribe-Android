@@ -1,0 +1,40 @@
+name: pr_code_coverage
+on:
+    pull_request:
+        branches:
+            - main
+        types: [opened, reopened, synchronize]
+
+jobs:
+    code-coverage:
+        runs-on: ubuntu-latest
+        name: Generate code coverage report
+        permissions:
+            pull-requests: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup JDK environment
+              uses: actions/setup-java@v4
+              with:
+                  distribution: "zulu"
+                  java-version: 17
+                  cache: 'gradle'
+
+            - name: Generate coverage report
+              run: ./gradlew jacocoCoreDebugCodeCoverage
+
+            - name: Add coverage to PR
+              id: jacoco
+              uses: madrapps/jacoco-report@v1.7.1
+              with:
+                  paths: |
+                      ${{ github.workspace }}/**/build/reports/jacoco/jacocoCoreDebugCodeCoverage/jacocoCoreDebugCodeCoverage.xml
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  min-coverage-overall: 40
+                  min-coverage-changed-files: 60
+                  title: Code Coverage
+                  update-comment: true
+                  debug-mode: true
