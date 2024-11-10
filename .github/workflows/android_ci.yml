@@ -9,6 +9,8 @@ jobs:
     code-quality:
         runs-on: ubuntu-latest
         name: Run lint and unit tests
+        permissions:
+            pull-requests: write        
 
         steps:
             - name: Checkout repository
