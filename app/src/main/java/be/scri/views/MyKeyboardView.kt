@@ -980,18 +980,24 @@ class MyKeyboardView
             )
         }
 
-    private fun openPopupIfRequired(me: MotionEvent): Boolean {
-        if (mPopupLayout == 0 || mCurrentKey !in mKeys.indices) {
-            return false
+        private fun openPopupIfRequired(me: MotionEvent): Boolean {
+            if (mPopupLayout == 0 || mCurrentKey !in mKeys.indices) {
+                return false
+            }
+
+            val popupKey = mKeys[mCurrentKey]
+            val result = onLongPress(popupKey, me)
+            if (result) {
+                mAbortKey = true
+                showPreview(NOT_A_KEY)
+            }
+
+            return result
         }
 
-        val popupKey = mKeys[mCurrentKey]
-        val result = onLongPress(popupKey, me)
-        if (result) {
-            mAbortKey = true
-            showPreview(NOT_A_KEY)
-        }
-
+        /**
+         * Called when a key is long pressed.
+         * By default this will open any popup keyboard associated with this key through the attributes
          * popupLayout and popupCharacters.
          * @param popupKey the key that was long pressed
          * @return true if the long press is handled, false otherwise.
@@ -1199,212 +1205,208 @@ class MyKeyboardView
             return onModifiedTouchEvent(me)
         }
 
-    @Suppress("ReturnCount")
-    private fun onModifiedTouchEvent(me: MotionEvent): Boolean {
-        var touchX = me.x.toInt()
-        var touchY = me.y.toInt()
-        if (touchY >= -mVerticalCorrection) {
-            touchY += mVerticalCorrection
-        }
+        private fun onModifiedTouchEvent(me: MotionEvent): Boolean {
+            var touchX = me.x.toInt()
+            var touchY = me.y.toInt()
+            if (touchY >= -mVerticalCorrection) {
+                touchY += mVerticalCorrection
+            }
 
-        val action = me.actionMasked
-        val eventTime = me.eventTime
-        val keyIndex = getPressedKeyIndex(touchX, touchY)
+            var handled = false
+            val action = me.actionMasked
+            val eventTime = me.eventTime
+            val keyIndex = getPressedKeyIndex(touchX, touchY)
 
-        var handled = false
-
-        // Ignore all motion events until a DOWN.
-        if (mAbortKey && action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_CANCEL) {
-            handled = true
-        }
+            // Ignore all motion events until a DOWN.
+            if (mAbortKey && action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_CANCEL) {
+                handled = true
+            }
 
             // Needs to be called after the gesture detector gets a turn, as it may have displayed the mini keyboard.
             if (mMiniKeyboardOnScreen && action != MotionEvent.ACTION_CANCEL) {
                 return true
             }
 
-        if (!handled) {
-            when (action) {
-                MotionEvent.ACTION_POINTER_DOWN -> {
-                    // If the user presses a key while still holding down the previous,
-                    // type in both chars and ignore the later gestures.
-                    // Can happen at fast typing, easier to reproduce by increasing LONGPRESS_TIMEOUT.
-                    ignoreTouches = true
-                    mHandler!!.removeMessages(MSG_LONGPRESS)
-                    dismissPopupKeyboard()
-                    detectAndSendKey(keyIndex, touchX, touchY, eventTime)
-
-                    val newPointerX = me.getX(1).toInt()
-                    val newPointerY = me.getY(1).toInt()
-                    val secondKeyIndex = getPressedKeyIndex(newPointerX, newPointerY)
-                    showPreview(secondKeyIndex)
-                    detectAndSendKey(secondKeyIndex, newPointerX, newPointerY, eventTime)
-
-                    val secondKeyCode = mKeys.getOrNull(secondKeyIndex)?.code
-                    secondKeyCode?.let { mOnKeyboardActionListener!!.onPress(it) }
-
-                    showPreview(NOT_A_KEY)
-                    invalidateKey(mCurrentKey)
-                    handled = true
-                }
-                MotionEvent.ACTION_DOWN -> {
-                    mAbortKey = false
-                    mLastCodeX = touchX
-                    mLastCodeY = touchY
-                    mLastKeyTime = 0
-                    mCurrentKeyTime = 0
-                    mLastKey = NOT_A_KEY
-                    mCurrentKey = keyIndex
-                    mDownTime = eventTime
-                    mLastMoveTime = eventTime
-
-                    val onPressKey = if (keyIndex != NOT_A_KEY) mKeys[keyIndex].code else 0
-                    mOnKeyboardActionListener!!.onPress(onPressKey)
-
-                    if (mCurrentKey >= 0 && mKeys[mCurrentKey].repeatable) {
-                        mRepeatKeyIndex = mCurrentKey
-                        val msg = mHandler!!.obtainMessage(MSG_REPEAT)
-                        mHandler!!.sendMessageDelayed(msg, REPEAT_START_DELAY.toLong())
-                        // If the user long presses Space, move the cursor after swipine left/right.
-                        if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
-                            mLastSpaceMoveX = -1
-                        } else {
-                            repeatKey(true)
-                        }
-
-                        // Delivering the key could have caused an abort.
-                        if (mAbortKey) {
-                            mRepeatKeyIndex = NOT_A_KEY
-                            handled = true
-                        }
-                    }
-
-                    if (!handled && mCurrentKey != NOT_A_KEY) {
-                        val msg = mHandler!!.obtainMessage(MSG_LONGPRESS, me)
-                        mHandler!!.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
-                    }
-
-                    if (mPopupParent.id != R.id.mini_keyboard_view) {
-                        showPreview(keyIndex)
-                    }
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    var continueLongPress = false
-                    if (keyIndex != NOT_A_KEY) {
-                        if (mCurrentKey == NOT_A_KEY) {
-                            mCurrentKey = keyIndex
-                            mCurrentKeyTime = eventTime - mDownTime
-                        } else {
-                            if (keyIndex == mCurrentKey) {
-                                mCurrentKeyTime += eventTime - mLastMoveTime
-                                continueLongPress = true
-                            } else if (mRepeatKeyIndex == NOT_A_KEY) {
-                                mLastKey = mCurrentKey
-                                mLastCodeX = mLastX
-                                mLastCodeY = mLastY
-                                mLastKeyTime = mCurrentKeyTime + eventTime - mLastMoveTime
-                                mCurrentKey = keyIndex
-                                mCurrentKeyTime = 0
-                            }
-                        }
-                    }
-
-                    if (mIsLongPressingSpace) {
-                        if (mLastSpaceMoveX == -1) {
-                            mLastSpaceMoveX = mLastX
-                        }
-
-                        val diff = mLastX - mLastSpaceMoveX
-                        if (diff < -mSpaceMoveThreshold) {
-                            for (i in diff / mSpaceMoveThreshold until 0) {
-                                mOnKeyboardActionListener?.moveCursorLeft()
-                            }
-                            mLastSpaceMoveX = mLastX
-                        } else if (diff > mSpaceMoveThreshold) {
-                            for (i in 0 until diff / mSpaceMoveThreshold) {
-                                mOnKeyboardActionListener?.moveCursorRight()
-                            }
-                            mLastSpaceMoveX = mLastX
-                        }
-                    } else if (!continueLongPress) {
-                        // Cancel old longpress.
+            if (!handled) {
+                when (action) {
+                    MotionEvent.ACTION_POINTER_DOWN -> {
+                        // If the user presses a key while still holding down the previous,
+                        // type in both chars and ignore the later gestures.
+                        // Can happen at fast typing, easier to reproduce by increasing LONGPRESS_TIMEOUT.
+                        ignoreTouches = true
                         mHandler!!.removeMessages(MSG_LONGPRESS)
-                        // Start new longpress if key has changed.
-                        if (keyIndex != NOT_A_KEY) {
+                        dismissPopupKeyboard()
+                        detectAndSendKey(keyIndex, touchX, touchY, eventTime)
+
+                        val newPointerX = me.getX(1).toInt()
+                        val newPointerY = me.getY(1).toInt()
+                        val secondKeyIndex = getPressedKeyIndex(newPointerX, newPointerY)
+                        showPreview(secondKeyIndex)
+                        detectAndSendKey(secondKeyIndex, newPointerX, newPointerY, eventTime)
+
+                        val secondKeyCode = mKeys.getOrNull(secondKeyIndex)?.code
+                        secondKeyCode?.let { mOnKeyboardActionListener!!.onPress(it) }
+
+                        showPreview(NOT_A_KEY)
+                        invalidateKey(mCurrentKey)
+                        handled = true
+                    }
+                    MotionEvent.ACTION_DOWN -> {
+                        mAbortKey = false
+                        mLastCodeX = touchX
+                        mLastCodeY = touchY
+                        mLastKeyTime = 0
+                        mCurrentKeyTime = 0
+                        mLastKey = NOT_A_KEY
+                        mCurrentKey = keyIndex
+                        mDownTime = eventTime
+                        mLastMoveTime = eventTime
+
+                        val onPressKey = if (keyIndex != NOT_A_KEY) mKeys[keyIndex].code else 0
+                        mOnKeyboardActionListener!!.onPress(onPressKey)
+
+                        if (mCurrentKey >= 0 && mKeys[mCurrentKey].repeatable) {
+                            mRepeatKeyIndex = mCurrentKey
+                            val msg = mHandler!!.obtainMessage(MSG_REPEAT)
+                            mHandler!!.sendMessageDelayed(msg, REPEAT_START_DELAY.toLong())
+                            // If the user long presses Space, move the cursor after swipine left/right.
+                            if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
+                                mLastSpaceMoveX = -1
+                            } else {
+                                repeatKey(true)
+                            }
+
+                            // Delivering the key could have caused an abort.
+                            if (mAbortKey) {
+                                mRepeatKeyIndex = NOT_A_KEY
+                                handled = true
+                            }
+                        }
+
+                        if (!handled && mCurrentKey != NOT_A_KEY) {
                             val msg = mHandler!!.obtainMessage(MSG_LONGPRESS, me)
                             mHandler!!.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
                         }
 
                         if (mPopupParent.id != R.id.mini_keyboard_view) {
-                            showPreview(mCurrentKey)
+                            showPreview(keyIndex)
                         }
-                        mLastMoveTime = eventTime
                     }
-                }
-                MotionEvent.ACTION_UP -> {
-                    mLastSpaceMoveX = 0
-                    removeMessages()
-                    if (keyIndex == mCurrentKey) {
-                        mCurrentKeyTime += eventTime - mLastMoveTime
-                    } else {
-                        mLastKey = mCurrentKey
-                        mLastKeyTime = mCurrentKeyTime + eventTime - mLastMoveTime
-                        mCurrentKey = keyIndex
-                        mCurrentKeyTime = 0
-                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        var continueLongPress = false
+                        if (keyIndex != NOT_A_KEY) {
+                            if (mCurrentKey == NOT_A_KEY) {
+                                mCurrentKey = keyIndex
+                                mCurrentKeyTime = eventTime - mDownTime
+                            } else {
+                                if (keyIndex == mCurrentKey) {
+                                    mCurrentKeyTime += eventTime - mLastMoveTime
+                                    continueLongPress = true
+                                } else if (mRepeatKeyIndex == NOT_A_KEY) {
+                                    mLastKey = mCurrentKey
+                                    mLastCodeX = mLastX
+                                    mLastCodeY = mLastY
+                                    mLastKeyTime = mCurrentKeyTime + eventTime - mLastMoveTime
+                                    mCurrentKey = keyIndex
+                                    mCurrentKeyTime = 0
+                                }
+                            }
+                        }
 
-                    if (mCurrentKeyTime < mLastKeyTime && mCurrentKeyTime < DEBOUNCE_TIME && mLastKey != NOT_A_KEY) {
-                        mCurrentKey = mLastKey
-                        touchX = mLastCodeX
-                        touchY = mLastCodeY
-                    }
+                        if (mIsLongPressingSpace) {
+                            if (mLastSpaceMoveX == -1) {
+                                mLastSpaceMoveX = mLastX
+                            }
 
-                    showPreview(NOT_A_KEY)
-                    Arrays.fill(mKeyIndices, NOT_A_KEY)
-                    // If we're not on a repeating key (which sends on a DOWN event).
-                    if (mRepeatKeyIndex == NOT_A_KEY && !mMiniKeyboardOnScreen && !mAbortKey) {
-                        detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
-                    }
+                            val diff = mLastX - mLastSpaceMoveX
+                            if (diff < -mSpaceMoveThreshold) {
+                                for (i in diff / mSpaceMoveThreshold until 0) {
+                                    mOnKeyboardActionListener?.moveCursorLeft()
+                                }
+                                mLastSpaceMoveX = mLastX
+                            } else if (diff > mSpaceMoveThreshold) {
+                                for (i in 0 until diff / mSpaceMoveThreshold) {
+                                    mOnKeyboardActionListener?.moveCursorRight()
+                                }
+                                mLastSpaceMoveX = mLastX
+                            }
+                        } else if (!continueLongPress) {
+                            // Cancel old longpress.
+                            mHandler!!.removeMessages(MSG_LONGPRESS)
+                            // Start new longpress if key has changed.
+                            if (keyIndex != NOT_A_KEY) {
+                                val msg = mHandler!!.obtainMessage(MSG_LONGPRESS, me)
+                                mHandler!!.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
+                            }
 
-                    if (mKeys.getOrNull(mCurrentKey)?.code == KEYCODE_SPACE && !mIsLongPressingSpace) {
-                        val currentTime = System.currentTimeMillis()
-                        if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + EXTRA_DELAY &&
-                            context.config.periodOnDoubleTap &&
-                            mOnKeyboardActionListener!!.hasTextBeforeCursor()
-                        ) {
-                            mOnKeyboardActionListener!!.commitPeriodAfterSpace()
+                            if (mPopupParent.id != R.id.mini_keyboard_view) {
+                                showPreview(mCurrentKey)
+                            }
+                            mLastMoveTime = eventTime
+                        }
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        mLastSpaceMoveX = 0
+                        removeMessages()
+                        if (keyIndex == mCurrentKey) {
+                            mCurrentKeyTime += eventTime - mLastMoveTime
                         } else {
+                            mLastKey = mCurrentKey
+                            mLastKeyTime = mCurrentKeyTime + eventTime - mLastMoveTime
+                            mCurrentKey = keyIndex
+                            mCurrentKeyTime = 0
+                        }
+
+                        if (mCurrentKeyTime < mLastKeyTime && mCurrentKeyTime < DEBOUNCE_TIME && mLastKey != NOT_A_KEY) {
+                            mCurrentKey = mLastKey
+                            touchX = mLastCodeX
+                            touchY = mLastCodeY
+                        }
+
+                        showPreview(NOT_A_KEY)
+                        Arrays.fill(mKeyIndices, NOT_A_KEY)
+                        // If we're not on a repeating key (which sends on a DOWN event).
+                        if (mRepeatKeyIndex == NOT_A_KEY && !mMiniKeyboardOnScreen && !mAbortKey) {
                             detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
                         }
-                        lastSpaceBarTapTime = currentTime
-                    }
 
-                    invalidateKey(keyIndex)
-                    mRepeatKeyIndex = NOT_A_KEY
-                    mOnKeyboardActionListener!!.onActionUp()
-                    mIsLongPressingSpace = false
-                }
-                MotionEvent.ACTION_CANCEL -> {
-                    mIsLongPressingSpace = false
-                    mLastSpaceMoveX = 0
-                    removeMessages()
-                    dismissPopupKeyboard()
-                    mAbortKey = true
-                    showPreview(NOT_A_KEY)
-                    invalidateKey(mCurrentKey)
+                        if (mKeys.getOrNull(mCurrentKey)?.code == KEYCODE_SPACE && !mIsLongPressingSpace) {
+                            val currentTime = System.currentTimeMillis()
+                            if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + EXTRA_DELAY &&
+                                context.config.periodOnDoubleTap &&
+                                mOnKeyboardActionListener!!.hasTextBeforeCursor()
+                            ) {
+                                mOnKeyboardActionListener!!.commitPeriodAfterSpace()
+                            } else {
+                                detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
+                            }
+                            lastSpaceBarTapTime = currentTime
+                        }
+
+                        invalidateKey(keyIndex)
+                        mRepeatKeyIndex = NOT_A_KEY
+                        mOnKeyboardActionListener!!.onActionUp()
+                        mIsLongPressingSpace = false
+                    }
+                    MotionEvent.ACTION_CANCEL -> {
+                        mIsLongPressingSpace = false
+                        mLastSpaceMoveX = 0
+                        removeMessages()
+                        dismissPopupKeyboard()
+                        mAbortKey = true
+                        showPreview(NOT_A_KEY)
+                        invalidateKey(mCurrentKey)
+                    }
                 }
             }
+
+            mLastX = touchX
+            mLastY = touchY
+
+            return handled || true
         }
 
-        mLastX = touchX
-        mLastY = touchY
-
-        return handled || true
-    }
-
-
-
-    private fun repeatKey(initialCall: Boolean): Boolean {
+        private fun repeatKey(initialCall: Boolean): Boolean {
             val key = mKeys[mRepeatKeyIndex]
             if (!initialCall && key.code == KEYCODE_SPACE) {
                 if (!mIsLongPressingSpace) {

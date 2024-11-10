@@ -275,7 +275,7 @@ abstract class SimpleKeyboardIME(
 
     override fun hasTextBeforeCursor(): Boolean {
         val inputConnection = currentInputConnection ?: return false
-        val textBeforeCursor = inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0).orEmpty().trim()
+        val textBeforeCursor = inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0)?.trim() ?: ""
         return textBeforeCursor.isNotEmpty() && textBeforeCursor.lastOrNull() != '.'
     }
 
