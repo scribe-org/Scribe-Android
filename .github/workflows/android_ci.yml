@@ -77,7 +77,7 @@ jobs:
             - name: build app  
               run: ./gradlew assembleDebug
 
-            - run: tree   
+            - run: tree app/build/outputs/apk   
               
             - name: Upload Debug Apk
               uses: actions/upload-artifact@v4
