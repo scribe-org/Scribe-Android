@@ -22,10 +22,7 @@ jobs:
                   java-version: 17
 
             - name: Setup Gradle
-              uses: gradle/actions/setup-gradle@v4
-
-            - name: build app
-              run: ./gradlew build            
+              uses: gradle/actions/setup-gradle@v4      
 
             - name: Run ktlint
               run: ./gradlew lintKotlin
