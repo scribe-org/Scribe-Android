@@ -1357,7 +1357,11 @@ class MyKeyboardView
                             mCurrentKeyTime = 0
                         }
 
-                        if (mCurrentKeyTime < mLastKeyTime && mCurrentKeyTime < DEBOUNCE_TIME && mLastKey != NOT_A_KEY) {
+                        if (mCurrentKeyTime < mLastKeyTime &&
+                            mCurrentKeyTime <
+                            DEBOUNCE_TIME &&
+                            mLastKey != NOT_A_KEY
+                        ) {
                             mCurrentKey = mLastKey
                             touchX = mLastCodeX
                             touchY = mLastCodeY
