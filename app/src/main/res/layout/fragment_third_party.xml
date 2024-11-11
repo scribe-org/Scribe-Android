@@ -16,7 +16,6 @@
                 android:id="@+id/textView"
                 android:layout_width="303dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:layout_marginStart="18dp"
                 android:text="@string/app.about.legal.third_party"
                 android:layout_marginEnd="16dp"
