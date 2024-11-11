@@ -24,6 +24,13 @@
         android:layout_above="@id/bottom_navigation"
         app:layout_anchor="@+id/view_pager"
         app:layout_anchorGravity="center" />
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"
+        app:layout_anchor="@+id/view_pager"
+        app:layout_anchorGravity="center" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
