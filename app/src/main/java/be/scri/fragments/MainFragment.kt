@@ -51,8 +51,13 @@ class MainFragment : ScribeFragment("Main") {
         val cornerCogImageView: ImageView = binding.cornerCog
         val paramsTriangleLayout = binding.cornerTriangle.layoutParams as FrameLayout.LayoutParams
         val paramsCogLayout = binding.cornerCog.layoutParams as FrameLayout.LayoutParams
-        val currentLocale = requireActivity().resources.configuration.locales.get(0)
-        val languageCode = currentLocale.language
+        val currentLocale =
+            requireActivity()
+                .resources.configuration.locales
+                .get(0)
+        val languageCode =
+            currentLocale
+                .language
         if (languageCode == "ar") {
             paramsTriangleLayout.gravity = Gravity.TOP or Gravity.START
             paramsCogLayout.gravity = Gravity.TOP or Gravity.START
