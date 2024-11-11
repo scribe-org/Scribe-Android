@@ -16,6 +16,11 @@ style:
     UtilityClassWithPublicConstructor:
         active: true
 
+naming:
+    FunctionNaming:
+        active: true
+        ignoreAnnotated: ['Composable']
+
 complexity:
     TooManyFunctions:
         active: true

@@ -157,8 +157,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setActionBarVisibility(shouldShowOnScreen: Boolean) {
-        val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name)
-        val params = textView?.layoutParams as ViewGroup.MarginLayoutParams
+        val textView = supportActionBar?.customView?.findViewById<TextView>(R.id.name) ?: return
+        val params = textView.layoutParams as ViewGroup.MarginLayoutParams
         if (shouldShowOnScreen) {
             params.topMargin = ACTION_BAR_TOP_MARGIN_VISIBLE
             params.bottomMargin = ACTION_BAR_BOTTOM_MARGIN_VISIBLE
