@@ -6,9 +6,12 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import be.scri.R
@@ -39,7 +42,27 @@ class MainFragment : ScribeFragment("Main") {
             }
         (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
         callback.isEnabled = true
+        isArabicLanguage()
         return binding.root
+    }
+
+    private fun isArabicLanguage(): Boolean {
+        val cornerTriangleImageView: ImageView = binding.cornerTriangle
+        val cornerCogImageView: ImageView = binding.cornerCog
+        val paramsTriangleLayout = binding.cornerTriangle.layoutParams as FrameLayout.LayoutParams
+        val paramsCogLayout = binding.cornerCog.layoutParams as FrameLayout.LayoutParams
+        val currentLocale = requireActivity().resources.configuration.locales.get(0)
+        val languageCode = currentLocale.language
+        if (languageCode == "ar") {
+            paramsTriangleLayout.gravity = Gravity.TOP or Gravity.START
+            paramsCogLayout.gravity = Gravity.TOP or Gravity.START
+            cornerTriangleImageView.scaleX = -1f
+            cornerCogImageView.scaleX = -1f
+            Log.d("Debug", "Arabic")
+        } else {
+            Log.d("Debug", "Not Arabic")
+        }
+        return languageCode == "ar"
     }
 
     private fun applyUserDarkModePreference() {
