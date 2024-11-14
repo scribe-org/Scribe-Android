@@ -5,15 +5,19 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.provider.Settings
+import android.util.LayoutDirection
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.text.layoutDirection
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentMainBinding
+import java.util.Locale
 
 class MainFragment : ScribeFragment("Main") {
     private var _binding: FragmentMainBinding? = null
@@ -39,7 +43,15 @@ class MainFragment : ScribeFragment("Main") {
             }
         (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
         callback.isEnabled = true
+        moveCorner()
         return binding.root
+    }
+
+    private fun moveCorner() {
+        val cornerTriangleImageView: ImageView = binding.cornerTriangle
+        if (Locale.getDefault().layoutDirection == LayoutDirection.RTL) {
+            cornerTriangleImageView.scaleX = -1f
+        }
     }
 
     private fun applyUserDarkModePreference() {
