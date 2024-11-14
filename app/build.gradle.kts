@@ -157,6 +157,8 @@ android {
 }
 
 dependencies {
+    detektPlugins("io.nlopez.compose.rules:detekt:0.4.17")
+    lintChecks("com.slack.lint.compose:compose-lint-checks:1.4.2")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.activity:activity-ktx:1.9.2")
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.0")
