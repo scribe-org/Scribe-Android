@@ -127,13 +127,14 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/corner_triangle"
             android:layout_width="75dp"
             android:layout_height="76dp"
             android:layout_gravity="top|end"
             android:alpha="0.9"
-            android:src="@drawable/corner_polygon" />
-
+            android:src="@drawable/corner_polygon"/>
         <ImageView
+            android:id="@+id/corner_cog"
             android:layout_width="26dp"
             android:layout_height="25dp"
             android:layout_gravity="top|end"
