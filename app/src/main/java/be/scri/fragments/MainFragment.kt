@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.provider.Settings
+import android.util.LayoutDirection
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +13,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.text.layoutDirection
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.FragmentMainBinding
+import java.util.Locale
 
 class MainFragment : ScribeFragment("Main") {
     private var _binding: FragmentMainBinding? = null
@@ -43,21 +46,10 @@ class MainFragment : ScribeFragment("Main") {
         moveCorner()
         return binding.root
     }
-
-    private fun isRTLLanguage(): Boolean {
-        val currentLocale =
-            requireActivity()
-                .resources.configuration.locales
-                .get(0)
-        val languageCode =
-            currentLocale
-                .language
-        return languageCode == "de" || languageCode == "fa" || languageCode == "he"
-    }
-
+    
     private fun moveCorner() {
         val cornerTriangleImageView: ImageView = binding.cornerTriangle
-        if (isRTLLanguage()) {
+        if (Locale.getDefault().layoutDirection == LayoutDirection.RTL) {
             cornerTriangleImageView.scaleX = -1f
         }
     }
