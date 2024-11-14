@@ -1,30 +1,32 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/clBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/you_background_color"
     android:fitsSystemWindows="true">
+
     <ImageView
         android:id="@+id/scribe_logo"
         android:layout_width="222dp"
         android:layout_height="107dp"
-        android:layout_marginTop="0dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
         android:src="@drawable/scribe_logo" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/scribe_logo"
-        android:layout_marginTop="25dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="16dp"
         android:text="@string/app.installation.keyboard.title"
         android:textColor="@color/app_text_color"
         android:textSize="20sp"
         android:textStyle="bold" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
@@ -37,61 +39,75 @@
         android:background="@color/card_view_color"
         app:cardBackgroundColor="@color/card_view_color"
         app:cardCornerRadius="20dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="4dp">
+
                 <TextView
-                    android:layout_marginEnd="4dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
                     android:text="1."
                     android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/keyboard_settings"
                     android:layout_width="304dp"
                     android:layout_height="wrap_content"
                     android:text="@string/app.installation.keyboard.keyboard_settings"
-                    android:textStyle="bold"
                     android:textColor="@color/dark_scribe_blue"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="8dp">
+
                 <TextView
-                    android:layout_marginEnd="4dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
                     android:text="2."
                     android:textSize="16sp" />
+
                 <TextView
                     android:layout_width="304dp"
                     android:layout_height="wrap_content"
                     android:text="@string/app.installation.keyboard.text_2"
                     android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingTop="8dp">
+
                 <TextView
-                    android:layout_marginEnd="4dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
                     android:text="3."
                     android:textSize="16sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/app.installation.keyboard.text_3"
                     android:textSize="16sp" />
+
                 <ImageView
                     android:id="@+id/keyboard_mode"
                     android:layout_width="16dp"
@@ -101,6 +117,7 @@
                     android:paddingTop="8dp"
                     android:alpha="0.9"
                     android:src="@drawable/keyboard_light" />
+
                 <TextView
                     android:layout_width="304dp"
                     android:layout_height="wrap_content"
@@ -108,6 +125,7 @@
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
+
         <ImageView
             android:id="@+id/corner_triangle"
             android:layout_width="75dp"
@@ -124,18 +142,20 @@
             android:src="@drawable/cog"
             app:tint="@color/button_text_color" />
     </androidx.cardview.widget.CardView>
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/cardView"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/app.download.menu_option.scribe_title"
         android:textColor="@color/app_text_color"
         android:textSize="20sp"
         android:textStyle="bold" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
         android:layout_width="match_parent"
@@ -148,22 +168,32 @@
         android:background="@color/card_view_color"
         app:cardBackgroundColor="@color/card_view_color"
         app:cardCornerRadius="20dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
-                    android:layout_marginEnd="4dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginEnd="4dp"
                     android:text="@string/app.download.menu_option.download_data"
-                    android:textStyle="bold"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
                 <ImageView
                     android:layout_marginStart="180dp"
                     android:layout_width="24dp"
@@ -171,15 +201,17 @@
                     android:alpha="0.9"
                     android:src="@drawable/right_arrow" />
             </LinearLayout>
+
             <TextView
-                android:layout_marginEnd="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/darker_gray"
+                android:layout_marginEnd="4dp"
                 android:text="@string/app.download.menu_option.scribe_description"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="12sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView3"
         android:layout_width="match_parent"
@@ -190,17 +222,18 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:cardBackgroundColor="@color/corner_polygon_color"
+        app:cardCornerRadius="20dp"
         app:strokeColor="@color/button_outline_color"
-        app:strokeWidth="@dimen/tiny_margin"
-        app:cardCornerRadius="20dp">
+        app:strokeWidth="@dimen/tiny_margin">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingVertical="20sp"
             android:text="@string/app.installation.button_quick_tutorial"
-            android:textStyle="bold"
+            android:textColor="@color/button_text_color"
             android:textSize="20sp"
-            android:textColor="@color/button_text_color"/>
+            android:textStyle="bold" />
     </com.google.android.material.card.MaterialCardView>
 </RelativeLayout>

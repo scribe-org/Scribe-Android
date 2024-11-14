@@ -15,6 +15,7 @@
                 android:id="@+id/textView"
                 android:layout_width="303dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:layout_marginStart="18dp"
                 android:text="@string/app.about.legal.privacy_policy.caption"
                 android:layout_marginEnd="16dp"
@@ -31,7 +32,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="16dp"
                     android:background="@color/card_view_color"
@@ -80,4 +81,3 @@
             </View>
         </LinearLayout>
     </ScrollView>
-
