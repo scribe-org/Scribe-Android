@@ -46,7 +46,7 @@ class MainFragment : ScribeFragment("Main") {
         moveCorner()
         return binding.root
     }
-    
+
     private fun moveCorner() {
         val cornerTriangleImageView: ImageView = binding.cornerTriangle
         if (Locale.getDefault().layoutDirection == LayoutDirection.RTL) {
