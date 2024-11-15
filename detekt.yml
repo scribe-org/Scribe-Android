@@ -19,7 +19,7 @@ style:
 naming:
     FunctionNaming:
         active: true
-        ignoreAnnotated: ['Composable']
+        ignoreAnnotated: ["Composable"]
 
 complexity:
     TooManyFunctions:
