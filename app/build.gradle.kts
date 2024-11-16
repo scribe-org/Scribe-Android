@@ -201,18 +201,26 @@ dependencies {
 }
 
 tasks.register<Copy>("moveFromi18n") {
-    val locales = listOf("de", "es", "sv", "en-US")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    destinationDir = file("src/main/res")
 
+    val locales = file("src/main/assets/i18n/Scribe-i18n/values").listFiles()
+        ?.filter { it.isDirectory }
+        ?.map { it.name }
+        ?: emptyList()
     locales.forEach { locale ->
-        val fromDir = "src/main/assets/i18n/Scribe-i18n/values/$locale/"
-        val toDir = if (locale == "en-US") "src/main/res/values/" else "src/main/res/values-$locale/"
-        val sourceDir = file(fromDir)
+        val fromDir = file("src/main/assets/i18n/Scribe-i18n/values/$locale/")
+        val targetDir = if (locale == "en-US") {
+            "values"
+        } else {
+            "values-$locale"
+        }
 
-        if (sourceDir.exists()) {
-            println("Preparing to move from $fromDir to $toDir")
-            from(fileTree(fromDir))
-            into(toDir)
-            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        if (fromDir.exists()) {
+            println("Copying from $fromDir to $targetDir")
+            from(fromDir) {
+                into(targetDir)
+            }
         } else {
             println("Source directory does not exist: $fromDir")
         }
