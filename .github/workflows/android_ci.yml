@@ -10,6 +10,9 @@ jobs:
         runs-on: ubuntu-latest
         name: Run lint and detekt   
         steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+        
             - name: prepare app 
               uses: ./.github/composite/prepareApp  
 
@@ -22,6 +25,10 @@ jobs:
         runs-on: ubuntu-latest
         name: Run tests
         steps:
+        
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              
             - name: prepare app 
               uses: ./.github/composite/prepareApp  
 
@@ -35,6 +42,9 @@ jobs:
             pull-requests: write        
 
         steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              
             - name: prepare app 
               uses: ./.github/composite/prepareApp  
 
@@ -57,6 +67,10 @@ jobs:
       runs-on: ubuntu-latest
       name: build app
       steps: 
+      
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              
             - name: prepare app 
               uses: ./.github/composite/prepareApp  
               
