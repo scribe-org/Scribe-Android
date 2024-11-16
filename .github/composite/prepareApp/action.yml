@@ -4,9 +4,6 @@ description: checkout and cache dependencies
 runs:
   using: "composite"
   steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup JDK environment
         uses: actions/setup-java@v4
         with:
