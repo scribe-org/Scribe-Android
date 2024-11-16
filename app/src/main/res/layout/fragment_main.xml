@@ -185,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_marginEnd="4dp"
-                    android:text="@string/app.download.menu_option.download_data"
+                    android:text="@string/app.download.menu_option.scribe_download_data"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
