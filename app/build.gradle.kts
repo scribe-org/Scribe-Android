@@ -204,7 +204,10 @@ tasks.register<Copy>("moveFromi18n") {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     destinationDir = file("src/main/res")
 
-    val locales = listOf("de", "es", "sv", "en-US")
+    val locales = file("src/main/assets/i18n/Scribe-i18n/values").listFiles()
+        ?.filter { it.isDirectory }
+        ?.map { it.name }
+        ?: emptyList()
     locales.forEach { locale ->
         val fromDir = file("src/main/assets/i18n/Scribe-i18n/values/$locale/")
         val targetDir = if (locale == "en-US") {
