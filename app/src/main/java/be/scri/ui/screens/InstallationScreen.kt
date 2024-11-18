@@ -5,6 +5,7 @@ import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,13 @@ import be.scri.R
 fun InstallationScreen(modifier: Modifier = Modifier) {
     val layoutDirection = LocalLayoutDirection.current
     val context = LocalContext.current
+    val isDark = isSystemInDarkTheme()
+    val resource: Int =
+        if (isDark) {
+            R.drawable.keyboard_dark
+        } else {
+            R.drawable.keyboard_light
+        }
     Column(
         modifier
             .fillMaxSize()
@@ -126,11 +134,11 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
                             fontSize = Dimensions.TextSizeMedium,
                         )
                         Image(
-                            painter = painterResource(R.drawable.keyboard_light),
+                            painter = painterResource(resource),
                             contentDescription = "Select Keyboard",
                             modifier =
                                 Modifier
-                                    .size(16.dp)
+                                    .size(30.dp)
                                     .alpha(Alpha.HIGH)
                                     .padding(horizontal = Dimensions.PaddingSmall),
                             contentScale = ContentScale.Fit,

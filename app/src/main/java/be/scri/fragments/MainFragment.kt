@@ -13,7 +13,6 @@ import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.theme.ScribeTheme
 
 class MainFragment : ScribeFragment("Main") {
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
