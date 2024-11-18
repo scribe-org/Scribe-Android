@@ -8,14 +8,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.platform.ComposeView
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.databinding.FragmentMainBinding
 import be.scri.helpers.PreferencesHelper
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.theme.ScribeTheme
 
 class MainFragment : ScribeFragment("Main") {
-    private var _binding: FragmentMainBinding? = null
-    val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
