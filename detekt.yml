@@ -32,6 +32,7 @@ complexity:
         active: true
     LongMethod:
         active: true
+        ignoreAnnotated: ["Composable"]
     CyclomaticComplexMethod:
         active: false
 
