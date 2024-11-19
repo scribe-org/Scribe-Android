@@ -141,7 +141,7 @@ class AboutFragment : ScribeFragment("About") {
             ),
             ItemsViewModel(
                 image = R.drawable.bookmark_icon,
-                text = ItemsViewModel.Text(R.string.app_about_feedback_version_new, BuildConfig.VERSION_NAME),
+                text = ItemsViewModel.Text(R.string.app_about_feedback_version, BuildConfig.VERSION_NAME),
                 image2 = R.drawable.external_link,
                 url = "https://github.com/scribe-org/Scribe-Android/releases/",
                 activity = null,
