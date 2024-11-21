@@ -67,6 +67,7 @@ abstract class SimpleKeyboardIME(
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
     var isAutoSuggestEnabled: Boolean = false
+    var isCommandMode: Boolean = false
     var lastWord: String? = null
     var autosuggestEmojis: MutableList<String>? = null
     // abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
@@ -85,6 +86,10 @@ abstract class SimpleKeyboardIME(
         ALREADY_PLURAL,
         INVALID,
         DISPLAY_INFORMATION,
+    }
+
+    fun updateIsCommandMode(newIsCommandMode: Boolean) {
+        keyboard!!.isCommandMode = newIsCommandMode
     }
 
     fun getIsAccentCharacter(): Boolean {
@@ -150,8 +155,10 @@ abstract class SimpleKeyboardIME(
                 initializeEmojiButtons()
                 updateButtonVisibility(isAutoSuggestEnabled)
                 updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+                updateIsCommandMode(true)
+                keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+                Log.d("Debug", "isCommandMode: ${keyboard!!.isCommandMode}")
             }
-
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
         }

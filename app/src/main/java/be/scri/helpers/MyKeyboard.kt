@@ -53,6 +53,8 @@ class MyKeyboard {
     /** Keyboard rows  */
     private val mRows = ArrayList<Row?>()
 
+    var isCommandMode = false
+
     companion object {
         private const val TAG_KEYBOARD = "Keyboard"
         private const val TAG_ROW = "Row"
@@ -408,19 +410,16 @@ class MyKeyboard {
                             key = createKeyFromXml(res, currentRow!!, x, y, parser)
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
-                                val enterResourceId =
+                                val enterResourceId = if (isCommandMode) {
+                                    R.drawable.play_button
+                                } else {
                                     when (mEnterKeyType) {
-                                        EditorInfo.IME_ACTION_SEARCH ->
-                                            R.drawable.ic_search_vector
-                                        EditorInfo.IME_ACTION_NEXT,
-                                        EditorInfo.IME_ACTION_GO,
-                                        ->
-                                            R.drawable.ic_arrow_right_vector
-                                        EditorInfo.IME_ACTION_SEND ->
-                                            R.drawable.ic_send_vector
-                                        else ->
-                                            R.drawable.ic_enter_vector
+                                        EditorInfo.IME_ACTION_SEARCH -> R.drawable.ic_search_vector
+                                        EditorInfo.IME_ACTION_NEXT, EditorInfo.IME_ACTION_GO -> R.drawable.ic_arrow_right_vector
+                                        EditorInfo.IME_ACTION_SEND -> R.drawable.ic_send_vector
+                                        else -> R.drawable.ic_enter_vector
                                     }
+                                }
                                 key.icon = context.resources.getDrawable(enterResourceId, context.theme)
                             }
                             currentRow.mKeys.add(key)
