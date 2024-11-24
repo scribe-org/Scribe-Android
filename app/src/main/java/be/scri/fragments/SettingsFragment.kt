@@ -39,30 +39,35 @@ class SettingsFragment : ScribeFragment("Settings") {
                 val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
 
                 ScribeTheme(
-                    useDarkTheme = PreferencesHelper.getUserDarkModePreference(requireContext())
-                        == AppCompatDelegate.MODE_NIGHT_YES,
+                    useDarkTheme =
+                        PreferencesHelper.getUserDarkModePreference(requireContext())
+                            == AppCompatDelegate.MODE_NIGHT_YES,
                 ) {
                     SettingsScreen(
                         onLanguageSelect = ::selectLanguage,
                         onDarkModeChange = ::setLightDarkMode,
                         onInstallKeyboard = ::navigateToKeyboardSettings,
                         isKeyboardInstalled = isKeyboardInstalled,
-                        defaultDarkMode = isSystemDarkMode
+                        isUserDarkMode = isSystemDarkMode,
                     )
                 }
             }
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         checkKeyboardInstallation()
     }
 
     private fun setupBackPress() {
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
-            parentFragmentManager.popBackStack()
-        }
+        val callback =
+            requireActivity().onBackPressedDispatcher.addCallback(this) {
+                parentFragmentManager.popBackStack()
+            }
         callback.isEnabled = true
     }
 
@@ -77,24 +82,26 @@ class SettingsFragment : ScribeFragment("Settings") {
 
     private fun checkKeyboardInstallation() {
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        isKeyboardInstalled = imm.enabledInputMethodList.any {
-            it.packageName == "be.scri.debug"
-        }
+        isKeyboardInstalled =
+            imm.enabledInputMethodList.any {
+                it.packageName == "be.scri.debug"
+            }
     }
 
     private fun selectLanguage() {
         val packageName = requireActivity().packageName
-        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Intent(ACTION_APP_LOCALE_SETTINGS)
-        } else {
-            Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.fromParts("package", packageName, null)
-                putExtra(
-                    "android.intent.extra.SHOW_FRAGMENT",
-                    "com.android.settings.localepicker.LocaleListEditor"
-                )
+        val intent =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Intent(ACTION_APP_LOCALE_SETTINGS)
+            } else {
+                Intent(ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", packageName, null)
+                    putExtra(
+                        "android.intent.extra.SHOW_FRAGMENT",
+                        "com.android.settings.localepicker.LocaleListEditor",
+                    )
+                }
             }
-        }
         intent.data = Uri.fromParts("package", packageName, null)
         startActivity(intent)
     }
