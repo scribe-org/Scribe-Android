@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
+import be.scri.helpers.PreferencesHelper
 import be.scri.ui.screens.Dimensions
 
 @SuppressLint("ComposeModifierMissing")
@@ -32,6 +33,24 @@ fun SettingsScreen(
     onDarkModeChange: (Boolean) -> Unit,
     onInstallKeyboard: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val vibrateOnKeypress =
+        remember {
+            mutableStateOf(
+                context
+                    .getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+                    .getBoolean("vibrate_on_keypress", false),
+            )
+        }
+    val popupOnKeypress =
+        remember {
+            mutableStateOf(
+                context
+                    .getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+                    .getBoolean("show_popup_on_keypress", false),
+            )
+        }
+
     Column(
         modifier =
             Modifier
@@ -81,9 +100,10 @@ fun SettingsScreen(
                     SwitchSettingItem(
                         title = stringResource(id = R.string.app_settings_keyboard_keypress_vibration),
                         description = stringResource(id = R.string.app_settings_keyboard_keypress_vibration_description),
-                        isChecked = isUserDarkMode,
-                        onCheckedChange = { isDarkMode ->
-                            onDarkModeChange(isDarkMode)
+                        isChecked = vibrateOnKeypress.value,
+                        onCheckedChange = { shouldVibrateOnKeypress ->
+                            vibrateOnKeypress.value = shouldVibrateOnKeypress
+                            PreferencesHelper.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
                         },
                     )
                 }
@@ -91,9 +111,10 @@ fun SettingsScreen(
                     SwitchSettingItem(
                         title = stringResource(id = R.string.app_settings_keyboard_functionality_popup_on_keypress),
                         description = stringResource(id = R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
-                        isChecked = isUserDarkMode,
-                        onCheckedChange = { isDarkMode ->
-                            onDarkModeChange(isDarkMode)
+                        isChecked = popupOnKeypress.value,
+                        onCheckedChange = { shouldPopUpOnKeypress ->
+                            popupOnKeypress.value = shouldPopUpOnKeypress
+                            PreferencesHelper.setShowPopupOnKeypress(context, shouldPopUpOnKeypress)
                         },
                     )
                 }
