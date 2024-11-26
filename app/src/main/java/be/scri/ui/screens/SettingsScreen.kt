@@ -1,6 +1,8 @@
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -20,9 +23,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import be.scri.R
+import be.scri.fragments.LanguageSettingsFragment
 import be.scri.helpers.PreferencesHelper
 import be.scri.ui.screens.Dimensions
+
 
 @SuppressLint("ComposeModifierMissing")
 @Composable
@@ -54,7 +60,6 @@ fun SettingsScreen(
     Column(
         modifier =
             Modifier
-                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
     ) {
         Text(
@@ -67,14 +72,11 @@ fun SettingsScreen(
         Column(
             modifier =
                 Modifier
-                    .fillMaxWidth()
                     .padding(10.dp),
         ) {
             LazyColumn(
                 modifier =
                     Modifier
-                        .fillMaxWidth()
-                        .fillMaxWidth()
                         .padding(horizontal = 10.dp, vertical = 10.dp)
                         .clip(RoundedCornerShape(15.dp))
                         .background(colorResource(R.color.card_view_color)),
@@ -121,7 +123,46 @@ fun SettingsScreen(
             }
 
             if (isKeyboardInstalled) {
-                KeyboardLanguagesSection()
+                val context = LocalContext.current
+                val languages = remember { getKeyboardLanguages(context) }
+
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.app_settings_keyboard_title),
+                        modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = 10.dp,
+                                start = 10.dp,
+                                end = 12.dp,
+                                bottom = 10.dp,
+                            ),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+
+                    Surface(
+                        modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                    ) {
+                        Column {
+                            languages.forEach { language ->
+                                LanguageItem(
+                                    language = getLocalizedLanguageName(context, language),
+                                    onClick = {
+                                        context.navigateToFragment(language)
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
             } else {
                 InstallKeyboardButton(onInstallKeyboard)
             }
@@ -129,48 +170,7 @@ fun SettingsScreen(
     }
 }
 
-@Composable
-private fun KeyboardLanguagesSection() {
-    val context = LocalContext.current
-    val languages = remember { getKeyboardLanguages(context) }
 
-    Column {
-        Text(
-            text = stringResource(id = R.string.app_settings_keyboard_title),
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = 10.dp,
-                        start = 10.dp,
-                        end = 12.dp,
-                        bottom = 10.dp,
-                    ),
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-        )
-
-        Surface(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-            shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colorScheme.surface,
-        ) {
-            Column {
-                languages.forEach { language ->
-                    LanguageItem(
-                        language = getLocalizedLanguageName(context, language),
-                        onClick = {
-                        },
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
 private fun InstallKeyboardButton(onClick: () -> Unit) {
@@ -247,11 +247,9 @@ private fun SwitchSettingItem(
     Column(
         modifier =
             Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
+                .padding(10.dp),
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -264,7 +262,7 @@ private fun SwitchSettingItem(
             Switch(
                 checked = isChecked,
                 onCheckedChange = onCheckedChange,
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = Modifier.padding(start = 8.dp).scale(0.75f),
             )
         }
         Text(
@@ -272,7 +270,7 @@ private fun SwitchSettingItem(
             fontSize = 13.sp,
             color = Color.Gray,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 4.dp),
+            modifier = Modifier.padding(top = 2.dp),
         )
     }
 }
@@ -280,13 +278,13 @@ private fun SwitchSettingItem(
 @Composable
 private fun LanguageItem(
     language: String,
-    onClick: () -> Unit,
+    onClick: (String) -> Unit
 ) {
     Column(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
+                .clickable(onClick = { onClick(language) })
                 .padding(16.dp),
     ) {
         Text(
@@ -334,4 +332,18 @@ private fun getKeyboardLanguages(context: Context): List<String> {
             else -> null
         }
     }
+}
+
+fun Context.navigateToFragment(language: String) {
+    val fragmentTransaction = (this as? AppCompatActivity)?.supportFragmentManager?.beginTransaction()
+
+    val fragment = LanguageSettingsFragment().apply {
+        arguments = Bundle().apply {
+            putString("LANGUAGE_EXTRA", language)
+        }
+    }
+
+    fragmentTransaction?.replace(R.id.fragment_container, fragment)
+    fragmentTransaction?.addToBackStack(null)
+    fragmentTransaction?.commit()
 }
