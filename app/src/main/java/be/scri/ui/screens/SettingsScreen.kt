@@ -5,15 +5,30 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -37,13 +52,13 @@ fun SettingsScreen(
     onLanguageSelect: () -> Unit,
     onDarkModeChange: (Boolean) -> Unit,
     onInstallKeyboard: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var languages by remember(lifecycleOwner) {
         mutableStateOf(getKeyboardLanguages(context))
     }
-
     DisposableEffect(lifecycleOwner) {
         val observer =
             LifecycleEventObserver { _, event ->
@@ -74,11 +89,10 @@ fun SettingsScreen(
         }
 
     LazyColumn(
-        modifier =
-            Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .fillMaxWidth()
-                .padding(bottom = 56.dp),
+        modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()
+            .padding(bottom = 56.dp),
     ) {
         item {
             Text(
@@ -86,7 +100,12 @@ fun SettingsScreen(
                 color = colorResource(R.color.app_text_color),
                 fontWeight = FontWeight.Bold,
                 fontSize = Dimensions.TextSizeLarge,
-                modifier = Modifier.padding(start = 20.dp, top = Dimensions.PaddingLarge, bottom = Dimensions.PaddingSmall),
+                modifier =
+                    Modifier.padding(
+                        start = 20.dp,
+                        top = Dimensions.PaddingLarge,
+                        bottom = Dimensions.PaddingSmall,
+                    ),
             )
         }
 
@@ -125,7 +144,10 @@ fun SettingsScreen(
 
                 SwitchSettingItem(
                     title = stringResource(id = R.string.app_settings_keyboard_functionality_popup_on_keypress),
-                    description = stringResource(id = R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
+                    description =
+                        stringResource(
+                            id = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
+                        ),
                     isChecked = popupOnKeypress.value,
                     onCheckedChange = { shouldPopUpOnKeypress ->
                         popupOnKeypress.value = shouldPopUpOnKeypress
@@ -215,9 +237,9 @@ private fun SettingItem(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
                 .padding(horizontal = 16.dp, vertical = 14.dp)
-                .clip(RoundedCornerShape(12.dp)),
+                .clip(RoundedCornerShape(12.dp))
+                .clickable(onClick = onClick),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -256,10 +278,10 @@ private fun SwitchSettingItem(
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
-    val checkedThumbColor = Color(0xFFFDAD0D)
-    val uncheckedThumbColor = Color(0xFF444444)
-    val checkedTrackColor = Color(0xFFFEDE9E)
-    val uncheckedTrackColor = Color(0xFFB0BEC5)
+    val checkedThumbColor = colorResource(R.color.switch_thumb_selector_color_true)
+    val uncheckedThumbColor = colorResource(R.color.switch_thumb_selector_color_false)
+    val checkedTrackColor = colorResource(R.color.switch_selector_color)
+    val uncheckedTrackColor = colorResource(R.color.switch_selector_color_false)
 
     Column(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
@@ -277,7 +299,7 @@ private fun SwitchSettingItem(
             Switch(
                 checked = isChecked,
                 onCheckedChange = onCheckedChange,
-                modifier = Modifier.padding(start = 8.dp).scale(0.85f),
+                modifier = Modifier.padding(start = 8.dp),
                 colors =
                     SwitchDefaults.colors(
                         checkedThumbColor = checkedThumbColor,
@@ -329,7 +351,7 @@ private fun LanguageItem(
             )
         }
         if (!isLastElement) {
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.padding(top = 8.dp),
                 color = Color.Gray.copy(alpha = 0.2f),
                 thickness = 1.dp,
@@ -384,7 +406,6 @@ fun Context.navigateToFragment(language: String) {
                     putString("LANGUAGE_EXTRA", language)
                 }
         }
-
     fragmentTransaction?.replace(R.id.fragment_container, fragment)
     fragmentTransaction?.addToBackStack(null)
     fragmentTransaction?.commit()
