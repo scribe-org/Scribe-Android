@@ -67,9 +67,9 @@ abstract class SimpleKeyboardIME(
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
     var isAutoSuggestEnabled: Boolean = false
-    var isCommandMode: Boolean = false
     var lastWord: String? = null
     var autosuggestEmojis: MutableList<String>? = null
+    private var currentEnterKeyType: Int? = null
     // abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     protected var currentState: ScribeState = ScribeState.IDLE
@@ -88,8 +88,13 @@ abstract class SimpleKeyboardIME(
         DISPLAY_INFORMATION,
     }
 
-    fun updateIsCommandMode(newIsCommandMode: Boolean) {
-        keyboard!!.isCommandMode = newIsCommandMode
+    private fun updateKeyboardMode(isCommandMode: Boolean = false) {
+        if (isCommandMode) {
+            enterKeyType = MyKeyboard.MyCustomActions.IME_ACTION_COMMAND
+        } else {
+            enterKeyType = currentEnterKeyType!!
+        }
+        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
     fun getIsAccentCharacter(): Boolean {
@@ -155,9 +160,6 @@ abstract class SimpleKeyboardIME(
                 initializeEmojiButtons()
                 updateButtonVisibility(isAutoSuggestEnabled)
                 updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
-                updateIsCommandMode(true)
-                keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
-                Log.d("Debug", "isCommandMode: ${keyboard!!.isCommandMode}")
             }
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             else -> switchToToolBar()
@@ -191,6 +193,7 @@ abstract class SimpleKeyboardIME(
             updateUI()
         }
         setInputView(keyboardHolder)
+        updateKeyboardMode(false)
     }
 
     private fun setupIdleView() {
@@ -254,17 +257,20 @@ abstract class SimpleKeyboardIME(
             updateUI()
         }
         binding.translateBtn.setOnClickListener {
-            currentState = ScribeState.TRANSLATE
             Log.i("MY-TAG", "TRANSLATE STATE")
+            updateKeyboardMode(true)
+            currentState = ScribeState.TRANSLATE
             updateUI()
         }
         binding.conjugateBtn.setOnClickListener {
             Log.i("MY-TAG", "CONJUGATE STATE")
+            updateKeyboardMode(true)
             currentState = ScribeState.CONJUGATE
             updateUI()
         }
         binding.pluralBtn.setOnClickListener {
             Log.i("MY-TAG", "PLURAL STATE")
+            updateKeyboardMode(true)
             currentState = ScribeState.PLURAL
             updateUI()
         }
@@ -398,6 +404,7 @@ abstract class SimpleKeyboardIME(
 
         inputTypeClass = attribute!!.inputType and TYPE_MASK_CLASS
         enterKeyType = attribute.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
+        currentEnterKeyType = enterKeyType
         val inputConnection = currentInputConnection
         hasTextBeforeCursor = inputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
 
