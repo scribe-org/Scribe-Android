@@ -43,7 +43,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.scri.R
 import be.scri.fragments.LanguageSettingsFragment
 import be.scri.helpers.PreferencesHelper
-import be.scri.ui.screens.Dimensions
 
 @Composable
 fun SettingsScreen(
@@ -59,6 +58,7 @@ fun SettingsScreen(
     var languages by remember(lifecycleOwner) {
         mutableStateOf(getKeyboardLanguages(context))
     }
+
     DisposableEffect(lifecycleOwner) {
         val observer =
             LifecycleEventObserver { _, event ->
@@ -67,10 +67,9 @@ fun SettingsScreen(
                 }
             }
         lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
+
     val vibrateOnKeypress =
         remember {
             mutableStateOf(
@@ -79,6 +78,7 @@ fun SettingsScreen(
                     .getBoolean("vibrate_on_keypress", false),
             )
         }
+
     val popupOnKeypress =
         remember {
             mutableStateOf(
@@ -89,22 +89,23 @@ fun SettingsScreen(
         }
 
     LazyColumn(
-        modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth()
-            .padding(bottom = 56.dp),
+        modifier =
+            modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
+                .padding(bottom = 40.dp),
     ) {
         item {
             Text(
                 text = stringResource(R.string.app_settings_menu_title),
                 color = colorResource(R.color.app_text_color),
                 fontWeight = FontWeight.Bold,
-                fontSize = Dimensions.TextSizeLarge,
+                fontSize = 18.sp,
                 modifier =
                     Modifier.padding(
-                        start = 20.dp,
-                        top = Dimensions.PaddingLarge,
-                        bottom = Dimensions.PaddingSmall,
+                        start = 16.dp,
+                        top = 16.dp,
+                        bottom = 8.dp,
                     ),
             )
         }
@@ -113,7 +114,7 @@ fun SettingsScreen(
             Column(
                 modifier =
                     Modifier
-                        .padding(15.dp)
+                        .padding(12.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(colorResource(R.color.card_view_color)),
             ) {
@@ -165,13 +166,13 @@ fun SettingsScreen(
                         Modifier
                             .fillMaxWidth()
                             .padding(
-                                top = 10.dp,
-                                start = 10.dp,
-                                end = 12.dp,
-                                bottom = 10.dp,
+                                top = 8.dp,
+                                start = 8.dp,
+                                end = 8.dp,
+                                bottom = 8.dp,
                             ),
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                 )
 
@@ -179,7 +180,7 @@ fun SettingsScreen(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 15.dp),
+                            .padding(horizontal = 12.dp),
                     shape = RoundedCornerShape(8.dp),
                     color = MaterialTheme.colorScheme.surface,
                 ) {
@@ -187,9 +188,7 @@ fun SettingsScreen(
                         languages.forEachIndexed { index, language ->
                             LanguageItem(
                                 language = getLocalizedLanguageName(context, language),
-                                onClick = {
-                                    context.navigateToFragment(language)
-                                },
+                                onClick = { context.navigateToFragment(language) },
                                 isLastElement = index == languages.size - 1,
                             )
                         }
@@ -209,9 +208,9 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = Dimensions.PaddingLarge)
-                .padding(10.dp),
-        shape = RoundedCornerShape(Dimensions.PaddingLarge),
+                .padding(vertical = 16.dp)
+                .padding(8.dp),
+        shape = RoundedCornerShape(16.dp),
         colors =
             ButtonDefaults.outlinedButtonColors(
                 containerColor = colorResource(R.color.corner_polygon_color),
@@ -219,10 +218,10 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
     ) {
         Text(
             text = stringResource(R.string.app_settings_button_install_keyboards),
-            fontSize = Dimensions.TextSizeLarge,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             color = colorResource(R.color.button_text_color),
-            modifier = Modifier.padding(vertical = Dimensions.PaddingLarge),
+            modifier = Modifier.padding(vertical = 8.dp),
         )
     }
 }
@@ -237,7 +236,7 @@ private fun SettingItem(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp)
+                .padding(horizontal = 12.dp, vertical = 10.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .clickable(onClick = onClick),
     ) {
@@ -248,7 +247,7 @@ private fun SettingItem(
             Text(
                 text = title,
                 modifier = Modifier.weight(1f),
-                fontSize = 17.sp,
+                fontSize = 16.sp,
                 color = colorResource(R.color.app_text_color),
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -256,14 +255,14 @@ private fun SettingItem(
                 painter = painterResource(R.drawable.right_arrow),
                 modifier =
                     Modifier
-                        .padding(start = 8.dp)
-                        .size(16.dp),
+                        .padding(start = 6.dp)
+                        .size(14.dp),
                 contentDescription = "Right Arrow",
             )
         }
         Text(
             text = description,
-            fontSize = 14.sp,
+            fontSize = 12.sp,
             color = Color.Gray,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(top = 4.dp),
@@ -284,7 +283,7 @@ private fun SwitchSettingItem(
     val uncheckedTrackColor = colorResource(R.color.switch_selector_color_false)
 
     Column(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -292,14 +291,14 @@ private fun SwitchSettingItem(
             Text(
                 text = title,
                 modifier = Modifier.weight(1f),
-                fontSize = 17.sp,
+                fontSize = 16.sp,
                 color = colorResource(R.color.app_text_color),
                 style = MaterialTheme.typography.bodyMedium,
             )
             Switch(
                 checked = isChecked,
                 onCheckedChange = onCheckedChange,
-                modifier = Modifier.padding(start = 8.dp),
+                modifier = Modifier.padding(start = 6.dp),
                 colors =
                     SwitchDefaults.colors(
                         checkedThumbColor = checkedThumbColor,
@@ -311,7 +310,7 @@ private fun SwitchSettingItem(
         }
         Text(
             text = description,
-            fontSize = 14.sp,
+            fontSize = 12.sp,
             color = Color.Gray,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(top = 4.dp),
@@ -336,7 +335,7 @@ private fun LanguageItem(
             Text(
                 text = language,
                 modifier = Modifier.weight(1f),
-                fontSize = 17.sp,
+                fontSize = 16.sp,
                 color = colorResource(R.color.app_text_color),
                 style = MaterialTheme.typography.bodyMedium,
             )
