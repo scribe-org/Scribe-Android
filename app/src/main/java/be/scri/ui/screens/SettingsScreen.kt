@@ -1,4 +1,3 @@
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
@@ -23,14 +22,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.scri.R
 import be.scri.fragments.LanguageSettingsFragment
 import be.scri.helpers.PreferencesHelper
 import be.scri.ui.screens.Dimensions
 
-
-@SuppressLint("ComposeModifierMissing")
 @Composable
 fun SettingsScreen(
     isUserDarkMode: Boolean,
@@ -40,6 +39,23 @@ fun SettingsScreen(
     onInstallKeyboard: () -> Unit,
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var languages by remember(lifecycleOwner) {
+        mutableStateOf(getKeyboardLanguages(context))
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    languages = getKeyboardLanguages(context)
+                }
+            }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
     val vibrateOnKeypress =
         remember {
             mutableStateOf(
@@ -57,79 +73,73 @@ fun SettingsScreen(
             )
         }
 
-    Column(
+    LazyColumn(
         modifier =
             Modifier
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
+                .padding(bottom = 56.dp),
     ) {
-        Text(
-            text = stringResource(R.string.app_settings_menu_title),
-            color = colorResource(R.color.app_text_color),
-            fontWeight = FontWeight.Bold,
-            fontSize = Dimensions.TextSizeLarge,
-            modifier = Modifier.padding(start = 20.dp, top = Dimensions.PaddingLarge, bottom = Dimensions.PaddingSmall),
-        )
-        Column(
-            modifier =
-                Modifier
-                    .padding(10.dp),
-        ) {
-            LazyColumn(
+        item {
+            Text(
+                text = stringResource(R.string.app_settings_menu_title),
+                color = colorResource(R.color.app_text_color),
+                fontWeight = FontWeight.Bold,
+                fontSize = Dimensions.TextSizeLarge,
+                modifier = Modifier.padding(start = 20.dp, top = Dimensions.PaddingLarge, bottom = Dimensions.PaddingSmall),
+            )
+        }
+
+        item {
+            Column(
                 modifier =
                     Modifier
-                        .padding(horizontal = 10.dp, vertical = 10.dp)
-                        .clip(RoundedCornerShape(15.dp))
+                        .padding(15.dp)
+                        .clip(RoundedCornerShape(8.dp))
                         .background(colorResource(R.color.card_view_color)),
             ) {
-                item {
-                    SettingItem(
-                        title = stringResource(id = R.string.app_settings_menu_app_language),
-                        description = stringResource(id = R.string.app_settings_menu_app_language_description),
-                        onClick = onLanguageSelect,
-                    )
-                }
-                item {
-                    SwitchSettingItem(
-                        title = stringResource(id = R.string.app_settings_menu_app_color_mode),
-                        description = stringResource(id = R.string.app_settings_menu_app_color_mode_description),
-                        isChecked = isUserDarkMode,
-                        onCheckedChange = { isDarkMode ->
-                            onDarkModeChange(isDarkMode)
-                        },
-                    )
-                }
-                item {
-                    SwitchSettingItem(
-                        title = stringResource(id = R.string.app_settings_keyboard_keypress_vibration),
-                        description = stringResource(id = R.string.app_settings_keyboard_keypress_vibration_description),
-                        isChecked = vibrateOnKeypress.value,
-                        onCheckedChange = { shouldVibrateOnKeypress ->
-                            vibrateOnKeypress.value = shouldVibrateOnKeypress
-                            PreferencesHelper.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
-                        },
-                    )
-                }
-                item {
-                    SwitchSettingItem(
-                        title = stringResource(id = R.string.app_settings_keyboard_functionality_popup_on_keypress),
-                        description = stringResource(id = R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
-                        isChecked = popupOnKeypress.value,
-                        onCheckedChange = { shouldPopUpOnKeypress ->
-                            popupOnKeypress.value = shouldPopUpOnKeypress
-                            PreferencesHelper.setShowPopupOnKeypress(context, shouldPopUpOnKeypress)
-                        },
-                    )
-                }
+                SettingItem(
+                    title = stringResource(id = R.string.app_settings_menu_app_language),
+                    description = stringResource(id = R.string.app_settings_menu_app_language_description),
+                    onClick = onLanguageSelect,
+                )
+
+                SwitchSettingItem(
+                    title = stringResource(id = R.string.app_settings_menu_app_color_mode),
+                    description = stringResource(id = R.string.app_settings_menu_app_color_mode_description),
+                    isChecked = isUserDarkMode,
+                    onCheckedChange = { isDarkMode ->
+                        onDarkModeChange(isDarkMode)
+                    },
+                )
+
+                SwitchSettingItem(
+                    title = stringResource(id = R.string.app_settings_keyboard_keypress_vibration),
+                    description = stringResource(id = R.string.app_settings_keyboard_keypress_vibration_description),
+                    isChecked = vibrateOnKeypress.value,
+                    onCheckedChange = { shouldVibrateOnKeypress ->
+                        vibrateOnKeypress.value = shouldVibrateOnKeypress
+                        PreferencesHelper.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
+                    },
+                )
+
+                SwitchSettingItem(
+                    title = stringResource(id = R.string.app_settings_keyboard_functionality_popup_on_keypress),
+                    description = stringResource(id = R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
+                    isChecked = popupOnKeypress.value,
+                    onCheckedChange = { shouldPopUpOnKeypress ->
+                        popupOnKeypress.value = shouldPopUpOnKeypress
+                        PreferencesHelper.setShowPopupOnKeypress(context, shouldPopUpOnKeypress)
+                    },
+                )
             }
+        }
 
+        item {
             if (isKeyboardInstalled) {
-                val context = LocalContext.current
-                val languages = remember { getKeyboardLanguages(context) }
-
-                Column {
-                    Text(
-                        text = stringResource(id = R.string.app_settings_keyboard_title),
-                        modifier =
+                Text(
+                    text = stringResource(id = R.string.app_settings_keyboard_title),
+                    modifier =
                         Modifier
                             .fillMaxWidth()
                             .padding(
@@ -138,28 +148,28 @@ fun SettingsScreen(
                                 end = 12.dp,
                                 bottom = 10.dp,
                             ),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                )
 
-                    Surface(
-                        modifier =
+                Surface(
+                    modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                    ) {
-                        Column {
-                            languages.forEach { language ->
-                                LanguageItem(
-                                    language = getLocalizedLanguageName(context, language),
-                                    onClick = {
-                                        context.navigateToFragment(language)
-                                    },
-                                )
-                            }
+                            .padding(horizontal = 15.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                ) {
+                    Column {
+                        languages.forEachIndexed { index, language ->
+                            LanguageItem(
+                                language = getLocalizedLanguageName(context, language),
+                                onClick = {
+                                    context.navigateToFragment(language)
+                                },
+                                isLastElement = index == languages.size - 1,
+                            )
                         }
                     }
                 }
@@ -169,8 +179,6 @@ fun SettingsScreen(
         }
     }
 }
-
-
 
 @Composable
 private fun InstallKeyboardButton(onClick: () -> Unit) {
@@ -208,7 +216,8 @@ private fun SettingItem(
             Modifier
                 .fillMaxWidth()
                 .clickable(onClick = onClick)
-                .padding(14.dp),
+                .padding(horizontal = 16.dp, vertical = 14.dp)
+                .clip(RoundedCornerShape(12.dp)),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -217,19 +226,22 @@ private fun SettingItem(
             Text(
                 text = title,
                 modifier = Modifier.weight(1f),
-                fontSize = 18.sp,
+                fontSize = 17.sp,
                 color = colorResource(R.color.app_text_color),
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.bodyMedium,
             )
             Image(
                 painter = painterResource(R.drawable.right_arrow),
-                modifier = Modifier.padding(start = 8.dp),
+                modifier =
+                    Modifier
+                        .padding(start = 8.dp)
+                        .size(16.dp),
                 contentDescription = "Right Arrow",
             )
         }
         Text(
             text = description,
-            fontSize = 13.sp,
+            fontSize = 14.sp,
             color = Color.Gray,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(top = 4.dp),
@@ -244,10 +256,13 @@ private fun SwitchSettingItem(
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
+    val checkedThumbColor = Color(0xFFFDAD0D)
+    val uncheckedThumbColor = Color(0xFF444444)
+    val checkedTrackColor = Color(0xFFFEDE9E)
+    val uncheckedTrackColor = Color(0xFFB0BEC5)
+
     Column(
-        modifier =
-            Modifier
-                .padding(10.dp),
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -255,22 +270,29 @@ private fun SwitchSettingItem(
             Text(
                 text = title,
                 modifier = Modifier.weight(1f),
-                fontSize = 18.sp,
+                fontSize = 17.sp,
                 color = colorResource(R.color.app_text_color),
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.bodyMedium,
             )
             Switch(
                 checked = isChecked,
                 onCheckedChange = onCheckedChange,
-                modifier = Modifier.padding(start = 8.dp).scale(0.75f),
+                modifier = Modifier.padding(start = 8.dp).scale(0.85f),
+                colors =
+                    SwitchDefaults.colors(
+                        checkedThumbColor = checkedThumbColor,
+                        uncheckedThumbColor = uncheckedThumbColor,
+                        checkedTrackColor = checkedTrackColor,
+                        uncheckedTrackColor = uncheckedTrackColor,
+                    ),
             )
         }
         Text(
             text = description,
-            fontSize = 13.sp,
+            fontSize = 14.sp,
             color = Color.Gray,
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 2.dp),
+            modifier = Modifier.padding(top = 4.dp),
         )
     }
 }
@@ -278,23 +300,41 @@ private fun SwitchSettingItem(
 @Composable
 private fun LanguageItem(
     language: String,
-    onClick: (String) -> Unit
+    onClick: (String) -> Unit,
+    isLastElement: Boolean = false,
 ) {
     Column(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .clickable(onClick = { onClick(language) })
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 14.dp),
     ) {
-        Text(
-            text = language,
-            style =
-                MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-            color = MaterialTheme.colorScheme.onSurface,
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = language,
+                modifier = Modifier.weight(1f),
+                fontSize = 17.sp,
+                color = colorResource(R.color.app_text_color),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+
+            Image(
+                painter = painterResource(R.drawable.right_arrow),
+                modifier =
+                    Modifier
+                        .padding(start = 8.dp)
+                        .size(16.dp),
+                contentDescription = "Right Arrow",
+            )
+        }
+        if (!isLastElement) {
+            Divider(
+                modifier = Modifier.padding(top = 8.dp),
+                color = Color.Gray.copy(alpha = 0.2f),
+                thickness = 1.dp,
+            )
+        }
     }
 }
 
@@ -337,11 +377,13 @@ private fun getKeyboardLanguages(context: Context): List<String> {
 fun Context.navigateToFragment(language: String) {
     val fragmentTransaction = (this as? AppCompatActivity)?.supportFragmentManager?.beginTransaction()
 
-    val fragment = LanguageSettingsFragment().apply {
-        arguments = Bundle().apply {
-            putString("LANGUAGE_EXTRA", language)
+    val fragment =
+        LanguageSettingsFragment().apply {
+            arguments =
+                Bundle().apply {
+                    putString("LANGUAGE_EXTRA", language)
+                }
         }
-    }
 
     fragmentTransaction?.replace(R.id.fragment_container, fragment)
     fragmentTransaction?.addToBackStack(null)

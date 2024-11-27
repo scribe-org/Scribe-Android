@@ -1,6 +1,5 @@
 package be.scri.fragments
 
-
 import SettingsScreen
 import android.content.Context
 import android.content.Intent
@@ -55,7 +54,6 @@ class SettingsFragment : ScribeFragment("Settings") {
             }
         }
     }
-
 
     override fun onViewCreated(
         view: View,
@@ -122,8 +120,6 @@ class SettingsFragment : ScribeFragment("Settings") {
             startActivity(this)
         }
     }
-
-
 
     override fun onResume() {
         super.onResume()
