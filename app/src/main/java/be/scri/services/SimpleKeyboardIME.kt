@@ -113,9 +113,11 @@ abstract class SimpleKeyboardIME(
         }
     }
 
-    override fun onFinishInput() {
-        super.onFinishInput()
+    override fun onFinishInputView(finishingInput: Boolean) {
+        super.onFinishInputView(finishingInput)
         currentState = ScribeState.IDLE
+        switchToCommandToolBar()
+        updateUI()
     }
 
     override fun commitPeriodAfterSpace() {
