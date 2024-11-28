@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -325,39 +328,44 @@ private fun LanguageItem(
     isLastElement: Boolean = false,
 ) {
     Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .clickable(onClick = { onClick(language) })
-                .padding(horizontal = 16.dp, vertical = 14.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = { onClick(language) })
+            .padding(bottom = 15.dp)
+
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 10.dp , start = 10.dp , end = 10.dp)) {
             Text(
                 text = language,
                 modifier = Modifier.weight(1f),
                 fontSize = 16.sp,
                 color = colorResource(R.color.app_text_color),
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Image(
                 painter = painterResource(R.drawable.right_arrow),
-                modifier =
-                    Modifier
-                        .padding(start = 8.dp)
-                        .size(16.dp),
-                contentDescription = "Right Arrow",
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .size(16.dp),
+                contentDescription = "Right Arrow"
             )
         }
         if (!isLastElement) {
+            Spacer(modifier = Modifier.height(8.dp))
             HorizontalDivider(
-                modifier = Modifier.padding(top = 8.dp),
                 color = Color.Gray.copy(alpha = 0.2f),
                 thickness = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+                    .padding(top = 8.dp )
             )
         }
     }
 }
+
+
 
 private fun getLocalizedLanguageName(
     context: Context,
