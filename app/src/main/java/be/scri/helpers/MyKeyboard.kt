@@ -418,6 +418,8 @@ class MyKeyboard {
                                             R.drawable.ic_arrow_right_vector
                                         EditorInfo.IME_ACTION_SEND ->
                                             R.drawable.ic_send_vector
+                                        MyCustomActions.IME_ACTION_COMMAND ->
+                                            R.drawable.play_button
                                         else ->
                                             R.drawable.ic_enter_vector
                                     }
@@ -462,5 +464,9 @@ class MyKeyboard {
         mDefaultHeight = res.getDimension(R.dimen.key_height).toInt()
         mDefaultHorizontalGap = getDimensionOrFraction(a, R.styleable.MyKeyboard_horizontalGap, mDisplayWidth, 0)
         a.recycle()
+    }
+
+    object MyCustomActions {
+        const val IME_ACTION_COMMAND = 0x00000008
     }
 }
