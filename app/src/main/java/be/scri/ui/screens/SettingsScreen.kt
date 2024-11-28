@@ -4,10 +4,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -308,20 +304,23 @@ private fun SwitchSettingItem(
                 interactionSource = null,
                 checked = isChecked,
                 onCheckedChange = onCheckedChange,
-                modifier = Modifier
-                    .width(51.dp)
-                    .height(31.dp),
+                modifier =
+                    Modifier
+                        .width(51.dp)
+                        .height(31.dp),
                 thumbContent = {
                     Box(
-                        modifier = Modifier
-                            .size(27.dp)
-                            .background(
-                                if (isChecked)
-                                    colorResource(R.color.switch_thumb_selector_color_true)
-                                else
-                                    colorResource(R.color.switch_thumb_selector_color_false)
-                                , shape = CircleShape
-                            )
+                        modifier =
+                            Modifier
+                                .size(27.dp)
+                                .background(
+                                    if (isChecked) {
+                                        colorResource(R.color.switch_thumb_selector_color_true)
+                                    } else {
+                                        colorResource(R.color.switch_thumb_selector_color_false)
+                                    },
+                                    shape = CircleShape,
+                                ),
                     )
                 },
                 colors =
@@ -330,7 +329,7 @@ private fun SwitchSettingItem(
                         uncheckedThumbColor = uncheckedThumbColor,
                         checkedTrackColor = checkedTrackColor,
                         uncheckedTrackColor = uncheckedTrackColor,
-                        uncheckedBorderColor = Color.Transparent
+                        uncheckedBorderColor = Color.Transparent,
                     ),
             )
         }
@@ -351,27 +350,31 @@ private fun LanguageItem(
     isLastElement: Boolean = false,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = { onClick(language) })
-            .padding(bottom = 15.dp)
-
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = { onClick(language) })
+                .padding(bottom = 15.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 10.dp , start = 10.dp , end = 10.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp),
+        ) {
             Text(
                 text = language,
                 modifier = Modifier.weight(1f),
                 fontSize = 16.sp,
                 color = colorResource(R.color.app_text_color),
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
             )
 
             Image(
                 painter = painterResource(R.drawable.right_arrow),
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .size(16.dp),
-                contentDescription = "Right Arrow"
+                modifier =
+                    Modifier
+                        .padding(start = 8.dp)
+                        .size(16.dp),
+                contentDescription = "Right Arrow",
             )
         }
         if (!isLastElement) {
@@ -379,16 +382,15 @@ private fun LanguageItem(
             HorizontalDivider(
                 color = Color.Gray.copy(alpha = 0.2f),
                 thickness = 1.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-                    .padding(top = 8.dp )
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                        .padding(top = 8.dp),
             )
         }
     }
 }
-
-
 
 private fun getLocalizedLanguageName(
     context: Context,
