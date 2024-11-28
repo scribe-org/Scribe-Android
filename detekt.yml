@@ -30,6 +30,7 @@ complexity:
         active: true
     LongParameterList:
         active: true
+        functionThreshold: 10
     LongMethod:
         active: true
         ignoreAnnotated: ["Composable"]

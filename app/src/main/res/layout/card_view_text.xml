@@ -20,11 +20,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Get the code on GitHub"
-                android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="15sp"
                 android:autoSizeMaxTextSize="24sp"
+                android:autoSizeMinTextSize="15sp"
                 android:autoSizeStepGranularity="2sp"
+                android:autoSizeTextType="uniform"
+                android:text="Get the code on GitHub"
                 android:textStyle="normal" />
 
             <ImageView

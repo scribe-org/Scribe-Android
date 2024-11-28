@@ -176,6 +176,8 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("com.google.android.play:core:1.10.0")
+    implementation("androidx.navigation:navigation-compose:2.6.0")
+
 
     val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
     implementation(composeBom)
