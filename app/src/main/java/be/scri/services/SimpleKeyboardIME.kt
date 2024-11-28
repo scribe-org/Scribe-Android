@@ -19,6 +19,7 @@ import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
 import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.widget.Button
+import androidx.appcompat.content.res.AppCompatResources
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
@@ -31,7 +32,7 @@ import be.scri.views.MyKeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass")
 abstract class SimpleKeyboardIME(
     var language: String,
 ) : InputMethodService(),
@@ -89,11 +90,12 @@ abstract class SimpleKeyboardIME(
     }
 
     private fun updateKeyboardMode(isCommandMode: Boolean = false) {
-        if (isCommandMode) {
-            enterKeyType = MyKeyboard.MyCustomActions.IME_ACTION_COMMAND
-        } else {
-            enterKeyType = currentEnterKeyType!!
-        }
+        enterKeyType =
+            if (isCommandMode) {
+                MyKeyboard.MyCustomActions.IME_ACTION_COMMAND
+            } else {
+                currentEnterKeyType!!
+            }
         keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
@@ -109,6 +111,11 @@ abstract class SimpleKeyboardIME(
             ScribeState.SELECT_COMMAND -> keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
             else -> keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
         }
+    }
+
+    override fun onFinishInput() {
+        super.onFinishInput()
+        currentState = ScribeState.IDLE
     }
 
     override fun commitPeriodAfterSpace() {
@@ -235,15 +242,15 @@ abstract class SimpleKeyboardIME(
             currentState = ScribeState.SELECT_COMMAND
             updateButtonVisibility(false)
             Log.i("MY-TAG", "SELECT COMMAND STATE")
-            binding.scribeKey.foreground = getDrawable(R.drawable.close)
+            binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
             updateUI()
         }
     }
 
     private fun setupSelectCommandView() {
-        binding.translateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
-        binding.conjugateBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
-        binding.pluralBtn.setBackgroundDrawable(getDrawable(R.drawable.button_background_rounded))
+        binding.translateBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
+        binding.conjugateBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
+        binding.pluralBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
         binding.translateBtn.text = "Translate"
         binding.conjugateBtn.text = "Conjugate"
         binding.pluralBtn.text = "Plural"
@@ -253,7 +260,7 @@ abstract class SimpleKeyboardIME(
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             Log.i("MY-TAG", "IDLE STATE")
-            binding.scribeKey.foreground = getDrawable(R.drawable.ic_scribe_icon_vector)
+            binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
             updateUI()
         }
         binding.translateBtn.setOnClickListener {
@@ -342,7 +349,7 @@ abstract class SimpleKeyboardIME(
 
     fun getLastWordBeforeCursor(): String? {
         val textBeforeCursor = getText() ?: return null
-        val trimmedText = textBeforeCursor.trim().toString()
+        val trimmedText = textBeforeCursor.trim()
         val lastWord = trimmedText.split("\\s+".toRegex()).lastOrNull()
         return lastWord
     }
