@@ -3,6 +3,7 @@ package be.scri.ui.screens
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -41,27 +42,17 @@ fun LanguageSettingsScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
-        Text(
-            text = language,
-            color = colorResource(R.color.app_text_color),
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-            modifier = Modifier.padding(
-                start = 16.dp,
-                top = 16.dp,
-                bottom = 10.dp,
-            ),
-        )
+        Column {
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.app_settings_keyboard_layout_title),
+                cardItemsList = layoutList,
+            )
 
-        ItemCardContainerWithTitle(
-            title = stringResource(R.string.app_settings_keyboard_layout_title),
-            cardItemsList = layoutList,
-        )
-
-        ItemCardContainerWithTitle(
-            title = stringResource(R.string.app_settings_keyboard_functionality_title),
-            cardItemsList = functionalityList
-        )
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.app_settings_keyboard_functionality_title),
+                cardItemsList = functionalityList
+            )
+        }
     }
 }
 
