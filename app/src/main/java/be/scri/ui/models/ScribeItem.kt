@@ -30,10 +30,3 @@ sealed class ScribeItem(
         val customAction: (Any?) -> Unit,
     ) : ScribeItem(title, desc)
 }
-
-enum class ItemType {
-    CLICKABLE_ITEM,
-    SWITCH_ITEM,
-    EXTERNAL_LINK_ITEM,
-    CUSTOM_ITEM,
-}
