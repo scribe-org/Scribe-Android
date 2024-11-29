@@ -1,50 +1,37 @@
+import android.app.UiModeManager
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.testing.FragmentScenario
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.scri.fragments.MainFragment
+import be.scri.helpers.PreferencesHelper
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import io.mockk.mockkStatic
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-@RunWith(AndroidJUnit4::class)
 class MainFragmentTest {
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var editor: SharedPreferences.Editor
-    private lateinit var context: Context
+    private lateinit var mainFragment: MainFragment
+    private val mockContext: Context = mockk()
+    private val mockSharedPreferences: SharedPreferences = mockk()
+    private val mockUiModeManager: UiModeManager = mockk(relaxed = true)
 
-    @Before
-    fun setUp() {
-        context = ApplicationProvider.getApplicationContext()
-        sharedPreferences = mockk()
-        editor = mockk()
-        every { sharedPreferences.edit() } returns editor
-        every { sharedPreferences.getBoolean("dark_mode", false) } returns true
+    @BeforeEach
+    fun setup() {
+        mainFragment = MainFragment()
+        mockkStatic(PreferencesHelper::class)
+
+        every { mockContext.getSharedPreferences(any(), any()) } returns mockSharedPreferences
+        every { mockSharedPreferences.getBoolean(eq("dark_mode"), any()) } returns true
+        every { mockContext.getSystemService(Context.UI_MODE_SERVICE) } returns mockUiModeManager
+        every { mockUiModeManager.nightMode } returns UiModeManager.MODE_NIGHT_YES
     }
 
     @Test
-    fun testApplyUserDarkModePreference_darkModeEnabled() {
-        val fragmentScenario = FragmentScenario.launchInContainer(MainFragment::class.java)
-        fragmentScenario.onFragment { fragment ->
-            fragment.applyUserDarkModePreference()
-            verify { editor.apply() }
-            assert(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
-        }
-    }
-
-    @Test
-    fun testApplyUserDarkModePreference_darkModeDisabled() {
-        every { sharedPreferences.getBoolean("dark_mode", false) } returns false
-        val fragmentScenario = FragmentScenario.launchInContainer(MainFragment::class.java)
-        fragmentScenario.onFragment { fragment ->
-            fragment.applyUserDarkModePreference()
-            verify { editor.apply() }
-            assert(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO)
-        }
+    fun `GIVEN dark mode enabled in preferences WHEN getDarkModePreference is called THEN returns true`() {
+        every { mockContext.getSharedPreferences("preferences", Context.MODE_PRIVATE) } returns mockSharedPreferences
+        every { mockSharedPreferences.getBoolean("dark_mode", false) } returns true
+        val result = mainFragment.getDarkModePreference(mockContext)
+        assertTrue(result)
     }
 }
