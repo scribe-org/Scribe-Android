@@ -1,6 +1,5 @@
 package be.scri.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,16 +10,11 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.databinding.FragmentLanguageSettingsBinding
-import be.scri.helpers.CustomAdapter
 import be.scri.helpers.PreferencesHelper
-import be.scri.models.SwitchItem
 import be.scri.ui.screens.LanguageSettingsScreen
-import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.theme.ScribeTheme
 
 @Suppress("LongMethod")
@@ -83,8 +77,8 @@ class LanguageSettingsFragment : Fragment() {
             setContent {
                 ScribeTheme(
                     useDarkTheme =
-                    PreferencesHelper.getUserDarkModePreference(requireContext())
-                        == AppCompatDelegate.MODE_NIGHT_YES,
+                        PreferencesHelper.getUserDarkModePreference(requireContext())
+                            == AppCompatDelegate.MODE_NIGHT_YES,
                 ) {
                     LanguageSettingsScreen(
                         language = arguments?.getString("LANGUAGE_EXTRA") ?: "",

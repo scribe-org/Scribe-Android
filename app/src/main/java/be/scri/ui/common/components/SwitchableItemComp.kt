@@ -29,7 +29,7 @@ fun SwitchableItemComp(
     desc: String,
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val checkedThumbColor = colorResource(R.color.switch_thumb_selector_color_true)
     val uncheckedThumbColor = colorResource(R.color.switch_thumb_selector_color_false)
@@ -37,8 +37,9 @@ fun SwitchableItemComp(
     val uncheckedTrackColor = colorResource(R.color.switch_selector_color_false)
 
     Column(
-        modifier = modifier
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+        modifier =
+            modifier
+                .padding(horizontal = 12.dp, vertical = 10.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -54,30 +55,33 @@ fun SwitchableItemComp(
                 interactionSource = null,
                 checked = isChecked,
                 onCheckedChange = onCheckedChange,
-                modifier = Modifier
-                    .width(51.dp)
-                    .height(31.dp),
+                modifier =
+                    Modifier
+                        .width(51.dp)
+                        .height(31.dp),
                 thumbContent = {
                     Box(
-                        modifier = Modifier
-                            .size(27.dp)
-                            .background(
-                                if (isChecked) {
-                                    colorResource(R.color.switch_thumb_selector_color_true)
-                                } else {
-                                    colorResource(R.color.switch_thumb_selector_color_false)
-                                },
-                                shape = CircleShape,
-                            ),
+                        modifier =
+                            Modifier
+                                .size(27.dp)
+                                .background(
+                                    if (isChecked) {
+                                        colorResource(R.color.switch_thumb_selector_color_true)
+                                    } else {
+                                        colorResource(R.color.switch_thumb_selector_color_false)
+                                    },
+                                    shape = CircleShape,
+                                ),
                     )
                 },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = checkedThumbColor,
-                    uncheckedThumbColor = uncheckedThumbColor,
-                    checkedTrackColor = checkedTrackColor,
-                    uncheckedTrackColor = uncheckedTrackColor,
-                    uncheckedBorderColor = Color.Transparent,
-                ),
+                colors =
+                    SwitchDefaults.colors(
+                        checkedThumbColor = checkedThumbColor,
+                        uncheckedThumbColor = uncheckedThumbColor,
+                        checkedTrackColor = checkedTrackColor,
+                        uncheckedTrackColor = uncheckedTrackColor,
+                        uncheckedBorderColor = Color.Transparent,
+                    ),
             )
         }
         Text(

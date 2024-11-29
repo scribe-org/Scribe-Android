@@ -27,17 +27,17 @@ fun ClickableItemComp(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    desc: String? = null
+    desc: String? = null,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = 12.dp,
-                vertical = 10.dp
-            )
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 12.dp,
+                    vertical = 10.dp,
+                ).clip(RoundedCornerShape(12.dp))
+                .clickable(onClick = onClick),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -52,14 +52,15 @@ fun ClickableItemComp(
             )
             Icon(
                 painter = painterResource(R.drawable.right_arrow),
-                modifier = Modifier
-                    .padding(start = 6.dp)
-                    .size(14.dp),
+                modifier =
+                    Modifier
+                        .padding(start = 6.dp)
+                        .size(14.dp),
                 contentDescription = "Right Arrow",
             )
         }
 
-        if(!desc.isNullOrEmpty()) {
+        if (!desc.isNullOrEmpty()) {
             Text(
                 text = desc,
                 fontSize = 12.sp,
@@ -77,6 +78,6 @@ private fun ClickableItemPreview() {
     ClickableItemComp(
         title = "Title",
         desc = "Description",
-        onClick = {}
+        onClick = {},
     )
 }

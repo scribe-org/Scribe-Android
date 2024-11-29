@@ -18,24 +18,25 @@ import be.scri.ui.models.ScribeItemList
 fun ItemsCardContainer(
     cardItemsList: ScribeItemList,
     isDivider: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surface
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Column(
-            modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 4.dp)
+            modifier =
+                Modifier
+                    .padding(vertical = 4.dp, horizontal = 4.dp),
         ) {
             cardItemsList.items.forEach { item ->
-                when(item) {
+                when (item) {
                     is ScribeItem.ClickableItem -> {
                         ClickableItemComp(
                             title = item.title,
                             desc = item.desc,
-                            onClick = item.action
+                            onClick = item.action,
                         )
                     }
 
@@ -44,31 +45,29 @@ fun ItemsCardContainer(
                             title = item.title,
                             desc = item.desc,
                             isChecked = item.state,
-                            onCheckedChange = item.onToggle
+                            onCheckedChange = item.onToggle,
                         )
                     }
 
                     is ScribeItem.CustomItem -> {
-
                     }
 
                     is ScribeItem.ExternalLinkItem -> {
-
                     }
                 }
 
-                if(
-                    isDivider
-                    &&
+                if (
+                    isDivider &&
                     cardItemsList.items.indexOf(item) != cardItemsList.items.lastIndex
                 ) {
                     HorizontalDivider(
                         color = Color.Gray.copy(alpha = 0.25f),
                         thickness = 1.dp,
-                        modifier = Modifier.padding(
-                            vertical = 8.dp,
-                            horizontal = 12.dp
-                        )
+                        modifier =
+                            Modifier.padding(
+                                vertical = 8.dp,
+                                horizontal = 12.dp,
+                            ),
                     )
                 }
             }
@@ -79,18 +78,19 @@ fun ItemsCardContainer(
 @PreviewLightDark
 @Composable
 private fun ItemsCardContainerPreview() {
-    val cardItemsList = ScribeItemList(
-        listOf(
-            ScribeItem.ClickableItem(
-                "",
-                "",
-                action = {}
-            )
+    val cardItemsList =
+        ScribeItemList(
+            listOf(
+                ScribeItem.ClickableItem(
+                    "",
+                    "",
+                    action = {},
+                ),
+            ),
         )
-    )
 
     ItemsCardContainer(
         cardItemsList,
-        true
+        true,
     )
 }

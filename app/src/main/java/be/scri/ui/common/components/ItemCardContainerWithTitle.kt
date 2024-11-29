@@ -18,29 +18,31 @@ fun ItemCardContainerWithTitle(
     title: String,
     cardItemsList: ScribeItemList,
     modifier: Modifier = Modifier,
-    isDivider: Boolean = false
+    isDivider: Boolean = false,
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
     ) {
         Text(
             text = title,
             color = colorResource(R.color.app_text_color),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
-            modifier = Modifier.padding(
-                start = 16.dp,
-                top = 16.dp,
-                bottom = 10.dp,
-            ),
+            modifier =
+                Modifier.padding(
+                    start = 16.dp,
+                    top = 16.dp,
+                    bottom = 10.dp,
+                ),
         )
 
         ItemsCardContainer(
             cardItemsList = cardItemsList,
             isDivider = isDivider,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
         )
     }
 }
