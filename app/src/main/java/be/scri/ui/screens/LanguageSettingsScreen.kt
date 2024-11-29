@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -31,70 +34,69 @@ fun LanguageSettingsScreen(
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
 
+    val periodOnDoubleTapState = remember {
+        mutableStateOf(
+            sharedPref.getBoolean(
+                "period_on_double_tap_$language",
+                false)
+        )
+    }
+    val emojiSuggestionsState = remember {
+        mutableStateOf(
+            sharedPref.getBoolean(
+                "emoji_suggestions_$language",
+                true)
+        )
+    }
+    val disableAccentCharacterState = remember {
+        mutableStateOf(
+            sharedPref.getBoolean(
+                "disable_accent_characters_$language",
+                false)
+        )
+    }
+    val periodAndCommaState = remember {
+        mutableStateOf(
+            sharedPref.getBoolean(
+                "period_and_comma_$language",
+                false)
+        )
+    }
+
+
     val layoutList = ScribeItemList(
-        items = getLayoutListData(context, language, sharedPref)
+        items = getLayoutListData(
+            language = language,
+            togglePeriodAndCommaState = periodAndCommaState.value,
+            onTogglePeriodAndComma = { shouldDoubleSpacePeriod ->
+                periodAndCommaState.value = shouldDoubleSpacePeriod
+                PreferencesHelper.setCommaAndPeriodPreference()
+            },
+            toggleDisableAccentCharacter = disableAccentCharacterState.value,
+            onToggleDisableAccentCharacter = { shouldDisableAccentCharacter ->
+                disableAccentCharacterState.value = shouldDisableAccentCharacter
+                PreferencesHelper.setAccentCharacterPreference(
+                    context,
+                    language,
+                    shouldDisableAccentCharacter
+                )
+            }
+        )
     )
     val functionalityList = ScribeItemList(
-        items = getFunctionalityListData(context, language, sharedPref)
-    )
-
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-    ) {
-        Column {
-            ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_settings_keyboard_layout_title),
-                cardItemsList = layoutList,
-            )
-
-            ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_settings_keyboard_functionality_title),
-                cardItemsList = functionalityList
-            )
-        }
-    }
-}
-
-
-@Composable
-private fun getFunctionalityListData(
-    context: Context,
-    language: String,
-    sharePref: SharedPreferences
-): List<ScribeItem> {
-    val list = listOf(
-        ScribeItem.SwitchItem(
-            title = stringResource(
-                R.string.app_settings_keyboard_functionality_double_space_period
-            ),
-            desc = stringResource(
-                R.string.app_settings_keyboard_functionality_double_space_period_description
-            ),
-            state = sharePref.getBoolean(
-                "period_on_double_tap_$language",
-                false,
-            ),
-            onToggle = { shouldDoubleSpacePeriod ->
+        items = getFunctionalityListData(
+            periodOnDoubleTapState = periodOnDoubleTapState.value,
+            onTogglePeriodOnDoubleTap = { shouldDoubleSpacePeriod ->
+                periodOnDoubleTapState.value = shouldDoubleSpacePeriod
                 PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(
                     context,
                     language,
                     shouldDoubleSpacePeriod
                 )
-            }
-        ),
-        ScribeItem.SwitchItem(
-            title = stringResource(
-                R.string.app_settings_keyboard_functionality_auto_suggest_emoji
-            ),
-            desc = stringResource(
-                R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description
-            ),
-            state = sharePref.getBoolean(
-                "emoji_suggestions_$language",
-                false,
-            ),
-            onToggle = { shouldDoubleSpacePeriod ->
+            },
+            emojiSuggestionsState = emojiSuggestionsState.value,
+            onToggleEmojiSuggestions = { shouldDoubleSpacePeriod ->
+                emojiSuggestionsState.value = shouldDoubleSpacePeriod
                 PreferencesHelper.setEmojiAutoSuggestionsPreference(
                     context,
                     language,
@@ -104,19 +106,72 @@ private fun getFunctionalityListData(
         )
     )
 
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        Column {
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.app_settings_keyboard_layout_title),
+                cardItemsList = layoutList
+            )
+
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.app_settings_keyboard_functionality_title),
+                cardItemsList = functionalityList,
+                modifier = Modifier
+                    .padding(top = 6.dp)
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun getFunctionalityListData(
+    periodOnDoubleTapState: Boolean,
+    onTogglePeriodOnDoubleTap: (Boolean) -> Unit,
+    emojiSuggestionsState: Boolean,
+    onToggleEmojiSuggestions: (Boolean) -> Unit
+): List<ScribeItem> {
+    val list = listOf(
+        ScribeItem.SwitchItem(
+            title = stringResource(
+                R.string.app_settings_keyboard_functionality_double_space_period
+            ),
+            desc = stringResource(
+                R.string.app_settings_keyboard_functionality_double_space_period_description
+            ),
+            state = periodOnDoubleTapState,
+            onToggle = onTogglePeriodOnDoubleTap
+        ),
+        ScribeItem.SwitchItem(
+            title = stringResource(
+                R.string.app_settings_keyboard_functionality_auto_suggest_emoji
+            ),
+            desc = stringResource(
+                R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description
+            ),
+            state = emojiSuggestionsState,
+            onToggle = onToggleEmojiSuggestions
+        )
+    )
+
     return list
 }
 
 @Composable
 private fun getLayoutListData(
-    context: Context,
     language: String,
-    sharePref: SharedPreferences
+    togglePeriodAndCommaState: Boolean,
+    onTogglePeriodAndComma: (Boolean) -> Unit,
+    toggleDisableAccentCharacter: Boolean,
+    onToggleDisableAccentCharacter: (Boolean) -> Unit
 ): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
 
     when(language) {
-        "German" -> {
+        "German", "Swedish", "Spanish" -> {
             list.add(
                 ScribeItem.SwitchItem(
                     title = stringResource(
@@ -125,65 +180,8 @@ private fun getLayoutListData(
                     desc = stringResource(
                         R.string.app_settings_keyboard_layout_disable_accent_characters_description,
                     ),
-                    state = sharePref.getBoolean(
-                        "disable_accent_characters_$language",
-                        false,
-                    ),
-                    onToggle = { shouldDisableAccentCharacter ->
-                        PreferencesHelper.setAccentCharacterPreference(
-                            context,
-                            language,
-                            shouldDisableAccentCharacter
-                        )
-                    }
-                )
-            )
-        }
-
-        "Swedish" -> {
-            list.add(
-                ScribeItem.SwitchItem(
-                    title = stringResource(
-                        R.string.app_settings_keyboard_layout_disable_accent_characters,
-                    ),
-                    desc = stringResource(
-                        R.string.app_settings_keyboard_layout_disable_accent_characters_description,
-                    ),
-                    state = sharePref.getBoolean(
-                        "disable_accent_characters_$language",
-                        false,
-                    ),
-                    onToggle = { shouldDisableAccentCharacter ->
-                        PreferencesHelper.setAccentCharacterPreference(
-                            context,
-                            language,
-                            shouldDisableAccentCharacter
-                        )
-                    }
-                )
-            )
-        }
-
-        "Spanish" -> {
-            list.add(
-                ScribeItem.SwitchItem(
-                    title = stringResource(
-                        R.string.app_settings_keyboard_layout_disable_accent_characters,
-                    ),
-                    desc = stringResource(
-                        R.string.app_settings_keyboard_layout_disable_accent_characters_description,
-                    ),
-                    state = sharePref.getBoolean(
-                        "disable_accent_characters_$language",
-                        false,
-                    ),
-                    onToggle = { shouldDisableAccentCharacter ->
-                        PreferencesHelper.setAccentCharacterPreference(
-                            context,
-                            language,
-                            shouldDisableAccentCharacter
-                        )
-                    }
+                    state = toggleDisableAccentCharacter,
+                    onToggle = onToggleDisableAccentCharacter
                 )
             )
         }
@@ -197,13 +195,8 @@ private fun getLayoutListData(
             desc = stringResource(
                 R.string.app_settings_keyboard_layout_period_and_comma_description
             ),
-            state = sharePref.getBoolean(
-                "period_and_comma_$language",
-                false,
-            ),
-            onToggle = {
-                PreferencesHelper.setCommaAndPeriodPreference()
-            }
+            state = togglePeriodAndCommaState,
+            onToggle = onTogglePeriodAndComma
         )
     )
 
