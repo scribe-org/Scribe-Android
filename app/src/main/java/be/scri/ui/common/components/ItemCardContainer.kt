@@ -3,10 +3,12 @@ package be.scri.ui.common.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import be.scri.ui.model.ScribeItem
@@ -15,6 +17,7 @@ import be.scri.ui.model.ScribeItemList
 @Composable
 fun ItemsCardContainer(
     cardItemsList: ScribeItemList,
+    isDivider: Boolean,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -30,18 +33,18 @@ fun ItemsCardContainer(
                 when(item) {
                     is ScribeItem.ClickableItem -> {
                         ClickableItemComp(
-                            item.title,
-                            item.desc,
-                            item.action
+                            title = item.title,
+                            desc = item.desc,
+                            onClick = item.action
                         )
                     }
 
                     is ScribeItem.SwitchItem -> {
                         SwitchableItemComp(
-                            item.title,
-                            item.desc,
-                            item.state,
-                            item.onToggle
+                            title = item.title,
+                            desc = item.desc,
+                            isChecked = item.state,
+                            onCheckedChange = item.onToggle
                         )
                     }
 
@@ -52,6 +55,21 @@ fun ItemsCardContainer(
                     is ScribeItem.ExternalLinkItem -> {
 
                     }
+                }
+
+                if(
+                    isDivider
+                    &&
+                    cardItemsList.items.indexOf(item) != cardItemsList.items.lastIndex
+                ) {
+                    HorizontalDivider(
+                        color = Color.Gray.copy(alpha = 0.25f),
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(
+                            vertical = 8.dp,
+                            horizontal = 12.dp
+                        )
+                    )
                 }
             }
         }
@@ -71,5 +89,8 @@ private fun ItemsCardContainerPreview() {
         )
     )
 
-    ItemsCardContainer(cardItemsList)
+    ItemsCardContainer(
+        cardItemsList,
+        true
+    )
 }

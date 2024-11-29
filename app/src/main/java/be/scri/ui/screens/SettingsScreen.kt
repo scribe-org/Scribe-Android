@@ -48,6 +48,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.scri.R
 import be.scri.fragments.LanguageSettingsFragment
 import be.scri.helpers.PreferencesHelper
+import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.common.components.ItemsCardContainer
 import be.scri.ui.model.ScribeItem
 import be.scri.ui.model.ScribeItemList
@@ -130,76 +131,40 @@ fun SettingsScreen(
         )
     )
 
+    val installedKeyboardList = getKeyboardLanguages(context).map { language ->
+        ScribeItem.ClickableItem(
+            title = getLocalizedLanguageName(context, language),
+            desc = null,
+            action = {
+                context.navigateToFragment(language)
+            },
+        )
+    }
 
     LazyColumn(
         modifier =
             modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxWidth()
-                .padding(bottom = 40.dp),
+                .padding(bottom = 60.dp),
     ) {
         item {
-            Text(
-                text = stringResource(R.string.app_settings_menu_title),
-                color = colorResource(R.color.app_text_color),
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                modifier =
-                    Modifier.padding(
-                        start = 16.dp,
-                        top = 16.dp,
-                        bottom = 8.dp,
-                    ),
-            )
-        }
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.app_settings_menu_title),
+                cardItemsList = ScribeItemList(appSettingsItemList),
 
-        item {
-            ItemsCardContainer(
-                cardItemsList = ScribeItemList(
-                    items = appSettingsItemList
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
             )
         }
 
         item {
             if (isKeyboardInstalled) {
-                Text(
-                    text = stringResource(id = R.string.app_settings_keyboard_title),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                top = 8.dp,
-                                start = 8.dp,
-                                end = 8.dp,
-                                bottom = 8.dp,
-                            ),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
+                ItemCardContainerWithTitle(
+                    title = stringResource(R.string.app_settings_keyboard_title),
+                    cardItemsList = ScribeItemList(installedKeyboardList),
+                    isDivider = true,
+                    modifier = Modifier
+                        .padding(top = 8.dp)
                 )
-
-                Surface(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 12.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                ) {
-                    Column {
-                        languages.forEachIndexed { index, language ->
-                            LanguageItem(
-                                language = getLocalizedLanguageName(context, language),
-                                onClick = { context.navigateToFragment(language) },
-                                isLastElement = index == languages.size - 1,
-                            )
-                        }
-                    }
-                }
             } else {
                 InstallKeyboardButton(onInstallKeyboard)
             }
@@ -232,166 +197,6 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
     }
 }
 
-@Composable
-private fun SettingItem(
-    title: String,
-    description: String,
-    onClick: () -> Unit,
-) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .clickable(onClick = onClick),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = title,
-                modifier = Modifier.weight(1f),
-                fontSize = 16.sp,
-                color = colorResource(R.color.app_text_color),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Image(
-                painter = painterResource(R.drawable.right_arrow),
-                modifier =
-                    Modifier
-                        .padding(start = 6.dp)
-                        .size(14.dp),
-                contentDescription = "Right Arrow",
-            )
-        }
-        Text(
-            text = description,
-            fontSize = 12.sp,
-            color = Color.Gray,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 4.dp),
-        )
-    }
-}
-
-@Composable
-private fun SwitchSettingItem(
-    title: String,
-    description: String,
-    isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-) {
-    val checkedThumbColor = colorResource(R.color.switch_thumb_selector_color_true)
-    val uncheckedThumbColor = colorResource(R.color.switch_thumb_selector_color_false)
-    val checkedTrackColor = colorResource(R.color.switch_selector_color)
-    val uncheckedTrackColor = colorResource(R.color.switch_selector_color_false)
-
-    Column(
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = title,
-                modifier = Modifier.weight(1f),
-                fontSize = 16.sp,
-                color = colorResource(R.color.app_text_color),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Switch(
-                interactionSource = null,
-                checked = isChecked,
-                onCheckedChange = onCheckedChange,
-                modifier =
-                    Modifier
-                        .width(51.dp)
-                        .height(31.dp),
-                thumbContent = {
-                    Box(
-                        modifier =
-                            Modifier
-                                .size(27.dp)
-                                .background(
-                                    if (isChecked) {
-                                        colorResource(R.color.switch_thumb_selector_color_true)
-                                    } else {
-                                        colorResource(R.color.switch_thumb_selector_color_false)
-                                    },
-                                    shape = CircleShape,
-                                ),
-                    )
-                },
-                colors =
-                    SwitchDefaults.colors(
-                        checkedThumbColor = checkedThumbColor,
-                        uncheckedThumbColor = uncheckedThumbColor,
-                        checkedTrackColor = checkedTrackColor,
-                        uncheckedTrackColor = uncheckedTrackColor,
-                        uncheckedBorderColor = Color.Transparent,
-                    ),
-            )
-        }
-        Text(
-            text = description,
-            fontSize = 12.sp,
-            color = Color.Gray,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 4.dp),
-        )
-    }
-}
-
-@Composable
-private fun LanguageItem(
-    language: String,
-    onClick: (String) -> Unit,
-    isLastElement: Boolean = false,
-) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .clickable(onClick = { onClick(language) })
-                .padding(bottom = 15.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp),
-        ) {
-            Text(
-                text = language,
-                modifier = Modifier.weight(1f),
-                fontSize = 16.sp,
-                color = colorResource(R.color.app_text_color),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-
-            Image(
-                painter = painterResource(R.drawable.right_arrow),
-                modifier =
-                    Modifier
-                        .padding(start = 8.dp)
-                        .size(16.dp),
-                contentDescription = "Right Arrow",
-            )
-        }
-        if (!isLastElement) {
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(
-                color = Color.Gray.copy(alpha = 0.2f),
-                thickness = 1.dp,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
-                        .padding(top = 8.dp),
-            )
-        }
-    }
-}
 
 private fun getLocalizedLanguageName(
     context: Context,

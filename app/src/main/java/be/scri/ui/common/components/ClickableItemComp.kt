@@ -25,9 +25,9 @@ import be.scri.R
 @Composable
 fun ClickableItemComp(
     title: String,
-    desc: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    desc: String? = null
 ) {
     Column(
         modifier = modifier
@@ -58,13 +58,16 @@ fun ClickableItemComp(
                 contentDescription = "Right Arrow",
             )
         }
-        Text(
-            text = desc,
-            fontSize = 12.sp,
-            color = Color.Gray,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 4.dp),
-        )
+
+        if(!desc.isNullOrEmpty()) {
+            Text(
+                text = desc,
+                fontSize = 12.sp,
+                color = Color.Gray,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
     }
 }
 
