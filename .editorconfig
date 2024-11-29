@@ -24,3 +24,4 @@ ij_kotlin_name_count_to_use_star_import_for_members = 999
 ktlint_code_style = ktlint_official
 ktlint_standard = enabled
 ktlint_standard_final-newline = enabled
+ktlint_function_naming_ignore_when_annotated_with = Composable

@@ -17,6 +17,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
     id("de.mannodermaus.android-junit5") version "1.11.2.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("jacoco")
 }
 
@@ -57,6 +58,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
     }
 
     signingConfigs {
@@ -159,6 +161,8 @@ android {
 }
 
 dependencies {
+    detektPlugins("io.nlopez.compose.rules:detekt:0.4.17")
+    lintChecks("com.slack.lint.compose:compose-lint-checks:1.4.2")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.activity:activity-ktx:1.9.2")
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.0")
@@ -179,19 +183,19 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("com.google.android.play:core:1.10.0")
 
-    // Unit Testing (JUnit, MockK)
-    testImplementation("io.mockk:mockk:1.13.13")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.11.2")
-    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.activity:activity-compose")
 
-    // UI Testing (Espresso)
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("androidx.test:rules:1.6.1")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
 
     api("joda-time:joda-time:2.10.13")
     api("com.github.tibbi:RecyclerView-FastScroller:e7d3e150c4")
@@ -203,18 +207,26 @@ dependencies {
 }
 
 tasks.register<Copy>("moveFromi18n") {
-    val locales = listOf("de", "es", "sv", "en-US")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    destinationDir = file("src/main/res")
 
+    val locales = file("src/main/assets/i18n/Scribe-i18n/values").listFiles()
+        ?.filter { it.isDirectory }
+        ?.map { it.name }
+        ?: emptyList()
     locales.forEach { locale ->
-        val fromDir = "src/main/assets/i18n/Scribe-i18n/values/$locale/"
-        val toDir = if (locale == "en-US") "src/main/res/values/" else "src/main/res/values-$locale/"
-        val sourceDir = file(fromDir)
+        val fromDir = file("src/main/assets/i18n/Scribe-i18n/values/$locale/")
+        val targetDir = if (locale == "en-US") {
+            "values"
+        } else {
+            "values-$locale"
+        }
 
-        if (sourceDir.exists()) {
-            println("Preparing to move from $fromDir to $toDir")
-            from(fileTree(fromDir))
-            into(toDir)
-            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        if (fromDir.exists()) {
+            println("Copying from $fromDir to $targetDir")
+            from(fromDir) {
+                into(targetDir)
+            }
         } else {
             println("Source directory does not exist: $fromDir")
         }

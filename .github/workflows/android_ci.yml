@@ -1,0 +1,85 @@
+name: Android CI
+on:
+    pull_request:
+        branches:
+            - main
+        types: [opened, reopened, synchronize]
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        name: Run lint and detekt   
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+        
+            - name: prepare app 
+              uses: ./.github/composite/prepareApp  
+
+            - name: Run ktlint
+              run: ./gradlew lintKotlin
+
+            - name: Run detekt
+              run: ./gradlew detekt
+    test:
+        runs-on: ubuntu-latest
+        name: Run tests
+        steps:
+        
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              
+            - name: prepare app 
+              uses: ./.github/composite/prepareApp  
+
+            - name: Run ktlint
+              run: ./gradlew test
+              
+    coverage:
+        runs-on: ubuntu-latest
+        name: Run coverage
+        permissions:
+            pull-requests: write        
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              
+            - name: prepare app 
+              uses: ./.github/composite/prepareApp  
+
+            - name: Generate coverage report
+              run: ./gradlew jacocoCoreDebugCodeCoverage
+
+            - name: Add coverage to PR
+              id: jacoco
+              uses: madrapps/jacoco-report@v1.7.1
+              with:
+                  paths: |
+                      ${{ github.workspace }}/**/jacocoCoreDebugCodeCoverage.xml
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  min-coverage-overall: 40
+                  min-coverage-changed-files: 60
+                  title: Code Coverage
+                  update-comment: true
+                  debug-mode: true   
+    build:
+      runs-on: ubuntu-latest
+      name: build app
+      steps: 
+      
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              
+            - name: prepare app 
+              uses: ./.github/composite/prepareApp  
+              
+            - name: build app  
+              run: ./gradlew assembleDebug
+              
+            - name: Upload Debug Apk
+              uses: actions/upload-artifact@v4
+              if: success()
+              with:
+                  name: latest-apk
+                  path: "app/build/outputs/apk/core/debug/app-core-debug.apk"          
