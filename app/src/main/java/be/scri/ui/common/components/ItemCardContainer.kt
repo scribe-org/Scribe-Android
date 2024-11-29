@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import be.scri.ui.model.ScribeItem
-import be.scri.ui.model.ScribeItemList
+import be.scri.ui.models.ScribeItem
+import be.scri.ui.models.ScribeItemList
 
 @Composable
 fun ItemsCardContainer(

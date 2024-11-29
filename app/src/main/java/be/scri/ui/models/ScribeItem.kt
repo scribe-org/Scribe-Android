@@ -1,4 +1,4 @@
-package be.scri.ui.model
+package be.scri.ui.models
 
 sealed class ScribeItem(
     open val title: String,

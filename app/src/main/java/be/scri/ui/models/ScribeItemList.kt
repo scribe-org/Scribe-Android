@@ -1,4 +1,4 @@
-package be.scri.ui.model
+package be.scri.ui.models
 
 import androidx.compose.runtime.Immutable
 

@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
-import be.scri.ui.model.ScribeItemList
+import be.scri.ui.models.ScribeItemList
 
 @Composable
 fun ItemCardContainerWithTitle(

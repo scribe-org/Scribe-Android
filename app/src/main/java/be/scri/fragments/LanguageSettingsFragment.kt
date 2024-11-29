@@ -23,29 +23,29 @@ class LanguageSettingsFragment : Fragment() {
     private var _binding: FragmentLanguageSettingsBinding? = null
     val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
-        val mainActivity = requireActivity() as MainActivity
-        mainActivity.setActionBarButtonFunction(
-            ACTION_BAR_BUTTON_INDEX,
-            R.string.app_settings_title,
-        )
-        val callback =
-            requireActivity().onBackPressedDispatcher.addCallback(this) {
-                viewpager.setCurrentItem(ACTION_BAR_BUTTON_INDEX, true)
-                (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                (requireActivity() as MainActivity).setActionBarVisibility(false)
-            }
-        (requireActivity() as MainActivity).setActionBarVisibility(true)
-        (requireActivity() as MainActivity)
-            .supportActionBar
-            ?.customView
-            ?.findViewById<Button>(R.id.button)
-            ?.text = getString(R.string.app_settings_title)
-
-        callback.isEnabled = true
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
+//        val mainActivity = requireActivity() as MainActivity
+//        mainActivity.setActionBarButtonFunction(
+//            ACTION_BAR_BUTTON_INDEX,
+//            R.string.app_settings_title,
+//        )
+//        val callback =
+//            requireActivity().onBackPressedDispatcher.addCallback(this) {
+//                viewpager.setCurrentItem(ACTION_BAR_BUTTON_INDEX, true)
+//                (requireActivity() as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+//                (requireActivity() as MainActivity).setActionBarVisibility(false)
+//            }
+//        (requireActivity() as MainActivity).setActionBarVisibility(true)
+//        (requireActivity() as MainActivity)
+//            .supportActionBar
+//            ?.customView
+//            ?.findViewById<Button>(R.id.button)
+//            ?.text = getString(R.string.app_settings_title)
+//
+//        callback.isEnabled = true
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
