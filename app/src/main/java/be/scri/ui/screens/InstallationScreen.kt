@@ -86,8 +86,7 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
                     .clickable {
                         val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
                         context.startActivity(intent)
-                    }
-                    .testTag("keyboardSettingsCard"),
+                    }.testTag("keyboardSettingsCard"),
             shape = RoundedCornerShape(Dimensions.PaddingLarge),
             colors =
                 CardDefaults.cardColors(

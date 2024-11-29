@@ -1,18 +1,17 @@
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.test.core.app.ApplicationProvider
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.theme.ScribeTheme
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import androidx.test.core.app.ApplicationProvider
 
 class MainFragmentTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
