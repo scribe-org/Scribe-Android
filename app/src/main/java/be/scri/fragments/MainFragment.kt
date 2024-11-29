@@ -36,7 +36,8 @@ class MainFragment : ScribeFragment("Main") {
         (activity as MainActivity).showHint("hint_shown_main", R.string.app_installation_app_hint)
     }
 
-    fun getDarkModePreference(context: Context) {
-        Boolean = PreferencesHelper.getUserDarkModePreference(context) == AppCompatDelegate.MODE_NIGHT_YES
+    fun getDarkModePreference(context: Context): Boolean {
+        val mode = PreferencesHelper.getUserDarkModePreference(context)
+        return mode == AppCompatDelegate.MODE_NIGHT_YES
     }
 }

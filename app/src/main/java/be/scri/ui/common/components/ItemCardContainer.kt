@@ -9,7 +9,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
@@ -73,24 +72,4 @@ fun ItemsCardContainer(
             }
         }
     }
-}
-
-@PreviewLightDark
-@Composable
-private fun ItemsCardContainerPreview() {
-    val cardItemsList =
-        ScribeItemList(
-            listOf(
-                ScribeItem.ClickableItem(
-                    "",
-                    "",
-                    action = {},
-                ),
-            ),
-        )
-
-    ItemsCardContainer(
-        cardItemsList,
-        true,
-    )
 }
