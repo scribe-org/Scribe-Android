@@ -40,6 +40,14 @@ android {
         versionName = "1.0.0"
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
     }
 
     compileOptions {
@@ -159,14 +167,24 @@ android {
 dependencies {
     detektPlugins("io.nlopez.compose.rules:detekt:0.4.17")
     lintChecks("com.slack.lint.compose:compose-lint-checks:1.4.2")
+
+    // AndroidX dependencies
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.activity:activity-ktx:1.9.2")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.0")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.4")
+    debugImplementation("androidx.fragment:fragment-testing:1.8.5")
+    implementation("androidx.test.ext:junit-ktx:1.2.1")
+
+    // Room database
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-runtime:2.6.1")
+
+    // Kotlin dependencies
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    // Layout and UI components
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
     implementation("androidx.documentfile:documentfile:1.0.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
@@ -179,6 +197,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.6.0")
 
 
+    // Jetpack Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -187,12 +206,37 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Activity Compose
     implementation("androidx.activity:activity-compose")
 
+    // Testing libraries
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // For Instrumentation Tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
+
+    // Espresso for UI tests
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
+    // Android testing framework
+    androidTestImplementation("androidx.test:core-ktx:1.6.1")
+    androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
+
+    // JUnit 5 dependencies
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
 
+    //  AndroidJUnit4 is included
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("io.mockk:mockk-android:1.13.5")
+
+
+    // Other libraries
     api("joda-time:joda-time:2.10.13")
     api("com.github.tibbi:RecyclerView-FastScroller:e7d3e150c4")
     api("com.github.tibbi:reprint:2cb206415d")
@@ -238,4 +282,8 @@ tasks.withType(Test::class) {
         isIncludeNoLocationClasses = true
         excludes = listOf("jdk.internal.*")
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

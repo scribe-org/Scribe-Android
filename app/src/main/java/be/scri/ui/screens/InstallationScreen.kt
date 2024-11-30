@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,7 +56,8 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
         modifier
             .fillMaxSize()
             .background(colorResource(R.color.you_background_color))
-            .padding(Dimensions.PaddingMedium),
+            .padding(Dimensions.PaddingMedium)
+            .testTag("backgroundContainer"),
     ) {
         Image(
             painter = painterResource(id = R.drawable.scribe_logo),
@@ -84,7 +86,7 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
                     .clickable {
                         val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
                         context.startActivity(intent)
-                    },
+                    }.testTag("keyboardSettingsCard"),
             shape = RoundedCornerShape(Dimensions.PaddingLarge),
             colors =
                 CardDefaults.cardColors(

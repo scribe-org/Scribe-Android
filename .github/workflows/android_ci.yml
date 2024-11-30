@@ -49,7 +49,7 @@ jobs:
               uses: ./.github/composite/prepareApp  
 
             - name: Generate coverage report
-              run: ./gradlew jacocoCoreDebugCodeCoverage
+              run: ./gradlew jacocoCoreDebugCodeCoverage -x connectedCoreDebugAndroidTest
 
             - name: Add coverage to PR
               id: jacoco

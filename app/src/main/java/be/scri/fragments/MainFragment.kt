@@ -1,5 +1,6 @@
 package be.scri.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,5 +34,10 @@ class MainFragment : ScribeFragment("Main") {
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).showHint("hint_shown_main", R.string.app_installation_app_hint)
+    }
+
+    fun getDarkModePreference(context: Context): Boolean {
+        val mode = PreferencesHelper.getUserDarkModePreference(context)
+        return mode == AppCompatDelegate.MODE_NIGHT_YES
     }
 }
