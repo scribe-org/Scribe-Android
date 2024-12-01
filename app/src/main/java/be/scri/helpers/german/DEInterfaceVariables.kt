@@ -1,7 +1,6 @@
 package be.scri.helpers.german
 
 object GermanLanguageConstants {
-
     // Currency Symbol and Alternates
     const val currencySymbol = "€"
     val currencySymbolAlternates = listOf("€", "$", "£", "¥", "₩", "¢")
@@ -17,16 +16,17 @@ object GermanLanguageConstants {
     val verbsAfterPronounsArray = listOf("haben", "sein", "können")
 
     // Pronoun Tenses (for conjugation suggestion)
-    val pronounAutosuggestionTenses = mapOf(
-        "ich" to "presFPS",
-        "du" to "presSPS",
-        "er" to "presTPS",
-        "sie" to "presTPS",
-        "es" to "presTPS",
-        "wir" to "presFPP",
-        "ihr" to "presSPP",
-        "Sie" to "presTPP"
-    )
+    val pronounAutosuggestionTenses =
+        mapOf(
+            "ich" to "presFPS",
+            "du" to "presSPS",
+            "er" to "presTPS",
+            "sie" to "presTPS",
+            "es" to "presTPS",
+            "wir" to "presFPP",
+            "ihr" to "presSPP",
+            "Sie" to "presTPP",
+        )
 
     // Translate Command Texts
     const val translateKeyLbl = "Übersetzen"

@@ -1,7 +1,6 @@
 package be.scri.helpers.swedish
 
 object SwedishLanguageConstants {
-
     // Currency Symbol and Alternates
     const val currencySymbol = "kr"
     val currencySymbolAlternates = listOf("kr", "$", "€", "£", "¥")

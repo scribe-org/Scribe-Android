@@ -1,7 +1,6 @@
 package be.scri.helpers.italian
 
 object ItalianLanguageConstants {
-
     // Currency Symbol and Alternates
     const val currencySymbol = "€"
     val currencySymbolAlternates = listOf("€", "$", "£", "¥", "₩", "¢")

@@ -1,7 +1,6 @@
 package be.scri.helpers.english
 
 object EnglishLanguageConstants {
-
     // Currency Symbol and Alternates
     const val currencySymbol = "$"
     val currencySymbolAlternates = listOf("$", "€", "£", "¥", "₩", "¢")
@@ -17,15 +16,16 @@ object EnglishLanguageConstants {
     val verbsAfterPronounsArray = listOf("have", "be", "can")
 
     // Pronoun Tenses (for conjugation suggestion)
-    val pronounAutosuggestionTenses = mapOf(
-        "I" to "presSimp",
-        "you" to "presSimp",
-        "he" to "presTPS",
-        "she" to "presTPS",
-        "it" to "presTPS",
-        "we" to "presSimp",
-        "they" to "presSimp"
-    )
+    val pronounAutosuggestionTenses =
+        mapOf(
+            "I" to "presSimp",
+            "you" to "presSimp",
+            "he" to "presTPS",
+            "she" to "presTPS",
+            "it" to "presTPS",
+            "we" to "presSimp",
+            "they" to "presSimp",
+        )
 
     // Translate Command Texts
     const val translateKeyLbl = "Translate"

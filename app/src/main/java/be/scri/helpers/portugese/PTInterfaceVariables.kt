@@ -1,7 +1,6 @@
 package be.scri.helpers.portugese
 
 object PortugueseLanguageConstants {
-
     // Currency Symbol and Alternates
     const val currencySymbol = "$"
     val currencySymbolAlternates = listOf("$", "€", "£", "¥", "₩", "¢")

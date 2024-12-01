@@ -1,7 +1,6 @@
 package be.scri.helpers.russian
 
 object RussianLanguageConstants {
-
     // Currency Symbol and Alternates
     const val currencySymbol = "₽"
     val currencySymbolAlternates = listOf("₽", "$", "€", "£", "¥")

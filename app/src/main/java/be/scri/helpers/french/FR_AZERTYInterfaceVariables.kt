@@ -1,7 +1,6 @@
 package be.scri.helpers.french
 
 object FrenchLanguageConstants {
-
     // Currency Symbol and Alternates
     const val currencySymbol = "€"
     val currencySymbolAlternates = listOf("€", "$", "£", "¥", "₩", "¢")
@@ -17,17 +16,18 @@ object FrenchLanguageConstants {
     val verbsAfterPronounsArray = listOf("être", "avoir", "ne")
 
     // Pronoun Tenses (for conjugation suggestion)
-    val pronounAutosuggestionTenses = mapOf(
-        "je" to "presFPS",
-        "tu" to "presSPS",
-        "il" to "presTPS",
-        "elle" to "presTPS",
-        "on" to "presTPS",
-        "nous" to "presFPP",
-        "vous" to "presSPP",
-        "ils" to "presTPP",
-        "elles" to "presTPP"
-    )
+    val pronounAutosuggestionTenses =
+        mapOf(
+            "je" to "presFPS",
+            "tu" to "presSPS",
+            "il" to "presTPS",
+            "elle" to "presTPS",
+            "on" to "presTPS",
+            "nous" to "presFPP",
+            "vous" to "presSPP",
+            "ils" to "presTPP",
+            "elles" to "presTPP",
+        )
 
     // Translate Command Texts
     const val translateKeyLbl = "Traduire"
