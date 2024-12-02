@@ -1,22 +1,22 @@
 package be.scri.helpers.spanish
 
-object SpanishLanguageConstants {
+object ESInterfaceVariables {
     // Currency Symbol and Alternates
-    const val currencySymbol = "$"
-    val currencySymbolAlternates = listOf("₡", "S", "€", "£", "₲", "¢")
+    const val CURRENCY_SYMBOL = "$"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("₡", "S", "€", "£", "₲", "¢")
 
     // Keyboard Labels
-    const val spaceBar = "espacio"
-    const val language = "Español"
-    const val invalidCommandMsg = "No en Wikidata"
-    val baseAutosuggestions = listOf("el", "la", "no")
-    val numericAutosuggestions = listOf("que", "de", "en")
+    const val SPACE_BAR = "espacio"
+    const val LANGUAGE = "Español"
+    const val INVALID_COMMAND_MSG = "No en Wikidata"
+    val BASE_AUTOSUGGESTIONS = listOf("el", "la", "no")
+    val NUMERIC_AUTOSUGGESTIONS = listOf("que", "de", "en")
 
     // Verbs After Pronouns (for suggestion)
-    val verbsAfterPronounsArray = listOf("ser", "REFLEXIVE_PRONOUN", "no")
+    val VERBS_AFTER_PRONOUNS_ARRAY = listOf("ser", "REFLEXIVE_PRONOUN", "no")
 
     // Pronoun Tenses (for conjugation suggestion)
-    val pronounAutosuggestionTenses =
+    val PRONOUN_AUTOSUGGESTION_TENSES =
         mapOf(
             "yo" to "presFPS",
             "tú" to "presSPS",
@@ -32,27 +32,27 @@ object SpanishLanguageConstants {
         )
 
     // Translate Command Texts
-    const val translateKeyLbl = "Traducir"
-    const val translatePlaceholder = "Ingrese una palabra"
-    const val translatePrompt = " es -› ${"targetLanguage()"}" // Example, replace with actual language code
-    const val translatePromptAndCursor = translatePrompt + "commandCursor" // commandCursor needs to be replaced with the actual value
-    const val translatePromptAndPlaceholder = "$translatePromptAndCursor $translatePlaceholder"
-    // it would be better to add mutability for changing the color of the cursor when we are ready to use this variables
+    const val TRANSLATE_KEY_LBL = "Traducir"
+    const val TRANSLATE_PLACEHOLDER = "Ingrese una palabra"
+    const val TRANSLATE_PROMPT = " es -› ${"targetLanguage()"}" // Example, replace with actual language code
+    const val TRANSLATE_PROMPT_AND_CURSOR = TRANSLATE_PROMPT + "commandCursor" // commandCursor needs to be replaced with the actual value
+    const val TRANSLATE_PROMPT_AND_PLACEHOLDER = "$TRANSLATE_PROMPT_AND_CURSOR $TRANSLATE_PLACEHOLDER"
+// it would be better to add mutability for changing the color of the cursor when we are ready to use these variables
 
     // Conjugate Command Texts
-    const val conjugateKeyLbl = "Conjugar"
-    const val conjugatePlaceholder = "Ingrese un verbo"
-    const val conjugatePrompt = "Conjugar: "
-    val conjugatePromptAndCursor = conjugatePrompt + "commandCursor" // same here
-    val conjugatePromptAndPlaceholder = "$conjugatePromptAndCursor $conjugatePlaceholder"
+    const val CONJUGATE_KEY_LBL = "Conjugar"
+    const val CONJUGATE_PLACEHOLDER = "Ingrese un verbo"
+    const val CONJUGATE_PROMPT = "Conjugar: "
+    val CONJUGATE_PROMPT_AND_CURSOR = CONJUGATE_PROMPT + "commandCursor" // same here
+    val CONJUGATE_PROMPT_AND_PLACEHOLDER = "$CONJUGATE_PROMPT_AND_CURSOR $CONJUGATE_PLACEHOLDER"
 
     // Plural Command Texts
-    const val pluralKeyLbl = "Plural"
-    const val pluralPlaceholder = "Ingrese un sustantivo"
-    const val pluralPrompt = "Plural: "
-    val pluralPromptAndCursor = pluralPrompt + "commandCursor" // same
-    val pluralPromptAndPlaceholder = "$pluralPromptAndCursor $pluralPlaceholder"
+    const val PLURAL_KEY_LBL = "Plural"
+    const val PLURAL_PLACEHOLDER = "Ingrese un sustantivo"
+    const val PLURAL_PROMPT = "Plural: "
+    val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "commandCursor" // same
+    val PLURAL_PROMPT_AND_PLACEHOLDER = "$PLURAL_PROMPT_AND_CURSOR $PLURAL_PLACEHOLDER"
 
     // Already Plural Message
-    const val alreadyPluralMsg = "Ya en plural"
+    const val ALREADY_PLURAL_MSG = "Ya en plural"
 }

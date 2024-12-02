@@ -1,38 +1,38 @@
 package be.scri.helpers.portugese
 
-object PortugueseLanguageConstants {
+object PTInterfaceVariables {
     // Currency Symbol and Alternates
-    const val currencySymbol = "$"
-    val currencySymbolAlternates = listOf("$", "€", "£", "¥", "₩", "¢")
+    const val CURRENCY_SYMBOL = "$"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("$", "€", "£", "¥", "₩", "¢")
 
     // Keyboard Labels
-    const val spaceBar = "espaço"
-    const val language = "Português"
-    const val invalidCommandMsg = "Não está no Wikidata"
-    val baseAutosuggestions = listOf("o", "a", "eu")
-    val numericAutosuggestions = listOf("de", "que", "a")
+    const val SPACE_BAR = "espaço"
+    const val LANGUAGE = "Português"
+    const val INVALID_COMMAND_MSG = "Não está no Wikidata"
+    val BASE_AUTOSUGGESTIONS = listOf("o", "a", "eu")
+    val NUMERIC_AUTOSUGGESTIONS = listOf("de", "que", "a")
 
     // Translate Command Texts
-    const val translateKeyLbl = "Traduzir"
-    const val translatePlaceholder = "Digite uma palavra"
-    const val translatePrompt = "pt -› targetLanguage()" // Example, replace with actual language code
-    const val translatePromptAndCursor = "$translatePrompt commandCursor" // Replace with actual dynamic value when available
-    const val translatePromptAndPlaceholder = "$translatePromptAndCursor $translatePlaceholder"
+    const val TRANSLATE_KEY_LBL = "Traduzir"
+    const val TRANSLATE_PLACEHOLDER = "Digite uma palavra"
+    const val TRANSLATE_PROMPT = "pt -› targetLanguage()" // Example, replace with actual language code
+    const val TRANSLATE_PROMPT_AND_CURSOR = "$TRANSLATE_PROMPT commandCursor" // Replace with actual dynamic value when available
+    const val TRANSLATE_PROMPT_AND_PLACEHOLDER = "$TRANSLATE_PROMPT_AND_CURSOR $TRANSLATE_PLACEHOLDER"
 
     // Conjugate Command Texts
-    const val conjugateKeyLbl = "Conjugar"
-    const val conjugatePlaceholder = "Digite um verbo"
-    const val conjugatePrompt = "Conjugar: "
-    const val conjugatePromptAndCursor = "$conjugatePrompt commandCursor" // Replace with actual value
-    const val conjugatePromptAndPlaceholder = "$conjugatePromptAndCursor $conjugatePlaceholder"
+    const val CONJUGATE_KEY_LBL = "Conjugar"
+    const val CONJUGATE_PLACEHOLDER = "Digite um verbo"
+    const val CONJUGATE_PROMPT = "Conjugar: "
+    const val CONJUGATE_PROMPT_AND_CURSOR = "$CONJUGATE_PROMPT commandCursor" // Replace with actual value
+    const val CONJUGATE_PROMPT_AND_PLACEHOLDER = "$CONJUGATE_PROMPT_AND_CURSOR $CONJUGATE_PLACEHOLDER"
 
     // Plural Command Texts
-    const val pluralKeyLbl = "Plural"
-    const val pluralPlaceholder = "Digite um substantivo"
-    const val pluralPrompt = "Plural: "
-    const val pluralPromptAndCursor = "$pluralPrompt commandCursor" // Replace with actual value
-    const val pluralPromptAndPlaceholder = "$pluralPromptAndCursor $pluralPlaceholder"
+    const val PLURAL_KEY_LBL = "Plural"
+    const val PLURAL_PLACEHOLDER = "Digite um substantivo"
+    const val PLURAL_PROMPT = "Plural: "
+    const val PLURAL_PROMPT_AND_CURSOR = "$PLURAL_PROMPT commandCursor" // Replace with actual value
+    const val PLURAL_PROMPT_AND_PLACEHOLDER = "$PLURAL_PROMPT_AND_CURSOR $PLURAL_PLACEHOLDER"
 
     // Already Plural Message
-    const val alreadyPluralMsg = "Já plural"
+    const val ALREADY_PLURAL_MSG = "Já plural"
 }
