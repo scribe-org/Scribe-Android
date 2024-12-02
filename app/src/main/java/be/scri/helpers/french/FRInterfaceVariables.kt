@@ -1,6 +1,6 @@
 package be.scri.helpers.french
 
-object FR_AZERTYInterfaceVariables {
+object FRInterfaceVariables {
     // Currency Symbol and Alternates
     const val CURRENCY_SYMBOL = "€"
     val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
