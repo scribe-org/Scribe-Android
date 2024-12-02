@@ -589,13 +589,18 @@ class MyKeyboardView
                 } else {
                     Color.WHITE
                 }
+            mBackgroundColor =
+                if (isUserDarkMode) {
+                    Color.DKGRAY
+                } else {
+                    Color.WHITE
+                }
             mTextColor =
                 if (keyBackgroundColor == Color.WHITE) {
                     Color.BLACK
                 } else {
                     Color.WHITE
                 }
-
             mSpecialKeyColor =
                 if (isUserDarkMode) {
                     R.color.special_key_dark
@@ -615,14 +620,12 @@ class MyKeyboardView
                     textSize = mTopSmallNumberSize
                     typeface = Typeface.DEFAULT
                 }
-
             val shadowPaint =
                 Paint().apply {
                     color = Color.GRAY
                     alpha = SHADOW_ALPHA
                     style = Paint.Style.FILL
                 }
-
             mKeyboardBackgroundColor =
                 if (isUserDarkMode) {
                     Color.BLACK
