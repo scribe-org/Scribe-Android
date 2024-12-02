@@ -19,7 +19,7 @@ object ITInterfaceVariables {
     const val TRANSLATE_KEY_LBL = "Tradurre"
     const val TRANSLATE_PLACEHOLDER = "Inserisci una parola"
     const val TRANSLATE_PROMPT = "it -› targetLanguage()"
-    const val TRANSLATE_PROMPT_AND_CURSOR = TRANSLATE_PROMPT + "$COMMAND_CURSOR"
+    const val TRANSLATE_PROMPT_AND_CURSOR = TRANSLATE_PROMPT + "COMMAND_CURSOR"
     const val TRANSLATE_PROMPT_AND_PLACEHOLDER = TRANSLATE_PROMPT_AND_CURSOR + "$TRANSLATE_PLACEHOLDER"
 
     // MARK: Conjugate Command
@@ -27,7 +27,7 @@ object ITInterfaceVariables {
     const val CONJUGATE_KEY_LBL = "Coniugare"
     const val CONJUGATE_PLACEHOLDER = "Inserisci un verbo"
     const val CONJUGATE_PROMPT = "Coniugare: "
-    const val CONJUGATE_PROMPT_AND_CURSOR = CONJUGATE_PROMPT + "$COMMAND_CURSOR"
+    const val CONJUGATE_PROMPT_AND_CURSOR = CONJUGATE_PROMPT + "COMMAND_CURSOR"
     const val CONJUGATE_PROMPT_AND_PLACEHOLDER = CONJUGATE_PROMPT_AND_CURSOR + "$CONJUGATE_PLACEHOLDER"
 
     // MARK: Plural Command
@@ -35,7 +35,7 @@ object ITInterfaceVariables {
     const val PLURAL_KEY_LBL = "Plurale"
     const val PLURAL_PLACEHOLDER = "Inserisci un nome"
     const val PLURAL_PROMPT = "Plurale: "
-    const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "$COMMAND_CURSOR"
+    const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Già plurale"
 }

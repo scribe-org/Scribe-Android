@@ -19,7 +19,7 @@ object PTInterfaceVariables {
     const val TRANSLATE_KEY_LBL = "Traduzir"
     const val TRANSLATE_PLACEHOLDER = "Digite uma palavra"
     const val TRANSLATE_PROMPT = "pt -› targetLanguage()"
-    const val TRANSLATE_PROMPT_AND_CURSOR = TRANSLATE_PROMPT + "$COMMAND_CURSOR"
+    const val TRANSLATE_PROMPT_AND_CURSOR = TRANSLATE_PROMPT + "COMMAND_CURSOR"
     const val TRANSLATE_PROMPT_AND_PLACEHOLDER = TRANSLATE_PROMPT_AND_CURSOR + "$TRANSLATE_PLACEHOLDER"
 
     // MARK: Conjugate Command
@@ -27,7 +27,7 @@ object PTInterfaceVariables {
     const val CONJUGATE_KEY_LBL = "Conjugar"
     const val CONJUGATE_PLACEHOLDER = "Digite um verbo"
     const val CONJUGATE_PROMPT = "Conjugar: "
-    const val CONJUGATE_PROMPT_AND_CURSOR = CONJUGATE_PROMPT + "$COMMAND_CURSOR"
+    const val CONJUGATE_PROMPT_AND_CURSOR = CONJUGATE_PROMPT + "COMMAND_CURSOR"
     const val CONJUGATE_PROMPT_AND_PLACEHOLDER = CONJUGATE_PROMPT_AND_CURSOR + "$CONJUGATE_PLACEHOLDER"
 
     // MARK: Plural Command
@@ -35,7 +35,7 @@ object PTInterfaceVariables {
     const val PLURAL_KEY_LBL = "Plural"
     const val PLURAL_PLACEHOLDER = "Digite um substantivo"
     const val PLURAL_PROMPT = "Plural: "
-    const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "$COMMAND_CURSOR"
+    const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Já plural"
 }
