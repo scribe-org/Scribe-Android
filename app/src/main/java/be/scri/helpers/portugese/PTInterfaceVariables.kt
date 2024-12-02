@@ -16,7 +16,9 @@ object PTInterfaceVariables {
     const val TRANSLATE_KEY_LBL = "Traduzir"
     const val TRANSLATE_PLACEHOLDER = "Digite uma palavra"
     const val TRANSLATE_PROMPT = "pt -› targetLanguage()" // Example, replace with actual language code
-    const val TRANSLATE_PROMPT_AND_CURSOR = "$TRANSLATE_PROMPT commandCursor" // Replace with actual dynamic value when available
+
+    // Replace with actual dynamic value when available
+    const val TRANSLATE_PROMPT_AND_CURSOR = "$TRANSLATE_PROMPT commandCursor"
     const val TRANSLATE_PROMPT_AND_PLACEHOLDER = "$TRANSLATE_PROMPT_AND_CURSOR $TRANSLATE_PLACEHOLDER"
 
     // Conjugate Command Texts

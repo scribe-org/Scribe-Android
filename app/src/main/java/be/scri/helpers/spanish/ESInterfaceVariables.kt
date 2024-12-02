@@ -34,8 +34,12 @@ object ESInterfaceVariables {
     // Translate Command Texts
     const val TRANSLATE_KEY_LBL = "Traducir"
     const val TRANSLATE_PLACEHOLDER = "Ingrese una palabra"
-    const val TRANSLATE_PROMPT = " es -› ${"targetLanguage()"}" // Example, replace with actual language code
-    const val TRANSLATE_PROMPT_AND_CURSOR = TRANSLATE_PROMPT + "commandCursor" // commandCursor needs to be replaced with the actual value
+
+    // Example, replace with actual language code
+    const val TRANSLATE_PROMPT = " es -› ${"targetLanguage()"}"
+
+    // commandCursor needs to be replaced with the actual value
+    const val TRANSLATE_PROMPT_AND_CURSOR = TRANSLATE_PROMPT + "commandCursor"
     const val TRANSLATE_PROMPT_AND_PLACEHOLDER = "$TRANSLATE_PROMPT_AND_CURSOR $TRANSLATE_PLACEHOLDER"
 // it would be better to add mutability for changing the color of the cursor when we are ready to use these variables
 
@@ -43,15 +47,15 @@ object ESInterfaceVariables {
     const val CONJUGATE_KEY_LBL = "Conjugar"
     const val CONJUGATE_PLACEHOLDER = "Ingrese un verbo"
     const val CONJUGATE_PROMPT = "Conjugar: "
-    val CONJUGATE_PROMPT_AND_CURSOR = CONJUGATE_PROMPT + "commandCursor" // same here
-    val CONJUGATE_PROMPT_AND_PLACEHOLDER = "$CONJUGATE_PROMPT_AND_CURSOR $CONJUGATE_PLACEHOLDER"
+    const val CONJUGATE_PROMPT_AND_CURSOR = CONJUGATE_PROMPT + "commandCursor" // same here
+    const val CONJUGATE_PROMPT_AND_PLACEHOLDER = "$CONJUGATE_PROMPT_AND_CURSOR $CONJUGATE_PLACEHOLDER"
 
     // Plural Command Texts
     const val PLURAL_KEY_LBL = "Plural"
     const val PLURAL_PLACEHOLDER = "Ingrese un sustantivo"
     const val PLURAL_PROMPT = "Plural: "
-    val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "commandCursor" // same
-    val PLURAL_PROMPT_AND_PLACEHOLDER = "$PLURAL_PROMPT_AND_CURSOR $PLURAL_PLACEHOLDER"
+    const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "commandCursor" // same
+    const val PLURAL_PROMPT_AND_PLACEHOLDER = "$PLURAL_PROMPT_AND_CURSOR $PLURAL_PLACEHOLDER"
 
     // Already Plural Message
     const val ALREADY_PLURAL_MSG = "Ya en plural"
