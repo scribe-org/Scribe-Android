@@ -3,10 +3,15 @@ package be.scri.ui.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -28,13 +33,17 @@ import be.scri.ui.theme.ScribeTypography
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun WikimediaScreen(modifier: Modifier = Modifier) {
+fun WikimediaScreen(
+    bottomSpacerHeight: Int,
+    modifier: Modifier = Modifier,
+) {
     Scaffold(modifier = modifier.fillMaxSize()) {
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState()),
         ) {
             Text(
                 text = stringResource(id = R.string.wikimedia_and_scribe_title),
@@ -101,6 +110,11 @@ fun WikimediaScreen(modifier: Modifier = Modifier) {
                     )
                 }
             }
+            Spacer(
+                Modifier.windowInsetsBottomHeight(
+                    WindowInsets(bottom = bottomSpacerHeight),
+                ),
+            )
         }
     }
 }

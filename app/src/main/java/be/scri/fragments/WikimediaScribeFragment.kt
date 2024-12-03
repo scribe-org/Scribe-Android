@@ -16,12 +16,12 @@ import be.scri.activities.MainActivity
 import be.scri.helpers.PreferencesHelper
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.theme.ScribeTheme
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class WikimediaScribeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
-        val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 viewpager.setCurrentItem(2, true)
@@ -44,17 +44,18 @@ class WikimediaScribeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        (requireActivity() as MainActivity).showFragmentContainer()
-        (requireActivity() as MainActivity).setActionBarTitle(R.string.wikimedia_and_scribe)
+        val mainActivity = requireActivity() as MainActivity
+        mainActivity.showFragmentContainer()
+        mainActivity.setActionBarTitle(R.string.wikimedia_and_scribe)
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
-                    val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
-                    (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
-                    (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
-                    (requireActivity() as MainActivity).setActionBarVisibility(false)
+                    val viewpager = mainActivity.findViewById<ViewPager2>(R.id.view_pager)
+                    val frameLayout = mainActivity.findViewById<ViewGroup>(R.id.fragment_container)
+                    mainActivity.setActionBarTitle(R.string.app_about_title)
+                    mainActivity.setActionBarButtonVisibility(false)
+                    mainActivity.setActionBarVisibility(false)
                     if (viewpager.currentItem == 2) {
                         viewpager.setCurrentItem(2, true)
                         frameLayout.visibility = View.GONE
@@ -76,7 +77,10 @@ class WikimediaScribeFragment : Fragment() {
                         PreferencesHelper.getUserDarkModePreference(requireContext())
                             == AppCompatDelegate.MODE_NIGHT_YES,
                 ) {
-                    WikimediaScreen()
+                    WikimediaScreen(
+                        bottomSpacerHeight =
+                            mainActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation).height,
+                    )
                 }
             }
         }
