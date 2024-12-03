@@ -2,8 +2,11 @@ package be.scri.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -22,7 +25,10 @@ import be.scri.ui.theme.ScribeTypography
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ThirdPartyScreen(modifier: Modifier = Modifier) {
+fun ThirdPartyScreen(
+    bottomSpacerHeight: Int,
+    modifier: Modifier = Modifier,
+) {
     Scaffold(modifier = modifier.fillMaxSize()) {
         Column(
             modifier =
@@ -66,6 +72,11 @@ fun ThirdPartyScreen(modifier: Modifier = Modifier) {
                     )
                 }
             }
+            Spacer(
+                Modifier.windowInsetsBottomHeight(
+                    WindowInsets(bottom = bottomSpacerHeight),
+                ),
+            )
         }
     }
 }
