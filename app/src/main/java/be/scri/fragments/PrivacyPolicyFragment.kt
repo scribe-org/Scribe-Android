@@ -8,15 +8,18 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.databinding.FragmentPrivacyPolicyBinding
+import be.scri.helpers.PreferencesHelper
+import be.scri.ui.screens.PrivacyPolicyScreen
+import be.scri.ui.theme.ScribeTheme
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class PrivacyPolicyFragment : Fragment() {
-    private lateinit var binding: FragmentPrivacyPolicyBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,19 +58,19 @@ class PrivacyPolicyFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentPrivacyPolicyBinding.inflate(inflater, container, false)
-        (requireActivity() as MainActivity).showFragmentContainer()
-        (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_legal_privacy_policy)
-        (requireActivity() as MainActivity).setActionBarButtonFunction(2, R.string.app_about_title)
+        val mainActivity = requireActivity() as MainActivity
+        mainActivity.showFragmentContainer()
+        mainActivity.setActionBarTitle(R.string.app_about_legal_privacy_policy)
+        mainActivity.setActionBarButtonFunction(2, R.string.app_about_title)
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
-                    val frameLayout = requireActivity().findViewById<ViewGroup>(R.id.fragment_container)
-                    (requireActivity() as MainActivity).setActionBarTitle(R.string.app_about_title)
-                    (requireActivity() as MainActivity).setActionBarButtonVisibility(false)
-                    (requireActivity() as MainActivity).setActionBarVisibility(false)
+                    val viewpager = mainActivity.findViewById<ViewPager2>(R.id.view_pager)
+                    val frameLayout = mainActivity.findViewById<ViewGroup>(R.id.fragment_container)
+                    mainActivity.setActionBarTitle(R.string.app_about_title)
+                    mainActivity.setActionBarButtonVisibility(false)
+                    mainActivity.setActionBarVisibility(false)
                     if (viewpager.currentItem == 2) {
                         viewpager.setCurrentItem(2, true)
                         frameLayout.visibility = View.GONE
@@ -82,7 +85,20 @@ class PrivacyPolicyFragment : Fragment() {
                 }
             },
         )
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                ScribeTheme(
+                    useDarkTheme =
+                        PreferencesHelper.getUserDarkModePreference(requireContext())
+                            == AppCompatDelegate.MODE_NIGHT_YES,
+                ) {
+                    PrivacyPolicyScreen(
+                        bottomSpacerHeight =
+                            mainActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation).height,
+                    )
+                }
+            }
+        }
     }
 
     companion object {
