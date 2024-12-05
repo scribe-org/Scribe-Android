@@ -35,7 +35,7 @@ complexity:
         active: true
         ignoreAnnotated: ["Composable"]
     CyclomaticComplexMethod:
-        active: false
+        active: true
 
 exceptions:
     SwallowedException:
