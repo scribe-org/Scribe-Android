@@ -25,7 +25,7 @@ complexity:
     TooManyFunctions:
         active: true
     NestedBlockDepth:
-        active: false
+        active: true
     ComplexCondition:
         active: true
     LongParameterList:
@@ -35,7 +35,7 @@ complexity:
         active: true
         ignoreAnnotated: ["Composable"]
     CyclomaticComplexMethod:
-        active: false
+        active: true
 
 exceptions:
     SwallowedException:

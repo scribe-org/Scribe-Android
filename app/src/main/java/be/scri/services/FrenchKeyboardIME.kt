@@ -44,18 +44,13 @@ class FrenchKeyboardIME : SimpleKeyboardIME("French") {
         if (keyboard == null || inputConnection == null) {
             return
         }
-
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             lastShiftPressTS = 0
         }
 
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
-                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleDelete(false, keyboardBinding)
-                } else {
-                    handleDelete(true, keyboardBinding)
-                }
+                handleKeycodeDelete()
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_SHIFT -> {
@@ -63,14 +58,7 @@ class FrenchKeyboardIME : SimpleKeyboardIME("French") {
                 keyboardView!!.invalidateAllKeys()
             }
             MyKeyboard.KEYCODE_ENTER -> {
-                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleKeycodeEnter(keyboardBinding, false)
-                } else {
-                    handleKeycodeEnter(keyboardBinding, true)
-                    currentState = ScribeState.IDLE
-                    switchToCommandToolBar()
-                    updateUI()
-                }
+                handleKeycodeEnter()
             }
             MyKeyboard.KEYCODE_MODE_CHANGE -> {
                 handleModeChange(keyboardMode, keyboardView, this)
@@ -92,6 +80,25 @@ class FrenchKeyboardIME : SimpleKeyboardIME("French") {
 
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
+        }
+    }
+
+    fun handleKeycodeDelete() {
+        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+            handleDelete(false, keyboardBinding)
+        } else {
+            handleDelete(true, keyboardBinding)
+        }
+    }
+
+    fun handleKeycodeEnter() {
+        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+            handleKeycodeEnter(keyboardBinding, false)
+        } else {
+            handleKeycodeEnter(keyboardBinding, true)
+            currentState = ScribeState.IDLE
+            switchToCommandToolBar()
+            updateUI()
         }
     }
 
