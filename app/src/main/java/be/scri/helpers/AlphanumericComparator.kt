@@ -2,6 +2,8 @@ package be.scri.helpers
 
 // Taken from https://gist.github.com/MichaelRocks/1b94bb44c7804e999dbf31dac86955ec.
 // Make IMG_5.jpg come before IMG_10.jpg.
+// This is a example test so suppressed as it doesn't effect the application
+@Suppress("NestedBlockDepth")
 class AlphanumericComparator {
     fun compare(
         string1: String,

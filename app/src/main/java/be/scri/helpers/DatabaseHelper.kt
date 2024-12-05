@@ -1,6 +1,7 @@
 package be.scri.helpers
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.io.FileOutputStream
@@ -51,16 +52,19 @@ class DatabaseHelper(
             if (cursor.moveToFirst()) {
                 do {
                     val key = cursor.getString(0)
-                    val values = mutableListOf<String>()
-
-                    for (i in 1 until cursor.columnCount) {
-                        values.add(cursor.getString(i))
-                    }
-
-                    hashMap[key] = values
+                    hashMap[key] = getEmojiKeyMaps(cursor)
                 } while (cursor.moveToNext())
             }
         }
         return hashMap
+    }
+
+    fun getEmojiKeyMaps(cursor: Cursor): MutableList<String> {
+        val values = mutableListOf<String>()
+
+        for (i in 1 until cursor.columnCount) {
+            values.add(cursor.getString(i))
+        }
+        return values
     }
 }

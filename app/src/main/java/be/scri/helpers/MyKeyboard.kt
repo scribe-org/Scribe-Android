@@ -21,7 +21,7 @@ import java.io.IOException
  * @attr ref android.R.styleable#Keyboard_keyWidth
  * @attr ref android.R.styleable#Keyboard_horizontalGap
  */
-@Suppress("LongMethod")
+@Suppress("LongMethod", "NestedBlockDepth")
 class MyKeyboard {
     /** Horizontal gap default for all rows  */
     private var mDefaultHorizontalGap = 0
