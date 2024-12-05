@@ -1,5 +1,7 @@
 package be.scri.ui.models
 
+import androidx.annotation.DrawableRes
+
 sealed class ScribeItem(
     open val title: String,
     open val desc: String?,
@@ -19,9 +21,11 @@ sealed class ScribeItem(
 
     data class ExternalLinkItem(
         override val title: String,
-        override val desc: String,
-        val url: String,
-        val onClick: (String) -> Unit,
+        override val desc: String? = null,
+        @DrawableRes val leadingIcon: Int,
+        @DrawableRes val trailingIcon: Int,
+        val url: String?,
+        val onClick: () -> Unit,
     ) : ScribeItem(title, desc)
 
     data class CustomItem(
