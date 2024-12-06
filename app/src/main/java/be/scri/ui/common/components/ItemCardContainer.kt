@@ -66,7 +66,7 @@ fun ItemsCardContainer(
                     cardItemsList.items.indexOf(item) != cardItemsList.items.lastIndex
                 ) {
                     HorizontalDivider(
-                        color = Color.Gray.copy(alpha = 0.38f),
+                        color = Color.Gray.copy(alpha = 0.3f),
                         thickness = 1.dp,
                         modifier =
                             Modifier.padding(

@@ -48,14 +48,14 @@ fun AboutPageItemComp(
             modifier =
                 Modifier
                     .padding(start = 2.dp)
-                    .size(20.dp),
+                    .size(22.dp),
             tint = colorResource(R.color.app_text_color),
             contentDescription = "Right Arrow",
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = title,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).padding(start = 4.dp),
             fontSize = 16.sp,
             color = colorResource(R.color.app_text_color),
             style = MaterialTheme.typography.bodyMedium,
