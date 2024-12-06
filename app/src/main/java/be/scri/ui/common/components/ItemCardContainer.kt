@@ -27,7 +27,7 @@ fun ItemsCardContainer(
         Column(
             modifier =
                 Modifier
-                    .padding(vertical = 4.dp, horizontal = 4.dp),
+                    .padding(vertical = 10.dp, horizontal = 4.dp),
         ) {
             cardItemsList.items.forEach { item ->
                 when (item) {
@@ -66,7 +66,7 @@ fun ItemsCardContainer(
                     cardItemsList.items.indexOf(item) != cardItemsList.items.lastIndex
                 ) {
                     HorizontalDivider(
-                        color = Color.Gray.copy(alpha = 0.25f),
+                        color = Color.Gray.copy(alpha = 0.38f),
                         thickness = 1.dp,
                         modifier =
                             Modifier.padding(

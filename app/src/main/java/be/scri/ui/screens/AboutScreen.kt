@@ -1,12 +1,25 @@
 package be.scri.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import be.scri.BuildConfig
 import be.scri.R
 import be.scri.activities.MainActivity
@@ -29,12 +42,15 @@ fun AboutScreen(
     onRateScribeClick: () -> Unit,
     onMailClick: () -> Unit,
     onResetHintsClick: () -> Unit,
+    context: Context,
     modifier: Modifier = Modifier
 ) {
+    val scrollState = rememberScrollState()
 
     val communityList = ScribeItemList(
         items = getCommunityList(
-            onWikimediaAndScribeClick = onWikimediaAndScribeClick
+            onWikimediaAndScribeClick = onWikimediaAndScribeClick,
+            context = context
         )
     )
 
@@ -42,7 +58,8 @@ fun AboutScreen(
         items = getFeedbackAndSupportList(
             onRateScribeClick = onRateScribeClick,
             onMailClick = onMailClick,
-            onResetHintsClick = onResetHintsClick
+            onResetHintsClick = onResetHintsClick,
+            context = context
         )
     )
 
@@ -55,33 +72,33 @@ fun AboutScreen(
 
     Scaffold(
         modifier = modifier
+            .background(color = MaterialTheme.colorScheme.background )
     ) {
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            item {
-                ItemCardContainerWithTitle(
-                    title = stringResource(R.string.community_title),
-                    cardItemsList = communityList,
-                    isDivider = true,
-                )
-            }
-            item {
-                ItemCardContainerWithTitle(
-                    title = stringResource(R.string.app_about_feedback_title),
-                    cardItemsList = feedbackAndSupportList,
-                    isDivider = true,
-                )
-            }
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.community_title),
+                cardItemsList = communityList,
+                isDivider = true,
+            )
 
-            item {
-                ItemCardContainerWithTitle(
-                    title = stringResource(R.string.app_about_legal_title),
-                    cardItemsList = legalItemsList,
-                    isDivider = true
-                )
-            }
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.app_about_feedback_title),
+                cardItemsList = feedbackAndSupportList,
+                isDivider = true,
+            )
+
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.app_about_legal_title),
+                cardItemsList = legalItemsList,
+                isDivider = true
+            )
+
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
@@ -89,7 +106,8 @@ fun AboutScreen(
 
 @Composable
 fun getCommunityList(
-    onWikimediaAndScribeClick: () -> Unit
+    onWikimediaAndScribeClick: () -> Unit,
+    context: Context
 ): List<ScribeItem.ExternalLinkItem> {
     return listOf(
         ScribeItem.ExternalLinkItem(
@@ -97,21 +115,36 @@ fun getCommunityList(
             title = stringResource(R.string.app_about_community_github),
             trailingIcon = R.drawable.external_link,
             url = "https://github.com/scribe-org/Scribe-Android",
-            onClick = {  }
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                    "https://github.com/scribe-org/Scribe-Android"
+                ))
+                context.startActivity(intent)
+            }
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.matrix_icon,
             title = stringResource(R.string.app_about_community_matrix),
             trailingIcon = R.drawable.external_link,
             url = "https://matrix.to/%23/%23scribe_community:matrix.org",
-            onClick = { },
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                    "https://matrix.to/%23/%23scribe_community:matrix.org"
+                ))
+                context.startActivity(intent)
+            },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.mastodon_svg_icon,
             title = stringResource(R.string.app_about_community_mastodon),
             trailingIcon = R.drawable.external_link,
             url = "https://wikis.world/@scribe",
-            onClick = { },
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                    "https://wikis.world/@scribe"
+                ))
+                context.startActivity(intent)
+            },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.share_icon,
@@ -137,7 +170,7 @@ fun getFeedbackAndSupportList(
     onRateScribeClick: () -> Unit,
     onMailClick: () -> Unit,
     onResetHintsClick: () -> Unit,
-
+    context: Context
 ): List<ScribeItem.ExternalLinkItem> {
     return listOf(
         ScribeItem.ExternalLinkItem(
@@ -145,14 +178,21 @@ fun getFeedbackAndSupportList(
             title = stringResource(R.string.app_about_feedback_rate_scribe),
             trailingIcon = R.drawable.external_link,
             url = null,
-            onClick = { onMailClick() },
+            onClick = {
+                onRateScribeClick()
+            },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.bug_report_icon,
             title = stringResource(R.string.app_about_feedback_bug_report),
             trailingIcon = R.drawable.external_link,
             url = "https://github.com/scribe-org/Scribe-Android/issues",
-            onClick = { },
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                    "https://github.com/scribe-org/Scribe-Android/issues"
+                ))
+                context.startActivity(intent)
+            },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.mail_icon,
@@ -166,7 +206,12 @@ fun getFeedbackAndSupportList(
             title = stringResource(R.string.app_about_feedback_version, BuildConfig.VERSION_NAME),
             trailingIcon = R.drawable.external_link,
             url = "https://github.com/scribe-org/Scribe-Android/releases/",
-            onClick = { },
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
+                    "https://github.com/scribe-org/Scribe-Android/releases/"
+                ))
+                context.startActivity(intent)
+            },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.light_bulb_icon,
