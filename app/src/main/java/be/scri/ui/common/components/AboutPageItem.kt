@@ -32,47 +32,45 @@ fun AboutPageItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier =
-        modifier
+    Row(
+        modifier = modifier
             .fillMaxWidth()
             .padding(
-                horizontal = 12.dp,
-                vertical = 10.dp,
+                start = 12.dp,
+                end = 20.dp,
+                top = 10.dp,
+                bottom = 10.dp
             )
             .clip(RoundedCornerShape(12.dp))
             .clickable(onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                painter = painterResource(leadingIcon),
-                modifier =
-                Modifier
-                    .padding(start = 2.dp)
-                    .size(18.dp),
-                tint = colorResource(R.color.app_text_color),
-                contentDescription = "Right Arrow",
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = title,
-                modifier = Modifier.weight(1f),
-                fontSize = 16.sp,
-                color = colorResource(R.color.app_text_color),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Icon(
-                painter = painterResource(trailingIcon),
-                modifier =
-                Modifier
-                    .padding(start = 6.dp)
-                    .size(14.dp),
-                contentDescription = "Right Arrow",
-            )
-        }
+        Icon(
+            painter = painterResource(leadingIcon),
+            modifier =
+            Modifier
+                .padding(start = 2.dp)
+                .size(20.dp),
+            tint = colorResource(R.color.app_text_color),
+            contentDescription = "Right Arrow",
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = title,
+            modifier = Modifier.weight(1f),
+            fontSize = 16.sp,
+            color = colorResource(R.color.app_text_color),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Icon(
+            painter = painterResource(trailingIcon),
+            modifier =
+            Modifier
+                .padding(start = 6.dp)
+                .size(24.dp),
+            contentDescription = "Right Arrow",
+            tint = Color.Gray
+        )
     }
 }
 

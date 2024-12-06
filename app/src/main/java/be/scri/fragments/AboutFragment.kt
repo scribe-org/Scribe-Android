@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.background
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.recyclerview.widget.LinearLayoutManager
 import be.scri.BuildConfig
@@ -53,6 +55,7 @@ class AboutFragment : ScribeFragment("About") {
                         onRateScribeClick = { RatingHelper.rateScribe(requireContext(), activity as MainActivity) },
                         onMailClick = { ShareHelper.sendEmail(requireContext()) },
                         onResetHintsClick = ::resetHints,
+                        context = requireContext()
                     )
                 }
             }
