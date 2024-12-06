@@ -1,7 +1,6 @@
 package be.scri.ui.common.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,38 +18,37 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
 
 @Composable
-fun AboutPageItem(
+fun AboutPageItemComp(
     title: String,
     leadingIcon: Int,
     trailingIcon: Int,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                start = 12.dp,
-                end = 20.dp,
-                top = 10.dp,
-                bottom = 10.dp
-            )
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    start = 12.dp,
+                    end = 20.dp,
+                    top = 10.dp,
+                    bottom = 10.dp,
+                ).clip(RoundedCornerShape(12.dp))
+                .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             painter = painterResource(leadingIcon),
             modifier =
-            Modifier
-                .padding(start = 2.dp)
-                .size(20.dp),
+                Modifier
+                    .padding(start = 2.dp)
+                    .size(20.dp),
             tint = colorResource(R.color.app_text_color),
             contentDescription = "Right Arrow",
         )
@@ -65,22 +63,11 @@ fun AboutPageItem(
         Icon(
             painter = painterResource(trailingIcon),
             modifier =
-            Modifier
-                .padding(start = 6.dp)
-                .size(24.dp),
+                Modifier
+                    .padding(start = 6.dp)
+                    .size(24.dp),
             contentDescription = "Right Arrow",
-            tint = Color.Gray
+            tint = Color.Gray,
         )
     }
-}
-
-@PreviewLightDark
-@Composable
-private fun AboutPageItemPreview(modifier: Modifier = Modifier) {
-    AboutPageItem(
-        title = "About Scribe",
-        leadingIcon = R.drawable.github_logo,
-        trailingIcon = R.drawable.right_arrow,
-        onClick = {}
-    )
 }
