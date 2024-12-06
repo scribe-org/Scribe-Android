@@ -52,7 +52,7 @@ fun ItemsCardContainer(
                     }
 
                     is ScribeItem.ExternalLinkItem -> {
-                        AboutPageItem(
+                        AboutPageItemComp(
                             title = item.title,
                             leadingIcon = item.leadingIcon,
                             trailingIcon = item.trailingIcon,

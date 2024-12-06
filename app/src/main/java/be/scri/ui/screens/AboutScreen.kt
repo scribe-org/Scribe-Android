@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -22,13 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.BuildConfig
 import be.scri.R
-import be.scri.activities.MainActivity
-import be.scri.fragments.PrivacyPolicyFragment
-import be.scri.fragments.ThirdPartyFragment
-import be.scri.fragments.WikimediaScribeFragment
-import be.scri.helpers.RatingHelper
-import be.scri.helpers.ShareHelper
-import be.scri.models.ItemsViewModel
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
@@ -37,48 +28,58 @@ import be.scri.ui.models.ScribeItemList
 @Composable
 fun AboutScreen(
     onWikimediaAndScribeClick: () -> Unit,
+    onShareScribeClick: () -> Unit,
     onPrivacyPolicyClick: () -> Unit,
     onThirdPartyLicensesClick: () -> Unit,
     onRateScribeClick: () -> Unit,
     onMailClick: () -> Unit,
     onResetHintsClick: () -> Unit,
     context: Context,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
 
-    val communityList = ScribeItemList(
-        items = getCommunityList(
-            onWikimediaAndScribeClick = onWikimediaAndScribeClick,
-            context = context
+    val communityList =
+        ScribeItemList(
+            items =
+                getCommunityList(
+                    onWikimediaAndScribeClick = onWikimediaAndScribeClick,
+                    onShareScribeClick = onShareScribeClick,
+                    context = context,
+                ),
         )
-    )
 
-    val feedbackAndSupportList = ScribeItemList(
-        items = getFeedbackAndSupportList(
-            onRateScribeClick = onRateScribeClick,
-            onMailClick = onMailClick,
-            onResetHintsClick = onResetHintsClick,
-            context = context
+    val feedbackAndSupportList =
+        ScribeItemList(
+            items =
+                getFeedbackAndSupportList(
+                    onRateScribeClick = onRateScribeClick,
+                    onMailClick = onMailClick,
+                    onResetHintsClick = onResetHintsClick,
+                    context = context,
+                ),
         )
-    )
 
-    val legalItemsList = ScribeItemList(
-        items = getLegalListItems(
-            onPrivacyPolicyClick = onPrivacyPolicyClick,
-            onThirdPartyLicensesClick = onThirdPartyLicensesClick
+    val legalItemsList =
+        ScribeItemList(
+            items =
+                getLegalListItems(
+                    onPrivacyPolicyClick = onPrivacyPolicyClick,
+                    onThirdPartyLicensesClick = onThirdPartyLicensesClick,
+                ),
         )
-    )
 
     Scaffold(
-        modifier = modifier
-            .background(color = MaterialTheme.colorScheme.background )
+        modifier =
+            modifier
+                .background(color = MaterialTheme.colorScheme.background),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             ItemCardContainerWithTitle(
                 title = stringResource(R.string.community_title),
@@ -95,7 +96,7 @@ fun AboutScreen(
             ItemCardContainerWithTitle(
                 title = stringResource(R.string.app_about_legal_title),
                 cardItemsList = legalItemsList,
-                isDivider = true
+                isDivider = true,
             )
 
             Spacer(modifier = Modifier.height(80.dp))
@@ -103,24 +104,28 @@ fun AboutScreen(
     }
 }
 
-
 @Composable
 fun getCommunityList(
     onWikimediaAndScribeClick: () -> Unit,
-    context: Context
-): List<ScribeItem.ExternalLinkItem> {
-    return listOf(
+    onShareScribeClick: () -> Unit,
+    context: Context,
+): List<ScribeItem.ExternalLinkItem> =
+    listOf(
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.github_logo,
             title = stringResource(R.string.app_about_community_github),
             trailingIcon = R.drawable.external_link,
             url = "https://github.com/scribe-org/Scribe-Android",
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
-                    "https://github.com/scribe-org/Scribe-Android"
-                ))
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(
+                            "https://github.com/scribe-org/Scribe-Android",
+                        ),
+                    )
                 context.startActivity(intent)
-            }
+            },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.matrix_icon,
@@ -128,9 +133,13 @@ fun getCommunityList(
             trailingIcon = R.drawable.external_link,
             url = "https://matrix.to/%23/%23scribe_community:matrix.org",
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
-                    "https://matrix.to/%23/%23scribe_community:matrix.org"
-                ))
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(
+                            "https://matrix.to/%23/%23scribe_community:matrix.org",
+                        ),
+                    )
                 context.startActivity(intent)
             },
         ),
@@ -140,9 +149,13 @@ fun getCommunityList(
             trailingIcon = R.drawable.external_link,
             url = "https://wikis.world/@scribe",
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
-                    "https://wikis.world/@scribe"
-                ))
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(
+                            "https://wikis.world/@scribe",
+                        ),
+                    )
                 context.startActivity(intent)
             },
         ),
@@ -151,7 +164,9 @@ fun getCommunityList(
             title = stringResource(R.string.app_about_community_share_scribe),
             trailingIcon = R.drawable.external_link,
             url = null,
-            onClick = { },
+            onClick = {
+                onShareScribeClick()
+            },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.wikimedia_logo_black,
@@ -160,19 +175,18 @@ fun getCommunityList(
             url = null,
             onClick = {
                 onWikimediaAndScribeClick()
-            }
+            },
         ),
     )
-}
 
 @Composable
 fun getFeedbackAndSupportList(
     onRateScribeClick: () -> Unit,
     onMailClick: () -> Unit,
     onResetHintsClick: () -> Unit,
-    context: Context
-): List<ScribeItem.ExternalLinkItem> {
-    return listOf(
+    context: Context,
+): List<ScribeItem.ExternalLinkItem> =
+    listOf(
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.star,
             title = stringResource(R.string.app_about_feedback_rate_scribe),
@@ -188,9 +202,13 @@ fun getFeedbackAndSupportList(
             trailingIcon = R.drawable.external_link,
             url = "https://github.com/scribe-org/Scribe-Android/issues",
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
-                    "https://github.com/scribe-org/Scribe-Android/issues"
-                ))
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(
+                            "https://github.com/scribe-org/Scribe-Android/issues",
+                        ),
+                    )
                 context.startActivity(intent)
             },
         ),
@@ -207,9 +225,13 @@ fun getFeedbackAndSupportList(
             trailingIcon = R.drawable.external_link,
             url = "https://github.com/scribe-org/Scribe-Android/releases/",
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
-                    "https://github.com/scribe-org/Scribe-Android/releases/"
-                ))
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(
+                            "https://github.com/scribe-org/Scribe-Android/releases/",
+                        ),
+                    )
                 context.startActivity(intent)
             },
         ),
@@ -221,14 +243,13 @@ fun getFeedbackAndSupportList(
             onClick = { onResetHintsClick() },
         ),
     )
-}
 
 @Composable
 fun getLegalListItems(
     onPrivacyPolicyClick: () -> Unit,
-    onThirdPartyLicensesClick: () -> Unit
-): List<ScribeItem.ExternalLinkItem> {
-    return listOf(
+    onThirdPartyLicensesClick: () -> Unit,
+): List<ScribeItem.ExternalLinkItem> =
+    listOf(
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.shield_lock,
             title = stringResource(R.string.app_about_legal_privacy_policy),
@@ -244,4 +265,3 @@ fun getLegalListItems(
             onClick = { onThirdPartyLicensesClick() },
         ),
     )
-}
