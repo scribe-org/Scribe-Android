@@ -172,6 +172,9 @@ pre-commit install  # install pre-commit hooks
 
 # App Setup [`⇧`](#contents)
 
+> [!NOTE]\
+> It does not work on floating keyboards as of yet (2024-12-07)
+
 Users access Scribe language keyboards through the following:
 
 -   Open the app and press **`Enable Keyboard`**
