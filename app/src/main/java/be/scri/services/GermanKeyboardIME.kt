@@ -11,10 +11,14 @@ import be.scri.views.MyKeyboardView
 
 class GermanKeyboardIME : SimpleKeyboardIME("German") {
     override fun getKeyboardLayoutXML(): Int =
-        if (getIsAccentCharacter()) {
-            R.xml.keys_letter_german_without_accent_character
-        } else {
+        if (getIsAccentCharacterDisabled() && !getEnablePeriodAndCommaABC()) {
+            R.xml.keys_letter_german_without_accent_characters_and_without_period_and_comma
+        } else if (!getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
             R.xml.keys_letters_german
+        } else if (getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
+            R.xml.keys_letter_german_without_accent_characters
+        } else {
+            R.xml.keys_letter_swedish_without_period_and_comma
         }
 
     override lateinit var binding: KeyboardViewCommandOptionsBinding

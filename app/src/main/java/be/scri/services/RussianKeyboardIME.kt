@@ -10,7 +10,12 @@ import be.scri.helpers.MyKeyboard
 import be.scri.views.MyKeyboardView
 
 class RussianKeyboardIME : SimpleKeyboardIME("Russian") {
-    override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_russian
+    override fun getKeyboardLayoutXML(): Int =
+        if (getEnablePeriodAndCommaABC()) {
+            R.xml.keys_letters_russian
+        } else {
+            R.xml.keys_letters_russian_without_period_and_comma
+        }
 
     override lateinit var binding: KeyboardViewCommandOptionsBinding
     override var keyboardView: MyKeyboardView? = null

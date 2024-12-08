@@ -10,7 +10,12 @@ import be.scri.helpers.MyKeyboard
 import be.scri.views.MyKeyboardView
 
 class EnglishKeyboardIME : SimpleKeyboardIME("English") {
-    override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_english
+    override fun getKeyboardLayoutXML(): Int =
+        if (getEnablePeriodAndCommaABC()) {
+            R.xml.keys_letters_english
+        } else {
+            R.xml.keys_letters_english_without_period_and_comma
+        }
 
     override val keyboardLetters = 0
     override val keyboardSymbols = 1
