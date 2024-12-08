@@ -156,6 +156,9 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
     - Press the play button marked "Run App"
     - From here code edits that are made will be reflected in the app each time it is ran.
 
+> [!NOTE]
+> Currently Scribe-Android does not work as a floating keyboard.
+
 After activating your emulator, consider setting up [pre-commit](https://pre-commit.com/) to fix common errors in the codebase before they're committed by running:
 
 ```bash
@@ -171,6 +174,9 @@ pre-commit install  # install pre-commit hooks
 <a id="app-setup"></a>
 
 # App Setup [`⇧`](#contents)
+
+> [!NOTE]
+> Currently Scribe-Android does not work as a floating keyboard.
 
 Users access Scribe language keyboards through the following:
 

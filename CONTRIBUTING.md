@@ -118,6 +118,9 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
     - From here code edits that are made will be reflected in the app each time it is ran
 
 > [!NOTE]
+> Currently Scribe-Android does not work as a floating keyboard.
+
+> [!NOTE]
 > Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
 
 ## Pre-commit Hooks [`⇧`](#contents)
