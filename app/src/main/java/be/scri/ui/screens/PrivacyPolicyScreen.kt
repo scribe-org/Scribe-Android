@@ -17,7 +17,6 @@ fun PrivacyPolicyScreen(
     modifier: Modifier = Modifier,
 ) {
     MainActivityComposeScreen(
-        bottomSpacerHeight,
         R.string.app_about_legal_privacy_policy_caption,
         modifier,
     ) {

@@ -210,6 +210,9 @@ dependencies {
     // Activity Compose
     implementation("androidx.activity:activity-compose")
 
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:$2.8.4")
+
     // Testing libraries
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testImplementation("io.mockk:mockk:$mockkVersion")

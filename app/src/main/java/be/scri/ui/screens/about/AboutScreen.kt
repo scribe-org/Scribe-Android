@@ -1,4 +1,4 @@
-package be.scri.ui.screens
+package be.scri.ui.screens.about
 
 import android.annotation.SuppressLint
 import android.content.Context

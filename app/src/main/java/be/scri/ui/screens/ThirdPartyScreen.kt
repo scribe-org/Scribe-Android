@@ -14,10 +14,9 @@ import be.scri.ui.theme.ScribeTypography
 
 @Composable
 fun ThirdPartyScreen(
-    bottomSpacerHeight: Int,
     modifier: Modifier = Modifier,
 ) {
-    MainActivityComposeScreen(bottomSpacerHeight, R.string.app_about_legal_third_party_caption, modifier) {
+    MainActivityComposeScreen(R.string.app_about_legal_third_party_caption, modifier) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = stringResource(id = R.string.app_about_legal_third_party_text),

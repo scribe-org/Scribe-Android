@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
@@ -25,7 +26,6 @@ import be.scri.ui.theme.ScribeTypography
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainActivityComposeScreen(
-    bottomSpacerHeight: Int,
     title: Int,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
@@ -56,10 +56,9 @@ fun MainActivityComposeScreen(
             ) {
                 content()
             }
+
             Spacer(
-                Modifier.windowInsetsBottomHeight(
-                    WindowInsets(bottom = bottomSpacerHeight + 16),
-                ),
+                modifier = Modifier.height(80.dp)
             )
         }
     }

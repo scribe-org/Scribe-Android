@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.navigation.NavHostController
 import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
 import be.scri.adapters.ViewPagerAdapter
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: ViewPagerAdapter
     private lateinit var binding: ActivityMainBinding
     private var englishKeyboardIME: EnglishKeyboardIME? = null
+    private lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+//        navController = navHostFragment.navController
 
         englishKeyboardIME = EnglishKeyboardIME()
 

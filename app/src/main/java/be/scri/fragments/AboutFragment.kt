@@ -7,13 +7,15 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.platform.ComposeView
+import androidx.navigation.fragment.findNavController
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.helpers.HintUtils
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.RatingHelper
 import be.scri.helpers.ShareHelper
-import be.scri.ui.screens.AboutScreen
+import be.scri.navigation.Screen
+import be.scri.ui.screens.about.AboutScreen
 import be.scri.ui.theme.ScribeTheme
 
 class AboutFragment : ScribeFragment("About") {
@@ -22,6 +24,7 @@ class AboutFragment : ScribeFragment("About") {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        val navController = findNavController()
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 getParentFragmentManager().popBackStack()
@@ -44,7 +47,7 @@ class AboutFragment : ScribeFragment("About") {
                         },
                         onShareScribeClick = { ShareHelper.shareScribe(requireContext()) },
                         onPrivacyPolicyClick = { loadOtherFragment(PrivacyPolicyFragment(), null) },
-                        onThirdPartyLicensesClick = { loadOtherFragment(ThirdPartyFragment(), null) },
+                        onThirdPartyLicensesClick = { navController.navigate(Screen.ThirdParty) },
                         onRateScribeClick = {
                             RatingHelper.rateScribe(requireContext(), activity as MainActivity)
                         },

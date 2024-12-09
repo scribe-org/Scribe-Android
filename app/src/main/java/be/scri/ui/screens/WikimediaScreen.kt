@@ -26,7 +26,7 @@ fun WikimediaScreen(
     bottomSpacerHeight: Int,
     modifier: Modifier = Modifier,
 ) {
-    MainActivityComposeScreen(bottomSpacerHeight, R.string.wikimedia_and_scribe_title, modifier) {
+    MainActivityComposeScreen(R.string.wikimedia_and_scribe_title, modifier) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = stringResource(id = R.string.scribe_wikimedia),

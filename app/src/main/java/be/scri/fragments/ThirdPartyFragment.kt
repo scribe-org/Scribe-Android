@@ -79,10 +79,7 @@ class ThirdPartyFragment : Fragment() {
                         PreferencesHelper.getUserDarkModePreference(requireContext())
                             == AppCompatDelegate.MODE_NIGHT_YES,
                 ) {
-                    ThirdPartyScreen(
-                        bottomSpacerHeight =
-                            mainActivity.findViewById<BottomNavigationView>(R.id.bottom_navigation).height,
-                    )
+                    ThirdPartyScreen()
                 }
             }
         }
