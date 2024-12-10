@@ -57,10 +57,13 @@ fun LanguageSettingsScreen(
         }
     val periodAndCommaState =
         remember {
+            if (!sharedPref.contains("period_and_comma_$language")) {
+                sharedPref.edit().putBoolean("period_and_comma_$language", true).apply()
+            }
             mutableStateOf(
                 sharedPref.getBoolean(
                     "period_and_comma_$language",
-                    false,
+                    true,
                 ),
             )
         }

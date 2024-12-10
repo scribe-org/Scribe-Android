@@ -74,8 +74,8 @@ object PreferencesHelper {
         Toast
             .makeText(
                 context,
-                "$language Disable period and comma " +
-                    if (shouldEnablePeriodAndComma) "off" else "on",
+                "$language period and comma on ABC " +
+                    if (shouldEnablePeriodAndComma) "enabled" else "disabled",
                 Toast.LENGTH_SHORT,
             ).show()
     }
