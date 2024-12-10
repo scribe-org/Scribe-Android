@@ -57,10 +57,13 @@ fun LanguageSettingsScreen(
         }
     val periodAndCommaState =
         remember {
+            if (!sharedPref.contains("period_and_comma_$language")) {
+                sharedPref.edit().putBoolean("period_and_comma_$language", true).apply()
+            }
             mutableStateOf(
                 sharedPref.getBoolean(
                     "period_and_comma_$language",
-                    false,
+                    true,
                 ),
             )
         }
@@ -71,9 +74,13 @@ fun LanguageSettingsScreen(
                 getLayoutListData(
                     language = language,
                     togglePeriodAndCommaState = periodAndCommaState.value,
-                    onTogglePeriodAndComma = { shouldDoubleSpacePeriod ->
-                        periodAndCommaState.value = shouldDoubleSpacePeriod
-                        PreferencesHelper.setCommaAndPeriodPreference()
+                    onTogglePeriodAndComma = { shouldDisablePeriodAndComma ->
+                        periodAndCommaState.value = shouldDisablePeriodAndComma
+                        PreferencesHelper.setCommaAndPeriodPreference(
+                            context,
+                            language,
+                            shouldDisablePeriodAndComma,
+                        )
                     },
                     toggleDisableAccentCharacter = disableAccentCharacterState.value,
                     onToggleDisableAccentCharacter = { shouldDisableAccentCharacter ->
