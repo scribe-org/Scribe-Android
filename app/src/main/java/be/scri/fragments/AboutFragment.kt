@@ -17,6 +17,7 @@ import be.scri.helpers.HintUtils
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.RatingHelper
 import be.scri.helpers.ShareHelper
+import be.scri.navigation.AboutNavHost
 import be.scri.navigation.Screen
 import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.about.AboutScreen
@@ -47,34 +48,16 @@ class AboutFragment : ScribeFragment("About") {
                     PreferencesHelper.getUserDarkModePreference(requireContext())
                         == AppCompatDelegate.MODE_NIGHT_YES
                 ) {
-                    NavHost(navController = navController, startDestination = "about") {
-                        composable("about") {
-                            AboutScreen(
-                                onWikimediaAndScribeClick = {
-                                    // Navigate to another screen (example)
-                                    navController.navigate("wikimedia_scribe")
-                                },
-                                onShareScribeClick = { ShareHelper.shareScribe(requireContext()) },
-                                onPrivacyPolicyClick = {
-                                    navController.navigate("privacy_policy")
-                                },
-                                onThirdPartyLicensesClick = {
-                                    navController.navigate("third_party")
-                                },
-                                onRateScribeClick = {
-                                    RatingHelper.rateScribe(requireContext(), activity as MainActivity)
-                                },
-                                onMailClick = { ShareHelper.sendEmail(requireContext()) },
-                                onResetHintsClick = ::resetHints,
-                                context = requireContext(),
-                            )
-                        }
-                        composable("third_party") {
-                            ThirdPartyScreen(
-                                onBackNavigation = { navController.popBackStack() }
-                            )
-                        }
-                    }
+                    AboutNavHost(
+                        navController = navController,
+                        context = requireContext(),
+                        resetHints = ::resetHints,
+                        onShareScribeClick = { ShareHelper.shareScribe(requireContext()) },
+                        onRateScribeClick = {
+                            RatingHelper.rateScribe(requireContext(), activity as MainActivity)
+                        },
+                        onMailClick = { ShareHelper.sendEmail(requireContext()) },
+                    )
                 }
             }
         }

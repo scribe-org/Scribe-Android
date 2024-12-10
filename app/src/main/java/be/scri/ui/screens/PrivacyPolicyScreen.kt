@@ -13,7 +13,6 @@ import be.scri.ui.theme.ScribeTypography
 
 @Composable
 fun PrivacyPolicyScreen(
-    bottomSpacerHeight: Int,
     modifier: Modifier = Modifier,
 ) {
     MainActivityComposeScreen(

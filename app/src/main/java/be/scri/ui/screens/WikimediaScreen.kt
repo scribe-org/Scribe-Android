@@ -18,62 +18,86 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import be.scri.R
+import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.MainActivityComposeScreen
 import be.scri.ui.theme.ScribeTypography
 
 @Composable
 fun WikimediaScreen(
-    bottomSpacerHeight: Int,
+    onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    MainActivityComposeScreen(R.string.wikimedia_and_scribe_title, modifier) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = stringResource(id = R.string.scribe_wikimedia),
-                fontSize = ScribeTypography.bodyMedium.fontSize,
-                style =
+
+    ScribeBaseScreen(
+        pageTitle = stringResource(R.string.app_about_legal_third_party),
+        onBackNavigation = { onBackNavigation() },
+        lastPage = stringResource(R.string.app_about_title),
+        modifier = modifier
+    ) {
+        WikimediaScreenContent(
+            title = stringResource(R.string.app_about_legal_third_party_caption),
+            modifier = Modifier.padding(
+                horizontal = 16.dp
+            )
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = stringResource(id = R.string.scribe_wikimedia),
+                    fontSize = ScribeTypography.bodyMedium.fontSize,
+                    style =
                     TextStyle.Default.copy(
                         fontStyle = ScribeTypography.bodyMedium.fontStyle,
                     ),
-            )
-            Image(
-                imageVector = ImageVector.vectorResource(R.drawable.wikidata_logo),
-                contentDescription = stringResource(R.string.wikimedia_logo),
-                modifier =
+                )
+                Image(
+                    imageVector = ImageVector.vectorResource(R.drawable.wikidata_logo),
+                    contentDescription = stringResource(R.string.wikimedia_logo),
+                    modifier =
                     Modifier
                         .align(Alignment.CenterHorizontally)
                         .width(200.dp)
                         .padding(vertical = 5.dp),
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            )
-            Text(
-                text = stringResource(id = R.string.wikidata_and_scribe),
-                fontSize = ScribeTypography.bodyMedium.fontSize,
-                style =
+                    contentScale = ContentScale.Fit,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                )
+                Text(
+                    text = stringResource(id = R.string.wikidata_and_scribe),
+                    fontSize = ScribeTypography.bodyMedium.fontSize,
+                    style =
                     TextStyle.Default.copy(
                         fontStyle = ScribeTypography.bodyMedium.fontStyle,
                     ),
-            )
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.wikipedia_logo),
-                contentDescription = stringResource(R.string.wikimedia_logo),
-                modifier =
+                )
+                Image(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.wikipedia_logo),
+                    contentDescription = stringResource(R.string.wikimedia_logo),
+                    modifier =
                     Modifier
                         .align(Alignment.CenterHorizontally)
                         .width(251.dp)
                         .height(123.dp),
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            )
-            Text(
-                text = stringResource(id = R.string.wikipedia_and_scribe),
-                fontSize = ScribeTypography.bodyMedium.fontSize,
-                style =
+                    contentScale = ContentScale.Fit,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                )
+                Text(
+                    text = stringResource(id = R.string.wikipedia_and_scribe),
+                    fontSize = ScribeTypography.bodyMedium.fontSize,
+                    style =
                     TextStyle.Default.copy(
                         fontStyle = ScribeTypography.bodyMedium.fontStyle,
                     ),
-            )
+                )
+            }
         }
     }
+}
+
+
+@Composable
+fun WikimediaScreenContent(
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+
 }

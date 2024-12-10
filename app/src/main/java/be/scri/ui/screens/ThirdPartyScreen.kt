@@ -61,26 +61,6 @@ fun ThirdPartyScreen(
             }
         }
     }
-//    MainActivityComposeScreen(R.string.app_about_legal_third_party_caption, modifier) {
-//        Column(modifier = Modifier.padding(16.dp)) {
-//            Text(
-//                text = stringResource(id = R.string.app_about_legal_third_party_text),
-//                fontSize = ScribeTypography.bodyMedium.fontSize,
-//                style =
-//                    TextStyle.Default.copy(
-//                        fontStyle = ScribeTypography.bodyMedium.fontStyle,
-//                    ),
-//            )
-//            Text(
-//                text = stringResource(id = R.string.app_about_legal_third_party_entry_simple_keyboard),
-//                fontSize = ScribeTypography.bodyMedium.fontSize,
-//                style =
-//                    TextStyle.Default.copy(
-//                        fontStyle = ScribeTypography.bodyMedium.fontStyle,
-//                    ),
-//            )
-//        }
-//    }
 }
 
 @Composable
