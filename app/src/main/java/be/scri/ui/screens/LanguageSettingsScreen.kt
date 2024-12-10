@@ -71,9 +71,13 @@ fun LanguageSettingsScreen(
                 getLayoutListData(
                     language = language,
                     togglePeriodAndCommaState = periodAndCommaState.value,
-                    onTogglePeriodAndComma = { shouldDoubleSpacePeriod ->
-                        periodAndCommaState.value = shouldDoubleSpacePeriod
-                        PreferencesHelper.setCommaAndPeriodPreference()
+                    onTogglePeriodAndComma = { shouldDisablePeriodAndComma ->
+                        periodAndCommaState.value = shouldDisablePeriodAndComma
+                        PreferencesHelper.setCommaAndPeriodPreference(
+                            context,
+                            language,
+                            shouldDisablePeriodAndComma,
+                        )
                     },
                     toggleDisableAccentCharacter = disableAccentCharacterState.value,
                     onToggleDisableAccentCharacter = { shouldDisableAccentCharacter ->
