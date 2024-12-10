@@ -37,6 +37,9 @@ fun ThirdPartyScreen(
     ) {
         ThirdPartyScreenContent(
             title = stringResource(R.string.app_about_legal_third_party_caption),
+            modifier = Modifier.padding(
+                horizontal = 16.dp
+            )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
@@ -89,7 +92,6 @@ fun ThirdPartyScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
     ) {
         Text(

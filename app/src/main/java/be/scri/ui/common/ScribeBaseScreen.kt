@@ -3,9 +3,11 @@ package be.scri.ui.common
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import be.scri.ui.common.app_components.ActionBar
 import be.scri.ui.common.app_components.PageTitle
 
@@ -36,6 +38,7 @@ fun ScribeBaseScreen(
             PageTitle(
                 pageTitle = pageTitle,
                 modifier = Modifier
+                    .padding(horizontal = 16.dp)
             )
 
             content()
