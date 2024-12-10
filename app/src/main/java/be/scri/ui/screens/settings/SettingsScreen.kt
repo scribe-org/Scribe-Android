@@ -1,7 +1,5 @@
 import android.content.Context
-import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +11,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,31 +28,32 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.scri.R
 import be.scri.helpers.PreferencesHelper
+import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
+import be.scri.ui.screens.settings.SettingsUtil
 
 @Composable
 fun SettingsScreen(
     isUserDarkMode: Boolean,
-    isKeyboardInstalled: Boolean,
-    onLanguageSelect: () -> Unit,
-    onDarkModeChange: (Boolean) -> Unit,
-    onInstallKeyboard: () -> Unit,
     onLanguageSettingsClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var languages by remember(lifecycleOwner) {
-        mutableStateOf(getKeyboardLanguages(context))
+        mutableStateOf(SettingsUtil.getKeyboardLanguages(context))
     }
+    var isKeyboardInstalled by remember { mutableStateOf(false) }
 
     DisposableEffect(lifecycleOwner) {
         val observer =
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
-                    languages = getKeyboardLanguages(context)
+                    languages = SettingsUtil.getKeyboardLanguages(context)
+                    isKeyboardInstalled = SettingsUtil.checkKeyboardInstallation(context)
+                    SettingsUtil.showSettingsHint(context)
                 }
             }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -83,14 +83,16 @@ fun SettingsScreen(
             ScribeItem.ClickableItem(
                 title = stringResource(R.string.app_settings_menu_app_language),
                 desc = stringResource(R.string.app_settings_menu_app_language_description),
-                action = onLanguageSelect,
+                action = {
+                    SettingsUtil.selectLanguage(context)
+                },
             ),
             ScribeItem.SwitchItem(
                 title = stringResource(R.string.app_settings_menu_app_color_mode),
                 desc = stringResource(R.string.app_settings_menu_app_color_mode_description),
                 state = isUserDarkMode,
                 onToggle = { isUserDarkMode1 ->
-                    onDarkModeChange(isUserDarkMode1)
+                    SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
                 },
             ),
             ScribeItem.SwitchItem(
@@ -114,7 +116,7 @@ fun SettingsScreen(
         )
 
     val installedKeyboardList =
-        getKeyboardLanguages(context).map { language ->
+        SettingsUtil.getKeyboardLanguages(context).map { language ->
             ScribeItem.ClickableItem(
                 title = getLocalizedLanguageName(context, language),
                 desc = null,
@@ -124,32 +126,42 @@ fun SettingsScreen(
             )
         }
 
-    LazyColumn(
-        modifier =
-            modifier
+    ScribeBaseScreen(
+        pageTitle = stringResource(R.string.app_settings_title),
+        onBackNavigation = {},
+        modifier = modifier,
+    ) {
+        LazyColumn(
+            modifier =
+            Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxWidth()
                 .padding(bottom = 60.dp),
-    ) {
-        item {
-            ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_settings_menu_title),
-                cardItemsList = ScribeItemList(appSettingsItemList),
-            )
-        }
-
-        item {
-            if (isKeyboardInstalled) {
+        ) {
+            item {
                 ItemCardContainerWithTitle(
-                    title = stringResource(R.string.app_settings_keyboard_title),
-                    cardItemsList = ScribeItemList(installedKeyboardList),
-                    isDivider = true,
-                    modifier =
+                    title = stringResource(R.string.app_settings_menu_title),
+                    cardItemsList = ScribeItemList(appSettingsItemList),
+                )
+            }
+
+            item {
+                if (isKeyboardInstalled) {
+                    ItemCardContainerWithTitle(
+                        title = stringResource(R.string.app_settings_keyboard_title),
+                        cardItemsList = ScribeItemList(installedKeyboardList),
+                        isDivider = true,
+                        modifier =
                         Modifier
                             .padding(top = 8.dp),
-                )
-            } else {
-                InstallKeyboardButton(onInstallKeyboard)
+                    )
+                } else {
+                    InstallKeyboardButton(
+                        onClick = {
+                            SettingsUtil.navigateToKeyboardSettings(context)
+                        }
+                    )
+                }
             }
         }
     }
@@ -199,22 +211,7 @@ private fun getLocalizedLanguageName(
     return context.getString(resourceId)
 }
 
-private fun getKeyboardLanguages(context: Context): List<String> {
-    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    return imm.enabledInputMethodList.mapNotNull { inputMethod ->
-        when (inputMethod.serviceName) {
-            "be.scri.services.EnglishKeyboardIME" -> "English"
-            "be.scri.services.GermanKeyboardIME" -> "German"
-            "be.scri.services.RussianKeyboardIME" -> "Russian"
-            "be.scri.services.SpanishKeyboardIME" -> "Spanish"
-            "be.scri.services.FrenchKeyboardIME" -> "French"
-            "be.scri.services.ItalianKeyboardIME" -> "Italian"
-            "be.scri.services.PortugueseKeyboardIME" -> "Portuguese"
-            "be.scri.services.SwedishKeyboardIME" -> "Swedish"
-            else -> null
-        }
-    }
-}
+
 
 //fun Context.navigateToFragment(language: String) {
 //    val fragmentTransaction = (this as? AppCompatActivity)?.supportFragmentManager?.beginTransaction()

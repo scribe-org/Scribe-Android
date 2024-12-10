@@ -12,10 +12,6 @@ import be.scri.ui.screens.LanguageSettingsScreen
 
 @Composable
 fun SettingsNavHost(
-    onLanguageSelect: () -> Unit,
-    onDarkModeChange: (Boolean) -> Unit,
-    onInstallKeyboard: () -> Unit,
-    isKeyboardInstalled: Boolean,
     isUserDarkMode: Boolean,
     navController: NavHostController,
     modifier: Modifier = Modifier
@@ -27,10 +23,6 @@ fun SettingsNavHost(
     ) {
         composable(Screen.Settings.route) {
             SettingsScreen(
-                onLanguageSelect = onLanguageSelect,
-                onDarkModeChange = onDarkModeChange,
-                onInstallKeyboard = onInstallKeyboard,
-                isKeyboardInstalled = isKeyboardInstalled,
                 isUserDarkMode = isUserDarkMode,
                 onLanguageSettingsClick = { language ->
                     navController.navigate("${Screen.LanguageSettings.route}/$language")

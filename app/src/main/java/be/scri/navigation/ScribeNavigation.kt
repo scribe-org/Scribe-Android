@@ -24,32 +24,14 @@ fun ScribeNavigation(
         startDestination = Screen.Installation.route,
         modifier = modifier
     ) {
-        composable(Screen.Installation.route) {
+        composable(route = Screen.Installation.route) {
             InstallationScreen()
         }
 
-        composable(Screen.Settings.route) {
-//            SettingsScreen()
-        }
-
-        composable(Screen.LanguageSettings.route) {
-//            LanguageSettingsScreen()
-        }
-
-        composable(Screen.About.route) {
-//            AboutScreen()
-        }
-
-        composable(Screen.PrivacyPolicy.route) {
-//            PrivacyPolicyScreen()
-        }
-
-        composable(Screen.WikimediaScribe.route) {
-//            WikimediaScreen()
-            }
-
-        composable(Screen.ThirdParty.route) {
-//            ThirdPartyScreen()
-        }
+//        composable(route = Screen.Settings.route) {
+//            SettingsNavHost(
+//
+//            )
+//        }
     }
 }
