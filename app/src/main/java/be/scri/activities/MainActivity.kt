@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
 //        navController = navHostFragment.navController
 
         englishKeyboardIME = EnglishKeyboardIME()

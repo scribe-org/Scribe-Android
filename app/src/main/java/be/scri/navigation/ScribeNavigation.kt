@@ -49,7 +49,7 @@ fun ScribeNavigation(
             }
 
         composable(Screen.ThirdParty.route) {
-            ThirdPartyScreen()
+//            ThirdPartyScreen()
         }
     }
 }

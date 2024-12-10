@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.platform.ComposeView
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.fragment.findNavController
 import be.scri.R
 import be.scri.activities.MainActivity
@@ -15,6 +18,7 @@ import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.RatingHelper
 import be.scri.helpers.ShareHelper
 import be.scri.navigation.Screen
+import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.about.AboutScreen
 import be.scri.ui.theme.ScribeTheme
 
@@ -24,7 +28,7 @@ class AboutFragment : ScribeFragment("About") {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val navController = findNavController()
+//        val navController = findNavController()
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 getParentFragmentManager().popBackStack()
@@ -36,25 +40,41 @@ class AboutFragment : ScribeFragment("About") {
 
         return ComposeView(requireContext()).apply {
             setContent {
+                val navController = rememberNavController() // Compose NavController
+
                 ScribeTheme(
                     useDarkTheme =
-                        PreferencesHelper.getUserDarkModePreference(requireContext())
-                            == AppCompatDelegate.MODE_NIGHT_YES,
+                    PreferencesHelper.getUserDarkModePreference(requireContext())
+                        == AppCompatDelegate.MODE_NIGHT_YES
                 ) {
-                    AboutScreen(
-                        onWikimediaAndScribeClick = {
-                            loadOtherFragment(WikimediaScribeFragment(), "WikimediaScribePage")
-                        },
-                        onShareScribeClick = { ShareHelper.shareScribe(requireContext()) },
-                        onPrivacyPolicyClick = { loadOtherFragment(PrivacyPolicyFragment(), null) },
-                        onThirdPartyLicensesClick = { navController.navigate(Screen.ThirdParty) },
-                        onRateScribeClick = {
-                            RatingHelper.rateScribe(requireContext(), activity as MainActivity)
-                        },
-                        onMailClick = { ShareHelper.sendEmail(requireContext()) },
-                        onResetHintsClick = ::resetHints,
-                        context = requireContext(),
-                    )
+                    NavHost(navController = navController, startDestination = "about") {
+                        composable("about") {
+                            AboutScreen(
+                                onWikimediaAndScribeClick = {
+                                    // Navigate to another screen (example)
+                                    navController.navigate("wikimedia_scribe")
+                                },
+                                onShareScribeClick = { ShareHelper.shareScribe(requireContext()) },
+                                onPrivacyPolicyClick = {
+                                    navController.navigate("privacy_policy")
+                                },
+                                onThirdPartyLicensesClick = {
+                                    navController.navigate("third_party")
+                                },
+                                onRateScribeClick = {
+                                    RatingHelper.rateScribe(requireContext(), activity as MainActivity)
+                                },
+                                onMailClick = { ShareHelper.sendEmail(requireContext()) },
+                                onResetHintsClick = ::resetHints,
+                                context = requireContext(),
+                            )
+                        }
+                        composable("third_party") {
+                            ThirdPartyScreen(
+                                onBackNavigation = { navController.popBackStack() }
+                            )
+                        }
+                    }
                 }
             }
         }
