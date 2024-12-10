@@ -49,11 +49,15 @@ fun AboutNavHost(
         }
 
         composable(Screen.WikimediaScribe.route) {
-            WikimediaScreen()
+            WikimediaScreen(
+                onBackNavigation = { navController.popBackStack() }
+            )
         }
 
         composable(Screen.PrivacyPolicy.route) {
-            PrivacyPolicyScreen()
+            PrivacyPolicyScreen(
+                onBackNavigation = { navController.popBackStack() }
+            )
         }
 
         composable(Screen.ThirdParty.route) {

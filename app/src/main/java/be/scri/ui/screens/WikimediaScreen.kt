@@ -2,9 +2,15 @@ package be.scri.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
@@ -27,15 +34,14 @@ fun WikimediaScreen(
     onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.app_about_legal_third_party),
+        pageTitle = stringResource(R.string.wikimedia_and_scribe),
         onBackNavigation = { onBackNavigation() },
         lastPage = stringResource(R.string.app_about_title),
         modifier = modifier
     ) {
         WikimediaScreenContent(
-            title = stringResource(R.string.app_about_legal_third_party_caption),
+            title = stringResource(R.string.wikimedia_and_scribe_title),
             modifier = Modifier.padding(
                 horizontal = 16.dp
             )
@@ -99,5 +105,32 @@ fun WikimediaScreenContent(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
+            fontSize = ScribeTypography.headlineMedium.fontSize,
+            style =
+            TextStyle.Default.copy(
+                fontStyle = ScribeTypography.headlineMedium.fontStyle,
+                fontWeight = FontWeight.Bold,
+            ),
+        )
+        Card(
+            colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+        ) {
+            content()
+        }
 
+        Spacer(
+            modifier = Modifier.height(80.dp)
+        )
+    }
 }
