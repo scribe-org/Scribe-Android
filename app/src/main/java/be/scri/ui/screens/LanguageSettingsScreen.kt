@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.R
 import be.scri.helpers.PreferencesHelper
+import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
@@ -23,6 +24,7 @@ import be.scri.ui.models.ScribeItemList
 @Composable
 fun LanguageSettingsScreen(
     language: String,
+    onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -37,6 +39,7 @@ fun LanguageSettingsScreen(
                 ),
             )
         }
+
     val emojiSuggestionsState =
         remember {
             mutableStateOf(
@@ -46,6 +49,7 @@ fun LanguageSettingsScreen(
                 ),
             )
         }
+
     val disableAccentCharacterState =
         remember {
             mutableStateOf(
@@ -55,6 +59,7 @@ fun LanguageSettingsScreen(
                 ),
             )
         }
+
     val periodAndCommaState =
         remember {
             mutableStateOf(
@@ -111,10 +116,11 @@ fun LanguageSettingsScreen(
                 ),
         )
 
-    Scaffold(
-        modifier =
-            modifier
-                .fillMaxSize(),
+    ScribeBaseScreen(
+        pageTitle = stringResource(getLanguageStringFromi18n(language)),
+        lastPage = stringResource(R.string.app_settings_title),
+        onBackNavigation = onBackNavigation,
+        modifier = modifier
     ) {
         Column {
             ItemCardContainerWithTitle(
@@ -126,8 +132,8 @@ fun LanguageSettingsScreen(
                 title = stringResource(R.string.app_settings_keyboard_functionality_title),
                 cardItemsList = functionalityList,
                 modifier =
-                    Modifier
-                        .padding(top = 6.dp),
+                Modifier
+                    .padding(top = 6.dp),
             )
         }
     }
@@ -216,4 +222,18 @@ private fun getLayoutListData(
     )
 
     return list
+}
+
+fun getLanguageStringFromi18n(language: String): Int {
+    val languageMap =
+        mapOf(
+            "German" to R.string.app__global_german,
+            "French" to R.string.app__global_french,
+            "Spanish" to R.string.app__global_spanish,
+            "Italian" to R.string.app__global_italian,
+            "Russian" to R.string.app__global_russian,
+            "Portuguese" to R.string.app__global_portuguese,
+            "Swedish" to R.string.app__global_swedish,
+        )
+    return languageMap[language] ?: R.string.app__global_english
 }

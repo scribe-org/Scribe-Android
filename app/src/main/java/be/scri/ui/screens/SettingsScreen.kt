@@ -28,7 +28,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.scri.R
-import be.scri.fragments.LanguageSettingsFragment
 import be.scri.helpers.PreferencesHelper
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
@@ -41,6 +40,7 @@ fun SettingsScreen(
     onLanguageSelect: () -> Unit,
     onDarkModeChange: (Boolean) -> Unit,
     onInstallKeyboard: () -> Unit,
+    onLanguageSettingsClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -119,7 +119,7 @@ fun SettingsScreen(
                 title = getLocalizedLanguageName(context, language),
                 desc = null,
                 action = {
-                    context.navigateToFragment(language)
+                    onLanguageSettingsClick(language)
                 },
             )
         }
@@ -216,17 +216,17 @@ private fun getKeyboardLanguages(context: Context): List<String> {
     }
 }
 
-fun Context.navigateToFragment(language: String) {
-    val fragmentTransaction = (this as? AppCompatActivity)?.supportFragmentManager?.beginTransaction()
-
-    val fragment =
-        LanguageSettingsFragment().apply {
-            arguments =
-                Bundle().apply {
-                    putString("LANGUAGE_EXTRA", language)
-                }
-        }
-    fragmentTransaction?.replace(R.id.fragment_container, fragment)
-    fragmentTransaction?.addToBackStack(null)
-    fragmentTransaction?.commit()
-}
+//fun Context.navigateToFragment(language: String) {
+//    val fragmentTransaction = (this as? AppCompatActivity)?.supportFragmentManager?.beginTransaction()
+//
+//    val fragment =
+//        LanguageSettingsFragment().apply {
+//            arguments =
+//                Bundle().apply {
+//                    putString("LANGUAGE_EXTRA", language)
+//                }
+//        }
+//    fragmentTransaction?.replace(R.id.fragment_container, fragment)
+//    fragmentTransaction?.addToBackStack(null)
+//    fragmentTransaction?.commit()
+//}

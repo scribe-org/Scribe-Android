@@ -17,9 +17,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.platform.ComposeView
+import androidx.navigation.compose.rememberNavController
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.helpers.PreferencesHelper
+import be.scri.navigation.SettingsNavHost
 import be.scri.ui.theme.ScribeTheme
 
 class SettingsFragment : ScribeFragment("Settings") {
@@ -35,6 +37,7 @@ class SettingsFragment : ScribeFragment("Settings") {
 
         return ComposeView(requireContext()).apply {
             setContent {
+                val navController = rememberNavController()
                 val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
                 val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
 
@@ -43,12 +46,13 @@ class SettingsFragment : ScribeFragment("Settings") {
                         PreferencesHelper.getUserDarkModePreference(requireContext())
                             == AppCompatDelegate.MODE_NIGHT_YES,
                 ) {
-                    SettingsScreen(
+                    SettingsNavHost(
                         onLanguageSelect = ::selectLanguage,
                         onDarkModeChange = ::setLightDarkMode,
                         onInstallKeyboard = ::navigateToKeyboardSettings,
                         isKeyboardInstalled = isKeyboardInstalled,
                         isUserDarkMode = isSystemDarkMode,
+                        navController = navController,
                     )
                 }
             }
