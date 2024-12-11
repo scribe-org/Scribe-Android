@@ -29,7 +29,7 @@ class AboutFragment : ScribeFragment("About") {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-//        val navController = findNavController()
+//        val navController = findNavController()    
         val callback =
             requireActivity().onBackPressedDispatcher.addCallback(this) {
                 getParentFragmentManager().popBackStack()
@@ -49,14 +49,7 @@ class AboutFragment : ScribeFragment("About") {
                         == AppCompatDelegate.MODE_NIGHT_YES
                 ) {
                     AboutNavHost(
-                        navController = navController,
-                        context = requireContext(),
-                        resetHints = ::resetHints,
-                        onShareScribeClick = { ShareHelper.shareScribe(requireContext()) },
-                        onRateScribeClick = {
-                            RatingHelper.rateScribe(requireContext(), activity as MainActivity)
-                        },
-                        onMailClick = { ShareHelper.sendEmail(requireContext()) },
+                        navController = navController
                     )
                 }
             }

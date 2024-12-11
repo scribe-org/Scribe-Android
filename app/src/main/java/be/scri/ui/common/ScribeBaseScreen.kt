@@ -14,10 +14,10 @@ import be.scri.ui.common.app_components.PageTitle
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ScribeBaseScreen(
-    pageTitle: String,
-    onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
+    pageTitle: String? = null,
     lastPage: String? = null,
+    onBackNavigation: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Scaffold(
@@ -35,11 +35,13 @@ fun ScribeBaseScreen(
                 )
             }
 
-            PageTitle(
-                pageTitle = pageTitle,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-            )
+            if (pageTitle != null) {
+                PageTitle(
+                    pageTitle = pageTitle,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                )
+            }
 
             content()
         }

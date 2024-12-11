@@ -17,11 +17,6 @@ import be.scri.ui.screens.about.AboutScreen
 @Composable
 fun AboutNavHost(
     navController: NavHostController,
-    context: Context,
-    resetHints: () -> Unit,
-    onShareScribeClick: () -> Unit,
-    onRateScribeClick: () -> Unit,
-    onMailClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -34,17 +29,12 @@ fun AboutNavHost(
                 onWikimediaAndScribeClick = {
                     navController.navigate(Screen.WikimediaScribe.route)
                 },
-                onShareScribeClick = onShareScribeClick,
                 onPrivacyPolicyClick = {
                     navController.navigate(Screen.PrivacyPolicy.route)
                 },
                 onThirdPartyLicensesClick = {
                     navController.navigate(Screen.ThirdParty.route)
-                },
-                onRateScribeClick = onRateScribeClick,
-                onMailClick = onMailClick,
-                onResetHintsClick = resetHints,
-                context = context,
+                }
             )
         }
 
