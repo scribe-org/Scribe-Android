@@ -15,11 +15,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.BuildConfig
 import be.scri.R
+import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
@@ -28,23 +31,22 @@ import be.scri.ui.models.ScribeItemList
 @Composable
 fun AboutScreen(
     onWikimediaAndScribeClick: () -> Unit,
-    onShareScribeClick: () -> Unit,
     onPrivacyPolicyClick: () -> Unit,
     onThirdPartyLicensesClick: () -> Unit,
-    onRateScribeClick: () -> Unit,
-    onMailClick: () -> Unit,
-    onResetHintsClick: () -> Unit,
-    context: Context,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        AboutUtil.showAboutHint(context)
+    }
     val communityList =
         ScribeItemList(
             items =
                 getCommunityList(
                     onWikimediaAndScribeClick = onWikimediaAndScribeClick,
-                    onShareScribeClick = onShareScribeClick,
+                    onShareScribeClick = { AboutUtil.onShareScribeClick(context) },
                     context = context,
                 ),
         )
@@ -53,9 +55,9 @@ fun AboutScreen(
         ScribeItemList(
             items =
                 getFeedbackAndSupportList(
-                    onRateScribeClick = onRateScribeClick,
-                    onMailClick = onMailClick,
-                    onResetHintsClick = onResetHintsClick,
+                    onRateScribeClick = { AboutUtil.onRateScribeClick(context) },
+                    onMailClick = { AboutUtil.onMailClick(context) },
+                    onResetHintsClick = { AboutUtil.resetHints(context) },
                     context = context,
                 ),
         )
@@ -69,16 +71,16 @@ fun AboutScreen(
                 ),
         )
 
-    Scaffold(
-        modifier =
-            modifier
-                .background(color = MaterialTheme.colorScheme.background),
+    ScribeBaseScreen(
+        pageTitle = stringResource(R.string.app_about_title),
+        onBackNavigation = {},
+        modifier = modifier
     ) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState),
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             ItemCardContainerWithTitle(
