@@ -134,7 +134,6 @@ fun SettingsScreen(
         LazyColumn(
             modifier =
             Modifier
-                .background(MaterialTheme.colorScheme.background)
                 .fillMaxWidth()
                 .padding(bottom = 60.dp),
         ) {

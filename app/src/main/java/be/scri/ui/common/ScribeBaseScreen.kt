@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import be.scri.R
 import be.scri.ui.common.app_components.ActionBar
 import be.scri.ui.common.app_components.PageTitle
 
@@ -22,7 +24,8 @@ fun ScribeBaseScreen(
 ) {
     Scaffold(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        containerColor = colorResource(R.color.background_color)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
