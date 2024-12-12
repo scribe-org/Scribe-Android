@@ -54,7 +54,8 @@ fun ClickableItemComp(
                 modifier =
                     Modifier
                         .padding(start = 6.dp)
-                        .size(14.dp),
+                        .size(17.dp),
+                tint = Color.Gray,
                 contentDescription = "Right Arrow",
             )
         }

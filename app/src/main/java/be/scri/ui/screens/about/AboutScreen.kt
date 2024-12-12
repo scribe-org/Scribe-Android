@@ -84,8 +84,7 @@ fun AboutScreen(
             modifier =
             Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(vertical = 16.dp),
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             ItemCardContainerWithTitle(
@@ -106,7 +105,7 @@ fun AboutScreen(
                 isDivider = true,
             )
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }

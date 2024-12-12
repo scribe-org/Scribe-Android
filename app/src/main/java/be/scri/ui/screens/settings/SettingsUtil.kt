@@ -9,14 +9,10 @@ import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
 import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.startActivity
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.helpers.PreferencesHelper
-import be.scri.ui.models.ScribeItem
 
 object SettingsUtil {
     fun checkKeyboardInstallation(context: Context): Boolean {
@@ -96,44 +92,4 @@ object SettingsUtil {
             else -> return R.string.language
         }
     }
-
-    @Composable
-    fun getAppSettingsItemList(context: Context): List<ScribeItem> =
-        remember {
-            listOf(
-                ScribeItem.ClickableItem(
-                    title = R.string.app_settings_menu_app_language,
-                    desc = stringResource(R.string.app_settings_menu_app_language_description),
-                    action = {
-                        SettingsUtil.selectLanguage(context)
-                    },
-                ),
-                ScribeItem.SwitchItem(
-                    title = R.string.app_settings_menu_app_color_mode,
-                    desc = stringResource(R.string.app_settings_menu_app_color_mode_description),
-                    state = isUserDarkMode,
-                    onToggle = { isUserDarkMode1 ->
-                        SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
-                    },
-                ),
-                ScribeItem.SwitchItem(
-                    title = R.string.app_settings_keyboard_keypress_vibration,
-                    desc = stringResource(R.string.app_settings_keyboard_keypress_vibration_description),
-                    state = vibrateOnKeypress.value,
-                    onToggle = { shouldVibrateOnKeypress ->
-                        vibrateOnKeypress.value = shouldVibrateOnKeypress
-                        PreferencesHelper.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
-                    },
-                ),
-                ScribeItem.SwitchItem(
-                    title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
-                    desc = stringResource(R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
-                    state = popupOnKeypress.value,
-                    onToggle = { shouldPopUpOnKeypress ->
-                        popupOnKeypress.value = shouldPopUpOnKeypress
-                        PreferencesHelper.setShowPopupOnKeypress(context, shouldPopUpOnKeypress)
-                    },
-                ),
-            )
-        }
 }

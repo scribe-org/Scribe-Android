@@ -149,26 +149,14 @@ private fun getFunctionalityListData(
     val list =
         listOf(
             ScribeItem.SwitchItem(
-                title =
-                    stringResource(
-                        R.string.app_settings_keyboard_functionality_double_space_period,
-                    ),
-                desc =
-                    stringResource(
-                        R.string.app_settings_keyboard_functionality_double_space_period_description,
-                    ),
+                title = R.string.app_settings_keyboard_functionality_double_space_period,
+                desc = R.string.app_settings_keyboard_functionality_double_space_period_description,
                 state = periodOnDoubleTapState,
                 onToggle = onTogglePeriodOnDoubleTap,
             ),
             ScribeItem.SwitchItem(
-                title =
-                    stringResource(
-                        R.string.app_settings_keyboard_functionality_auto_suggest_emoji,
-                    ),
-                desc =
-                    stringResource(
-                        R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description,
-                    ),
+                title = R.string.app_settings_keyboard_functionality_auto_suggest_emoji,
+                desc = R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description,
                 state = emojiSuggestionsState,
                 onToggle = onToggleEmojiSuggestions,
             ),
@@ -191,14 +179,8 @@ private fun getLayoutListData(
         "German", "Swedish", "Spanish" -> {
             list.add(
                 ScribeItem.SwitchItem(
-                    title =
-                        stringResource(
-                            R.string.app_settings_keyboard_layout_disable_accent_characters,
-                        ),
-                    desc =
-                        stringResource(
-                            R.string.app_settings_keyboard_layout_disable_accent_characters_description,
-                        ),
+                    title = R.string.app_settings_keyboard_layout_disable_accent_characters,
+                    desc = R.string.app_settings_keyboard_layout_disable_accent_characters_description,
                     state = toggleDisableAccentCharacter,
                     onToggle = onToggleDisableAccentCharacter,
                 ),
@@ -208,14 +190,8 @@ private fun getLayoutListData(
 
     list.add(
         ScribeItem.SwitchItem(
-            title =
-                stringResource(
-                    R.string.app_settings_keyboard_layout_period_and_comma,
-                ),
-            desc =
-                stringResource(
-                    R.string.app_settings_keyboard_layout_period_and_comma_description,
-                ),
+            title = R.string.app_settings_keyboard_layout_period_and_comma,
+            desc = R.string.app_settings_keyboard_layout_period_and_comma_description,
             state = togglePeriodAndCommaState,
             onToggle = onTogglePeriodAndComma,
         ),

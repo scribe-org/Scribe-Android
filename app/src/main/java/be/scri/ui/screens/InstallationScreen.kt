@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -63,6 +64,8 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
+            Spacer(modifier = Modifier.height(60.dp))
+
             Image(
                 painter = painterResource(id = R.drawable.scribe_logo),
                 contentDescription = stringResource(R.string.app_launcher_name),
@@ -108,6 +111,7 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
                             Text(
                                 text = "1. ",
                                 fontSize = Dimensions.TextSizeMedium,
+                                color = colorResource(R.color.app_text_color),
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_keyboard_settings),
@@ -121,10 +125,12 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
                             Text(
                                 text = "2. ",
                                 fontSize = Dimensions.TextSizeMedium,
+                                color = colorResource(R.color.app_text_color),
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_text_2),
                                 fontSize = Dimensions.TextSizeMedium,
+                                color = colorResource(R.color.app_text_color),
                             )
                         }
                         Row(
@@ -134,10 +140,12 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
                             Text(
                                 text = "3. ",
                                 fontSize = Dimensions.TextSizeMedium,
+                                color = colorResource(R.color.app_text_color),
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_text_3),
                                 fontSize = Dimensions.TextSizeMedium,
+                                color = colorResource(R.color.app_text_color),
                             )
                             Image(
                                 painter = painterResource(resource),
@@ -152,6 +160,7 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_text_4),
                                 fontSize = Dimensions.TextSizeMedium,
+                                color = colorResource(R.color.app_text_color),
                             )
                         }
                     }
@@ -221,6 +230,7 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
                             text = stringResource(R.string.app_download_menu_option_scribe_download_data),
                             fontSize = Dimensions.TextSizeMedium,
                             fontWeight = FontWeight.Bold,
+                            color = colorResource(R.color.app_text_color),
                         )
                         Image(
                             painter = painterResource(R.drawable.right_arrow),

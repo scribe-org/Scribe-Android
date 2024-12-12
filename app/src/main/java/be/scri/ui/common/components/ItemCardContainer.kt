@@ -37,7 +37,7 @@ fun ItemsCardContainer(
                     is ScribeItem.ClickableItem -> {
                         ClickableItemComp(
                             title = stringResource(item.title),
-                            desc = item.desc,
+                            desc = item.desc?.let { stringResource(it) },
                             onClick = item.action,
                         )
                     }
@@ -45,7 +45,7 @@ fun ItemsCardContainer(
                     is ScribeItem.SwitchItem -> {
                         SwitchableItemComp(
                             title = stringResource(item.title),
-                            desc = item.desc,
+                            desc = stringResource(item.desc),
                             isChecked = item.state,
                             onCheckedChange = item.onToggle,
                         )

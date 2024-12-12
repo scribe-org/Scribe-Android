@@ -1,7 +1,9 @@
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +35,6 @@ import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 import be.scri.ui.screens.settings.SettingsUtil
-import be.scri.ui.screens.settings.SettingsUtil.getLocalizedLanguageName
 
 @Composable
 fun SettingsScreen(
@@ -80,41 +81,43 @@ fun SettingsScreen(
         }
 
     val appSettingsItemList =
-        listOf(
-            ScribeItem.ClickableItem(
-                title = R.string.app_settings_menu_app_language,
-                desc = stringResource(R.string.app_settings_menu_app_language_description),
-                action = {
-                    SettingsUtil.selectLanguage(context)
-                },
-            ),
-            ScribeItem.SwitchItem(
-                title = R.string.app_settings_menu_app_color_mode,
-                desc = stringResource(R.string.app_settings_menu_app_color_mode_description),
-                state = isUserDarkMode,
-                onToggle = { isUserDarkMode1 ->
-                    SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
-                },
-            ),
-            ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_keypress_vibration,
-                desc = stringResource(R.string.app_settings_keyboard_keypress_vibration_description),
-                state = vibrateOnKeypress.value,
-                onToggle = { shouldVibrateOnKeypress ->
-                    vibrateOnKeypress.value = shouldVibrateOnKeypress
-                    PreferencesHelper.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
-                },
-            ),
-            ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
-                desc = stringResource(R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
-                state = popupOnKeypress.value,
-                onToggle = { shouldPopUpOnKeypress ->
-                    popupOnKeypress.value = shouldPopUpOnKeypress
-                    PreferencesHelper.setShowPopupOnKeypress(context, shouldPopUpOnKeypress)
-                },
-            ),
-        )
+        remember {
+            listOf(
+                ScribeItem.ClickableItem(
+                    title = R.string.app_settings_menu_app_language,
+                    desc = R.string.app_settings_menu_app_language_description,
+                    action = {
+                        SettingsUtil.selectLanguage(context)
+                    },
+                ),
+                ScribeItem.SwitchItem(
+                    title = R.string.app_settings_menu_app_color_mode,
+                    desc = R.string.app_settings_menu_app_color_mode_description,
+                    state = isUserDarkMode,
+                    onToggle = { isUserDarkMode1 ->
+                        SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
+                    },
+                ),
+                ScribeItem.SwitchItem(
+                    title = R.string.app_settings_keyboard_keypress_vibration,
+                    desc = R.string.app_settings_keyboard_keypress_vibration_description,
+                    state = vibrateOnKeypress.value,
+                    onToggle = { shouldVibrateOnKeypress ->
+                        vibrateOnKeypress.value = shouldVibrateOnKeypress
+                        PreferencesHelper.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
+                    },
+                ),
+                ScribeItem.SwitchItem(
+                    title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
+                    desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
+                    state = popupOnKeypress.value,
+                    onToggle = { shouldPopUpOnKeypress ->
+                        popupOnKeypress.value = shouldPopUpOnKeypress
+                        PreferencesHelper.setShowPopupOnKeypress(context, shouldPopUpOnKeypress)
+                    },
+                ),
+            )
+        }
 
     val installedKeyboardList =
         SettingsUtil.getKeyboardLanguages(context).map { language ->
@@ -135,8 +138,7 @@ fun SettingsScreen(
         LazyColumn(
             modifier =
             Modifier
-                .fillMaxWidth()
-                .padding(bottom = 60.dp),
+                .fillMaxWidth(),
         ) {
             item {
                 ItemCardContainerWithTitle(
@@ -162,6 +164,10 @@ fun SettingsScreen(
                         }
                     )
                 }
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }
@@ -190,6 +196,23 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
             modifier = Modifier.padding(vertical = 8.dp),
         )
     }
+}
+
+private fun getLocalizedLanguageName(
+    context: Context,
+    language: String,
+): Int {
+    return when (language) {
+            "English" -> R.string.app__global_english
+            "French" -> R.string.app__global_french
+            "German" -> R.string.app__global_german
+            "Russian" -> R.string.app__global_russian
+            "Spanish" -> R.string.app__global_spanish
+            "Italian" -> R.string.app__global_italian
+            "Portuguese" -> R.string.app__global_portuguese
+            "Swedish" -> R.string.app__global_swedish
+            else -> return R.string.language
+        }
 }
 
 
