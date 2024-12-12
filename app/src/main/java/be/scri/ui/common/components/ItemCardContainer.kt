@@ -9,7 +9,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import be.scri.R
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
@@ -22,7 +25,7 @@ fun ItemsCardContainer(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surface,
+        color = colorResource(R.color.card_view_color),
     ) {
         Column(
             modifier =
@@ -33,7 +36,7 @@ fun ItemsCardContainer(
                 when (item) {
                     is ScribeItem.ClickableItem -> {
                         ClickableItemComp(
-                            title = item.title,
+                            title = stringResource(item.title),
                             desc = item.desc,
                             onClick = item.action,
                         )
@@ -41,7 +44,7 @@ fun ItemsCardContainer(
 
                     is ScribeItem.SwitchItem -> {
                         SwitchableItemComp(
-                            title = item.title,
+                            title = stringResource(item.title),
                             desc = item.desc,
                             isChecked = item.state,
                             onCheckedChange = item.onToggle,
@@ -53,7 +56,7 @@ fun ItemsCardContainer(
 
                     is ScribeItem.ExternalLinkItem -> {
                         AboutPageItemComp(
-                            title = item.title,
+                            title = stringResource(item.title),
                             leadingIcon = item.leadingIcon,
                             trailingIcon = item.trailingIcon,
                             onClick = item.onClick,

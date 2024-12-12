@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
@@ -18,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHost
@@ -97,11 +100,12 @@ fun ScribeBottomBarWithPager(
         }
 
         BottomAppBar(
-            containerColor = if (isDarkTheme) Color.Black else Color.White,
+            containerColor = colorResource(R.color.nav_bar_color),
             modifier = Modifier
                 .fillMaxWidth()
+                .height(72.dp)
         ) {
-            Spacer(modifier = Modifier.width(16.dp))
+//            Spacer(modifier = Modifier.width(10.dp))
             bottomBarScreens.forEachIndexed { index, item ->
                 BottomBarItem(
                     icon = item.icon,
@@ -113,10 +117,17 @@ fun ScribeBottomBarWithPager(
                         }
                     },
                     modifier = Modifier.weight(1f) // Equal space modifier
-                        .padding(horizontal = 16.dp) // Dynamic spacing padding
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+//                            top = (-8).dp
+                        ) // Dynamic spacing padding
+                        .offset(
+                            y = (-8).dp
+                        )
                 )
             }
-            Spacer(modifier = Modifier.width(16.dp))
+//            Spacer(modifier = Modifier.width(10.dp))
         }
     }
 

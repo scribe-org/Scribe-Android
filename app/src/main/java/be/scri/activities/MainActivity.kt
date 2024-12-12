@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -28,7 +29,7 @@ import be.scri.services.EnglishKeyboardIME
 import be.scri.ui.common.bottom_bar.ScribeBottomBarWithPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 //    private lateinit var bottomNavigationView: BottomNavigationView
 //    private lateinit var viewPager: ViewPager2
 //    private lateinit var adapter: ViewPagerAdapter

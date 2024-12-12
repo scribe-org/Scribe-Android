@@ -60,6 +60,8 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
                 .background(colorResource(R.color.you_background_color))
                 .padding(Dimensions.PaddingMedium)
                 .testTag("backgroundContainer"),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.scribe_logo),

@@ -33,6 +33,7 @@ import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 import be.scri.ui.screens.settings.SettingsUtil
+import be.scri.ui.screens.settings.SettingsUtil.getLocalizedLanguageName
 
 @Composable
 fun SettingsScreen(
@@ -81,14 +82,14 @@ fun SettingsScreen(
     val appSettingsItemList =
         listOf(
             ScribeItem.ClickableItem(
-                title = stringResource(R.string.app_settings_menu_app_language),
+                title = R.string.app_settings_menu_app_language,
                 desc = stringResource(R.string.app_settings_menu_app_language_description),
                 action = {
                     SettingsUtil.selectLanguage(context)
                 },
             ),
             ScribeItem.SwitchItem(
-                title = stringResource(R.string.app_settings_menu_app_color_mode),
+                title = R.string.app_settings_menu_app_color_mode,
                 desc = stringResource(R.string.app_settings_menu_app_color_mode_description),
                 state = isUserDarkMode,
                 onToggle = { isUserDarkMode1 ->
@@ -96,7 +97,7 @@ fun SettingsScreen(
                 },
             ),
             ScribeItem.SwitchItem(
-                title = stringResource(R.string.app_settings_keyboard_keypress_vibration),
+                title = R.string.app_settings_keyboard_keypress_vibration,
                 desc = stringResource(R.string.app_settings_keyboard_keypress_vibration_description),
                 state = vibrateOnKeypress.value,
                 onToggle = { shouldVibrateOnKeypress ->
@@ -105,7 +106,7 @@ fun SettingsScreen(
                 },
             ),
             ScribeItem.SwitchItem(
-                title = stringResource(R.string.app_settings_keyboard_functionality_popup_on_keypress),
+                title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
                 desc = stringResource(R.string.app_settings_keyboard_functionality_popup_on_keypress_description),
                 state = popupOnKeypress.value,
                 onToggle = { shouldPopUpOnKeypress ->
@@ -189,25 +190,6 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
             modifier = Modifier.padding(vertical = 8.dp),
         )
     }
-}
-
-private fun getLocalizedLanguageName(
-    context: Context,
-    language: String,
-): String {
-    val resourceId =
-        when (language) {
-            "English" -> R.string.app__global_english
-            "French" -> R.string.app__global_french
-            "German" -> R.string.app__global_german
-            "Russian" -> R.string.app__global_russian
-            "Spanish" -> R.string.app__global_spanish
-            "Italian" -> R.string.app__global_italian
-            "Portuguese" -> R.string.app__global_portuguese
-            "Swedish" -> R.string.app__global_swedish
-            else -> return language
-        }
-    return context.getString(resourceId)
 }
 
 
