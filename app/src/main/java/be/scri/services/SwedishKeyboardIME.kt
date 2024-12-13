@@ -11,10 +11,14 @@ import be.scri.views.MyKeyboardView
 
 class SwedishKeyboardIME : SimpleKeyboardIME("Swedish") {
     override fun getKeyboardLayoutXML(): Int =
-        if (getIsAccentCharacter()) {
+        if (getIsAccentCharacterDisabled() && !getEnablePeriodAndCommaABC()) {
+            R.xml.keys_letter_swedish_without_accent_characters_and_without_period_and_comma
+        } else if (!getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
+            R.xml.keys_letters_swedish
+        } else if (getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
             R.xml.keys_letter_swedish_without_accent_characters
         } else {
-            R.xml.keys_letters_swedish
+            R.xml.keys_letter_swedish_without_period_and_comma
         }
 
     override lateinit var binding: KeyboardViewCommandOptionsBinding

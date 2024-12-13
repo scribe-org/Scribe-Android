@@ -10,7 +10,12 @@ import be.scri.helpers.MyKeyboard
 import be.scri.views.MyKeyboardView
 
 class PortugueseKeyboardIME : SimpleKeyboardIME("Portuguese") {
-    override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_portuguese
+    override fun getKeyboardLayoutXML(): Int =
+        if (getEnablePeriodAndCommaABC()) {
+            R.xml.keys_letters_portuguese
+        } else {
+            R.xml.keys_letters_portuguese_without_period_and_comma
+        }
 
     override lateinit var binding: KeyboardViewCommandOptionsBinding
     override var keyboardView: MyKeyboardView? = null
