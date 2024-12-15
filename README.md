@@ -15,14 +15,6 @@
 <!-- <a href='https://play.google.com/store/apps'><img alt='Get it on Google Play' src='https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/.github/resources/images/google_play_badge.png' height='60px'/></a>
 <a href='https://f-droid.org/packages/'><img src='https://raw.githubusercontent.com/scribe-org/Scribe-Android/main/.github/resources/images/f_droid_badge.png' alt='Get it on F-Droid' height='60px' /></a> -->
 
-<details><summary>🌐 Language</summary>
-<p>
-
--   [Open a localization issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=localization&template=localization.yml) to add a new readme to the [README](https://github.com/scribe-org/Scribe-Android/tree/main/README) directory
-
-</p>
-</details>
-
 ### Android app with keyboards for language learners
 
 #### WIP port of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
