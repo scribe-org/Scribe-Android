@@ -48,7 +48,7 @@ class FrenchKeyboardIME : SimpleKeyboardIME("French") {
             lastShiftPressTS = 0
         }
 
-        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords,lastWord)
+        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
         updateAutoSuggestText(nounTypeSuggestion)
 
         when (code) {
@@ -73,7 +73,6 @@ class FrenchKeyboardIME : SimpleKeyboardIME("French") {
                     handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
                 }
             }
-
         }
 
         lastWord = getLastWordBeforeCursor()

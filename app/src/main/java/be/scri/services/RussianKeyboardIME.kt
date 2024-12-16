@@ -48,7 +48,7 @@ class RussianKeyboardIME : SimpleKeyboardIME("Russian") {
             lastShiftPressTS = 0
         }
 
-        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords,lastWord)
+        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
         updateAutoSuggestText(nounTypeSuggestion)
 
         when (code) {

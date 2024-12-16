@@ -53,9 +53,6 @@ class SpanishKeyboardIME : SimpleKeyboardIME(language = "Spanish") {
             lastShiftPressTS = 0
         }
 
-        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords,lastWord)
-        updateAutoSuggestText(nounTypeSuggestion)
-
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
                 handleKeycodeDelete()
@@ -85,7 +82,9 @@ class SpanishKeyboardIME : SimpleKeyboardIME(language = "Spanish") {
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         Log.d("Debug", "$autosuggestEmojis")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
-
+        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
+        Log.d("Debug", "$nounTypeSuggestion")
+        updateAutoSuggestText(nounTypeSuggestion)
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }

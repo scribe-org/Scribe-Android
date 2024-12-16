@@ -48,9 +48,8 @@ class ItalianKeyboardIME : SimpleKeyboardIME("Italian") {
             lastShiftPressTS = 0
         }
 
-        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords,lastWord)
+        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
         updateAutoSuggestText(nounTypeSuggestion)
-
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
                 handleKeycodeDelete()
@@ -73,7 +72,6 @@ class ItalianKeyboardIME : SimpleKeyboardIME("Italian") {
                     handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
                 }
             }
-
         }
 
         lastWord = getLastWordBeforeCursor()

@@ -67,7 +67,7 @@ abstract class SimpleKeyboardIME(
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
-    lateinit var nounKeywords:  HashMap<String, MutableList<String>>
+    lateinit var nounKeywords: HashMap<String, MutableList<String>>
     var isAutoSuggestEnabled: Boolean = false
     var lastWord: String? = null
     var autosuggestEmojis: MutableList<String>? = null
@@ -414,34 +414,22 @@ abstract class SimpleKeyboardIME(
     }
 
     fun updateAutoSuggestText(nounTypeSuggestion: MutableList<String>?) {
-        when (nounTypeSuggestion?.get(0)) {
-            "PL" -> {
-                binding.translateBtn.text = nounTypeSuggestion[0]
-                binding.translateBtn.setBackgroundColor(getColor(R.color.md_deep_orange))
-            }
-            "N" -> {
-                binding.translateBtn.text = nounTypeSuggestion[0]
-                binding.translateBtn.setBackgroundColor(getColor(R.color.md_light_green))
-            }
-            "C" -> {
-                binding.translateBtn.text = nounTypeSuggestion[0]
-                binding.translateBtn.setBackgroundColor(getColor(R.color.md_indigo))
-            }
-            "M" -> {
-                binding.translateBtn.text = nounTypeSuggestion[0]
-                binding.translateBtn.setBackgroundColor(getColor(R.color.background_color))
-            }
-            "F" -> {
-                binding.translateBtn.text = nounTypeSuggestion[0]
-                binding.translateBtn.setBackgroundColor(getColor(R.color.md_pink))
-            }
-            else ->  {
-                binding.translateBtn.text = "Suggestion"
-                binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
-            }
-        }
-    }
+        val suggestionMap =
+            mapOf(
+                "PL" to Pair(R.color.md_deep_orange, "PL"),
+                "N" to Pair(R.color.md_light_green, "N"),
+                "C" to Pair(R.color.md_indigo, "C"),
+                "M" to Pair(R.color.background_color, "M"),
+                "F" to Pair(R.color.md_pink, "F"),
+            )
 
+        val (colorRes, text) =
+            suggestionMap[nounTypeSuggestion?.getOrNull(0)]
+                ?: Pair(R.color.transparent, "Suggestion")
+
+        binding.translateBtn.text = text
+        binding.translateBtn.setBackgroundColor(getColor(colorRes))
+    }
 
     private fun insertEmoji(emoji: String) {
         val inputConnection = currentInputConnection ?: return

@@ -88,8 +88,8 @@ class GermanKeyboardIME : SimpleKeyboardIME("German") {
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
 
         Log.d("Debug", "$autosuggestEmojis")
-        Log.d("MY-TAG","$nounTypeSuggestion")
-        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords,lastWord)
+        Log.d("MY-TAG", "$nounTypeSuggestion")
+        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
         updateAutoSuggestText(nounTypeSuggestion)
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
