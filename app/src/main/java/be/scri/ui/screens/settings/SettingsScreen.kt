@@ -55,7 +55,7 @@ fun SettingsScreen(
                 if (event == Lifecycle.Event.ON_RESUME) {
                     languages = SettingsUtil.getKeyboardLanguages(context)
                     isKeyboardInstalled = SettingsUtil.checkKeyboardInstallation(context)
-                    SettingsUtil.showSettingsHint(context)
+//                    SettingsUtil.showSettingsHint(context)
                 }
             }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -82,40 +82,42 @@ fun SettingsScreen(
 
     val appSettingsItemList =
         remember {
-            listOf(
-                ScribeItem.ClickableItem(
-                    title = R.string.app_settings_menu_app_language,
-                    desc = R.string.app_settings_menu_app_language_description,
-                    action = {
-                        SettingsUtil.selectLanguage(context)
-                    },
-                ),
-                ScribeItem.SwitchItem(
-                    title = R.string.app_settings_menu_app_color_mode,
-                    desc = R.string.app_settings_menu_app_color_mode_description,
-                    state = isUserDarkMode,
-                    onToggle = { isUserDarkMode1 ->
-                        SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
-                    },
-                ),
-                ScribeItem.SwitchItem(
-                    title = R.string.app_settings_keyboard_keypress_vibration,
-                    desc = R.string.app_settings_keyboard_keypress_vibration_description,
-                    state = vibrateOnKeypress.value,
-                    onToggle = { shouldVibrateOnKeypress ->
-                        vibrateOnKeypress.value = shouldVibrateOnKeypress
-                        PreferencesHelper.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
-                    },
-                ),
-                ScribeItem.SwitchItem(
-                    title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
-                    desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
-                    state = popupOnKeypress.value,
-                    onToggle = { shouldPopUpOnKeypress ->
-                        popupOnKeypress.value = shouldPopUpOnKeypress
-                        PreferencesHelper.setShowPopupOnKeypress(context, shouldPopUpOnKeypress)
-                    },
-                ),
+            ScribeItemList(
+                items = listOf(
+                    ScribeItem.ClickableItem(
+                        title = R.string.app_settings_menu_app_language,
+                        desc = R.string.app_settings_menu_app_language_description,
+                        action = {
+                            SettingsUtil.selectLanguage(context)
+                        },
+                    ),
+                    ScribeItem.SwitchItem(
+                        title = R.string.app_settings_menu_app_color_mode,
+                        desc = R.string.app_settings_menu_app_color_mode_description,
+                        state = isUserDarkMode,
+                        onToggle = { isUserDarkMode1 ->
+                            SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
+                        },
+                    ),
+                    ScribeItem.SwitchItem(
+                        title = R.string.app_settings_keyboard_keypress_vibration,
+                        desc = R.string.app_settings_keyboard_keypress_vibration_description,
+                        state = vibrateOnKeypress.value,
+                        onToggle = { shouldVibrateOnKeypress ->
+                            vibrateOnKeypress.value = shouldVibrateOnKeypress
+                            PreferencesHelper.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
+                        },
+                    ),
+                    ScribeItem.SwitchItem(
+                        title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
+                        desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
+                        state = popupOnKeypress.value,
+                        onToggle = { shouldPopUpOnKeypress ->
+                            popupOnKeypress.value = shouldPopUpOnKeypress
+                            PreferencesHelper.setShowPopupOnKeypress(context, shouldPopUpOnKeypress)
+                        },
+                    ),
+                )
             )
         }
 
@@ -143,7 +145,7 @@ fun SettingsScreen(
             item {
                 ItemCardContainerWithTitle(
                     title = stringResource(R.string.app_settings_menu_title),
-                    cardItemsList = ScribeItemList(appSettingsItemList),
+                    cardItemsList = appSettingsItemList,
                 )
             }
 

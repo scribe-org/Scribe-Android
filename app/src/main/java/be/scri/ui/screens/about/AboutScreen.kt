@@ -21,12 +21,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import be.scri.BuildConfig
 import be.scri.R
+import be.scri.navigation.Screen
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
+import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutUtil.getCommunityList
 import be.scri.ui.screens.about.AboutUtil.getFeedbackAndSupportList
 import be.scri.ui.screens.about.AboutUtil.getLegalListItems
@@ -34,46 +38,39 @@ import be.scri.ui.screens.about.AboutUtil.getLegalListItems
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AboutScreen(
-    onWikimediaAndScribeClick: () -> Unit,
-    onPrivacyPolicyClick: () -> Unit,
-    onThirdPartyLicensesClick: () -> Unit,
+//    navController: NavHostController,
+    onWikiClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        AboutUtil.showAboutHint(context)
+//        AboutUtil.showAboutHint(context)
     }
-    val communityList =
-        ScribeItemList(
-            items =
-                getCommunityList(
-                    onWikimediaAndScribeClick = onWikimediaAndScribeClick,
-                    onShareScribeClick = { AboutUtil.onShareScribeClick(context) },
-                    context = context,
-                ),
-        )
+    val communityList = getCommunityList(
+        onWikimediaAndScribeClick = {
+            onWikiClick()
+        },
+        onShareScribeClick = { AboutUtil.onShareScribeClick(context) },
+        context = context,
+    )
 
-    val feedbackAndSupportList =
-        ScribeItemList(
-            items =
-                getFeedbackAndSupportList(
-                    onRateScribeClick = { AboutUtil.onRateScribeClick(context) },
-                    onMailClick = { AboutUtil.onMailClick(context) },
-                    onResetHintsClick = { AboutUtil.resetHints(context) },
-                    context = context,
-                ),
-        )
+    val feedbackAndSupportList = getFeedbackAndSupportList(
+        onRateScribeClick = { AboutUtil.onRateScribeClick(context) },
+        onMailClick = { AboutUtil.onMailClick(context) },
+        onResetHintsClick = { AboutUtil.resetHints(context) },
+        context = context,
+    )
 
-    val legalItemsList =
-        ScribeItemList(
-            items =
-                getLegalListItems(
-                    onPrivacyPolicyClick = onPrivacyPolicyClick,
-                    onThirdPartyLicensesClick = onThirdPartyLicensesClick,
-                ),
-        )
+    val legalItemsList = getLegalListItems(
+        onPrivacyPolicyClick = {
+
+        },
+        onThirdPartyLicensesClick = {
+//            navController.navigate(Screen.ThirdParty.route)
+        },
+    )
 
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_about_title),

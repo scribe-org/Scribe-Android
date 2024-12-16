@@ -31,7 +31,7 @@ object SettingsUtil {
     }
 
     fun showSettingsHint(context: Context) {
-        (context as MainActivity).showHint("hint_shown_settings", R.string.app_settings_app_hint)
+        (context as MainActivity)?.showHint("hint_shown_settings", R.string.app_settings_app_hint)
     }
 
     fun selectLanguage(context: Context) {

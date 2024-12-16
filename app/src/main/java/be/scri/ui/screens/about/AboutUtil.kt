@@ -13,6 +13,7 @@ import be.scri.helpers.HintUtils
 import be.scri.helpers.RatingHelper
 import be.scri.helpers.ShareHelper
 import be.scri.ui.models.ScribeItem
+import be.scri.ui.models.ScribeItemList
 
 object AboutUtil {
     fun resetHints(context: Context) {
@@ -41,75 +42,77 @@ object AboutUtil {
         onWikimediaAndScribeClick: () -> Unit,
         onShareScribeClick: () -> Unit,
         context: Context,
-    ): List<ScribeItem.ExternalLinkItem> =
+    ): ScribeItemList =
         remember {
-            listOf(
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.github_logo,
-                    title = R.string.app_about_community_github,
-                    trailingIcon = R.drawable.external_link,
-                    url = "https://github.com/scribe-org/Scribe-Android",
-                    onClick = {
-                        val intent =
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(
-                                    "https://github.com/scribe-org/Scribe-Android",
-                                ),
-                            )
-                        context.startActivity(intent)
-                    },
-                ),
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.matrix_icon,
-                    title = R.string.app_about_community_matrix,
-                    trailingIcon = R.drawable.external_link,
-                    url = "https://matrix.to/%23/%23scribe_community:matrix.org",
-                    onClick = {
-                        val intent =
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(
-                                    "https://matrix.to/%23/%23scribe_community:matrix.org",
-                                ),
-                            )
-                        context.startActivity(intent)
-                    },
-                ),
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.mastodon_svg_icon,
-                    title = R.string.app_about_community_mastodon,
-                    trailingIcon = R.drawable.external_link,
-                    url = "https://wikis.world/@scribe",
-                    onClick = {
-                        val intent =
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(
-                                    "https://wikis.world/@scribe",
-                                ),
-                            )
-                        context.startActivity(intent)
-                    },
-                ),
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.share_icon,
-                    title = R.string.app_about_community_share_scribe,
-                    trailingIcon = R.drawable.external_link,
-                    url = null,
-                    onClick = {
-                        onShareScribeClick()
-                    },
-                ),
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.wikimedia_logo_black,
-                    title = R.string.app_about_community_wikimedia,
-                    trailingIcon = R.drawable.right_arrow,
-                    url = null,
-                    onClick = {
-                        onWikimediaAndScribeClick()
-                    },
-                ),
+            ScribeItemList(
+                items = listOf(
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.github_logo,
+                        title = R.string.app_about_community_github,
+                        trailingIcon = R.drawable.external_link,
+                        url = "https://github.com/scribe-org/Scribe-Android",
+                        onClick = {
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(
+                                        "https://github.com/scribe-org/Scribe-Android",
+                                    ),
+                                )
+                            context.startActivity(intent)
+                        },
+                    ),
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.matrix_icon,
+                        title = R.string.app_about_community_matrix,
+                        trailingIcon = R.drawable.external_link,
+                        url = "https://matrix.to/%23/%23scribe_community:matrix.org",
+                        onClick = {
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(
+                                        "https://matrix.to/%23/%23scribe_community:matrix.org",
+                                    ),
+                                )
+                            context.startActivity(intent)
+                        },
+                    ),
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.mastodon_svg_icon,
+                        title = R.string.app_about_community_mastodon,
+                        trailingIcon = R.drawable.external_link,
+                        url = "https://wikis.world/@scribe",
+                        onClick = {
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(
+                                        "https://wikis.world/@scribe",
+                                    ),
+                                )
+                            context.startActivity(intent)
+                        },
+                    ),
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.share_icon,
+                        title = R.string.app_about_community_share_scribe,
+                        trailingIcon = R.drawable.external_link,
+                        url = null,
+                        onClick = {
+                            onShareScribeClick()
+                        },
+                    ),
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.wikimedia_logo_black,
+                        title = R.string.app_about_community_wikimedia,
+                        trailingIcon = R.drawable.right_arrow,
+                        url = null,
+                        onClick = {
+                            onWikimediaAndScribeClick()
+                        },
+                    ),
+                )
             )
         }
 
@@ -119,65 +122,67 @@ object AboutUtil {
         onMailClick: () -> Unit,
         onResetHintsClick: () -> Unit,
         context: Context,
-    ): List<ScribeItem.ExternalLinkItem> =
+    ): ScribeItemList =
         remember {
-            listOf(
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.star,
-                    title = R.string.app_about_feedback_rate_scribe,
-                    trailingIcon = R.drawable.external_link,
-                    url = null,
-                    onClick = {
-                        onRateScribeClick()
-                    },
-                ),
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.bug_report_icon,
-                    title = R.string.app_about_feedback_bug_report,
-                    trailingIcon = R.drawable.external_link,
-                    url = "https://github.com/scribe-org/Scribe-Android/issues",
-                    onClick = {
-                        val intent =
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(
-                                    "https://github.com/scribe-org/Scribe-Android/issues",
-                                ),
-                            )
-                        context.startActivity(intent)
-                    },
-                ),
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.mail_icon,
-                    title = R.string.app_about_feedback_email,
-                    trailingIcon = R.drawable.external_link,
-                    url = null,
-                    onClick = { onMailClick() },
-                ),
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.bookmark_icon,
-                    title = R.string.app_about_feedback_version,
+            ScribeItemList(
+                items = listOf(
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.star,
+                        title = R.string.app_about_feedback_rate_scribe,
+                        trailingIcon = R.drawable.external_link,
+                        url = null,
+                        onClick = {
+                            onRateScribeClick()
+                        },
+                    ),
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.bug_report_icon,
+                        title = R.string.app_about_feedback_bug_report,
+                        trailingIcon = R.drawable.external_link,
+                        url = "https://github.com/scribe-org/Scribe-Android/issues",
+                        onClick = {
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(
+                                        "https://github.com/scribe-org/Scribe-Android/issues",
+                                    ),
+                                )
+                            context.startActivity(intent)
+                        },
+                    ),
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.mail_icon,
+                        title = R.string.app_about_feedback_email,
+                        trailingIcon = R.drawable.external_link,
+                        url = null,
+                        onClick = { onMailClick() },
+                    ),
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.bookmark_icon,
+                        title = R.string.app_about_feedback_version,
 //                    , BuildConfig.VERSION_NAME,
-                    trailingIcon = R.drawable.external_link,
-                    url = "https://github.com/scribe-org/Scribe-Android/releases/",
-                    onClick = {
-                        val intent =
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(
-                                    "https://github.com/scribe-org/Scribe-Android/releases/",
-                                ),
-                            )
-                        context.startActivity(intent)
-                    },
-                ),
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.light_bulb_icon,
-                    title = R.string.app_about_feedback_app_hints,
-                    trailingIcon = R.drawable.counter_clockwise_icon,
-                    url = null,
-                    onClick = { onResetHintsClick() },
-                ),
+                        trailingIcon = R.drawable.external_link,
+                        url = "https://github.com/scribe-org/Scribe-Android/releases/",
+                        onClick = {
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(
+                                        "https://github.com/scribe-org/Scribe-Android/releases/",
+                                    ),
+                                )
+                            context.startActivity(intent)
+                        },
+                    ),
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.light_bulb_icon,
+                        title = R.string.app_about_feedback_app_hints,
+                        trailingIcon = R.drawable.counter_clockwise_icon,
+                        url = null,
+                        onClick = { onResetHintsClick() },
+                    ),
+                )
             )
         }
 
@@ -185,23 +190,25 @@ object AboutUtil {
     fun getLegalListItems(
         onPrivacyPolicyClick: () -> Unit,
         onThirdPartyLicensesClick: () -> Unit,
-    ): List<ScribeItem.ExternalLinkItem> =
+    ): ScribeItemList =
         remember {
-            listOf(
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.shield_lock,
-                    title = R.string.app_about_legal_privacy_policy,
-                    trailingIcon = R.drawable.right_arrow,
-                    url = null,
-                    onClick = { onPrivacyPolicyClick() },
-                ),
-                ScribeItem.ExternalLinkItem(
-                    leadingIcon = R.drawable.license_icon,
-                    title = R.string.app_about_legal_third_party,
-                    trailingIcon = R.drawable.right_arrow,
-                    url = null,
-                    onClick = { onThirdPartyLicensesClick() },
-                ),
+            ScribeItemList(
+                items = listOf(
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.shield_lock,
+                        title = R.string.app_about_legal_privacy_policy,
+                        trailingIcon = R.drawable.right_arrow,
+                        url = null,
+                        onClick = { onPrivacyPolicyClick() },
+                    ),
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = R.drawable.license_icon,
+                        title = R.string.app_about_legal_third_party,
+                        trailingIcon = R.drawable.right_arrow,
+                        url = null,
+                        onClick = { onThirdPartyLicensesClick() },
+                    ),
+                )
             )
         }
 }

@@ -5,29 +5,20 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.navigation.NavHostController
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.rememberNavController
-import androidx.viewpager2.widget.ViewPager2
 import be.scri.R
+import be.scri.ScribeApp
 //import be.scri.adapters.ViewPagerAdapter
-import be.scri.databinding.ActivityMainBinding
 import be.scri.helpers.PreferencesHelper
-import be.scri.navigation.ScribeNavigation
 import be.scri.services.EnglishKeyboardIME
-import be.scri.ui.common.bottom_bar.ScribeBottomBarWithPager
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import be.scri.ui.common.bottom_bar.bottomBarScreens
 
 class MainActivity : ComponentActivity() {
 //    private lateinit var bottomNavigationView: BottomNavigationView
@@ -74,27 +65,18 @@ class MainActivity : ComponentActivity() {
 //        }
 
         setContent {
-            val navController = rememberNavController()
             val isUserDarkTheme =
                 PreferencesHelper.getUserDarkModePreference(this) == AppCompatDelegate.MODE_NIGHT_YES
+            val pagerState = PagerState { 
+                bottomBarScreens.size
+            }    
+            val coroutineScope = rememberCoroutineScope()
 
-            Scaffold(
-                bottomBar = {
-                    ScribeBottomBarWithPager(
-                        navController = navController,
-                        isDarkTheme = isUserDarkTheme,
-                        modifier = Modifier
-                            .background(color = colorResource(R.color.background_color))
-                    )
-                },
-                modifier = Modifier.fillMaxSize()
-            ) {
-                ScribeNavigation(
-                    isUserDarkMode = isUserDarkTheme,
-                    navController = navController,
-                    modifier = Modifier
-                )
-            }
+            ScribeApp(
+                pagerState = pagerState,
+                coroutineScope = coroutineScope,
+                isDarkTheme = isUserDarkTheme
+            )
         }
 //        viewPager.registerOnPageChangeCallback(
 //            object : ViewPager2.OnPageChangeCallback() {
@@ -213,7 +195,7 @@ class MainActivity : ComponentActivity() {
         sharedPrefsKey: String,
         hintMessageResId: Int,
     ) {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val allEntries = sharedPref.all
         for ((key, value) in allEntries) {
             Log.i("hint", "$key = $value")
@@ -223,6 +205,7 @@ class MainActivity : ComponentActivity() {
         if (!isHintShown) {
             val hintLayout = findViewById<View>(R.id.hint_layout)
             val hintText = findViewById<TextView>(R.id.hint_text)
+
             hintText.text = getString(hintMessageResId)
 
             hintLayout.visibility = View.VISIBLE

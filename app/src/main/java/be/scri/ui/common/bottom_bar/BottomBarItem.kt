@@ -48,7 +48,7 @@ fun BottomBarItem(
     Column(
         modifier = modifier.padding(bottom = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy((-6).dp)
+        verticalArrangement = Arrangement.spacedBy((-9).dp)
     ) {
         IconButton(
             onClick = {
