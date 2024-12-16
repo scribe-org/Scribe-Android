@@ -87,7 +87,7 @@ class DatabaseHelper(
 
     fun getNounKeyMaps(cursor: Cursor): MutableList<String> {
         val values = mutableListOf<String>()
-        values.add(cursor.getString(1))
+        values.add(cursor.getString(2))
         return values
     }
 

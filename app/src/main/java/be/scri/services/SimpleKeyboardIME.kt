@@ -413,6 +413,36 @@ abstract class SimpleKeyboardIME(
         }
     }
 
+    fun updateAutoSuggestText(nounTypeSuggestion: MutableList<String>?) {
+        when (nounTypeSuggestion?.get(0)) {
+            "PL" -> {
+                binding.translateBtn.text = nounTypeSuggestion[0]
+                binding.translateBtn.setBackgroundColor(getColor(R.color.md_deep_orange))
+            }
+            "N" -> {
+                binding.translateBtn.text = nounTypeSuggestion[0]
+                binding.translateBtn.setBackgroundColor(getColor(R.color.md_light_green))
+            }
+            "C" -> {
+                binding.translateBtn.text = nounTypeSuggestion[0]
+                binding.translateBtn.setBackgroundColor(getColor(R.color.md_indigo))
+            }
+            "M" -> {
+                binding.translateBtn.text = nounTypeSuggestion[0]
+                binding.translateBtn.setBackgroundColor(getColor(R.color.background_color))
+            }
+            "F" -> {
+                binding.translateBtn.text = nounTypeSuggestion[0]
+                binding.translateBtn.setBackgroundColor(getColor(R.color.md_pink))
+            }
+            else ->  {
+                binding.translateBtn.text = "Suggestion"
+                binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
+            }
+        }
+    }
+
+
     private fun insertEmoji(emoji: String) {
         val inputConnection = currentInputConnection ?: return
         inputConnection.commitText(emoji, 1)

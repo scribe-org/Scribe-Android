@@ -52,7 +52,8 @@ class SwedishKeyboardIME : SimpleKeyboardIME("Swedish") {
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             lastShiftPressTS = 0
         }
-
+        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords,lastWord)
+        updateAutoSuggestText(nounTypeSuggestion)
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
                 handleKeycodeDelete()
