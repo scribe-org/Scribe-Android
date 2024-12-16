@@ -86,7 +86,9 @@ class SpanishKeyboardIME : SimpleKeyboardIME(language = "Spanish") {
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         Log.d("Debug", "$autosuggestEmojis")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
-
+        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
+        Log.d("Debug", "$nounTypeSuggestion")
+        updateAutoSuggestText(nounTypeSuggestion)
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }

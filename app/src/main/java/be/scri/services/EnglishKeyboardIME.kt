@@ -84,9 +84,11 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
         Log.d("Debug", "$autosuggestEmojis")
+        Log.d("MY-TAG", "$nounTypeSuggestion")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
-
+        updateAutoSuggestText(nounTypeSuggestion)
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }
