@@ -67,4 +67,28 @@ class DatabaseHelper(
         }
         return values
     }
+
+    fun getNounKeywords(language: String): HashMap<String, MutableList<String>> {
+        val hashMap = HashMap<String, MutableList<String>>()
+        val dbFile = context.getDatabasePath("${language}LanguageData.sqlite")
+        val db = SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY)
+        val cursor = db.rawQuery("SELECT * FROM nouns", null)
+
+        cursor.use {
+            if (cursor.moveToFirst()) {
+                do {
+                    val key = cursor.getString(0).lowercase()
+                    hashMap[key] = getNounKeyMaps(cursor)
+                } while (cursor.moveToNext())
+            }
+        }
+        return hashMap
+    }
+
+    fun getNounKeyMaps(cursor: Cursor): MutableList<String> {
+        val values = mutableListOf<String>()
+        values.add(cursor.getString(1))
+        return values
+    }
+
 }

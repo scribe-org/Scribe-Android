@@ -67,9 +67,11 @@ abstract class SimpleKeyboardIME(
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
+    lateinit var nounKeywords:  HashMap<String, MutableList<String>>
     var isAutoSuggestEnabled: Boolean = false
     var lastWord: String? = null
     var autosuggestEmojis: MutableList<String>? = null
+    var nounTypeSuggestion: MutableList<String>? = null
     private var currentEnterKeyType: Int? = null
     // abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
@@ -373,6 +375,23 @@ abstract class SimpleKeyboardIME(
         return null
     }
 
+    fun findNounTypeForLastWord(
+        nounKeywords: HashMap<String, MutableList<String>>,
+        lastWord: String?,
+    ): MutableList<String>? {
+        lastWord?.let { word ->
+            val lowerCaseWord = word.lowercase()
+            val nouns = nounKeywords[lowerCaseWord]
+            if (nouns != null) {
+                Log.d("Debug", "Noun Types  for '$word': $nouns")
+                return nouns
+            } else {
+                Log.d("Debug", "No nouns found for '$word'")
+            }
+        }
+        return null
+    }
+
     fun updateButtonText(
         isAutoSuggestEnabled: Boolean,
         autosuggestEmojis: MutableList<String>?,
@@ -434,6 +453,7 @@ abstract class SimpleKeyboardIME(
         dbHelper = DatabaseHelper(this)
         dbHelper.loadDatabase(languageAlias)
         emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
+        nounKeywords = dbHelper.getNounKeywords(languageAlias)
 
         keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
