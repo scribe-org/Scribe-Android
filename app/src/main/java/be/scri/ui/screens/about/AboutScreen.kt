@@ -99,7 +99,7 @@ fun AboutScreen(
                 isDivider = true,
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(60.dp))
         }
     }
 }
