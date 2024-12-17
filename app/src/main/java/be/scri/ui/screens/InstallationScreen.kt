@@ -44,10 +44,12 @@ import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 
 @Composable
-fun InstallationScreen(modifier: Modifier = Modifier) {
+fun InstallationScreen(
+    isDark: Boolean,
+    modifier: Modifier = Modifier
+) {
     val layoutDirection = LocalLayoutDirection.current
     val context = LocalContext.current
-    val isDark = isSystemInDarkTheme()
     val resource: Int =
         if (isDark) {
             R.drawable.keyboard_dark

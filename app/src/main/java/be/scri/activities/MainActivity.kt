@@ -11,6 +11,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.rememberNavController
 import be.scri.R
@@ -65,18 +68,24 @@ class MainActivity : ComponentActivity() {
 //        }
 
         setContent {
-            val isUserDarkTheme =
-                PreferencesHelper.getUserDarkModePreference(this) == AppCompatDelegate.MODE_NIGHT_YES
-            val pagerState = PagerState { 
+            val isUserDarkTheme = remember {
+                mutableStateOf(
+                    PreferencesHelper.getUserDarkModePreference(this) == AppCompatDelegate.MODE_NIGHT_YES
+                )
+            }
+            val pagerState = rememberPagerState {
                 bottomBarScreens.size
-            }    
+            }
             val coroutineScope = rememberCoroutineScope()
             val navController = rememberNavController()
 
             ScribeApp(
                 pagerState = pagerState,
                 coroutineScope = coroutineScope,
-                isDarkTheme = isUserDarkTheme,
+                isDarkTheme = isUserDarkTheme.value,
+                onDarkModeChange = { it ->
+                    isUserDarkTheme.value = it
+                },
                 navController = navController
             )
         }

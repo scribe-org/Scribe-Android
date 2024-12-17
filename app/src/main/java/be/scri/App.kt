@@ -33,6 +33,7 @@ fun ScribeApp(
     pagerState: PagerState,
     navController: NavHostController,
     coroutineScope: CoroutineScope,
+    onDarkModeChange: (Boolean) -> Unit,
     isDarkTheme: Boolean
 ) {
     ScribeTheme(isDarkTheme) {
@@ -59,12 +60,16 @@ fun ScribeApp(
                 composable("pager") {
                     HorizontalPager(
                         state = pagerState,
+                        beyondViewportPageCount = 3,
                         modifier = Modifier
                     ) { page ->
                         when (page) {
-                            0 -> InstallationScreen()
+                            0 -> InstallationScreen(
+                                isDark = isDarkTheme
+                            )
                             1 -> SettingsScreen(
                                 isUserDarkMode = isDarkTheme,
+                                onDarkModeChange = { onDarkModeChange(it) },
                                 onLanguageSettingsClick = { language ->
                                     navController.navigate(
                                         "${Screen.LanguageSettings.route}/$language"
