@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -82,6 +83,7 @@ fun ThirdPartyScreenContent(
             TextStyle.Default.copy(
                 fontStyle = ScribeTypography.headlineMedium.fontStyle,
                 fontWeight = FontWeight.Bold,
+                color = colorResource(R.color.app_text_color)
             ),
         )
         Card(

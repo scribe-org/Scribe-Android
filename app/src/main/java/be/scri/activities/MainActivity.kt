@@ -71,11 +71,13 @@ class MainActivity : ComponentActivity() {
                 bottomBarScreens.size
             }    
             val coroutineScope = rememberCoroutineScope()
+            val navController = rememberNavController()
 
             ScribeApp(
                 pagerState = pagerState,
                 coroutineScope = coroutineScope,
-                isDarkTheme = isUserDarkTheme
+                isDarkTheme = isUserDarkTheme,
+                navController = navController
             )
         }
 //        viewPager.registerOnPageChangeCallback(

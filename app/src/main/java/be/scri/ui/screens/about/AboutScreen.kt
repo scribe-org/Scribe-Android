@@ -38,7 +38,8 @@ import be.scri.ui.screens.about.AboutUtil.getLegalListItems
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AboutScreen(
-//    navController: NavHostController,
+    onPrivacyPolicyClick: () -> Unit,
+    onThirdPartyLicensesClick: () -> Unit,
     onWikiClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -64,12 +65,8 @@ fun AboutScreen(
     )
 
     val legalItemsList = getLegalListItems(
-        onPrivacyPolicyClick = {
-
-        },
-        onThirdPartyLicensesClick = {
-//            navController.navigate(Screen.ThirdParty.route)
-        },
+        onPrivacyPolicyClick = onPrivacyPolicyClick,
+        onThirdPartyLicensesClick = onThirdPartyLicensesClick,
     )
 
     ScribeBaseScreen(

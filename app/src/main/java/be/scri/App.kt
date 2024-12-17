@@ -11,33 +11,27 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import be.scri.navigation.Screen
 import be.scri.ui.common.bottom_bar.ScribeBottomBar
 import be.scri.ui.common.bottom_bar.bottomBarScreens
 import be.scri.ui.screens.InstallationScreen
+import be.scri.ui.screens.LanguageSettingsScreen
+import be.scri.ui.screens.PrivacyPolicyScreen
+import be.scri.ui.screens.ThirdPartyScreen
+import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
 import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-//class App : Application() {
-//    override fun onCreate() {
-//        AppCompatDelegate.setDefaultNightMode(
-//            if (config.darkTheme) {
-//                AppCompatDelegate.MODE_NIGHT_YES
-//            } else {
-//                AppCompatDelegate.MODE_NIGHT_NO
-//            },
-//        )
-//        super.onCreate()
-//    }
-//}
-
-
 @SuppressLint("ComposeModifierMissing", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ScribeApp(
     pagerState: PagerState,
+    navController: NavHostController,
     coroutineScope: CoroutineScope,
     isDarkTheme: Boolean
 ) {
@@ -58,22 +52,74 @@ fun ScribeApp(
             },
             modifier = Modifier.fillMaxSize()
         ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-            ) { page ->
-                when (page) {
-                    0 -> InstallationScreen()
-                    1 -> SettingsScreen(
-                        isUserDarkMode = isDarkTheme,
-                        onLanguageSettingsClick = { language ->
-//                            navController.navigate("${Screen.LanguageSettings.route}/$language")
+            NavHost(
+                navController = navController,
+                startDestination = "pager"
+            ) {
+                composable("pager") {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                    ) { page ->
+                        when (page) {
+                            0 -> InstallationScreen()
+                            1 -> SettingsScreen(
+                                isUserDarkMode = isDarkTheme,
+                                onLanguageSettingsClick = { language ->
+                                    navController.navigate(
+                                        "${Screen.LanguageSettings.route}/$language"
+                                    )
+                                }
+                            )
+                            2 -> AboutScreen(
+                                onPrivacyPolicyClick = {
+                                    navController.navigate(Screen.PrivacyPolicy.route)
+                                },
+                                onThirdPartyLicensesClick = {
+                                    navController.navigate(Screen.ThirdParty.route)
+                                },
+                                onWikiClick = {
+                                    navController.navigate(Screen.WikimediaScribe.route)
+                                }
+                            )
+                        }
+                    }
+                }
+
+                composable(
+                    route = "${Screen.LanguageSettings.route}/{languageName}",
+                ) {
+                    val language = it.arguments?.getString("languageName")
+                    if (language != null) {
+                        LanguageSettingsScreen(
+                            language = language,
+                            onBackNavigation = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+                }
+
+                composable(Screen.WikimediaScribe.route) {
+                    WikimediaScreen(
+                        onBackNavigation = {
+                            navController.popBackStack()
                         }
                     )
-                    2 -> AboutScreen(
-//                        navController = navController,
-                        onWikiClick = {
-//                            navController.navigate(Screen.WikimediaScribe.route)
+                }
+
+                composable(Screen.PrivacyPolicy.route) {
+                    PrivacyPolicyScreen(
+                        onBackNavigation = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable(Screen.ThirdParty.route) {
+                    ThirdPartyScreen(
+                        onBackNavigation = {
+                            navController.popBackStack()
                         }
                     )
                 }

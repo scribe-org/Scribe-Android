@@ -64,7 +64,7 @@ fun InstallationScreen(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.scribe_logo),

@@ -37,7 +37,7 @@ fun ActionBar(
         ) {
             Icon(
                 painter = painterResource(R.drawable.chevron),
-                tint  = colorResource(R.color.button_text_color),
+                tint  = colorResource(R.color.app_text_color),
                 contentDescription = "Back button"
             )
         }

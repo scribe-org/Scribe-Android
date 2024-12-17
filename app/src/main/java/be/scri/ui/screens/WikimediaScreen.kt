@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
@@ -118,6 +119,7 @@ fun WikimediaScreenContent(
             TextStyle.Default.copy(
                 fontStyle = ScribeTypography.headlineMedium.fontStyle,
                 fontWeight = FontWeight.Bold,
+                color = colorResource(R.color.app_text_color)
             ),
         )
         Card(
