@@ -77,14 +77,12 @@ fun HintDialog(
         HintDialogContent(
             text = stringResource(id = hintMessageResId),
             onDismiss = {
-                // Save the state in SharedPreferences
                 sharedPrefs.edit().putBoolean(sharedPrefsKey, true).apply()
-//                isHintShowing = sharedPrefs.getBoolean(sharedPrefsKey, false)
                 isHintShown = true
-//                isHintChangedInner = false
                 onDismiss(currentPageIndex)
             },
             modifier = modifier
+                .padding(top = 8.dp)
         )
     }
 }
@@ -98,7 +96,7 @@ fun HintDialogContent(
 ) {
     Surface(
         shape = RoundedCornerShape(10.dp),
-        color = colorResource(R.color.app_text_color),
+        color = colorResource(R.color.hint_surface_color),
         modifier = modifier
     ) {
         Row(
@@ -116,7 +114,7 @@ fun HintDialogContent(
 
             Text(
                 text = text,
-                color = Color.Black,
+                color = colorResource(R.color.app_text_color),
                 fontSize = 14.sp,
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Normal
