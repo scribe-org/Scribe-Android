@@ -61,10 +61,10 @@ fun SettingsScreen(
                 title = R.string.app_settings_menu_app_color_mode,
                 desc = R.string.app_settings_menu_app_color_mode_description,
                 state = isUserDarkMode,
-                onToggle = { isUserDarkMode1 ->
+                onToggle = { newDarkMode ->
 //                    SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
-                    viewModel.setLightDarkMode(isUserDarkMode1, context)
-                    onDarkModeChange(isUserDarkMode1)
+                    viewModel.setLightDarkMode(newDarkMode, context)
+                    onDarkModeChange(newDarkMode)
                 },
             ),
             ScribeItem.SwitchItem(

@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
 //        setActionBarTitle(R.string.app_launcher_name)
 //        val mButton = supportActionBar?.customView?.findViewById<Button>(R.id.button)
 //        val mImage = getDrawable(R.drawable.chevron)
-        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
+//        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
 //        mButton?.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
 //        mButton?.compoundDrawablePadding = 2
 //        mButton?.visibility = View.GONE
