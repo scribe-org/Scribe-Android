@@ -3,6 +3,7 @@ package be.scri.ui.screens.settings
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import be.scri.helpers.PreferencesHelper
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -36,12 +37,12 @@ class SettingsViewModel(context: Context) : ViewModel() {
 
     fun setVibrateOnKeypress(context: Context, value: Boolean) {
         _vibrateOnKeypress.value = value
-        sharedPrefs.edit().putBoolean("vibrate_on_keypress", value).apply()
+        PreferencesHelper.setVibrateOnKeypress(context, value)
     }
 
     fun setPopupOnKeypress(context: Context, value: Boolean) {
         _popupOnKeypress.value = value
-        sharedPrefs.edit().putBoolean("show_popup_on_keypress", value).apply()
+        PreferencesHelper.setShowPopupOnKeypress(context, value)
     }
 
     fun setLightDarkMode(value: Boolean, context: Context) {

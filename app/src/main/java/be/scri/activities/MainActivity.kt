@@ -2,6 +2,7 @@ package be.scri.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -74,12 +75,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val context = LocalContext.current
-            val isUserDarkTheme = remember {
-                mutableStateOf(
-                    context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                        .getBoolean("dark_mode", false)
-                )
+
+            val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            val isSystemDarkMode = remember {
+                mutableStateOf(currentNightMode == Configuration.UI_MODE_NIGHT_YES)
             }
+
             val pagerState = rememberPagerState {
                 bottomBarScreens.size
             }
@@ -99,22 +100,23 @@ class MainActivity : ComponentActivity() {
                 // Update shared preferences
 //                setLightDarkModePreference(context, darkMode)
 
-                val sharedPrefs = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                sharedPrefs.edit().putBoolean("dark_mode", darkMode).apply()
+                setLightDarkModePreference(this, darkMode)
+
+
 
                 // Update the state
-                isUserDarkTheme.value = darkMode
+                isSystemDarkMode.value = darkMode
 
-                // Apply the theme immediately
                 AppCompatDelegate.setDefaultNightMode(
                     if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
                 )
+                Log.d("darktheme", "${isSystemDarkMode.value}")
             }
 
             ScribeApp(
                 pagerState = pagerState,
                 coroutineScope = coroutineScope,
-                isDarkTheme = isUserDarkTheme.value,
+                isDarkTheme = isSystemDarkMode.value,
                 onDarkModeChange = {
                     updateTheme(it)
                 },
@@ -127,6 +129,7 @@ class MainActivity : ComponentActivity() {
                 onDismiss = { pageIndex ->
                     isHintChangedMap[pageIndex] = false
                 },
+                context = context,
                 navController = navController
             )
         }

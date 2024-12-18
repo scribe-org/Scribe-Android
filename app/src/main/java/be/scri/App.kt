@@ -3,6 +3,7 @@ package be.scri
 import SettingsScreen
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import be.scri.helpers.PreferencesHelper
 import be.scri.navigation.Screen
 import be.scri.ui.common.app_components.HintDialog
 import be.scri.ui.common.bottom_bar.ScribeBottomBar
@@ -41,9 +43,12 @@ fun ScribeApp(
     resetHints: () -> Unit,
     isHintChanged: Map<Int, Boolean>,
     onDismiss: (Int) -> Unit,
+    context: Context,
     isDarkTheme: Boolean
 ) {
-    ScribeTheme(isDarkTheme) {
+    ScribeTheme(
+        useDarkTheme = false
+    ) {
         Scaffold(
             bottomBar = {
                 ScribeBottomBar(
@@ -101,7 +106,8 @@ fun ScribeApp(
                                             navController.navigate(
                                                 "${Screen.LanguageSettings.route}/$language"
                                             )
-                                        }
+                                        },
+                                        pagerState = pagerState
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
