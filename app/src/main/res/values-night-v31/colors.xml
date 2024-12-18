@@ -20,6 +20,7 @@
     <color name="switch_thumb_selector_color_false">@android:color/darker_gray</color>
     <color name="switch_selector_color">@color/corner_polygon_color</color>
     <color name="switch_selector_color_false">@color/md_grey_800_dark</color>
+    <color name="button_container_color">@color/you_button_background_color</color>
 
     <!-- Commons colors -->
     <color name="you_status_bar_color">@android:color/system_accent2_800</color>
@@ -29,4 +30,5 @@
     <color name="you_primary_color">@color/dark_scribe_color</color>
     <color name="you_primary_dark_color">@android:color/system_accent1_600</color>
     <color name="you_dialog_background_color">@android:color/system_accent2_800</color>
+    <color name="you_button_background_color">@color/light_scribe_color</color>
 </resources>

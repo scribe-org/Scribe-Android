@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import be.scri.BuildConfig
 import be.scri.R
+import be.scri.helpers.HintUtils
 import be.scri.navigation.Screen
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
@@ -41,14 +43,12 @@ fun AboutScreen(
     onPrivacyPolicyClick: () -> Unit,
     onThirdPartyLicensesClick: () -> Unit,
     onWikiClick: () -> Unit,
+    resetHints: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-//        AboutUtil.showAboutHint(context)
-    }
     val communityList = getCommunityList(
         onWikimediaAndScribeClick = {
             onWikiClick()
@@ -60,7 +60,10 @@ fun AboutScreen(
     val feedbackAndSupportList = getFeedbackAndSupportList(
         onRateScribeClick = { AboutUtil.onRateScribeClick(context) },
         onMailClick = { AboutUtil.onMailClick(context) },
-        onResetHintsClick = { AboutUtil.resetHints(context) },
+        onResetHintsClick = {
+            HintUtils.resetHints(context)
+            resetHints()
+        },
         context = context,
     )
 

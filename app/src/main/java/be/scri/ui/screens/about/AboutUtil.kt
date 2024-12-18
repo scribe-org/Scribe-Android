@@ -16,14 +16,6 @@ import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
 object AboutUtil {
-    fun resetHints(context: Context) {
-        HintUtils.resetHints(context)
-        (context as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
-    }
-
-    fun showAboutHint(context: Context) {
-        (context as MainActivity).showHint("hint_shown_about", R.string.app_about_app_hint)
-    }
 
     fun onShareScribeClick(context: Context) {
         ShareHelper.shareScribe(context)

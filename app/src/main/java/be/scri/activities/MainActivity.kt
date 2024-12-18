@@ -12,12 +12,14 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.rememberNavController
 import be.scri.R
 import be.scri.ScribeApp
+import be.scri.helpers.HintUtils
 //import be.scri.adapters.ViewPagerAdapter
 import be.scri.helpers.PreferencesHelper
 import be.scri.services.EnglishKeyboardIME
@@ -79,12 +81,23 @@ class MainActivity : ComponentActivity() {
             val coroutineScope = rememberCoroutineScope()
             val navController = rememberNavController()
 
+            val isHintChangedMap = remember { mutableStateMapOf<Int, Boolean>() }
+
             ScribeApp(
                 pagerState = pagerState,
                 coroutineScope = coroutineScope,
                 isDarkTheme = isUserDarkTheme.value,
-                onDarkModeChange = { it ->
+                onDarkModeChange = {
                     isUserDarkTheme.value = it
+                },
+                resetHints = {
+                    isHintChangedMap[0] = true
+                    isHintChangedMap[1] = true
+                    isHintChangedMap[2] = true
+                },
+                isHintChanged = isHintChangedMap,
+                onDismiss = { pageIndex ->
+                    isHintChangedMap[pageIndex] = false
                 },
                 navController = navController
             )
@@ -202,35 +215,35 @@ class MainActivity : ComponentActivity() {
 //        textView.layoutParams = params
 //    }
 
-    fun showHint(
-        sharedPrefsKey: String,
-        hintMessageResId: Int,
-    ) {
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val allEntries = sharedPref.all
-        for ((key, value) in allEntries) {
-            Log.i("hint", "$key = $value")
-        }
-        val isHintShown = sharedPref.getBoolean(sharedPrefsKey, false)
-        Log.i("hint", isHintShown.toString())
-        if (!isHintShown) {
-            val hintLayout = findViewById<View>(R.id.hint_layout)
-            val hintText = findViewById<TextView>(R.id.hint_text)
-
-            hintText.text = getString(hintMessageResId)
-
-            hintLayout.visibility = View.VISIBLE
-
-            val okButton = findViewById<Button>(R.id.hint_ok_button)
-            okButton.setOnClickListener {
-                with(sharedPref.edit()) {
-                    putBoolean(sharedPrefsKey, true)
-                    apply()
-                }
-                hideHint()
-            }
-        }
-    }
+//    fun showHint(
+//        sharedPrefsKey: String,
+//        hintMessageResId: Int,
+//    ) {
+//        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
+//        val allEntries = sharedPref.all
+//        for ((key, value) in allEntries) {
+//            Log.i("hint", "$key = $value")
+//        }
+//        val isHintShown = sharedPref.getBoolean(sharedPrefsKey, false)
+//        Log.i("hint", isHintShown.toString())
+//        if (!isHintShown) {
+//            val hintLayout = findViewById<View>(R.id.hint_layout)
+//            val hintText = findViewById<TextView>(R.id.hint_text)
+//
+//            hintText.text = getString(hintMessageResId)
+//
+//            hintLayout.visibility = View.VISIBLE
+//
+//            val okButton = findViewById<Button>(R.id.hint_ok_button)
+//            okButton.setOnClickListener {
+//                with(sharedPref.edit()) {
+//                    putBoolean(sharedPrefsKey, true)
+//                    apply()
+//                }
+//                hideHint()
+//            }
+//        }
+//    }
 
 //    override fun onBackPressed() {
 //        super.onBackPressed()
@@ -245,10 +258,10 @@ class MainActivity : ComponentActivity() {
 //        }
 //    }
 
-    fun hideHint() {
-        val hintLayout = findViewById<View>(R.id.hint_layout)
-        hintLayout.visibility = View.GONE
-    }
+//    fun hideHint() {
+//        val hintLayout = findViewById<View>(R.id.hint_layout)
+//        hintLayout.visibility = View.GONE
+//    }
 
     companion object {
         private const val DEFAULT_HEIGHT = 1000

@@ -2,21 +2,25 @@ package be.scri
 
 import SettingsScreen
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import be.scri.navigation.Screen
+import be.scri.ui.common.app_components.HintDialog
 import be.scri.ui.common.bottom_bar.ScribeBottomBar
-import be.scri.ui.common.bottom_bar.bottomBarScreens
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
 import be.scri.ui.screens.PrivacyPolicyScreen
@@ -34,6 +38,9 @@ fun ScribeApp(
     navController: NavHostController,
     coroutineScope: CoroutineScope,
     onDarkModeChange: (Boolean) -> Unit,
+    resetHints: () -> Unit,
+    isHintChanged: Map<Int, Boolean>,
+    onDismiss: (Int) -> Unit,
     isDarkTheme: Boolean
 ) {
     ScribeTheme(isDarkTheme) {
@@ -64,29 +71,77 @@ fun ScribeApp(
                         modifier = Modifier
                     ) { page ->
                         when (page) {
-                            0 -> InstallationScreen(
-                                isDark = isDarkTheme
-                            )
-                            1 -> SettingsScreen(
-                                isUserDarkMode = isDarkTheme,
-                                onDarkModeChange = { onDarkModeChange(it) },
-                                onLanguageSettingsClick = { language ->
-                                    navController.navigate(
-                                        "${Screen.LanguageSettings.route}/$language"
+                            0 -> {
+                                Box(
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    InstallationScreen(
+                                        isDark = isDarkTheme
+                                    )
+                                    HintDialog(
+                                        pagerState = pagerState,
+                                        currentPageIndex = 0,
+                                        sharedPrefsKey = "hint_shown_main",
+                                        hintMessageResId = R.string.app_installation_app_hint,
+                                        isHintChanged = isHintChanged[0] == true,
+                                        onDismiss = { onDismiss(it) },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp)
                                     )
                                 }
-                            )
-                            2 -> AboutScreen(
-                                onPrivacyPolicyClick = {
-                                    navController.navigate(Screen.PrivacyPolicy.route)
-                                },
-                                onThirdPartyLicensesClick = {
-                                    navController.navigate(Screen.ThirdParty.route)
-                                },
-                                onWikiClick = {
-                                    navController.navigate(Screen.WikimediaScribe.route)
+                            }
+                            1 -> {
+                                Box(
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    SettingsScreen(
+                                        isUserDarkMode = isDarkTheme,
+                                        onDarkModeChange = { onDarkModeChange(it) },
+                                        onLanguageSettingsClick = { language ->
+                                            navController.navigate(
+                                                "${Screen.LanguageSettings.route}/$language"
+                                            )
+                                        }
+                                    )
+                                    HintDialog(
+                                        pagerState = pagerState,
+                                        currentPageIndex = 1,
+                                        sharedPrefsKey = "hint_shown_settings",
+                                        hintMessageResId = R.string.app_settings_app_hint,
+                                        isHintChanged = isHintChanged[1] == true,
+                                        onDismiss = { onDismiss(it) },
+                                        modifier = Modifier.padding(8.dp)
+                                    )
                                 }
-                            )
+                            }
+                            2 -> {
+                                Box(
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    AboutScreen(
+                                        onPrivacyPolicyClick = {
+                                            navController.navigate(Screen.PrivacyPolicy.route)
+                                        },
+                                        onThirdPartyLicensesClick = {
+                                            navController.navigate(Screen.ThirdParty.route)
+                                        },
+                                        onWikiClick = {
+                                            navController.navigate(Screen.WikimediaScribe.route)
+                                        },
+                                        resetHints = { resetHints() }
+                                    )
+                                    HintDialog(
+                                        pagerState = pagerState,
+                                        currentPageIndex = 2,
+                                        sharedPrefsKey = "hint_shown_about",
+                                        hintMessageResId = R.string.app_about_app_hint,
+                                        isHintChanged = isHintChanged[2] == true,
+                                        onDismiss = { onDismiss(it) },
+                                        modifier = Modifier.padding(8.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
