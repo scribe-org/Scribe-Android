@@ -20,6 +20,9 @@ class SettingsViewModel(context: Context) : ViewModel() {
     private val _popupOnKeypress = MutableStateFlow(sharedPrefs.getBoolean("show_popup_on_keypress", false))
     val popupOnKeypress: StateFlow<Boolean> = _popupOnKeypress
 
+    private val _isUserDarkMode = MutableStateFlow(sharedPrefs.getBoolean("dark_mode", false))
+    val isUserDarkMode: StateFlow<Boolean> = _isUserDarkMode
+
     init {
         viewModelScope.launch {
             refreshSettings(context)
@@ -39,5 +42,10 @@ class SettingsViewModel(context: Context) : ViewModel() {
     fun setPopupOnKeypress(context: Context, value: Boolean) {
         _popupOnKeypress.value = value
         sharedPrefs.edit().putBoolean("show_popup_on_keypress", value).apply()
+    }
+
+    fun setLightDarkMode(value: Boolean, context: Context) {
+        _isUserDarkMode.value = value
+//        sharedPrefs.edit().putBoolean("dark_mode", value).apply()
     }
 }

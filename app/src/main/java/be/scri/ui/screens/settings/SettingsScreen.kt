@@ -31,7 +31,6 @@ import be.scri.ui.screens.settings.SettingsViewModelFactory
 
 @Composable
 fun SettingsScreen(
-    isUserDarkMode: Boolean,
     onDarkModeChange: (Boolean) -> Unit,
     onLanguageSettingsClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -42,6 +41,7 @@ fun SettingsScreen(
     val isKeyboardInstalled by viewModel.isKeyboardInstalled.collectAsState()
     val vibrateOnKeypress by viewModel.vibrateOnKeypress.collectAsState()
     val popupOnKeypress by viewModel.popupOnKeypress.collectAsState()
+    val isUserDarkMode by viewModel.isUserDarkMode.collectAsState()
 
     DisposableEffect(Unit) {
         viewModel.refreshSettings(context)
@@ -62,7 +62,8 @@ fun SettingsScreen(
                 desc = R.string.app_settings_menu_app_color_mode_description,
                 state = isUserDarkMode,
                 onToggle = { isUserDarkMode1 ->
-                    SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
+//                    SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
+                    viewModel.setLightDarkMode(isUserDarkMode1, context)
                     onDarkModeChange(isUserDarkMode1)
                 },
             ),
@@ -121,7 +122,7 @@ fun SettingsScreen(
                 }
             }
 
-            item { Spacer(modifier = Modifier.height(40.dp)) }
+            item { Spacer(modifier = Modifier.height(70.dp)) }
         }
     }
 }

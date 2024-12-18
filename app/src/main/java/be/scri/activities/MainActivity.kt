@@ -16,12 +16,14 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import be.scri.R
 import be.scri.ScribeApp
 import be.scri.helpers.HintUtils
 //import be.scri.adapters.ViewPagerAdapter
 import be.scri.helpers.PreferencesHelper
+import be.scri.helpers.PreferencesHelper.setLightDarkModePreference
 import be.scri.services.EnglishKeyboardIME
 import be.scri.ui.common.bottom_bar.bottomBarScreens
 
@@ -70,9 +72,11 @@ class MainActivity : ComponentActivity() {
 //        }
 
         setContent {
+            val context = LocalContext.current
             val isUserDarkTheme = remember {
                 mutableStateOf(
-                    PreferencesHelper.getUserDarkModePreference(this) == AppCompatDelegate.MODE_NIGHT_YES
+                    context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+                        .getBoolean("dark_mode", false)
                 )
             }
             val pagerState = rememberPagerState {
@@ -83,12 +87,35 @@ class MainActivity : ComponentActivity() {
 
             val isHintChangedMap = remember { mutableStateMapOf<Int, Boolean>() }
 
+//            val isDarkTheme = remember {
+//                mutableStateOf(
+//                    context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+//                        .getBoolean("dark_mode", false) // Default is light mode
+//                )
+//            }
+
+            fun updateTheme(darkMode: Boolean) {
+                // Update shared preferences
+//                setLightDarkModePreference(context, darkMode)
+
+                val sharedPrefs = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+                sharedPrefs.edit().putBoolean("dark_mode", darkMode).apply()
+
+                // Update the state
+                isUserDarkTheme.value = darkMode
+
+                // Apply the theme immediately
+                AppCompatDelegate.setDefaultNightMode(
+                    if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                )
+            }
+
             ScribeApp(
                 pagerState = pagerState,
                 coroutineScope = coroutineScope,
                 isDarkTheme = isUserDarkTheme.value,
                 onDarkModeChange = {
-                    isUserDarkTheme.value = it
+                    updateTheme(it)
                 },
                 resetHints = {
                     isHintChangedMap[0] = true

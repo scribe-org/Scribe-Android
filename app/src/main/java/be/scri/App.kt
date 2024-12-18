@@ -96,7 +96,6 @@ fun ScribeApp(
                                     modifier = Modifier.fillMaxSize()
                                 ) {
                                     SettingsScreen(
-                                        isUserDarkMode = isDarkTheme,
                                         onDarkModeChange = { onDarkModeChange(it) },
                                         onLanguageSettingsClick = { language ->
                                             navController.navigate(
