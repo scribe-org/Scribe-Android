@@ -85,7 +85,7 @@ fun PrivacyPolicyScreenContent(
         }
 
         Spacer(
-            modifier = Modifier.height(80.dp)
+            modifier = Modifier.height(10.dp)
         )
     }
 }

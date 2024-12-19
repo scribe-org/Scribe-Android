@@ -130,7 +130,7 @@ fun SettingsScreen(
                 }
             }
 
-            item { Spacer(modifier = Modifier.height(70.dp)) }
+            item { Spacer(modifier = Modifier.height(10.dp)) }
         }
     }
 }

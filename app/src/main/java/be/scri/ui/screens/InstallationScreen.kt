@@ -64,16 +64,16 @@ fun InstallationScreen(
 
     ScribeBaseScreen() {
         Column(
-            modifier
+            modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(Dimensions.PaddingMedium)
+                .padding(horizontal = Dimensions.PaddingMedium)
                 .testTag("backgroundContainer")
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.scribe_logo),
@@ -284,7 +284,6 @@ fun InstallationScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }

@@ -63,7 +63,7 @@ fun ScribeApp(
                 )
             },
             modifier = Modifier.fillMaxSize()
-        ) {
+        ) { innerPadding ->
             NavHost(
                 navController = navController,
                 startDestination = "pager"
@@ -72,7 +72,7 @@ fun ScribeApp(
                     HorizontalPager(
                         state = pagerState,
                         beyondViewportPageCount = 3,
-                        modifier = Modifier
+                        modifier = Modifier.padding(innerPadding)
                     ) { page ->
                         when (page) {
                             0 -> {
@@ -164,7 +164,8 @@ fun ScribeApp(
                             language = language,
                             onBackNavigation = {
                                 navController.popBackStack()
-                            }
+                            },
+                            modifier = Modifier.padding(innerPadding)
                         )
                     }
                 }
@@ -173,7 +174,8 @@ fun ScribeApp(
                     WikimediaScreen(
                         onBackNavigation = {
                             navController.popBackStack()
-                        }
+                        },
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
 
@@ -181,7 +183,8 @@ fun ScribeApp(
                     PrivacyPolicyScreen(
                         onBackNavigation = {
                             navController.popBackStack()
-                        }
+                        },
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
 
@@ -189,7 +192,8 @@ fun ScribeApp(
                     ThirdPartyScreen(
                         onBackNavigation = {
                             navController.popBackStack()
-                        }
+                        },
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             }

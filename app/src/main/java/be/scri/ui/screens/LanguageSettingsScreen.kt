@@ -3,8 +3,12 @@ package be.scri.ui.screens
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +33,8 @@ fun LanguageSettingsScreen(
 ) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+
+    val scrollState = rememberScrollState()
 
     val periodOnDoubleTapState =
         remember {
@@ -122,7 +128,10 @@ fun LanguageSettingsScreen(
         onBackNavigation = onBackNavigation,
         modifier = modifier
     ) {
-        Column {
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+        ) {
             ItemCardContainerWithTitle(
                 title = stringResource(R.string.app_settings_keyboard_layout_title),
                 cardItemsList = layoutList,
@@ -135,6 +144,8 @@ fun LanguageSettingsScreen(
                 Modifier
                     .padding(top = 6.dp),
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
