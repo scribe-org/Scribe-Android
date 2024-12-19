@@ -1,3 +1,5 @@
+package be.scri.ui.screens.settings
+
 import android.content.Context
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +12,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -29,9 +30,6 @@ import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
-import be.scri.ui.screens.settings.SettingsUtil
-import be.scri.ui.screens.settings.SettingsViewModel
-import be.scri.ui.screens.settings.SettingsViewModelFactory
 
 @Composable
 fun SettingsScreen(
@@ -40,7 +38,9 @@ fun SettingsScreen(
     pagerState: PagerState,
     context: Context,
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = viewModel(factory = SettingsViewModelFactory(LocalContext.current))
+    viewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(LocalContext.current)
+    )
 ) {
     val languages by viewModel.languages.collectAsState()
     val isKeyboardInstalled by viewModel.isKeyboardInstalled.collectAsState()
@@ -70,7 +70,6 @@ fun SettingsScreen(
                 desc = R.string.app_settings_menu_app_color_mode_description,
                 state = isUserDarkMode,
                 onToggle = { newDarkMode ->
-//                    SettingsUtil.setLightDarkMode(isUserDarkMode1, context)
                     viewModel.setLightDarkMode(newDarkMode, context)
                     onDarkModeChange(newDarkMode)
                 },
@@ -96,7 +95,7 @@ fun SettingsScreen(
 
     val installedKeyboardList = languages.map { language ->
         ScribeItem.ClickableItem(
-            title = getLocalizedLanguageName(context, language),
+            title = getLocalizedLanguageName(language),
             desc = null,
             action = { onLanguageSettingsClick(language) },
         )
@@ -125,7 +124,9 @@ fun SettingsScreen(
                     )
                 } else {
                     InstallKeyboardButton(
-                        onClick = { SettingsUtil.navigateToKeyboardSettings(context) }
+                        onClick = {
+                            SettingsUtil.navigateToKeyboardSettings(context)
+                        }
                     )
                 }
             }
@@ -161,7 +162,6 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
 }
 
 private fun getLocalizedLanguageName(
-    context: Context,
     language: String,
 ): Int {
     return when (language) {

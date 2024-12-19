@@ -2,7 +2,6 @@ package be.scri.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,7 +14,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import be.scri.ScribeApp
-//import be.scri.adapters.ViewPagerAdapter
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.setLightDarkModePreference
 import be.scri.services.EnglishKeyboardIME

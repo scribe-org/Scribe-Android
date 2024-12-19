@@ -96,7 +96,7 @@ fun HintDialogContent(
 ) {
     Surface(
         shape = RoundedCornerShape(10.dp),
-        color = colorResource(R.color.hint_surface_color),
+        color = MaterialTheme.colorScheme.surface,
         modifier = modifier
     ) {
         Row(
@@ -106,7 +106,7 @@ fun HintDialogContent(
             Icon(
                 painter = painterResource(R.drawable.light_bulb_icon),
                 contentDescription = "Hint",
-                tint = colorResource(R.color.hint_text_color),
+                tint = Color(0xFFFDAD0D),
                 modifier = Modifier
                     .padding(end = 8.dp)
                     .size(30.dp)
@@ -114,7 +114,7 @@ fun HintDialogContent(
 
             Text(
                 text = text,
-                color = colorResource(R.color.app_text_color),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp,
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Normal
@@ -125,10 +125,10 @@ fun HintDialogContent(
             Button(
                 onClick = onDismiss,
                 colors = ButtonColors(
-                    containerColor = colorResource(R.color.button_container_color),
-                    contentColor = colorResource(R.color.white),
-                    disabledContainerColor = colorResource(R.color.button_container_color),
-                    disabledContentColor = colorResource(R.color.white),
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = Color.White,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                    disabledContentColor = Color.White,
                 ),
                 contentPadding = PaddingValues(0.dp),
                 shape = RoundedCornerShape(8.dp),

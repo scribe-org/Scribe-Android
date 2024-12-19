@@ -1,9 +1,7 @@
 package be.scri
 
-import SettingsScreen
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import be.scri.helpers.PreferencesHelper
 import be.scri.navigation.Screen
 import be.scri.ui.common.app_components.HintDialog
 import be.scri.ui.common.bottom_bar.ScribeBottomBar
@@ -29,6 +26,7 @@ import be.scri.ui.screens.PrivacyPolicyScreen
 import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
+import be.scri.ui.screens.settings.SettingsScreen
 import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -41,7 +39,7 @@ fun ScribeApp(
     coroutineScope: CoroutineScope,
     onDarkModeChange: (Boolean) -> Unit,
     resetHints: () -> Unit,
-    isHintChanged: Map<Int, Boolean>,
+    @SuppressLint("ComposeUnstableCollections") isHintChanged: Map<Int, Boolean>,
     onDismiss: (Int) -> Unit,
     context: Context,
     isDarkTheme: Boolean
