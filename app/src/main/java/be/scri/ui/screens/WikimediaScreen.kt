@@ -37,31 +37,32 @@ fun WikimediaScreen(
         pageTitle = stringResource(R.string.wikimedia_and_scribe),
         onBackNavigation = { onBackNavigation() },
         lastPage = stringResource(R.string.app_about_title),
-        modifier = modifier
+        modifier = modifier,
     ) {
         WikimediaScreenContent(
             title = stringResource(R.string.wikimedia_and_scribe_title),
-            modifier = Modifier.padding(
-                horizontal = 16.dp
-            )
+            modifier =
+                Modifier.padding(
+                    horizontal = 16.dp,
+                ),
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = stringResource(id = R.string.scribe_wikimedia),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
-                    TextStyle.Default.copy(
-                        fontStyle = ScribeTypography.bodyMedium.fontStyle,
-                    ),
+                        TextStyle.Default.copy(
+                            fontStyle = ScribeTypography.bodyMedium.fontStyle,
+                        ),
                 )
                 Image(
                     imageVector = ImageVector.vectorResource(R.drawable.wikidata_logo),
                     contentDescription = stringResource(R.string.wikimedia_logo),
                     modifier =
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .width(200.dp)
-                        .padding(vertical = 5.dp),
+                        Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .width(200.dp)
+                            .padding(vertical = 5.dp),
                     contentScale = ContentScale.Fit,
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 )
@@ -69,18 +70,18 @@ fun WikimediaScreen(
                     text = stringResource(id = R.string.wikidata_and_scribe),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
-                    TextStyle.Default.copy(
-                        fontStyle = ScribeTypography.bodyMedium.fontStyle,
-                    ),
+                        TextStyle.Default.copy(
+                            fontStyle = ScribeTypography.bodyMedium.fontStyle,
+                        ),
                 )
                 Image(
                     imageVector = ImageVector.vectorResource(id = R.drawable.wikipedia_logo),
                     contentDescription = stringResource(R.string.wikimedia_logo),
                     modifier =
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .width(251.dp)
-                        .height(123.dp),
+                        Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .width(251.dp)
+                            .height(123.dp),
                     contentScale = ContentScale.Fit,
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 )
@@ -88,49 +89,49 @@ fun WikimediaScreen(
                     text = stringResource(id = R.string.wikipedia_and_scribe),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
-                    TextStyle.Default.copy(
-                        fontStyle = ScribeTypography.bodyMedium.fontStyle,
-                    ),
+                        TextStyle.Default.copy(
+                            fontStyle = ScribeTypography.bodyMedium.fontStyle,
+                        ),
                 )
             }
         }
     }
 }
 
-
 @Composable
 fun WikimediaScreenContent(
     title: String,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
     ) {
         Text(
             text = title,
             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
             fontSize = ScribeTypography.headlineMedium.fontSize,
             style =
-            TextStyle.Default.copy(
-                fontStyle = ScribeTypography.headlineMedium.fontStyle,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-            ),
+                TextStyle.Default.copy(
+                    fontStyle = ScribeTypography.headlineMedium.fontStyle,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
         )
         Card(
             colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
         ) {
             content()
         }
 
         Spacer(
-            modifier = Modifier.height(10.dp)
+            modifier = Modifier.height(10.dp),
         )
     }
 }

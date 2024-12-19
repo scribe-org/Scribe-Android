@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -26,56 +25,61 @@ fun BottomBarItem(
     title: String,
     isSelected: Boolean,
     onItemClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val color = if (isSelected) {
-        MaterialTheme.colorScheme.secondary
-    } else {
-        MaterialTheme.colorScheme.onSurface
-    }
+    val color =
+        if (isSelected) {
+            MaterialTheme.colorScheme.secondary
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
 
-    val iconSize = if (isSelected) {
-        27.dp
-    } else {
-        24.dp
-    }
+    val iconSize =
+        if (isSelected) {
+            27.dp
+        } else {
+            24.dp
+        }
 
-    val textSize = if (isSelected) {
-        12.sp
-    } else {
-        11.sp
-    }
+    val textSize =
+        if (isSelected) {
+            12.sp
+        } else {
+            11.sp
+        }
     Column(
         modifier = modifier.padding(bottom = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy((-9).dp)
+        verticalArrangement = Arrangement.spacedBy((-9).dp),
     ) {
         IconButton(
             onClick = {
                 onItemClick()
-            }
+            },
         ) {
             Icon(
-                painter = painterResource(
-                    id = icon
-                ),
+                painter =
+                    painterResource(
+                        id = icon,
+                    ),
                 tint = color,
                 contentDescription = "Keyboard",
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .size(iconSize)
+                modifier =
+                    Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .size(iconSize),
             )
         }
         Text(
             text = title,
             color = color,
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontSize = textSize
-            ),
+            style =
+                MaterialTheme.typography.labelMedium.copy(
+                    fontSize = textSize,
+                ),
         )
     }
 }
-
 
 @PreviewLightDark
 @Composable
@@ -84,6 +88,6 @@ private fun BottomBarItemPreview() {
         icon = R.drawable.keyboard_dark,
         title = "Keyboard",
         isSelected = true,
-        onItemClick = {}
+        onItemClick = {},
     )
 }

@@ -6,8 +6,6 @@ import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
@@ -51,7 +48,7 @@ import be.scri.ui.common.ScribeBaseScreen
 fun InstallationScreen(
     isDark: Boolean,
     context: Context,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val layoutDirection = LocalLayoutDirection.current
     val resource: Int =
@@ -62,14 +59,15 @@ fun InstallationScreen(
         }
     val scrollState = rememberScrollState()
 
-    ScribeBaseScreen() {
+    ScribeBaseScreen {
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = Dimensions.PaddingMedium)
-                .testTag("backgroundContainer")
-                .verticalScroll(scrollState),
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = Dimensions.PaddingMedium)
+                    .testTag("backgroundContainer")
+                    .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -79,10 +77,10 @@ fun InstallationScreen(
                 painter = painterResource(id = R.drawable.scribe_logo),
                 contentDescription = stringResource(R.string.app_launcher_name),
                 modifier =
-                Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .width(222.dp)
-                    .height(107.dp),
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .width(222.dp)
+                        .height(107.dp),
                 contentScale = ContentScale.Fit,
             )
 
@@ -96,25 +94,25 @@ fun InstallationScreen(
 
             Card(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = Dimensions.PaddingSmall)
-                    .clickable {
-                        val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
-                        context.startActivity(intent)
-                    }.testTag("keyboardSettingsCard"),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = Dimensions.PaddingSmall)
+                        .clickable {
+                            val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
+                            context.startActivity(intent)
+                        }.testTag("keyboardSettingsCard"),
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                ),
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
             ) {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Column(
                         modifier =
-                        Modifier
-                            .padding(Dimensions.PaddingMedium)
-                            .fillMaxWidth(),
+                            Modifier
+                                .padding(Dimensions.PaddingMedium)
+                                .fillMaxWidth(),
                     ) {
                         Row(modifier = Modifier.padding(top = Dimensions.PaddingSmall)) {
                             Text(
@@ -160,10 +158,10 @@ fun InstallationScreen(
                                 painter = painterResource(resource),
                                 contentDescription = "Select Keyboard",
                                 modifier =
-                                Modifier
-                                    .size(30.dp)
-                                    .alpha(Alpha.HIGH)
-                                    .padding(horizontal = Dimensions.PaddingSmall),
+                                    Modifier
+                                        .size(30.dp)
+                                        .alpha(Alpha.HIGH)
+                                        .padding(horizontal = Dimensions.PaddingSmall),
                                 contentScale = ContentScale.Fit,
                             )
                             Text(
@@ -178,34 +176,34 @@ fun InstallationScreen(
                         painter = painterResource(R.drawable.corner_polygon),
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .align(Alignment.TopEnd)
-                            .size(75.dp)
-                            .alpha(Alpha.HIGH)
-                            .rotate(
-                                if (layoutDirection == LayoutDirection.Rtl) {
-                                    Dimensions.RIGHT_LAYOUT_DIRECTION
-                                } else {
-                                    Dimensions.LEFT_LAYOUT_DIRECTION
-                                },
-                            ),
+                            Modifier
+                                .align(Alignment.TopEnd)
+                                .size(75.dp)
+                                .alpha(Alpha.HIGH)
+                                .rotate(
+                                    if (layoutDirection == LayoutDirection.Rtl) {
+                                        Dimensions.RIGHT_LAYOUT_DIRECTION
+                                    } else {
+                                        Dimensions.LEFT_LAYOUT_DIRECTION
+                                    },
+                                ),
                         colorFilter =
-                        androidx.compose.ui.graphics.ColorFilter.tint(
-                            MaterialTheme.colorScheme.surfaceContainer,
-                        ),
+                            androidx.compose.ui.graphics.ColorFilter.tint(
+                                MaterialTheme.colorScheme.surfaceContainer,
+                            ),
                     )
                     Image(
                         painter = painterResource(R.drawable.cog),
                         contentDescription = null,
                         modifier =
-                        Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(Dimensions.PaddingSmall)
-                            .size(26.dp),
+                            Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(Dimensions.PaddingSmall)
+                                .size(26.dp),
                         colorFilter =
-                        androidx.compose.ui.graphics.ColorFilter.tint(
-                            MaterialTheme.colorScheme.onPrimary,
-                        ),
+                            androidx.compose.ui.graphics.ColorFilter.tint(
+                                MaterialTheme.colorScheme.onPrimary,
+                            ),
                     )
                 }
             }
@@ -219,20 +217,20 @@ fun InstallationScreen(
             )
             Card(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = Dimensions.PaddingSmall),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = Dimensions.PaddingSmall),
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                ),
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
             ) {
                 Column(
                     modifier =
-                    Modifier
-                        .padding(Dimensions.PaddingMedium)
-                        .fillMaxWidth(),
+                        Modifier
+                            .padding(Dimensions.PaddingMedium)
+                            .fillMaxWidth(),
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -249,9 +247,9 @@ fun InstallationScreen(
                             painter = painterResource(R.drawable.right_arrow),
                             contentDescription = "Right Arrow",
                             modifier =
-                            Modifier
-                                .size(Dimensions.IconSize)
-                                .alpha(Alpha.HIGH),
+                                Modifier
+                                    .size(Dimensions.IconSize)
+                                    .alpha(Alpha.HIGH),
                         )
                     }
                     Text(
@@ -266,14 +264,14 @@ fun InstallationScreen(
                 onClick = {
                 },
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = Dimensions.PaddingLarge),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = Dimensions.PaddingLarge),
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
-                ButtonDefaults.outlinedButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                ),
+                    ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    ),
             ) {
                 Text(
                     text = stringResource(R.string.app_installation_button_quick_tutorial),
@@ -283,7 +281,6 @@ fun InstallationScreen(
                     modifier = Modifier.padding(vertical = Dimensions.PaddingLarge),
                 )
             }
-
         }
     }
 }

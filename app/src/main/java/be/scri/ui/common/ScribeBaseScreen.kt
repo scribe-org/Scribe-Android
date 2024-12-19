@@ -8,14 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
-import be.scri.R
-import be.scri.helpers.PreferencesHelper
 import be.scri.ui.common.app_components.ActionBar
 import be.scri.ui.common.app_components.PageTitle
-import be.scri.ui.theme.ScribeTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -24,29 +19,31 @@ fun ScribeBaseScreen(
     pageTitle: String? = null,
     lastPage: String? = null,
     onBackNavigation: () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Scaffold(
-        modifier = modifier
-            .fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background
+        modifier =
+            modifier
+                .fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             if (lastPage != null) {
                 ActionBar(
                     title = lastPage,
                     onClickAction = onBackNavigation,
-                    modifier = Modifier
+                    modifier = Modifier,
                 )
             }
 
             if (pageTitle != null) {
                 PageTitle(
                     pageTitle = pageTitle,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 16.dp),
                 )
             }
 

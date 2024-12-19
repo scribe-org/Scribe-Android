@@ -1,25 +1,14 @@
 package be.scri.ui.common.app_components
 
 import android.content.Context
-import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,14 +22,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
@@ -53,7 +39,7 @@ fun HintDialog(
     hintMessageResId: Int,
     isHintChanged: Boolean,
     onDismiss: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val sharedPrefs =
@@ -81,64 +67,68 @@ fun HintDialog(
                 isHintShown = true
                 onDismiss(currentPageIndex)
             },
-            modifier = modifier
-                .padding(top = 8.dp)
+            modifier =
+                modifier
+                    .padding(top = 8.dp),
         )
     }
 }
-
 
 @Composable
 fun HintDialogContent(
     text: String,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.surface,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp)
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp),
         ) {
             Icon(
                 painter = painterResource(R.drawable.light_bulb_icon),
                 contentDescription = "Hint",
                 tint = Color(0xFFFDAD0D),
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .size(30.dp)
+                modifier =
+                    Modifier
+                        .padding(end = 8.dp)
+                        .size(30.dp),
             )
 
             Text(
                 text = text,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.Normal
-                ),
-                modifier = Modifier.weight(0.85f)
+                style =
+                    MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                    ),
+                modifier = Modifier.weight(0.85f),
             )
 
             Button(
                 onClick = onDismiss,
-                colors = ButtonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = Color.White,
-                    disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                    disabledContentColor = Color.White,
-                ),
+                colors =
+                    ButtonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = Color.White,
+                        disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                        disabledContentColor = Color.White,
+                    ),
                 contentPadding = PaddingValues(0.dp),
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .weight(0.15f)
+                modifier =
+                    Modifier
+                        .weight(0.15f),
             ) {
                 Text(
                     text = "OK",
                     fontSize = 12.sp,
-                    modifier = Modifier
+                    modifier = Modifier,
                 )
             }
         }

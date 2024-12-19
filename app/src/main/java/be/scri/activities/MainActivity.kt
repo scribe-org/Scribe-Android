@@ -34,15 +34,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
 
-            val isDarkMode = remember {
-                mutableStateOf(
-                    PreferencesHelper
-                        .getUserDarkModePreference(context) == AppCompatDelegate.MODE_NIGHT_YES
-                )
-            }
-            val pagerState = rememberPagerState {
-                bottomBarScreens.size
-            }
+            val isDarkMode =
+                remember {
+                    mutableStateOf(
+                        PreferencesHelper
+                            .getUserDarkModePreference(context) == AppCompatDelegate.MODE_NIGHT_YES,
+                    )
+                }
+            val pagerState =
+                rememberPagerState {
+                    bottomBarScreens.size
+                }
 
             val coroutineScope = rememberCoroutineScope()
             val navController = rememberNavController()
@@ -53,14 +55,14 @@ class MainActivity : ComponentActivity() {
                 setLightDarkModePreference(context, darkMode)
 
                 AppCompatDelegate.setDefaultNightMode(
-                    if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                    if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO,
                 )
 
                 isDarkMode.value = darkMode
             }
 
             ScribeTheme(
-                useDarkTheme = isDarkMode.value
+                useDarkTheme = isDarkMode.value,
             ) {
                 ScribeApp(
                     pagerState = pagerState,
@@ -80,7 +82,7 @@ class MainActivity : ComponentActivity() {
                     },
                     context = context,
                     navController = navController,
-                    modifier = Modifier
+                    modifier = Modifier,
                 )
             }
         }

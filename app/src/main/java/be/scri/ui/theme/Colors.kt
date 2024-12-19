@@ -26,6 +26,6 @@ val theme_dark_unchecked_switch_selector_color = Color(color = 0xFF2D2D2D)
 val theme_dark_corner_button_color = Color(color = 0xFF2A1903)
 
 val Pink40 = Color(0xFF7D5260)
-val BlueSky= Color(0xFF4478a9)
-val NightSky =  Color(0xFF333333)
+val BlueSky = Color(0xFF4478a9)
+val NightSky = Color(0xFF333333)
 val BorderColor = Color(0x40000000)

@@ -1,19 +1,19 @@
-//package be.scri.fragments
+// package be.scri.fragments
 //
-//import android.content.Context
-//import android.os.Bundle
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import androidx.appcompat.app.AppCompatDelegate
-//import androidx.compose.ui.platform.ComposeView
-//import be.scri.R
-//import be.scri.activities.MainActivity
-//import be.scri.helpers.PreferencesHelper
-//import be.scri.ui.screens.InstallationScreen
-//import be.scri.ui.theme.ScribeTheme
+// import android.content.Context
+// import android.os.Bundle
+// import android.view.LayoutInflater
+// import android.view.View
+// import android.view.ViewGroup
+// import androidx.appcompat.app.AppCompatDelegate
+// import androidx.compose.ui.platform.ComposeView
+// import be.scri.R
+// import be.scri.activities.MainActivity
+// import be.scri.helpers.PreferencesHelper
+// import be.scri.ui.screens.InstallationScreen
+// import be.scri.ui.theme.ScribeTheme
 //
-//class MainFragment : ScribeFragment("Main") {
+// class MainFragment : ScribeFragment("Main") {
 //    override fun onCreateView(
 //        inflater: LayoutInflater,
 //        container: ViewGroup?,
@@ -40,4 +40,4 @@
 //        val mode = PreferencesHelper.getUserDarkModePreference(context)
 //        return mode == AppCompatDelegate.MODE_NIGHT_YES
 //    }
-//}
+// }

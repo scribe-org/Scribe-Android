@@ -11,7 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.startActivity
 import be.scri.R
-import be.scri.activities.MainActivity
 import be.scri.helpers.PreferencesHelper
 
 object SettingsUtil {
@@ -19,11 +18,14 @@ object SettingsUtil {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         return imm.enabledInputMethodList.any {
-                it.packageName == "be.scri.debug"
-            }
+            it.packageName == "be.scri.debug"
+        }
     }
 
-    fun setLightDarkMode(isDarkMode: Boolean, context: Context) {
+    fun setLightDarkMode(
+        isDarkMode: Boolean,
+        context: Context,
+    ) {
         PreferencesHelper.setLightDarkModePreference(context, isDarkMode)
         AppCompatDelegate.setDefaultNightMode(
             if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO,

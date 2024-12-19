@@ -7,7 +7,9 @@ import be.scri.helpers.PreferencesHelper
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(context: Context) : ViewModel() {
+class SettingsViewModel(
+    context: Context,
+) : ViewModel() {
     private val _languages = MutableStateFlow<List<String>>(emptyList())
     val languages: StateFlow<List<String>> = _languages
 
@@ -35,17 +37,26 @@ class SettingsViewModel(context: Context) : ViewModel() {
         _isKeyboardInstalled.value = SettingsUtil.checkKeyboardInstallation(context)
     }
 
-    fun setVibrateOnKeypress(context: Context, value: Boolean) {
+    fun setVibrateOnKeypress(
+        context: Context,
+        value: Boolean,
+    ) {
         _vibrateOnKeypress.value = value
         PreferencesHelper.setVibrateOnKeypress(context, value)
     }
 
-    fun setPopupOnKeypress(context: Context, value: Boolean) {
+    fun setPopupOnKeypress(
+        context: Context,
+        value: Boolean,
+    ) {
         _popupOnKeypress.value = value
         PreferencesHelper.setShowPopupOnKeypress(context, value)
     }
 
-    fun setLightDarkMode(value: Boolean, context: Context) {
+    fun setLightDarkMode(
+        value: Boolean,
+        context: Context,
+    ) {
         _isUserDarkMode.value = value
 //        sharedPrefs.edit().putBoolean("dark_mode", value).apply()
     }

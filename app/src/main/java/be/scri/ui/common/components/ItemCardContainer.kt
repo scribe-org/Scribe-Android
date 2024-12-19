@@ -9,7 +9,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.R
@@ -48,7 +47,7 @@ fun ItemsCardContainer(
                             desc = stringResource(item.desc),
                             isChecked = item.state,
                             onCheckedChange = item.onToggle,
-                            isDarkModeSwitch = item.title == R.string.app_settings_menu_app_color_mode
+                            isDarkModeSwitch = item.title == R.string.app_settings_menu_app_color_mode,
                         )
                     }
 

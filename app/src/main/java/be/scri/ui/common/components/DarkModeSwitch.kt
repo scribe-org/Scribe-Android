@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 fun DarkModeSwitch(
     checked: Boolean,
     onCheckedChanged: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val switchWidth = 61.dp
     val switchHeight = 31.dp
@@ -63,19 +63,20 @@ fun DarkModeSwitch(
     }
     Box(
         contentAlignment = Alignment.CenterStart,
-        modifier = modifier
-            .width(switchWidth)
-            .height(switchHeight)
-            .clip(RoundedCornerShape(switchHeight))
-            .background(lerp(BlueSky, NightSky, offset.value))
-            .border(3.dp, BorderColor, RoundedCornerShape(switchHeight))
-            .toggleable(
-                value = checked,
-                onValueChange = onCheckedChanged,
-                role = Role.Switch,
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            )
+        modifier =
+            modifier
+                .width(switchWidth)
+                .height(switchHeight)
+                .clip(RoundedCornerShape(switchHeight))
+                .background(lerp(BlueSky, NightSky, offset.value))
+                .border(3.dp, BorderColor, RoundedCornerShape(switchHeight))
+                .toggleable(
+                    value = checked,
+                    onValueChange = onCheckedChanged,
+                    role = Role.Switch,
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ),
     ) {
         val backgroundPainter = painterResource(R.drawable.background)
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -91,34 +92,38 @@ fun DarkModeSwitch(
             painter = painterResource(R.drawable.glow),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(switchWidth)
-                .graphicsLayer {
-                    scaleX = 1.2f
-                    scaleY = scaleX
-                    translationX = lerp(
-                        -size.width * 0.5f + handlePadding.toPx() + handleSize.toPx() * 0.5f,
-                        switchWidth.toPx() - size.width * 0.5f - handlePadding.toPx() - handleSize.toPx() * 0.5f,
-                        offset.value
-                    )
-                }
+            modifier =
+                Modifier
+                    .size(switchWidth)
+                    .graphicsLayer {
+                        scaleX = 1.2f
+                        scaleY = scaleX
+                        translationX =
+                            lerp(
+                                -size.width * 0.5f + handlePadding.toPx() + handleSize.toPx() * 0.5f,
+                                switchWidth.toPx() - size.width * 0.5f - handlePadding.toPx() - handleSize.toPx() * 0.5f,
+                                offset.value,
+                            )
+                    },
         )
         Box(
-            modifier = Modifier
-                .padding(horizontal = handlePadding)
-                .size(handleSize)
-                .offset(x = (switchWidth - handleSize - handlePadding * 2f) * offset.value)
-                .paint(painterResource(R.drawable.sun))
-                .clip(CircleShape)
+            modifier =
+                Modifier
+                    .padding(horizontal = handlePadding)
+                    .size(handleSize)
+                    .offset(x = (switchWidth - handleSize - handlePadding * 2f) * offset.value)
+                    .paint(painterResource(R.drawable.sun))
+                    .clip(CircleShape),
         ) {
             Image(
                 painter = painterResource(R.drawable.moon),
                 contentDescription = null,
-                modifier = Modifier
-                    .size(handleSize)
-                    .graphicsLayer {
-                        translationX = size.width * (1f - offset.value)
-                    }
+                modifier =
+                    Modifier
+                        .size(handleSize)
+                        .graphicsLayer {
+                            translationX = size.width * (1f - offset.value)
+                        },
             )
         }
     }

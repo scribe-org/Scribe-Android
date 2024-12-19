@@ -45,49 +45,50 @@ fun ScribeApp(
     onDismiss: (Int) -> Unit,
     context: Context,
     isDarkTheme: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     ScribeTheme(
-        useDarkTheme = isDarkTheme
+        useDarkTheme = isDarkTheme,
     ) {
         Scaffold(
             bottomBar = {
                 ScribeBottomBar(
                     onItemClick = {
                         coroutineScope.launch {
-                            if(navBackStackEntry?.destination?.route != "pager") {
+                            if (navBackStackEntry?.destination?.route != "pager") {
                                 navController.popBackStack()
                             }
                             pagerState.animateScrollToPage(it)
                         }
                     },
                     pagerState = pagerState,
-                    modifier = modifier
-                        .background(color = colorResource(R.color.background_color))
+                    modifier =
+                        modifier
+                            .background(color = colorResource(R.color.background_color)),
                 )
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = "pager"
+                startDestination = "pager",
             ) {
                 composable("pager") {
                     HorizontalPager(
                         state = pagerState,
                         beyondViewportPageCount = 3,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     ) { page ->
                         when (page) {
                             0 -> {
                                 Box(
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize(),
                                 ) {
                                     InstallationScreen(
                                         isDark = isDarkTheme,
-                                        context = context
+                                        context = context,
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
@@ -96,16 +97,17 @@ fun ScribeApp(
                                         hintMessageResId = R.string.app_installation_app_hint,
                                         isHintChanged = isHintChanged[0] == true,
                                         onDismiss = { onDismiss(it) },
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(8.dp)
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(8.dp),
                                     )
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
                             }
                             1 -> {
                                 Box(
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize(),
                                 ) {
                                     SettingsScreen(
                                         onDarkModeChange = { isDarkMode ->
@@ -113,7 +115,7 @@ fun ScribeApp(
                                         },
                                         onLanguageSettingsClick = { language ->
                                             navController.navigate(
-                                                "${Screen.LanguageSettings.route}/$language"
+                                                "${Screen.LanguageSettings.route}/$language",
                                             )
                                         },
                                         context = context,
@@ -125,14 +127,14 @@ fun ScribeApp(
                                         hintMessageResId = R.string.app_settings_app_hint,
                                         isHintChanged = isHintChanged[1] == true,
                                         onDismiss = { onDismiss(it) },
-                                        modifier = Modifier.padding(8.dp)
+                                        modifier = Modifier.padding(8.dp),
                                     )
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
                             }
                             2 -> {
                                 Box(
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize(),
                                 ) {
                                     AboutScreen(
                                         onPrivacyPolicyClick = {
@@ -145,7 +147,7 @@ fun ScribeApp(
                                             navController.navigate(Screen.WikimediaScribe.route)
                                         },
                                         resetHints = { resetHints() },
-                                        context = context
+                                        context = context,
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
@@ -154,7 +156,7 @@ fun ScribeApp(
                                         hintMessageResId = R.string.app_about_app_hint,
                                         isHintChanged = isHintChanged[2] == true,
                                         onDismiss = { onDismiss(it) },
-                                        modifier = Modifier.padding(8.dp)
+                                        modifier = Modifier.padding(8.dp),
                                     )
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
@@ -173,7 +175,7 @@ fun ScribeApp(
                             onBackNavigation = {
                                 navController.popBackStack()
                             },
-                            modifier = Modifier.padding(innerPadding)
+                            modifier = Modifier.padding(innerPadding),
                         )
                     }
                 }
@@ -183,7 +185,7 @@ fun ScribeApp(
                         onBackNavigation = {
                             navController.popBackStack()
                         },
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
 
@@ -192,7 +194,7 @@ fun ScribeApp(
                         onBackNavigation = {
                             navController.popBackStack()
                         },
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
 
@@ -201,7 +203,7 @@ fun ScribeApp(
                         onBackNavigation = {
                             navController.popBackStack()
                         },
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
             }
@@ -210,7 +212,10 @@ fun ScribeApp(
 }
 
 @Composable
-fun HandleBackPress(pagerState: PagerState, coroutineScope: CoroutineScope) {
+fun HandleBackPress(
+    pagerState: PagerState,
+    coroutineScope: CoroutineScope,
+) {
     BackHandler(enabled = pagerState.currentPage > 0) {
         coroutineScope.launch {
             pagerState.animateScrollToPage(pagerState.currentPage - 1)

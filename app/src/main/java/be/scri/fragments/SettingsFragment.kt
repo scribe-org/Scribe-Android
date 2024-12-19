@@ -1,30 +1,30 @@
-//package be.scri.fragments
+// package be.scri.fragments
 //
-//import SettingsScreen
-//import android.content.Context
-//import android.content.Intent
-//import android.content.res.Configuration
-//import android.net.Uri
-//import android.os.Build
-//import android.os.Bundle
-//import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-//import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
-//import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import android.view.inputmethod.InputMethodManager
-//import androidx.activity.addCallback
-//import androidx.appcompat.app.AppCompatDelegate
-//import androidx.compose.ui.platform.ComposeView
-//import androidx.navigation.compose.rememberNavController
-//import be.scri.R
-//import be.scri.activities.MainActivity
-//import be.scri.helpers.PreferencesHelper
-//import be.scri.navigation.SettingsNavHost
-//import be.scri.ui.theme.ScribeTheme
+// import SettingsScreen
+// import android.content.Context
+// import android.content.Intent
+// import android.content.res.Configuration
+// import android.net.Uri
+// import android.os.Build
+// import android.os.Bundle
+// import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+// import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
+// import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
+// import android.view.LayoutInflater
+// import android.view.View
+// import android.view.ViewGroup
+// import android.view.inputmethod.InputMethodManager
+// import androidx.activity.addCallback
+// import androidx.appcompat.app.AppCompatDelegate
+// import androidx.compose.ui.platform.ComposeView
+// import androidx.navigation.compose.rememberNavController
+// import be.scri.R
+// import be.scri.activities.MainActivity
+// import be.scri.helpers.PreferencesHelper
+// import be.scri.navigation.SettingsNavHost
+// import be.scri.ui.theme.ScribeTheme
 //
-//class SettingsFragment : ScribeFragment("Settings") {
+// class SettingsFragment : ScribeFragment("Settings") {
 //    private var isKeyboardInstalled = false
 //
 //    override fun onCreateView(
@@ -60,7 +60,7 @@
 //        savedInstanceState: Bundle?,
 //    ) {
 //        super.onViewCreated(view, savedInstanceState)
-////        checkKeyboardInstallation()
+// //        checkKeyboardInstallation()
 //    }
 //
 //    private fun setupBackPress() {
@@ -82,6 +82,6 @@
 //
 //    override fun onResume() {
 //        super.onResume()
-////        (activity as MainActivity).showHint("hint_shown_settings", R.string.app_settings_app_hint)
+// //        (activity as MainActivity).showHint("hint_shown_settings", R.string.app_settings_app_hint)
 //    }
-//}
+// }

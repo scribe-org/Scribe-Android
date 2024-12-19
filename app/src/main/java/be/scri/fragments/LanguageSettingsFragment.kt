@@ -1,24 +1,24 @@
-//package be.scri.fragments
+// package be.scri.fragments
 //
-//import android.os.Bundle
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import android.widget.Button
-//import androidx.activity.OnBackPressedCallback
-//import androidx.activity.addCallback
-//import androidx.appcompat.app.AppCompatDelegate
-//import androidx.compose.ui.platform.ComposeView
-//import androidx.fragment.app.Fragment
-//import androidx.viewpager2.widget.ViewPager2
-//import be.scri.R
-//import be.scri.activities.MainActivity
-//import be.scri.helpers.PreferencesHelper
-//import be.scri.ui.screens.LanguageSettingsScreen
-//import be.scri.ui.theme.ScribeTheme
+// import android.os.Bundle
+// import android.view.LayoutInflater
+// import android.view.View
+// import android.view.ViewGroup
+// import android.widget.Button
+// import androidx.activity.OnBackPressedCallback
+// import androidx.activity.addCallback
+// import androidx.appcompat.app.AppCompatDelegate
+// import androidx.compose.ui.platform.ComposeView
+// import androidx.fragment.app.Fragment
+// import androidx.viewpager2.widget.ViewPager2
+// import be.scri.R
+// import be.scri.activities.MainActivity
+// import be.scri.helpers.PreferencesHelper
+// import be.scri.ui.screens.LanguageSettingsScreen
+// import be.scri.ui.theme.ScribeTheme
 //
-//@Suppress("LongMethod")
-//class LanguageSettingsFragment : Fragment() {
+// @Suppress("LongMethod")
+// class LanguageSettingsFragment : Fragment() {
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //        val viewpager = requireActivity().findViewById<ViewPager2>(R.id.view_pager)
@@ -132,4 +132,4 @@
 //    companion object {
 //        private const val ACTION_BAR_BUTTON_INDEX = 3
 //    }
-//}
+// }

@@ -17,10 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import be.scri.R
 
 @Composable
 fun SwitchableItemComp(
@@ -29,7 +27,7 @@ fun SwitchableItemComp(
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    isDarkModeSwitch: Boolean = false
+    isDarkModeSwitch: Boolean = false,
 ) {
     val checkedThumbColor = MaterialTheme.colorScheme.primary
     val uncheckedThumbColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -51,12 +49,12 @@ fun SwitchableItemComp(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
-            if(isDarkModeSwitch) {
+            if (isDarkModeSwitch) {
                 DarkModeSwitch(
                     checked = isChecked,
                     onCheckedChanged = onCheckedChange,
                     modifier =
-                        Modifier
+                    Modifier,
                 )
             } else {
                 Switch(
@@ -64,32 +62,32 @@ fun SwitchableItemComp(
                     checked = isChecked,
                     onCheckedChange = onCheckedChange,
                     modifier =
-                    Modifier
-                        .width(51.dp)
-                        .height(31.dp),
+                        Modifier
+                            .width(51.dp)
+                            .height(31.dp),
                     thumbContent = {
                         Box(
                             modifier =
-                            Modifier
-                                .size(27.dp)
-                                .background(
-                                    if (isChecked) {
-                                        checkedThumbColor
-                                    } else {
-                                        uncheckedThumbColor
-                                    },
-                                    shape = CircleShape,
-                                ),
+                                Modifier
+                                    .size(27.dp)
+                                    .background(
+                                        if (isChecked) {
+                                            checkedThumbColor
+                                        } else {
+                                            uncheckedThumbColor
+                                        },
+                                        shape = CircleShape,
+                                    ),
                         )
                     },
                     colors =
-                    SwitchDefaults.colors(
-                        checkedThumbColor = checkedThumbColor,
-                        uncheckedThumbColor = uncheckedThumbColor,
-                        checkedTrackColor = checkedTrackColor,
-                        uncheckedTrackColor = uncheckedTrackColor,
-                        uncheckedBorderColor = Color.Transparent,
-                    ),
+                        SwitchDefaults.colors(
+                            checkedThumbColor = checkedThumbColor,
+                            uncheckedThumbColor = uncheckedThumbColor,
+                            checkedTrackColor = checkedTrackColor,
+                            uncheckedTrackColor = uncheckedTrackColor,
+                            uncheckedBorderColor = Color.Transparent,
+                        ),
                 )
             }
         }

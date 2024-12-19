@@ -7,29 +7,30 @@ import be.scri.navigation.Screen
 sealed class BottomBarScreen(
     val route: String,
     @DrawableRes val icon: Int,
-    val label: String
+    val label: String,
 ) {
-    data object Installation: BottomBarScreen(
+    data object Installation : BottomBarScreen(
         Screen.Installation.route,
         R.drawable.material_keyboard,
-        "Installation"
+        "Installation",
     )
 
-    data object Settings: BottomBarScreen(
+    data object Settings : BottomBarScreen(
         Screen.Settings.route,
         R.drawable.material_settings,
-        "Settings"
+        "Settings",
     )
 
-    data object About: BottomBarScreen(
+    data object About : BottomBarScreen(
         Screen.About.route,
         R.drawable.material_info,
-        "About"
+        "About",
     )
 }
 
-val bottomBarScreens = listOf(
-    BottomBarScreen.Installation,
-    BottomBarScreen.Settings,
-    BottomBarScreen.About
-)
+val bottomBarScreens =
+    listOf(
+        BottomBarScreen.Installation,
+        BottomBarScreen.Settings,
+        BottomBarScreen.About,
+    )

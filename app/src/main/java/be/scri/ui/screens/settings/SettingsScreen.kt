@@ -6,18 +6,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -41,9 +37,10 @@ fun SettingsScreen(
     onLanguageSettingsClick: (String) -> Unit,
     context: Context,
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = viewModel(
-        factory = SettingsViewModelFactory(LocalContext.current)
-    )
+    viewModel: SettingsViewModel =
+        viewModel(
+            factory = SettingsViewModelFactory(LocalContext.current),
+        ),
 ) {
     val languages by viewModel.languages.collectAsState()
     val isKeyboardInstalled by viewModel.isKeyboardInstalled.collectAsState()
@@ -55,62 +52,66 @@ fun SettingsScreen(
 
     // Observe lifecycle events
     DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                // Refresh settings when coming back to the app
-                viewModel.refreshSettings(context)
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    // Refresh settings when coming back to the app
+                    viewModel.refreshSettings(context)
+                }
             }
-        }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
-    val appSettingsItemList = ScribeItemList(
-        items = listOf(
-            ScribeItem.ClickableItem(
-                title = R.string.app_settings_menu_app_language,
-                desc = R.string.app_settings_menu_app_language_description,
-                action = {
-                    SettingsUtil.selectLanguage(context)
-                },
-            ),
-            ScribeItem.SwitchItem(
-                title = R.string.app_settings_menu_app_color_mode,
-                desc = R.string.app_settings_menu_app_color_mode_description,
-                state = isUserDarkMode,
-                onToggle = { newDarkMode ->
-                    viewModel.setLightDarkMode(newDarkMode, context)
-                    onDarkModeChange(newDarkMode)
-                },
-            ),
-            ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_keypress_vibration,
-                desc = R.string.app_settings_keyboard_keypress_vibration_description,
-                state = vibrateOnKeypress,
-                onToggle = { shouldVibrateOnKeypress ->
-                    viewModel.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
-                },
-            ),
-            ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
-                desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
-                state = popupOnKeypress,
-                onToggle = { shouldPopUpOnKeypress ->
-                    viewModel.setPopupOnKeypress(context, shouldPopUpOnKeypress)
-                },
-            ),
+    val appSettingsItemList =
+        ScribeItemList(
+            items =
+                listOf(
+                    ScribeItem.ClickableItem(
+                        title = R.string.app_settings_menu_app_language,
+                        desc = R.string.app_settings_menu_app_language_description,
+                        action = {
+                            SettingsUtil.selectLanguage(context)
+                        },
+                    ),
+                    ScribeItem.SwitchItem(
+                        title = R.string.app_settings_menu_app_color_mode,
+                        desc = R.string.app_settings_menu_app_color_mode_description,
+                        state = isUserDarkMode,
+                        onToggle = { newDarkMode ->
+                            viewModel.setLightDarkMode(newDarkMode, context)
+                            onDarkModeChange(newDarkMode)
+                        },
+                    ),
+                    ScribeItem.SwitchItem(
+                        title = R.string.app_settings_keyboard_keypress_vibration,
+                        desc = R.string.app_settings_keyboard_keypress_vibration_description,
+                        state = vibrateOnKeypress,
+                        onToggle = { shouldVibrateOnKeypress ->
+                            viewModel.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
+                        },
+                    ),
+                    ScribeItem.SwitchItem(
+                        title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
+                        desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
+                        state = popupOnKeypress,
+                        onToggle = { shouldPopUpOnKeypress ->
+                            viewModel.setPopupOnKeypress(context, shouldPopUpOnKeypress)
+                        },
+                    ),
+                ),
         )
-    )
 
-    val installedKeyboardList = languages.map { language ->
-        ScribeItem.ClickableItem(
-            title = getLocalizedLanguageName(language),
-            desc = null,
-            action = { onLanguageSettingsClick(language) },
-        )
-    }
+    val installedKeyboardList =
+        languages.map { language ->
+            ScribeItem.ClickableItem(
+                title = getLocalizedLanguageName(language),
+                desc = null,
+                action = { onLanguageSettingsClick(language) },
+            )
+        }
 
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_settings_title),
@@ -137,7 +138,7 @@ fun SettingsScreen(
                     InstallKeyboardButton(
                         onClick = {
                             SettingsUtil.navigateToKeyboardSettings(context)
-                        }
+                        },
                     )
                 }
             }
@@ -172,25 +173,21 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
     }
 }
 
-private fun getLocalizedLanguageName(
-    language: String,
-): Int {
+private fun getLocalizedLanguageName(language: String): Int {
     return when (language) {
-            "English" -> R.string.app__global_english
-            "French" -> R.string.app__global_french
-            "German" -> R.string.app__global_german
-            "Russian" -> R.string.app__global_russian
-            "Spanish" -> R.string.app__global_spanish
-            "Italian" -> R.string.app__global_italian
-            "Portuguese" -> R.string.app__global_portuguese
-            "Swedish" -> R.string.app__global_swedish
-            else -> return R.string.language
-        }
+        "English" -> R.string.app__global_english
+        "French" -> R.string.app__global_french
+        "German" -> R.string.app__global_german
+        "Russian" -> R.string.app__global_russian
+        "Spanish" -> R.string.app__global_spanish
+        "Italian" -> R.string.app__global_italian
+        "Portuguese" -> R.string.app__global_portuguese
+        "Swedish" -> R.string.app__global_swedish
+        else -> return R.string.language
+    }
 }
 
-
-
-//fun Context.navigateToFragment(language: String) {
+// fun Context.navigateToFragment(language: String) {
 //    val fragmentTransaction = (this as? AppCompatActivity)?.supportFragmentManager?.beginTransaction()
 //
 //    val fragment =
@@ -203,4 +200,4 @@ private fun getLocalizedLanguageName(
 //    fragmentTransaction?.replace(R.id.fragment_container, fragment)
 //    fragmentTransaction?.addToBackStack(null)
 //    fragmentTransaction?.commit()
-//}
+// }
