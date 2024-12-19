@@ -66,7 +66,7 @@ fun InstallationScreen(
         Column(
             modifier
                 .fillMaxSize()
-                .background(colorResource(R.color.you_background_color))
+                .background(MaterialTheme.colorScheme.background)
                 .padding(Dimensions.PaddingMedium)
                 .testTag("backgroundContainer")
                 .verticalScroll(scrollState),
@@ -88,7 +88,7 @@ fun InstallationScreen(
 
             Text(
                 text = stringResource(R.string.app_installation_keyboard_title),
-                color = colorResource(R.color.app_text_color),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 fontSize = Dimensions.TextSizeLarge,
                 modifier = Modifier.padding(start = 4.dp, top = Dimensions.PaddingLarge, bottom = Dimensions.PaddingSmall),
@@ -106,7 +106,7 @@ fun InstallationScreen(
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
                 CardDefaults.cardColors(
-                    containerColor = colorResource(R.color.card_view_color),
+                    containerColor = MaterialTheme.colorScheme.surface,
                 ),
             ) {
                 Box(modifier = Modifier.fillMaxWidth()) {
@@ -120,7 +120,7 @@ fun InstallationScreen(
                             Text(
                                 text = "1. ",
                                 fontSize = Dimensions.TextSizeMedium,
-                                color = colorResource(R.color.app_text_color),
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_keyboard_settings),
@@ -134,12 +134,12 @@ fun InstallationScreen(
                             Text(
                                 text = "2. ",
                                 fontSize = Dimensions.TextSizeMedium,
-                                color = colorResource(R.color.app_text_color),
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_text_2),
                                 fontSize = Dimensions.TextSizeMedium,
-                                color = colorResource(R.color.app_text_color),
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
                         Row(
@@ -149,12 +149,12 @@ fun InstallationScreen(
                             Text(
                                 text = "3. ",
                                 fontSize = Dimensions.TextSizeMedium,
-                                color = colorResource(R.color.app_text_color),
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_text_3),
                                 fontSize = Dimensions.TextSizeMedium,
-                                color = colorResource(R.color.app_text_color),
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                             Image(
                                 painter = painterResource(resource),
@@ -169,7 +169,7 @@ fun InstallationScreen(
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_text_4),
                                 fontSize = Dimensions.TextSizeMedium,
-                                color = colorResource(R.color.app_text_color),
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
                     }
@@ -189,6 +189,10 @@ fun InstallationScreen(
                                     Dimensions.LEFT_LAYOUT_DIRECTION
                                 },
                             ),
+                        colorFilter =
+                        androidx.compose.ui.graphics.ColorFilter.tint(
+                            MaterialTheme.colorScheme.surfaceContainer,
+                        ),
                     )
                     Image(
                         painter = painterResource(R.drawable.cog),
@@ -200,7 +204,7 @@ fun InstallationScreen(
                             .size(26.dp),
                         colorFilter =
                         androidx.compose.ui.graphics.ColorFilter.tint(
-                            colorResource(R.color.button_text_color),
+                            MaterialTheme.colorScheme.onPrimary,
                         ),
                     )
                 }
@@ -208,7 +212,7 @@ fun InstallationScreen(
 
             Text(
                 text = stringResource(R.string.app_download_menu_option_scribe_title),
-                color = colorResource(R.color.app_text_color),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 fontSize = Dimensions.TextSizeLarge,
                 modifier = Modifier.padding(start = 4.dp, top = Dimensions.PaddingLarge, bottom = Dimensions.PaddingSmall),
@@ -221,7 +225,7 @@ fun InstallationScreen(
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
                 CardDefaults.cardColors(
-                    containerColor = colorResource(R.color.card_view_color),
+                    containerColor = MaterialTheme.colorScheme.surface,
                 ),
             ) {
                 Column(
@@ -239,7 +243,7 @@ fun InstallationScreen(
                             text = stringResource(R.string.app_download_menu_option_scribe_download_data),
                             fontSize = Dimensions.TextSizeMedium,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.app_text_color),
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         Image(
                             painter = painterResource(R.drawable.right_arrow),
@@ -268,14 +272,14 @@ fun InstallationScreen(
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
                 ButtonDefaults.outlinedButtonColors(
-                    containerColor = colorResource(R.color.corner_polygon_color),
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 ),
             ) {
                 Text(
                     text = stringResource(R.string.app_installation_button_quick_tutorial),
                     fontSize = Dimensions.TextSizeLarge,
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.button_text_color),
+                    color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.padding(vertical = Dimensions.PaddingLarge),
                 )
             }

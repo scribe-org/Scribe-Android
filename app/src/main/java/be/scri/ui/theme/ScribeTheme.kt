@@ -17,7 +17,8 @@ private val LightColors =
         secondary = theme_light_selected_button_color,
         tertiary = theme_light_switch_selector_color,
         tertiaryContainer = theme_light_switch_container_color,
-        outlineVariant = theme_light_unchecked_switch_selector_color
+        outlineVariant = theme_light_unchecked_switch_selector_color,
+        surfaceContainer = theme_light_corner_button_color
     )
 
 private val DarkColors =
@@ -32,7 +33,8 @@ private val DarkColors =
         secondary = theme_dark_selected_button_color,
         tertiary = theme_dark_switch_selector_color,
         tertiaryContainer = theme_dark_switch_container_color,
-        outlineVariant = theme_dark_unchecked_switch_selector_color
+        outlineVariant = theme_dark_unchecked_switch_selector_color,
+        surfaceContainer = theme_dark_corner_button_color
     )
 
 @Composable
