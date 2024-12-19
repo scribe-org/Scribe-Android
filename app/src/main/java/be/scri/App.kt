@@ -13,6 +13,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
@@ -21,8 +22,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import be.scri.navigation.Screen
-import be.scri.ui.common.app_components.HintDialog
-import be.scri.ui.common.bottom_bar.ScribeBottomBar
+import be.scri.ui.common.appcomponents.HintDialog
+import be.scri.ui.common.bottombar.ScribeBottomBar
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
 import be.scri.ui.screens.PrivacyPolicyScreen
@@ -34,11 +35,11 @@ import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@SuppressLint("ComposeModifierMissing")
 @Composable
 fun ScribeApp(
     pagerState: PagerState,
     navController: NavHostController,
-    coroutineScope: CoroutineScope,
     onDarkModeChange: (Boolean) -> Unit,
     resetHints: () -> Unit,
     @SuppressLint("ComposeUnstableCollections") isHintChanged: Map<Int, Boolean>,
@@ -47,6 +48,7 @@ fun ScribeApp(
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     ScribeTheme(
@@ -65,11 +67,11 @@ fun ScribeApp(
                     },
                     pagerState = pagerState,
                     modifier =
-                        modifier
+                        Modifier
                             .background(color = colorResource(R.color.background_color)),
                 )
             },
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
         ) { innerPadding ->
             NavHost(
                 navController = navController,

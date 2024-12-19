@@ -1,4 +1,4 @@
-package be.scri.ui.common.app_components
+package be.scri.ui.common.appcomponents
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

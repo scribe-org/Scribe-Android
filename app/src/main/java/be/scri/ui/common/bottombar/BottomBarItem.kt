@@ -1,4 +1,4 @@
-package be.scri.ui.common.bottom_bar
+package be.scri.ui.common.bottombar
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
@@ -14,11 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import be.scri.R
 
+@Suppress("MagicNumber")
 @Composable
 fun BottomBarItem(
     @DrawableRes icon: Int,
@@ -79,15 +78,4 @@ fun BottomBarItem(
                 ),
         )
     }
-}
-
-@PreviewLightDark
-@Composable
-private fun BottomBarItemPreview() {
-    BottomBarItem(
-        icon = R.drawable.keyboard_dark,
-        title = "Keyboard",
-        isSelected = true,
-        onItemClick = {},
-    )
 }

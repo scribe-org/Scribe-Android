@@ -4,7 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.scri.helpers.PreferencesHelper
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
@@ -53,11 +54,7 @@ class SettingsViewModel(
         PreferencesHelper.setShowPopupOnKeypress(context, value)
     }
 
-    fun setLightDarkMode(
-        value: Boolean,
-        context: Context,
-    ) {
+    fun setLightDarkMode(value: Boolean) {
         _isUserDarkMode.value = value
-//        sharedPrefs.edit().putBoolean("dark_mode", value).apply()
     }
 }

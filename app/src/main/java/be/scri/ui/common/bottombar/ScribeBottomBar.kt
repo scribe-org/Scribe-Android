@@ -1,4 +1,4 @@
-package be.scri.ui.common.bottom_bar
+package be.scri.ui.common.bottombar
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,37 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-
-// @Composable
-// fun ScribeBottomBar(
-//    navController: NavHostController,
-//    modifier: Modifier = Modifier
-// ) {
-//
-// }
-//
-// @Composable
-// fun ScribeBottomBar(
-//    isDarkTheme: Boolean,
-//    coroutineScope: CoroutineScope,
-//    modifier: Modifier = Modifier
-// ) {
-//   BottomAppBar(
-//       modifier = Modifier
-//           .fillMaxWidth()
-//   ) {
-//        bottomBarScreens.forEach { item ->
-//            BottomBarItem(
-//                icon = item.icon,
-//                title = item.label,
-//                isSelected = item.route == Screen.Installation.route,
-//                onItemClick = {
-//                    // Handle item click
-//                }
-//            )
-//        }
-//   }
-// }
 
 @Composable
 fun ScribeBottomBar(
@@ -64,10 +33,6 @@ fun ScribeBottomBar(
                     isSelected = pagerState.currentPage == index,
                     onItemClick = {
                         onItemClick(index)
-//                        coroutineScope.launch {
-// //                            pagerState.animateScrollToPage(index)
-//                            onItemClick
-//                        }
                     },
                     modifier =
                         Modifier

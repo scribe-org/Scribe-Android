@@ -52,7 +52,7 @@ fun SwitchableItemComp(
             if (isDarkModeSwitch) {
                 DarkModeSwitch(
                     checked = isChecked,
-                    onCheckedChanged = onCheckedChange,
+                    onCheckChange = onCheckedChange,
                     modifier =
                     Modifier,
                 )

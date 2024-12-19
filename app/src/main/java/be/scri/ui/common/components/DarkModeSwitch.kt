@@ -40,10 +40,11 @@ import be.scri.ui.theme.BorderColor
 import be.scri.ui.theme.NightSky
 import kotlinx.coroutines.launch
 
+@Suppress("MagicNumber")
 @Composable
 fun DarkModeSwitch(
     checked: Boolean,
-    onCheckedChanged: (Boolean) -> Unit,
+    onCheckChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val switchWidth = 61.dp
@@ -72,7 +73,7 @@ fun DarkModeSwitch(
                 .border(3.dp, BorderColor, RoundedCornerShape(switchHeight))
                 .toggleable(
                     value = checked,
-                    onValueChange = onCheckedChanged,
+                    onValueChange = onCheckChange,
                     role = Role.Switch,
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
@@ -101,7 +102,11 @@ fun DarkModeSwitch(
                         translationX =
                             lerp(
                                 -size.width * 0.5f + handlePadding.toPx() + handleSize.toPx() * 0.5f,
-                                switchWidth.toPx() - size.width * 0.5f - handlePadding.toPx() - handleSize.toPx() * 0.5f,
+                                switchWidth.toPx() -
+                                    size.width * 0.5f -
+                                    handlePadding.toPx() -
+                                    handleSize.toPx() *
+                                    0.5f,
                                 offset.value,
                             )
                     },

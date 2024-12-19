@@ -74,10 +74,7 @@ object SettingsUtil {
         }
     }
 
-    fun getLocalizedLanguageName(
-        context: Context,
-        language: String,
-    ): Int {
+    fun getLocalizedLanguageName(language: String): Int {
         return when (language) {
             "English" -> R.string.app__global_english
             "French" -> R.string.app__global_french

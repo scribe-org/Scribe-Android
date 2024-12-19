@@ -30,6 +30,7 @@ import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
+import be.scri.ui.screens.settings.SettingsUtil.getLocalizedLanguageName
 
 @Composable
 fun SettingsScreen(
@@ -81,7 +82,7 @@ fun SettingsScreen(
                         desc = R.string.app_settings_menu_app_color_mode_description,
                         state = isUserDarkMode,
                         onToggle = { newDarkMode ->
-                            viewModel.setLightDarkMode(newDarkMode, context)
+                            viewModel.setLightDarkMode(newDarkMode)
                             onDarkModeChange(newDarkMode)
                         },
                     ),
@@ -172,32 +173,3 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
         )
     }
 }
-
-private fun getLocalizedLanguageName(language: String): Int {
-    return when (language) {
-        "English" -> R.string.app__global_english
-        "French" -> R.string.app__global_french
-        "German" -> R.string.app__global_german
-        "Russian" -> R.string.app__global_russian
-        "Spanish" -> R.string.app__global_spanish
-        "Italian" -> R.string.app__global_italian
-        "Portuguese" -> R.string.app__global_portuguese
-        "Swedish" -> R.string.app__global_swedish
-        else -> return R.string.language
-    }
-}
-
-// fun Context.navigateToFragment(language: String) {
-//    val fragmentTransaction = (this as? AppCompatActivity)?.supportFragmentManager?.beginTransaction()
-//
-//    val fragment =
-//        LanguageSettingsFragment().apply {
-//            arguments =
-//                Bundle().apply {
-//                    putString("LANGUAGE_EXTRA", language)
-//                }
-//        }
-//    fragmentTransaction?.replace(R.id.fragment_container, fragment)
-//    fragmentTransaction?.addToBackStack(null)
-//    fragmentTransaction?.commit()
-// }

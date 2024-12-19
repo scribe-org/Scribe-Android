@@ -89,7 +89,13 @@ fun InstallationScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 fontSize = Dimensions.TextSizeLarge,
-                modifier = Modifier.padding(start = 4.dp, top = Dimensions.PaddingLarge, bottom = Dimensions.PaddingSmall),
+                modifier =
+                    Modifier
+                        .padding(
+                            start = 4.dp,
+                            top = Dimensions.PaddingLarge,
+                            bottom = Dimensions.PaddingSmall,
+                        ),
             )
 
             Card(
@@ -213,7 +219,12 @@ fun InstallationScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 fontSize = Dimensions.TextSizeLarge,
-                modifier = Modifier.padding(start = 4.dp, top = Dimensions.PaddingLarge, bottom = Dimensions.PaddingSmall),
+                modifier =
+                    Modifier.padding(
+                        start = 4.dp,
+                        top = Dimensions.PaddingLarge,
+                        bottom = Dimensions.PaddingSmall,
+                    ),
             )
             Card(
                 modifier =

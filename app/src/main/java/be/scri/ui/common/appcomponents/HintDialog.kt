@@ -1,4 +1,4 @@
-package be.scri.ui.common.app_components
+package be.scri.ui.common.appcomponents
 
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
@@ -74,6 +74,7 @@ fun HintDialog(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun HintDialogContent(
     text: String,

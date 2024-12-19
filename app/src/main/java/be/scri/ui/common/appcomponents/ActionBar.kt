@@ -1,4 +1,4 @@
-package be.scri.ui.common.app_components
+package be.scri.ui.common.appcomponents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

@@ -1,4 +1,4 @@
-package be.scri.ui.common.bottom_bar
+package be.scri.ui.common.bottombar
 
 import androidx.annotation.DrawableRes
 import be.scri.R

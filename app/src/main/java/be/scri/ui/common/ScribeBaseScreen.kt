@@ -9,8 +9,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import be.scri.ui.common.app_components.ActionBar
-import be.scri.ui.common.app_components.PageTitle
+import be.scri.ui.common.appcomponents.ActionBar
+import be.scri.ui.common.appcomponents.PageTitle
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
