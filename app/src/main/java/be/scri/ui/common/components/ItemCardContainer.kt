@@ -25,7 +25,7 @@ fun ItemsCardContainer(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        color = colorResource(R.color.card_view_color),
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             modifier =

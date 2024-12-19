@@ -1,5 +1,6 @@
 package be.scri.ui.common.app_components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,7 +22,7 @@ fun PageTitle(
         TextStyle.Default.copy(
             fontStyle = ScribeTypography.headlineMedium.fontStyle,
             fontWeight = FontWeight.Bold,
-            color = colorResource(R.color.app_text_color),
+            color = MaterialTheme.colorScheme.onBackground,
         ),
         modifier = modifier
     )

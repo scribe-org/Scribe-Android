@@ -4,14 +4,18 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import be.scri.R
+import be.scri.helpers.PreferencesHelper
 import be.scri.ui.common.app_components.ActionBar
 import be.scri.ui.common.app_components.PageTitle
+import be.scri.ui.theme.ScribeTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -25,7 +29,7 @@ fun ScribeBaseScreen(
     Scaffold(
         modifier = modifier
             .fillMaxSize(),
-        containerColor = colorResource(R.color.background_color)
+        containerColor = MaterialTheme.colorScheme.background
     ) {
         Column(
             modifier = Modifier.fillMaxSize()

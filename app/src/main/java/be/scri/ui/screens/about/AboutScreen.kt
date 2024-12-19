@@ -44,10 +44,10 @@ fun AboutScreen(
     onThirdPartyLicensesClick: () -> Unit,
     onWikiClick: () -> Unit,
     resetHints: () -> Unit,
+    context: Context,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
-    val context = LocalContext.current
 
     val communityList = getCommunityList(
         onWikimediaAndScribeClick = {

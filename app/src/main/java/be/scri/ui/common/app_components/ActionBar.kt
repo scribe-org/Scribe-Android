@@ -37,14 +37,14 @@ fun ActionBar(
         ) {
             Icon(
                 painter = painterResource(R.drawable.chevron),
-                tint  = colorResource(R.color.app_text_color),
+                tint  = MaterialTheme.colorScheme.onBackground,
                 contentDescription = "Back button"
             )
         }
         Text(
             text = title,
             fontSize = 16.sp,
-            color = colorResource(R.color.app_text_color),
+            color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )

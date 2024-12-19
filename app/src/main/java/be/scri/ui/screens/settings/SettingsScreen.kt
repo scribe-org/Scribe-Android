@@ -38,10 +38,10 @@ fun SettingsScreen(
     onDarkModeChange: (Boolean) -> Unit,
     onLanguageSettingsClick: (String) -> Unit,
     pagerState: PagerState,
+    context: Context,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = viewModel(factory = SettingsViewModelFactory(LocalContext.current))
 ) {
-    val context = LocalContext.current
     val languages by viewModel.languages.collectAsState()
     val isKeyboardInstalled by viewModel.isKeyboardInstalled.collectAsState()
     val vibrateOnKeypress by viewModel.vibrateOnKeypress.collectAsState()

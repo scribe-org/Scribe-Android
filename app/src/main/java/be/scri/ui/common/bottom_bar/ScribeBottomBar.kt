@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,12 +57,9 @@ fun ScribeBottomBar(
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier
 ) {
-
     Column(modifier = modifier) {
-
-
         BottomAppBar(
-            containerColor = colorResource(R.color.nav_bar_color),
+            containerColor = MaterialTheme.colorScheme.surface,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(65.dp)

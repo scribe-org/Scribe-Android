@@ -47,7 +47,7 @@ fun ScribeApp(
     isDarkTheme: Boolean
 ) {
     ScribeTheme(
-        useDarkTheme = false
+        useDarkTheme = isDarkTheme
     ) {
         Scaffold(
             bottomBar = {
@@ -81,7 +81,8 @@ fun ScribeApp(
                                     modifier = Modifier.fillMaxSize()
                                 ) {
                                     InstallationScreen(
-                                        isDark = isDarkTheme
+                                        isDark = isDarkTheme,
+                                        context = context
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
@@ -101,12 +102,15 @@ fun ScribeApp(
                                     modifier = Modifier.fillMaxSize()
                                 ) {
                                     SettingsScreen(
-                                        onDarkModeChange = { onDarkModeChange(it) },
+                                        onDarkModeChange = { isDarkMode ->
+                                            onDarkModeChange(isDarkMode)
+                                        },
                                         onLanguageSettingsClick = { language ->
                                             navController.navigate(
                                                 "${Screen.LanguageSettings.route}/$language"
                                             )
                                         },
+                                        context = context,
                                         pagerState = pagerState
                                     )
                                     HintDialog(
@@ -134,7 +138,8 @@ fun ScribeApp(
                                         onWikiClick = {
                                             navController.navigate(Screen.WikimediaScribe.route)
                                         },
-                                        resetHints = { resetHints() }
+                                        resetHints = { resetHints() },
+                                        context = context
                                     )
                                     HintDialog(
                                         pagerState = pagerState,

@@ -1,33 +1,25 @@
 package be.scri.activities
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
-import be.scri.R
 import be.scri.ScribeApp
-import be.scri.helpers.HintUtils
 //import be.scri.adapters.ViewPagerAdapter
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.setLightDarkModePreference
 import be.scri.services.EnglishKeyboardIME
 import be.scri.ui.common.bottom_bar.bottomBarScreens
+import be.scri.ui.theme.ScribeTheme
 
 class MainActivity : ComponentActivity() {
 //    private lateinit var bottomNavigationView: BottomNavigationView
@@ -50,7 +42,7 @@ class MainActivity : ComponentActivity() {
 //        setActionBarTitle(R.string.app_launcher_name)
 //        val mButton = supportActionBar?.customView?.findViewById<Button>(R.id.button)
 //        val mImage = getDrawable(R.drawable.chevron)
-//        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
+        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
 //        mButton?.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
 //        mButton?.compoundDrawablePadding = 2
 //        mButton?.visibility = View.GONE
@@ -76,11 +68,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
 
-            val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-            val isSystemDarkMode = remember {
-                mutableStateOf(currentNightMode == Configuration.UI_MODE_NIGHT_YES)
-            }
+//            val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+//            val isSystemDarkMode = remember {
+//                mutableStateOf(currentNightMode == Configuration.UI_MODE_NIGHT_YES)
+//            }
 
+            val isDarkMode = remember {
+                mutableStateOf(PreferencesHelper
+                    .getUserDarkModePreference(context) == AppCompatDelegate.MODE_NIGHT_YES)
+            }
             val pagerState = rememberPagerState {
                 bottomBarScreens.size
             }
@@ -97,41 +93,41 @@ class MainActivity : ComponentActivity() {
 //            }
 
             fun updateTheme(darkMode: Boolean) {
-                // Update shared preferences
-//                setLightDarkModePreference(context, darkMode)
-
-                setLightDarkModePreference(this, darkMode)
-
-
-
-                // Update the state
-                isSystemDarkMode.value = darkMode
+                setLightDarkModePreference(context, darkMode)
 
                 AppCompatDelegate.setDefaultNightMode(
                     if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
                 )
-                Log.d("darktheme", "${isSystemDarkMode.value}")
+
+                // Update the state
+                isDarkMode.value = darkMode
+
+                Log.d("darktheme", "$darkMode")
             }
 
-            ScribeApp(
-                pagerState = pagerState,
-                coroutineScope = coroutineScope,
-                isDarkTheme = isSystemDarkMode.value,
-                onDarkModeChange = {
-                    updateTheme(it)
-                },
-                resetHints = {
-                    isHintChangedMap[0] = true
-                    isHintChangedMap[1] = true
-                    isHintChangedMap[2] = true
-                },
-                isHintChanged = isHintChangedMap,
-                onDismiss = { pageIndex ->
-                    isHintChangedMap[pageIndex] = false
-                },
-                context = context,
-                navController = navController
-            )
+            ScribeTheme(
+                useDarkTheme = isDarkMode.value
+            ) {
+                ScribeApp(
+                    pagerState = pagerState,
+                    coroutineScope = coroutineScope,
+                    isDarkTheme = isDarkMode.value,
+                    onDarkModeChange = { darkMode ->
+                        updateTheme(darkMode)
+                    },
+                    resetHints = {
+                        isHintChangedMap[0] = true
+                        isHintChangedMap[1] = true
+                        isHintChangedMap[2] = true
+                    },
+                    isHintChanged = isHintChangedMap,
+                    onDismiss = { pageIndex ->
+                        isHintChangedMap[pageIndex] = false
+                    },
+                    context = context,
+                    navController = navController
+                )
+            }
         }
 //        viewPager.registerOnPageChangeCallback(
 //            object : ViewPager2.OnPageChangeCallback() {

@@ -29,9 +29,9 @@ fun BottomBarItem(
     modifier: Modifier = Modifier
 ) {
     val color = if (isSelected) {
-        colorResource(R.color.nav_bar_selected_color)
+        MaterialTheme.colorScheme.secondary
     } else {
-        colorResource(R.color.nav_bar_focus_color)
+        MaterialTheme.colorScheme.onSurface
     }
 
     val iconSize = if (isSelected) {

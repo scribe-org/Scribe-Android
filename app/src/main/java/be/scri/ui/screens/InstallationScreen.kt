@@ -1,5 +1,6 @@
 package be.scri.ui.screens
 
+import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.foundation.Image
@@ -49,10 +50,10 @@ import be.scri.ui.common.ScribeBaseScreen
 @Composable
 fun InstallationScreen(
     isDark: Boolean,
+    context: Context,
     modifier: Modifier = Modifier
 ) {
     val layoutDirection = LocalLayoutDirection.current
-    val context = LocalContext.current
     val resource: Int =
         if (isDark) {
             R.drawable.keyboard_dark
