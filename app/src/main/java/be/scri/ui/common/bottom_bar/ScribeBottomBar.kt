@@ -54,7 +54,6 @@ import kotlinx.coroutines.launch
 fun ScribeBottomBar(
     onItemClick: (Int) -> Unit,
     pagerState: PagerState,
-    isDarkTheme: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -62,7 +61,7 @@ fun ScribeBottomBar(
             containerColor = MaterialTheme.colorScheme.surface,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(65.dp)
+                .height(62.dp)
         ) {
             bottomBarScreens.forEachIndexed { index, item ->
                 BottomBarItem(

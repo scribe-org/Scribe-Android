@@ -83,7 +83,7 @@ fun ThirdPartyScreenContent(
             TextStyle.Default.copy(
                 fontStyle = ScribeTypography.headlineMedium.fontStyle,
                 fontWeight = FontWeight.Bold,
-                color = colorResource(R.color.app_text_color)
+                color = MaterialTheme.colorScheme.onSurface
             ),
         )
         Card(

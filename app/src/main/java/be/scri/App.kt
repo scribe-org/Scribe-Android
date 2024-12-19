@@ -58,7 +58,6 @@ fun ScribeApp(
                         }
                     },
                     pagerState = pagerState,
-                    isDarkTheme = isDarkTheme,
                     modifier = Modifier
                         .background(color = colorResource(R.color.background_color))
                 )

@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
 //        setActionBarTitle(R.string.app_launcher_name)
 //        val mButton = supportActionBar?.customView?.findViewById<Button>(R.id.button)
 //        val mImage = getDrawable(R.drawable.chevron)
-        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
+//        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
 //        mButton?.setCompoundDrawablesWithIntrinsicBounds(mImage, null, null, null)
 //        mButton?.compoundDrawablePadding = 2
 //        mButton?.visibility = View.GONE
@@ -85,13 +85,6 @@ class MainActivity : ComponentActivity() {
 
             val isHintChangedMap = remember { mutableStateMapOf<Int, Boolean>() }
 
-//            val isDarkTheme = remember {
-//                mutableStateOf(
-//                    context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-//                        .getBoolean("dark_mode", false) // Default is light mode
-//                )
-//            }
-
             fun updateTheme(darkMode: Boolean) {
                 setLightDarkModePreference(context, darkMode)
 
@@ -99,10 +92,7 @@ class MainActivity : ComponentActivity() {
                     if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
                 )
 
-                // Update the state
                 isDarkMode.value = darkMode
-
-                Log.d("darktheme", "$darkMode")
             }
 
             ScribeTheme(

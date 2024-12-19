@@ -35,15 +35,15 @@ fun BottomBarItem(
     }
 
     val iconSize = if (isSelected) {
-        30.dp
+        27.dp
     } else {
-        26.dp
+        24.dp
     }
 
     val textSize = if (isSelected) {
-        13.sp
-    } else {
         12.sp
+    } else {
+        11.sp
     }
     Column(
         modifier = modifier.padding(bottom = 4.dp),
