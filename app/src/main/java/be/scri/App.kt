@@ -2,6 +2,7 @@ package be.scri
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,12 +12,14 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import be.scri.navigation.Screen
 import be.scri.ui.common.app_components.HintDialog
 import be.scri.ui.common.bottom_bar.ScribeBottomBar
@@ -44,6 +47,8 @@ fun ScribeApp(
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
     ScribeTheme(
         useDarkTheme = isDarkTheme
     ) {
@@ -52,6 +57,9 @@ fun ScribeApp(
                 ScribeBottomBar(
                     onItemClick = {
                         coroutineScope.launch {
+                            if(navBackStackEntry?.destination?.route != "pager") {
+                                navController.popBackStack()
+                            }
                             pagerState.animateScrollToPage(it)
                         }
                     },
@@ -93,6 +101,7 @@ fun ScribeApp(
                                             .padding(8.dp)
                                     )
                                 }
+                                HandleBackPress(pagerState, coroutineScope)
                             }
                             1 -> {
                                 Box(
@@ -119,6 +128,7 @@ fun ScribeApp(
                                         modifier = Modifier.padding(8.dp)
                                     )
                                 }
+                                HandleBackPress(pagerState, coroutineScope)
                             }
                             2 -> {
                                 Box(
@@ -147,6 +157,7 @@ fun ScribeApp(
                                         modifier = Modifier.padding(8.dp)
                                     )
                                 }
+                                HandleBackPress(pagerState, coroutineScope)
                             }
                         }
                     }
@@ -194,6 +205,15 @@ fun ScribeApp(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun HandleBackPress(pagerState: PagerState, coroutineScope: CoroutineScope) {
+    BackHandler(enabled = pagerState.currentPage > 0) {
+        coroutineScope.launch {
+            pagerState.animateScrollToPage(pagerState.currentPage - 1)
         }
     }
 }
