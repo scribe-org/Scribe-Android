@@ -2,7 +2,6 @@ package be.scri.helpers
 
 import android.app.UiModeManager
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
@@ -63,8 +62,22 @@ object PreferencesHelper {
             ).show()
     }
 
-    fun setCommaAndPeriodPreference() {
-        Log.d("PreferencesHelper", "This setCommaAndPeriodPreference-function is to be implemented later")
+    fun setCommaAndPeriodPreference(
+        context: Context,
+        language: String,
+        shouldEnablePeriodAndComma: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putBoolean("period_and_comma_$language", shouldEnablePeriodAndComma)
+        editor.apply()
+        Toast
+            .makeText(
+                context,
+                "$language period and comma on ABC " +
+                    if (shouldEnablePeriodAndComma) "enabled" else "disabled",
+                Toast.LENGTH_SHORT,
+            ).show()
     }
 
     fun setVibrateOnKeypress(

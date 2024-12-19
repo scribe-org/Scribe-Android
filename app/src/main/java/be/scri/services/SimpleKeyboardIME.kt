@@ -99,10 +99,16 @@ abstract class SimpleKeyboardIME(
         keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
-    fun getIsAccentCharacter(): Boolean {
+    fun getIsAccentCharacterDisabled(): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val isAccentCharacter = sharedPref.getBoolean("disable_accent_character_Swedish", false)
-        return isAccentCharacter
+        val isAccentCharacterDisabled = sharedPref.getBoolean("disable_accent_character_$language", false)
+        return isAccentCharacterDisabled
+    }
+
+    fun getEnablePeriodAndCommaABC(): Boolean {
+        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isDisabledPeriodAndCommaABC = sharedPref.getBoolean("period_and_comma_$language", false)
+        return isDisabledPeriodAndCommaABC
     }
 
     private fun updateEnterKeyColor(isDarkMode: Boolean? = null) {
