@@ -48,8 +48,8 @@ fun DarkModeSwitch(
 ) {
     val switchWidth = 61.dp
     val switchHeight = 31.dp
-    val handleSize = 43.dp
-    val handlePadding = 6.dp
+    val handleSize = 30.dp
+    val handlePadding = 3.dp
     val valueToOffset = if (checked) 1f else 0f
     val offset = remember { Animatable(valueToOffset) }
     val scope = rememberCoroutineScope()

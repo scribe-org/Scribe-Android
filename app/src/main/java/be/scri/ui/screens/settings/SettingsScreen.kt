@@ -12,6 +12,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -24,6 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
@@ -35,7 +39,6 @@ import be.scri.ui.models.ScribeItemList
 fun SettingsScreen(
     onDarkModeChange: (Boolean) -> Unit,
     onLanguageSettingsClick: (String) -> Unit,
-    pagerState: PagerState,
     context: Context,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = viewModel(
@@ -48,12 +51,20 @@ fun SettingsScreen(
     val popupOnKeypress by viewModel.popupOnKeypress.collectAsState()
     val isUserDarkMode by viewModel.isUserDarkMode.collectAsState()
 
-    val isPageVisible by remember {
-        derivedStateOf { pagerState.currentPage == 1 }
-    }
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(isPageVisible) {
-        viewModel.refreshSettings(context)
+    // Observe lifecycle events
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                // Refresh settings when coming back to the app
+                viewModel.refreshSettings(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     val appSettingsItemList = ScribeItemList(

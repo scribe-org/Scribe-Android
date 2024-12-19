@@ -108,7 +108,6 @@ fun ScribeApp(
                                             )
                                         },
                                         context = context,
-                                        pagerState = pagerState
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
