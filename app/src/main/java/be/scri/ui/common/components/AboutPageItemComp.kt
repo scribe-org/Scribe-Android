@@ -16,11 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import be.scri.R
 
 @Composable
 fun AboutPageItemComp(
@@ -49,7 +47,7 @@ fun AboutPageItemComp(
                 Modifier
                     .padding(start = 2.dp)
                     .size(22.dp),
-            tint = colorResource(R.color.app_text_color),
+            tint = MaterialTheme.colorScheme.onSurface,
             contentDescription = "Right Arrow",
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -57,7 +55,7 @@ fun AboutPageItemComp(
             text = title,
             modifier = Modifier.weight(1f).padding(start = 4.dp),
             fontSize = 16.sp,
-            color = colorResource(R.color.app_text_color),
+            color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyMedium,
         )
         Icon(
