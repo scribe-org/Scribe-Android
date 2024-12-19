@@ -30,10 +30,6 @@
             </intent-filter>
         </activity>
 
-<!--        <activity-->
-<!--            android:name=".fragments.MainFragment"-->
-<!--            android:exported="false" />-->
-
         <service
             android:name=".services.EnglishKeyboardIME"
             android:exported="true"
@@ -138,21 +134,6 @@
                 android:name="android.view.im"
                 android:resource="@xml/method_swedish" />
         </service>
-
-<!--        <activity-->
-<!--            android:name=".fragments.SettingsFragment"-->
-<!--            android:exported="true"-->
-<!--            android:label="@string/app.settings.title"-->
-<!--            android:parentActivityName=".fragments.MainFragment" >-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--            </intent-filter>-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />-->
-
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
     </application>
 
 </manifest>
