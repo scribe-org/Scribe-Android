@@ -1,6 +1,5 @@
 package be.scri.activities
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +10,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import be.scri.ScribeApp
@@ -23,7 +23,6 @@ import be.scri.ui.theme.ScribeTheme
 class MainActivity : ComponentActivity() {
     private var englishKeyboardIME: EnglishKeyboardIME? = null
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
@@ -80,7 +79,8 @@ class MainActivity : ComponentActivity() {
                         isHintChangedMap[pageIndex] = false
                     },
                     context = context,
-                    navController = navController
+                    navController = navController,
+                    modifier = Modifier
                 )
             }
         }

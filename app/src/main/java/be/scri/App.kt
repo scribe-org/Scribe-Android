@@ -31,7 +31,6 @@ import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@SuppressLint("ComposeModifierMissing", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ScribeApp(
     pagerState: PagerState,
@@ -42,7 +41,8 @@ fun ScribeApp(
     @SuppressLint("ComposeUnstableCollections") isHintChanged: Map<Int, Boolean>,
     onDismiss: (Int) -> Unit,
     context: Context,
-    isDarkTheme: Boolean
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier
 ) {
     ScribeTheme(
         useDarkTheme = isDarkTheme
@@ -56,7 +56,7 @@ fun ScribeApp(
                         }
                     },
                     pagerState = pagerState,
-                    modifier = Modifier
+                    modifier = modifier
                         .background(color = colorResource(R.color.background_color))
                 )
             },
