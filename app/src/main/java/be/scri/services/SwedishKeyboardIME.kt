@@ -52,29 +52,42 @@ class SwedishKeyboardIME : SimpleKeyboardIME("Swedish") {
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             lastShiftPressTS = 0
         }
-        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
-        Log.i("MY-TAG", "$nounTypeSuggestion")
-        updateAutoSuggestText(nounTypeSuggestion)
+
         when (code) {
             MyKeyboard.KEYCODE_DELETE -> {
                 handleKeycodeDelete()
                 keyboardView!!.invalidateAllKeys()
+                disableAutoSuggest()
             }
+
             MyKeyboard.KEYCODE_SHIFT -> {
                 super.handleKeyboardLetters(keyboardMode, keyboardView)
                 keyboardView!!.invalidateAllKeys()
+                disableAutoSuggest()
             }
+
             MyKeyboard.KEYCODE_ENTER -> {
                 handleKeycodeEnter()
+                disableAutoSuggest()
             }
+
             MyKeyboard.KEYCODE_MODE_CHANGE -> {
                 handleModeChange(keyboardMode, keyboardView, this)
+                disableAutoSuggest()
             }
+
+            MyKeyboard.KEYCODE_SPACE -> {
+                handleElseCondition(code , keyboardMode , binding = null)
+                updateAutoSuggestText(nounTypeSuggestion)
+            }
+
             else -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
                     handleElseCondition(code, keyboardMode, binding = null)
+                    disableAutoSuggest()
                 } else {
                     handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
+                    disableAutoSuggest()
                 }
             }
         }
@@ -82,9 +95,10 @@ class SwedishKeyboardIME : SimpleKeyboardIME("Swedish") {
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
         Log.d("Debug", "$autosuggestEmojis")
+        Log.d("MY-TAG", "$nounTypeSuggestion")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
-
         if (code != MyKeyboard.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }

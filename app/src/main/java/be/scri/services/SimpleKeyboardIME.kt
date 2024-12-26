@@ -416,11 +416,11 @@ abstract class SimpleKeyboardIME(
     fun updateAutoSuggestText(nounTypeSuggestion: MutableList<String>?) {
         val suggestionMap =
             mapOf(
-                "PL" to Pair(R.color.md_deep_orange, "PL"),
-                "N" to Pair(R.color.md_light_green, "N"),
-                "C" to Pair(R.color.md_indigo, "C"),
-                "M" to Pair(R.color.background_color, "M"),
-                "F" to Pair(R.color.md_pink, "F"),
+                "PL" to Pair(R.color.annotateOrange, "PL"),
+                "N" to Pair(R.color.annotateGreen, "N"),
+                "C" to Pair(R.color.annotatePurple, "C"),
+                "M" to Pair(R.color.annotateBlue, "M"),
+                "F" to Pair(R.color.annotateRed, "F"),
             )
 
         val (colorRes, text) =
@@ -431,6 +431,10 @@ abstract class SimpleKeyboardIME(
         binding.translateBtn.setBackgroundColor(getColor(colorRes))
     }
 
+    fun disableAutoSuggest() {
+        binding.translateBtn.text = "Suggestion"
+        binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
+    }
     private fun insertEmoji(emoji: String) {
         val inputConnection = currentInputConnection ?: return
         inputConnection.commitText(emoji, 1)
@@ -762,4 +766,5 @@ abstract class SimpleKeyboardIME(
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
     }
+
 }
