@@ -81,7 +81,7 @@ class GermanKeyboardIME : SimpleKeyboardIME("German") {
             }
 
             MyKeyboard.KEYCODE_SPACE -> {
-                handleElseCondition(code , keyboardMode , binding = null)
+                handleElseCondition(code, keyboardMode, binding = null)
                 updateAutoSuggestText(nounTypeSuggestion)
             }
 

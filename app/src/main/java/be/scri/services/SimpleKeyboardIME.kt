@@ -3,6 +3,8 @@ package be.scri.services
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuff.Mode
 import android.inputmethodservice.InputMethodService
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
@@ -20,6 +22,7 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.widget.Button
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
@@ -428,13 +431,17 @@ abstract class SimpleKeyboardIME(
                 ?: Pair(R.color.transparent, "Suggestion")
 
         binding.translateBtn.text = text
-        binding.translateBtn.setBackgroundColor(getColor(colorRes))
+        val drawable = ContextCompat.getDrawable(this, R.drawable.rounded_drawable)
+        drawable?.setTintMode(PorterDuff.Mode.SRC_IN)
+        drawable?.setTint(ContextCompat.getColor(this, colorRes))
+        binding.translateBtn.background = drawable
     }
 
     fun disableAutoSuggest() {
         binding.translateBtn.text = "Suggestion"
         binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
     }
+
     private fun insertEmoji(emoji: String) {
         val inputConnection = currentInputConnection ?: return
         inputConnection.commitText(emoji, 1)
@@ -766,5 +773,4 @@ abstract class SimpleKeyboardIME(
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
     }
-
 }
