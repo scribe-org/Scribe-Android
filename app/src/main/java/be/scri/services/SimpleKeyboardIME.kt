@@ -3,6 +3,8 @@ package be.scri.services
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuff.Mode
 import android.inputmethodservice.InputMethodService
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
@@ -20,6 +22,7 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.widget.Button
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
@@ -67,9 +70,11 @@ abstract class SimpleKeyboardIME(
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
+    lateinit var nounKeywords: HashMap<String, MutableList<String>>
     var isAutoSuggestEnabled: Boolean = false
     var lastWord: String? = null
     var autosuggestEmojis: MutableList<String>? = null
+    var nounTypeSuggestion: MutableList<String>? = null
     private var currentEnterKeyType: Int? = null
     // abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
@@ -379,6 +384,23 @@ abstract class SimpleKeyboardIME(
         return null
     }
 
+    fun findNounTypeForLastWord(
+        nounKeywords: HashMap<String, MutableList<String>>,
+        lastWord: String?,
+    ): MutableList<String>? {
+        lastWord?.let { word ->
+            val lowerCaseWord = word.lowercase()
+            val nouns = nounKeywords[lowerCaseWord]
+            if (nouns != null) {
+                Log.d("Debug", "Noun Types  for '$word': $nouns")
+                return nouns
+            } else {
+                Log.d("Debug", "No nouns found for '$word'")
+            }
+        }
+        return null
+    }
+
     fun updateButtonText(
         isAutoSuggestEnabled: Boolean,
         autosuggestEmojis: MutableList<String>?,
@@ -398,6 +420,32 @@ abstract class SimpleKeyboardIME(
             binding.emojiBtnPhone1.setOnClickListener { insertEmoji(emojiBtnPhone1?.text.toString()) }
             binding.emojiBtnPhone2.setOnClickListener { insertEmoji(emojiBtnPhone2?.text.toString()) }
         }
+    }
+
+    fun updateAutoSuggestText(nounTypeSuggestion: MutableList<String>?) {
+        val suggestionMap =
+            mapOf(
+                "PL" to Pair(R.color.annotateOrange, "PL"),
+                "N" to Pair(R.color.annotateGreen, "N"),
+                "C" to Pair(R.color.annotatePurple, "C"),
+                "M" to Pair(R.color.annotateBlue, "M"),
+                "F" to Pair(R.color.annotateRed, "F"),
+            )
+
+        val (colorRes, text) =
+            suggestionMap[nounTypeSuggestion?.getOrNull(0)]
+                ?: Pair(R.color.transparent, "Suggestion")
+
+        binding.translateBtn.text = text
+        val drawable = ContextCompat.getDrawable(this, R.drawable.rounded_drawable)
+        drawable?.setTintMode(PorterDuff.Mode.SRC_IN)
+        drawable?.setTint(ContextCompat.getColor(this, colorRes))
+        binding.translateBtn.background = drawable
+    }
+
+    fun disableAutoSuggest() {
+        binding.translateBtn.text = "Suggestion"
+        binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
     }
 
     private fun insertEmoji(emoji: String) {
@@ -440,6 +488,7 @@ abstract class SimpleKeyboardIME(
         dbHelper = DatabaseHelper(this)
         dbHelper.loadDatabase(languageAlias)
         emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
+        nounKeywords = dbHelper.getNounKeywords(languageAlias)
 
         keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)

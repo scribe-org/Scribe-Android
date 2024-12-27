@@ -30,6 +30,12 @@
     <color name="you_primary_color">@color/light_scribe_color</color>
     <color name="you_primary_dark_color">@android:color/system_accent1_600</color>
     <color name="you_dialog_background_color">@android:color/system_accent2_50</color>
+
+    <color name="annotateRed">#9F1722</color>
+    <color name="annotateBlue">#335C99</color>
+    <color name="annotatePurple">#700589</color>
+    <color name="annotateGreen">#3D7946</color>
+    <color name="annotateOrange">#F85A39</color>
 </resources>
 
 
