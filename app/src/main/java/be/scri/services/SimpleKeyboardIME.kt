@@ -1,3 +1,35 @@
+/*
+ * Copyright (C) 2024 Scribe-Android
+ *
+ * This file is part of Scribe-Android and is licensed under the
+ * GNU General Public License, version 3.
+ * See LICENSE for more information.
+ */
+/*
+ * Copyright (C) 2024 Scribe-Android
+ *
+ * This file is part of Scribe-Android and is licensed under the
+ * GNU General Public License, version 3.
+ * See LICENSE for more information.
+ */
+/**
+ * Class of methods to manage Scribe's behaviors.
+ *
+ * Copyright (C) 2024 Scribe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package be.scri.services
 
 import android.content.Context
@@ -363,7 +395,7 @@ abstract class SimpleKeyboardIME(
     fun getLastWordBeforeCursor(): String? {
         val textBeforeCursor = getText() ?: return null
         val trimmedText = textBeforeCursor.trim()
-        val lastWord = trimmedText.split("\\s+".toRegex()).lastOrNull()
+        val lastWord = trimmedText.split("\s+".toRegex()).lastOrNull()
         return lastWord
     }
 
@@ -684,7 +716,7 @@ abstract class SimpleKeyboardIME(
         }
 
         val lastTwoChars = word.substring(word.length - 2)
-        val emojiRegex = Regex("[\\uD83C\\uDF00-\\uD83E\\uDDFF]|[\\u2600-\\u26FF]|[\\u2700-\\u27BF]")
+        val emojiRegex = Regex("[í ¼í¼€-í ¾í·¿]|[â˜€-â›¿]|[âœ€-âž¿]")
         return emojiRegex.containsMatchIn(lastTwoChars)
     }
 
