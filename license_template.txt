@@ -1,5 +1,5 @@
 /**
- * This file contains the implementation for CommonsConstants.
+ * {Description}
  *
  * Copyright (C) 2024 Scribe
  *
@@ -16,17 +16,3 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package be.scri.helpers
-
-val DARK_GREY = 0xFF333333.toInt()
-
-// Shared preferences.
-const val PREFS_KEY = "Prefs"
-const val TEXT_COLOR = "text_color"
-const val KEY_COLOR = "key_color"
-const val BACKGROUND_COLOR = "background_color"
-const val PRIMARY_COLOR = "primary_color_2"
-const val ACCENT_COLOR = "accent_color"
-const val USE_ENGLISH = "use_english"
-const val WAS_USE_ENGLISH_TOGGLED = "was_use_english_toggled"
-const val IS_USING_SYSTEM_THEME = "is_using_system_theme"
