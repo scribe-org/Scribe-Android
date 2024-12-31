@@ -1,5 +1,5 @@
 /**
- * Composable screen that displays information about the app, including community links, feedback, support options, and legal information.
+ * The about page of the application with links to the community as well as sub pages for detailed descriptions.
  *
  * Copyright (C) 2024 Scribe
  *
@@ -10,12 +10,13 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package be.scri.ui.screens
 
 import android.annotation.SuppressLint

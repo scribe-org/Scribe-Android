@@ -1,5 +1,5 @@
 /**
- * This file implements the ScribeFragment, a base fragment class that includes functionality for hiding hints and loading other fragments with back-stack support.
+ * Handles displaying information like app hints and other fragments.
  *
  * Copyright (C) 2024 Scribe
  *
@@ -10,12 +10,13 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package be.scri.fragments
 
 import android.util.Log

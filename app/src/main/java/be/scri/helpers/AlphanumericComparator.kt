@@ -1,5 +1,5 @@
 /**
- * contains the AlphanumericComparator class, which compares two strings in a way that sorts alphanumeric values correctly, such as making "IMG_5.jpg" come before "IMG_10.jpg".
+ * A test class to prepare for application testing.
  *
  * Copyright (C) 2024 Scribe
  *
@@ -10,17 +10,18 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package be.scri.helpers
 
 // Taken from https://gist.github.com/MichaelRocks/1b94bb44c7804e999dbf31dac86955ec.
 // Make IMG_5.jpg come before IMG_10.jpg.
-// This is a example test so suppressed as it doesn't effect the application
+// This is a example test, so it is suppressed as it doesn't effect the application.
 @Suppress("NestedBlockDepth")
 class AlphanumericComparator {
     fun compare(

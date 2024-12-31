@@ -1,5 +1,5 @@
 /**
- * custom keyboard view for an Android application, providing features such as key press handling, key layout management, and keyboard actions. It supports various input behaviors, including key presses, shift states, and custom feedback mechanisms.
+ * The base keyboard view for Scribe language keyboards application.
  *
  * Copyright (C) 2024 Scribe
  *
@@ -10,12 +10,13 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package be.scri.views
 
 import android.annotation.SuppressLint

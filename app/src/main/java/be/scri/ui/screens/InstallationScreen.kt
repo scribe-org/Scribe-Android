@@ -1,5 +1,5 @@
 /**
- * Composable screen that guides users through the installation process of the Scribe keyboard, including settings and download options.
+ * The installation page of the application with details for installing Scribe keyboards and downloading data.
  *
  * Copyright (C) 2024 Scribe
  *
@@ -10,12 +10,13 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package be.scri.ui.screens
 
 import android.content.Intent

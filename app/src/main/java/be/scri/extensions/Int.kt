@@ -1,5 +1,5 @@
 /**
- * Provides extension functions for manipulating colors, including contrast adjustment, alpha adjustment, random value generation within a range, and darkening/lightening of colors.
+ * Functions for manipulating colors used within the application.
  *
  * Copyright (C) 2024 Scribe
  *
@@ -10,12 +10,13 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package be.scri.extensions
 
 import android.graphics.Color
