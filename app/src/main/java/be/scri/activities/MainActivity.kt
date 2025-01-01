@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
                     },
                     context = context,
                     navController = navController,
-                    modifier = Modifier.navigationBarsPadding()
+                    modifier = Modifier.navigationBarsPadding(),
                 )
             }
         }

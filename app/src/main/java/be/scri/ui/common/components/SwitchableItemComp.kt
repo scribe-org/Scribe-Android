@@ -72,32 +72,32 @@ fun SwitchableItemComp(
                 checked = isChecked,
                 onCheckedChange = onCheckedChange,
                 modifier =
-                Modifier
-                    .width(51.dp)
-                    .height(31.dp),
+                    Modifier
+                        .width(51.dp)
+                        .height(31.dp),
                 thumbContent = {
                     Box(
                         modifier =
-                        Modifier
-                            .size(27.dp)
-                            .background(
-                                if (isChecked) {
-                                    checkedThumbColor
-                                } else {
-                                    uncheckedThumbColor
-                                },
-                                shape = CircleShape,
-                            ),
+                            Modifier
+                                .size(27.dp)
+                                .background(
+                                    if (isChecked) {
+                                        checkedThumbColor
+                                    } else {
+                                        uncheckedThumbColor
+                                    },
+                                    shape = CircleShape,
+                                ),
                     )
                 },
                 colors =
-                SwitchDefaults.colors(
-                    checkedThumbColor = checkedThumbColor,
-                    uncheckedThumbColor = uncheckedThumbColor,
-                    checkedTrackColor = checkedTrackColor,
-                    uncheckedTrackColor = uncheckedTrackColor,
-                    uncheckedBorderColor = Color.Transparent,
-                ),
+                    SwitchDefaults.colors(
+                        checkedThumbColor = checkedThumbColor,
+                        uncheckedThumbColor = uncheckedThumbColor,
+                        checkedTrackColor = checkedTrackColor,
+                        uncheckedTrackColor = uncheckedTrackColor,
+                        uncheckedBorderColor = Color.Transparent,
+                    ),
             )
         }
         Text(
