@@ -3,7 +3,6 @@ package be.scri.ui.common.bottombar
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -76,7 +75,7 @@ fun BottomBarItem(
             style =
                 MaterialTheme.typography.labelMedium.copy(
                     fontSize = textSize,
-                    fontWeight = if(isSelected) FontWeight.ExtraBold else FontWeight.W600,
+                    fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.W600,
                     letterSpacing = (0).sp,
                 ),
         )

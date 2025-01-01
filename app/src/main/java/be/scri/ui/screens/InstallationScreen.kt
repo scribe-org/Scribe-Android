@@ -114,9 +114,7 @@ fun InstallationScreen(
                             start = 4.dp,
                             top = Dimensions.PaddingLarge,
                             bottom = Dimensions.PaddingSmall,
-                        )
-                        .align(Alignment.Start)
-                ,
+                        ).align(Alignment.Start),
             )
 
             Card(
@@ -241,13 +239,12 @@ fun InstallationScreen(
                 fontWeight = FontWeight.Bold,
                 fontSize = Dimensions.TextSizeLarge,
                 modifier =
-                    Modifier.padding(
-                        start = 4.dp,
-                        top = Dimensions.PaddingLarge,
-                        bottom = Dimensions.PaddingSmall,
-                    )
-                        .align(Alignment.Start)
-                ,
+                    Modifier
+                        .padding(
+                            start = 4.dp,
+                            top = Dimensions.PaddingLarge,
+                            bottom = Dimensions.PaddingSmall,
+                        ).align(Alignment.Start),
             )
             Card(
                 modifier =
