@@ -24,7 +24,7 @@ fun ScribeBottomBar(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(62.dp),
+                    .height(57.dp),
         ) {
             bottomBarScreens.forEachIndexed { index, item ->
                 BottomBarItem(

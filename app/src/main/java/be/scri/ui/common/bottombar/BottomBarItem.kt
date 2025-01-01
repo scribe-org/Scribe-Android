@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -35,21 +36,21 @@ fun BottomBarItem(
 
     val iconSize =
         if (isSelected) {
-            27.dp
+            26.dp
         } else {
             24.dp
         }
 
     val textSize =
         if (isSelected) {
-            12.sp
+            13.sp
         } else {
-            11.sp
+            12.sp
         }
     Column(
-        modifier = modifier.padding(bottom = 4.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy((-9).dp),
+        verticalArrangement = Arrangement.spacedBy((-10).dp),
     ) {
         IconButton(
             onClick = {
@@ -75,6 +76,8 @@ fun BottomBarItem(
             style =
                 MaterialTheme.typography.labelMedium.copy(
                     fontSize = textSize,
+                    fontWeight = if(isSelected) FontWeight.ExtraBold else FontWeight.W600,
+                    letterSpacing = (0).sp,
                 ),
         )
     }

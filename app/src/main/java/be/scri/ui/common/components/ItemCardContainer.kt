@@ -66,6 +66,7 @@ fun ItemsCardContainer(
                             desc = stringResource(item.desc),
                             isChecked = item.state,
                             onCheckedChange = item.onToggle,
+                            isDarkModeSwitch = item.title == R.string.app_settings_menu_app_color_mode,
                         )
                     }
 

@@ -90,7 +90,7 @@ fun InstallationScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(54.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.scribe_logo),
@@ -114,7 +114,9 @@ fun InstallationScreen(
                             start = 4.dp,
                             top = Dimensions.PaddingLarge,
                             bottom = Dimensions.PaddingSmall,
-                        ),
+                        )
+                        .align(Alignment.Start)
+                ,
             )
 
             Card(
@@ -243,7 +245,9 @@ fun InstallationScreen(
                         start = 4.dp,
                         top = Dimensions.PaddingLarge,
                         bottom = Dimensions.PaddingSmall,
-                    ),
+                    )
+                        .align(Alignment.Start)
+                ,
             )
             Card(
                 modifier =
