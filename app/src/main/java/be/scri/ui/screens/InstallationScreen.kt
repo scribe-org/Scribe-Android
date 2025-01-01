@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 
+@Suppress("MagicNumber")
 @Composable
 fun InstallationScreen(
     isDark: Boolean,
