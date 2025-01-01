@@ -46,7 +46,6 @@ fun SwitchableItemComp(
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    isDarkModeSwitch: Boolean = false,
 ) {
     val checkedThumbColor = MaterialTheme.colorScheme.primary
     val uncheckedThumbColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -68,47 +67,38 @@ fun SwitchableItemComp(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
-            if (isDarkModeSwitch) {
-                DarkModeSwitch(
-                    checked = isChecked,
-                    onCheckChange = onCheckedChange,
-                    modifier =
-                    Modifier,
-                )
-            } else {
-                Switch(
-                    interactionSource = null,
-                    checked = isChecked,
-                    onCheckedChange = onCheckedChange,
-                    modifier =
+            Switch(
+                interactionSource = null,
+                checked = isChecked,
+                onCheckedChange = onCheckedChange,
+                modifier =
+                Modifier
+                    .width(51.dp)
+                    .height(31.dp),
+                thumbContent = {
+                    Box(
+                        modifier =
                         Modifier
-                            .width(51.dp)
-                            .height(31.dp),
-                    thumbContent = {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .size(27.dp)
-                                    .background(
-                                        if (isChecked) {
-                                            checkedThumbColor
-                                        } else {
-                                            uncheckedThumbColor
-                                        },
-                                        shape = CircleShape,
-                                    ),
-                        )
-                    },
-                    colors =
-                        SwitchDefaults.colors(
-                            checkedThumbColor = checkedThumbColor,
-                            uncheckedThumbColor = uncheckedThumbColor,
-                            checkedTrackColor = checkedTrackColor,
-                            uncheckedTrackColor = uncheckedTrackColor,
-                            uncheckedBorderColor = Color.Transparent,
-                        ),
-                )
-            }
+                            .size(27.dp)
+                            .background(
+                                if (isChecked) {
+                                    checkedThumbColor
+                                } else {
+                                    uncheckedThumbColor
+                                },
+                                shape = CircleShape,
+                            ),
+                    )
+                },
+                colors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = checkedThumbColor,
+                    uncheckedThumbColor = uncheckedThumbColor,
+                    checkedTrackColor = checkedTrackColor,
+                    uncheckedTrackColor = uncheckedTrackColor,
+                    uncheckedBorderColor = Color.Transparent,
+                ),
+            )
         }
         Text(
             text = desc,
