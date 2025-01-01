@@ -53,7 +53,6 @@ import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.views.MyKeyboardView
 
-
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
 @Suppress("TooManyFunctions", "LargeClass")
@@ -118,17 +117,15 @@ abstract class SimpleKeyboardIME(
     private fun updateCommandBarHintandPrompt() {
         val commandBarButton = keyboardBinding.commandBar
         val hintMessage = HintUtils.getCommandBarHint(currentState, language)
-        val promptText = HintUtils.getPromptText(currentState,language)
+        val promptText = HintUtils.getPromptText(currentState, language)
         val promptTextView = keyboardBinding.promptText
         promptTextView?.setText(promptText)
         commandBarButton.hint = hintMessage
         Log.d(
             "KeyboardUpdate",
-            "CommandBar Hint Updated: [State: $currentState, Language: $language, Hint: $hintMessage]"
+            "CommandBar Hint Updated: [State: $currentState, Language: $language, Hint: $hintMessage]",
         )
     }
-
-
 
     private fun updateKeyboardMode(isCommandMode: Boolean = false) {
         updateCommandBarHintandPrompt()
