@@ -17,7 +17,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package be.scri.helpers.portugese
+package be.scri.helpers.portuguese
 
 object PTInterfaceVariables {
     // MARK: Currency Symbols
