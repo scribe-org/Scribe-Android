@@ -46,6 +46,7 @@ import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.DatabaseHelper
+import be.scri.helpers.HintUtils
 import be.scri.helpers.MyKeyboard
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
@@ -113,7 +114,21 @@ abstract class SimpleKeyboardIME(
         DISPLAY_INFORMATION,
     }
 
+    private fun updateCommandBarHintandPrompt() {
+        val commandBarButton = keyboardBinding.commandBar
+        val hintMessage = HintUtils.getCommandBarHint(currentState, language)
+        val promptText = HintUtils.getPromptText(currentState, language)
+        val promptTextView = keyboardBinding.promptText
+        promptTextView?.setText(promptText)
+        commandBarButton.hint = hintMessage
+        Log.d(
+            "KeyboardUpdate",
+            "CommandBar Hint Updated: [State: $currentState, Language: $language, Hint: $hintMessage]",
+        )
+    }
+
     private fun updateKeyboardMode(isCommandMode: Boolean = false) {
+        updateCommandBarHintandPrompt()
         enterKeyType =
             if (isCommandMode) {
                 MyKeyboard.MyCustomActions.IME_ACTION_COMMAND

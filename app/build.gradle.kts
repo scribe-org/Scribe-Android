@@ -235,7 +235,6 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("io.mockk:mockk-android:1.13.5")
 
-
     // Other libraries
     api("joda-time:joda-time:2.10.13")
     api("com.github.tibbi:RecyclerView-FastScroller:e7d3e150c4")
@@ -250,17 +249,20 @@ tasks.register<Copy>("moveFromi18n") {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     destinationDir = file("src/main/res")
 
-    val locales = file("src/main/assets/i18n/Scribe-i18n/values").listFiles()
-        ?.filter { it.isDirectory }
-        ?.map { it.name }
-        ?: emptyList()
+    val locales =
+        file("src/main/assets/i18n/Scribe-i18n/values")
+            .listFiles()
+            ?.filter { it.isDirectory }
+            ?.map { it.name }
+            ?: emptyList()
     locales.forEach { locale ->
         val fromDir = file("src/main/assets/i18n/Scribe-i18n/values/$locale/")
-        val targetDir = if (locale == "en-US") {
-            "values"
-        } else {
-            "values-$locale"
-        }
+        val targetDir =
+            if (locale == "en-US") {
+                "values"
+            } else {
+                "values-$locale"
+            }
 
         if (fromDir.exists()) {
             println("Copying from $fromDir to $targetDir")
