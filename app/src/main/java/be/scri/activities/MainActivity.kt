@@ -24,10 +24,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import be.scri.ScribeApp
@@ -97,6 +99,7 @@ class MainActivity : ComponentActivity() {
                     },
                     context = context,
                     navController = navController,
+                    modifier = Modifier.navigationBarsPadding()
                 )
             }
         }

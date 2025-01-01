@@ -87,7 +87,6 @@ fun ScribeApp(
                     pagerState = pagerState,
                     modifier =
                         Modifier
-                            .background(color = colorResource(R.color.background_color)),
                 )
             },
             modifier = modifier.fillMaxSize(),

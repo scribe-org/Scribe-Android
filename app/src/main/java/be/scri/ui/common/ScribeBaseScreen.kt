@@ -24,7 +24,8 @@ fun ScribeBaseScreen(
     Scaffold(
         modifier =
             modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(top = 8.dp),
         containerColor = MaterialTheme.colorScheme.background,
     ) {
         Column(
