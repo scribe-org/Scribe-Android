@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -52,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
@@ -72,6 +72,7 @@ fun InstallationScreen(
     modifier: Modifier = Modifier,
 ) {
     val layoutDirection = LocalLayoutDirection.current
+    val localConfiguration = LocalConfiguration.current
     val resource: Int =
         if (isDark) {
             R.drawable.keyboard_dark
@@ -80,6 +81,7 @@ fun InstallationScreen(
         }
     val scrollState = rememberScrollState()
 
+    val dynamicSpacing = localConfiguration.screenHeightDp.dp * 0.1f
     ScribeBaseScreen {
         Column(
             modifier =
@@ -90,9 +92,8 @@ fun InstallationScreen(
                     .testTag("backgroundContainer")
                     .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
         ) {
-            Spacer(modifier = Modifier.fillMaxHeight(0.4f))
+            Spacer(modifier = Modifier.height(dynamicSpacing))
 
             Image(
                 painter = painterResource(id = R.drawable.scribe_logo),
