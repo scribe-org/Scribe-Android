@@ -34,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +64,7 @@ fun ClickableItemComp(
                 text = title,
                 modifier = Modifier.weight(1f),
                 fontSize = 16.sp,
-                color = colorResource(R.color.app_text_color),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
             Icon(
@@ -73,7 +72,8 @@ fun ClickableItemComp(
                 modifier =
                     Modifier
                         .padding(start = 6.dp)
-                        .size(14.dp),
+                        .size(17.dp),
+                tint = MaterialTheme.colorScheme.onSurface,
                 contentDescription = "Right Arrow",
             )
         }

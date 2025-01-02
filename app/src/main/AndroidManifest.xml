@@ -11,7 +11,6 @@
         android:maxSdkVersion="28" />
 
     <application
-        android:name=".App"
         android:allowBackup="true"
         android:appCategory="productivity"
         android:icon="@mipmap/ic_launcher"
@@ -20,17 +19,16 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Base">
-        <activity android:name=".activities.MainActivity"
+
+        <!-- Main Activity -->
+        <activity
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".fragments.MainFragment"
-            android:exported="false" />
 
         <service
             android:name=".services.EnglishKeyboardIME"
@@ -136,21 +134,6 @@
                 android:name="android.view.im"
                 android:resource="@xml/method_swedish" />
         </service>
-
-        <activity
-            android:name=".fragments.SettingsFragment"
-            android:exported="true"
-            android:label="@string/app.settings.title"
-            android:parentActivityName=".fragments.MainFragment" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

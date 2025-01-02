@@ -202,6 +202,8 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material:1.7.6")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
@@ -209,6 +211,9 @@ dependencies {
 
     // Activity Compose
     implementation("androidx.activity:activity-compose")
+
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:$2.8.4")
 
     // Testing libraries
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")

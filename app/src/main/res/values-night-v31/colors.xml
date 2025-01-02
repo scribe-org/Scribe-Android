@@ -11,6 +11,7 @@
     <color name="text_color">#FFF</color>
     <color name="icon_color">#FFF</color>
     <color name="card_view_color">#000</color>
+    <color name="hint_surface_color">@color/you_hint_surface_color</color>
     <color name="menu_option_color">#878472</color>
     <color name="corner_polygon_color">@color/dark_tutorial_button_color</color>
     <color name="button_outline_color">@color/dark_button_outline_color</color>
@@ -20,6 +21,7 @@
     <color name="switch_thumb_selector_color_false">@android:color/darker_gray</color>
     <color name="switch_selector_color">@color/corner_polygon_color</color>
     <color name="switch_selector_color_false">@color/md_grey_800_dark</color>
+    <color name="button_container_color">@color/you_button_background_color</color>
 
     <!-- Commons colors -->
     <color name="you_status_bar_color">@android:color/system_accent2_800</color>
@@ -29,11 +31,11 @@
     <color name="you_primary_color">@color/dark_scribe_color</color>
     <color name="you_primary_dark_color">@android:color/system_accent1_600</color>
     <color name="you_dialog_background_color">@android:color/system_accent2_800</color>
-
+    <color name="you_button_background_color">@color/light_scribe_color</color>
+    <color name="you_hint_surface_color">#000000</color>
     <color name="annotateRed">#FB5F6C</color>
     <color name="annotateBlue">#339EEB</color>
     <color name="annotatePurple">#AC6DEC</color>
     <color name="annotateGreen">#85C26F</color>
     <color name="annotateOrange">#FD9F5D</color>
-
 </resources>

@@ -36,10 +36,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import be.scri.R
 
 @Composable
 fun SwitchableItemComp(
@@ -49,10 +47,10 @@ fun SwitchableItemComp(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val checkedThumbColor = colorResource(R.color.switch_thumb_selector_color_true)
-    val uncheckedThumbColor = colorResource(R.color.switch_thumb_selector_color_false)
-    val checkedTrackColor = colorResource(R.color.switch_selector_color)
-    val uncheckedTrackColor = colorResource(R.color.switch_selector_color_false)
+    val checkedThumbColor = MaterialTheme.colorScheme.primary
+    val uncheckedThumbColor = MaterialTheme.colorScheme.tertiaryContainer
+    val checkedTrackColor = MaterialTheme.colorScheme.tertiary
+    val uncheckedTrackColor = MaterialTheme.colorScheme.outlineVariant
 
     Column(
         modifier =
@@ -66,7 +64,7 @@ fun SwitchableItemComp(
                 text = title,
                 modifier = Modifier.weight(1f),
                 fontSize = 16.sp,
-                color = colorResource(R.color.app_text_color),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
             Switch(
@@ -84,9 +82,9 @@ fun SwitchableItemComp(
                                 .size(27.dp)
                                 .background(
                                     if (isChecked) {
-                                        colorResource(R.color.switch_thumb_selector_color_true)
+                                        checkedThumbColor
                                     } else {
-                                        colorResource(R.color.switch_thumb_selector_color_false)
+                                        uncheckedThumbColor
                                     },
                                     shape = CircleShape,
                                 ),

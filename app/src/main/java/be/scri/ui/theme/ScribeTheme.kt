@@ -33,6 +33,11 @@ private val LightColors =
         surface = theme_light_card_view_color,
         onSurface = theme_light_text_color,
         outline = theme_light_button_color,
+        secondary = theme_light_selected_button_color,
+        tertiary = theme_light_switch_selector_color,
+        tertiaryContainer = theme_light_switch_container_color,
+        outlineVariant = theme_light_unchecked_switch_selector_color,
+        surfaceContainer = theme_light_corner_button_color,
     )
 
 private val DarkColors =
@@ -44,6 +49,11 @@ private val DarkColors =
         surface = theme_dark_card_view_color,
         onSurface = theme_dark_text_color,
         outline = theme_dark_button_outline_color,
+        secondary = theme_dark_selected_button_color,
+        tertiary = theme_dark_switch_selector_color,
+        tertiaryContainer = theme_dark_switch_container_color,
+        outlineVariant = theme_dark_unchecked_switch_selector_color,
+        surfaceContainer = theme_dark_corner_button_color,
     )
 
 @Composable
