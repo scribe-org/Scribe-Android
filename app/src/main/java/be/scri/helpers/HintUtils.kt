@@ -24,7 +24,7 @@ import be.scri.helpers.english.ENInterfaceVariables
 import be.scri.helpers.french.FRInterfaceVariables
 import be.scri.helpers.german.DEInterfaceVariables
 import be.scri.helpers.italian.ITInterfaceVariables
-import be.scri.helpers.portugese.PTInterfaceVariables
+import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
@@ -46,7 +46,7 @@ object HintUtils {
         language: String,
     ): String {
         val hintMessageForState = getHintForState(currentState)
-        return hintMessageForState[language] ?: "" // Return the placeholder or empty string if not found
+        return hintMessageForState[language] ?: "" // return the placeholder or empty string if not found
     }
 
     private fun getHintForState(currentState: SimpleKeyboardIME.ScribeState): Map<String, String> =
@@ -54,7 +54,7 @@ object HintUtils {
             SimpleKeyboardIME.ScribeState.TRANSLATE -> getTranslateHints()
             SimpleKeyboardIME.ScribeState.CONJUGATE -> getConjugateHints()
             SimpleKeyboardIME.ScribeState.PLURAL -> getPluralHints()
-            else -> emptyMap() // Fallback for unknown states
+            else -> emptyMap()
         }
 
     private fun getTranslateHints(): Map<String, String> =
@@ -101,7 +101,7 @@ object HintUtils {
             SimpleKeyboardIME.ScribeState.TRANSLATE -> getTranslationPrompt(language)
             SimpleKeyboardIME.ScribeState.CONJUGATE -> getConjugationPrompt(language)
             SimpleKeyboardIME.ScribeState.PLURAL -> getPluralPrompt(language)
-            else -> "" // Default fallback for unknown states
+            else -> ""
         }
 
     private fun getTranslationPrompt(language: String): String {
@@ -116,7 +116,7 @@ object HintUtils {
                 "Spanish" to "es",
                 "Swedish" to "sv",
             )
-        val shorthand = languageShorthand[language] ?: "en" // Default fallback to "en"
+        val shorthand = languageShorthand[language] ?: "en" // default fallback to "en"
         return "en -> $shorthand"
     }
 
@@ -130,7 +130,7 @@ object HintUtils {
             "Russian" -> RUInterfaceVariables.CONJUGATE_PROMPT
             "Spanish" -> ESInterfaceVariables.CONJUGATE_PROMPT
             "Swedish" -> SVInterfaceVariables.CONJUGATE_PROMPT
-            else -> "Conjugate :" // Default fallback
+            else -> "Conjugate :"
         }
 
     private fun getPluralPrompt(language: String): String =
@@ -143,6 +143,6 @@ object HintUtils {
             "Russian" -> RUInterfaceVariables.PLURAL_PROMPT
             "Spanish" -> ESInterfaceVariables.PLURAL_PROMPT
             "Swedish" -> SVInterfaceVariables.PLURAL_PROMPT
-            else -> "Plural :" // Default fallback
+            else -> "Plural :"
         }
 }
