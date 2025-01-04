@@ -196,7 +196,6 @@ dependencies {
     implementation("com.google.android.play:core:1.10.0")
     implementation("androidx.navigation:navigation-compose:2.6.0")
 
-
     // Jetpack Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
     implementation(composeBom)

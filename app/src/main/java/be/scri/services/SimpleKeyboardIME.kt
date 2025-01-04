@@ -174,8 +174,6 @@ abstract class SimpleKeyboardIME(
         }
     }
 
-
-
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
         currentState = ScribeState.IDLE
@@ -196,9 +194,6 @@ abstract class SimpleKeyboardIME(
             inputConnection.commitText("  ", 1)
         }
     }
-
-
-
 
     protected fun switchToCommandToolBar() {
         val binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
