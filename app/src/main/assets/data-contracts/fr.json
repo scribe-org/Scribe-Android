@@ -1,0 +1,48 @@
+{
+    "numbers": { "singular": "plural" },
+    "genders": {
+        "canonical": ["gender"],
+        "feminines": [],
+        "masculines": [],
+        "commons": [],
+        "neuters": []
+    },
+    "conjugations": {
+        "1": {
+            "title": "Présent",
+            "1": { "je": "indicativePresentFirstPersonSingular" },
+            "2": { "tu": "indicativePresentFirstPersonPlural" },
+            "3": { "il/elle": "indicativePresentSecondPersonSingular" },
+            "4": { "nous": "indicativePresentSecondPersonPlural" },
+            "5": { "vous": "indicativePresentThirdPersonSingular" },
+            "6": { "ils/elles": "indicativePresentThirdPersonPlural" }
+        },
+        "2": {
+            "title": "Passé simple",
+            "1": { "je": "indicativePreteriteFirstPersonSingular" },
+            "2": { "tu": "indicativePreteriteFirstPersonPlural" },
+            "3": { "il/elle": "indicativePreteriteSecondPersonSingular" },
+            "4": { "nous": "indicativePreteriteSecondPersonPlural" },
+            "5": { "vous": "indicativePreteriteThirdPersonSingular" },
+            "6": { "ils/elles": "indicativePreteriteThirdPersonPlural" }
+        },
+        "3": {
+            "title": "Imparfait",
+            "1": { "je": "indicativeImperfectFirstPersonSingular" },
+            "2": { "tu": "indicativeImperfectFirstPersonPlural" },
+            "3": { "il/elle": "indicativeImperfectSecondPersonSingular" },
+            "4": { "nous": "indicativeImperfectSecondPersonPlural" },
+            "5": { "vous": "indicativeImperfectThirdPersonSingular" },
+            "6": { "ils/elles": "indicativeImperfectThirdPersonPlural" }
+        },
+        "4": {
+            "title": "Futur",
+            "1": { "je": "indicativeSimpleFutureFirstPersonSingular" },
+            "2": { "tu": "indicativeSimpleFutureFirstPersonPlural" },
+            "3": { "il/elle": "indicativeSimpleFutureSecondPersonSingular" },
+            "4": { "nous": "indicativeSimpleFutureSecondPersonPlural" },
+            "5": { "vous": "indicativeSimpleFutureThirdPersonSingular" },
+            "6": { "ils/elles": "indicativeSimpleFutureThirdPersonPlural" }
+        }
+    }
+}

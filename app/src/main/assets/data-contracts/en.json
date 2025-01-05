@@ -1,0 +1,21 @@
+{
+    "numbers": { "singular": "plural" },
+    "genders": {
+        "canonical": [],
+        "feminines": [],
+        "masculines": [],
+        "commons": [],
+        "neuters": []
+    },
+    "conjugations": {
+        "1": {
+            "title": "",
+            "1": "",
+            "2": "",
+            "3": "",
+            "4": "",
+            "5": "",
+            "6": ""
+        }
+    }
+}

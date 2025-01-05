@@ -1,0 +1,39 @@
+{
+    "numbers": { "nominativeSingular": "nominativePlural" },
+    "genders": {
+        "canonical": ["gender"],
+        "feminines": [],
+        "masculines": [],
+        "commons": [],
+        "neuters": []
+    },
+    "conjugations": {
+        "1": {
+            "title": "Präsens",
+            "1": { "ich": "indicativePresentFirstPersonSingular" },
+            "2": { "du": "indicativePresentSecondPersonSingular" },
+            "3": { "er/sie/es": "indicativePresentThirdPersonSingular" },
+            "4": { "wir": "indicativePresentFirstPersonPlural" },
+            "5": { "ihr": "indicativePresentSecondPersonPlural" },
+            "6": { "sie/Sie": "indicativePresentThirdPersonPlural" }
+        },
+        "2": {
+            "title": "Preterite",
+            "1": { "ich": "indicativePreteriteFirstPersonSingular" },
+            "2": { "du": "indicativePreteriteFirstPersonPlural" },
+            "3": { "er/sie/es": "indicativePreteriteSecondPersonSingular" },
+            "4": { "wir": "indicativePreteriteSecondPersonPlural" },
+            "5": { "ihr": "indicativePreteriteThirdPersonSingular" },
+            "6": { "sie/Sie": "indicativePreteriteThirdPersonPlural" }
+        },
+        "3": {
+            "title": "Perfekt",
+            "1": { "ich": "" },
+            "2": { "du": "" },
+            "3": { "er/sie/es": "" },
+            "4": { "wir": "" },
+            "5": { "ihr": "" },
+            "6": { "sie/Sie": "" }
+        }
+    }
+}

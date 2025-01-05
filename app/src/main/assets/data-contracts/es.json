@@ -1,0 +1,42 @@
+{
+    "numbers": {
+        "feminineSingular": "femininePlural",
+        "masculineSingular": "masculinePlural"
+    },
+    "genders": {
+        "canonical": [],
+        "feminines": ["feminineSingular"],
+        "masculines": ["masculineSingular"],
+        "commons": [],
+        "neuters": []
+    },
+    "conjugations": {
+        "1": {
+            "title": "Presente",
+            "1": { "yo": "indicativePresentFirstPersonSingular" },
+            "2": { "tú": "indicativePresentFirstPersonPlural" },
+            "3": { "él/ella/Ud.": "indicativePresentSecondPersonSingular" },
+            "4": { "nosotros": "indicativePresentSecondPersonPlural" },
+            "5": { "vosotros": "indicativePresentThirdPersonSingular" },
+            "6": { "ellos/ellas/Uds.": "indicativePresentThirdPersonPlural" }
+        },
+        "2": {
+            "title": "Pretérito",
+            "1": { "yo": "preteriteFirstPersonSingular" },
+            "2": { "tú": "preteriteFirstPersonPlural" },
+            "3": { "él/ella/Ud.": "preteriteSecondPersonSingular" },
+            "4": { "nosotros": "preteriteSecondPersonPlural" },
+            "5": { "vosotros": "preteriteThirdPersonSingular" },
+            "6": { "ellos/ellas/Uds.": "preteriteThirdPersonPlural" }
+        },
+        "3": {
+            "title": "Imperfecto",
+            "1": { "yo": "pastImperfectFirstPersonSingular" },
+            "2": { "tú": "pastImperfectFirstPersonPlural" },
+            "3": { "él/ella/Ud.": "pastImperfectSecondPersonSingular" },
+            "4": { "nosotros": "pastImperfectSecondPersonPlural" },
+            "5": { "vosotros": "pastImperfectThirdPersonSingular" },
+            "6": { "ellos/ellas/Uds.": "pastImperfectThirdPersonPlural" }
+        }
+    }
+}
