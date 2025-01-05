@@ -79,6 +79,14 @@ After your first few pull requests organization members would be happy to discus
 -   Adding language data to [Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) via [Wikidata](https://www.wikidata.org/)! 🗃️
 -   [Sharing Scribe-Android](https://github.com/scribe-org/Scribe-iOS/issues/62) with others! 🚀
 
+<details><summary><strong>View Scribe-i18n localization progress</strong></summary>
+    <p>
+        <a href="https://hosted.weblate.org/projects/scribe/scribe-i18n">
+            <img src="https://hosted.weblate.org/widget/scribe/scribe-i18n/multi-auto.svg" alt="Translation status" />
+        </a>
+    </p>
+</details>
+
 ### Road Map [`⇧`](#contents)
 
 The Scribe road map can be followed in the organization's [project board](https://github.com/orgs/scribe-org/projects/1) where we list the most important issues along with their priority, status and an indication of which sub projects they're included in (if applicable).
