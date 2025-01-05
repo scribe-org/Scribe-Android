@@ -114,6 +114,14 @@ abstract class SimpleKeyboardIME(
         DISPLAY_INFORMATION,
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
+        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+        onCreateInputView()
+        setupCommandBarTheme(binding)
+    }
+
     private fun updateCommandBarHintandPrompt() {
         val commandBarButton = keyboardBinding.commandBar
         val hintMessage = HintUtils.getCommandBarHint(currentState, language)
@@ -156,6 +164,14 @@ abstract class SimpleKeyboardIME(
             ScribeState.SELECT_COMMAND -> keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
             else -> keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
         }
+
+        if (isDarkMode == true) {
+            val color = ContextCompat.getColorStateList(this, R.color.light_key_color)
+            binding.scribeKey.foregroundTintList = color
+        } else {
+            val colorLight = ContextCompat.getColorStateList(this, R.color.light_key_text_color)
+            binding.scribeKey.foregroundTintList = colorLight
+        }
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
@@ -177,14 +193,6 @@ abstract class SimpleKeyboardIME(
             inputConnection.deleteSurroundingText(1, 0)
             inputConnection.commitText("  ", 1)
         }
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
-        onCreateInputView()
-        setupCommandBarTheme(binding)
-        keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
     }
 
     protected fun switchToCommandToolBar() {
@@ -219,6 +227,7 @@ abstract class SimpleKeyboardIME(
             else -> switchToToolBar()
         }
         updateEnterKeyColor(isUserDarkMode)
+//        updateCloseButtonColor(isUserDarkMode)
     }
 
     private fun switchToToolBar() {
@@ -265,6 +274,7 @@ abstract class SimpleKeyboardIME(
                 binding.pluralBtn.setTextColor(Color.WHITE)
                 binding.separator2.setBackgroundColor(getColor(R.color.special_key_dark))
                 binding.separator3.setBackgroundColor(getColor(R.color.special_key_dark))
+                binding.separator4.setBackgroundColor(getColor(R.color.special_key_dark))
             }
 
             else -> {
@@ -276,6 +286,7 @@ abstract class SimpleKeyboardIME(
                 binding.pluralBtn.setTextColor(Color.BLACK)
                 binding.separator2.setBackgroundColor(getColor(R.color.special_key_light))
                 binding.separator3.setBackgroundColor(getColor(R.color.special_key_light))
+                binding.separator4.setBackgroundColor(getColor(R.color.special_key_light))
             }
         }
 
