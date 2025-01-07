@@ -28,7 +28,7 @@ import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.MyKeyboard
 import be.scri.views.MyKeyboardView
 
-class EnglishKeyboardIME : SimpleKeyboardIME("English") {
+class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override fun getKeyboardLayoutXML(): Int =
         if (getEnablePeriodAndCommaABC()) {
             R.xml.keys_letters_english

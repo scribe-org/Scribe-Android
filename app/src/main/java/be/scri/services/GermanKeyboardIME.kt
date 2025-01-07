@@ -28,7 +28,7 @@ import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.MyKeyboard
 import be.scri.views.MyKeyboardView
 
-class GermanKeyboardIME : SimpleKeyboardIME("German") {
+class GermanKeyboardIME : GeneralKeyboardIME("German") {
     override fun getKeyboardLayoutXML(): Int =
         if (getIsAccentCharacterDisabled() && !getEnablePeriodAndCommaABC()) {
             R.xml.keys_letter_german_without_accent_characters_and_without_period_and_comma

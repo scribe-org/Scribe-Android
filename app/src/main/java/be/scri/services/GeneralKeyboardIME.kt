@@ -23,7 +23,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.PorterDuff.Mode
 import android.inputmethodservice.InputMethodService
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
@@ -56,7 +55,7 @@ import be.scri.views.MyKeyboardView
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
 @Suppress("TooManyFunctions", "LargeClass")
-abstract class SimpleKeyboardIME(
+abstract class GeneralKeyboardIME(
     var language: String,
 ) : InputMethodService(),
     MyKeyboardView.OnKeyboardActionListener {
