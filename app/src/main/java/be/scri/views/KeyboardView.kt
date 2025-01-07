@@ -63,13 +63,13 @@ import be.scri.extensions.getProperPrimaryColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
 import be.scri.extensions.performHapticFeedback
+import be.scri.helpers.KeyboardBase
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_ENTER
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_MODE_CHANGE
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SHIFT
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SPACE
 import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
-import be.scri.helpers.MyKeyboard
-import be.scri.helpers.MyKeyboard.Companion.KEYCODE_DELETE
-import be.scri.helpers.MyKeyboard.Companion.KEYCODE_ENTER
-import be.scri.helpers.MyKeyboard.Companion.KEYCODE_MODE_CHANGE
-import be.scri.helpers.MyKeyboard.Companion.KEYCODE_SHIFT
-import be.scri.helpers.MyKeyboard.Companion.KEYCODE_SPACE
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -78,7 +78,7 @@ import java.util.Locale
 
 @SuppressLint("UseCompatLoadingForDrawables")
 @Suppress("LargeClass", "LongMethod", "TooManyFunctions", "NestedBlockDepth", "CyclomaticComplexMethod")
-class MyKeyboardView
+class KeyboardView
     @JvmOverloads
     constructor(
         context: Context,
@@ -126,7 +126,7 @@ class MyKeyboardView
             fun commitPeriodAfterSpace()
         }
 
-        private var mKeyboard: MyKeyboard? = null
+        private var mKeyboard: KeyboardBase? = null
         private var mCurrentKeyIndex: Int = NOT_A_KEY
 
         private var mLabelTextSize = 0
@@ -145,13 +145,13 @@ class MyKeyboardView
         private val mCoordinates = IntArray(2)
         private val mPopupKeyboard: PopupWindow
         private var mMiniKeyboardContainer: View? = null
-        private var mMiniKeyboard: MyKeyboardView? = null
+        private var mMiniKeyboard: KeyboardView? = null
         private var mMiniKeyboardOnScreen = false
         private var mPopupParent: View
         private var mMiniKeyboardOffsetX = 0
         private var mMiniKeyboardOffsetY = 0
-        private val mMiniKeyboardCache: MutableMap<MyKeyboard.Key, View?>
-        private var mKeys = ArrayList<MyKeyboard.Key>()
+        private val mMiniKeyboardCache: MutableMap<KeyboardBase.Key, View?>
+        private var mKeys = ArrayList<KeyboardBase.Key>()
         private var mMiniKeyboardSelectedKeyIndex = -1
 
         var mOnKeyboardActionListener: OnKeyboardActionListener? = null
@@ -312,7 +312,7 @@ class MyKeyboardView
             }
 
         init {
-            val attributes = context.obtainStyledAttributes(attrs, R.styleable.MyKeyboardView, 0, defStyleRes)
+            val attributes = context.obtainStyledAttributes(attrs, R.styleable.KeyboardView, 0, defStyleRes)
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val keyTextSize = 0
             val indexCnt = attributes.indexCount
@@ -320,7 +320,7 @@ class MyKeyboardView
             try {
                 for (i in 0 until indexCnt) {
                     when (val attr = attributes.getIndex(i)) {
-                        R.styleable.MyKeyboardView_keyTextSize -> {
+                        R.styleable.KeyboardView_keyTextSize -> {
                             mKeyTextSize = attributes.getDimensionPixelSize(attr, DEFAULT_KEY_TEXT_SIZE)
                         }
                     }
@@ -450,7 +450,7 @@ class MyKeyboardView
          * The keyboard can be switched at any time and the view will re-layout itself to accommodate the keyboard.
          * @param keyboard the keyboard to display in this view
          */
-        fun setKeyboard(keyboard: MyKeyboard) {
+        fun setKeyboard(keyboard: KeyboardBase) {
             if (mKeyboard != null) {
                 showPreview(NOT_A_KEY)
             }
@@ -458,7 +458,7 @@ class MyKeyboardView
             removeMessages()
             mKeyboard = keyboard
             val keys = mKeyboard!!.mKeys
-            mKeys = keys!!.toMutableList() as ArrayList<MyKeyboard.Key>
+            mKeys = keys!!.toMutableList() as ArrayList<KeyboardBase.Key>
             requestLayout()
             mKeyboardChanged = true
             invalidateAllKeys()
@@ -544,7 +544,7 @@ class MyKeyboardView
          * We use a square here and in computing the touch distance from a key's center to avoid taking a square root.
          * @param keyboard
          */
-        private fun computeProximityThreshold(keyboard: MyKeyboard?) {
+        private fun computeProximityThreshold(keyboard: KeyboardBase?) {
             if (keyboard == null) {
                 return
             }
@@ -979,7 +979,7 @@ class MyKeyboardView
          * Invalidates a key so that it will be redrawn on the next repaint.
          * Use this method if only one key is changing it's content. Any changes that
          * affect the position or size of the key may not be honored.
-         * @param keyIndex the index of the key in the attached [MyKeyboard].
+         * @param keyIndex the index of the key in the attached [KeyboardBase].
          */
         private fun invalidateKey(keyIndex: Int) {
             if (keyIndex < 0 || keyIndex >= mKeys.size) {
@@ -1027,7 +1027,7 @@ class MyKeyboardView
          * handle the call.
          */
         private fun onLongPress(
-            popupKey: MyKeyboard.Key,
+            popupKey: KeyboardBase.Key,
             me: MotionEvent,
         ): Boolean {
             val popupKeyboardId = popupKey.popupResId
@@ -1039,7 +1039,7 @@ class MyKeyboardView
                     mMiniKeyboard =
                         mMiniKeyboardContainer!!
                             .findViewById<View>(R.id.mini_keyboard_view)
-                            as MyKeyboardView
+                            as KeyboardView
 
                     mMiniKeyboard!!.mOnKeyboardActionListener =
                         object : OnKeyboardActionListener {
@@ -1079,9 +1079,9 @@ class MyKeyboardView
 
                     val keyboard =
                         if (popupKey.popupCharacters != null) {
-                            MyKeyboard(context, popupKeyboardId, popupKey.popupCharacters!!, popupKey.width)
+                            KeyboardBase(context, popupKeyboardId, popupKey.popupCharacters!!, popupKey.width)
                         } else {
-                            MyKeyboard(context, popupKeyboardId, 0)
+                            KeyboardBase(context, popupKeyboardId, 0)
                         }
 
                     mMiniKeyboard!!.setKeyboard(keyboard)
@@ -1094,7 +1094,7 @@ class MyKeyboardView
                 } else {
                     mMiniKeyboard =
                         mMiniKeyboardContainer!!
-                            .findViewById<View>(R.id.mini_keyboard_view) as MyKeyboardView
+                            .findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
                 }
 
                 getLocationInWindow(mCoordinates)

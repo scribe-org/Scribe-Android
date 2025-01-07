@@ -23,7 +23,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.PorterDuff.Mode
 import android.inputmethodservice.InputMethodService
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
@@ -47,27 +46,27 @@ import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.DatabaseHelper
 import be.scri.helpers.HintUtils
-import be.scri.helpers.MyKeyboard
+import be.scri.helpers.KeyboardBase
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
-import be.scri.views.MyKeyboardView
+import be.scri.views.KeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
 @Suppress("TooManyFunctions", "LargeClass")
-abstract class SimpleKeyboardIME(
+abstract class GeneralKeyboardIME(
     var language: String,
 ) : InputMethodService(),
-    MyKeyboardView.OnKeyboardActionListener {
+    KeyboardView.OnKeyboardActionListener {
     abstract fun getKeyboardLayoutXML(): Int
 
     abstract val keyboardLetters: Int
     abstract val keyboardSymbols: Int
     abstract val keyboardSymbolShift: Int
 
-    abstract var keyboard: MyKeyboard?
-    abstract var keyboardView: MyKeyboardView?
+    abstract var keyboard: KeyboardBase?
+    abstract var keyboardView: KeyboardView?
     abstract var lastShiftPressTS: Long
     abstract var keyboardMode: Int
     abstract var inputTypeClass: Int
@@ -117,7 +116,7 @@ abstract class SimpleKeyboardIME(
     override fun onCreate() {
         super.onCreate()
         keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
-        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         onCreateInputView()
         setupCommandBarTheme(binding)
     }
@@ -139,11 +138,11 @@ abstract class SimpleKeyboardIME(
         updateCommandBarHintandPrompt()
         enterKeyType =
             if (isCommandMode) {
-                MyKeyboard.MyCustomActions.IME_ACTION_COMMAND
+                KeyboardBase.MyCustomActions.IME_ACTION_COMMAND
             } else {
                 currentEnterKeyType!!
             }
-        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
     fun getIsAccentCharacterDisabled(): Boolean {
@@ -348,7 +347,7 @@ abstract class SimpleKeyboardIME(
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()
-        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
     override fun hasTextBeforeCursor(): Boolean {
@@ -535,7 +534,7 @@ abstract class SimpleKeyboardIME(
         emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
         nounKeywords = dbHelper.getNounKeywords(languageAlias)
 
-        keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
+        keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
     }
 
@@ -571,7 +570,7 @@ abstract class SimpleKeyboardIME(
     override fun onActionUp() {
         if (switchToLetters) {
             keyboardMode = keyboardLetters
-            keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+            keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
 
             val editorInfo = currentInputEditorInfo
             if (
@@ -643,7 +642,7 @@ abstract class SimpleKeyboardIME(
 
     fun handleModeChange(
         keyboardMode: Int,
-        keyboardView: MyKeyboardView?,
+        keyboardView: KeyboardView?,
         context: Context,
     ) {
         val keyboardXml =
@@ -654,14 +653,14 @@ abstract class SimpleKeyboardIME(
                 this.keyboardMode = keyboardLetters
                 getKeyboardLayoutXML()
             }
-        keyboard = MyKeyboard(context, keyboardXml, enterKeyType)
+        keyboard = KeyboardBase(context, keyboardXml, enterKeyType)
         keyboardView?.invalidateAllKeys()
         keyboardView?.setKeyboard(keyboard!!)
     }
 
     fun handleKeyboardLetters(
         keyboardMode: Int,
-        keyboardView: MyKeyboardView?,
+        keyboardView: KeyboardView?,
     ) {
         if (keyboardMode == keyboardLetters) {
             when {
@@ -689,7 +688,7 @@ abstract class SimpleKeyboardIME(
                     this.keyboardMode = keyboardSymbols
                     R.xml.keys_symbols
                 }
-            keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
+            keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
             keyboardView!!.setKeyboard(keyboard!!)
         }
     }
@@ -753,7 +752,7 @@ abstract class SimpleKeyboardIME(
             }
         } else {
             // Handling space key logic.
-            if (keyboardMode != keyboardLetters && code == MyKeyboard.KEYCODE_SPACE) {
+            if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
                 binding?.commandBar?.text = " "
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                 inputConnection.commitText(codeChar.toString(), 1)

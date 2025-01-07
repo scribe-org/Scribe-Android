@@ -25,10 +25,10 @@ import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
-import be.scri.helpers.MyKeyboard
-import be.scri.views.MyKeyboardView
+import be.scri.helpers.KeyboardBase
+import be.scri.views.KeyboardView
 
-class EnglishKeyboardIME : SimpleKeyboardIME("English") {
+class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override fun getKeyboardLayoutXML(): Int =
         if (getEnablePeriodAndCommaABC()) {
             R.xml.keys_letters_english
@@ -40,8 +40,8 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
     override val keyboardSymbols = 1
     override val keyboardSymbolShift = 2
 
-    override var keyboard: MyKeyboard? = null
-    override var keyboardView: MyKeyboardView? = null
+    override var keyboard: KeyboardBase? = null
+    override var keyboardView: KeyboardView? = null
     override var lastShiftPressTS = 0L
     override var keyboardMode = keyboardLetters
     override var inputTypeClass = InputType.TYPE_CLASS_TEXT
@@ -72,34 +72,34 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
         if (keyboard == null || inputConnection == null) {
             return
         }
-        if (code != MyKeyboard.KEYCODE_SHIFT) {
+        if (code != KeyboardBase.KEYCODE_SHIFT) {
             lastShiftPressTS = 0
         }
 
         when (code) {
-            MyKeyboard.KEYCODE_DELETE -> {
+            KeyboardBase.KEYCODE_DELETE -> {
                 handleKeycodeDelete()
                 keyboardView!!.invalidateAllKeys()
                 disableAutoSuggest()
             }
 
-            MyKeyboard.KEYCODE_SHIFT -> {
+            KeyboardBase.KEYCODE_SHIFT -> {
                 super.handleKeyboardLetters(keyboardMode, keyboardView)
                 keyboardView!!.invalidateAllKeys()
                 disableAutoSuggest()
             }
 
-            MyKeyboard.KEYCODE_ENTER -> {
+            KeyboardBase.KEYCODE_ENTER -> {
                 handleKeycodeEnter()
                 disableAutoSuggest()
             }
 
-            MyKeyboard.KEYCODE_MODE_CHANGE -> {
+            KeyboardBase.KEYCODE_MODE_CHANGE -> {
                 handleModeChange(keyboardMode, keyboardView, this)
                 disableAutoSuggest()
             }
 
-            MyKeyboard.KEYCODE_SPACE -> {
+            KeyboardBase.KEYCODE_SPACE -> {
                 handleElseCondition(code, keyboardMode, binding = null)
                 updateAutoSuggestText(nounTypeSuggestion)
             }
@@ -122,7 +122,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
         Log.d("Debug", "$autosuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
-        if (code != MyKeyboard.KEYCODE_SHIFT) {
+        if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }
     }
@@ -148,7 +148,7 @@ class EnglishKeyboardIME : SimpleKeyboardIME("English") {
 
     override fun onCreate() {
         super.onCreate()
-        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         onCreateInputView()
         setupCommandBarTheme(binding)
     }

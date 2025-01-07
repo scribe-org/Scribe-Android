@@ -1,6 +1,6 @@
-<be.scri.views.MyKeyboardView xmlns:android="http://schemas.android.com/apk/res/android"
+<be.scri.views.KeyboardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mini_keyboard_view"
-    style="@style/MyKeyboardViewPopup"
+    style="@style/KeyboardViewPopup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/you_keyboard_background_color" />

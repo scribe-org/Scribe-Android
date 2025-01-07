@@ -28,7 +28,7 @@ import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
-import be.scri.services.SimpleKeyboardIME
+import be.scri.services.GeneralKeyboardIME
 
 object HintUtils {
     fun resetHints(context: Context) {
@@ -42,18 +42,18 @@ object HintUtils {
     }
 
     fun getCommandBarHint(
-        currentState: SimpleKeyboardIME.ScribeState,
+        currentState: GeneralKeyboardIME.ScribeState,
         language: String,
     ): String {
         val hintMessageForState = getHintForState(currentState)
         return hintMessageForState[language] ?: "" // return the placeholder or empty string if not found
     }
 
-    private fun getHintForState(currentState: SimpleKeyboardIME.ScribeState): Map<String, String> =
+    private fun getHintForState(currentState: GeneralKeyboardIME.ScribeState): Map<String, String> =
         when (currentState) {
-            SimpleKeyboardIME.ScribeState.TRANSLATE -> getTranslateHints()
-            SimpleKeyboardIME.ScribeState.CONJUGATE -> getConjugateHints()
-            SimpleKeyboardIME.ScribeState.PLURAL -> getPluralHints()
+            GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslateHints()
+            GeneralKeyboardIME.ScribeState.CONJUGATE -> getConjugateHints()
+            GeneralKeyboardIME.ScribeState.PLURAL -> getPluralHints()
             else -> emptyMap()
         }
 
@@ -94,13 +94,13 @@ object HintUtils {
         )
 
     fun getPromptText(
-        currentState: SimpleKeyboardIME.ScribeState,
+        currentState: GeneralKeyboardIME.ScribeState,
         language: String,
     ): String =
         when (currentState) {
-            SimpleKeyboardIME.ScribeState.TRANSLATE -> getTranslationPrompt(language)
-            SimpleKeyboardIME.ScribeState.CONJUGATE -> getConjugationPrompt(language)
-            SimpleKeyboardIME.ScribeState.PLURAL -> getPluralPrompt(language)
+            GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslationPrompt(language)
+            GeneralKeyboardIME.ScribeState.CONJUGATE -> getConjugationPrompt(language)
+            GeneralKeyboardIME.ScribeState.PLURAL -> getPluralPrompt(language)
             else -> ""
         }
 
