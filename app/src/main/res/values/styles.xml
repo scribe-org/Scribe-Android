@@ -2,15 +2,15 @@
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge" />
 
-    <style name="MyKeyboard">
+    <style name="KeyboardBase">
         <item name="itemTextAppearance">?attr/itemTextAppearance</item>
     </style>
 
-    <style name="KeyboardView" parent="MyKeyboard">
+    <style name="KeyboardView" parent="KeyboardBase">
         <item name="keyTextSize">@dimen/keyboard_text_size</item>
     </style>
 
-    <style name="KeyboardViewPopup" parent="MyKeyboard">
+    <style name="KeyboardViewPopup" parent="KeyboardBase">
         <item name="keyTextSize">@dimen/preview_text_size</item>
     </style>
 

@@ -46,7 +46,7 @@ import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.DatabaseHelper
 import be.scri.helpers.HintUtils
-import be.scri.helpers.MyKeyboard
+import be.scri.helpers.KeyboardBase
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -65,7 +65,7 @@ abstract class GeneralKeyboardIME(
     abstract val keyboardSymbols: Int
     abstract val keyboardSymbolShift: Int
 
-    abstract var keyboard: MyKeyboard?
+    abstract var keyboard: KeyboardBase?
     abstract var keyboardView: KeyboardView?
     abstract var lastShiftPressTS: Long
     abstract var keyboardMode: Int
@@ -116,7 +116,7 @@ abstract class GeneralKeyboardIME(
     override fun onCreate() {
         super.onCreate()
         keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
-        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         onCreateInputView()
         setupCommandBarTheme(binding)
     }
@@ -138,11 +138,11 @@ abstract class GeneralKeyboardIME(
         updateCommandBarHintandPrompt()
         enterKeyType =
             if (isCommandMode) {
-                MyKeyboard.MyCustomActions.IME_ACTION_COMMAND
+                KeyboardBase.MyCustomActions.IME_ACTION_COMMAND
             } else {
                 currentEnterKeyType!!
             }
-        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
     fun getIsAccentCharacterDisabled(): Boolean {
@@ -347,7 +347,7 @@ abstract class GeneralKeyboardIME(
 
     override fun onInitializeInterface() {
         super.onInitializeInterface()
-        keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
     override fun hasTextBeforeCursor(): Boolean {
@@ -534,7 +534,7 @@ abstract class GeneralKeyboardIME(
         emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
         nounKeywords = dbHelper.getNounKeywords(languageAlias)
 
-        keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
+        keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
     }
 
@@ -570,7 +570,7 @@ abstract class GeneralKeyboardIME(
     override fun onActionUp() {
         if (switchToLetters) {
             keyboardMode = keyboardLetters
-            keyboard = MyKeyboard(this, getKeyboardLayoutXML(), enterKeyType)
+            keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
 
             val editorInfo = currentInputEditorInfo
             if (
@@ -653,7 +653,7 @@ abstract class GeneralKeyboardIME(
                 this.keyboardMode = keyboardLetters
                 getKeyboardLayoutXML()
             }
-        keyboard = MyKeyboard(context, keyboardXml, enterKeyType)
+        keyboard = KeyboardBase(context, keyboardXml, enterKeyType)
         keyboardView?.invalidateAllKeys()
         keyboardView?.setKeyboard(keyboard!!)
     }
@@ -688,7 +688,7 @@ abstract class GeneralKeyboardIME(
                     this.keyboardMode = keyboardSymbols
                     R.xml.keys_symbols
                 }
-            keyboard = MyKeyboard(this, keyboardXml, enterKeyType)
+            keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
             keyboardView!!.setKeyboard(keyboard!!)
         }
     }
@@ -752,7 +752,7 @@ abstract class GeneralKeyboardIME(
             }
         } else {
             // Handling space key logic.
-            if (keyboardMode != keyboardLetters && code == MyKeyboard.KEYCODE_SPACE) {
+            if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
                 binding?.commandBar?.text = " "
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                 inputConnection.commitText(codeChar.toString(), 1)

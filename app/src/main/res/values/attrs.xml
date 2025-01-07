@@ -8,12 +8,12 @@
         <attr name="keyTextSize" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="MyKeyboard">
+    <declare-styleable name="KeyboardBase">
         <attr name="keyWidth" format="fraction" />
         <attr name="horizontalGap" format="fraction" />
     </declare-styleable>
 
-    <declare-styleable name="MyKeyboard_Key">
+    <declare-styleable name="KeyboardBase_Key">
         <!-- The unicode value that this key outputs. -->
         <attr name="code" format="integer" />
         <!-- The XML keyboard layout of any popup keyboard. -->
