@@ -63,13 +63,13 @@ import be.scri.extensions.getProperPrimaryColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
 import be.scri.extensions.performHapticFeedback
-import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_ENTER
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_MODE_CHANGE
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SHIFT
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SPACE
+import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
