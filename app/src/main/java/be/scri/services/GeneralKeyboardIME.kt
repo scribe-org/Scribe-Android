@@ -50,7 +50,7 @@ import be.scri.helpers.MyKeyboard
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
-import be.scri.views.MyKeyboardView
+import be.scri.views.KeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
@@ -58,7 +58,7 @@ import be.scri.views.MyKeyboardView
 abstract class GeneralKeyboardIME(
     var language: String,
 ) : InputMethodService(),
-    MyKeyboardView.OnKeyboardActionListener {
+    KeyboardView.OnKeyboardActionListener {
     abstract fun getKeyboardLayoutXML(): Int
 
     abstract val keyboardLetters: Int
@@ -66,7 +66,7 @@ abstract class GeneralKeyboardIME(
     abstract val keyboardSymbolShift: Int
 
     abstract var keyboard: MyKeyboard?
-    abstract var keyboardView: MyKeyboardView?
+    abstract var keyboardView: KeyboardView?
     abstract var lastShiftPressTS: Long
     abstract var keyboardMode: Int
     abstract var inputTypeClass: Int
@@ -642,7 +642,7 @@ abstract class GeneralKeyboardIME(
 
     fun handleModeChange(
         keyboardMode: Int,
-        keyboardView: MyKeyboardView?,
+        keyboardView: KeyboardView?,
         context: Context,
     ) {
         val keyboardXml =
@@ -660,7 +660,7 @@ abstract class GeneralKeyboardIME(
 
     fun handleKeyboardLetters(
         keyboardMode: Int,
-        keyboardView: MyKeyboardView?,
+        keyboardView: KeyboardView?,
     ) {
         if (keyboardMode == keyboardLetters) {
             when {

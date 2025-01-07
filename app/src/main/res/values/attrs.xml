@@ -4,7 +4,7 @@
         <attr name="state_long_pressable" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="MyKeyboardView">
+    <declare-styleable name="KeyboardView">
         <attr name="keyTextSize" format="dimension" />
     </declare-styleable>
 

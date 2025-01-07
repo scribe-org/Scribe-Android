@@ -6,11 +6,11 @@
         <item name="itemTextAppearance">?attr/itemTextAppearance</item>
     </style>
 
-    <style name="MyKeyboardView" parent="MyKeyboard">
+    <style name="KeyboardView" parent="MyKeyboard">
         <item name="keyTextSize">@dimen/keyboard_text_size</item>
     </style>
 
-    <style name="MyKeyboardViewPopup" parent="MyKeyboard">
+    <style name="KeyboardViewPopup" parent="MyKeyboard">
         <item name="keyTextSize">@dimen/preview_text_size</item>
     </style>
 

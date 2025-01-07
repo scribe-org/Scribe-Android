@@ -78,7 +78,7 @@ import java.util.Locale
 
 @SuppressLint("UseCompatLoadingForDrawables")
 @Suppress("LargeClass", "LongMethod", "TooManyFunctions", "NestedBlockDepth", "CyclomaticComplexMethod")
-class MyKeyboardView
+class KeyboardView
     @JvmOverloads
     constructor(
         context: Context,
@@ -145,7 +145,7 @@ class MyKeyboardView
         private val mCoordinates = IntArray(2)
         private val mPopupKeyboard: PopupWindow
         private var mMiniKeyboardContainer: View? = null
-        private var mMiniKeyboard: MyKeyboardView? = null
+        private var mMiniKeyboard: KeyboardView? = null
         private var mMiniKeyboardOnScreen = false
         private var mPopupParent: View
         private var mMiniKeyboardOffsetX = 0
@@ -312,7 +312,7 @@ class MyKeyboardView
             }
 
         init {
-            val attributes = context.obtainStyledAttributes(attrs, R.styleable.MyKeyboardView, 0, defStyleRes)
+            val attributes = context.obtainStyledAttributes(attrs, R.styleable.KeyboardView, 0, defStyleRes)
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val keyTextSize = 0
             val indexCnt = attributes.indexCount
@@ -320,7 +320,7 @@ class MyKeyboardView
             try {
                 for (i in 0 until indexCnt) {
                     when (val attr = attributes.getIndex(i)) {
-                        R.styleable.MyKeyboardView_keyTextSize -> {
+                        R.styleable.KeyboardView_keyTextSize -> {
                             mKeyTextSize = attributes.getDimensionPixelSize(attr, DEFAULT_KEY_TEXT_SIZE)
                         }
                     }
@@ -1039,7 +1039,7 @@ class MyKeyboardView
                     mMiniKeyboard =
                         mMiniKeyboardContainer!!
                             .findViewById<View>(R.id.mini_keyboard_view)
-                            as MyKeyboardView
+                            as KeyboardView
 
                     mMiniKeyboard!!.mOnKeyboardActionListener =
                         object : OnKeyboardActionListener {
@@ -1094,7 +1094,7 @@ class MyKeyboardView
                 } else {
                     mMiniKeyboard =
                         mMiniKeyboardContainer!!
-                            .findViewById<View>(R.id.mini_keyboard_view) as MyKeyboardView
+                            .findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
                 }
 
                 getLocationInWindow(mCoordinates)

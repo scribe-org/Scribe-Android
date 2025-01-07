@@ -26,7 +26,7 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.MyKeyboard
-import be.scri.views.MyKeyboardView
+import be.scri.views.KeyboardView
 
 class FrenchKeyboardIME : GeneralKeyboardIME("French") {
     override fun getKeyboardLayoutXML(): Int =
@@ -37,7 +37,7 @@ class FrenchKeyboardIME : GeneralKeyboardIME("French") {
         }
 
     override lateinit var binding: KeyboardViewCommandOptionsBinding
-    override var keyboardView: MyKeyboardView? = null
+    override var keyboardView: KeyboardView? = null
     override var keyboard: MyKeyboard? = null
     override var enterKeyType = IME_ACTION_NONE
     override val keyboardLetters = 0

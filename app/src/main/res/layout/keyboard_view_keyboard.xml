@@ -99,9 +99,9 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <be.scri.views.MyKeyboardView
+    <be.scri.views.KeyboardView
         android:id="@+id/keyboard_view"
-        style="@style/MyKeyboardView"
+        style="@style/KeyboardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/theme_dark_background_color"
