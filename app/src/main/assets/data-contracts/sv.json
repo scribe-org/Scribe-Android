@@ -1,0 +1,29 @@
+{
+    "numbers": {
+        "nominativeIndefiniteSingular": "nominativeIndefinitePlural",
+        "nominativeDefiniteSingular": "nominativeDefinitePlural"
+    },
+    "genders": {
+        "canonical": ["gender"],
+        "feminines": [],
+        "masculines": [],
+        "commons": [],
+        "neuters": []
+    },
+    "conjugations": {
+        "1": {
+            "title": "Aktiv",
+            "1": { "": "activeInfinitive" },
+            "2": { "": "activePresent" },
+            "3": { "": "activePreterite" },
+            "4": { "": "activeSupine" }
+        },
+        "2": {
+            "title": "Passiv",
+            "1": { "": "passiveInfinitive" },
+            "2": { "": "passivePresent" },
+            "3": { "": "passivePreterite" },
+            "4": { "": "passiveSupine" }
+        }
+    }
+}
