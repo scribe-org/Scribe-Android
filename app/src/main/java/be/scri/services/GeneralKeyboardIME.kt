@@ -337,7 +337,7 @@ abstract class GeneralKeyboardIME(
             updateKeyboardMode(true)
             currentState = ScribeState.PLURAL
             if (language == "German") {
-                // Nouns are capitalized in 'German' language.
+                // All nouns are capitalized in German.
                 keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
             }
             updateUI()
@@ -556,8 +556,8 @@ abstract class GeneralKeyboardIME(
         }
 
     fun updateShiftKeyState() {
-        // The shift state in the command modes like Translate, Conjugate, Plural etc. should not depend on the
-        // capitalization mode of the Input Connection. It should be be carried on from the previous mode.
+        // The shift state in the Scribe commands should not depend on the Input Connection.
+        // The current state should be transferred to the command unless required by the language.
         if ((currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) &&
             keyboardMode == keyboardLetters
         ) {
