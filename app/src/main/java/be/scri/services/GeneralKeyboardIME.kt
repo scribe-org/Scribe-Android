@@ -142,7 +142,7 @@ abstract class GeneralKeyboardIME(
             } else {
                 currentEnterKeyType!!
             }
-        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboardView?.setKeyboard(keyboard!!)
     }
 
     fun getIsAccentCharacterDisabled(): Boolean {
@@ -336,6 +336,10 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "PLURAL STATE")
             updateKeyboardMode(true)
             currentState = ScribeState.PLURAL
+            if (language == "German") {
+                // All nouns are capitalized in German.
+                keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
+            }
             updateUI()
         }
     }
@@ -552,7 +556,11 @@ abstract class GeneralKeyboardIME(
         }
 
     fun updateShiftKeyState() {
-        if (keyboardMode == keyboardLetters) {
+        // The shift state in the Scribe commands should not depend on the Input Connection.
+        // The current state should be transferred to the command unless required by the language.
+        if ((currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) &&
+            keyboardMode == keyboardLetters
+        ) {
             val editorInfo = currentInputEditorInfo
             if (
                 editorInfo != null &&
@@ -762,11 +770,11 @@ abstract class GeneralKeyboardIME(
                 binding?.commandBar?.append(codeChar.toString())
                 inputConnection.commitText(codeChar.toString(), 1)
             }
+        }
 
-            if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
-                keyboard!!.mShiftState = SHIFT_OFF
-                keyboardView!!.invalidateAllKeys()
-            }
+        if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
+            keyboard!!.mShiftState = SHIFT_OFF
+            keyboardView!!.invalidateAllKeys()
         }
     }
 
