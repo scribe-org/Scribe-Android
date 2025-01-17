@@ -249,6 +249,7 @@ abstract class GeneralKeyboardIME(
         keyboardView = keyboardBinding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
+        handleModeChange(keyboardSymbols, keyboardView, this)
         keyboardBinding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             switchToCommandToolBar()
@@ -259,6 +260,7 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun setupIdleView() {
+        handleModeChange(keyboardSymbols, keyboardView, this)
         val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
