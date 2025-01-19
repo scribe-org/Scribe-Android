@@ -246,6 +246,7 @@ abstract class GeneralKeyboardIME(
                 keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_light))
             }
         }
+        handleModeChange(keyboardSymbols, keyboardView, this)
         keyboardView = keyboardBinding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
@@ -336,11 +337,11 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "PLURAL STATE")
             updateKeyboardMode(true)
             currentState = ScribeState.PLURAL
+            updateUI()
             if (language == "German") {
                 // All nouns are capitalized in German.
                 keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
             }
-            updateUI()
         }
     }
 
