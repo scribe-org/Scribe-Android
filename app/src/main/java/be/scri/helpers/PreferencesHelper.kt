@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * A helper to facilitate setting preferences for individual language keyboards.
  */

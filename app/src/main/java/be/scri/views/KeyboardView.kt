@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * The base keyboard view for Scribe language keyboards application.
  */

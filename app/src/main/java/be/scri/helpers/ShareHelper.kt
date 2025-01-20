@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * A helper to facilitate sharing of the application and contacting the team.
  */

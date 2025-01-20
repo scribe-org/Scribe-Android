@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * Functions and properties for accessing shared preferences and BaseConfig.
  */

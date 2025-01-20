@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * Utility functions for managing visibility and haptic feedback in Android views.
  */

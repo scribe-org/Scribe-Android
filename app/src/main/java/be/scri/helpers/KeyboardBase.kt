@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * Custom keyboard implementation for handling keyboard layouts, rows and keys with XML-based configuration.
  */

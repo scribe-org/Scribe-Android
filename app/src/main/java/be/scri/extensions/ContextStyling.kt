@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * Functions for determining and retrieving proper text and colors based on user settings.
  */

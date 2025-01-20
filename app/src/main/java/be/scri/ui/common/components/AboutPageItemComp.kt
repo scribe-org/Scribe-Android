@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * A composable component that displays a row with a title as well as leading and trailing icons.
  */

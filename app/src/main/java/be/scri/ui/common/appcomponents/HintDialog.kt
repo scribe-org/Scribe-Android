@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 package be.scri.ui.common.appcomponents
 
 import android.content.Context

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * The installation page of the application with details for installing Scribe keyboards and downloading data.
  */
