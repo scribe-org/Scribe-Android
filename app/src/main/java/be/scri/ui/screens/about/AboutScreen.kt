@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  * The about page of the application with links to the community as well as sub pages for detailed descriptions.
  */

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  * A custom divider for use in recycle views.
  */

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  * This file provides utility functions for settings page.
  */

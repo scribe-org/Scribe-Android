@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  * The base keyboard input method (IME) imported into all language keyboards.
  */

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  * Implements the main activity with a custom action bar, ViewPager navigation, and dynamic UI adjustments.
  */

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  * Handles application-level initialization and sets the default night mode based on user configuration.
  */

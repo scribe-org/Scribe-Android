@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  * A class that extends BaseConfig to manage additional app settings.
  */

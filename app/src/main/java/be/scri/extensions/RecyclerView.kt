@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  * Adds a custom item decoration (divider) to a RecyclerView, using a specified drawable and custom margins.
  */

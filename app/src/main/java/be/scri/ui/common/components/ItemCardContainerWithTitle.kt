@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  *  A composable function that displays a title above a list of items inside a card container.
  */

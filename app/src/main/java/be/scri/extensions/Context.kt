@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  * Functions for retrieving configuration settings and calculating color based on theme and background preferences.
  */

@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  *  A composable component that displays a clickable item with a title, optional description and an arrow icon.
  */
