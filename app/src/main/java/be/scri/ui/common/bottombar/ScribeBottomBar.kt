@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /**
  * The bottom bar that is displayed at the bottom of the screen for navigation purposes.

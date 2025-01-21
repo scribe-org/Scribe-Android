@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /**
  * The settings sub menu page for languages that allows for customization of language keyboard interfaces.
