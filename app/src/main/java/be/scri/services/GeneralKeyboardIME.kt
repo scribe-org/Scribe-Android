@@ -1,20 +1,7 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 /**
  * The base keyboard input method (IME) imported into all language keyboards.
- *
- * Copyright (C) 2024 Scribe
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package be.scri.services
@@ -148,7 +135,7 @@ abstract class GeneralKeyboardIME(
             } else {
                 currentEnterKeyType!!
             }
-        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboardView?.setKeyboard(keyboard!!)
     }
 
     fun getIsAccentCharacterDisabled(): Boolean {
@@ -251,6 +238,7 @@ abstract class GeneralKeyboardIME(
                 keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_light))
             }
         }
+        handleModeChange(keyboardSymbols, keyboardView, this)
         keyboardView = keyboardBinding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
@@ -342,6 +330,10 @@ abstract class GeneralKeyboardIME(
             updateKeyboardMode(true)
             currentState = ScribeState.PLURAL
             updateUI()
+            if (language == "German") {
+                // All nouns are capitalized in German.
+                keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
+            }
         }
     }
 
@@ -675,7 +667,11 @@ abstract class GeneralKeyboardIME(
         }
 
     fun updateShiftKeyState() {
-        if (keyboardMode == keyboardLetters) {
+        // The shift state in the Scribe commands should not depend on the Input Connection.
+        // The current state should be transferred to the command unless required by the language.
+        if ((currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) &&
+            keyboardMode == keyboardLetters
+        ) {
             val editorInfo = currentInputEditorInfo
             if (
                 editorInfo != null &&
@@ -885,11 +881,11 @@ abstract class GeneralKeyboardIME(
                 binding?.commandBar?.append(codeChar.toString())
                 inputConnection.commitText(codeChar.toString(), 1)
             }
+        }
 
-            if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
-                keyboard!!.mShiftState = SHIFT_OFF
-                keyboardView!!.invalidateAllKeys()
-            }
+        if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
+            keyboard!!.mShiftState = SHIFT_OFF
+            keyboardView!!.invalidateAllKeys()
         }
     }
 
