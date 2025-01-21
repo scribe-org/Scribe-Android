@@ -85,15 +85,21 @@ abstract class GeneralKeyboardIME(
     private var emojiSpaceTablet2: View? = null
     private var emojiBtnTablet3: Button? = null
 
-    // How quickly do we have to doubletap shift to enable permanent caps lock.
+    private var genderSuggestionLeft: Button? = null
+    private var genderSuggestionRight: Button? = null
+    private var isSingularAndPlural: Boolean = false
+
+    // How quickly do we have to double-tap shift to enable permanent caps lock.
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
-    lateinit var nounKeywords: HashMap<String, MutableList<String>>
+    lateinit var nounKeywords: HashMap<String, List<String>>
+    lateinit var pluralWords: List<String>
     var isAutoSuggestEnabled: Boolean = false
     var lastWord: String? = null
     var autosuggestEmojis: MutableList<String>? = null
-    var nounTypeSuggestion: MutableList<String>? = null
+    var nounTypeSuggestion: List<String>? = null
+    var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
     // abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
@@ -226,7 +232,6 @@ abstract class GeneralKeyboardIME(
             else -> switchToToolBar()
         }
         updateEnterKeyColor(isUserDarkMode)
-//        updateCloseButtonColor(isUserDarkMode)
     }
 
     private fun switchToToolBar() {
@@ -376,6 +381,8 @@ abstract class GeneralKeyboardIME(
         emojiBtnTablet2 = binding.emojiBtnTablet2
         emojiSpaceTablet2 = binding.emojiSpaceTablet2
         emojiBtnTablet3 = binding.emojiBtnTablet3
+        genderSuggestionLeft = binding.translateBtnLeft
+        genderSuggestionRight = binding.translateBtnRight
     }
 
     fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
@@ -428,21 +435,46 @@ abstract class GeneralKeyboardIME(
         return null
     }
 
-    fun findNounTypeForLastWord(
-        nounKeywords: HashMap<String, MutableList<String>>,
+    fun findGenderForLastWord(
+        nounKeywords: HashMap<String, List<String>>,
         lastWord: String?,
-    ): MutableList<String>? {
+    ): List<String>? {
         lastWord?.let { word ->
             val lowerCaseWord = word.lowercase()
-            val nouns = nounKeywords[lowerCaseWord]
-            if (nouns != null) {
-                Log.d("Debug", "Noun Types  for '$word': $nouns")
-                return nouns
+            Log.i("MY-TAG", word)
+            Log.i("MY-TAG", nounKeywords.keys.toString())
+            Log.i("MY-TAG", nounKeywords[word].toString())
+            val gender = nounKeywords[lowerCaseWord]
+            if (gender != null) {
+                Log.d("Debug", "Gender for '$word': $gender")
+                Log.i("MY-TAG", pluralWords.contains(lastWord).toString())
+                if (pluralWords.any { it.equals(lastWord, ignoreCase = true) }) {
+                    Log.i("MY-TAG", "Plural Words : $pluralWords")
+                    isSingularAndPlural = true
+                    Log.i("MY-TAG", "isSingularPlural Updated to true")
+                } else {
+                    isSingularAndPlural = false
+                    Log.i("MY-TAG", "Plural Words : $pluralWords")
+                    Log.i("MY-TAG", "isSingularPlural Updated to false")
+                }
+                return gender
             } else {
-                Log.d("Debug", "No nouns found for '$word'")
+                Log.d("Debug", "No gender found for '$word'")
             }
         }
         return null
+    }
+
+    fun findWheatherWordIsPlural(
+        pluralWords: List<String>,
+        lastWord: String?,
+    ): Boolean {
+        for (item in pluralWords) {
+            if (item == lastWord) {
+                return true
+            }
+        }
+        return false
     }
 
     fun updateButtonText(
@@ -466,30 +498,119 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    fun updateAutoSuggestText(nounTypeSuggestion: MutableList<String>?) {
+    fun updateAutoSuggestText(
+        nounTypeSuggestion: List<String>? = null,
+        isPlural: Boolean = false,
+    ) {
+        if (isPlural) {
+            var(colorRes, text) = handleColorAndTextForNounType(nounType = "PL")
+            text = "PL"
+            colorRes = R.color.annotateOrange
+            binding.translateBtnLeft.visibility = View.INVISIBLE
+            binding.translateBtnRight.visibility = View.INVISIBLE
+            binding.translateBtn.apply {
+                visibility = View.VISIBLE
+                binding.translateBtn.text = text
+                textSize = NOUN_TYPE_SIZE
+                background =
+                    ContextCompat.getDrawable(context, R.drawable.rounded_drawable)?.apply {
+                        setTintMode(PorterDuff.Mode.SRC_IN)
+                        setTint(ContextCompat.getColor(context, colorRes))
+                    }
+            }
+        } else {
+            nounTypeSuggestion?.size?.let {
+                if (it > 1 || isSingularAndPlural) {
+                    handleMultipleNounFormats(nounTypeSuggestion)
+                } else {
+                    handleSingleType(nounTypeSuggestion)
+                }
+            }
+        }
+    }
+
+    fun handleSingleType(nounTypeSuggestion: List<String>?) {
+        val text = nounTypeSuggestion?.get(0).toString()
+        val (colorRes, buttonText) = handleColorAndTextForNounType(text)
+
+        binding.translateBtnLeft.visibility = View.INVISIBLE
+        binding.translateBtnRight.visibility = View.INVISIBLE
+        binding.translateBtn.apply {
+            visibility = View.VISIBLE
+            binding.translateBtn.text = buttonText
+            textSize = NOUN_TYPE_SIZE
+            background =
+                ContextCompat.getDrawable(context, R.drawable.rounded_drawable)?.apply {
+                    setTintMode(PorterDuff.Mode.SRC_IN)
+                    setTint(ContextCompat.getColor(context, colorRes))
+                }
+        }
+    }
+
+    fun handleMultipleNounFormats(nounTypeSuggestion: List<String>?) {
+        binding.apply {
+            translateBtnLeft.visibility = View.VISIBLE
+            translateBtnRight.visibility = View.VISIBLE
+            translateBtn.visibility = View.INVISIBLE
+
+            val (leftType, rightType) =
+                if (isSingularAndPlural) {
+                    "PL" to nounTypeSuggestion?.get(0).toString()
+                } else {
+                    nounTypeSuggestion?.get(0).toString() to nounTypeSuggestion?.get(1).toString()
+                }
+
+            handleColorAndTextForNounType(leftType).let { (colorRes, text) ->
+                translateBtnLeft.text = text
+                translateBtnLeft.background =
+                    ContextCompat
+                        .getDrawable(
+                            applicationContext,
+                            R.drawable.gender_suggestion_button_left_background,
+                        )?.apply {
+                            setTintMode(PorterDuff.Mode.SRC_IN)
+                            setTint(ContextCompat.getColor(applicationContext, colorRes))
+                        }
+            }
+
+            handleColorAndTextForNounType(rightType).let { (colorRes, text) ->
+                translateBtnRight.text = text
+                translateBtnRight.background =
+                    ContextCompat
+                        .getDrawable(
+                            applicationContext,
+                            R.drawable.gender_suggestion_button_right_background,
+                        )?.apply {
+                            setTintMode(PorterDuff.Mode.SRC_IN)
+                            setTint(ContextCompat.getColor(applicationContext, colorRes))
+                        }
+            }
+        }
+    }
+
+    fun handleColorAndTextForNounType(nounType: String): Pair<Int, String> {
         val suggestionMap =
             mapOf(
                 "PL" to Pair(R.color.annotateOrange, "PL"),
-                "N" to Pair(R.color.annotateGreen, "N"),
-                "C" to Pair(R.color.annotatePurple, "C"),
-                "M" to Pair(R.color.annotateBlue, "M"),
-                "F" to Pair(R.color.annotateRed, "F"),
+                "neuter" to Pair(R.color.annotateGreen, "N"),
+                "common of two genders" to Pair(R.color.annotatePurple, "C"),
+                "common" to Pair(R.color.annotatePurple, "C"),
+                "masculine" to Pair(R.color.annotateBlue, "M"),
+                "feminine" to Pair(R.color.annotateRed, "F"),
             )
-
-        val (colorRes, text) =
-            suggestionMap[nounTypeSuggestion?.getOrNull(0)]
+        var (colorRes, text) =
+            suggestionMap[nounType]
                 ?: Pair(R.color.transparent, "Suggestion")
-
-        binding.translateBtn.text = text
-        val drawable = ContextCompat.getDrawable(this, R.drawable.rounded_drawable)
-        drawable?.setTintMode(PorterDuff.Mode.SRC_IN)
-        drawable?.setTint(ContextCompat.getColor(this, colorRes))
-        binding.translateBtn.background = drawable
+        return Pair(colorRes, text)
     }
 
     fun disableAutoSuggest() {
+        binding.translateBtnRight.visibility = View.INVISIBLE
+        binding.translateBtnLeft.visibility = View.INVISIBLE
+        binding.translateBtn.visibility = View.VISIBLE
         binding.translateBtn.text = "Suggestion"
         binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
+        binding.translateBtn.textSize = SUGGESTION_SIZE
     }
 
     private fun insertEmoji(emoji: String) {
@@ -532,8 +653,10 @@ abstract class GeneralKeyboardIME(
         dbHelper = DatabaseHelper(this)
         dbHelper.loadDatabase(languageAlias)
         emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
-        nounKeywords = dbHelper.getNounKeywords(languageAlias)
+        pluralWords = dbHelper.checkIfWordIsPlural(languageAlias)!!
+        nounKeywords = dbHelper.findGenderOfWord(languageAlias)
 
+        Log.i("MY-TAG", nounKeywords.toString())
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
     }
@@ -822,5 +945,7 @@ abstract class GeneralKeyboardIME(
     private companion object {
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
+        const val NOUN_TYPE_SIZE = 25f
+        const val SUGGESTION_SIZE = 15f
     }
 }

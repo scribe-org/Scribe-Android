@@ -19,6 +19,7 @@ plugins {
     id("de.mannodermaus.android-junit5") version "1.11.2.0"
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("jacoco")
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 jacoco {
@@ -247,6 +248,7 @@ dependencies {
     api("com.google.code.gson:gson:2.10.1")
     api("com.github.bumptech.glide:glide:4.14.2")
     ksp("com.github.bumptech.glide:ksp:4.14.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 }
 
 tasks.register<Copy>("moveFromi18n") {
