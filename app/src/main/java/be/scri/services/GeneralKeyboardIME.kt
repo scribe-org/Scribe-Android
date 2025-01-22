@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /**
  * The base keyboard input method (IME) imported into all language keyboards.
@@ -527,10 +527,12 @@ abstract class GeneralKeyboardIME(
 
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtnRight.visibility = View.INVISIBLE
+        binding.translateBtn.setTextColor(getColor(R.color.white))
         binding.translateBtn.apply {
             visibility = View.VISIBLE
             binding.translateBtn.text = buttonText
             textSize = NOUN_TYPE_SIZE
+            setTextColor(getColor(R.color.white))
             background =
                 ContextCompat.getDrawable(context, R.drawable.rounded_drawable)?.apply {
                     setTintMode(PorterDuff.Mode.SRC_IN)
@@ -544,7 +546,8 @@ abstract class GeneralKeyboardIME(
             translateBtnLeft.visibility = View.VISIBLE
             translateBtnRight.visibility = View.VISIBLE
             translateBtn.visibility = View.INVISIBLE
-
+            binding.translateBtnLeft.setTextColor(getColor(R.color.white))
+            binding.translateBtnRight.setTextColor(getColor(R.color.white))
             val (leftType, rightType) =
                 if (isSingularAndPlural) {
                     "PL" to nounTypeSuggestion?.get(0).toString()
@@ -601,6 +604,7 @@ abstract class GeneralKeyboardIME(
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtn.visibility = View.VISIBLE
         binding.translateBtn.text = "Suggestion"
+        binding.translateBtn.setTextColor(getColor(R.color.special_key_dark))
         binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
         binding.translateBtn.textSize = SUGGESTION_SIZE
     }
