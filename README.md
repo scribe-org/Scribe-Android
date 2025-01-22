@@ -156,8 +156,8 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
     - Press the play button marked "Run App"
     - From here code edits that are made will be reflected in the app each time it is ran.
 
-> [!NOTE]
-> Currently Scribe-Android does not work as a floating keyboard.
+> [!IMPORTANT]
+> If you're not seeing your changes or are experiencing issues when running the app, consider clearing the Android Studio cache. This can be done via `File` > `Invalidate caches` in the menu.
 
 After activating your emulator, consider setting up [pre-commit](https://pre-commit.com/) to fix common errors in the codebase before they're committed by running:
 
