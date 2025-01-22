@@ -157,7 +157,7 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
     - From here code edits that are made will be reflected in the app each time it is ran.
 
 > [!IMPORTANT]
-> If you're not seeing your changes or are experiencing issues when running the app, consider clearing the Android Studio cache. This can be done via `File` > `Invalidate caches` in the menu.
+> If you're not seeing your changes or are experiencing issues when running the app, consider clearing the Android Studio cache. This can be done via `File` > `Invalidate Caches...` in the menu. You can then select options for which caches to invalidate and then select `Invalidate and Restart` restart Android Studio so the changes are reflected.
 
 After activating your emulator, consider setting up [pre-commit](https://pre-commit.com/) to fix common errors in the codebase before they're committed by running:
 
