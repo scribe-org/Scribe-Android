@@ -53,16 +53,19 @@
             app:layout_constraintStart_toEndOf="@+id/scribe_key"
             app:layout_constraintTop_toTopOf="@+id/command_field" />
 
-        <View
+        <TextView
             android:id="@+id/prompt_text_border"
-            android:layout_width="1.5dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:background="@android:color/black"
-            app:layout_constraintTop_toTopOf="@+id/prompt_text"
+            android:background="@drawable/cmd_bar_prompt_background"
+            android:text="⎜"
+            android:textFontWeight="500"
+            android:textSize="16sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/command_bar"
             app:layout_constraintBottom_toBottomOf="@+id/prompt_text"
-            app:layout_constraintHeight_percent="0.5"
-            app:layout_constraintEnd_toEndOf="@+id/prompt_text"
-            app:layout_constraintHorizontal_bias="1.0" />
+            app:layout_constraintEnd_toStartOf="@+id/command_bar"
+            app:layout_constraintStart_toEndOf="@+id/prompt_text"
+            app:layout_constraintTop_toTopOf="@+id/prompt_text" />
 
 
         <Button

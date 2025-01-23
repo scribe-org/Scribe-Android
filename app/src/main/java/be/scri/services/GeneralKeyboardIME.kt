@@ -82,6 +82,7 @@ abstract class GeneralKeyboardIME(
     var autosuggestEmojis: MutableList<String>? = null
     var nounTypeSuggestion: MutableList<String>? = null
     private var currentEnterKeyType: Int? = null
+    private val commandChar = "⎜"
     // abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     protected var currentState: ScribeState = ScribeState.IDLE
@@ -689,6 +690,27 @@ abstract class GeneralKeyboardIME(
         }
     }
 
+    private fun handleCommandBarDelete(binding: KeyboardViewKeyboardBinding?) {
+        binding?.commandBar?.let { commandBar ->
+            var newText = ""
+            if (commandBar.text.length <= 2) {
+                binding.promptTextBorder?.visibility = View.VISIBLE
+                binding.commandBar.setPadding(
+                    binding.commandBar.paddingRight,
+                    binding.commandBar.paddingTop,
+                    binding.commandBar.paddingRight,
+                    binding.commandBar.paddingBottom,
+                )
+                if (language == "German" && this.currentState == ScribeState.PLURAL) {
+                    keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
+                }
+            } else {
+                newText = "${commandBar.text.trim().dropLast(2)}$commandChar"
+            }
+            commandBar.text = newText
+        }
+    }
+
     fun handleDelete(
         currentState: Boolean? = false,
         binding: KeyboardViewKeyboardBinding? = null,
@@ -700,10 +722,7 @@ abstract class GeneralKeyboardIME(
         }
 
         if (currentState == true) {
-            binding?.commandBar?.let { commandBar ->
-                val newText = "${commandBar.text.trim().dropLast(1)}"
-                commandBar.text = newText
-            }
+            handleCommandBarDelete(binding)
         } else {
             val selectedText = inputConnection.getSelectedText(0)
             if (TextUtils.isEmpty(selectedText)) {
@@ -743,7 +762,16 @@ abstract class GeneralKeyboardIME(
 
         if (commandBarState) {
             binding?.commandBar?.let { commandBar ->
-                val newText = "${commandBar.text}$codeChar"
+                if (commandBar.text.isEmpty()) {
+                    binding.promptTextBorder?.visibility = View.GONE
+                    binding.commandBar.setPadding(
+                        0,
+                        binding.commandBar.paddingTop,
+                        binding.commandBar.paddingRight,
+                        binding.commandBar.paddingBottom,
+                    )
+                }
+                val newText = "${commandBar.text.trim().dropLast(1)}$codeChar$commandChar"
                 commandBar.text = newText
             }
         } else {
