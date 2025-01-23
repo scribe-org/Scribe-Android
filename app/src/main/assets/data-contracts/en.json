@@ -1,6 +1,12 @@
 {
     "numbers": { "singular": "plural" },
-    "genders": "NOT_INCLUDED",
+    "genders":  {
+        "canonical": ["NOT_INCLUDED"],
+        "feminines": ["NOT_INCLUDED"],
+        "masculines": ["NOT_INCLUDED"],
+        "commons": ["NOT_INCLUDED"],
+        "neuters": ["NOT_INCLUDED"]
+    },
     "conjugations": {
         "1": {
             "title": "Present",
