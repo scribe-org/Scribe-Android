@@ -84,7 +84,7 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
 
             KeyboardBase.KEYCODE_SPACE -> {
                 handleElseCondition(code, keyboardMode, binding = null)
-                updateAutoSuggestText(nounTypeSuggestion)
+                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
             }
 
             else -> {
@@ -101,7 +101,8 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
-        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
+        nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
+        checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
         Log.d("Debug", "$autosuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)

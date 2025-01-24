@@ -1,21 +1,48 @@
 {
     "numbers": { "singular": "plural" },
-    "genders": {
-        "canonical": [],
-        "feminines": [],
-        "masculines": [],
-        "commons": [],
-        "neuters": []
+    "genders":  {
+        "canonical": ["NOT_INCLUDED"],
+        "feminines": ["NOT_INCLUDED"],
+        "masculines": ["NOT_INCLUDED"],
+        "commons": ["NOT_INCLUDED"],
+        "neuters": ["NOT_INCLUDED"]
     },
     "conjugations": {
         "1": {
-            "title": "",
-            "1": "",
-            "2": "",
-            "3": "",
-            "4": "",
-            "5": "",
-            "6": ""
+            "title": "Present",
+            "1": { "I": "simplePresent" },
+            "2": { "you": "simplePresent" },
+            "3": { "he/she/it": "simplePresentThirdPersonSingular" },
+            "4": { "we": "simplePresent" },
+            "5": { "you all": "simplePresent" },
+            "6": { "they": "simplePresent" }
+        },
+        "2": {
+            "title": "Past",
+            "1": { "I": "simplePast" },
+            "2": { "you": "simplePast" },
+            "3": { "he/she/it": "simplePast" },
+            "4": { "we": "simplePast" },
+            "5": { "you all": "simplePast" },
+            "6": { "they": "simplePast" }
+        },
+        "3": {
+            "title": "Perfect",
+            "1": { "I": "presentParticiple simplePast" },
+            "2": { "you": "presentParticiple simplePast" },
+            "3": { "he/she/it": "presentParticiple simplePast" },
+            "4": { "we": "presentParticiple simplePast" },
+            "5": { "you all": "presentParticiple simplePast" },
+            "6": { "they": "presentParticiple simplePast" }
+        },
+        "4": {
+            "title": "Past Perfect",
+            "1": { "I": "pastParticiple simplePast" },
+            "2": { "you": "pastParticiple simplePast" },
+            "3": { "he/she/it": "pastParticiple simplePast" },
+            "4": { "we": "pastParticiple simplePast" },
+            "5": { "you all": "pastParticiple simplePast" },
+            "6": { "they": "pastParticiple simplePast" }
         }
     }
 }

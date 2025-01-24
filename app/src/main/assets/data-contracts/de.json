@@ -28,12 +28,12 @@
         },
         "3": {
             "title": "Perfekt",
-            "1": { "ich": "" },
-            "2": { "du": "" },
-            "3": { "er/sie/es": "" },
-            "4": { "wir": "" },
-            "5": { "ihr": "" },
-            "6": { "sie/Sie": "" }
+            "1": { "ich": "[auxiliaryVerb] pastParticiple" },
+            "2": { "du": "[auxiliaryVerb] pastParticiple" },
+            "3": { "er/sie/es": "[auxiliaryVerb] pastParticiple" },
+            "4": { "wir": "[auxiliaryVerb] pastParticiple" },
+            "5": { "ihr": "[auxiliaryVerb] pastParticiple" },
+            "6": { "sie/Sie": "[auxiliaryVerb] pastParticiple" }
         }
     }
 }
