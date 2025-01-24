@@ -88,7 +88,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
 
             KeyboardBase.KEYCODE_SPACE -> {
                 handleElseCondition(code, keyboardMode, binding = null)
-                updateAutoSuggestText(nounTypeSuggestion)
+                updateAutoSuggestText(isPlural = checkIfPluralWord)
             }
 
             else -> {
@@ -105,7 +105,9 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
-        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
+        checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
+
+        Log.i("MY-TAG", "$checkIfPluralWord")
         Log.d("Debug", "$autosuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
