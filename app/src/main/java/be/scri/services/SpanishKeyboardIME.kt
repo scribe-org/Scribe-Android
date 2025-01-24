@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /**
  * The input method (IME) for the Spanish language keyboard.
@@ -88,7 +88,7 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
 
             KeyboardBase.KEYCODE_SPACE -> {
                 handleElseCondition(code, keyboardMode, binding = null)
-                updateAutoSuggestText(nounTypeSuggestion)
+                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
             }
 
             else -> {
@@ -105,7 +105,8 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
-        nounTypeSuggestion = findNounTypeForLastWord(nounKeywords, lastWord)
+        nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
+        checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
         Log.d("Debug", "$autosuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
