@@ -123,6 +123,9 @@ object PreferencesHelper {
         val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
         val isSystemDarkTheme = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
+        if (!sharedPref.contains("dark_mode")) {
+            setLightDarkModePreference(context, isUserDarkMode)
+        }
         return if (isUserDarkMode) {
             AppCompatDelegate.MODE_NIGHT_YES
         } else {
