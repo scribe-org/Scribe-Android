@@ -175,16 +175,18 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun commitPeriodAfterSpace() {
-        if (getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                .getBoolean("period_on_double_tap_$language", true)
-        ) {
-            val inputConnection = currentInputConnection ?: return
-            inputConnection.deleteSurroundingText(1, 0)
-            inputConnection.commitText(". ", 1)
-        } else {
-            val inputConnection = currentInputConnection ?: return
-            inputConnection.deleteSurroundingText(1, 0)
-            inputConnection.commitText("  ", 1)
+        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+            if (getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+                    .getBoolean("period_on_double_tap_$language", true)
+            ) {
+                val inputConnection = currentInputConnection ?: return
+                inputConnection.deleteSurroundingText(1, 0)
+                inputConnection.commitText(". ", 1)
+            } else {
+                val inputConnection = currentInputConnection ?: return
+                inputConnection.deleteSurroundingText(1, 0)
+                inputConnection.commitText("  ", 1)
+            }
         }
     }
 
