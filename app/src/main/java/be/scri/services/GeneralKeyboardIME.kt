@@ -617,6 +617,13 @@ abstract class GeneralKeyboardIME(
         inputConnection.commitText(emoji, 1)
     }
 
+    private fun getPluralRepresentation(word: String?): String? {
+        if (word.isNullOrEmpty()) return null
+        val languageAlias = getLanguageAlias(language)
+        val pluralRepresentationMap = dbHelper.getPluralRepresentation(languageAlias, word)
+        return pluralRepresentationMap.values.filterNotNull().firstOrNull()
+    }
+
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) {
             keyboardView?.vibrateIfNeeded()
@@ -754,7 +761,19 @@ abstract class GeneralKeyboardIME(
         val imeOptionsActionId = getImeOptionsActionId()
 
         if (commandBarState == true) {
-            inputConnection.commitText(binding?.commandBar?.text.toString(), 1)
+            val commandBarInput =
+                binding
+                    ?.commandBar
+                    ?.text
+                    .toString()
+                    .trim()
+                    .dropLast(1)
+            lateinit var commandModeOutput: String
+            when (currentState) {
+                ScribeState.PLURAL -> commandModeOutput = getPluralRepresentation(commandBarInput) ?: ""
+                else -> commandModeOutput = commandBarInput
+            }
+            inputConnection.commitText(commandModeOutput, 1)
             binding?.commandBar?.text = ""
         } else {
             if (imeOptionsActionId != IME_ACTION_NONE) {
