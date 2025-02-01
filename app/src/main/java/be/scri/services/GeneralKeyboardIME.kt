@@ -773,7 +773,7 @@ abstract class GeneralKeyboardIME(
                 ScribeState.PLURAL -> commandModeOutput = getPluralRepresentation(commandBarInput) ?: ""
                 else -> commandModeOutput = commandBarInput
             }
-            inputConnection.commitText(commandModeOutput, 1)
+            inputConnection.commitText("$commandModeOutput ", 1)
             binding?.commandBar?.text = ""
         } else {
             if (imeOptionsActionId != IME_ACTION_NONE) {
