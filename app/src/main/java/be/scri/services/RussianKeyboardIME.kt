@@ -84,7 +84,11 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
 
             KeyboardBase.KEYCODE_SPACE -> {
                 handleElseCondition(code, keyboardMode, binding = null)
-                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion ,  caseAnnotationSuggestion = caseAnnotationSuggestion,)
+                updateAutoSuggestText(
+                    isPlural = checkIfPluralWord,
+                    nounTypeSuggestion = nounTypeSuggestion,
+                    caseAnnotationSuggestion = caseAnnotationSuggestion,
+                )
             }
 
             else -> {

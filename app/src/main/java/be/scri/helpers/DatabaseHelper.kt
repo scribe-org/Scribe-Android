@@ -61,4 +61,9 @@ class DatabaseHelper(
             language,
             getRequiredData(language),
         )
+
+    fun findCaseAnnnotationForPreposition(language: String): HashMap<String, MutableList<String>> =
+        dbManagers.prepositionManager.getCaseAnnotations(
+            language,
+        )
 }

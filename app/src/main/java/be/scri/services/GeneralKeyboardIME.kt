@@ -645,60 +645,76 @@ abstract class GeneralKeyboardIME(
 
             when (type) {
                 "noun" -> {
-                    handleColorAndTextForNounType(leftType).let { (colorRes, text) ->
-                        translateBtnLeft.text = text
-                        translateBtnLeft.background =
-                            ContextCompat
-                                .getDrawable(
-                                    applicationContext,
-                                    R.drawable.gender_suggestion_button_left_background,
-                                )?.apply {
-                                    setTintMode(PorterDuff.Mode.SRC_IN)
-                                    setTint(ContextCompat.getColor(applicationContext, colorRes))
-                                }
-                    }
-
-                    handleColorAndTextForNounType(rightType).let { (colorRes, text) ->
-                        translateBtnRight.text = text
-                        translateBtnRight.background =
-                            ContextCompat
-                                .getDrawable(
-                                    applicationContext,
-                                    R.drawable.gender_suggestion_button_right_background,
-                                )?.apply {
-                                    setTintMode(PorterDuff.Mode.SRC_IN)
-                                    setTint(ContextCompat.getColor(applicationContext, colorRes))
-                                }
-                    }
+                    handleTextForNouns(leftType, rightType, binding)
                 }
                 "preposition" -> {
-                    handleTextForCaseAnnotation(leftType).let { (colorRes, text) ->
-                        translateBtnLeft.text = text
-                        translateBtnLeft.background =
-                            ContextCompat
-                                .getDrawable(
-                                    applicationContext,
-                                    R.drawable.gender_suggestion_button_left_background,
-                                )?.apply {
-                                    setTintMode(PorterDuff.Mode.SRC_IN)
-                                    setTint(ContextCompat.getColor(applicationContext, colorRes))
-                                }
-                    }
-
-                    handleTextForCaseAnnotation(rightType).let { (colorRes, text) ->
-                        translateBtnRight.text = text
-                        translateBtnRight.background =
-                            ContextCompat
-                                .getDrawable(
-                                    applicationContext,
-                                    R.drawable.gender_suggestion_button_right_background,
-                                )?.apply {
-                                    setTintMode(PorterDuff.Mode.SRC_IN)
-                                    setTint(ContextCompat.getColor(applicationContext, colorRes))
-                                }
-                    }
+                    handleTextForPreposition(leftType, rightType, binding)
                 }
             }
+        }
+    }
+
+    fun handleTextForNouns(
+        leftType: String,
+        rightType: String,
+        binding: KeyboardViewCommandOptionsBinding,
+    ) {
+        handleColorAndTextForNounType(leftType).let { (colorRes, text) ->
+            binding.translateBtnLeft.text = text
+            binding.translateBtnLeft.background =
+                ContextCompat
+                    .getDrawable(
+                        applicationContext,
+                        R.drawable.gender_suggestion_button_left_background,
+                    )?.apply {
+                        setTintMode(PorterDuff.Mode.SRC_IN)
+                        setTint(ContextCompat.getColor(applicationContext, colorRes))
+                    }
+        }
+
+        handleColorAndTextForNounType(rightType).let { (colorRes, text) ->
+            binding.translateBtnRight.text = text
+            binding.translateBtnRight.background =
+                ContextCompat
+                    .getDrawable(
+                        applicationContext,
+                        R.drawable.gender_suggestion_button_right_background,
+                    )?.apply {
+                        setTintMode(PorterDuff.Mode.SRC_IN)
+                        setTint(ContextCompat.getColor(applicationContext, colorRes))
+                    }
+        }
+    }
+
+    fun handleTextForPreposition(
+        leftType: String,
+        rightType: String,
+        binding: KeyboardViewCommandOptionsBinding,
+    ) {
+        handleTextForCaseAnnotation(leftType).let { (colorRes, text) ->
+            binding.translateBtnLeft.text = text
+            binding.translateBtnLeft.background =
+                ContextCompat
+                    .getDrawable(
+                        applicationContext,
+                        R.drawable.gender_suggestion_button_left_background,
+                    )?.apply {
+                        setTintMode(PorterDuff.Mode.SRC_IN)
+                        setTint(ContextCompat.getColor(applicationContext, colorRes))
+                    }
+        }
+
+        handleTextForCaseAnnotation(rightType).let { (colorRes, text) ->
+            binding.translateBtnRight.text = text
+            binding.translateBtnRight.background =
+                ContextCompat
+                    .getDrawable(
+                        applicationContext,
+                        R.drawable.gender_suggestion_button_right_background,
+                    )?.apply {
+                        setTintMode(PorterDuff.Mode.SRC_IN)
+                        setTint(ContextCompat.getColor(applicationContext, colorRes))
+                    }
         }
     }
 
@@ -831,19 +847,6 @@ abstract class GeneralKeyboardIME(
             "Russian" -> "RU"
             "Spanish" -> "ES"
             "Swedish" -> "SV"
-            else -> ""
-        }
-
-    private fun getLanguageFromAlias(alias: String): String =
-        when (language) {
-            "EN" -> "English"
-            "FR" -> "French"
-            "DE" -> "German"
-            "IT" -> "Italian"
-            "PT" -> "Portuguese"
-            "RU" -> "Russian"
-            "ES" -> "Spanish"
-            "SV" -> "Swedish"
             else -> ""
         }
 
