@@ -4,7 +4,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
-import androidx.compose.ui.graphics.Path
 
 class PluralFormsManager(
     private val context: Context,
@@ -21,7 +20,6 @@ class PluralFormsManager(
         val dbFile = context.getDatabasePath("${language}LanguageData.sqlite")
         val pluralForms = jsonData.numbers.values.toList()
         Log.d("MY-TAG", "Plural Forms: $pluralForms")
-        getCaseAnnotations(language)
 
         return queryPluralForms(dbFile.path, pluralForms)
     }
@@ -70,36 +68,5 @@ class PluralFormsManager(
                 Log.e("MY-TAG", "Column '$pluralForm' not found in the database.")
             }
         }
-    }
-
-    fun getCaseAnnotations(language: String) {
-        val dbFile = context.getDatabasePath("${language}LanguageData.sqlite")
-        val result = HashMap<String, MutableList<String>>()
-        val db = SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY)
-        if (language.lowercase() == "de" || language.lowercase() == "ru") {
-            db.use { database ->
-                database.rawQuery("SELECT * FROM PREPOSITIONS" , null)?.use { cursor ->
-                    if (cursor.moveToFirst()) {
-                        do {
-                            val preposition = cursor.getString(1)
-                            val caseAnnotation = cursor.getString(2)
-
-                            if (result.containsKey(preposition)) {
-                                result[preposition]?.add(caseAnnotation)
-                            }
-                            else {
-                                result[preposition] = mutableListOf<String>(caseAnnotation)
-                            }
-
-                        } while (cursor.moveToNext())
-                    }
-                }
-
-            }
-            Log.i("MY-TAG","Hi")
-            Log.i("MY-TAG","This is being called for german or russian and the result is ${result}")
-        }
-        Log.i("MY-TAG","The function getCaseAnnotations is being called")
-
     }
 }
