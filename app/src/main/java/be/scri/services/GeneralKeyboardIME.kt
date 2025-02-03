@@ -29,6 +29,8 @@ import android.widget.Button
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import be.scri.R
+import be.scri.R.color.md_grey_black_dark
+import be.scri.R.color.white
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.DatabaseHelper
@@ -82,13 +84,41 @@ abstract class GeneralKeyboardIME(
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
     lateinit var nounKeywords: HashMap<String, List<String>>
     lateinit var pluralWords: List<String>
+    lateinit var caseAnnotation: HashMap<String, MutableList<String>>
     var isAutoSuggestEnabled: Boolean = false
     var lastWord: String? = null
     var autosuggestEmojis: MutableList<String>? = null
+    var caseAnnotationSuggestion: MutableList<String>? = null
     var nounTypeSuggestion: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
     private val commandChar = "⎜"
+    val prepAnnotationConversionDict =
+        mapOf(
+            "German" to mapOf("Acc" to "Akk"),
+            "Russian" to
+                mapOf(
+                    "Acc" to "Вин",
+                    "Dat" to "Дат",
+                    "Gen" to "Род",
+                    "Loc" to "Мес",
+                    "Pre" to "Пре",
+                    "Ins" to "Инс",
+                ),
+        )
+
+    val nounAnnotationConversionDict =
+        mapOf(
+            "Swedish" to mapOf("C" to "U"),
+            "Russian" to
+                mapOf(
+                    "F" to "Ж",
+                    "M" to "М",
+                    "N" to "Н",
+                    "PL" to "МН",
+                ),
+        )
+
     // abstract var keyboardViewKeyboardBinding : KeyboardViewKeyboardBinding
 
     protected var currentState: ScribeState = ScribeState.IDLE
@@ -120,7 +150,7 @@ abstract class GeneralKeyboardIME(
         val hintMessage = HintUtils.getCommandBarHint(currentState, language)
         val promptText = HintUtils.getPromptText(currentState, language)
         val promptTextView = keyboardBinding.promptText
-        promptTextView?.setText(promptText)
+        promptTextView?.text = promptText
         commandBarButton.hint = hintMessage
         Log.d(
             "KeyboardUpdate",
@@ -140,13 +170,13 @@ abstract class GeneralKeyboardIME(
     }
 
     fun getIsAccentCharacterDisabled(): Boolean {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val isAccentCharacterDisabled = sharedPref.getBoolean("disable_accent_character_$language", false)
         return isAccentCharacterDisabled
     }
 
     fun getEnablePeriodAndCommaABC(): Boolean {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val isDisabledPeriodAndCommaABC = sharedPref.getBoolean("period_and_comma_$language", false)
         return isDisabledPeriodAndCommaABC
     }
@@ -157,7 +187,6 @@ abstract class GeneralKeyboardIME(
             ScribeState.SELECT_COMMAND -> keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
             else -> keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
         }
-
         if (isDarkMode == true) {
             val color = ContextCompat.getColorStateList(this, R.color.light_key_color)
             binding.scribeKey.foregroundTintList = color
@@ -175,7 +204,7 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun commitPeriodAfterSpace() {
-        if (getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        if (getSharedPreferences("app_preferences", MODE_PRIVATE)
                 .getBoolean("period_on_double_tap_$language", true)
         ) {
             val inputConnection = currentInputConnection ?: return
@@ -205,7 +234,7 @@ abstract class GeneralKeyboardIME(
     }
 
     fun updateUI() {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
@@ -226,7 +255,7 @@ abstract class GeneralKeyboardIME(
         this.keyboardBinding = initializeKeyboardBinding()
         val keyboardHolder = keyboardBinding.root
         setupToolBarTheme(keyboardBinding)
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
@@ -253,7 +282,7 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun setupIdleView() {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
@@ -302,7 +331,7 @@ abstract class GeneralKeyboardIME(
         binding.translateBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
         binding.conjugateBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
         binding.pluralBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
-        binding.translateBtn.text = "Translate"
+        binding.translateBtn.text
         binding.conjugateBtn.text = "Conjugate"
         binding.pluralBtn.text = "Plural"
         binding.separator2.visibility = View.GONE
@@ -332,7 +361,6 @@ abstract class GeneralKeyboardIME(
             currentState = ScribeState.PLURAL
             updateUI()
             if (language == "German") {
-                // All nouns are capitalized in German.
                 keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
             }
         }
@@ -470,6 +498,18 @@ abstract class GeneralKeyboardIME(
         return false
     }
 
+    fun getCaseAnnotationForPreposition(
+        caseAnnotation: HashMap<String, MutableList<String>>,
+        lastWord: String?,
+    ): MutableList<String>? {
+        lastWord?.let { word ->
+            val lowerCaseWord = word.lowercase()
+            val caseAnnotations = caseAnnotation[lowerCaseWord]
+            return caseAnnotations
+        }
+        return null
+    }
+
     fun updateButtonText(
         isAutoSuggestEnabled: Boolean,
         autosuggestEmojis: MutableList<String>?,
@@ -494,46 +534,38 @@ abstract class GeneralKeyboardIME(
     fun updateAutoSuggestText(
         nounTypeSuggestion: List<String>? = null,
         isPlural: Boolean = false,
+        caseAnnotationSuggestion: MutableList<String>? = null,
     ) {
         if (isPlural) {
-            var(colorRes, text) = handleColorAndTextForNounType(nounType = "PL")
-            text = "PL"
-            colorRes = R.color.annotateOrange
-            binding.translateBtnLeft.visibility = View.INVISIBLE
-            binding.translateBtnRight.visibility = View.INVISIBLE
-            binding.translateBtn.apply {
-                visibility = View.VISIBLE
-                binding.translateBtn.text = text
-                textSize = NOUN_TYPE_SIZE
-                background =
-                    ContextCompat.getDrawable(context, R.drawable.rounded_drawable)?.apply {
-                        setTintMode(PorterDuff.Mode.SRC_IN)
-                        setTint(ContextCompat.getColor(context, colorRes))
-                    }
-            }
+            handlePluralAutoSuggest()
         } else {
             nounTypeSuggestion?.size?.let {
                 if (it > 1 || isSingularAndPlural) {
-                    handleMultipleNounFormats(nounTypeSuggestion)
+                    handleMultipleNounFormats(nounTypeSuggestion, "noun")
                 } else {
-                    handleSingleType(nounTypeSuggestion)
+                    handleSingleType(nounTypeSuggestion, "noun")
+                }
+            }
+            caseAnnotationSuggestion?.size?.let {
+                if (it > 1) {
+                    handleMultipleNounFormats(caseAnnotationSuggestion, "preposition")
+                } else {
+                    handleSingleType(caseAnnotationSuggestion, "preposition")
                 }
             }
         }
     }
 
-    fun handleSingleType(nounTypeSuggestion: List<String>?) {
-        val text = nounTypeSuggestion?.get(0).toString()
-        val (colorRes, buttonText) = handleColorAndTextForNounType(text)
-
+    fun handlePluralAutoSuggest() {
+        var(colorRes, text) = handleColorAndTextForNounType(nounType = "PL")
+        text = "PL"
+        colorRes = R.color.annotateOrange
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtnRight.visibility = View.INVISIBLE
-        binding.translateBtn.setTextColor(getColor(R.color.white))
         binding.translateBtn.apply {
             visibility = View.VISIBLE
-            binding.translateBtn.text = buttonText
+            binding.translateBtn.text = text
             textSize = NOUN_TYPE_SIZE
-            setTextColor(getColor(R.color.white))
             background =
                 ContextCompat.getDrawable(context, R.drawable.rounded_drawable)?.apply {
                     setTintMode(PorterDuff.Mode.SRC_IN)
@@ -542,62 +574,192 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    fun handleMultipleNounFormats(nounTypeSuggestion: List<String>?) {
+    fun handleSingleType(
+        singleTypeSuggestion: List<String>?,
+        type: String? = null,
+    ) {
+        val text = singleTypeSuggestion?.get(0).toString()
+        var (colorRes, buttonText) = Pair(R.color.transparent, "Suggestion")
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        var textColor = md_grey_black_dark
+        if (isUserDarkMode) {
+            colorRes = white
+            textColor = md_grey_black_dark
+        } else {
+            colorRes = md_grey_black_dark
+            textColor = white
+        }
+        when (type) {
+            "noun" -> {
+                val (newColorRes, newButtonText) = handleColorAndTextForNounType(text)
+                colorRes = newColorRes
+                buttonText = newButtonText
+            }
+            "preposition" -> {
+                val (newColorRes, newButtonText) = handleTextForCaseAnnotation(text)
+                buttonText = newButtonText
+                textColor = textColor
+            }
+            else -> {
+                val (newColorRes, newButtonText) = Pair(R.color.transparent, "Suggestion")
+                colorRes = newColorRes
+                buttonText = newButtonText
+            }
+        }
+        Log.i("MY-TAG", "These are the colorRes and text $colorRes and $buttonText")
+        binding.translateBtnLeft.visibility = View.INVISIBLE
+        binding.translateBtnRight.visibility = View.INVISIBLE
+        binding.translateBtn.setTextColor(getColor(textColor))
+        binding.translateBtn.apply {
+            visibility = View.VISIBLE
+            binding.translateBtn.text = buttonText
+            textSize = NOUN_TYPE_SIZE
+            setTextColor(getColor(textColor))
+            background =
+                ContextCompat.getDrawable(context, R.drawable.rounded_drawable)?.apply {
+                    setTintMode(PorterDuff.Mode.SRC_IN)
+                    setTint(ContextCompat.getColor(context, colorRes))
+                }
+        }
+    }
+
+    fun handleMultipleNounFormats(
+        multipleTypeSuggestion: List<String>?,
+        type: String? = null,
+    ) {
         binding.apply {
             translateBtnLeft.visibility = View.VISIBLE
             translateBtnRight.visibility = View.VISIBLE
             translateBtn.visibility = View.INVISIBLE
-            binding.translateBtnLeft.setTextColor(getColor(R.color.white))
-            binding.translateBtnRight.setTextColor(getColor(R.color.white))
+            binding.translateBtnLeft.setTextColor(getColor(white))
+            binding.translateBtnRight.setTextColor(getColor(white))
             val (leftType, rightType) =
                 if (isSingularAndPlural) {
-                    "PL" to nounTypeSuggestion?.get(0).toString()
+                    "PL" to multipleTypeSuggestion?.get(0).toString()
                 } else {
-                    nounTypeSuggestion?.get(0).toString() to nounTypeSuggestion?.get(1).toString()
+                    multipleTypeSuggestion?.get(0).toString() to multipleTypeSuggestion?.get(1).toString()
                 }
 
-            handleColorAndTextForNounType(leftType).let { (colorRes, text) ->
-                translateBtnLeft.text = text
-                translateBtnLeft.background =
-                    ContextCompat
-                        .getDrawable(
-                            applicationContext,
-                            R.drawable.gender_suggestion_button_left_background,
-                        )?.apply {
-                            setTintMode(PorterDuff.Mode.SRC_IN)
-                            setTint(ContextCompat.getColor(applicationContext, colorRes))
-                        }
-            }
+            when (type) {
+                "noun" -> {
+                    handleColorAndTextForNounType(leftType).let { (colorRes, text) ->
+                        translateBtnLeft.text = text
+                        translateBtnLeft.background =
+                            ContextCompat
+                                .getDrawable(
+                                    applicationContext,
+                                    R.drawable.gender_suggestion_button_left_background,
+                                )?.apply {
+                                    setTintMode(PorterDuff.Mode.SRC_IN)
+                                    setTint(ContextCompat.getColor(applicationContext, colorRes))
+                                }
+                    }
 
-            handleColorAndTextForNounType(rightType).let { (colorRes, text) ->
-                translateBtnRight.text = text
-                translateBtnRight.background =
-                    ContextCompat
-                        .getDrawable(
-                            applicationContext,
-                            R.drawable.gender_suggestion_button_right_background,
-                        )?.apply {
-                            setTintMode(PorterDuff.Mode.SRC_IN)
-                            setTint(ContextCompat.getColor(applicationContext, colorRes))
-                        }
+                    handleColorAndTextForNounType(rightType).let { (colorRes, text) ->
+                        translateBtnRight.text = text
+                        translateBtnRight.background =
+                            ContextCompat
+                                .getDrawable(
+                                    applicationContext,
+                                    R.drawable.gender_suggestion_button_right_background,
+                                )?.apply {
+                                    setTintMode(PorterDuff.Mode.SRC_IN)
+                                    setTint(ContextCompat.getColor(applicationContext, colorRes))
+                                }
+                    }
+                }
+                "preposition" -> {
+                    handleTextForCaseAnnotation(leftType).let { (colorRes, text) ->
+                        translateBtnLeft.text = text
+                        translateBtnLeft.background =
+                            ContextCompat
+                                .getDrawable(
+                                    applicationContext,
+                                    R.drawable.gender_suggestion_button_left_background,
+                                )?.apply {
+                                    setTintMode(PorterDuff.Mode.SRC_IN)
+                                    setTint(ContextCompat.getColor(applicationContext, colorRes))
+                                }
+                    }
+
+                    handleTextForCaseAnnotation(rightType).let { (colorRes, text) ->
+                        translateBtnRight.text = text
+                        translateBtnRight.background =
+                            ContextCompat
+                                .getDrawable(
+                                    applicationContext,
+                                    R.drawable.gender_suggestion_button_right_background,
+                                )?.apply {
+                                    setTintMode(PorterDuff.Mode.SRC_IN)
+                                    setTint(ContextCompat.getColor(applicationContext, colorRes))
+                                }
+                    }
+                }
             }
         }
     }
 
-    fun handleColorAndTextForNounType(nounType: String): Pair<Int, String> {
+    fun handleTextForCaseAnnotation(nounType: String): Pair<Int, String> {
         val suggestionMap =
             mapOf(
-                "PL" to Pair(R.color.annotateOrange, "PL"),
-                "neuter" to Pair(R.color.annotateGreen, "N"),
-                "common of two genders" to Pair(R.color.annotatePurple, "C"),
-                "common" to Pair(R.color.annotatePurple, "C"),
-                "masculine" to Pair(R.color.annotateBlue, "M"),
-                "feminine" to Pair(R.color.annotateRed, "F"),
+                "genitive case" to Pair(md_grey_black_dark, processValuesForPreposition(language, "Gen")),
+                "accusative case" to Pair(md_grey_black_dark, processValuesForPreposition(language, "Acc")),
+                "dative case" to Pair(md_grey_black_dark, processValuesForPreposition(language, "Dat")),
+                "locative case" to Pair(md_grey_black_dark, processValuesForPreposition(language, "Loc")),
+                "Prepositional case" to Pair(md_grey_black_dark, processValuesForPreposition(language, "Pre")),
+                "Instrumental case" to Pair(md_grey_black_dark, processValuesForPreposition(language, "Ins")),
             )
         var (colorRes, text) =
             suggestionMap[nounType]
                 ?: Pair(R.color.transparent, "Suggestion")
         return Pair(colorRes, text)
+    }
+
+    fun handleColorAndTextForNounType(nounType: String): Pair<Int, String> {
+        Log.i("MY-TAG", "Hi i am from handleColorAndText for npun type and the langauge is $language")
+        val suggestionMap =
+            mapOf(
+                "PL" to Pair(R.color.annotateOrange, "PL"),
+                "neuter" to Pair(R.color.annotateGreen, "N"),
+                "common of two genders" to Pair(R.color.annotatePurple, processValueForNouns(language, "C")),
+                "common" to Pair(R.color.annotatePurple, processValueForNouns(language, "C")),
+                "masculine" to Pair(R.color.annotateBlue, processValueForNouns(language, "M")),
+                "feminine" to Pair(R.color.annotateRed, processValueForNouns(language, "F")),
+            )
+
+        var (colorRes, text) =
+            suggestionMap[nounType]
+                ?: Pair(R.color.transparent, "Suggestion")
+        return Pair(colorRes, text)
+    }
+
+    fun processValueForNouns(
+        language: String,
+        text: String,
+    ): String {
+        var textOutput: String
+        if (nounAnnotationConversionDict[language]?.get(text) != null) {
+            textOutput = nounAnnotationConversionDict[language]?.get(text).toString()
+        } else {
+            return text
+        }
+        return textOutput
+    }
+
+    fun processValuesForPreposition(
+        language: String,
+        text: String,
+    ): String {
+        var textOutput: String
+        if (prepAnnotationConversionDict[language]?.get(text) != null) {
+            textOutput = prepAnnotationConversionDict[language]?.get(text).toString()
+        } else {
+            return text
+        }
+        return textOutput
     }
 
     fun disableAutoSuggest() {
@@ -652,6 +814,7 @@ abstract class GeneralKeyboardIME(
         emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
         pluralWords = dbHelper.checkIfWordIsPlural(languageAlias)!!
         nounKeywords = dbHelper.findGenderOfWord(languageAlias)
+        caseAnnotation = dbHelper.findCaseAnnnotationForPreposition(languageAlias)
 
         Log.i("MY-TAG", nounKeywords.toString())
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
@@ -668,6 +831,19 @@ abstract class GeneralKeyboardIME(
             "Russian" -> "RU"
             "Spanish" -> "ES"
             "Swedish" -> "SV"
+            else -> ""
+        }
+
+    private fun getLanguageFromAlias(alias: String): String =
+        when (language) {
+            "EN" -> "English"
+            "FR" -> "French"
+            "DE" -> "German"
+            "IT" -> "Italian"
+            "PT" -> "Portuguese"
+            "RU" -> "Russian"
+            "ES" -> "Spanish"
+            "SV" -> "Swedish"
             else -> ""
         }
 
@@ -925,7 +1101,7 @@ abstract class GeneralKeyboardIME(
         editorInfo: EditorInfo?,
         restarting: Boolean,
     ) {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
@@ -939,13 +1115,13 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun setupToolBarTheme(binding: KeyboardViewKeyboardBinding) {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         when (isUserDarkMode) {
             true -> {
-                binding.commandField.setBackgroundColor(getColor(R.color.md_grey_black_dark))
+                binding.commandField.setBackgroundColor(getColor(md_grey_black_dark))
             }
 
             else -> {
@@ -955,13 +1131,13 @@ abstract class GeneralKeyboardIME(
     }
 
     fun setupCommandBarTheme(binding: KeyboardViewCommandOptionsBinding) {
-        val sharedPref = getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         when (isUserDarkMode) {
             true -> {
-                binding.commandField.setBackgroundColor(getColor(R.color.md_grey_black_dark))
+                binding.commandField.setBackgroundColor(getColor(md_grey_black_dark))
             }
 
             else -> {

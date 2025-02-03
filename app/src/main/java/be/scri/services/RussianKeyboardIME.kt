@@ -84,7 +84,7 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
 
             KeyboardBase.KEYCODE_SPACE -> {
                 handleElseCondition(code, keyboardMode, binding = null)
-                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
+                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion ,  caseAnnotationSuggestion = caseAnnotationSuggestion,)
             }
 
             else -> {
@@ -103,6 +103,7 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
         checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
+        caseAnnotationSuggestion = getCaseAnnotationForPreposition(caseAnnotation, lastWord)
         Log.d("Debug", "$autosuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)

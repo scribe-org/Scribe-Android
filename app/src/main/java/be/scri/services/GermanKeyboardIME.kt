@@ -92,7 +92,11 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
 
             KeyboardBase.KEYCODE_SPACE -> {
                 handleElseCondition(code, keyboardMode, binding = null)
-                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
+                updateAutoSuggestText(
+                    isPlural = checkIfPluralWord,
+                    nounTypeSuggestion = nounTypeSuggestion,
+                    caseAnnotationSuggestion = caseAnnotationSuggestion,
+                )
             }
 
             else -> {
@@ -111,8 +115,7 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
         checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
-        Log.d("Debug", "$autosuggestEmojis")
-
+        caseAnnotationSuggestion = getCaseAnnotationForPreposition(caseAnnotation, lastWord)
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
