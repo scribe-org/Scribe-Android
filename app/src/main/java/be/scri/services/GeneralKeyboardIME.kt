@@ -39,6 +39,14 @@ import be.scri.helpers.KeyboardBase
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
+import be.scri.helpers.english.ENInterfaceVariables
+import be.scri.helpers.french.FRInterfaceVariables
+import be.scri.helpers.german.DEInterfaceVariables
+import be.scri.helpers.italian.ITInterfaceVariables
+import be.scri.helpers.portuguese.PTInterfaceVariables
+import be.scri.helpers.russian.RUInterfaceVariables
+import be.scri.helpers.spanish.ESInterfaceVariables
+import be.scri.helpers.swedish.SVInterfaceVariables
 import be.scri.views.KeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
@@ -204,16 +212,18 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun commitPeriodAfterSpace() {
-        if (getSharedPreferences("app_preferences", MODE_PRIVATE)
-                .getBoolean("period_on_double_tap_$language", true)
-        ) {
-            val inputConnection = currentInputConnection ?: return
-            inputConnection.deleteSurroundingText(1, 0)
-            inputConnection.commitText(". ", 1)
-        } else {
-            val inputConnection = currentInputConnection ?: return
-            inputConnection.deleteSurroundingText(1, 0)
-            inputConnection.commitText("  ", 1)
+        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+            if (getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+                    .getBoolean("period_on_double_tap_$language", true)
+            ) {
+                val inputConnection = currentInputConnection ?: return
+                inputConnection.deleteSurroundingText(1, 0)
+                inputConnection.commitText(". ", 1)
+            } else {
+                val inputConnection = currentInputConnection ?: return
+                inputConnection.deleteSurroundingText(1, 0)
+                inputConnection.commitText("  ", 1)
+            }
         }
     }
 
@@ -327,11 +337,48 @@ abstract class GeneralKeyboardIME(
         }
     }
 
+    val translatePlaceholder =
+        mapOf(
+            "EN" to ENInterfaceVariables.TRANSLATE_PLACEHOLDER,
+            "ES" to ESInterfaceVariables.TRANSLATE_PLACEHOLDER,
+            "DE" to DEInterfaceVariables.TRANSLATE_PLACEHOLDER,
+            "IT" to ITInterfaceVariables.TRANSLATE_PLACEHOLDER,
+            "FR" to FRInterfaceVariables.TRANSLATE_PLACEHOLDER,
+            "PT" to PTInterfaceVariables.TRANSLATE_PLACEHOLDER,
+            "RU" to RUInterfaceVariables.TRANSLATE_PLACEHOLDER,
+            "SV" to SVInterfaceVariables.TRANSLATE_PLACEHOLDER,
+        )
+
+    val conjugatePlaceholder =
+        mapOf(
+            "EN" to ENInterfaceVariables.CONJUGATE_PLACEHOLDER,
+            "ES" to ESInterfaceVariables.CONJUGATE_PLACEHOLDER,
+            "DE" to DEInterfaceVariables.CONJUGATE_PLACEHOLDER,
+            "IT" to ITInterfaceVariables.CONJUGATE_PLACEHOLDER,
+            "FR" to FRInterfaceVariables.CONJUGATE_PLACEHOLDER,
+            "PT" to PTInterfaceVariables.CONJUGATE_PLACEHOLDER,
+            "RU" to RUInterfaceVariables.CONJUGATE_PLACEHOLDER,
+            "SV" to SVInterfaceVariables.CONJUGATE_PLACEHOLDER,
+        )
+
+    val pluralPlaceholder =
+        mapOf(
+            "EN" to ENInterfaceVariables.PLURAL_PLACEHOLDER,
+            "ES" to ESInterfaceVariables.PLURAL_PLACEHOLDER,
+            "DE" to DEInterfaceVariables.PLURAL_PLACEHOLDER,
+            "IT" to ITInterfaceVariables.PLURAL_PLACEHOLDER,
+            "FR" to FRInterfaceVariables.PLURAL_PLACEHOLDER,
+            "PT" to PTInterfaceVariables.PLURAL_PLACEHOLDER,
+            "RU" to RUInterfaceVariables.PLURAL_PLACEHOLDER,
+            "SV" to SVInterfaceVariables.PLURAL_PLACEHOLDER,
+        )
+
     private fun setupSelectCommandView() {
         binding.translateBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
         binding.conjugateBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
         binding.pluralBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
-        binding.translateBtn.text
+        getLanguageAlias(language)
+        binding.translateBtn.text = "Translate"
         binding.conjugateBtn.text = "Conjugate"
         binding.pluralBtn.text = "Plural"
         binding.separator2.visibility = View.GONE
@@ -793,6 +840,13 @@ abstract class GeneralKeyboardIME(
         inputConnection.commitText(emoji, 1)
     }
 
+    private fun getPluralRepresentation(word: String?): String? {
+        if (word.isNullOrEmpty()) return null
+        val languageAlias = getLanguageAlias(language)
+        val pluralRepresentationMap = dbHelper.getPluralRepresentation(languageAlias, word)
+        return pluralRepresentationMap.values.filterNotNull().firstOrNull()
+    }
+
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) {
             keyboardView?.vibrateIfNeeded()
@@ -830,6 +884,7 @@ abstract class GeneralKeyboardIME(
         emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
         pluralWords = dbHelper.checkIfWordIsPlural(languageAlias)!!
         nounKeywords = dbHelper.findGenderOfWord(languageAlias)
+
         caseAnnotation = dbHelper.findCaseAnnnotationForPreposition(languageAlias)
 
         Log.i("MY-TAG", nounKeywords.toString())
@@ -931,7 +986,22 @@ abstract class GeneralKeyboardIME(
         val imeOptionsActionId = getImeOptionsActionId()
 
         if (commandBarState == true) {
-            inputConnection.commitText(binding?.commandBar?.text.toString(), 1)
+            val commandBarInput =
+                binding
+                    ?.commandBar
+                    ?.text
+                    .toString()
+                    .trim()
+                    .dropLast(1)
+            lateinit var commandModeOutput: String
+            when (currentState) {
+                ScribeState.PLURAL -> commandModeOutput = getPluralRepresentation(commandBarInput) ?: ""
+                else -> commandModeOutput = commandBarInput
+            }
+            if (commandModeOutput.length > commandBarInput.length) {
+                commandModeOutput = "$commandModeOutput "
+            }
+            inputConnection.commitText(commandModeOutput, 1)
             binding?.commandBar?.text = ""
         } else {
             if (imeOptionsActionId != IME_ACTION_NONE) {

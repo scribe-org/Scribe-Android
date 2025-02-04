@@ -6,6 +6,7 @@
 
 package be.scri.helpers
 
+import DataContract
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -63,7 +64,21 @@ class DatabaseHelper(
         )
 
     fun findCaseAnnnotationForPreposition(language: String): HashMap<String, MutableList<String>> =
-        dbManagers.prepositionManager.getCaseAnnotations(
+        if (language != "DE" && language != "RU") {
+            hashMapOf()
+        } else {
+            dbManagers.prepositionManager.getCaseAnnotations(
+                language,
+            )
+        }
+
+    fun getPluralRepresentation(
+        language: String,
+        noun: String,
+    ): Map<String, String?> =
+        dbManagers.pluralManager.queryPluralRepresentation(
             language,
+            getRequiredData(language),
+            noun,
         )
 }

@@ -91,12 +91,7 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
             }
 
             KeyboardBase.KEYCODE_SPACE -> {
-                handleElseCondition(code, keyboardMode, binding = null)
-                updateAutoSuggestText(
-                    isPlural = checkIfPluralWord,
-                    nounTypeSuggestion = nounTypeSuggestion,
-                    caseAnnotationSuggestion = caseAnnotationSuggestion,
-                )
+                handleKeycodeSpace()
             }
 
             else -> {
@@ -138,6 +133,21 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
             currentState = ScribeState.IDLE
             switchToCommandToolBar()
             updateUI()
+        }
+    }
+
+    fun handleKeycodeSpace() {
+        val code = KeyboardBase.KEYCODE_SPACE
+        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+            handleElseCondition(code, keyboardMode, binding = null)
+            updateAutoSuggestText(
+                isPlural = checkIfPluralWord,
+                nounTypeSuggestion = nounTypeSuggestion,
+                caseAnnotationSuggestion = caseAnnotationSuggestion,
+            )
+        } else {
+            handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
+            disableAutoSuggest()
         }
     }
 
