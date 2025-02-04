@@ -110,8 +110,7 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
         checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
-        Log.d("Debug", "$autosuggestEmojis")
-
+        caseAnnotationSuggestion = getCaseAnnotationForPreposition(caseAnnotation, lastWord)
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
@@ -141,7 +140,11 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         val code = KeyboardBase.KEYCODE_SPACE
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleElseCondition(code, keyboardMode, binding = null)
-            updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
+            updateAutoSuggestText(
+                isPlural = checkIfPluralWord,
+                nounTypeSuggestion = nounTypeSuggestion,
+                caseAnnotationSuggestion = caseAnnotationSuggestion,
+            )
         } else {
             handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
             disableAutoSuggest()

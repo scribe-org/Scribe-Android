@@ -102,6 +102,7 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
         checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
+        caseAnnotationSuggestion = getCaseAnnotationForPreposition(caseAnnotation, lastWord)
         Log.d("Debug", "$autosuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
@@ -133,7 +134,11 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         val code = KeyboardBase.KEYCODE_SPACE
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleElseCondition(code, keyboardMode, binding = null)
-            updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
+            updateAutoSuggestText(
+                isPlural = checkIfPluralWord,
+                nounTypeSuggestion = nounTypeSuggestion,
+                caseAnnotationSuggestion = caseAnnotationSuggestion,
+            )
         } else {
             handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
             disableAutoSuggest()

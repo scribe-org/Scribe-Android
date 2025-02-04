@@ -5,6 +5,7 @@ import EmojiDataManager
 import GenderDataManager
 import PluralFormsManager
 import android.content.Context
+import be.scri.helpers.keyboardDBHelper.PrepositionDataManager
 
 class DatabaseManagers(
     context: Context,
@@ -14,4 +15,5 @@ class DatabaseManagers(
     val emojiManager = EmojiDataManager(context)
     val genderManager = GenderDataManager(context)
     val pluralManager = PluralFormsManager(context)
+    val prepositionManager = PrepositionDataManager(context)
 }

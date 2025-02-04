@@ -63,6 +63,15 @@ class DatabaseHelper(
             getRequiredData(language),
         )
 
+    fun findCaseAnnnotationForPreposition(language: String): HashMap<String, MutableList<String>> =
+        if (language != "DE" && language != "RU") {
+            hashMapOf()
+        } else {
+            dbManagers.prepositionManager.getCaseAnnotations(
+                language,
+            )
+        }
+
     fun getPluralRepresentation(
         language: String,
         noun: String,
