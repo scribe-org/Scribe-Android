@@ -87,8 +87,7 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
             }
 
             KeyboardBase.KEYCODE_SPACE -> {
-                handleElseCondition(code, keyboardMode, binding = null)
-                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
+                handleKeycodeSpace()
             }
 
             else -> {
@@ -131,6 +130,17 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
             currentState = ScribeState.IDLE
             switchToCommandToolBar()
             updateUI()
+        }
+    }
+
+    fun handleKeycodeSpace() {
+        val code = KeyboardBase.KEYCODE_SPACE
+        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+            handleElseCondition(code, keyboardMode, binding = null)
+            updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
+        } else {
+            handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
+            disableAutoSuggest()
         }
     }
 
