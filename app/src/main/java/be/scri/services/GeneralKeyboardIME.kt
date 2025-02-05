@@ -339,38 +339,38 @@ abstract class GeneralKeyboardIME(
 
     val translatePlaceholder =
         mapOf(
-            "EN" to ENInterfaceVariables.TRANSLATE_PLACEHOLDER,
-            "ES" to ESInterfaceVariables.TRANSLATE_PLACEHOLDER,
-            "DE" to DEInterfaceVariables.TRANSLATE_PLACEHOLDER,
-            "IT" to ITInterfaceVariables.TRANSLATE_PLACEHOLDER,
-            "FR" to FRInterfaceVariables.TRANSLATE_PLACEHOLDER,
-            "PT" to PTInterfaceVariables.TRANSLATE_PLACEHOLDER,
-            "RU" to RUInterfaceVariables.TRANSLATE_PLACEHOLDER,
-            "SV" to SVInterfaceVariables.TRANSLATE_PLACEHOLDER,
+            "EN" to ENInterfaceVariables.TRANSLATE_KEY_LBL,
+            "ES" to ESInterfaceVariables.TRANSLATE_KEY_LBL,
+            "DE" to DEInterfaceVariables.TRANSLATE_KEY_LBL,
+            "IT" to ITInterfaceVariables.TRANSLATE_KEY_LBL,
+            "FR" to FRInterfaceVariables.TRANSLATE_KEY_LBL,
+            "PT" to PTInterfaceVariables.TRANSLATE_KEY_LBL,
+            "RU" to RUInterfaceVariables.TRANSLATE_KEY_LBL,
+            "SV" to SVInterfaceVariables.TRANSLATE_KEY_LBL,
         )
 
     val conjugatePlaceholder =
         mapOf(
-            "EN" to ENInterfaceVariables.CONJUGATE_PLACEHOLDER,
-            "ES" to ESInterfaceVariables.CONJUGATE_PLACEHOLDER,
-            "DE" to DEInterfaceVariables.CONJUGATE_PLACEHOLDER,
-            "IT" to ITInterfaceVariables.CONJUGATE_PLACEHOLDER,
-            "FR" to FRInterfaceVariables.CONJUGATE_PLACEHOLDER,
-            "PT" to PTInterfaceVariables.CONJUGATE_PLACEHOLDER,
-            "RU" to RUInterfaceVariables.CONJUGATE_PLACEHOLDER,
-            "SV" to SVInterfaceVariables.CONJUGATE_PLACEHOLDER,
+            "EN" to ENInterfaceVariables.CONJUGATE_KEY_LBL,
+            "ES" to ESInterfaceVariables.CONJUGATE_KEY_LBL,
+            "DE" to DEInterfaceVariables.CONJUGATE_KEY_LBL,
+            "IT" to ITInterfaceVariables.CONJUGATE_KEY_LBL,
+            "FR" to FRInterfaceVariables.CONJUGATE_KEY_LBL,
+            "PT" to PTInterfaceVariables.CONJUGATE_KEY_LBL,
+            "RU" to RUInterfaceVariables.CONJUGATE_KEY_LBL,
+            "SV" to SVInterfaceVariables.CONJUGATE_KEY_LBL,
         )
 
     val pluralPlaceholder =
         mapOf(
-            "EN" to ENInterfaceVariables.PLURAL_PLACEHOLDER,
-            "ES" to ESInterfaceVariables.PLURAL_PLACEHOLDER,
-            "DE" to DEInterfaceVariables.PLURAL_PLACEHOLDER,
-            "IT" to ITInterfaceVariables.PLURAL_PLACEHOLDER,
-            "FR" to FRInterfaceVariables.PLURAL_PLACEHOLDER,
-            "PT" to PTInterfaceVariables.PLURAL_PLACEHOLDER,
-            "RU" to RUInterfaceVariables.PLURAL_PLACEHOLDER,
-            "SV" to SVInterfaceVariables.PLURAL_PLACEHOLDER,
+            "EN" to ENInterfaceVariables.PLURAL_KEY_LBL,
+            "ES" to ESInterfaceVariables.PLURAL_KEY_LBL,
+            "DE" to DEInterfaceVariables.PLURAL_KEY_LBL,
+            "IT" to ITInterfaceVariables.PLURAL_KEY_LBL,
+            "FR" to FRInterfaceVariables.PLURAL_KEY_LBL,
+            "PT" to PTInterfaceVariables.PLURAL_KEY_LBL,
+            "RU" to RUInterfaceVariables.PLURAL_KEY_LBL,
+            "SV" to SVInterfaceVariables.PLURAL_KEY_LBL,
         )
 
     private fun setupSelectCommandView() {
@@ -378,9 +378,9 @@ abstract class GeneralKeyboardIME(
         binding.conjugateBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
         binding.pluralBtn.background = AppCompatResources.getDrawable(this, R.drawable.button_background_rounded)
         getLanguageAlias(language)
-        binding.translateBtn.text = "Translate"
-        binding.conjugateBtn.text = "Conjugate"
-        binding.pluralBtn.text = "Plural"
+        binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
+        binding.conjugateBtn.text = conjugatePlaceholder[getLanguageAlias(language)] ?: "Conjugate"
+        binding.pluralBtn.text = pluralPlaceholder[getLanguageAlias(language)] ?: "Plural"
         binding.separator2.visibility = View.GONE
         binding.separator3.visibility = View.GONE
         setupCommandBarTheme(binding)
