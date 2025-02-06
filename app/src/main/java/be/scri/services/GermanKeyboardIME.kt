@@ -24,7 +24,7 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         } else if (getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
             R.xml.keys_letter_german_without_accent_characters
         } else {
-            R.xml.keys_letter_swedish_without_period_and_comma
+            R.xml.keys_letter_german_without_period_and_comma
         }
 
     override lateinit var binding: KeyboardViewCommandOptionsBinding
