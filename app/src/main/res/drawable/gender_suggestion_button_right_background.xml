@@ -6,9 +6,9 @@
             <item android:id="@+id/button_background_shape">
                 <shape android:shape="rectangle">
                     <corners
-                        android:topRightRadius="10dp"
+                        android:topRightRadius="5dp"
                         android:topLeftRadius="0dp"
-                        android:bottomRightRadius="10dp"
+                        android:bottomRightRadius="5dp"
                         android:bottomLeftRadius="0dp" />
                 </shape>
             </item>

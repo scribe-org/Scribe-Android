@@ -24,7 +24,7 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         } else if (getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
             R.xml.keys_letter_german_without_accent_characters
         } else {
-            R.xml.keys_letter_swedish_without_period_and_comma
+            R.xml.keys_letter_german_without_period_and_comma
         }
 
     override lateinit var binding: KeyboardViewCommandOptionsBinding
@@ -110,8 +110,7 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
         checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
-        Log.d("Debug", "$autosuggestEmojis")
-
+        caseAnnotationSuggestion = getCaseAnnotationForPreposition(caseAnnotation, lastWord)
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
@@ -141,7 +140,11 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         val code = KeyboardBase.KEYCODE_SPACE
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleElseCondition(code, keyboardMode, binding = null)
-            updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
+            updateAutoSuggestText(
+                isPlural = checkIfPluralWord,
+                nounTypeSuggestion = nounTypeSuggestion,
+                caseAnnotationSuggestion = caseAnnotationSuggestion,
+            )
         } else {
             handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
             disableAutoSuggest()
