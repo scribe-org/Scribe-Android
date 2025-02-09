@@ -168,13 +168,6 @@ abstract class GeneralKeyboardIME(
 
     private fun updateKeyboardMode(isCommandMode: Boolean = false) {
         updateCommandBarHintandPrompt()
-        enterKeyType =
-            if (isCommandMode) {
-                KeyboardBase.MyCustomActions.IME_ACTION_COMMAND
-            } else {
-                currentEnterKeyType!!
-            }
-        keyboardView?.setKeyboard(keyboard!!)
     }
 
     fun getIsAccentCharacterDisabled(): Boolean {
@@ -189,11 +182,28 @@ abstract class GeneralKeyboardIME(
         return isDisabledPeriodAndCommaABC
     }
 
+    var earlierValue:Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
+
     private fun updateEnterKeyColor(isDarkMode: Boolean? = null) {
         when (currentState) {
-            ScribeState.IDLE -> keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
-            ScribeState.SELECT_COMMAND -> keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
-            else -> keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
+            ScribeState.IDLE -> {
+                keyboardView?.setEnterKeyIcon(ScribeState.IDLE , earlierValue)
+                Log.i("MY-TAG" , "The value is the following ${earlierValue.toString()}")
+                keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
+                Log.i("MY-TAG1","I am called after changing the enter key color ")
+            }
+            ScribeState.SELECT_COMMAND -> {
+
+                keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
+                earlierValue = keyboardView?.setEnterKeyIcon(ScribeState.SELECT_COMMAND , earlierValue)
+                Log.i("MY-TAG" , "The earlier value from select command part is ${earlierValue}")
+            }
+            else -> {
+                keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
+                keyboardView?.setEnterKeyIcon(ScribeState.PLURAL , earlierValue)
+                Log.i("MY-TAG" , earlierValue.toString())
+                Log.i("ALPHA",earlierValue.toString())
+            }
         }
         if (isDarkMode == true) {
             val color = ContextCompat.getColorStateList(this, R.color.light_key_color)

@@ -54,7 +54,7 @@ class KeyboardBase {
     private var mDisplayWidth = 0
 
     /** What icon should we show at Enter key  */
-    private var mEnterKeyType = IME_ACTION_NONE
+    var mEnterKeyType = IME_ACTION_NONE
 
     /** Keyboard rows  */
     private val mRows = ArrayList<Row?>()
