@@ -188,21 +188,16 @@ abstract class GeneralKeyboardIME(
         when (currentState) {
             ScribeState.IDLE -> {
                 keyboardView?.setEnterKeyIcon(ScribeState.IDLE , earlierValue)
-                Log.i("MY-TAG" , "The value is the following ${earlierValue.toString()}")
                 keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
-                Log.i("MY-TAG1","I am called after changing the enter key color ")
             }
             ScribeState.SELECT_COMMAND -> {
 
                 keyboardView?.setEnterKeyColor(null, isDarkMode = isDarkMode)
                 earlierValue = keyboardView?.setEnterKeyIcon(ScribeState.SELECT_COMMAND , earlierValue)
-                Log.i("MY-TAG" , "The earlier value from select command part is ${earlierValue}")
             }
             else -> {
                 keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
                 keyboardView?.setEnterKeyIcon(ScribeState.PLURAL , earlierValue)
-                Log.i("MY-TAG" , earlierValue.toString())
-                Log.i("ALPHA",earlierValue.toString())
             }
         }
         if (isDarkMode == true) {
@@ -248,6 +243,7 @@ abstract class GeneralKeyboardIME(
         keyboardBinding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             setupSelectCommandView()
+
             updateUI()
         }
         setInputView(keyboardHolder)
@@ -261,11 +257,15 @@ abstract class GeneralKeyboardIME(
         when (currentState) {
             ScribeState.IDLE -> {
                 setupIdleView()
+                handleTextSizeForSuggestion(binding)
                 initializeEmojiButtons()
                 updateButtonVisibility(isAutoSuggestEnabled)
                 updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
             }
-            ScribeState.SELECT_COMMAND -> setupSelectCommandView()
+            ScribeState.SELECT_COMMAND -> {
+                binding.translateBtn.textSize = SUGGESTION_SIZE
+                setupSelectCommandView()
+            }
             else -> switchToToolBar()
         }
         updateEnterKeyColor(isUserDarkMode)
@@ -275,10 +275,12 @@ abstract class GeneralKeyboardIME(
         this.keyboardBinding = initializeKeyboardBinding()
         val keyboardHolder = keyboardBinding.root
         setupToolBarTheme(keyboardBinding)
+        handleTextSizeForSuggestion(binding)
         val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        binding.translateBtn.textSize = SUGGESTION_SIZE
         when (isUserDarkMode) {
             true -> {
                 keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_dark))
@@ -295,6 +297,7 @@ abstract class GeneralKeyboardIME(
         keyboardBinding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             switchToCommandToolBar()
+            handleTextSizeForSuggestion(binding)
             updateUI()
         }
         setInputView(keyboardHolder)
@@ -619,10 +622,10 @@ abstract class GeneralKeyboardIME(
         colorRes = R.color.annotateOrange
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtnRight.visibility = View.INVISIBLE
+        handleTextSize(binding)
         binding.translateBtn.apply {
             visibility = View.VISIBLE
             binding.translateBtn.text = text
-            textSize = NOUN_TYPE_SIZE
             background =
                 ContextCompat.getDrawable(context, R.drawable.rounded_drawable)?.apply {
                     setTintMode(PorterDuff.Mode.SRC_IN)
@@ -670,10 +673,10 @@ abstract class GeneralKeyboardIME(
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtnRight.visibility = View.INVISIBLE
         binding.translateBtn.setTextColor(getColor(textColor))
+        handleTextSize(binding)
         binding.translateBtn.apply {
             visibility = View.VISIBLE
             binding.translateBtn.text = buttonText
-            textSize = NOUN_TYPE_SIZE
             setTextColor(getColor(textColor))
             background =
                 ContextCompat.getDrawable(context, R.drawable.rounded_drawable)?.apply {
@@ -683,6 +686,9 @@ abstract class GeneralKeyboardIME(
         }
     }
 
+    fun handleTextSize(binding: KeyboardViewCommandOptionsBinding) {
+        binding.translateBtn.textSize = NOUN_TYPE_SIZE
+    }
     fun handleMultipleNounFormats(
         multipleTypeSuggestion: List<String>?,
         type: String? = null,
@@ -842,9 +848,15 @@ abstract class GeneralKeyboardIME(
         binding.translateBtn.text = "Suggestion"
         binding.translateBtn.setTextColor(getColor(R.color.special_key_dark))
         binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
-        binding.translateBtn.textSize = SUGGESTION_SIZE
+        handleTextSizeForSuggestion(binding)
     }
 
+    fun handleTextSizeForSuggestion(binding: KeyboardViewCommandOptionsBinding) {
+        binding.translateBtn.setTextColor(getColor(R.color.button_text_color))
+        binding.translateBtn.textSize = SUGGESTION_SIZE
+
+
+    }
     private fun insertEmoji(emoji: String) {
         val inputConnection = currentInputConnection ?: return
         inputConnection.commitText(emoji, 1)
@@ -920,6 +932,7 @@ abstract class GeneralKeyboardIME(
         // The current state should be transferred to the command unless required by the language.
         if ((currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) &&
             keyboardMode == keyboardLetters
+
         ) {
             val editorInfo = currentInputEditorInfo
             if (
@@ -1212,6 +1225,7 @@ abstract class GeneralKeyboardIME(
             }
         }
     }
+
 
     fun setupCommandBarTheme(binding: KeyboardViewCommandOptionsBinding) {
         val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
