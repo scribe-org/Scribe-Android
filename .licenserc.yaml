@@ -1,0 +1,11 @@
+header:
+  license:
+    content: "SPDX-License-Identifier: GPL-3.0-or-later"
+  paths:
+    - '**/*.java'
+    - '**/*.kt'
+  paths-ignore:
+    - '**/*.md'
+    - '**/.git/**'
+  comment: on-failure
+  license-location-threshold: 10
