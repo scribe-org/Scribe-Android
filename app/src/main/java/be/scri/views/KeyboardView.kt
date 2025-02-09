@@ -649,15 +649,15 @@ class KeyboardView
                 }
             val shadowPaint =
                 Paint().apply {
-                    color = Color.GRAY
+                    color = Color.BLACK
                     alpha = SHADOW_ALPHA
                     style = Paint.Style.FILL
                 }
             mKeyboardBackgroundColor =
                 if (isUserDarkMode) {
-                    Color.BLACK
+                    Color.parseColor("#1E1E1E")
                 } else {
-                    Color.LTGRAY
+                    Color.parseColor("#d2d4da")
                 }
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
             canvas.drawColor(mKeyboardBackgroundColor)
