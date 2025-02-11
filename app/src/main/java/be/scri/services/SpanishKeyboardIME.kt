@@ -77,8 +77,9 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
             }
 
             KeyboardBase.KEYCODE_ENTER -> {
-                handleKeycodeEnter()
                 disableAutoSuggest()
+                handleKeycodeEnter()
+                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
             }
 
             KeyboardBase.KEYCODE_MODE_CHANGE -> {

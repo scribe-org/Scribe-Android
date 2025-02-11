@@ -73,8 +73,9 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
             }
 
             KeyboardBase.KEYCODE_ENTER -> {
-                handleKeycodeEnter()
                 disableAutoSuggest()
+                handleKeycodeEnter()
+                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
             }
 
             KeyboardBase.KEYCODE_MODE_CHANGE -> {
@@ -124,6 +125,7 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
         } else {
             handleKeycodeEnter(keyboardBinding, true)
             currentState = ScribeState.IDLE
+
             switchToCommandToolBar()
             updateUI()
         }
