@@ -608,6 +608,7 @@ abstract class GeneralKeyboardIME(
         if (isPlural) {
             handlePluralAutoSuggest()
         } else {
+            Log.i("MY-TAG", "These are the case annotations $caseAnnotationSuggestion")
             nounTypeSuggestion?.size?.let {
                 if (it > 1 || isSingularAndPlural) {
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
@@ -647,6 +648,7 @@ abstract class GeneralKeyboardIME(
         singleTypeSuggestion: List<String>?,
         type: String? = null,
     ) {
+        Log.i("MY-TAG", "Single suggestion activated $singleTypeSuggestion")
         val text = singleTypeSuggestion?.get(0).toString()
         var (colorRes, buttonText) = Pair(R.color.transparent, "Suggestion")
         val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
@@ -703,6 +705,7 @@ abstract class GeneralKeyboardIME(
         multipleTypeSuggestion: List<String>?,
         type: String? = null,
     ) {
+        Log.i("MY-TAG", "Mutliple suggestion activated $multipleTypeSuggestion")
         binding.apply {
             translateBtnLeft.visibility = View.VISIBLE
             translateBtnRight.visibility = View.VISIBLE

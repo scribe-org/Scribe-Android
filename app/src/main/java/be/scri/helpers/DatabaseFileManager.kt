@@ -1,3 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+/**
+ * A helper to facilitate loading and
+ * managing database files for different languages in the Scribe keyboard.
+ *
+ */
+
 package be.scri.helpers
 
 import android.content.Context

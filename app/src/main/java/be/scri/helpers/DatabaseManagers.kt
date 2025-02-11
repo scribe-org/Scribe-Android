@@ -1,3 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+/**
+ * A helper class that manages various database-related operations
+ * and data managers for the Scribe keyboard.
+*/
+
 package be.scri.helpers
 
 import ContractDataLoader

@@ -1,4 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 
+/**
+ * A helper class to manage emoji keywords by querying an SQLite database based on the specified language.
+ */
 
 import android.content.Context
 import android.database.Cursor

@@ -1,8 +1,15 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+/**
+ * A helper class to manage preposition data and extract case annotations from an SQLite database for a given language.
+ */
+
 package be.scri.helpers.keyboardDBHelper
 
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 
 class PrepositionDataManager(
     private val context: Context,
@@ -42,7 +49,7 @@ class PrepositionDataManager(
                 result.putAll(processCursor(cursor))
             }
         }
-
+        Log.i("MY-TAG", " These are the case annotations ${result["in"]}")
         return result
     }
 }
