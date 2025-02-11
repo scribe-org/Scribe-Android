@@ -35,7 +35,6 @@ import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.EditorInfo
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.compose.ui.layout.IntrinsicMeasurable
 import be.scri.R
 import be.scri.databinding.KeyboardPopupKeyboardBinding
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
@@ -63,8 +62,7 @@ import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
-import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.*
+import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
 
@@ -296,15 +294,13 @@ class KeyboardView
 
         fun setEnterKeyIcon(
             state: ScribeState,
-            earlierValue: Int ? = null
+            earlierValue: Int? = null,
         ): Int? {
-            if ((state == ScribeState.IDLE || state == ScribeState.SELECT_COMMAND) && earlierValue == null ) {
+            if ((state == ScribeState.IDLE || state == ScribeState.SELECT_COMMAND) && earlierValue == null) {
                 return mKeyboard?.mEnterKeyType
-            }
-            else if (earlierValue != null && (state == ScribeState.IDLE || state == ScribeState.SELECT_COMMAND)) {
+            } else if (earlierValue != null && (state == ScribeState.IDLE || state == ScribeState.SELECT_COMMAND)) {
                 mKeyboard?.mEnterKeyType = earlierValue
-            }
-            else{
+            } else {
                 mKeyboard?.mEnterKeyType = MyCustomActions.IME_ACTION_COMMAND
             }
             return earlierValue
@@ -625,8 +621,6 @@ class KeyboardView
             mTextColor =
                 if (keyBackgroundColor == Color.WHITE) {
                     Color.BLACK
-
-
                 } else {
                     Color.WHITE
                 }
@@ -762,7 +756,7 @@ class KeyboardView
                                     R.drawable.ic_search_vector
                                 EditorInfo.IME_ACTION_NEXT,
                                 EditorInfo.IME_ACTION_GO,
-                                    ->
+                                ->
                                     R.drawable.ic_arrow_right_vector
                                 EditorInfo.IME_ACTION_SEND ->
                                     R.drawable.ic_send_vector
