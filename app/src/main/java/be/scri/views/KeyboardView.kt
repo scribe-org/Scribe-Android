@@ -625,6 +625,8 @@ class KeyboardView
             mTextColor =
                 if (keyBackgroundColor == Color.WHITE) {
                     Color.BLACK
+
+
                 } else {
                     Color.WHITE
                 }

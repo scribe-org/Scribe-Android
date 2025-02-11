@@ -33,6 +33,7 @@ import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
+import be.scri.extensions.isUsingSystemDarkTheme
 import be.scri.helpers.DatabaseHelper
 import be.scri.helpers.HintUtils
 import be.scri.helpers.KeyboardBase
@@ -150,6 +151,7 @@ abstract class GeneralKeyboardIME(
         keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         onCreateInputView()
+
         setupCommandBarTheme(binding)
     }
 
@@ -304,10 +306,17 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun setupIdleView() {
+        binding.translateBtn.textSize = SUGGESTION_SIZE
         val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        if (isUserDarkMode) {
+            binding.translateBtn.setTextColor(getColor(R.color.white))
+        }
+        else {
+            binding.translateBtn.setTextColor(getColor(R.color.md_grey_black_dark))
+        }
         when (isUserDarkMode) {
             true -> {
                 binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
@@ -316,11 +325,10 @@ abstract class GeneralKeyboardIME(
                 binding.translateBtn.setTextColor(Color.WHITE)
                 binding.conjugateBtn.setTextColor(Color.WHITE)
                 binding.pluralBtn.setTextColor(Color.WHITE)
-                binding.separator2.setBackgroundColor(getColor(R.color.special_key_dark))
-                binding.separator3.setBackgroundColor(getColor(R.color.special_key_dark))
-                binding.separator4.setBackgroundColor(getColor(R.color.special_key_dark))
+                binding.separator2.setBackgroundColor(Color.parseColor("#aeb3be"))
+                binding.separator3.setBackgroundColor(Color.parseColor("#aeb3be"))
+                binding.separator4.setBackgroundColor(Color.parseColor("#aeb3be"))
             }
-
             else -> {
                 binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
                 binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
@@ -328,9 +336,9 @@ abstract class GeneralKeyboardIME(
                 binding.translateBtn.setTextColor(Color.parseColor("#1E1E1E"))
                 binding.conjugateBtn.setTextColor(Color.parseColor("#1E1E1E"))
                 binding.pluralBtn.setTextColor(Color.parseColor("#1E1E1E"))
-                binding.separator2.setBackgroundColor(getColor(R.color.special_key_light))
-                binding.separator3.setBackgroundColor(getColor(R.color.special_key_light))
-                binding.separator4.setBackgroundColor(getColor(R.color.special_key_light))
+                binding.separator2.setBackgroundColor(Color.parseColor("#4b4b4b"))
+                binding.separator3.setBackgroundColor(Color.parseColor("#4b4b4b"))
+                binding.separator4.setBackgroundColor(Color.parseColor("#4b4b4b"))
             }
         }
 
@@ -338,6 +346,7 @@ abstract class GeneralKeyboardIME(
         binding.translateBtn.text = "Suggestion"
         binding.conjugateBtn.text = "Suggestion"
         binding.pluralBtn.text = "Suggestion"
+        binding.translateBtn.setTextColor(Color.BLACK)
         binding.separator2.visibility = View.VISIBLE
         binding.separator3.visibility = View.VISIBLE
         binding.scribeKey.setOnClickListener {
@@ -396,9 +405,11 @@ abstract class GeneralKeyboardIME(
         binding.separator2.visibility = View.GONE
         binding.separator3.visibility = View.GONE
         setupCommandBarTheme(binding)
+        binding.translateBtn.setTextColor(Color.BLACK)
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             Log.i("MY-TAG", "IDLE STATE")
+            binding.translateBtn.setTextColor(Color.BLACK)
             binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
             updateUI()
         }
@@ -445,6 +456,7 @@ abstract class GeneralKeyboardIME(
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
+
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
@@ -851,10 +863,17 @@ abstract class GeneralKeyboardIME(
     }
 
     fun handleTextSizeForSuggestion(binding: KeyboardViewCommandOptionsBinding) {
-        binding.translateBtn.setTextColor(getColor(R.color.white))
         binding.translateBtn.textSize = SUGGESTION_SIZE
-
-
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        if (isUserDarkMode) {
+            binding.translateBtn.setTextColor(getColor(R.color.white))
+        }
+        else {
+            binding.translateBtn.setTextColor(getColor(R.color.md_grey_black_dark))
+        }
     }
     private fun insertEmoji(emoji: String) {
         val inputConnection = currentInputConnection ?: return
@@ -1234,8 +1253,8 @@ abstract class GeneralKeyboardIME(
         when (isUserDarkMode) {
             true -> {
                 binding.commandField.setBackgroundColor(Color.parseColor("#1E1E1E"))
+                binding.translateBtn.setTextColor(getColor(R.color.white))
             }
-
             else -> {
                 binding.commandField.setBackgroundColor(Color.parseColor("#d2d4da"))
             }
