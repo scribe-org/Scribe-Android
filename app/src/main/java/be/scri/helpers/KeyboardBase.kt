@@ -72,6 +72,7 @@ class KeyboardBase {
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
+        const val SCALING_CONSTANT = 150
 
         fun getDimensionOrFraction(
             a: TypedArray,
@@ -320,7 +321,7 @@ class KeyboardBase {
         mDisplayWidth =
             when (context.resources.configuration.orientation) {
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    context.resources.displayMetrics.widthPixels - 150
+                    context.resources.displayMetrics.widthPixels - SCALING_CONSTANT
                 }
                 Configuration.ORIENTATION_PORTRAIT -> {
                     context.resources.displayMetrics.widthPixels
