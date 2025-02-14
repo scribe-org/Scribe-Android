@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+/**
+ * A helper class to manage and process gender data from an SQLite database for a given language and JSON contract.
+ */
+
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log

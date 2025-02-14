@@ -1,3 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+/**
+ * Data structure to hold various linguistic data for the Scribe keyboard.
+ *
+ * This includes information such as gender classifications, verb conjugations, and number representations
+ * for different languages, allowing for processing of language-specific grammar rules.
+ */
+
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

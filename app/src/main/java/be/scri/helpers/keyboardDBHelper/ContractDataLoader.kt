@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+/**
+ * A helper class to load and deserialize contract data from assets based on the specified language.
+ */
 
 import android.content.Context
 import android.util.Log

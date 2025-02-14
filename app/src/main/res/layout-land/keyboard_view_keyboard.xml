@@ -17,7 +17,7 @@
         <Button
             android:id="@+id/scribe_key"
             android:layout_width="0dp"
-            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_height="36dp"
             android:layout_marginStart="@dimen/small_margin"
             android:background="@drawable/scribe_key_background_left_rounded"
             android:contentDescription="@string/scribe_key"
@@ -25,24 +25,69 @@
             android:foregroundGravity="center"
             android:foregroundTint="@color/light_key_text_color"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
-            app:layout_constraintEnd_toStartOf="@+id/command_bar"
+            app:layout_constraintEnd_toStartOf="@+id/prompt_text"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintHorizontal_weight="20"
             app:layout_constraintStart_toStartOf="@+id/command_field"
             app:layout_constraintTop_toTopOf="@+id/command_field" />
 
+        <TextView
+            android:id="@+id/prompt_text"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@drawable/cmd_bar_prompt_background"
+            android:textFontWeight="500"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:minWidth="48dp"
+            android:maxWidth="120dp"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/command_bar"
+            app:layout_constraintStart_toEndOf="@+id/scribe_key"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <TextView
+            android:id="@+id/prompt_text_border"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@drawable/cmd_bar_prompt_background"
+            android:text="⎜"
+            android:textFontWeight="500"
+            android:textSize="16sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/command_bar"
+            app:layout_constraintBottom_toBottomOf="@+id/prompt_text"
+            app:layout_constraintEnd_toStartOf="@+id/command_bar"
+            app:layout_constraintStart_toEndOf="@+id/prompt_text"
+            app:layout_constraintTop_toTopOf="@+id/prompt_text" />
+
+
         <Button
             android:id="@+id/command_bar"
             android:layout_width="0dp"
-            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_height="36dp"
+            android:textFontWeight="500"
             android:layout_marginEnd="@dimen/tiny_margin"
             android:background="@drawable/cmd_bar_background_right_rounded"
             android:contentDescription="@string/command_bar"
+            android:elevation="0dp"
+            android:stateListAnimator="@null"
+            android:textSize="16sp"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:textAlignment="textStart"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
             app:layout_constraintEnd_toEndOf="@+id/command_field"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_weight="84"
-            app:layout_constraintStart_toEndOf="@+id/scribe_key"
+            app:layout_constraintHorizontal_weight="50"
+            app:layout_constraintStart_toEndOf="@+id/prompt_text"
             app:layout_constraintTop_toTopOf="@+id/command_field" />
 
         <ImageView

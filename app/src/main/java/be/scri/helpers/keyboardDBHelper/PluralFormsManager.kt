@@ -1,4 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 
+/**
+ * A helper class to manage and query plural forms of
+ * words from an SQLite database based on the provided language and JSON contract.
+ */
 
 import android.content.Context
 import android.database.Cursor

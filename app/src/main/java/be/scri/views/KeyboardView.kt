@@ -32,6 +32,7 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
+import android.view.inputmethod.EditorInfo
 import android.widget.PopupWindow
 import android.widget.TextView
 import be.scri.R
@@ -56,10 +57,12 @@ import be.scri.helpers.KeyboardBase.Companion.KEYCODE_ENTER
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_MODE_CHANGE
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SHIFT
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SPACE
+import be.scri.helpers.KeyboardBase.MyCustomActions
 import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
+import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
 
@@ -287,6 +290,20 @@ class KeyboardView
                     }
                 }
             }
+        }
+
+        fun setEnterKeyIcon(
+            state: ScribeState,
+            earlierValue: Int? = null,
+        ): Int? {
+            if ((state == ScribeState.IDLE || state == ScribeState.SELECT_COMMAND) && earlierValue == null) {
+                return mKeyboard?.mEnterKeyType
+            } else if (earlierValue != null && (state == ScribeState.IDLE || state == ScribeState.SELECT_COMMAND)) {
+                mKeyboard?.mEnterKeyType = earlierValue
+            } else {
+                mKeyboard?.mEnterKeyType = MyCustomActions.IME_ACTION_COMMAND
+            }
+            return earlierValue
         }
 
         private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
@@ -628,15 +645,15 @@ class KeyboardView
                 }
             val shadowPaint =
                 Paint().apply {
-                    color = Color.GRAY
+                    color = Color.BLACK
                     alpha = SHADOW_ALPHA
                     style = Paint.Style.FILL
                 }
             mKeyboardBackgroundColor =
                 if (isUserDarkMode) {
-                    Color.BLACK
+                    Color.parseColor("#1E1E1E")
                 } else {
-                    Color.LTGRAY
+                    Color.parseColor("#d2d4da")
                 }
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
             canvas.drawColor(mKeyboardBackgroundColor)
@@ -733,6 +750,22 @@ class KeyboardView
                     }
 
                     if (code == KEYCODE_ENTER) {
+                        val drawableId =
+                            when (mKeyboard!!.mEnterKeyType) {
+                                EditorInfo.IME_ACTION_SEARCH ->
+                                    R.drawable.ic_search_vector
+                                EditorInfo.IME_ACTION_NEXT,
+                                EditorInfo.IME_ACTION_GO,
+                                ->
+                                    R.drawable.ic_arrow_right_vector
+                                EditorInfo.IME_ACTION_SEND ->
+                                    R.drawable.ic_send_vector
+                                MyCustomActions.IME_ACTION_COMMAND ->
+                                    R.drawable.play_button
+                                else ->
+                                    R.drawable.ic_enter_vector
+                            }
+                        key.icon = resources.getDrawable(drawableId)
                         key.icon!!.applyColorFilter(mTextColor)
                     } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT) {
                         key.icon!!.applyColorFilter(mTextColor)

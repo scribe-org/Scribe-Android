@@ -8,6 +8,7 @@ package be.scri.helpers
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.TypedArray
 import android.content.res.XmlResourceParser
@@ -54,7 +55,7 @@ class KeyboardBase {
     private var mDisplayWidth = 0
 
     /** What icon should we show at Enter key  */
-    private var mEnterKeyType = IME_ACTION_NONE
+    var mEnterKeyType = IME_ACTION_NONE
 
     /** Keyboard rows  */
     private val mRows = ArrayList<Row?>()
@@ -71,6 +72,7 @@ class KeyboardBase {
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
+        const val SCALING_CONSTANT = 150
 
         fun getDimensionOrFraction(
             a: TypedArray,
@@ -124,10 +126,19 @@ class KeyboardBase {
                     parent.mDefaultWidth,
                 )
 
+            val resources = Resources.getSystem()
             defaultHeight =
-                res
-                    .getDimension(R.dimen.key_height)
-                    .toInt()
+                when (resources.configuration.orientation) {
+                    Configuration.ORIENTATION_LANDSCAPE -> {
+                        res.getDimension(R.dimen.key_height_landscape).toInt()
+                    }
+                    Configuration.ORIENTATION_PORTRAIT -> {
+                        res.getDimension(R.dimen.key_height).toInt()
+                    }
+                    else -> {
+                        res.getDimension(R.dimen.key_height).toInt()
+                    }
+                }
 
             defaultHorizontalGap =
                 getDimensionOrFraction(
@@ -307,7 +318,18 @@ class KeyboardBase {
         @XmlRes xmlLayoutResId: Int,
         enterKeyType: Int,
     ) {
-        mDisplayWidth = context.resources.displayMetrics.widthPixels
+        mDisplayWidth =
+            when (context.resources.configuration.orientation) {
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    context.resources.displayMetrics.widthPixels - SCALING_CONSTANT
+                }
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    context.resources.displayMetrics.widthPixels
+                }
+                else -> {
+                    context.resources.displayMetrics.widthPixels
+                }
+            }
         mDefaultHorizontalGap = 0
         mDefaultWidth = mDisplayWidth / WIDTH_DIVIDER
         mDefaultHeight = mDefaultWidth
@@ -359,6 +381,7 @@ class KeyboardBase {
                 mMinWidth = x
             }
         }
+
         mHeight = y + mDefaultHeight
         mRows.add(row)
     }

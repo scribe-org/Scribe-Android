@@ -14,8 +14,8 @@
     <color name="white">#ffffff</color>
     <color name="light_keyboard">#99FFFFFF</color>
     <color name="transparent">@android:color/transparent</color>
-    <color name="special_key_light">#B0B2BD</color>
-    <color name="special_key_dark">#2D2D2D</color>
+    <color name="special_key_light">#aeb3be</color>
+    <color name="special_key_dark">#202020</color>
 
     <color name="nav_bar_selected_color_light">@color/dark_scribe_color</color>
     <color name="nav_bar_selected_color_dark">@color/light_scribe_color</color>
