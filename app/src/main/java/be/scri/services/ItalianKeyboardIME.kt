@@ -125,7 +125,6 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
         } else {
             handleKeycodeEnter(keyboardBinding, true)
             currentState = ScribeState.IDLE
-
             switchToCommandToolBar()
             updateUI()
         }
