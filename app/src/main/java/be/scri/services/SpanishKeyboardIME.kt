@@ -48,6 +48,7 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
         keyboardView!!.setKeyboard(keyboard!!)
         setupCommandBarTheme(binding)
         keyboardView!!.setPreview = getIsPreviewEmabled()
+        keyboardView!!.setVibrate = getIsVibrateEnabled()
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         initializeEmojiButtons()

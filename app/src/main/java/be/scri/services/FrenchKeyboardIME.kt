@@ -43,6 +43,7 @@ class FrenchKeyboardIME : GeneralKeyboardIME("French") {
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setPreview = getIsPreviewEmabled()
+        keyboardView!!.setVibrate = getIsVibrateEnabled()
         setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this

@@ -70,14 +70,13 @@ fun LanguageSettingsScreen(
             )
         }
 
-
     val popupOnKeyPressState =
         remember {
             mutableStateOf(
                 sharedPref.getBoolean(
                     "popup_on_keypress_$language",
-                    false
-                )
+                    true,
+                ),
             )
         }
 
@@ -86,12 +85,10 @@ fun LanguageSettingsScreen(
             mutableStateOf(
                 sharedPref.getBoolean(
                     "vibrate_on_keypress_$language",
-                    false
-                )
+                    true,
+                ),
             )
         }
-
-
 
     val periodAndCommaState =
         remember {
@@ -129,7 +126,6 @@ fun LanguageSettingsScreen(
                             shouldDisableAccentCharacter,
                         )
                     },
-
                 ),
         )
     val functionalityList =
@@ -160,7 +156,7 @@ fun LanguageSettingsScreen(
                         PreferencesHelper.setShowPopupOnKeypress(
                             context,
                             language,
-                            shouldDisablePopUpOnKeyPress
+                            shouldDisablePopUpOnKeyPress,
                         )
                     },
                     toggleVibrateOnKeyPress = vibrateOnKeyPressState.value,
@@ -169,7 +165,7 @@ fun LanguageSettingsScreen(
                         PreferencesHelper.setVibrateOnKeypress(
                             context,
                             language,
-                            shouldVibrateOnKeyPress
+                            shouldVibrateOnKeyPress,
                         )
                     },
                 ),
@@ -211,9 +207,9 @@ private fun getFunctionalityListData(
     emojiSuggestionsState: Boolean,
     onToggleEmojiSuggestions: (Boolean) -> Unit,
     togglePopUpOnKeyPress: Boolean,
-    onTogglePopUpOnKeyPress: (Boolean) -> Unit ,
-    toggleVibrateOnKeyPress : Boolean,
-    onToggleVibrateOnKeyPress: (Boolean) -> Unit
+    onTogglePopUpOnKeyPress: (Boolean) -> Unit,
+    toggleVibrateOnKeyPress: Boolean,
+    onToggleVibrateOnKeyPress: (Boolean) -> Unit,
 ): List<ScribeItem> {
     val list =
         listOf(
@@ -231,16 +227,16 @@ private fun getFunctionalityListData(
             ),
             ScribeItem.SwitchItem(
                 title = R.string.app_settings_keyboard_keypress_vibration,
-                desc =  R.string.app_settings_keyboard_keypress_vibration_description,
+                desc = R.string.app_settings_keyboard_keypress_vibration_description,
                 state = toggleVibrateOnKeyPress,
-                onToggle = onToggleVibrateOnKeyPress
+                onToggle = onToggleVibrateOnKeyPress,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
-                desc =  R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
+                desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
                 state = togglePopUpOnKeyPress,
-                onToggle = onTogglePopUpOnKeyPress
-            )
+                onToggle = onTogglePopUpOnKeyPress,
+            ),
         )
     return list
 }

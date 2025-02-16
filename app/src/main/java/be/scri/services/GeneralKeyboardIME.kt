@@ -173,7 +173,13 @@ abstract class GeneralKeyboardIME(
 
     fun getIsPreviewEmabled(): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isPreviewEnabled = sharedPref.getBoolean("show_popup_on_keypress_$language", false)
+        val isPreviewEnabled = sharedPref.getBoolean("show_popup_on_keypress_$language", true)
+        return isPreviewEnabled
+    }
+
+    fun getIsVibrateEnabled(): Boolean {
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isPreviewEnabled = sharedPref.getBoolean("vibrate_on_keypress_$language", true)
         return isPreviewEnabled
     }
 

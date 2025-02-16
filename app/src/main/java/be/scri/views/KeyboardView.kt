@@ -271,10 +271,8 @@ class KeyboardView
                 return _popupBinding!!
             }
 
-
         var setPreview: Boolean = true
-
-
+        var setVibrate: Boolean = true
 
         fun setEnterKeyColor(
             color: Int? = null,
@@ -490,7 +488,7 @@ class KeyboardView
         }
 
         fun vibrateIfNeeded() {
-            if (context.config.vibrateOnKeypress) {
+            if (setVibrate) {
                 performHapticFeedback()
             }
         }

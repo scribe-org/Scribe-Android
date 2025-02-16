@@ -44,6 +44,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setPreview = getIsPreviewEmabled()
+        keyboardView!!.setVibrate = getIsVibrateEnabled()
         when (currentState) {
             ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
             else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
