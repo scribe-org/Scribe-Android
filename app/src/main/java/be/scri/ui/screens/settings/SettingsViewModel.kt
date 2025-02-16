@@ -44,22 +44,6 @@ class SettingsViewModel(
         _isKeyboardInstalled.value = SettingsUtil.checkKeyboardInstallation(context)
     }
 
-    fun setVibrateOnKeypress(
-        context: Context,
-        value: Boolean,
-    ) {
-        _vibrateOnKeypress.value = value
-        PreferencesHelper.setVibrateOnKeypress(context, value)
-    }
-
-    fun setPopupOnKeypress(
-        context: Context,
-        value: Boolean,
-    ) {
-        _popupOnKeypress.value = value
-        PreferencesHelper.setShowPopupOnKeypress(context, value)
-    }
-
     fun setLightDarkMode(value: Boolean) {
         _isUserDarkMode.value = value
     }
