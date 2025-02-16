@@ -271,6 +271,11 @@ class KeyboardView
                 return _popupBinding!!
             }
 
+
+        var setPreview: Boolean = true
+
+
+
         fun setEnterKeyColor(
             color: Int? = null,
             isDarkMode: Boolean? = null,
@@ -810,7 +815,7 @@ class KeyboardView
         }
 
         private fun showPreview(keyIndex: Int) {
-            if (!context.config.showPopupOnKeypress) {
+            if (!setPreview) {
                 return
             }
 

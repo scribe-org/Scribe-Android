@@ -171,6 +171,12 @@ abstract class GeneralKeyboardIME(
         return isAccentCharacterDisabled
     }
 
+    fun getIsPreviewEmabled(): Boolean {
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isPreviewEnabled = sharedPref.getBoolean("show_popup_on_keypress_$language", false)
+        return isPreviewEnabled
+    }
+
     fun getEnablePeriodAndCommaABC(): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val isDisabledPeriodAndCommaABC = sharedPref.getBoolean("period_and_comma_$language", false)

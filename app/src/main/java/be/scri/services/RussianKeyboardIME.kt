@@ -42,6 +42,7 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         Log.i("MY-TAG", "From Russian Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        keyboardView!!.setPreview = getIsPreviewEmabled()
         setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
