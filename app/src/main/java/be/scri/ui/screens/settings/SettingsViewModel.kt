@@ -9,7 +9,6 @@ package be.scri.ui.screens.settings
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import be.scri.helpers.PreferencesHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -42,22 +41,6 @@ class SettingsViewModel(
     fun refreshSettings(context: Context) {
         _languages.value = SettingsUtil.getKeyboardLanguages(context)
         _isKeyboardInstalled.value = SettingsUtil.checkKeyboardInstallation(context)
-    }
-
-    fun setVibrateOnKeypress(
-        context: Context,
-        value: Boolean,
-    ) {
-        _vibrateOnKeypress.value = value
-        PreferencesHelper.setVibrateOnKeypress(context, value)
-    }
-
-    fun setPopupOnKeypress(
-        context: Context,
-        value: Boolean,
-    ) {
-        _popupOnKeypress.value = value
-        PreferencesHelper.setShowPopupOnKeypress(context, value)
     }
 
     fun setLightDarkMode(value: Boolean) {

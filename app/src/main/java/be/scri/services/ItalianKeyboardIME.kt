@@ -42,6 +42,8 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
         Log.i("MY-TAG", "From Italian Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        keyboardView!!.setPreview = getIsPreviewEmabled()
+        keyboardView!!.setVibrate = getIsVibrateEnabled()
         keyboardView!!.setKeyboardHolder()
         setupCommandBarTheme(binding)
         keyboardView!!.mOnKeyboardActionListener = this

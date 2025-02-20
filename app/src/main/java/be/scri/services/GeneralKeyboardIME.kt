@@ -171,6 +171,18 @@ abstract class GeneralKeyboardIME(
         return isAccentCharacterDisabled
     }
 
+    fun getIsPreviewEmabled(): Boolean {
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isPreviewEnabled = sharedPref.getBoolean("show_popup_on_keypress_$language", true)
+        return isPreviewEnabled
+    }
+
+    fun getIsVibrateEnabled(): Boolean {
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isPreviewEnabled = sharedPref.getBoolean("vibrate_on_keypress_$language", true)
+        return isPreviewEnabled
+    }
+
     fun getEnablePeriodAndCommaABC(): Boolean {
         val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         val isDisabledPeriodAndCommaABC = sharedPref.getBoolean("period_and_comma_$language", false)
@@ -343,7 +355,7 @@ abstract class GeneralKeyboardIME(
         binding.separator3.visibility = View.VISIBLE
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
-
+            disableAutoSuggest()
             updateButtonVisibility(false)
             Log.i("MY-TAG", "SELECT COMMAND STATE")
             binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
@@ -408,6 +420,7 @@ abstract class GeneralKeyboardIME(
             currentState = ScribeState.IDLE
             Log.i("MY-TAG", "IDLE STATE")
             binding.translateBtn.setTextColor(Color.WHITE)
+            disableAutoSuggest()
             binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
             updateUI()
         }
@@ -862,6 +875,10 @@ abstract class GeneralKeyboardIME(
         binding.translateBtn.setTextColor(getColor(R.color.special_key_dark))
         binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
         handleTextSizeForSuggestion(binding)
+        if (currentState == ScribeState.SELECT_COMMAND) {
+            setupIdleView()
+            setupSelectCommandView()
+        }
     }
 
     fun handleTextSizeForSuggestion(binding: KeyboardViewCommandOptionsBinding) {

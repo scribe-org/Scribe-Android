@@ -88,23 +88,39 @@ object PreferencesHelper {
 
     fun setVibrateOnKeypress(
         context: Context,
+        language: String,
         shouldVibrateOnKeypress: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("vibrate_on_keypress", shouldVibrateOnKeypress)
+        editor.putBoolean("vibrate_on_keypress_$language", shouldVibrateOnKeypress)
         editor.apply()
+        Toast
+            .makeText(
+                context,
+                "$language vibrate on key press " +
+                    if (shouldVibrateOnKeypress) "enabled" else "disabled",
+                Toast.LENGTH_SHORT,
+            ).show()
         context.config.vibrateOnKeypress = shouldVibrateOnKeypress
     }
 
     fun setShowPopupOnKeypress(
         context: Context,
+        language: String,
         shouldShowPopupOnKeypress: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("show_popup_on_keypress", shouldShowPopupOnKeypress)
+        editor.putBoolean("show_popup_on_keypress_$language", shouldShowPopupOnKeypress)
         editor.apply()
+        Toast
+            .makeText(
+                context,
+                "$language PopUp on Keypress " +
+                    if (shouldShowPopupOnKeypress) "enabled" else "disabled",
+                Toast.LENGTH_SHORT,
+            ).show()
         context.config.showPopupOnKeypress = shouldShowPopupOnKeypress
     }
 

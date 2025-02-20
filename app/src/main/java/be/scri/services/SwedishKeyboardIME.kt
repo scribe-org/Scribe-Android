@@ -47,6 +47,8 @@ class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         setupCommandBarTheme(binding)
+        keyboardView!!.setPreview = getIsPreviewEmabled()
+        keyboardView!!.setVibrate = getIsVibrateEnabled()
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         initializeEmojiButtons()

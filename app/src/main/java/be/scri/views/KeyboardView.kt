@@ -271,6 +271,9 @@ class KeyboardView
                 return _popupBinding!!
             }
 
+        var setPreview: Boolean = true
+        var setVibrate: Boolean = true
+
         fun setEnterKeyColor(
             color: Int? = null,
             isDarkMode: Boolean? = null,
@@ -485,7 +488,7 @@ class KeyboardView
         }
 
         fun vibrateIfNeeded() {
-            if (context.config.vibrateOnKeypress) {
+            if (setVibrate) {
                 performHapticFeedback()
             }
         }
@@ -810,7 +813,7 @@ class KeyboardView
         }
 
         private fun showPreview(keyIndex: Int) {
-            if (!context.config.showPopupOnKeypress) {
+            if (!setPreview) {
                 return
             }
 

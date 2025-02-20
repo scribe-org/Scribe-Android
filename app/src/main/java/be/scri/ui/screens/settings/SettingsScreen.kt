@@ -92,22 +92,6 @@ fun SettingsScreen(
                             onDarkModeChange(newDarkMode)
                         },
                     ),
-                    ScribeItem.SwitchItem(
-                        title = R.string.app_settings_keyboard_keypress_vibration,
-                        desc = R.string.app_settings_keyboard_keypress_vibration_description,
-                        state = vibrateOnKeypress,
-                        onToggle = { shouldVibrateOnKeypress ->
-                            viewModel.setVibrateOnKeypress(context, shouldVibrateOnKeypress)
-                        },
-                    ),
-                    ScribeItem.SwitchItem(
-                        title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
-                        desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
-                        state = popupOnKeypress,
-                        onToggle = { shouldPopUpOnKeypress ->
-                            viewModel.setPopupOnKeypress(context, shouldPopUpOnKeypress)
-                        },
-                    ),
                 ),
         )
 
