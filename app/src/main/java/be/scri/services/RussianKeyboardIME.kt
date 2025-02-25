@@ -13,11 +13,14 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
+import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
+import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.views.KeyboardView
 
 class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
     override fun getKeyboardLayoutXML(): Int =
-        if (getEnablePeriodAndCommaABC()) {
+        if (getEnablePeriodAndCommaABC(applicationContext, language)) {
             R.xml.keys_letters_russian
         } else {
             R.xml.keys_letters_russian_without_period_and_comma
@@ -42,8 +45,8 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         Log.i("MY-TAG", "From Russian Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.setPreview = getIsPreviewEmabled()
-        keyboardView!!.setVibrate = getIsVibrateEnabled()
+        keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
+        keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
         setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
@@ -102,13 +105,13 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
 
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
-        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        autoSuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
         checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
         caseAnnotationSuggestion = getCaseAnnotationForPreposition(caseAnnotation, lastWord)
-        Log.d("Debug", "$autosuggestEmojis")
+        Log.d("Debug", "$autoSuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
-        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+        updateButtonText(isAutoSuggestEnabled, autoSuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }

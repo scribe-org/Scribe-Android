@@ -36,6 +36,7 @@ import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.DatabaseHelper
 import be.scri.helpers.HintUtils
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -88,6 +89,7 @@ abstract class GeneralKeyboardIME(
 
     // How quickly do we have to double-tap shift to enable permanent caps lock.
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
+
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
     lateinit var nounKeywords: HashMap<String, List<String>>
@@ -95,7 +97,7 @@ abstract class GeneralKeyboardIME(
     lateinit var caseAnnotation: HashMap<String, MutableList<String>>
     var isAutoSuggestEnabled: Boolean = false
     var lastWord: String? = null
-    var autosuggestEmojis: MutableList<String>? = null
+    var autoSuggestEmojis: MutableList<String>? = null
     var caseAnnotationSuggestion: MutableList<String>? = null
     var nounTypeSuggestion: List<String>? = null
     var checkIfPluralWord: Boolean = false
@@ -165,30 +167,6 @@ abstract class GeneralKeyboardIME(
         )
     }
 
-    fun getIsAccentCharacterDisabled(): Boolean {
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isAccentCharacterDisabled = sharedPref.getBoolean("disable_accent_character_$language", false)
-        return isAccentCharacterDisabled
-    }
-
-    fun getIsPreviewEmabled(): Boolean {
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isPreviewEnabled = sharedPref.getBoolean("show_popup_on_keypress_$language", true)
-        return isPreviewEnabled
-    }
-
-    fun getIsVibrateEnabled(): Boolean {
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isPreviewEnabled = sharedPref.getBoolean("vibrate_on_keypress_$language", true)
-        return isPreviewEnabled
-    }
-
-    fun getEnablePeriodAndCommaABC(): Boolean {
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isDisabledPeriodAndCommaABC = sharedPref.getBoolean("period_and_comma_$language", false)
-        return isDisabledPeriodAndCommaABC
-    }
-
     var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
 
     private fun updateEnterKeyColor(isDarkMode: Boolean? = null) {
@@ -256,17 +234,14 @@ abstract class GeneralKeyboardIME(
     }
 
     fun updateUI() {
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         when (currentState) {
             ScribeState.IDLE -> {
                 setupIdleView()
                 handleTextSizeForSuggestion(binding)
                 initializeEmojiButtons()
                 updateButtonVisibility(isAutoSuggestEnabled)
-                updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+                updateButtonText(isAutoSuggestEnabled, autoSuggestEmojis)
             }
             ScribeState.SELECT_COMMAND -> {
                 binding.translateBtn.textSize = SUGGESTION_SIZE
@@ -282,10 +257,7 @@ abstract class GeneralKeyboardIME(
         val keyboardHolder = keyboardBinding.root
         setupToolBarTheme(keyboardBinding)
         handleTextSizeForSuggestion(binding)
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        var isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         binding.translateBtn.textSize = SUGGESTION_SIZE
         when (isUserDarkMode) {
             true -> {
@@ -312,10 +284,7 @@ abstract class GeneralKeyboardIME(
 
     private fun setupIdleView() {
         binding.translateBtn.textSize = SUGGESTION_SIZE
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        var isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         if (isUserDarkMode) {
             binding.translateBtn.setTextColor(getColor(R.color.white))
         } else {
@@ -664,10 +633,7 @@ abstract class GeneralKeyboardIME(
         Log.i("MY-TAG", "Single suggestion activated $singleTypeSuggestion")
         val text = singleTypeSuggestion?.get(0).toString()
         var (colorRes, buttonText) = Pair(R.color.transparent, "Suggestion")
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         var textColor = md_grey_black_dark
         if (isUserDarkMode) {
             colorRes = white
@@ -883,10 +849,7 @@ abstract class GeneralKeyboardIME(
 
     fun handleTextSizeForSuggestion(binding: KeyboardViewCommandOptionsBinding) {
         binding.translateBtn.textSize = SUGGESTION_SIZE
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         if (isUserDarkMode) {
             binding.translateBtn.setTextColor(getColor(R.color.white))
         } else {
@@ -1234,12 +1197,10 @@ abstract class GeneralKeyboardIME(
         editorInfo: EditorInfo?,
         restarting: Boolean,
     ) {
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         updateEnterKeyColor(isUserDarkMode)
         initializeEmojiButtons()
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
         isAutoSuggestEnabled = sharedPref.getBoolean("emoji_suggestions_$language", true)
         updateButtonVisibility(isAutoSuggestEnabled)
         setupIdleView()
@@ -1248,15 +1209,11 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun setupToolBarTheme(binding: KeyboardViewKeyboardBinding) {
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         when (isUserDarkMode) {
             true -> {
                 binding.commandField.setBackgroundColor(Color.parseColor("#1E1E1E"))
             }
-
             else -> {
                 binding.commandField.setBackgroundColor(Color.parseColor("#d2d4da"))
             }
@@ -1264,18 +1221,15 @@ abstract class GeneralKeyboardIME(
     }
 
     fun setupCommandBarTheme(binding: KeyboardViewCommandOptionsBinding) {
-        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        val isUserDarkMode = getIsDarkModeOrNot(context = applicationContext)
         when (isUserDarkMode) {
             true -> {
                 binding.commandField.setBackgroundColor(Color.parseColor("#1E1E1E"))
-                binding.translateBtn.setTextColor(getColor(R.color.white))
+                binding.translateBtn.setTextColor(getColor(white))
             }
             else -> {
                 binding.commandField.setBackgroundColor(Color.parseColor("#d2d4da"))
-                binding.translateBtn.setTextColor(getColor(R.color.md_grey_black_dark))
+                binding.translateBtn.setTextColor(getColor(md_grey_black_dark))
             }
         }
     }

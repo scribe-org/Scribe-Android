@@ -13,11 +13,14 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
+import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
+import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.views.KeyboardView
 
 class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override fun getKeyboardLayoutXML(): Int =
-        if (getEnablePeriodAndCommaABC()) {
+        if (getEnablePeriodAndCommaABC(applicationContext, language)) {
             R.xml.keys_letters_english
         } else {
             R.xml.keys_letters_english_without_period_and_comma
@@ -43,8 +46,8 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.setPreview = getIsPreviewEmabled()
-        keyboardView!!.setVibrate = getIsVibrateEnabled()
+        keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
+        keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
         when (currentState) {
             ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
             else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
@@ -106,13 +109,13 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
 
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
-        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        autoSuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
 
         Log.i("MY-TAG", "$checkIfPluralWord")
-        Log.d("Debug", "$autosuggestEmojis")
+        Log.d("Debug", "$autoSuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
-        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+        updateButtonText(isAutoSuggestEnabled, autoSuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }

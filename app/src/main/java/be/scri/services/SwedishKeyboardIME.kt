@@ -13,15 +13,19 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
+import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
+import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
+import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.views.KeyboardView
 
 class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
     override fun getKeyboardLayoutXML(): Int =
-        if (getIsAccentCharacterDisabled() && !getEnablePeriodAndCommaABC()) {
+        if (getIsAccentCharacterDisabled(applicationContext, language) && !getEnablePeriodAndCommaABC(applicationContext, language)) {
             R.xml.keys_letter_swedish_without_accent_characters_and_without_period_and_comma
-        } else if (!getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
+        } else if (!getIsAccentCharacterDisabled(applicationContext, language) && getEnablePeriodAndCommaABC(applicationContext, language)) {
             R.xml.keys_letters_swedish
-        } else if (getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
+        } else if (getIsAccentCharacterDisabled(applicationContext, language) && getEnablePeriodAndCommaABC(applicationContext, language)) {
             R.xml.keys_letter_swedish_without_accent_characters
         } else {
             R.xml.keys_letter_swedish_without_period_and_comma
@@ -47,8 +51,8 @@ class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         setupCommandBarTheme(binding)
-        keyboardView!!.setPreview = getIsPreviewEmabled()
-        keyboardView!!.setVibrate = getIsVibrateEnabled()
+        keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
+        keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
         initializeEmojiButtons()
@@ -106,12 +110,12 @@ class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
 
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
-        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        autoSuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
         checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
-        Log.d("Debug", "$autosuggestEmojis")
+        Log.d("Debug", "$autoSuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
-        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+        updateButtonText(isAutoSuggestEnabled, autoSuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }
