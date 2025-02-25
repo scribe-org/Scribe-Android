@@ -1526,6 +1526,7 @@
     <string name="scribe_wikimedia">Scribe would not be possible without countless contributions by Wikimedia contributors to the many projects that they support. Specifically Scribe makes use of data from the Wikidata Lexicographical data community, as well as data from Wikipedia for each language that Scribe supports.</string>
     <string name="wikimedia_and_scribe_title">How we work together</string>
     <string name="wikimedia_logo">Wikimedia Logo</string>
+    <string name="suggestion">Suggestion</string>
 
     <string-array name="months">
         <item>@string/january</item>

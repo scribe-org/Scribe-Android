@@ -194,4 +194,13 @@ object PreferencesHelper {
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
         return isUserDarkMode
     }
+
+    fun getIsEmojiSuggestionsEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isEnabled = sharedPref.getBoolean("emoji_suggestions_$language", true)
+        return isEnabled
+    }
 }

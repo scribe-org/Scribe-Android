@@ -107,11 +107,11 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         Log.d("Debug", "$lastWord")
         autoSuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
-        checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
+        checkIfPluralWord = findWhetherWordIsPlural(pluralWords, lastWord)
         caseAnnotationSuggestion = getCaseAnnotationForPreposition(caseAnnotation, lastWord)
         Log.d("Debug", "$autoSuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
-        updateButtonText(isAutoSuggestEnabled, autoSuggestEmojis)
+        updateButtonText(emojiAutoSuggestionEnabled, autoSuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }
