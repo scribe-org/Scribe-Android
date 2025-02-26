@@ -100,7 +100,7 @@ abstract class GeneralKeyboardIME(
     var nounTypeSuggestion: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
-    private val commandChar = "⎜"
+    private val commandCursor = "│"
     val prepAnnotationConversionDict =
         mapOf(
             "German" to mapOf("Acc" to "Akk"),
@@ -1141,7 +1141,7 @@ abstract class GeneralKeyboardIME(
                     keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
                 }
             } else {
-                newText = "${commandBar.text.trim().dropLast(2)}$commandChar"
+                newText = "${commandBar.text.trim().dropLast(2)}$commandCursor"
             }
             commandBar.text = newText
         }
@@ -1207,7 +1207,7 @@ abstract class GeneralKeyboardIME(
                         binding.commandBar.paddingBottom,
                     )
                 }
-                val newText = "${commandBar.text.trim().dropLast(1)}$codeChar$commandChar"
+                val newText = "${commandBar.text.trim().dropLast(1)}$codeChar$commandCursor"
                 commandBar.text = newText
             }
         } else {
