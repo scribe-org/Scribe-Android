@@ -73,6 +73,13 @@ class KeyboardBase {
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
         const val SCALING_CONSTANT = 150
+        const val KEYCODE_TAB = -30
+        const val KEYCODE_CAPS_LOCK = -50
+        const val KEYCODE_LEFT_ARROW = -55
+        const val KEYCODE_RIGHT_ARROW = -56
+        const val SHIFT_OFF = 0
+        const val SHIFT_ON = 1
+        const val SHIFT_LOCKED = 2
 
         fun getDimensionOrFraction(
             a: TypedArray,
@@ -269,9 +276,10 @@ class KeyboardBase {
             label = a.getText(R.styleable.KeyboardBase_Key_keyLabel) ?: ""
             topSmallNumber = a.getString(R.styleable.KeyboardBase_Key_topSmallNumber) ?: ""
 
-            if (label.isNotEmpty() && code != KEYCODE_MODE_CHANGE && code != KEYCODE_SHIFT) {
+            if (label.isNotEmpty() && code == 0) {
                 code = label[0].code
             }
+
             a.recycle()
         }
 
@@ -318,18 +326,7 @@ class KeyboardBase {
         @XmlRes xmlLayoutResId: Int,
         enterKeyType: Int,
     ) {
-        mDisplayWidth =
-            when (context.resources.configuration.orientation) {
-                Configuration.ORIENTATION_LANDSCAPE -> {
-                    context.resources.displayMetrics.widthPixels - SCALING_CONSTANT
-                }
-                Configuration.ORIENTATION_PORTRAIT -> {
-                    context.resources.displayMetrics.widthPixels
-                }
-                else -> {
-                    context.resources.displayMetrics.widthPixels
-                }
-            }
+        mDisplayWidth = context.resources.displayMetrics.widthPixels
         mDefaultHorizontalGap = 0
         mDefaultWidth = mDisplayWidth / WIDTH_DIVIDER
         mDefaultHeight = mDefaultWidth
@@ -387,11 +384,13 @@ class KeyboardBase {
     }
 
     fun setShifted(shiftState: Int): Boolean {
-        if (this.mShiftState != shiftState) {
-            this.mShiftState = shiftState
+        if (mShiftState != shiftState) {
+            mShiftState = when (shiftState) {
+                SHIFT_ON_PERMANENT -> SHIFT_LOCKED
+                else -> shiftState and 0x1 // Normal shift handling
+            }
             return true
         }
-
         return false
     }
 

@@ -521,14 +521,15 @@ class KeyboardView
             }
         }
 
-        private fun adjustCase(label: CharSequence?): CharSequence? =
-            label?.takeIf { it.length in 1..2 }?.let {
-                if (mKeyboard?.mShiftState?.let { state -> state > SHIFT_OFF } == true) {
-                    label.toString().uppercase(Locale.getDefault())
-                } else {
-                    label
-                }
-            } ?: label
+    private fun adjustCase(label: CharSequence?): CharSequence? {
+        if (label == null) return null
+        return when {
+            label.toString() in listOf("tab", "caps lock") -> label // Preserve special labels
+            mKeyboard?.mShiftState == KeyboardBase.SHIFT_LOCKED || mKeyboard?.mShiftState == KeyboardBase.SHIFT_ON ->
+                label.toString().uppercase(Locale.getDefault())
+            else -> label
+        }
+    }
 
         public override fun onMeasure(
             widthMeasureSpec: Int,

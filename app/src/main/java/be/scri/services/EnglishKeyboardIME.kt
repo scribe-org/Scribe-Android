@@ -8,6 +8,7 @@ package be.scri.services
 
 import android.text.InputType
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
@@ -16,12 +17,15 @@ import be.scri.helpers.KeyboardBase
 import be.scri.views.KeyboardView
 
 class EnglishKeyboardIME : GeneralKeyboardIME("English") {
-    override fun getKeyboardLayoutXML(): Int =
-        if (getEnablePeriodAndCommaABC()) {
-            R.xml.keys_letters_english
-        } else {
-            R.xml.keys_letters_english_without_period_and_comma
-        }
+    private fun isTablet(): Boolean {
+        return resources.configuration.smallestScreenWidthDp >= 600
+    }
+
+    override fun getKeyboardLayoutXML(): Int = when {
+        isTablet() -> R.xml.keys_letters_english_tablet
+        getEnablePeriodAndCommaABC() -> R.xml.keys_letters_english
+        else -> R.xml.keys_letters_english_without_period_and_comma
+    }
 
     override val keyboardLetters = 0
     override val keyboardSymbols = 1
@@ -66,6 +70,25 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         }
 
         when (code) {
+
+            KeyboardBase.KEYCODE_TAB -> {
+                currentInputConnection?.commitText("\t", 1)
+                return
+            }
+
+            KeyboardBase.KEYCODE_CAPS_LOCK -> {
+                keyboard?.let {
+                    val newState = when (it.mShiftState) {
+                        KeyboardBase.SHIFT_OFF -> KeyboardBase.SHIFT_LOCKED
+                        else -> KeyboardBase.SHIFT_OFF
+                    }
+                    if (it.setShifted(newState)) {
+                        keyboardView?.invalidateAllKeys()
+                    }
+                }
+                return
+            }
+
             KeyboardBase.KEYCODE_DELETE -> {
                 handleKeycodeDelete()
                 keyboardView!!.invalidateAllKeys()
@@ -93,6 +116,9 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
                 handleKeycodeSpace()
             }
 
+            KeyboardBase.KEYCODE_LEFT_ARROW -> handleLeftArrow()
+            KeyboardBase.KEYCODE_RIGHT_ARROW -> handleRightArrow()
+
             else -> {
                 if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
                     handleElseCondition(code, keyboardMode, binding = null)
@@ -115,6 +141,23 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
+        }
+    }
+
+    private fun handleLeftArrow() {
+        currentInputConnection?.let { ic ->
+            val currentPos = ic.getTextBeforeCursor(1000, 0)?.length ?: 0
+            val newPos = (currentPos - 1).coerceAtLeast(0)
+            ic.setSelection(newPos, newPos)
+        }
+    }
+
+    private fun handleRightArrow() {
+        currentInputConnection?.let { ic ->
+            val currentPos = ic.getTextBeforeCursor(1000, 0)?.length ?: 0
+            val textAfter = ic.getTextAfterCursor(1000, 0)?.toString() ?: ""
+            val newPos = (currentPos + 1).coerceAtMost(currentPos + textAfter.length + 1)
+            ic.setSelection(newPos, newPos)
         }
     }
 
@@ -150,7 +193,8 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
 
     override fun onCreate() {
         super.onCreate()
-        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType).apply {
+        }
         onCreateInputView()
         setupCommandBarTheme(binding)
     }
