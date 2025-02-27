@@ -139,9 +139,11 @@ class KeyboardBase {
                     Configuration.ORIENTATION_LANDSCAPE -> {
                         res.getDimension(R.dimen.key_height_landscape).toInt()
                     }
+
                     Configuration.ORIENTATION_PORTRAIT -> {
                         res.getDimension(R.dimen.key_height).toInt()
                     }
+
                     else -> {
                         res.getDimension(R.dimen.key_height).toInt()
                     }
@@ -385,10 +387,11 @@ class KeyboardBase {
 
     fun setShifted(shiftState: Int): Boolean {
         if (mShiftState != shiftState) {
-            mShiftState = when (shiftState) {
-                SHIFT_ON_PERMANENT -> SHIFT_LOCKED
-                else -> shiftState and 0x1 // Normal shift handling
-            }
+            mShiftState =
+                when (shiftState) {
+                    SHIFT_ON_PERMANENT -> SHIFT_LOCKED
+                    else -> shiftState and 0x1
+                }
             return true
         }
         return false
@@ -431,6 +434,7 @@ class KeyboardBase {
                             currentRow = createRowFromXml(res, parser)
                             mRows.add(currentRow)
                         }
+
                         TAG_KEY -> {
                             inKey = true
                             key = createKeyFromXml(res, currentRow!!, x, y, parser)
@@ -440,14 +444,18 @@ class KeyboardBase {
                                     when (mEnterKeyType) {
                                         EditorInfo.IME_ACTION_SEARCH ->
                                             R.drawable.ic_search_vector
+
                                         EditorInfo.IME_ACTION_NEXT,
                                         EditorInfo.IME_ACTION_GO,
                                         ->
                                             R.drawable.ic_arrow_right_vector
+
                                         EditorInfo.IME_ACTION_SEND ->
                                             R.drawable.ic_send_vector
+
                                         MyCustomActions.IME_ACTION_COMMAND ->
                                             R.drawable.play_button
+
                                         else ->
                                             R.drawable.ic_enter_vector
                                     }
@@ -455,6 +463,7 @@ class KeyboardBase {
                             }
                             currentRow.mKeys.add(key)
                         }
+
                         TAG_KEYBOARD -> {
                             parseKeyboardAttributes(res, parser)
                         }
