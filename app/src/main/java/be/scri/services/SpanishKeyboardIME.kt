@@ -19,7 +19,15 @@ import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.views.KeyboardView
 
+/**
+ * The SpanishKeyboardIME class provides the input method for the Spanish language keyboard.
+ */
 class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
+
+    /**
+     * Returns the XML layout resource for the keyboard based on user preferences.
+     * @return The resource ID of the keyboard layout XML.
+     */
     override fun getKeyboardLayoutXML(): Int =
         if (getIsAccentCharacterDisabled(applicationContext, language) && !getEnablePeriodAndCommaABC(applicationContext, language)) {
             R.xml.keys_letter_spanish_without_accent_characters_and_without_period_and_comma
@@ -44,6 +52,10 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
     override var switchToLetters = false
     override var hasTextBeforeCursor = false
 
+    /**
+     * Creates and returns the input view for the keyboard.
+     * @return The root view of the keyboard layout.
+     */
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         val keyboardHolder = binding.root
@@ -60,6 +72,10 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
         return keyboardHolder
     }
 
+    /**
+     * Handles key press events on the keyboard.
+     * @param code The key code of the pressed key.
+     */
     override fun onKey(code: Int) {
         val inputConnection = currentInputConnection
         if (keyboard == null || inputConnection == null) {
@@ -121,6 +137,9 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
         }
     }
 
+    /**
+     * Handles the delete key press event.
+     */
     fun handleKeycodeDelete() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleDelete(false, keyboardBinding)
@@ -129,6 +148,9 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
         }
     }
 
+    /**
+     * Handles the enter key press event.
+     */
     fun handleKeycodeEnter() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleKeycodeEnter(keyboardBinding, false)
@@ -140,6 +162,9 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
         }
     }
 
+    /**
+     * Handles the space key press event.
+     */
     fun handleKeycodeSpace() {
         val code = KeyboardBase.KEYCODE_SPACE
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
@@ -151,6 +176,9 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
         }
     }
 
+    /**
+     * Initializes the keyboard and sets up the input view.
+     */
     override fun onCreate() {
         super.onCreate()
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
