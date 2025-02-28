@@ -18,7 +18,15 @@ import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.views.KeyboardView
 
+/**
+ * The RussianKeyboardIME class provides the input method for the Russian language keyboard.
+ */
 class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
+
+    /**
+     * Returns the XML layout resource for the keyboard based on user preferences.
+     * @return The resource ID of the keyboard layout XML.
+     */
     override fun getKeyboardLayoutXML(): Int =
         if (getEnablePeriodAndCommaABC(applicationContext, language)) {
             R.xml.keys_letters_russian
@@ -39,6 +47,10 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
     override var switchToLetters = false
     override var hasTextBeforeCursor = false
 
+    /**
+     * Creates and returns the input view for the keyboard.
+     * @return The root view of the keyboard layout.
+     */
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         val keyboardHolder = binding.root
@@ -55,6 +67,10 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         return keyboardHolder
     }
 
+    /**
+     * Handles key press events on the keyboard.
+     * @param code The key code of the pressed key.
+     */
     override fun onKey(code: Int) {
         val inputConnection = currentInputConnection
         if (keyboard == null || inputConnection == null) {
@@ -117,6 +133,9 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         }
     }
 
+    /**
+     * Handles the delete key press event.
+     */
     fun handleKeycodeDelete() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleDelete(false, keyboardBinding)
@@ -125,6 +144,9 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         }
     }
 
+    /**
+     * Handles the enter key press event.
+     */
     fun handleKeycodeEnter() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleKeycodeEnter(keyboardBinding, false)
@@ -136,6 +158,9 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         }
     }
 
+    /**
+     * Handles the space key press event.
+     */
     fun handleKeycodeSpace() {
         val code = KeyboardBase.KEYCODE_SPACE
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
@@ -151,6 +176,9 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
         }
     }
 
+    /**
+     * Initializes the keyboard and sets up the input view.
+     */
     override fun onCreate() {
         super.onCreate()
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
