@@ -7,7 +7,7 @@
     <dimen name="toolbar_icon_height">40dp</dimen>
     <dimen name="clip_drag_icon_height">42dp</dimen>
     <dimen name="key_height">64dp</dimen>
-    <dimen name="key_height_landscape">44dp</dimen>
+    <dimen name="key_height_landscape">50dp</dimen>
     <dimen name="vertical_correction">-10dp</dimen>
     <dimen name="clip_pin_size">30dp</dimen>
 

@@ -127,8 +127,8 @@ abstract class GeneralKeyboardIME(
                 ),
         )
 
-    protected var currentState: ScribeState = ScribeState.IDLE
-    protected lateinit var keyboardBinding: KeyboardViewKeyboardBinding
+    internal var currentState: ScribeState = ScribeState.IDLE
+    internal lateinit var keyboardBinding: KeyboardViewKeyboardBinding
 
     enum class ScribeState {
         IDLE,
@@ -238,7 +238,7 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    protected fun switchToCommandToolBar() {
+    internal fun switchToCommandToolBar() {
         val binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         this.binding = binding
         val keyboardHolder = binding.root

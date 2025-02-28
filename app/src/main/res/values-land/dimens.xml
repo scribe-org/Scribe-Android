@@ -6,8 +6,8 @@
     <dimen name="toolbar_height">40dp</dimen>
     <dimen name="toolbar_icon_height">36dp</dimen>
     <dimen name="clip_drag_icon_height">38dp</dimen>
-    <dimen name="key_height">40dp</dimen>
-    <dimen name="key_height_landscape">40dp</dimen>
+    <dimen name="key_height">50dp</dimen>
+    <dimen name="key_height_landscape">50dp</dimen>
     <dimen name="vertical_correction">-8dp</dimen>
     <dimen name="clip_pin_size">26dp</dimen>
 
