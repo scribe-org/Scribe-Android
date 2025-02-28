@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
 import be.scri.extensions.config
 
+@Suppress("TooManyFunctions")
 object PreferencesHelper {
     fun setPeriodOnSpaceBarDoubleTapPreference(
         context: Context,

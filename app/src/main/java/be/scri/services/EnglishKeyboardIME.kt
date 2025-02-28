@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 /**
  * The input method (IME) for the English language keyboard.
  */
@@ -18,7 +16,15 @@ import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.views.KeyboardView
 
+/**
+ * The EnglishKeyboardIME class provides the input method for the English language keyboard.
+ */
 class EnglishKeyboardIME : GeneralKeyboardIME("English") {
+
+    /**
+     * Returns the XML layout resource for the keyboard based on user preferences.
+     * @return The resource ID of the keyboard layout XML.
+     */
     override fun getKeyboardLayoutXML(): Int =
         if (getEnablePeriodAndCommaABC(applicationContext, language)) {
             R.xml.keys_letters_english
@@ -40,6 +46,10 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override var hasTextBeforeCursor = false
     override lateinit var binding: KeyboardViewCommandOptionsBinding
 
+    /**
+     * Creates and returns the input view for the keyboard.
+     * @return The root view of the keyboard layout.
+     */
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         setupCommandBarTheme(binding)
@@ -59,6 +69,10 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         return keyboardHolder
     }
 
+    /**
+     * Handles key press events on the keyboard.
+     * @param code The key code of the pressed key.
+     */
     override fun onKey(code: Int) {
         val inputConnection = currentInputConnection
         if (keyboard == null || inputConnection == null) {
@@ -121,6 +135,9 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         }
     }
 
+    /**
+     * Handles the delete key press event.
+     */
     fun handleKeycodeDelete() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleDelete(false, keyboardBinding)
@@ -129,6 +146,9 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         }
     }
 
+    /**
+     * Handles the enter key press event.
+     */
     fun handleKeycodeEnter() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleKeycodeEnter(keyboardBinding, false)
@@ -140,6 +160,9 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         }
     }
 
+    /**
+     * Handles the space key press event.
+     */
     fun handleKeycodeSpace() {
         val code = KeyboardBase.KEYCODE_SPACE
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
@@ -151,6 +174,9 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         }
     }
 
+    /**
+     * Initializes the keyboard and sets up the input view.
+     */
     override fun onCreate() {
         super.onCreate()
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
