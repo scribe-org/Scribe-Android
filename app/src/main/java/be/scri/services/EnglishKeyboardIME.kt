@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 /**
  * The input method (IME) for the English language keyboard.
  */
@@ -20,7 +21,6 @@ import be.scri.views.KeyboardView
  * The EnglishKeyboardIME class provides the input method for the English language keyboard.
  */
 class EnglishKeyboardIME : GeneralKeyboardIME("English") {
-
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.

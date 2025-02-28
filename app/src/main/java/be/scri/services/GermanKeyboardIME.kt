@@ -23,17 +23,22 @@ import be.scri.views.KeyboardView
  * The GermanKeyboardIME class provides the input method for the German language keyboard.
  */
 class GermanKeyboardIME : GeneralKeyboardIME("German") {
-
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.
      */
     override fun getKeyboardLayoutXML(): Int =
-        if (getIsAccentCharacterDisabled(applicationContext, language) && !getEnablePeriodAndCommaABC(applicationContext, language)) {
+        if (getIsAccentCharacterDisabled(applicationContext, language) &&
+            !getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letter_german_without_accent_characters_and_without_period_and_comma
-        } else if (!getIsAccentCharacterDisabled(applicationContext, language) && getEnablePeriodAndCommaABC(applicationContext, language)) {
+        } else if (!getIsAccentCharacterDisabled(applicationContext, language) &&
+            getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letters_german
-        } else if (getIsAccentCharacterDisabled(applicationContext, language) && getEnablePeriodAndCommaABC(applicationContext, language)) {
+        } else if (getIsAccentCharacterDisabled(applicationContext, language) &&
+            getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letter_german_without_accent_characters
         } else {
             R.xml.keys_letter_german_without_period_and_comma

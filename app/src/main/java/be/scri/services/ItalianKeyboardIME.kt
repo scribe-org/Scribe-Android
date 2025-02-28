@@ -22,7 +22,6 @@ import be.scri.views.KeyboardView
  * The ItalianKeyboardIME class provides the input method for the Italian language keyboard.
  */
 class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
-
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.

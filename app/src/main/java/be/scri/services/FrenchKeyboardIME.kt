@@ -22,7 +22,6 @@ import be.scri.views.KeyboardView
  * The FrenchKeyboardIME class provides the input method for the French language keyboard.
  */
 class FrenchKeyboardIME : GeneralKeyboardIME("French") {
-
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.

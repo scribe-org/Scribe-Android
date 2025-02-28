@@ -22,7 +22,6 @@ import be.scri.views.KeyboardView
  * The PortugueseKeyboardIME class provides the input method for the Portuguese language keyboard.
  */
 class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
-
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.

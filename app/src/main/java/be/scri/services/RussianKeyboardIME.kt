@@ -22,7 +22,6 @@ import be.scri.views.KeyboardView
  * The RussianKeyboardIME class provides the input method for the Russian language keyboard.
  */
 class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
-
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.

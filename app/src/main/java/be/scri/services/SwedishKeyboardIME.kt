@@ -23,17 +23,22 @@ import be.scri.views.KeyboardView
  * The SwedishKeyboardIME class provides the input method for the Swedish language keyboard.
  */
 class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
-
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.
      */
     override fun getKeyboardLayoutXML(): Int =
-        if (getIsAccentCharacterDisabled(applicationContext, language) && !getEnablePeriodAndCommaABC(applicationContext, language)) {
+        if (getIsAccentCharacterDisabled(applicationContext, language) &&
+            !getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letter_swedish_without_accent_characters_and_without_period_and_comma
-        } else if (!getIsAccentCharacterDisabled(applicationContext, language) && getEnablePeriodAndCommaABC(applicationContext, language)) {
+        } else if (!getIsAccentCharacterDisabled(applicationContext, language) &&
+            getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letters_swedish
-        } else if (getIsAccentCharacterDisabled(applicationContext, language) && getEnablePeriodAndCommaABC(applicationContext, language)) {
+        } else if (getIsAccentCharacterDisabled(applicationContext, language) &&
+            getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letter_swedish_without_accent_characters
         } else {
             R.xml.keys_letter_swedish_without_period_and_comma

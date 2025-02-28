@@ -23,17 +23,23 @@ import be.scri.views.KeyboardView
  * The SpanishKeyboardIME class provides the input method for the Spanish language keyboard.
  */
 class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
-
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.
      */
     override fun getKeyboardLayoutXML(): Int =
-        if (getIsAccentCharacterDisabled(applicationContext, language) && !getEnablePeriodAndCommaABC(applicationContext, language)) {
+        if
+            (getIsAccentCharacterDisabled(applicationContext, language) &&
+                !getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letter_spanish_without_accent_characters_and_without_period_and_comma
-        } else if (!getIsAccentCharacterDisabled(applicationContext, language) && getEnablePeriodAndCommaABC(applicationContext, language)) {
+        } else if (!getIsAccentCharacterDisabled(applicationContext, language) &&
+            getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letters_spanish
-        } else if (getIsAccentCharacterDisabled(applicationContext, language) && getEnablePeriodAndCommaABC(applicationContext, language)) {
+        } else if (getIsAccentCharacterDisabled(applicationContext, language) &&
+            getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letter_spanish_without_accent_character
         } else {
             R.xml.keys_letter_spanish_without_period_and_comma

@@ -183,7 +183,6 @@ abstract class GeneralKeyboardIME(
         DISPLAY_INFORMATION,
     }
 
-
     /**
      * Called by the system when the service is first created. This is where you should
      * initialize your service. The service will only be created once, and this method
@@ -209,7 +208,6 @@ abstract class GeneralKeyboardIME(
         updateUI()
     }
 
-
     /**
      * Called by the input method framework when the input method is first created.
      * This method is used to perform any one-time initialization tasks.
@@ -219,7 +217,6 @@ abstract class GeneralKeyboardIME(
         super.onInitializeInterface()
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
     }
-
 
     /**
      * Checks if there is any text before the cursor in the input field.
@@ -231,7 +228,6 @@ abstract class GeneralKeyboardIME(
         val textBeforeCursor = inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0)?.trim() ?: ""
         return textBeforeCursor.isNotEmpty() && textBeforeCursor.lastOrNull() != '.'
     }
-
 
     /**
      * Called by the framework when the input view is being created.
@@ -251,12 +247,11 @@ abstract class GeneralKeyboardIME(
         return keyboardHolder
     }
 
-
-
     /**
      * Called when a key is pressed.
      *
-     * @param primaryCode The unicode of the key being pressed. If the touch is not on a valid key, the value will be zero.
+     * @param primaryCode The unicode of the key being pressed.
+     *If the touch is not on a valid key, the value will be zero.
      */
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) {
@@ -264,7 +259,6 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    
     /**
      * Called when the input method is starting input in a new editor.
      * This is where you can set up any state you need.
@@ -311,7 +305,6 @@ abstract class GeneralKeyboardIME(
         keyboardView?.setKeyboard(keyboard!!)
     }
 
-    
     /**
      * This method is called when a key is released.
      * It handles the actions to be performed on key release.
@@ -337,7 +330,6 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-
     /**
      * Moves the cursor one position to the left.
      * This method is typically used to handle user input for cursor navigation.
@@ -347,13 +339,12 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-    * Moves the cursor one position to the right.
-    * This method is typically used to handle user input for cursor navigation.
+     * Moves the cursor one position to the right.
+     * This method is typically used to handle user input for cursor navigation.
      */
     override fun moveCursorRight() {
         moveCursor(true)
     }
-
 
     /**
      * Handles the input text when the user types on the keyboard.
@@ -363,7 +354,6 @@ abstract class GeneralKeyboardIME(
     override fun onText(text: String) {
         currentInputConnection?.commitText(text, 0)
     }
-
 
     /**
      * Called when the input view is starting. This is where you can set up the input view
@@ -520,7 +510,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Switches the input method to the toolbar.
      * This function is responsible for changing the current input method
-     * to a toolbar interface, allowing the user to interact with the toolbar.
+     * to have toolbar interface, allowing the user to interact with the toolbar.
      */
     private fun switchToToolBar() {
         this.keyboardBinding = initializeKeyboardBinding()
@@ -552,7 +542,6 @@ abstract class GeneralKeyboardIME(
         updateCommandBarHintAndPrompt()
     }
 
-    
     /**
      * Sets up the idle view for the keyboard input method editor (IME).
      * This function initializes and configures the view that is displayed
@@ -613,10 +602,10 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-     /**
+    /**
      * Sets up the command view for the keyboard input method editor (IME).
      * This function initializes and configures the view that is displayed
-     * when the keyboard is in command state. The command state is the state in 
+     * when the keyboard is in command state. The command state is the state in
      * which the keyboard shows the different command available for the keyboard.
      */
     private fun setupSelectCommandView() {
@@ -680,7 +669,6 @@ abstract class GeneralKeyboardIME(
             }
         }
     }
-
 
     /**
      * Initializes and returns the binding for the keyboard view.
@@ -884,8 +872,8 @@ abstract class GeneralKeyboardIME(
      *
      * This function is responsible for generating and displaying
      * suggestions as the user types. It takes into account the
-     * current context and input to provide relevant suggestions.It shows wheather 
-     * the word is plural or the gender of the word. 
+     * current context and input to provide relevant suggestions.It shows wheather
+     * the word is plural or the gender of the word.
      *
      * @param inputText The current text input by the user.
      * @param cursorPosition The position of the cursor within the input text.
@@ -1207,7 +1195,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Disables the auto-suggest feature of the keyboard.
-     * This function is used to disable the suggestion of plural or gender 
+     * This function is used to disable the suggestion of plural or gender
      * when the keyboard switches to one of the other modes.
      */
     fun disableAutoSuggest() {
@@ -1484,7 +1472,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the delete key press event.
      * This function is responsible for managing the behavior when the delete key is pressed
-     * on the keyboard. It ensures that the appropriate actions are taken to delete the 
+     * on the keyboard. It ensures that the appropriate actions are taken to delete the
      * selected text or character.
      */
     fun handleDelete(
@@ -1533,9 +1521,9 @@ abstract class GeneralKeyboardIME(
      * Handles the else condition for the given context.
      *
      * This function is called when none of the specific conditions are met.
-     * It performs the necessary actions to handle the default case. 
-     * These are the set of actions performed when the keyboard space , shift or such 
-     * characters are clicked. 
+     * It performs the necessary actions to handle the default case.
+     * These are the set of actions performed when the keyboard space , shift or such
+     * characters are clicked.
      *
      * @param context The context in which the else condition is being handled.
      */
