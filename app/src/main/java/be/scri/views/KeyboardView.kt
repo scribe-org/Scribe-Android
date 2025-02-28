@@ -52,11 +52,14 @@ import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
 import be.scri.extensions.performHapticFeedback
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_ENTER
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_MODE_CHANGE
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SHIFT
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SPACE
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_TAB
+import be.scri.helpers.KeyboardBase.Companion.SHIFT_LOCKED
 import be.scri.helpers.KeyboardBase.MyCustomActions
 import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
 import be.scri.helpers.SHIFT_OFF
@@ -754,9 +757,17 @@ class KeyboardView
                             when (mKeyboard!!.mShiftState) {
                                 SHIFT_OFF -> R.drawable.ic_caps_outline_vector
                                 SHIFT_ON_ONE_CHAR -> R.drawable.ic_caps_vector
-                                else -> R.drawable.ic_caps_underlined_vector
+                                SHIFT_LOCKED -> R.drawable.ic_caps_underlined_vector
+                                else -> R.drawable.ic_caps_outline_vector
                             }
-                        key.icon = resources.getDrawable(drawableId)
+                        key.icon = resources.getDrawable(drawableId, context.theme)
+                    } else if (code == KEYCODE_CAPS_LOCK) {
+                        val drawableId =
+                            when (mKeyboard!!.mShiftState) {
+                                SHIFT_LOCKED -> R.drawable.ic_caps_lock_on
+                                else -> R.drawable.ic_caps_lock_off
+                            }
+                        key.icon = resources.getDrawable(drawableId, context.theme)
                     }
 
                     if (code == KEYCODE_ENTER) {
@@ -777,7 +788,7 @@ class KeyboardView
                             }
                         key.icon = resources.getDrawable(drawableId)
                         key.icon!!.applyColorFilter(mTextColor)
-                    } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT) {
+                    } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_TAB) {
                         key.icon!!.applyColorFilter(mTextColor)
                     }
 

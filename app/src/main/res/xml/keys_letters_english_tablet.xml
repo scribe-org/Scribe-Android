@@ -9,7 +9,7 @@
         <Key
             app:keyEdgeFlags="left"
             app:code="-30"
-            app:keyLabel="tab"
+            app:keyIcon="@drawable/ic_tab_rounded"
             app:keyWidth="9%p"
             android:horizontalGap="@dimen/tiny_margin" />
 
@@ -97,7 +97,7 @@
         <Key
             app:keyEdgeFlags="left"
             app:code="-50"
-            app:keyLabel="caps lock"
+            app:keyIcon="@drawable/ic_caps_lock_selector"
             app:keyWidth="9.5%p"
             android:horizontalGap="@dimen/tiny_margin" />
 

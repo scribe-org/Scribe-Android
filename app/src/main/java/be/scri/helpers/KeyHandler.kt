@@ -2,14 +2,14 @@
 package be.scri.helpers
 
 import android.util.Log
-import be.scri.services.EnglishKeyboardIME
+import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
  * Handles key events for the EnglishKeyboardIME.
  */
 class KeyHandler(
-    private val ime: EnglishKeyboardIME,
+    private val ime: GeneralKeyboardIME,
 ) {
     /**
      * Processes the given key code and performs the corresponding action.
@@ -24,7 +24,7 @@ class KeyHandler(
         }
 
         when (code) {
-            KeyboardBase.KEYCODE_TAB -> inputConnection.commitText("\t", EnglishKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
+            KeyboardBase.KEYCODE_TAB -> inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
             KeyboardBase.KEYCODE_CAPS_LOCK -> handleCapsLock()
             KeyboardBase.KEYCODE_DELETE -> handleDeleteKey()
             KeyboardBase.KEYCODE_SHIFT -> handleShiftKey()
@@ -111,10 +111,10 @@ class KeyHandler(
 
     private fun handleArrowKey(isRight: Boolean) {
         ime.currentInputConnection?.let { ic ->
-            val currentPos = ic.getTextBeforeCursor(EnglishKeyboardIME.MAX_TEXT_LENGTH, 0)?.length ?: 0
+            val currentPos = ic.getTextBeforeCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.length ?: 0
             val newPos =
                 if (isRight) {
-                    val textAfter = ic.getTextAfterCursor(EnglishKeyboardIME.MAX_TEXT_LENGTH, 0)?.toString() ?: ""
+                    val textAfter = ic.getTextAfterCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.toString() ?: ""
                     (currentPos + 1).coerceAtMost(currentPos + textAfter.length)
                 } else {
                     (currentPos - 1).coerceAtLeast(0)

@@ -24,8 +24,6 @@ import be.scri.views.KeyboardView
 class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     companion object {
         const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-        const val MAX_TEXT_LENGTH = 1000
-        const val COMMIT_TEXT_CURSOR_POSITION = 1
     }
 
     private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
