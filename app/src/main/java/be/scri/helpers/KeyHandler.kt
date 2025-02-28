@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-package be.scri.services
+package be.scri.helpers
 
 import android.util.Log
-import be.scri.helpers.KeyboardBase
+import be.scri.services.EnglishKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
