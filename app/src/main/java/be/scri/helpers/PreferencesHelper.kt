@@ -8,11 +8,14 @@ package be.scri.helpers
 
 import android.app.UiModeManager
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
 import be.scri.extensions.config
 
+@Suppress("TooManyFunctions")
 object PreferencesHelper {
     fun setPeriodOnSpaceBarDoubleTapPreference(
         context: Context,
@@ -147,5 +150,58 @@ object PreferencesHelper {
         } else {
             AppCompatDelegate.MODE_NIGHT_NO
         }
+    }
+
+    fun getIsAccentCharacterDisabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isAccentCharacterDisabled = sharedPref.getBoolean("disable_accent_character_$language", false)
+        return isAccentCharacterDisabled
+    }
+
+    fun getIsPreviewEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isPreviewEnabled = sharedPref.getBoolean("show_popup_on_keypress_$language", true)
+        return isPreviewEnabled
+    }
+
+    fun getIsVibrateEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isPreviewEnabled = sharedPref.getBoolean("vibrate_on_keypress_$language", true)
+        return isPreviewEnabled
+    }
+
+    fun getEnablePeriodAndCommaABC(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isDisabledPeriodAndCommaABC = sharedPref.getBoolean("period_and_comma_$language", false)
+        return isDisabledPeriodAndCommaABC
+    }
+
+    fun getIsDarkModeOrNot(context: Context): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+        return isUserDarkMode
+    }
+
+    fun getIsEmojiSuggestionsEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val isEnabled = sharedPref.getBoolean("emoji_suggestions_$language", true)
+        return isEnabled
     }
 }
