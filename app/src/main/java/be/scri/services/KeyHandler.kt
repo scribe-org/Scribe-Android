@@ -41,13 +41,13 @@ class KeyHandler(
     private fun updateKeyboardState(code: Int) {
         ime.lastWord = ime.getLastWordBeforeCursor()
         Log.d("Debug", "${ime.lastWord}")
-        ime.autosuggestEmojis = ime.findEmojisForLastWord(ime.emojiKeywords, ime.lastWord)
-        ime.checkIfPluralWord = ime.findWheatherWordIsPlural(ime.pluralWords, ime.lastWord)
+        ime.autoSuggestEmojis = ime.findEmojisForLastWord(ime.emojiKeywords, ime.lastWord)
+        ime.checkIfPluralWord = ime.findWhetherWordIsPlural(ime.pluralWords, ime.lastWord)
 
         Log.i("MY-TAG", "${ime.checkIfPluralWord}")
-        Log.d("Debug", "${ime.autosuggestEmojis}")
+        Log.d("Debug", "${ime.autoSuggestEmojis}")
         Log.d("MY-TAG", "${ime.nounTypeSuggestion}")
-        ime.updateButtonText(ime.isAutoSuggestEnabled, ime.autosuggestEmojis)
+        ime.updateButtonText(ime.emojiAutoSuggestionEnabled, ime.autoSuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             ime.updateShiftKeyState()
         }

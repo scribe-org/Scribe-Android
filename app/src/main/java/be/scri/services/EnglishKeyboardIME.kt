@@ -28,7 +28,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     }
 
     private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-  
+
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.
@@ -36,7 +36,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_english_tablet
-            getEnablePeriodAndCommaABC() -> R.xml.keys_letters_english
+            getEnablePeriodAndCommaABC(applicationContext, language) -> R.xml.keys_letters_english
             else -> R.xml.keys_letters_english_without_period_and_comma
         }
 
@@ -56,7 +56,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
 
     // Key handling logic extracted to a separate class
     private val keyHandler = KeyHandler(this)
-    
+
     /**
      * Creates and returns the input view for the keyboard.
      * @return The root view of the keyboard layout.
