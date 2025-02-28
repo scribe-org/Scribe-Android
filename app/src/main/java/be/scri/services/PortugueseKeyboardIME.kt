@@ -13,11 +13,21 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
+import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
+import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.views.KeyboardView
 
+/**
+ * The PortugueseKeyboardIME class provides the input method for the Portuguese language keyboard.
+ */
 class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
+    /**
+     * Returns the XML layout resource for the keyboard based on user preferences.
+     * @return The resource ID of the keyboard layout XML.
+     */
     override fun getKeyboardLayoutXML(): Int =
-        if (getEnablePeriodAndCommaABC()) {
+        if (getEnablePeriodAndCommaABC(applicationContext, language)) {
             R.xml.keys_letters_portuguese
         } else {
             R.xml.keys_letters_portuguese_without_period_and_comma
@@ -36,6 +46,10 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
     override var switchToLetters = false
     override var hasTextBeforeCursor = false
 
+    /**
+     * Creates and returns the input view for the keyboard.
+     * @return The root view of the keyboard layout.
+     */
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         val keyboardHolder = binding.root
@@ -44,14 +58,18 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
         keyboardView!!.setKeyboard(keyboard!!)
         setupCommandBarTheme(binding)
         keyboardView!!.setKeyboardHolder()
-        keyboardView!!.setPreview = getIsPreviewEmabled()
-        keyboardView!!.setVibrate = getIsVibrateEnabled()
+        keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
+        keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeEmojiButtons()
         updateUI()
         return keyboardHolder
     }
 
+    /**
+     * Handles key press events on the keyboard.
+     * @param code The key code of the pressed key.
+     */
     override fun onKey(code: Int) {
         val inputConnection = currentInputConnection
         if (keyboard == null || inputConnection == null) {
@@ -102,17 +120,20 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
 
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
-        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        autoSuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
-        checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
-        Log.d("Debug", "$autosuggestEmojis")
+        checkIfPluralWord = findWhetherWordIsPlural(pluralWords, lastWord)
+        Log.d("Debug", "$autoSuggestEmojis")
         Log.d("MY-TAG", "$nounTypeSuggestion")
-        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+        updateButtonText(emojiAutoSuggestionEnabled, autoSuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }
     }
 
+    /**
+     * Handles the delete key press event.
+     */
     fun handleKeycodeDelete() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleDelete(false, keyboardBinding)
@@ -121,6 +142,9 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
         }
     }
 
+    /**
+     * Handles the enter key press event.
+     */
     fun handleKeycodeEnter() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleKeycodeEnter(keyboardBinding, false)
@@ -132,6 +156,9 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
         }
     }
 
+    /**
+     * Handles the space key press event.
+     */
     fun handleKeycodeSpace() {
         val code = KeyboardBase.KEYCODE_SPACE
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
@@ -143,6 +170,9 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
         }
     }
 
+    /**
+     * Initializes the keyboard and sets up the input view.
+     */
     override fun onCreate() {
         super.onCreate()
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)

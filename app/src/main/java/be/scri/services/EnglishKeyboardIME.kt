@@ -12,8 +12,14 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
+import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
+import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.views.KeyboardView
 
+/**
+ * The EnglishKeyboardIME class provides the input method for the English language keyboard.
+ */
 class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     companion object {
         const val SMALLEST_SCREEN_WIDTH_TABLET = 600
@@ -22,7 +28,11 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     }
 
     private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
+  
+    /**
+     * Returns the XML layout resource for the keyboard based on user preferences.
+     * @return The resource ID of the keyboard layout XML.
+     */
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_english_tablet
@@ -46,15 +56,19 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
 
     // Key handling logic extracted to a separate class
     private val keyHandler = KeyHandler(this)
-
+    
+    /**
+     * Creates and returns the input view for the keyboard.
+     * @return The root view of the keyboard layout.
+     */
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         setupCommandBarTheme(binding)
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.setPreview = getIsPreviewEmabled()
-        keyboardView!!.setVibrate = getIsVibrateEnabled()
+        keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
+        keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
         when (currentState) {
             ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
             else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
@@ -66,10 +80,17 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         return keyboardHolder
     }
 
+    /**
+     * Handles key press events on the keyboard.
+     * @param code The key code of the pressed key.
+     */
     override fun onKey(code: Int) {
         keyHandler.handleKey(code)
     }
 
+    /**
+     * Initializes the keyboard and sets up the input view.
+     */
     override fun onCreate() {
         super.onCreate()
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)

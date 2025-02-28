@@ -13,15 +13,32 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
+import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
+import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
+import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.views.KeyboardView
 
+/**
+ * The GermanKeyboardIME class provides the input method for the German language keyboard.
+ */
 class GermanKeyboardIME : GeneralKeyboardIME("German") {
+    /**
+     * Returns the XML layout resource for the keyboard based on user preferences.
+     * @return The resource ID of the keyboard layout XML.
+     */
     override fun getKeyboardLayoutXML(): Int =
-        if (getIsAccentCharacterDisabled() && !getEnablePeriodAndCommaABC()) {
+        if (getIsAccentCharacterDisabled(applicationContext, language) &&
+            !getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letter_german_without_accent_characters_and_without_period_and_comma
-        } else if (!getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
+        } else if (!getIsAccentCharacterDisabled(applicationContext, language) &&
+            getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letters_german
-        } else if (getIsAccentCharacterDisabled() && getEnablePeriodAndCommaABC()) {
+        } else if (getIsAccentCharacterDisabled(applicationContext, language) &&
+            getEnablePeriodAndCommaABC(applicationContext, language)
+        ) {
             R.xml.keys_letter_german_without_accent_characters
         } else {
             R.xml.keys_letter_german_without_period_and_comma
@@ -40,6 +57,10 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
     override var switchToLetters = false
     override var hasTextBeforeCursor = false
 
+    /**
+     * Creates and returns the input view for the keyboard.
+     * @return The root view of the keyboard layout.
+     */
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         val keyboardHolder = binding.root
@@ -47,8 +68,8 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
 
-        keyboardView!!.setPreview = getIsPreviewEmabled()
-        keyboardView!!.setVibrate = getIsVibrateEnabled()
+        keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
+        keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
         when (currentState) {
             ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
             else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
@@ -61,6 +82,10 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         return keyboardHolder
     }
 
+    /**
+     * Handles key press events on the keyboard.
+     * @param code The key code of the pressed key.
+     */
     override fun onKey(code: Int) {
         val inputConnection = currentInputConnection
         if (keyboard == null || inputConnection == null) {
@@ -111,16 +136,19 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
 
         lastWord = getLastWordBeforeCursor()
         Log.d("Debug", "$lastWord")
-        autosuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
+        autoSuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
         nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
-        checkIfPluralWord = findWheatherWordIsPlural(pluralWords, lastWord)
+        checkIfPluralWord = findWhetherWordIsPlural(pluralWords, lastWord)
         caseAnnotationSuggestion = getCaseAnnotationForPreposition(caseAnnotation, lastWord)
-        updateButtonText(isAutoSuggestEnabled, autosuggestEmojis)
+        updateButtonText(emojiAutoSuggestionEnabled, autoSuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             super.updateShiftKeyState()
         }
     }
 
+    /**
+     * Handles the delete key press event.
+     */
     fun handleKeycodeDelete() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleDelete(false, keyboardBinding)
@@ -129,6 +157,9 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         }
     }
 
+    /**
+     * Handles the enter key press event.
+     */
     fun handleKeycodeEnter() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleKeycodeEnter(keyboardBinding, false)
@@ -140,6 +171,9 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         }
     }
 
+    /**
+     * Handles the space key press event.
+     */
     fun handleKeycodeSpace() {
         val code = KeyboardBase.KEYCODE_SPACE
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
@@ -155,6 +189,9 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         }
     }
 
+    /**
+     * Initializes the keyboard and sets up the input view.
+     */
     override fun onCreate() {
         super.onCreate()
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
