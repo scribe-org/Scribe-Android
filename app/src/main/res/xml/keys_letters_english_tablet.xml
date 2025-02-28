@@ -222,12 +222,12 @@
 
         <Key
             app:code="-55"
-            app:keyLabel="←"
+            app:keyIcon="@drawable/ic_left_arrow"
             app:keyWidth="10%p" />
 
         <Key
             app:code="-56"
-            app:keyLabel="→"
+            app:keyIcon="@drawable/ic_right_arrow"
             app:keyWidth="10%p"
             app:keyEdgeFlags="right"
             android:horizontalGap="@dimen/tiny_margin" />

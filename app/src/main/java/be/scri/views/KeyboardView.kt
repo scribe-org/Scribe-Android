@@ -55,7 +55,9 @@ import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_ENTER
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_LEFT_ARROW
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_MODE_CHANGE
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_RIGHT_ARROW
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SHIFT
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_SPACE
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_TAB
@@ -768,6 +770,19 @@ class KeyboardView
                                 else -> R.drawable.ic_caps_lock_off
                             }
                         key.icon = resources.getDrawable(drawableId, context.theme)
+                    }
+
+                    if (code == KEYCODE_LEFT_ARROW || code == KEYCODE_RIGHT_ARROW) {
+                        val drawableId =
+                            when (code) {
+                                KEYCODE_LEFT_ARROW -> R.drawable.ic_left_arrow
+                                KEYCODE_RIGHT_ARROW -> R.drawable.ic_right_arrow
+                                else -> null
+                            }
+                        drawableId?.let {
+                            key.icon = resources.getDrawable(it, context.theme)
+                            key.icon!!.applyColorFilter(mTextColor)
+                        }
                     }
 
                     if (code == KEYCODE_ENTER) {
