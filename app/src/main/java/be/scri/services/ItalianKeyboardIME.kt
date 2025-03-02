@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 /**
  * The input method (IME) for the Italian language keyboard.
  */
