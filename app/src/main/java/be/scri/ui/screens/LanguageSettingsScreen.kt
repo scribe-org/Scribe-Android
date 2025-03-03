@@ -103,6 +103,16 @@ fun LanguageSettingsScreen(
             )
         }
 
+    val onTranslationLanguageSelect = {}
+
+    val translationSourceLanguageList =
+        ScribeItemList(
+            items =
+                getTranslationSourceLanguageListData {
+                    onTranslationLanguageSelect
+                },
+        )
+
     val layoutList =
         ScribeItemList(
             items =
@@ -182,6 +192,10 @@ fun LanguageSettingsScreen(
                 Modifier
                     .verticalScroll(scrollState),
         ) {
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.translation_source_language_title),
+                cardItemsList = translationSourceLanguageList,
+            )
             ItemCardContainerWithTitle(
                 title = stringResource(R.string.app_settings_keyboard_layout_title),
                 cardItemsList = layoutList,
@@ -288,4 +302,18 @@ fun getLanguageStringFromi18n(language: String): Int {
             "Swedish" to R.string.app__global_swedish,
         )
     return languageMap[language] ?: R.string.app__global_english
+}
+
+@Composable
+private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: () -> Unit): List<ScribeItem> {
+    val list: MutableList<ScribeItem> = mutableListOf()
+    list.add(
+        ScribeItem.ClickableItem(
+            title = R.string.app_settings_keyboard_translation_select_source,
+            desc = R.string.translation_source_language_description,
+            action = onTranslationLanguageSelect,
+        ),
+    )
+
+    return list
 }

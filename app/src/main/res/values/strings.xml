@@ -1528,6 +1528,10 @@
     <string name="wikimedia_logo">Wikimedia Logo</string>
     <string name="suggestion">Suggestion</string>
 
+<!--    Translation source language -->
+    <string name="translation_source_language_title">Translation source language</string>
+    <string name="translation_source_language_description">Select the language to translate from.</string>
+
     <string-array name="months">
         <item>@string/january</item>
         <item>@string/february</item>
