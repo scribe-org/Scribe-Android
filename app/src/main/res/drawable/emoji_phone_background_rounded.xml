@@ -5,7 +5,7 @@
         <layer-list>
             <item android:id="@+id/button_background_shape">
                 <shape android:shape="rectangle">
-                    <solid android:color="#00ffbb33" /> <!-- Fully transparent -->
+                    <solid android:color="#00ffffff" />
                     <corners android:radius="@dimen/command_button_corner_radius" />
                 </shape>
             </item>

@@ -7,11 +7,11 @@
 package be.scri.services
 
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
+import be.scri.helpers.KeyHandler
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
@@ -22,15 +22,21 @@ import be.scri.views.KeyboardView
  * The EnglishKeyboardIME class provides the input method for the English language keyboard.
  */
 class EnglishKeyboardIME : GeneralKeyboardIME("English") {
+    companion object {
+        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
+    }
+
+    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
+
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.
      */
     override fun getKeyboardLayoutXML(): Int =
-        if (getEnablePeriodAndCommaABC(applicationContext, language)) {
-            R.xml.keys_letters_english
-        } else {
-            R.xml.keys_letters_english_without_period_and_comma
+        when {
+            isTablet() -> R.xml.keys_letters_english_tablet
+            getEnablePeriodAndCommaABC(applicationContext, language) -> R.xml.keys_letters_english
+            else -> R.xml.keys_letters_english_without_period_and_comma
         }
 
     override val keyboardLetters = 0
@@ -46,6 +52,9 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override var switchToLetters = false
     override var hasTextBeforeCursor = false
     override lateinit var binding: KeyboardViewCommandOptionsBinding
+
+    // Key handling logic extracted to a separate class
+    private val keyHandler = KeyHandler(this)
 
     /**
      * Creates and returns the input view for the keyboard.
@@ -75,104 +84,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
      * @param code The key code of the pressed key.
      */
     override fun onKey(code: Int) {
-        val inputConnection = currentInputConnection
-        if (keyboard == null || inputConnection == null) {
-            return
-        }
-        if (code != KeyboardBase.KEYCODE_SHIFT) {
-            lastShiftPressTS = 0
-        }
-
-        when (code) {
-            KeyboardBase.KEYCODE_DELETE -> {
-                handleKeycodeDelete()
-                keyboardView!!.invalidateAllKeys()
-                disableAutoSuggest()
-            }
-
-            KeyboardBase.KEYCODE_SHIFT -> {
-                super.handleKeyboardLetters(keyboardMode, keyboardView)
-                keyboardView!!.invalidateAllKeys()
-                disableAutoSuggest()
-            }
-
-            KeyboardBase.KEYCODE_ENTER -> {
-                disableAutoSuggest()
-                handleKeycodeEnter()
-                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
-            }
-
-            KeyboardBase.KEYCODE_MODE_CHANGE -> {
-                handleModeChange(keyboardMode, keyboardView, this)
-                disableAutoSuggest()
-            }
-
-            KeyboardBase.KEYCODE_SPACE -> {
-                handleKeycodeSpace()
-            }
-
-            else -> {
-                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleElseCondition(code, keyboardMode, binding = null)
-                    disableAutoSuggest()
-                } else {
-                    handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
-                    disableAutoSuggest()
-                }
-            }
-        }
-
-        lastWord = getLastWordBeforeCursor()
-        Log.d("Debug", "$lastWord")
-        autoSuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
-        checkIfPluralWord = findWhetherWordIsPlural(pluralWords, lastWord)
-
-        Log.i("MY-TAG", "$checkIfPluralWord")
-        Log.d("Debug", "$autoSuggestEmojis")
-        Log.d("MY-TAG", "$nounTypeSuggestion")
-        updateButtonText(emojiAutoSuggestionEnabled, autoSuggestEmojis)
-        if (code != KeyboardBase.KEYCODE_SHIFT) {
-            super.updateShiftKeyState()
-        }
-    }
-
-    /**
-     * Handles the delete key press event.
-     */
-    fun handleKeycodeDelete() {
-        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            handleDelete(false, keyboardBinding)
-        } else {
-            handleDelete(true, keyboardBinding)
-        }
-    }
-
-    /**
-     * Handles the enter key press event.
-     */
-    fun handleKeycodeEnter() {
-        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            handleKeycodeEnter(keyboardBinding, false)
-        } else {
-            handleKeycodeEnter(keyboardBinding, true)
-            currentState = ScribeState.IDLE
-            switchToCommandToolBar()
-            updateUI()
-        }
-    }
-
-    /**
-     * Handles the space key press event.
-     */
-    fun handleKeycodeSpace() {
-        val code = KeyboardBase.KEYCODE_SPACE
-        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            handleElseCondition(code, keyboardMode, binding = null)
-            updateAutoSuggestText(isPlural = checkIfPluralWord)
-        } else {
-            handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
-            disableAutoSuggest()
-        }
+        keyHandler.handleKey(code)
     }
 
     /**

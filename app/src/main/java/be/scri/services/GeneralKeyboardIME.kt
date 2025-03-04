@@ -166,8 +166,8 @@ abstract class GeneralKeyboardIME(
             "SV" to SVInterfaceVariables.PLURAL_KEY_LBL,
         )
 
-    protected var currentState: ScribeState = ScribeState.IDLE
-    protected lateinit var keyboardBinding: KeyboardViewKeyboardBinding
+    internal var currentState: ScribeState = ScribeState.IDLE
+    internal lateinit var keyboardBinding: KeyboardViewKeyboardBinding
     var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
 
     enum class ScribeState {
@@ -467,7 +467,7 @@ abstract class GeneralKeyboardIME(
      * Switches the current input method to the command toolbar.
      * This function is protected and can be accessed within the same class or subclasses.
      */
-    protected fun switchToCommandToolBar() {
+    internal fun switchToCommandToolBar() {
         val binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         this.binding = binding
         val keyboardHolder = binding.root
@@ -1574,12 +1574,14 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    private companion object {
+    internal companion object {
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
         const val NOUN_TYPE_SIZE = 22f
         const val SUGGESTION_SIZE = 15f
         const val DARK_THEME = "#aeb3be"
         const val LIGHT_THEME = "#4b4b4b"
+        const val MAX_TEXT_LENGTH = 1000
+        const val COMMIT_TEXT_CURSOR_POSITION = 1
     }
 }

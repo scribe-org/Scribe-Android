@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/light_key_press_color">
+    android:color="@color/transparent">
     <item android:id="@+id/tablet_emoji_color">
         <layer-list>
             <item android:id="@+id/button_background_shape">
                 <shape android:shape="rectangle">
-                    <solid android:color="#80ff4444" />
+                    <solid android:color="#00ffffff" />
                     <corners android:radius="@dimen/command_button_corner_radius" />
                 </shape>
             </item>

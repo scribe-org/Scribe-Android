@@ -7,11 +7,11 @@
 package be.scri.services
 
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
+import be.scri.helpers.KeyHandler
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
@@ -22,29 +22,45 @@ import be.scri.views.KeyboardView
  * The FrenchKeyboardIME class provides the input method for the French language keyboard.
  */
 class FrenchKeyboardIME : GeneralKeyboardIME("French") {
+    companion object {
+        // Define the smallest screen width threshold for tablets
+        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
+    }
+
+    /**
+     * Determines if the device is a tablet based on screen width.
+     * @return True if the device is a tablet, false otherwise.
+     */
+    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
+
     /**
      * Returns the XML layout resource for the keyboard based on user preferences.
      * @return The resource ID of the keyboard layout XML.
      */
     override fun getKeyboardLayoutXML(): Int =
-        if (getEnablePeriodAndCommaABC(applicationContext, language)) {
-            R.xml.keys_letters_french
-        } else {
-            R.xml.keys_letter_french_without_period_and_comma
+        when {
+            isTablet() -> R.xml.keys_letters_french_tablet
+            getEnablePeriodAndCommaABC(applicationContext, language) -> R.xml.keys_letters_french
+            else -> R.xml.keys_letter_french_without_period_and_comma
         }
 
-    override lateinit var binding: KeyboardViewCommandOptionsBinding
-    override var keyboardView: KeyboardView? = null
-    override var keyboard: KeyboardBase? = null
-    override var enterKeyType = IME_ACTION_NONE
+    // Keyboard modes
     override val keyboardLetters = 0
     override val keyboardSymbols = 1
     override val keyboardSymbolShift = 2
+
+    // Keyboard components
+    override var keyboard: KeyboardBase? = null
+    override var keyboardView: KeyboardView? = null
     override var lastShiftPressTS = 0L
     override var keyboardMode = keyboardLetters
     override var inputTypeClass = InputType.TYPE_CLASS_TEXT
+    override var enterKeyType = IME_ACTION_NONE
     override var switchToLetters = false
     override var hasTextBeforeCursor = false
+    override lateinit var binding: KeyboardViewCommandOptionsBinding
+
+    private val keyHandler = KeyHandler(this)
 
     /**
      * Creates and returns the input view for the keyboard.
@@ -52,15 +68,21 @@ class FrenchKeyboardIME : GeneralKeyboardIME("French") {
      */
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
+        setupCommandBarTheme(binding)
         val keyboardHolder = binding.root
-        Log.i("MY-TAG", "From French Keyboard IME")
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
         keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
-        setupCommandBarTheme(binding)
+
+        // Update the enter key color based on the current state
+        when (currentState) {
+            ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
+            else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
+        }
+
         keyboardView!!.setKeyboardHolder()
-        keyboardView!!.mOnKeyboardActionListener = this
+        keyboardView?.mOnKeyboardActionListener = this
         initializeEmojiButtons()
         updateUI()
         return keyboardHolder
@@ -71,103 +93,7 @@ class FrenchKeyboardIME : GeneralKeyboardIME("French") {
      * @param code The key code of the pressed key.
      */
     override fun onKey(code: Int) {
-        val inputConnection = currentInputConnection
-        if (keyboard == null || inputConnection == null) {
-            return
-        }
-        if (code != KeyboardBase.KEYCODE_SHIFT) {
-            lastShiftPressTS = 0
-        }
-
-        when (code) {
-            KeyboardBase.KEYCODE_DELETE -> {
-                handleKeycodeDelete()
-                keyboardView!!.invalidateAllKeys()
-                disableAutoSuggest()
-            }
-
-            KeyboardBase.KEYCODE_SHIFT -> {
-                super.handleKeyboardLetters(keyboardMode, keyboardView)
-                keyboardView!!.invalidateAllKeys()
-                disableAutoSuggest()
-            }
-
-            KeyboardBase.KEYCODE_ENTER -> {
-                disableAutoSuggest()
-                handleKeycodeEnter()
-                updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
-            }
-
-            KeyboardBase.KEYCODE_MODE_CHANGE -> {
-                handleModeChange(keyboardMode, keyboardView, this)
-                disableAutoSuggest()
-            }
-
-            KeyboardBase.KEYCODE_SPACE -> {
-                handleKeycodeSpace()
-            }
-
-            else -> {
-                if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-                    handleElseCondition(code, keyboardMode, binding = null)
-                    disableAutoSuggest()
-                } else {
-                    handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
-                    disableAutoSuggest()
-                }
-            }
-        }
-
-        lastWord = getLastWordBeforeCursor()
-        Log.d("Debug", "$lastWord")
-        autoSuggestEmojis = findEmojisForLastWord(emojiKeywords, lastWord)
-        nounTypeSuggestion = findGenderForLastWord(nounKeywords, lastWord)
-        checkIfPluralWord = findWhetherWordIsPlural(pluralWords, lastWord)
-        Log.d("Debug", "$autoSuggestEmojis")
-        Log.d("MY-TAG", "$nounTypeSuggestion")
-        updateButtonText(emojiAutoSuggestionEnabled, autoSuggestEmojis)
-        if (code != KeyboardBase.KEYCODE_SHIFT) {
-            super.updateShiftKeyState()
-        }
-    }
-
-    /**
-     * Handles the delete key press event.
-     */
-    fun handleKeycodeDelete() {
-        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            handleDelete(false, keyboardBinding)
-        } else {
-            handleDelete(true, keyboardBinding)
-        }
-    }
-
-    /**
-     * Handles the enter key press event.
-     */
-    fun handleKeycodeEnter() {
-        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            handleKeycodeEnter(keyboardBinding, false)
-        } else {
-            handleKeycodeEnter(keyboardBinding, true)
-            currentState = ScribeState.IDLE
-            switchToCommandToolBar()
-            updateUI()
-        }
-    }
-
-    /**
-     * Handles the space key press event.
-     */
-    fun handleKeycodeSpace() {
-        val code = KeyboardBase.KEYCODE_SPACE
-        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            handleElseCondition(code, keyboardMode, binding = null)
-            updateAutoSuggestText(isPlural = checkIfPluralWord, nounTypeSuggestion = nounTypeSuggestion)
-        } else {
-            handleElseCondition(code, keyboardMode, keyboardBinding, commandBarState = true)
-            disableAutoSuggest()
-        }
+        keyHandler.handleKey(code)
     }
 
     /**
