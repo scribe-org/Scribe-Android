@@ -182,7 +182,7 @@ fun ScribeApp(
                             modifier = Modifier.padding(innerPadding),
                             onTranslationLanguageSelect = {
                                 navController.navigate("translation_language_detail/$language")
-                            }
+                            },
                         )
                     }
                 }
@@ -197,7 +197,6 @@ fun ScribeApp(
                         currentLanguage = language,
                     )
                 }
-
 
                 composable(Screen.WikimediaScribe.route) {
                     WikimediaScreen(

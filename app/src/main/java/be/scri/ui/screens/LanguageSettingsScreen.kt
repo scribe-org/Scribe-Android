@@ -31,7 +31,12 @@ import be.scri.ui.models.ScribeItemList
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LanguageSettingsScreen(language: String, onBackNavigation: () -> Unit, onTranslationLanguageSelect: () -> Unit, modifier: Modifier = Modifier) {
+fun LanguageSettingsScreen(
+    language: String,
+    onBackNavigation: () -> Unit,
+    onTranslationLanguageSelect: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
 
@@ -99,7 +104,6 @@ fun LanguageSettingsScreen(language: String, onBackNavigation: () -> Unit, onTra
                 ),
             )
         }
-
 
     val translationSourceLanguageList =
         ScribeItemList(
@@ -189,7 +193,7 @@ fun LanguageSettingsScreen(language: String, onBackNavigation: () -> Unit, onTra
                     .verticalScroll(scrollState),
         ) {
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.translation_source_language_title),
+                title = stringResource(R.string.app_settings_keyboard_translation_select_source),
                 cardItemsList = translationSourceLanguageList,
             )
             ItemCardContainerWithTitle(
@@ -306,13 +310,12 @@ private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: ()
     list.add(
         ScribeItem.ClickableItem(
             title = R.string.app_settings_keyboard_translation_select_source,
-            desc = R.string.translation_source_language_description,
+            desc = R.string.app_settings_keyboard_translation_select_source_description,
             action = {
                 Log.d("Navigation", "onTranslationLanguageSelect clicked")
                 onTranslationLanguageSelect()
-            }
-        )
-
+            },
+        ),
     )
 
     return list

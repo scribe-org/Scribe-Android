@@ -18,4 +18,6 @@ sealed class Screen(
     data object WikimediaScribe : Screen("wikimedia_scribe_screen")
 
     data object ThirdParty : Screen("third_party_screen")
+
+    data object TranslationSource : Screen("select_language_screen")
 }
