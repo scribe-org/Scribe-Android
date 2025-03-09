@@ -31,6 +31,7 @@ import be.scri.ui.common.bottombar.ScribeBottomBar
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
 import be.scri.ui.screens.PrivacyPolicyScreen
+import be.scri.ui.screens.SelectTranslationSourceLanguageScreen
 import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
@@ -170,9 +171,7 @@ fun ScribeApp(
                     }
                 }
 
-                composable(
-                    route = "${Screen.LanguageSettings.route}/{languageName}",
-                ) {
+                composable("${Screen.LanguageSettings.route}/{languageName}") {
                     val language = it.arguments?.getString("languageName")
                     if (language != null) {
                         LanguageSettingsScreen(
@@ -181,9 +180,24 @@ fun ScribeApp(
                                 navController.popBackStack()
                             },
                             modifier = Modifier.padding(innerPadding),
+                            onTranslationLanguageSelect = {
+                                navController.navigate("translation_language_detail/$language")
+                            }
                         )
                     }
                 }
+
+                composable("translation_language_detail" + "/{languageName}") { backStackEntry ->
+                    val language = backStackEntry.arguments?.getString("languageName") ?: ""
+                    SelectTranslationSourceLanguageScreen(
+                        onBackNavigation = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.padding(innerPadding),
+                        currentLanguage = language,
+                    )
+                }
+
 
                 composable(Screen.WikimediaScribe.route) {
                     WikimediaScreen(
