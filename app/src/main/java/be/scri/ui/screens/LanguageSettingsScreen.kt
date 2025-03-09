@@ -8,6 +8,7 @@ package be.scri.ui.screens
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -30,11 +31,7 @@ import be.scri.ui.models.ScribeItemList
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LanguageSettingsScreen(
-    language: String,
-    onBackNavigation: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun LanguageSettingsScreen(language: String, onBackNavigation: () -> Unit, onTranslationLanguageSelect: () -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
 
@@ -103,13 +100,12 @@ fun LanguageSettingsScreen(
             )
         }
 
-    val onTranslationLanguageSelect = {}
 
     val translationSourceLanguageList =
         ScribeItemList(
             items =
                 getTranslationSourceLanguageListData {
-                    onTranslationLanguageSelect
+                    onTranslationLanguageSelect()
                 },
         )
 
@@ -311,8 +307,12 @@ private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: ()
         ScribeItem.ClickableItem(
             title = R.string.app_settings_keyboard_translation_select_source,
             desc = R.string.translation_source_language_description,
-            action = onTranslationLanguageSelect,
-        ),
+            action = {
+                Log.d("Navigation", "onTranslationLanguageSelect clicked")
+                onTranslationLanguageSelect()
+            }
+        )
+
     )
 
     return list
