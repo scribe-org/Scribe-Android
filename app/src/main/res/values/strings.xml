@@ -1527,7 +1527,7 @@
     <string name="wikimedia_and_scribe_title">How we work together</string>
     <string name="wikimedia_logo">Wikimedia Logo</string>
     <string name="suggestion">Suggestion</string>
-
+    
     <string-array name="months">
         <item>@string/january</item>
         <item>@string/february</item>

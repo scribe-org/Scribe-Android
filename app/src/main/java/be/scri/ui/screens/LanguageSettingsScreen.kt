@@ -8,6 +8,7 @@ package be.scri.ui.screens
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -33,6 +34,7 @@ import be.scri.ui.models.ScribeItemList
 fun LanguageSettingsScreen(
     language: String,
     onBackNavigation: () -> Unit,
+    onTranslationLanguageSelect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -102,6 +104,14 @@ fun LanguageSettingsScreen(
                 ),
             )
         }
+
+    val translationSourceLanguageList =
+        ScribeItemList(
+            items =
+                getTranslationSourceLanguageListData {
+                    onTranslationLanguageSelect()
+                },
+        )
 
     val layoutList =
         ScribeItemList(
@@ -182,6 +192,10 @@ fun LanguageSettingsScreen(
                 Modifier
                     .verticalScroll(scrollState),
         ) {
+            ItemCardContainerWithTitle(
+                title = stringResource(R.string.app_settings_keyboard_translation_select_source),
+                cardItemsList = translationSourceLanguageList,
+            )
             ItemCardContainerWithTitle(
                 title = stringResource(R.string.app_settings_keyboard_layout_title),
                 cardItemsList = layoutList,
@@ -288,4 +302,21 @@ fun getLanguageStringFromi18n(language: String): Int {
             "Swedish" to R.string.app__global_swedish,
         )
     return languageMap[language] ?: R.string.app__global_english
+}
+
+@Composable
+private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: () -> Unit): List<ScribeItem> {
+    val list: MutableList<ScribeItem> = mutableListOf()
+    list.add(
+        ScribeItem.ClickableItem(
+            title = R.string.app_settings_keyboard_translation_select_source,
+            desc = R.string.app_settings_keyboard_translation_select_source_description,
+            action = {
+                Log.d("Navigation", "onTranslationLanguageSelect clicked")
+                onTranslationLanguageSelect()
+            },
+        ),
+    )
+
+    return list
 }

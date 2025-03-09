@@ -13,10 +13,28 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 import be.scri.extensions.config
 
 @Suppress("TooManyFunctions")
 object PreferencesHelper {
+    fun setTranslationSourceLanguage(
+        context: Context,
+        language: String,
+        translationSource: String,
+    ) {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit { putString("translation_source_$language", translationSource) }
+    }
+
+    fun getTranslationSourceLanguage(
+        context: Context,
+        language: String,
+    ): String {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        return sharedPref.getString("translation_source_$language", "English") ?: "English"
+    }
+
     fun setPeriodOnSpaceBarDoubleTapPreference(
         context: Context,
         language: String,
