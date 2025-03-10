@@ -1229,12 +1229,37 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Inserts the specified emoji into the current input field.
+     * Replaces the last word if there's no trailing space.
      *
      * @param emoji The emoji character to be inserted.
      */
     private fun insertEmoji(emoji: String) {
         val inputConnection = currentInputConnection ?: return
-        inputConnection.commitText(emoji, 1)
+        // need to be adjust according to the longest emoji keyword
+        val maxLookBack = MAX_EMOJI_KEYWORD_LENGTH
+        val previousText = inputConnection.getTextBeforeCursor(maxLookBack, 0)?.toString() ?: ""
+
+        // Check if the last character is a space
+        val endsWithSpace = previousText.endsWith(" ")
+        if (endsWithSpace) {
+            // Append emoji after the space
+            inputConnection.commitText(emoji, 1)
+        } else {
+            // Extract the last word (without trailing space)
+            val trimmedText = previousText.trim()
+            val lastWord = trimmedText.substringAfterLast(' ').takeIf { it.isNotEmpty() }
+
+            // Check if the last word exists in emojiKeywords
+            if (lastWord != null && emojiKeywords.containsKey(lastWord.lowercase())) {
+                // Calculate the length to delete (lastWord length)
+                val lengthToDelete = lastWord.length
+                inputConnection.deleteSurroundingText(lengthToDelete, 0)
+                inputConnection.commitText(emoji, 1)
+            } else {
+                // Default behavior: append the emoji
+                inputConnection.commitText(emoji, 1)
+            }
+        }
     }
 
     /**
@@ -1577,6 +1602,7 @@ abstract class GeneralKeyboardIME(
     internal companion object {
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
+        const val MAX_EMOJI_KEYWORD_LENGTH = 20
         const val NOUN_TYPE_SIZE = 22f
         const val SUGGESTION_SIZE = 15f
         const val DARK_THEME = "#aeb3be"
