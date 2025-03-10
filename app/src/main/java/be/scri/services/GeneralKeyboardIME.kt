@@ -1235,28 +1235,28 @@ abstract class GeneralKeyboardIME(
      */
     private fun insertEmoji(emoji: String) {
         val inputConnection = currentInputConnection ?: return
-        // need to be adjust according to the longest emoji keyword
+        // Need to be adjust according to the longest emoji keyword.
         val maxLookBack = MAX_EMOJI_KEYWORD_LENGTH
         val previousText = inputConnection.getTextBeforeCursor(maxLookBack, 0)?.toString() ?: ""
 
-        // Check if the last character is a space
+        // Check if the last character is a space.
         val endsWithSpace = previousText.endsWith(" ")
         if (endsWithSpace) {
-            // Append emoji after the space
+            // Append emoji after the space.
             inputConnection.commitText(emoji, 1)
         } else {
-            // Extract the last word (without trailing space)
+            // Extract the last word (without trailing space).
             val trimmedText = previousText.trim()
             val lastWord = trimmedText.substringAfterLast(' ').takeIf { it.isNotEmpty() }
 
-            // Check if the last word exists in emojiKeywords
+            // Check if the last word exists in emojiKeywords.
             if (lastWord != null && emojiKeywords.containsKey(lastWord.lowercase())) {
-                // Calculate the length to delete (lastWord length)
+                // Calculate the length to delete (lastWord length).
                 val lengthToDelete = lastWord.length
                 inputConnection.deleteSurroundingText(lengthToDelete, 0)
                 inputConnection.commitText(emoji, 1)
             } else {
-                // Default behavior: append the emoji
+                // Default behavior: append the emoji.
                 inputConnection.commitText(emoji, 1)
             }
         }
