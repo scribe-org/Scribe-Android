@@ -93,6 +93,7 @@ abstract class GeneralKeyboardIME(
 
     private lateinit var dbHelper: DatabaseHelper
     lateinit var emojiKeywords: HashMap<String, MutableList<String>>
+    var emojiMaxKeywordLength: Int = 0
     lateinit var nounKeywords: HashMap<String, List<String>>
     lateinit var pluralWords: List<String>
     lateinit var caseAnnotation: HashMap<String, MutableList<String>>
@@ -295,6 +296,7 @@ abstract class GeneralKeyboardIME(
         dbHelper = DatabaseHelper(this)
         dbHelper.loadDatabase(languageAlias)
         emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
+        emojiMaxKeywordLength = dbHelper.getEmojiMaxKeywordLength()
         pluralWords = dbHelper.checkIfWordIsPlural(languageAlias)!!
         nounKeywords = dbHelper.findGenderOfWord(languageAlias)
 
@@ -1235,30 +1237,45 @@ abstract class GeneralKeyboardIME(
      */
     private fun insertEmoji(emoji: String) {
         val inputConnection = currentInputConnection ?: return
-        // Need to be adjust according to the longest emoji keyword.
-        val maxLookBack = MAX_EMOJI_KEYWORD_LENGTH
-        val previousText = inputConnection.getTextBeforeCursor(maxLookBack, 0)?.toString() ?: ""
+        val maxLookBack = emojiMaxKeywordLength.coerceAtLeast(1)
 
-        // Check if the last character is a space.
-        val endsWithSpace = previousText.endsWith(" ")
-        if (endsWithSpace) {
-            // Append emoji after the space.
-            inputConnection.commitText(emoji, 1)
-        } else {
-            // Extract the last word (without trailing space).
-            val trimmedText = previousText.trim()
-            val lastWord = trimmedText.substringAfterLast(' ').takeIf { it.isNotEmpty() }
+        inputConnection.beginBatchEdit()
+        try {
+            val previousText = inputConnection.getTextBeforeCursor(maxLookBack, 0)?.toString() ?: ""
 
-            // Check if the last word exists in emojiKeywords.
-            if (lastWord != null && emojiKeywords.containsKey(lastWord.lowercase())) {
-                // Calculate the length to delete (lastWord length).
-                val lengthToDelete = lastWord.length
-                inputConnection.deleteSurroundingText(lengthToDelete, 0)
-                inputConnection.commitText(emoji, 1)
-            } else {
-                // Default behavior: append the emoji.
-                inputConnection.commitText(emoji, 1)
+            // Find last word boundary efficiently
+            val lastSpaceIndex = previousText.lastIndexOf(' ')
+            val hasSpace = lastSpaceIndex != -1
+
+            when {
+                // Case 1: Ends with space or empty
+                previousText.isEmpty() || hasSpace && lastSpaceIndex == previousText.length - 1 -> {
+                    inputConnection.commitText(emoji, 1)
+                }
+
+                // Case 2: Has previous word
+                hasSpace -> {
+                    val lastWord = previousText.substring(lastSpaceIndex + 1)
+                    if (emojiKeywords.containsKey(lastWord.lowercase())) {
+                        inputConnection.deleteSurroundingText(lastWord.length, 0)
+                        inputConnection.commitText(emoji, 1)
+                    } else {
+                        inputConnection.commitText(emoji, 1)
+                    }
+                }
+
+                // Case 3: Entire text is the word
+                else -> {
+                    if (emojiKeywords.containsKey(previousText.lowercase())) {
+                        inputConnection.deleteSurroundingText(previousText.length, 0)
+                        inputConnection.commitText(emoji, 1)
+                    } else {
+                        inputConnection.commitText(emoji, 1)
+                    }
+                }
             }
+        } finally {
+            inputConnection.endBatchEdit()
         }
     }
 

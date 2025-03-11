@@ -11,6 +11,9 @@ import android.database.sqlite.SQLiteDatabase
 class EmojiDataManager(
     private val context: Context,
 ) {
+    // Track max keyword length.
+    var maxKeywordLength = 0
+
     fun getEmojiKeywords(language: String): HashMap<String, MutableList<String>> {
         val dbFile = context.getDatabasePath("${language}LanguageData.sqlite")
         return processEmojiKeywords(dbFile.path)
@@ -18,10 +21,17 @@ class EmojiDataManager(
 
     private fun processEmojiKeywords(dbPath: String): HashMap<String, MutableList<String>> {
         val hashMap = HashMap<String, MutableList<String>>()
-        val db = SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READONLY)
 
-        db.use { database ->
-            database.rawQuery("SELECT * FROM emoji_keywords", null).use { cursor ->
+        SQLiteDatabase.openDatabase(dbPath, null, SQLiteDatabase.OPEN_READONLY).use { db ->
+            // Get max keyword length.
+            db.rawQuery("SELECT MAX(LENGTH(word)) FROM emoji_keywords", null).use { cursor ->
+                if (cursor.moveToFirst()) {
+                    maxKeywordLength = cursor.getInt(0)
+                }
+            }
+
+            // Keyword processing.
+            db.rawQuery("SELECT * FROM emoji_keywords", null).use { cursor ->
                 processEmojiCursor(cursor, hashMap)
             }
         }
