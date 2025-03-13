@@ -1619,7 +1619,6 @@ abstract class GeneralKeyboardIME(
     internal companion object {
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
-        const val MAX_EMOJI_KEYWORD_LENGTH = 20
         const val NOUN_TYPE_SIZE = 22f
         const val SUGGESTION_SIZE = 15f
         const val DARK_THEME = "#aeb3be"
