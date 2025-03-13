@@ -63,6 +63,8 @@ class DatabaseHelper(
             getRequiredData(language),
         )
 
+    fun getEmojiMaxKeywordLength(): Int = dbManagers.emojiManager.maxKeywordLength
+
     fun findCaseAnnnotationForPreposition(language: String): HashMap<String, MutableList<String>> =
         if (language != "DE" && language != "RU") {
             hashMapOf()
