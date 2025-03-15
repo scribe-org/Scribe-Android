@@ -153,13 +153,24 @@ abstract class GeneralKeyboardIME(
         setupCommandBarTheme(binding)
     }
 
-    private fun updateCommandBarHintandPrompt() {
+    private fun updateCommandBarHintandPrompt(isUserDarkMode: Boolean? = null) {
         val commandBarButton = keyboardBinding.commandBar
         val hintMessage = HintUtils.getCommandBarHint(currentState, language)
         val promptText = HintUtils.getPromptText(currentState, language)
         val promptTextView = keyboardBinding.promptText
         promptTextView?.text = promptText
         commandBarButton.hint = hintMessage
+
+        if (isUserDarkMode == true) {
+            commandBarButton.setBackgroundColor(getColor(R.color.special_key_dark))
+            promptTextView?.setBackgroundColor(getColor(R.color.special_key_dark))
+            keyboardBinding.promptTextBorder?.setBackgroundColor(getColor(R.color.special_key_dark))
+        } else {
+            commandBarButton.setBackgroundColor(getColor(white))
+            promptTextView?.setBackgroundColor(getColor(white))
+            keyboardBinding.promptTextBorder?.setBackgroundColor(getColor(white))
+        }
+
         Log.d(
             "KeyboardUpdate",
             "CommandBar Hint Updated: [State: $currentState, Language: $language, Hint: $hintMessage]",
@@ -167,7 +178,20 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun updateKeyboardMode(isCommandMode: Boolean = false) {
-        updateCommandBarHintandPrompt()
+        val sharedPref = getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+
+        if (isUserDarkMode) {
+            val color = ContextCompat.getColorStateList(this, R.color.light_key_color)
+            keyboardBinding.scribeKey.foregroundTintList = color
+        } else {
+            val colorLight = ContextCompat.getColorStateList(this, R.color.light_key_text_color)
+            keyboardBinding.scribeKey.foregroundTintList = colorLight
+        }
+
+        updateCommandBarHintandPrompt(isUserDarkMode)
         enterKeyType =
             if (isCommandMode) {
                 KeyboardBase.MyCustomActions.IME_ACTION_COMMAND
