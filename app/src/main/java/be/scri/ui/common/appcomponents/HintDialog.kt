@@ -3,6 +3,8 @@
 package be.scri.ui.common.appcomponents
 
 import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -24,8 +26,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -113,26 +117,40 @@ fun HintDialogContent(
                 modifier = Modifier.weight(0.85f),
             )
 
-            Button(
-                onClick = onDismiss,
-                colors =
-                    ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = Color.White,
-                        disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                        disabledContentColor = Color.White,
-                    ),
-                contentPadding = PaddingValues(0.dp),
-                shape = RoundedCornerShape(8.dp),
+            Box(
                 modifier =
                     Modifier
-                        .weight(0.15f),
+                        .weight(0.15f)
+                        .background(
+                            brush =
+                                Brush.verticalGradient(
+                                    colors =
+                                        listOf(
+                                            Color.Transparent,
+                                            colorResource(R.color.light_key_shadow_color),
+                                        ),
+                                ),
+                            shape = RoundedCornerShape(8.dp),
+                        ),
             ) {
-                Text(
-                    text = "OK",
-                    fontSize = 12.sp,
-                    modifier = Modifier,
-                )
+                Button(
+                    onClick = onDismiss,
+                    colors =
+                        ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = Color.White,
+                            disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                            disabledContentColor = Color.White,
+                        ),
+                    contentPadding = PaddingValues(0.dp),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Text(
+                        text = "OK",
+                        fontSize = 20.sp,
+                        modifier = Modifier,
+                    )
+                }
             }
         }
     }
