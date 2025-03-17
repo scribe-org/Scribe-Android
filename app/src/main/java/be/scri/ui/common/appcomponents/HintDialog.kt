@@ -79,7 +79,7 @@ fun HintDialog(
             isUserDarkMode = isUserDarkMode,
             modifier =
                 modifier
-                    .padding(top = 20.dp),
+                    .padding(top = 24.dp),
         )
     }
 }
@@ -116,7 +116,7 @@ fun HintDialogContent(
             shape = RoundedCornerShape(10.dp),
             color = MaterialTheme.colorScheme.surface,
             shadowElevation = 4.dp,
-            modifier = Modifier.padding(bottom = 6.dp),
+            modifier = Modifier.padding(bottom = 4.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
