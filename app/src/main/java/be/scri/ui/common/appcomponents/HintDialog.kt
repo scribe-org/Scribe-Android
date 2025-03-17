@@ -3,8 +3,11 @@
 package be.scri.ui.common.appcomponents
 
 import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
@@ -24,14 +27,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
+import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 
 @Composable
 fun HintDialog(
@@ -55,6 +64,8 @@ fun HintDialog(
         derivedStateOf { pagerState.currentPage == currentPageIndex }
     }
 
+    val isUserDarkMode = remember { getIsDarkModeOrNot(context.applicationContext) }
+
     LaunchedEffect(isPageVisible) {
         if (isPageVisible && !isHintShown) {
             isHintShown = false
@@ -69,9 +80,10 @@ fun HintDialog(
                 isHintShown = true
                 onDismiss(currentPageIndex)
             },
+            isUserDarkMode = isUserDarkMode,
             modifier =
                 modifier
-                    .padding(top = 8.dp),
+                    .padding(top = 24.dp),
         )
     }
 }
@@ -81,58 +93,96 @@ fun HintDialog(
 fun HintDialogContent(
     text: String,
     onDismiss: () -> Unit,
+    isUserDarkMode: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.surface,
-        modifier = modifier,
+    val buttonColor =
+        if (isUserDarkMode) {
+            colorResource(R.color.dark_scribe_blue)
+        } else {
+            colorResource(R.color.light_scribe_blue)
+        }
+
+    val shadowColor = colorResource(R.color.light_key_shadow_color)
+
+    Box(
+        modifier =
+            modifier.padding(horizontal = 12.dp).background(
+                brush =
+                    Brush.verticalGradient(
+                        colors =
+                            listOf(
+                                Color.Transparent,
+                                shadowColor,
+                            ),
+                    ),
+                shape = RoundedCornerShape(10.dp),
+            ),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp),
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 4.dp,
+            modifier = Modifier.padding(bottom = 4.dp),
         ) {
-            Icon(
-                painter = painterResource(R.drawable.light_bulb_icon),
-                contentDescription = "Hint",
-                tint = Color(0xFFFDAD0D),
-                modifier =
-                    Modifier
-                        .padding(end = 8.dp)
-                        .size(30.dp),
-            )
-
-            Text(
-                text = text,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 14.sp,
-                style =
-                    MaterialTheme.typography.labelMedium.copy(
-                        fontWeight = FontWeight.Normal,
-                    ),
-                modifier = Modifier.weight(0.85f),
-            )
-
-            Button(
-                onClick = onDismiss,
-                colors =
-                    ButtonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = Color.White,
-                        disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                        disabledContentColor = Color.White,
-                    ),
-                contentPadding = PaddingValues(0.dp),
-                shape = RoundedCornerShape(8.dp),
-                modifier =
-                    Modifier
-                        .weight(0.15f),
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp),
             ) {
-                Text(
-                    text = "OK",
-                    fontSize = 12.sp,
-                    modifier = Modifier,
+                Icon(
+                    painter = painterResource(R.drawable.light_bulb_icon),
+                    contentDescription = "Hint",
+                    tint = Color(0xFFFDAD0D),
+                    modifier =
+                        Modifier
+                            .padding(start = 8.dp, end = 12.dp)
+                            .size(30.dp),
                 )
+
+                Text(
+                    text = text,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 14.sp,
+                    style =
+                        MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = FontWeight.Normal,
+                        ),
+                    modifier = Modifier.weight(0.85f),
+                )
+
+                Box(
+                    modifier =
+                        Modifier
+                            .weight(0.15f)
+                            .background(Color.Transparent)
+                            .drawBehind {
+                                drawRoundRect(
+                                    color = shadowColor,
+                                    topLeft = Offset.Zero.copy(y = size.height - 16.dp.toPx()),
+                                    size = size.copy(height = 14.dp.toPx()),
+                                    cornerRadius = CornerRadius(8.dp.toPx()),
+                                )
+                            },
+                ) {
+                    Button(
+                        onClick = onDismiss,
+                        colors =
+                            ButtonColors(
+                                containerColor = buttonColor,
+                                contentColor = Color.White,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                                disabledContentColor = Color.White,
+                            ),
+                        contentPadding = PaddingValues(0.dp),
+                        shape = RoundedCornerShape(8.dp),
+                    ) {
+                        Text(
+                            text = "OK",
+                            fontSize = 20.sp,
+                            modifier = Modifier,
+                        )
+                    }
+                }
             }
         }
     }
