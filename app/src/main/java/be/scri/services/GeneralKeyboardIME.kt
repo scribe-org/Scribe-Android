@@ -461,11 +461,17 @@ abstract class GeneralKeyboardIME(
         commandBarButton.hint = hintMessage
 
         if (isUserDarkMode == true) {
+            commandBarButton.setHintTextColor(getColor(R.color.hint_white))
+            commandBarButton.setTextColor(getColor(white))
             commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
+            promptTextView.setTextColor(getColor(white))
             promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
         } else {
+            commandBarButton.setHintTextColor(getColor(R.color.hint_black))
+            commandBarButton.setTextColor(Color.BLACK)
             commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.white)
+            promptTextView.setTextColor(Color.BLACK)
             promptTextView.setBackgroundColor(getColor(white))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(white))
         }
