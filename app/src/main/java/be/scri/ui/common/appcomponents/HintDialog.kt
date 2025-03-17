@@ -79,7 +79,7 @@ fun HintDialog(
             isUserDarkMode = isUserDarkMode,
             modifier =
                 modifier
-                    .padding(top = 8.dp),
+                    .padding(top = 20.dp),
         )
     }
 }
@@ -98,70 +98,86 @@ fun HintDialogContent(
         } else {
             colorResource(R.color.light_scribe_blue)
         }
-    Surface(
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.surface,
-        modifier = modifier,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp),
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.light_bulb_icon),
-                contentDescription = "Hint",
-                tint = Color(0xFFFDAD0D),
-                modifier =
-                    Modifier
-                        .padding(start = 8.dp, end = 12.dp)
-                        .size(30.dp),
-            )
-
-            Text(
-                text = text,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 14.sp,
-                style =
-                    MaterialTheme.typography.labelMedium.copy(
-                        fontWeight = FontWeight.Normal,
+    Box(
+        modifier =
+            modifier.padding(horizontal = 12.dp).background(
+                brush =
+                    Brush.verticalGradient(
+                        colors =
+                            listOf(
+                                Color.Transparent,
+                                colorResource(R.color.light_key_shadow_color),
+                            ),
                     ),
-                modifier = Modifier.weight(0.85f),
-            )
-
-            Box(
-                modifier =
-                    Modifier
-                        .weight(0.15f)
-                        .padding(end = 8.dp)
-                        .background(
-                            brush =
-                                Brush.verticalGradient(
-                                    colors =
-                                        listOf(
-                                            Color.Transparent,
-                                            colorResource(R.color.light_key_shadow_color),
-                                        ),
-                                ),
-                            shape = RoundedCornerShape(8.dp),
-                        ),
+                shape = RoundedCornerShape(10.dp),
+            ),
+    ) {
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 4.dp,
+            modifier = Modifier.padding(bottom = 6.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp),
             ) {
-                Button(
-                    onClick = onDismiss,
-                    colors =
-                        ButtonColors(
-                            containerColor = buttonColor,
-                            contentColor = Color.White,
-                            disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                            disabledContentColor = Color.White,
+                Icon(
+                    painter = painterResource(R.drawable.light_bulb_icon),
+                    contentDescription = "Hint",
+                    tint = Color(0xFFFDAD0D),
+                    modifier =
+                        Modifier
+                            .padding(start = 8.dp, end = 12.dp)
+                            .size(30.dp),
+                )
+
+                Text(
+                    text = text,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 14.sp,
+                    style =
+                        MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = FontWeight.Normal,
                         ),
-                    contentPadding = PaddingValues(0.dp),
-                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.weight(0.85f),
+                )
+
+                Box(
+                    modifier =
+                        Modifier
+                            .weight(0.15f)
+                            .padding(end = 8.dp)
+                            .background(
+                                brush =
+                                    Brush.verticalGradient(
+                                        colors =
+                                            listOf(
+                                                Color.Transparent,
+                                                colorResource(R.color.light_key_shadow_color),
+                                            ),
+                                    ),
+                                shape = RoundedCornerShape(8.dp),
+                            ),
                 ) {
-                    Text(
-                        text = "OK",
-                        fontSize = 20.sp,
-                        modifier = Modifier,
-                    )
+                    Button(
+                        onClick = onDismiss,
+                        colors =
+                            ButtonColors(
+                                containerColor = buttonColor,
+                                contentColor = Color.White,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                                disabledContentColor = Color.White,
+                            ),
+                        contentPadding = PaddingValues(0.dp),
+                        shape = RoundedCornerShape(8.dp),
+                    ) {
+                        Text(
+                            text = "OK",
+                            fontSize = 20.sp,
+                            modifier = Modifier,
+                        )
+                    }
                 }
             }
         }
