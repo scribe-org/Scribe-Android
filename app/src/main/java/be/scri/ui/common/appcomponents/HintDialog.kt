@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
+import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 
 @Composable
 fun HintDialog(
@@ -59,6 +60,8 @@ fun HintDialog(
         derivedStateOf { pagerState.currentPage == currentPageIndex }
     }
 
+    val isUserDarkMode = remember { getIsDarkModeOrNot(context.applicationContext) }
+
     LaunchedEffect(isPageVisible) {
         if (isPageVisible && !isHintShown) {
             isHintShown = false
@@ -73,6 +76,7 @@ fun HintDialog(
                 isHintShown = true
                 onDismiss(currentPageIndex)
             },
+            isUserDarkMode = isUserDarkMode,
             modifier =
                 modifier
                     .padding(top = 8.dp),
@@ -85,8 +89,15 @@ fun HintDialog(
 fun HintDialogContent(
     text: String,
     onDismiss: () -> Unit,
+    isUserDarkMode: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val buttonColor =
+        if (isUserDarkMode) {
+            colorResource(R.color.dark_scribe_blue)
+        } else {
+            colorResource(R.color.light_scribe_blue)
+        }
     Surface(
         shape = RoundedCornerShape(10.dp),
         color = MaterialTheme.colorScheme.surface,
@@ -102,7 +113,7 @@ fun HintDialogContent(
                 tint = Color(0xFFFDAD0D),
                 modifier =
                     Modifier
-                        .padding(end = 8.dp)
+                        .padding(start = 8.dp, end = 12.dp)
                         .size(30.dp),
             )
 
@@ -121,6 +132,7 @@ fun HintDialogContent(
                 modifier =
                     Modifier
                         .weight(0.15f)
+                        .padding(end = 8.dp)
                         .background(
                             brush =
                                 Brush.verticalGradient(
@@ -137,7 +149,7 @@ fun HintDialogContent(
                     onClick = onDismiss,
                     colors =
                         ButtonColors(
-                            containerColor = MaterialTheme.colorScheme.secondary,
+                            containerColor = buttonColor,
                             contentColor = Color.White,
                             disabledContainerColor = MaterialTheme.colorScheme.secondary,
                             disabledContentColor = Color.White,
