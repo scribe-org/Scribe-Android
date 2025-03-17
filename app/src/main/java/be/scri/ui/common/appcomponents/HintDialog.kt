@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
@@ -26,6 +27,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -98,6 +102,9 @@ fun HintDialogContent(
         } else {
             colorResource(R.color.light_scribe_blue)
         }
+
+    val shadowColor = colorResource(R.color.light_key_shadow_color)
+
     Box(
         modifier =
             modifier.padding(horizontal = 12.dp).background(
@@ -106,7 +113,7 @@ fun HintDialogContent(
                         colors =
                             listOf(
                                 Color.Transparent,
-                                colorResource(R.color.light_key_shadow_color),
+                                shadowColor,
                             ),
                     ),
                 shape = RoundedCornerShape(10.dp),
@@ -147,18 +154,15 @@ fun HintDialogContent(
                     modifier =
                         Modifier
                             .weight(0.15f)
-                            .padding(end = 8.dp)
-                            .background(
-                                brush =
-                                    Brush.verticalGradient(
-                                        colors =
-                                            listOf(
-                                                Color.Transparent,
-                                                colorResource(R.color.light_key_shadow_color),
-                                            ),
-                                    ),
-                                shape = RoundedCornerShape(8.dp),
-                            ),
+                            .background(Color.Transparent)
+                            .drawBehind {
+                                drawRoundRect(
+                                    color = shadowColor,
+                                    topLeft = Offset.Zero.copy(y = size.height - 16.dp.toPx()),
+                                    size = size.copy(height = 14.dp.toPx()),
+                                    cornerRadius = CornerRadius(8.dp.toPx()),
+                                )
+                            },
                 ) {
                     Button(
                         onClick = onDismiss,
