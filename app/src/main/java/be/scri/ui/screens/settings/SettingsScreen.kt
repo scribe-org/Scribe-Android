@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,8 +22,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -146,20 +147,29 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp)
-                .padding(8.dp),
-        shape = RoundedCornerShape(16.dp),
+                .padding(Dimensions.PaddingSmallXL)
+                .shadow(Dimensions.ElevationSmall, RoundedCornerShape(Dimensions.PaddingLarge)),
+        shape = RoundedCornerShape(Dimensions.PaddingLarge),
         colors =
             ButtonDefaults.outlinedButtonColors(
-                containerColor = colorResource(R.color.corner_polygon_color),
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
             ),
     ) {
         Text(
             text = stringResource(R.string.app_settings_button_install_keyboards),
-            fontSize = 16.sp,
+            fontSize = Dimensions.TextSizeExtraLarge,
             fontWeight = FontWeight.Bold,
-            color = colorResource(R.color.button_text_color),
-            modifier = Modifier.padding(vertical = 8.dp),
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.padding(vertical = Dimensions.PaddingLarge),
         )
     }
+}
+
+object Dimensions {
+    val PaddingLarge = 20.dp
+    val PaddingSmallXL = 12.dp
+
+    val TextSizeExtraLarge = 28.sp
+
+    val ElevationSmall = 4.dp
 }

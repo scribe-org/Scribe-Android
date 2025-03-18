@@ -40,7 +40,7 @@ fun ClickableItemComp(
                 .padding(
                     horizontal = 12.dp,
                     vertical = 10.dp,
-                ).clip(RoundedCornerShape(12.dp))
+                ).clip(RoundedCornerShape(8.dp))
                 .clickable(onClick = onClick),
     ) {
         Row(

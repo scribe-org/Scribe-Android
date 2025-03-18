@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -287,7 +288,8 @@ fun InstallationScreen(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = Dimensions.PaddingLarge),
+                        .padding(vertical = Dimensions.PaddingLarge)
+                        .shadow(Dimensions.ElevationSmall, RoundedCornerShape(Dimensions.PaddingLarge)),
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
                     ButtonDefaults.outlinedButtonColors(
@@ -296,7 +298,7 @@ fun InstallationScreen(
             ) {
                 Text(
                     text = stringResource(R.string.app_installation_button_quick_tutorial),
-                    fontSize = Dimensions.TextSizeLarge,
+                    fontSize = Dimensions.TextSizeExtraLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.padding(vertical = Dimensions.PaddingLarge),
@@ -311,11 +313,14 @@ object Dimensions {
     val PaddingMedium = 16.dp
     val PaddingLarge = 20.dp
 
+    val TextSizeExtraLarge = 28.sp
     val TextSizeLarge = 20.sp
     val TextSizeMedium = 16.sp
     val TextSizeSmall = 12.sp
 
     val IconSize = 24.dp
+
+    val ElevationSmall = 4.dp
 
     const val RIGHT_LAYOUT_DIRECTION = 270f
     const val LEFT_LAYOUT_DIRECTION = 0f
