@@ -16,6 +16,7 @@
     <color name="transparent">@android:color/transparent</color>
     <color name="special_key_light">#aeb3be</color>
     <color name="special_key_dark">#202020</color>
+    <color name="command_bar_color_dark">#2E2E2E</color>
 
     <color name="nav_bar_selected_color_light">@color/dark_scribe_color</color>
     <color name="nav_bar_selected_color_dark">@color/light_scribe_color</color>

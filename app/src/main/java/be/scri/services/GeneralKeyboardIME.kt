@@ -452,13 +452,30 @@ abstract class GeneralKeyboardIME(
      * This function is responsible for modifying the UI elements of the command bar
      * to provide appropriate hints and prompts to the user.
      */
-    private fun updateCommandBarHintAndPrompt() {
+    private fun updateCommandBarHintAndPrompt(isUserDarkMode: Boolean? = null) {
         val commandBarButton = keyboardBinding.commandBar
         val hintMessage = HintUtils.getCommandBarHint(currentState, language)
         val promptText = HintUtils.getPromptText(currentState, language)
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
         commandBarButton.hint = hintMessage
+
+        if (isUserDarkMode == true) {
+            commandBarButton.setHintTextColor(getColor(R.color.hint_white))
+            commandBarButton.setTextColor(getColor(white))
+            commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
+            promptTextView.setTextColor(getColor(white))
+            promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
+            keyboardBinding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
+        } else {
+            commandBarButton.setHintTextColor(getColor(R.color.hint_black))
+            commandBarButton.setTextColor(Color.BLACK)
+            commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.white)
+            promptTextView.setTextColor(Color.BLACK)
+            promptTextView.setBackgroundColor(getColor(white))
+            keyboardBinding.promptTextBorder.setBackgroundColor(getColor(white))
+        }
+
         Log.d(
             "KeyboardUpdate",
             "CommandBar Hint Updated: [State: $currentState, Language: $language, Hint: $hintMessage]",
@@ -524,10 +541,14 @@ abstract class GeneralKeyboardIME(
         when (isUserDarkMode) {
             true -> {
                 keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_dark))
+                val color = ContextCompat.getColorStateList(this, R.color.light_key_color)
+                keyboardBinding.scribeKey.foregroundTintList = color
             }
 
             false -> {
                 keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_light))
+                val colorLight = ContextCompat.getColorStateList(this, R.color.light_key_text_color)
+                keyboardBinding.scribeKey.foregroundTintList = colorLight
             }
         }
         handleModeChange(keyboardSymbols, keyboardView, this)
@@ -541,7 +562,7 @@ abstract class GeneralKeyboardIME(
             updateUI()
         }
         setInputView(keyboardHolder)
-        updateCommandBarHintAndPrompt()
+        updateCommandBarHintAndPrompt(isUserDarkMode)
     }
 
     /**
