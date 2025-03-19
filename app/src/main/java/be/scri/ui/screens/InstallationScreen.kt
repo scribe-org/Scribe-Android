@@ -313,7 +313,7 @@ object Dimensions {
     val PaddingMedium = 16.dp
     val PaddingLarge = 20.dp
 
-    val TextSizeExtraLarge = 28.sp
+    val TextSizeExtraLarge = 24.sp
     val TextSizeLarge = 20.sp
     val TextSizeMedium = 16.sp
     val TextSizeSmall = 12.sp

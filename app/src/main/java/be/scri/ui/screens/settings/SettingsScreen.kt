@@ -169,7 +169,7 @@ object Dimensions {
     val PaddingLarge = 20.dp
     val PaddingSmallXL = 12.dp
 
-    val TextSizeExtraLarge = 28.sp
+    val TextSizeExtraLarge = 24.sp
 
     val ElevationSmall = 4.dp
 }
