@@ -645,6 +645,10 @@ class KeyboardView
                 } else {
                     R.color.special_key_light
                 }
+            val pressedColorResId = if (isUserDarkMode) R.color.dark_key_press_color else R.color.light_key_press_color
+            val pressedColor = resources.getColor(pressedColorResId, context.theme)
+            val specialKeyColorValue = resources.getColor(mSpecialKeyColor!!, context.theme)
+
             paint.color = mTextColor
             val keyBackgroundPaint =
                 Paint().apply {
@@ -698,24 +702,20 @@ class KeyboardView
                         (key.y + key.height - keyMargin + shadowOffset - padding).toFloat(),
                     )
                 canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+
+                val backgroundColor =
+                    when {
+                        key.pressed -> pressedColor
+                        code == KEYCODE_SHIFT && mKeyboard!!.mShiftState == SHIFT_LOCKED -> pressedColor
+                        code in listOf(KEYCODE_DELETE, KEYCODE_SHIFT, KEYCODE_MODE_CHANGE) -> specialKeyColorValue
+                        code == KEYCODE_ENTER -> mEnterKeyColor
+                        else -> keyBackgroundColor
+                    }
+                keyBackgroundPaint.color = backgroundColor
                 canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
 
                 // Switch the character to uppercase if shift is pressed.
                 val label = adjustCase(key.label)?.toString()
-
-                if (key.focused || code == KEYCODE_ENTER) {
-                    keyBackgroundPaint.color = Color.DKGRAY
-                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
-                    keyBackgroundPaint.color = mEnterKeyColor
-                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
-                    keyBackgroundPaint.color = keyBackgroundColor
-                }
-
-                if ((code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_MODE_CHANGE)) {
-                    keyBackgroundPaint.color = resources.getColor(mSpecialKeyColor!!)
-                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
-                    keyBackgroundPaint.color = keyBackgroundColor
-                }
 
                 canvas.translate(key.x.toFloat(), key.y.toFloat())
                 if (label?.isNotEmpty() == true) {
@@ -770,6 +770,7 @@ class KeyboardView
                                 else -> R.drawable.ic_caps_lock_off
                             }
                         key.icon = resources.getDrawable(drawableId, context.theme)
+                        key.icon!!.applyColorFilter(mTextColor)
                     }
 
                     if (code == KEYCODE_LEFT_ARROW || code == KEYCODE_RIGHT_ARROW) {
@@ -870,16 +871,8 @@ class KeyboardView
                 if (mCurrentKeyIndex != NOT_A_KEY && keys.size > mCurrentKeyIndex) {
                     val newKey = keys[mCurrentKeyIndex]
                     val code = newKey.code
-                    val pressedKeys =
-                        listOf(
-                            KEYCODE_SHIFT,
-                            KEYCODE_MODE_CHANGE,
-                            KEYCODE_DELETE,
-                            KEYCODE_ENTER,
-                            KEYCODE_SPACE,
-                        )
 
-                    newKey.pressed = code in pressedKeys
+                    newKey.pressed = true
 
                     invalidateKey(mCurrentKeyIndex)
                     sendAccessibilityEventForUnicodeCharacter(AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED, code)
