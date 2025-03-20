@@ -434,7 +434,7 @@ abstract class GeneralKeyboardIME(
                 earlierValue = keyboardView?.setEnterKeyIcon(ScribeState.SELECT_COMMAND)
             }
             else -> {
-                keyboardView?.setEnterKeyColor(getColor(R.color.dark_scribe_blue))
+                keyboardView?.setEnterKeyColor(getColor(R.color.color_primary))
                 keyboardView?.setEnterKeyIcon(ScribeState.PLURAL, earlierValue)
             }
         }
