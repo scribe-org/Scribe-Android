@@ -87,11 +87,12 @@ fun InstallationScreen(
             Image(
                 painter = painterResource(id = R.drawable.scribe_logo),
                 contentDescription = stringResource(R.string.app_launcher_name),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 16.dp)
-                    .width(222.dp)
-                    .height(107.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp)
+                        .width(222.dp)
+                        .height(107.dp),
                 contentScale = ContentScale.Fit,
             )
 
@@ -106,8 +107,7 @@ fun InstallationScreen(
                             start = 4.dp,
                             top = Dimensions.PaddingLarge,
                             bottom = Dimensions.PaddingSmall,
-                        )
-                        .align(Alignment.Start),
+                        ).align(Alignment.Start),
             )
 
             Card(
@@ -118,8 +118,7 @@ fun InstallationScreen(
                         .clickable {
                             val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
                             context.startActivity(intent)
-                        }
-                        .testTag("keyboardSettingsCard"),
+                        }.testTag("keyboardSettingsCard"),
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
                     CardDefaults.cardColors(
@@ -238,8 +237,7 @@ fun InstallationScreen(
                             start = 4.dp,
                             top = Dimensions.PaddingLarge,
                             bottom = Dimensions.PaddingSmall,
-                        )
-                        .align(Alignment.Start),
+                        ).align(Alignment.Start),
             )
             Card(
                 modifier =
