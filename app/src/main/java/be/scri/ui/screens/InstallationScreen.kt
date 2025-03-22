@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -86,11 +87,11 @@ fun InstallationScreen(
             Image(
                 painter = painterResource(id = R.drawable.scribe_logo),
                 contentDescription = stringResource(R.string.app_launcher_name),
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .width(222.dp)
-                        .height(107.dp),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp)
+                    .width(222.dp)
+                    .height(107.dp),
                 contentScale = ContentScale.Fit,
             )
 
@@ -105,7 +106,8 @@ fun InstallationScreen(
                             start = 4.dp,
                             top = Dimensions.PaddingLarge,
                             bottom = Dimensions.PaddingSmall,
-                        ).align(Alignment.Start),
+                        )
+                        .align(Alignment.Start),
             )
 
             Card(
@@ -116,7 +118,8 @@ fun InstallationScreen(
                         .clickable {
                             val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
                             context.startActivity(intent)
-                        }.testTag("keyboardSettingsCard"),
+                        }
+                        .testTag("keyboardSettingsCard"),
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
                     CardDefaults.cardColors(
@@ -204,7 +207,7 @@ fun InstallationScreen(
                                     },
                                 ),
                         colorFilter =
-                            androidx.compose.ui.graphics.ColorFilter.tint(
+                            ColorFilter.tint(
                                 MaterialTheme.colorScheme.surfaceContainer,
                             ),
                     )
@@ -217,7 +220,7 @@ fun InstallationScreen(
                                 .padding(Dimensions.PaddingSmall)
                                 .size(26.dp),
                         colorFilter =
-                            androidx.compose.ui.graphics.ColorFilter.tint(
+                            ColorFilter.tint(
                                 MaterialTheme.colorScheme.onPrimary,
                             ),
                     )
@@ -235,7 +238,8 @@ fun InstallationScreen(
                             start = 4.dp,
                             top = Dimensions.PaddingLarge,
                             bottom = Dimensions.PaddingSmall,
-                        ).align(Alignment.Start),
+                        )
+                        .align(Alignment.Start),
             )
             Card(
                 modifier =
