@@ -7,6 +7,7 @@
 package be.scri.ui.common.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,44 +35,50 @@ fun AboutPageItemComp(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Box(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(
-                    start = 12.dp,
-                    end = 20.dp,
-                    top = 10.dp,
-                    bottom = 10.dp,
-                ).clip(RoundedCornerShape(12.dp))
                 .clickable(onClick = onClick),
-        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            painter = painterResource(leadingIcon),
+        Row(
             modifier =
                 Modifier
-                    .padding(start = 2.dp)
-                    .size(22.dp),
-            tint = MaterialTheme.colorScheme.onSurface,
-            contentDescription = "Right Arrow",
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = title,
-            modifier = Modifier.weight(1f).padding(start = 4.dp),
-            fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        Icon(
-            painter = painterResource(trailingIcon),
-            modifier =
-                Modifier
-                    .padding(start = 6.dp)
-                    .size(24.dp),
-            contentDescription = "Right Arrow",
-            tint = Color.Gray,
-        )
+                    .fillMaxWidth()
+                    .padding(
+                        start = 12.dp,
+                        end = 20.dp,
+                        top = 10.dp,
+                        bottom = 10.dp,
+                    ).clip(RoundedCornerShape(12.dp)),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                painter = painterResource(leadingIcon),
+                modifier =
+                    Modifier
+                        .padding(start = 2.dp)
+                        .size(22.dp),
+                tint = MaterialTheme.colorScheme.onSurface,
+                contentDescription = "Leading Icon",
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = title,
+                modifier = Modifier.weight(1f).padding(start = 4.dp),
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Icon(
+                painter = painterResource(trailingIcon),
+                modifier =
+                    Modifier
+                        .padding(start = 6.dp)
+                        .size(24.dp),
+                contentDescription = "Trailing Icon",
+                tint = Color.Gray,
+            )
+        }
     }
 }
