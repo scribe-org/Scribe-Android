@@ -184,7 +184,7 @@ object PreferencesHelper {
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isPreviewEnabled = sharedPref.getBoolean("show_popup_on_keypress_$language", true)
+        val isPreviewEnabled = sharedPref.getBoolean("popup_on_keypress_$language", true)
         return isPreviewEnabled
     }
 

@@ -66,7 +66,7 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 sharedPref.getBoolean(
-                    "disable_accent_characters_$language",
+                    "disable_accent_character_$language",
                     false,
                 ),
             )
