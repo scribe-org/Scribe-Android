@@ -572,44 +572,44 @@ abstract class GeneralKeyboardIME(
      */
     private fun setupIdleView() {
         binding.translateBtn.textSize = SUGGESTION_SIZE
-        var isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-        if (isUserDarkMode) {
-            binding.translateBtn.setTextColor(getColor(white))
-        } else {
-            binding.translateBtn.setTextColor(getColor(md_grey_black_dark))
+        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
+
+        // Set common properties for buttons.
+        val textColor = if (isUserDarkMode) Color.WHITE else Color.parseColor("#1E1E1E")
+        val separatorColor = Color.parseColor(if (isUserDarkMode) DARK_THEME else LIGHT_THEME)
+
+        // Apply to all buttons.
+        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
+            button.setBackgroundColor(getColor(R.color.transparent))
+            button.setTextColor(textColor)
+            button.text = getString(R.string.suggestion)
         }
 
-        when (isUserDarkMode) {
-            true -> {
-                binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
-                binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
-                binding.pluralBtn.setBackgroundColor(getColor(R.color.transparent))
-                binding.translateBtn.setTextColor(Color.WHITE)
-                binding.conjugateBtn.setTextColor(Color.WHITE)
-                binding.pluralBtn.setTextColor(Color.WHITE)
-                binding.separator2.setBackgroundColor(Color.parseColor(DARK_THEME))
-                binding.separator3.setBackgroundColor(Color.parseColor(DARK_THEME))
-                binding.separator4.setBackgroundColor(Color.parseColor(DARK_THEME))
-            }
-            else -> {
-                binding.translateBtn.setBackgroundColor(getColor(R.color.transparent))
-                binding.conjugateBtn.setBackgroundColor(getColor(R.color.transparent))
-                binding.pluralBtn.setBackgroundColor(getColor(R.color.transparent))
-                binding.translateBtn.setTextColor(Color.parseColor("#1E1E1E"))
-                binding.conjugateBtn.setTextColor(Color.parseColor("#1E1E1E"))
-                binding.pluralBtn.setTextColor(Color.parseColor("#1E1E1E"))
-                binding.separator2.setBackgroundColor(Color.parseColor(LIGHT_THEME))
-                binding.separator3.setBackgroundColor(Color.parseColor(LIGHT_THEME))
-                binding.separator4.setBackgroundColor(Color.parseColor(LIGHT_THEME))
-            }
+        // Apply to all separators.
+        listOf(
+            binding.separator2,
+            binding.separator3,
+            binding.separator4,
+            binding.separator5,
+            binding.separator6,
+        ).forEach { separator ->
+            separator.setBackgroundColor(separatorColor)
         }
 
-        setupCommandBarTheme(binding)
-        binding.translateBtn.text = getString(R.string.suggestion)
-        binding.conjugateBtn.text = getString(R.string.suggestion)
-        binding.pluralBtn.text = getString(R.string.suggestion)
+        // Set visibility.
         binding.separator2.visibility = View.VISIBLE
         binding.separator3.visibility = View.VISIBLE
+
+        val isTablet =
+            (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >=
+                Configuration.SCREENLAYOUT_SIZE_LARGE
+
+        binding.separator4.visibility = if (isTablet) View.GONE else View.VISIBLE
+        binding.separator5.visibility = if (isTablet) View.VISIBLE else View.GONE
+        binding.separator6.visibility = if (isTablet) View.VISIBLE else View.GONE
+
+        setupCommandBarTheme(binding)
+
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.SELECT_COMMAND
             disableAutoSuggest()
@@ -617,11 +617,7 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "SELECT COMMAND STATE")
             binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
             updateUI()
-            if (isUserDarkMode) {
-                binding.translateBtn.setTextColor(Color.WHITE)
-            } else {
-                binding.translateBtn.setTextColor(Color.BLACK)
-            }
+            binding.translateBtn.setTextColor(if (isUserDarkMode) Color.WHITE else Color.BLACK)
         }
     }
 
@@ -641,6 +637,9 @@ abstract class GeneralKeyboardIME(
         binding.pluralBtn.text = pluralPlaceholder[getLanguageAlias(language)] ?: "Plural"
         binding.separator2.visibility = View.GONE
         binding.separator3.visibility = View.GONE
+        binding.separator4.visibility = View.GONE
+        binding.separator5.visibility = View.GONE
+        binding.separator6.visibility = View.GONE
         setupCommandBarTheme(binding)
         binding.translateBtn.setTextColor(Color.BLACK)
         binding.scribeKey.setOnClickListener {

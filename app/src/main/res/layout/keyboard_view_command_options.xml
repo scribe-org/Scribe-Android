@@ -170,17 +170,16 @@
 
         <View
             android:id="@+id/separator_4"
-            android:layout_width="1dp"
+            android:layout_width="0.5dp"
             android:layout_height="0dp"
             android:background="@color/special_key_light"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
             app:layout_constraintEnd_toStartOf="@+id/emoji_btn_phone_2"
             app:layout_constraintHeight_percent="0.8"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/emoji_btn_phone_1"
-
-            app:layout_constraintTop_toTopOf="@+id/plural_btn"
+            app:layout_constraintTop_toTopOf="@+id/command_field"
             app:layout_constraintVertical_bias="0.5" />
 
 
@@ -223,6 +222,20 @@
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="@+id/plural_btn" />
 
+        <View
+            android:id="@+id/separator_5"
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:background="@color/special_key_light"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_tablet_1"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_tablet_1"
+            app:layout_constraintTop_toTopOf="@+id/command_field"
+            app:layout_constraintVertical_bias="0.5" />
+
         <TextView
             android:id="@+id/emoji_space_tablet_1"
             android:layout_width="wrap_content"
@@ -246,6 +259,20 @@
             app:layout_constraintEnd_toStartOf="@+id/emoji_space_tablet_2"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/emoji_space_tablet_1" />
+
+        <View
+            android:id="@+id/separator_6"
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:background="@color/special_key_light"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_tablet_2"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_tablet_2"
+            app:layout_constraintTop_toTopOf="@+id/command_field"
+            app:layout_constraintVertical_bias="0.5" />
 
         <TextView
             android:id="@+id/emoji_space_tablet_2"
