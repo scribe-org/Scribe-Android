@@ -574,18 +574,18 @@ abstract class GeneralKeyboardIME(
         binding.translateBtn.textSize = SUGGESTION_SIZE
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
 
-        // Set common properties for buttons
+        // Set common properties for buttons.
         val textColor = if (isUserDarkMode) Color.WHITE else Color.parseColor("#1E1E1E")
         val separatorColor = Color.parseColor(if (isUserDarkMode) DARK_THEME else LIGHT_THEME)
 
-        // Apply to all buttons
+        // Apply to all buttons.
         listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
             button.setBackgroundColor(getColor(R.color.transparent))
             button.setTextColor(textColor)
             button.text = getString(R.string.suggestion)
         }
 
-        // Apply to all separators
+        // Apply to all separators.
         listOf(
             binding.separator2,
             binding.separator3,
@@ -596,7 +596,7 @@ abstract class GeneralKeyboardIME(
             separator.setBackgroundColor(separatorColor)
         }
 
-        // Set visibility
+        // Set visibility.
         binding.separator2.visibility = View.VISIBLE
         binding.separator3.visibility = View.VISIBLE
 
