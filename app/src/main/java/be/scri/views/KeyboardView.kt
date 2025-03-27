@@ -249,6 +249,7 @@ class KeyboardView
             private const val MARGIN_ADJUSTMENT = 10
             private const val PROXIMITY_SCALING_FACTOR = 1.4f
             private const val KEY_MARGIN = 8
+            private const val V_KEY_MARGIN = 16
             private const val SHADOW_OFFSET = 3
             private const val ALPHA_ADJUSTMENT_FACTOR = 0.8f
             private const val SHADOW_ALPHA = 100
@@ -595,6 +596,7 @@ class KeyboardView
         @SuppressLint("UseCompatLoadingForDrawables")
         private fun onBufferDraw() {
             val keyMargin = KEY_MARGIN
+            val vKeyMargin = V_KEY_MARGIN
             val shadowOffset = SHADOW_OFFSET
             if (mBuffer == null || mKeyboardChanged) {
                 if (mBuffer?.let { buffer -> buffer.width != width || buffer.height != height } != false) {
@@ -691,7 +693,7 @@ class KeyboardView
                         (key.x + keyMargin + padding).toFloat(),
                         (key.y + keyMargin + padding + shadowOffsetY).toFloat(),
                         (key.x + key.width - keyMargin - padding).toFloat(),
-                        (key.y + key.height - keyMargin - padding + shadowOffsetY).toFloat(),
+                        (key.y + key.height - vKeyMargin - padding + shadowOffsetY).toFloat(),
                     )
 
                 val keyRect =
@@ -699,7 +701,7 @@ class KeyboardView
                         (key.x + keyMargin - shadowOffset + padding).toFloat(),
                         (key.y + keyMargin - shadowOffset + padding).toFloat(),
                         (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
-                        (key.y + key.height - keyMargin + shadowOffset - padding).toFloat(),
+                        (key.y + key.height - vKeyMargin + shadowOffset - padding).toFloat(),
                     )
                 canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
 

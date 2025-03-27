@@ -18,6 +18,7 @@
             android:layout_width="@dimen/scribe_key_width"
             android:layout_height="37dp"
             android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginEnd="4dp"
             android:background="@drawable/cmd_key_background_rounded"
             android:contentDescription="@string/scribe_key"
             android:foreground="@drawable/ic_scribe_icon_vector"
