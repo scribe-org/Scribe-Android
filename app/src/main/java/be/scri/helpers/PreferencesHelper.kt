@@ -24,7 +24,7 @@ object PreferencesHelper {
         translationSource: String,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        sharedPref.edit { putString("translation_source_$language", translationSource) }
+        sharedPref.edit { putString(getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language), translationSource) }
     }
 
     fun getTranslationSourceLanguage(
@@ -32,7 +32,10 @@ object PreferencesHelper {
         language: String,
     ): String {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        return sharedPref.getString("translation_source_$language", "English") ?: "English"
+        return sharedPref.getString(
+            getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
+            "English"
+        ) ?: "English"
     }
 
     fun getLanguageSpecificPreferenceKey(key: String, language: String): String {

@@ -36,6 +36,8 @@ import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.helpers.DatabaseHelper
 import be.scri.helpers.HintUtils
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
+import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
 import be.scri.helpers.SHIFT_OFF
@@ -404,7 +406,7 @@ abstract class GeneralKeyboardIME(
     override fun commitPeriodAfterSpace() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             if (getSharedPreferences("app_preferences", MODE_PRIVATE)
-                    .getBoolean("period_on_double_tap_$language", true)
+                    .getBoolean(PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), true)
             ) {
                 val inputConnection = currentInputConnection ?: return
                 inputConnection.deleteSurroundingText(1, 0)
