@@ -34,13 +34,14 @@ object PreferencesHelper {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return sharedPref.getString(
             getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
-            "English"
+            "English",
         ) ?: "English"
     }
 
-    fun getLanguageSpecificPreferenceKey(key: String, language: String): String {
-        return "${key}_${language}"
-    }
+    fun getLanguageSpecificPreferenceKey(
+        key: String,
+        language: String,
+    ): String = "${key}_$language"
 
     fun setPeriodOnSpaceBarDoubleTapPreference(
         context: Context,
@@ -49,8 +50,10 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean(getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
-            shouldEnablePeriodOnSpaceBarDoubleTap)
+        editor.putBoolean(
+            getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
+            shouldEnablePeriodOnSpaceBarDoubleTap,
+        )
         editor.apply()
         Toast
             .makeText(
@@ -68,8 +71,10 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean(getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language),
-            shouldDisableAccentCharacter)
+        editor.putBoolean(
+            getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language),
+            shouldDisableAccentCharacter,
+        )
         editor.apply()
         Toast
             .makeText(

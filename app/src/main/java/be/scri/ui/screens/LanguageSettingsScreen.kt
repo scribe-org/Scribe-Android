@@ -101,9 +101,12 @@ fun LanguageSettingsScreen(
     val periodAndCommaState =
         remember {
             if (!sharedPref.contains(PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language))) {
-                sharedPref.edit().putBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), true
-                ).apply()
+                sharedPref
+                    .edit()
+                    .putBoolean(
+                        PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language),
+                        true,
+                    ).apply()
             }
             mutableStateOf(
                 sharedPref.getBoolean(

@@ -406,7 +406,10 @@ abstract class GeneralKeyboardIME(
     override fun commitPeriodAfterSpace() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             if (getSharedPreferences("app_preferences", MODE_PRIVATE)
-                    .getBoolean(PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), true)
+                    .getBoolean(
+                        PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
+                        true,
+                    )
             ) {
                 val inputConnection = currentInputConnection ?: return
                 inputConnection.deleteSurroundingText(1, 0)
