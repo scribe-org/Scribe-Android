@@ -653,6 +653,7 @@ abstract class GeneralKeyboardIME(
         }
         binding.translateBtn.setOnClickListener {
             Log.i("MY-TAG", "TRANSLATE STATE")
+            keyboardView?.invalidateAllKeys()
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.TRANSLATE
             updateUI()

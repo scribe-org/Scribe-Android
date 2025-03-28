@@ -295,3 +295,15 @@ tasks.withType(Test::class) {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports"
+
+    reports {
+        html.required.set(true)
+        xml.outputLocation.set(file("${buildDir}/reports/jacoco/jacoco.xml"))
+        xml.required.set(true)
+        csv.required.set(true)
+    }
+}

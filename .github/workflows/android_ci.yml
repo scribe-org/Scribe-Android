@@ -45,24 +45,25 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v4
               
-            - name: prepare app 
+            - name: Prepare app 
               uses: ./.github/composite/prepareApp  
 
             - name: Generate coverage report
-              run: ./gradlew jacocoCoreDebugCodeCoverage -x connectedCoreDebugAndroidTest
+              run: ./gradlew jacocoTestReport -x connectedCoreDebugAndroidTest
 
             - name: Add coverage to PR
               id: jacoco
               uses: madrapps/jacoco-report@v1.7.1
               with:
                   paths: |
-                      ${{ github.workspace }}/**/jacocoCoreDebugCodeCoverage.xml
+                      ${{ github.workspace }}/app/build/reports/jacoco/jacoco.xml
                   token: ${{ secrets.GITHUB_TOKEN }}
                   min-coverage-overall: 40
                   min-coverage-changed-files: 60
                   title: Code Coverage
                   update-comment: true
-                  debug-mode: true   
+                  debug-mode: true
+
     build:
       runs-on: ubuntu-latest
       name: build app
