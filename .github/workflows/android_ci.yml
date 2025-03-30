@@ -36,28 +36,50 @@ jobs:
               run: ./gradlew test
               
     coverage:
-        runs-on: ubuntu-latest
-        name: Run coverage
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-            - name: Prepare app 
-              uses: ./.github/composite/prepareApp  
-            - name: Generate coverage report
-              run: ./gradlew jacocoTestReport -x connectedCoreDebugAndroidTest
-            - name: Extract coverage percentage
-              id: extract_coverage
-              run: |
-                  COVERAGE=$(grep -oP '(?<=<counter type="INSTRUCTION" missed="\d+" covered=")\d+' app/build/reports/jacoco/html/index.html | awk '{s+=$1} END {printf "%.2f", s/(s+100)*100}')
-                  echo "Overall Coverage: $COVERAGE%"
-                  echo "coverage=$COVERAGE" >> "$GITHUB_ENV"
+      runs-on: ubuntu-latest
+      name: Run Coverage
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+        - name: Prepare App
+          uses: ./.github/composite/prepareApp  
+        - name: Generate Coverage Report
+          run: ./gradlew jacocoTestReport -x connectedCoreDebugAndroidTest
+        - name: Extract Overall Coverage
+          id: extract_coverage
+          run: |
+            COVERAGE=$(grep -oP '(?<=<counter type="INSTRUCTION" missed="\d+" covered=")\d+' app/build/reports/jacoco/html/index.html | awk '{s+=$1} END {printf "%.2f", s/(s+100)*100}')
+            echo "Overall Coverage: $COVERAGE%"
+            echo "coverage=$COVERAGE" >> "$GITHUB_ENV"
+        - name: Extract Individual Package Coverage
+          id: extract_package_coverage
+          run: |
+            echo "## Individual Package Coverage Report" > package_coverage.md
+            echo "| Package | Coverage | Missed Instructions | Covered Instructions |" >> package_coverage.md
+            echo "|---------|----------|---------------------|----------------------|" >> package_coverage.md
 
-            - name: Upload Coverage Report
-              uses: actions/upload-artifact@v4
-              with:
-                  name: coverage-report
-                  path: app/build/reports/jacoco/html/index.html
-                  retention-days: 7
+            while IFS= read -r line; do
+              PACKAGE=$(echo "$line" | awk '{print $1}')
+              MISSED=$(echo "$line" | awk '{print $2}')
+              COVERED=$(echo "$line" | awk '{print $3}')
+              
+              if [[ -n "$MISSED" && -n "$COVERED" ]]; then
+                TOTAL=$((MISSED + COVERED))
+                if [[ $TOTAL -gt 0 ]]; then
+                  PERCENTAGE=$(awk "BEGIN {printf \"%.2f\", $COVERED/$TOTAL*100}")
+                  echo "| $PACKAGE | $PERCENTAGE% | $MISSED | $COVERED |" >> package_coverage.md
+                fi
+              fi
+            done < <(grep -oP '(?<=<package name=").*?"' app/build/reports/jacoco/html/index.html | awk -F'"' '{print $2}')
+            
+            cat package_coverage.md
+            echo "coverage_report=package_coverage.md" >> "$GITHUB_ENV"
+        - name: Upload Coverage Report
+          uses: actions/upload-artifact@v4
+          with:
+            name: coverage-report
+            path: app/build/reports/jacoco/html/index.html
+            retention-days: 7
 
     build:
       runs-on: ubuntu-latest
