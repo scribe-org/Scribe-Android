@@ -98,7 +98,7 @@ fun InstallationScreen(
                 text = stringResource(R.string.app_installation_keyboard_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
-                fontSize = Dimensions.TextSizeLarge,
+                fontSize = Dimensions.TextSizeLarge_I,
                 modifier =
                     Modifier
                         .padding(
@@ -228,7 +228,7 @@ fun InstallationScreen(
                 text = stringResource(R.string.app_download_menu_option_scribe_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
-                fontSize = Dimensions.TextSizeLarge,
+                fontSize = Dimensions.TextSizeLarge_I,
                 modifier =
                     Modifier
                         .padding(
@@ -314,6 +314,8 @@ object Dimensions {
     val PaddingLarge = 20.dp
 
     val TextSizeExtraLarge = 24.sp
+    val TextSizeLarge_I = 20.sp
+
     val TextSizeLarge = 20.sp
     val TextSizeMedium = 16.sp
     val TextSizeSmall = 12.sp

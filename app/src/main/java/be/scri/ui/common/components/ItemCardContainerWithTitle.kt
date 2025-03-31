@@ -32,7 +32,7 @@ fun ItemCardContainerWithTitle(
             text = title,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
+            fontSize = 22.sp,
             modifier =
                 Modifier.padding(
                     start = 16.dp,
