@@ -66,16 +66,16 @@ android {
         compose = true
     }
 
-//    signingConfigs {
-//        create("release") {
-//            if (keystorePropertiesFile.exists()) {
-//                keyAlias = keystoreProperties["keyAlias"].toString()
-//                keyPassword = keystoreProperties["keyPassword"].toString()
-//                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-//                storePassword = keystoreProperties["storePassword"].toString()
-//            }
-//        }
-//    }
+    signingConfigs {
+        create("release") {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias = keystoreProperties["keyAlias"].toString()
+                keyPassword = keystoreProperties["keyPassword"].toString()
+                storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+                storePassword = keystoreProperties["storePassword"].toString()
+            }
+        }
+    }
 
     buildTypes {
         getByName("debug") {
@@ -86,7 +86,7 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-//            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
