@@ -317,7 +317,7 @@ object Dimensions {
     val TextSizeLarge_I = 20.sp
 
     val TextSizeLarge = 20.sp
-    val TextSizeMedium = 16.sp
+    val TextSizeMedium = 14.sp
     val TextSizeSmall = 12.sp
 
     val IconSize = 24.dp
