@@ -78,7 +78,6 @@ fun InstallationScreen(
                     .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = Dimensions.PaddingMedium)
                     .padding(vertical = Dimensions.PaddingLarge)
-
                     .testTag("backgroundContainer")
                     .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -135,13 +134,13 @@ fun InstallationScreen(
                         Row(modifier = Modifier.padding(top = Dimensions.PaddingSmall)) {
                             Text(
                                 text = "1. ",
-                                fontSize = Dimensions.TextSizeSmall,
+                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_keyboard_settings),
                                 color = colorResource(R.color.dark_scribe_blue),
-                                fontSize = Dimensions.TextSizeSmall,
+                                fontSize = Dimensions.TextSizeMedium,
                                 fontWeight = FontWeight.Bold,
                             )
                         }
@@ -149,12 +148,12 @@ fun InstallationScreen(
                         Row(modifier = Modifier.padding(top = Dimensions.PaddingSmall)) {
                             Text(
                                 text = "2. ",
-                                fontSize = Dimensions.TextSizeSmall,
+                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_text_2),
-                                fontSize = Dimensions.TextSizeSmall,
+                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
@@ -164,12 +163,12 @@ fun InstallationScreen(
                         ) {
                             Text(
                                 text = "3. ",
-                                fontSize = Dimensions.TextSizeSmall,
+                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_text_3),
-                                fontSize = Dimensions.TextSizeSmall,
+                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Image(
@@ -184,7 +183,7 @@ fun InstallationScreen(
                             )
                             Text(
                                 text = stringResource(R.string.app_installation_keyboard_text_4),
-                                fontSize = Dimensions.TextSizeSmall,
+                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
