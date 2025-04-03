@@ -77,6 +77,7 @@ fun InstallationScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = Dimensions.PaddingMedium)
+                    .padding(vertical = Dimensions.PaddingLarge)
                     .testTag("backgroundContainer")
                     .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -98,7 +99,7 @@ fun InstallationScreen(
                 text = stringResource(R.string.app_installation_keyboard_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
-                fontSize = Dimensions.TextSizeLarge,
+                fontSize = Dimensions.TextSizeLarge_I,
                 modifier =
                     Modifier
                         .padding(
@@ -112,7 +113,7 @@ fun InstallationScreen(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = Dimensions.PaddingSmall)
+                        .padding(bottom = Dimensions.PaddingSmall)
                         .clickable {
                             val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
                             context.startActivity(intent)
@@ -228,7 +229,7 @@ fun InstallationScreen(
                 text = stringResource(R.string.app_download_menu_option_scribe_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
-                fontSize = Dimensions.TextSizeLarge,
+                fontSize = Dimensions.TextSizeLarge_I,
                 modifier =
                     Modifier
                         .padding(
@@ -241,7 +242,7 @@ fun InstallationScreen(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = Dimensions.PaddingSmall),
+                        .padding(bottom = Dimensions.PaddingSmall),
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
                     CardDefaults.cardColors(
@@ -314,8 +315,10 @@ object Dimensions {
     val PaddingLarge = 20.dp
 
     val TextSizeExtraLarge = 24.sp
+    val TextSizeLarge_I = 20.sp
+
     val TextSizeLarge = 20.sp
-    val TextSizeMedium = 16.sp
+    val TextSizeMedium = 14.sp
     val TextSizeSmall = 12.sp
 
     val IconSize = 24.dp
