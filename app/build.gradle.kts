@@ -20,6 +20,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("jacoco")
     kotlin("plugin.serialization") version "1.9.0"
+    id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 
 jacoco {
@@ -42,6 +43,19 @@ android {
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+
+    kover {
+        verify {
+            rule {
+                isEnabled = true
+                name = "Coverage must be more than 60%"
+                bound {
+                    minValue = 60
+                }
+            }
+        }
     }
 
     testOptions {
@@ -294,4 +308,16 @@ tasks.withType(Test::class) {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports"
+
+    reports {
+        html.required.set(true)
+        xml.outputLocation.set(file("${buildDir}/reports/jacoco/jacoco.xml"))
+        xml.required.set(true)
+        csv.required.set(true)
+    }
 }

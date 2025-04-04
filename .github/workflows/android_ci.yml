@@ -4,7 +4,9 @@ on:
         branches:
             - main
         types: [opened, reopened, synchronize]
-
+permissions:
+  pull-requests: write
+  contents: read
 jobs:
     lint:
         runs-on: ubuntu-latest
@@ -25,7 +27,6 @@ jobs:
         runs-on: ubuntu-latest
         name: Run tests
         steps:
-        
             - name: Checkout repository
               uses: actions/checkout@v4
               
@@ -35,34 +36,29 @@ jobs:
             - name: Run ktlint
               run: ./gradlew test
               
-    coverage:
-        runs-on: ubuntu-latest
-        name: Run coverage
-        permissions:
-            pull-requests: write        
-
-        steps:
-            - name: Checkout repository
+    collect_coverage:
+          runs-on: ubuntu-latest
+          steps:
+            - name: Checkout Repository
               uses: actions/checkout@v4
-              
-            - name: prepare app 
-              uses: ./.github/composite/prepareApp  
-
-            - name: Generate coverage report
-              run: ./gradlew jacocoCoreDebugCodeCoverage -x connectedCoreDebugAndroidTest
-
-            - name: Add coverage to PR
-              id: jacoco
-              uses: madrapps/jacoco-report@v1.7.1
+      
+            - name: Set up JDK
+              uses: actions/setup-java@v1
               with:
-                  paths: |
-                      ${{ github.workspace }}/**/jacocoCoreDebugCodeCoverage.xml
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  min-coverage-overall: 40
-                  min-coverage-changed-files: 60
-                  title: Code Coverage
-                  update-comment: true
-                  debug-mode: true   
+                java-version: 17
+      
+            - name: Grant execute permission for gradlew
+              run: chmod +x gradlew
+      
+            - name: Get coverage
+              run: ./gradlew koverReport
+          
+            - name: Run File-wise Coverage Parser Script
+              run: python3 scripts/coverage_parser.py
+        
+            
+      
+
     build:
       runs-on: ubuntu-latest
       name: build app
