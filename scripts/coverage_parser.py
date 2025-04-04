@@ -3,6 +3,8 @@ from collections import defaultdict
 import os
 
 def parse_kover_coverage_report(report_path):
+    report_path = os.path.expandvars(report_path)
+
     if not os.path.exists(report_path):
         print(f"Report not found at: {report_path}")
         return
@@ -41,5 +43,5 @@ def parse_kover_coverage_report(report_path):
     print("Done.")
 
 if __name__ == "__main__":
-    REPORT_PATH = "../app/build/reports/kover/xml/report.xml"
+    REPORT_PATH = "${GITHUB_WORKSPACE}/app/build/reports/kover/xml/report.xml"
     parse_kover_coverage_report(REPORT_PATH)

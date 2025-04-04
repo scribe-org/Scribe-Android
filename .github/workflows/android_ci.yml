@@ -53,15 +53,9 @@ jobs:
             - name: Get coverage
               run: ./gradlew koverReport
           
-            - name: Parse Coverage Report
-              run: |
-                sudo apt-get install -y libxml2-utils  # Install xmllint
-                echo "Coverage Summary"
-                echo "---------------------------"
-                echo "Line Coverage: $(xmllint --xpath 'string(//counter[@type="LINE"]/@covered)' app/build/reports/kover/xml/report.xml)/$(xmllint --xpath 'string(//counter[@type="LINE"]/@missed)' app/build/reports/kover/xml/report.xml)"
-                echo "Branch Coverage: $(xmllint --xpath 'string(//counter[@type="BRANCH"]/@covered)' app/build/reports/kover/xml/report.xml)/$(xmllint --xpath 'string(//counter[@type="BRANCH"]/@missed)' app/build/reports/kover/xml/report.xml)"
-                echo "Instruction Coverage: $(xmllint --xpath 'string(//counter[@type="INSTRUCTION"]/@covered)' app/build/reports/kover/xml/report.xml)/$(xmllint --xpath 'string(//counter[@type="INSTRUCTION"]/@missed)' app/build/reports/kover/xml/report.xml)"
-                echo "---------------------------"
+            - name: Run File-wise Coverage Parser Script
+              run: python3 scripts/coverage_parser.py
+        
             
       
 
