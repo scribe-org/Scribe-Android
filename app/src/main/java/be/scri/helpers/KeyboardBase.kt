@@ -81,6 +81,15 @@ class KeyboardBase {
         const val SHIFT_ON = 1
         const val SHIFT_LOCKED = 2
 
+        /**
+         * Retrieves the dimension or fraction value from the attributes, adjusting the base value if necessary.
+         *
+         * @param a the TypedArray containing the attributes
+         * @param index the index of the desired attribute
+         * @param base the base value for the fraction calculation
+         * @param defValue the default value to return if no valid dimension is found
+         * @return the calculated dimension or fraction value
+         */
         fun getDimensionOrFraction(
             a: TypedArray,
             index: Int,
@@ -385,6 +394,12 @@ class KeyboardBase {
         mRows.add(row)
     }
 
+    /**
+     * Sets the keyboard shift state.
+     *
+     * @param shiftState the new shift state to apply
+     * @return true if the shift state was changed; false otherwise
+     */
     fun setShifted(shiftState: Int): Boolean {
         if (mShiftState != shiftState) {
             mShiftState =
@@ -397,11 +412,28 @@ class KeyboardBase {
         return false
     }
 
+    /**
+     * Creates a Row object from the XML resource parser.
+     *
+     * @param res the resources associated with the context
+     * @param parser the XML resource parser
+     * @return the created Row object
+     */
     private fun createRowFromXml(
         res: Resources,
         parser: XmlResourceParser?,
     ): Row = Row(res, this, parser)
 
+    /**
+     * Creates a Key object from the XML resource parser and the specified coordinates.
+     *
+     * @param res the resources associated with the context
+     * @param parent the parent Row that this key belongs to
+     * @param x the x-coordinate of the key
+     * @param y the y-coordinate of the key
+     * @param parser the XML resource parser
+     * @return the created Key object
+     */
     private fun createKeyFromXml(
         res: Resources,
         parent: Row,
@@ -410,6 +442,13 @@ class KeyboardBase {
         parser: XmlResourceParser?,
     ): Key = Key(res, parent, x, y, parser)
 
+    /**
+     * Loads the keyboard configuration from the provided XML parser, populating the rows and keys.
+     * This method also handles edge cases like custom icons for the Enter key based on its type.
+     *
+     * @param context the application context
+     * @param parser the XML resource parser
+     */
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun loadKeyboard(
         context: Context,
@@ -490,6 +529,12 @@ class KeyboardBase {
         mHeight = y
     }
 
+    /**
+     * Parses the keyboard attributes such as key width, height, and horizontal gap from the XML resource.
+     *
+     * @param res the resources associated with the context
+     * @param parser the XML resource parser
+     */
     private fun parseKeyboardAttributes(
         res: Resources,
         parser: XmlResourceParser,

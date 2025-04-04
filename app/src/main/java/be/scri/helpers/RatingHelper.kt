@@ -16,6 +16,12 @@ import be.scri.activities.MainActivity
 import com.google.android.play.core.review.ReviewManagerFactory
 
 object RatingHelper {
+    /**
+     * Retrieves the source from which the application was installed.
+     *
+     * @param context The application context.
+     * @return The install source, or null if unable to determine the source.
+     */
     private fun getInstallSource(context: Context): String? =
         try {
             val packageManager = context.packageManager
@@ -25,6 +31,14 @@ object RatingHelper {
             null
         }
 
+    /**
+     * Launches the appropriate flow for rating the application based on its installation source.
+     * If the application is installed from Google Play, the Google Play review flow is launched.
+     * If the application is installed from F-Droid, the F-Droid page for the app is opened in the browser.
+     *
+     * @param context The application context.
+     * @param activity The main activity of the application that is used to launch the review flow.
+     */
     fun rateScribe(
         context: Context,
         activity: MainActivity,
