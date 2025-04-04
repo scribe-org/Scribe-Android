@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""
+Parse a Kover coverage report for a human-readable CLI output.
+"""
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 import os
