@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * A RecyclerView adapter that supports multiple view types.
- */
-
 package be.scri.helpers
 
 import android.content.Context
@@ -23,6 +19,15 @@ import be.scri.models.ItemsViewModel
 import be.scri.models.SwitchItem
 import be.scri.models.TextItem
 
+/**
+ * A RecyclerView adapter that supports multiple view types for different data models.
+ * <p>
+ * This adapter can handle displaying images, switches, and text items in different layouts.
+ * </p>
+ *
+ * @param mList The list of items to be displayed in the RecyclerView.
+ * @param context The context used to inflate layouts and handle item actions.
+ */
 class CustomAdapter(
     private val mList: List<Any>,
     private val context: Context,
@@ -33,6 +38,14 @@ class CustomAdapter(
         private const val VIEW_TYPE_TEXT = 2
     }
 
+    /**
+     * Called when RecyclerView needs a new [RecyclerView.ViewHolder] of the given type to represent
+     * an item.
+     *
+     * @param parent The parent view that will hold the new view.
+     * @param viewType The view type of the new view.
+     * @return A new [RecyclerView.ViewHolder].
+     */
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
@@ -62,6 +75,12 @@ class CustomAdapter(
             else -> throw IllegalArgumentException("Invalid view type")
         }
 
+    /**
+     * Binds data to the appropriate ViewHolder based on its type.
+     *
+     * @param holder The [RecyclerView.ViewHolder] to bind data to.
+     * @param position The position of the item in the data set.
+     */
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
@@ -83,6 +102,12 @@ class CustomAdapter(
         holder.itemView.setBackgroundResource(backgroundResource)
     }
 
+    /**
+     * Binds data to the [ImageViewHolder].
+     *
+     * @param holder The [ImageViewHolder] to bind data to.
+     * @param position The position of the item in the data set.
+     */
     private fun bindImageViewHolder(
         holder: ImageViewHolder,
         position: Int,
@@ -117,6 +142,12 @@ class CustomAdapter(
         }
     }
 
+    /**
+     * Binds data to the [TextViewHolder].
+     *
+     * @param holder The [TextViewHolder] to bind data to.
+     * @param position The position of the item in the data set.
+     */
     private fun bindTextViewHolder(
         holder: TextViewHolder,
         position: Int,
@@ -138,6 +169,12 @@ class CustomAdapter(
         }
     }
 
+    /**
+     * Binds data to the [SwitchViewHolder].
+     *
+     * @param holder The [SwitchViewHolder] to bind data to.
+     * @param position The position of the item in the data set.
+     */
     private fun bindSwitchViewHolder(
         holder: SwitchViewHolder,
         position: Int,
@@ -165,8 +202,19 @@ class CustomAdapter(
         }
     }
 
+    /**
+     * Returns the total number of items in the data set.
+     *
+     * @return The number of items.
+     */
     override fun getItemCount(): Int = mList.size
 
+    /**
+     * Returns the view type for the item at the given position.
+     *
+     * @param position The position of the item.
+     * @return The view type corresponding to the item.
+     */
     override fun getItemViewType(position: Int): Int =
         when (mList[position]) {
             is ItemsViewModel -> VIEW_TYPE_IMAGE
@@ -175,6 +223,7 @@ class CustomAdapter(
             else -> throw IllegalArgumentException("Invalid item type")
         }
 
+    /** ViewHolder for items with an image. */
     class ImageViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
@@ -183,6 +232,7 @@ class CustomAdapter(
         val imageView2: ImageView = itemView.findViewById(R.id.imgView2)
     }
 
+    /** ViewHolder for items with a switch. */
     class SwitchViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {
@@ -191,6 +241,7 @@ class CustomAdapter(
         val descriptionTextView: TextView = itemView.findViewById(R.id.tvSubTitle)
     }
 
+    /** ViewHolder for items with text. */
     class TextViewHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView) {

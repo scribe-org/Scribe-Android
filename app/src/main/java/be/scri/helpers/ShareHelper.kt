@@ -13,6 +13,12 @@ import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
 
 object ShareHelper {
+    /**
+     * Shares the link to the Scribe Android project repository.
+     * This method opens an intent chooser to allow the user to select an application to share the link.
+     *
+     * @param context The application context.
+     */
     fun shareScribe(context: Context) {
         try {
             val sharingIntent =
@@ -28,6 +34,12 @@ object ShareHelper {
         }
     }
 
+    /**
+     * Sends an email to the Scribe team.
+     * This method opens an intent chooser to allow the user to select an email client to send the email.
+     *
+     * @param context The application context.
+     */
     fun sendEmail(context: Context) {
         try {
             val intent =
