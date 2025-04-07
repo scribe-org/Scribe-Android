@@ -469,7 +469,8 @@ abstract class GeneralKeyboardIME(
         if (isUserDarkMode == true) {
             commandBarEditText.setHintTextColor(getColor(R.color.hint_white))
             commandBarEditText.setTextColor(getColor(white))
-            keyboardBinding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
+            keyboardBinding.commandBarLayout.backgroundTintList =
+                ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
             promptTextView.setTextColor(getColor(white))
             promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
