@@ -548,6 +548,9 @@ class KeyboardBase {
         a.recycle()
     }
 
+    /**
+     * Holds custom IME (Input Method Editor) action constants.
+     */
     object MyCustomActions {
         const val IME_ACTION_COMMAND = 0x00000008
     }
