@@ -106,7 +106,6 @@ abstract class GeneralKeyboardIME(
     var nounTypeSuggestion: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
-    private val commandCursor = "│"
     val prepAnnotationConversionDict =
         mapOf(
             "German" to mapOf("Acc" to "Akk"),
@@ -458,24 +457,26 @@ abstract class GeneralKeyboardIME(
      * to provide appropriate hints and prompts to the user.
      */
     private fun updateCommandBarHintAndPrompt(isUserDarkMode: Boolean? = null) {
-        val commandBarButton = keyboardBinding.commandBar
+        val commandBarEditText = keyboardBinding.commandBar
         val hintMessage = HintUtils.getCommandBarHint(currentState, language)
         val promptText = HintUtils.getPromptText(currentState, language)
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
-        commandBarButton.hint = hintMessage
+        commandBarEditText.hint = hintMessage
+
+        commandBarEditText.requestFocus()
 
         if (isUserDarkMode == true) {
-            commandBarButton.setHintTextColor(getColor(R.color.hint_white))
-            commandBarButton.setTextColor(getColor(white))
-            commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
+            commandBarEditText.setHintTextColor(getColor(R.color.hint_white))
+            commandBarEditText.setTextColor(getColor(white))
+            keyboardBinding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
             promptTextView.setTextColor(getColor(white))
             promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
         } else {
-            commandBarButton.setHintTextColor(getColor(R.color.hint_black))
-            commandBarButton.setTextColor(Color.BLACK)
-            commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.white)
+            commandBarEditText.setHintTextColor(getColor(R.color.hint_black))
+            commandBarEditText.setTextColor(Color.BLACK)
+            keyboardBinding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, white)
             promptTextView.setTextColor(Color.BLACK)
             promptTextView.setBackgroundColor(getColor(white))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(white))
@@ -1421,7 +1422,6 @@ abstract class GeneralKeyboardIME(
                     ?.text
                     .toString()
                     .trim()
-                    .dropLast(1)
             lateinit var commandModeOutput: String
             commandModeOutput =
                 when (currentState) {
@@ -1432,7 +1432,7 @@ abstract class GeneralKeyboardIME(
                 commandModeOutput = "$commandModeOutput "
             }
             inputConnection.commitText(commandModeOutput, 1)
-            binding?.commandBar?.text = ""
+            binding?.commandBar?.setText("")
         } else {
             if (imeOptionsActionId != IME_ACTION_NONE) {
                 inputConnection.performEditorAction(imeOptionsActionId)
@@ -1531,9 +1531,10 @@ abstract class GeneralKeyboardIME(
                     keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
                 }
             } else {
-                newText = "${commandBar.text.trim().dropLast(2)}$commandCursor"
+                newText = "${commandBar.text.trim().dropLast(1)}"
             }
-            commandBar.text = newText
+            commandBar.setText(newText)
+            commandBar.setSelection(newText.length)
         }
     }
 
@@ -1619,13 +1620,14 @@ abstract class GeneralKeyboardIME(
                         binding.commandBar.paddingBottom,
                     )
                 }
-                val newText = "${commandBar.text.trim().dropLast(1)}$codeChar$commandCursor"
-                commandBar.text = newText
+                val newText = "${commandBar.text}$codeChar"
+                commandBar.setText(newText)
+                commandBar.setSelection(newText.length)
             }
         } else {
             // Handling space key logic.
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
-                binding?.commandBar?.text = " "
+                binding?.commandBar?.setText(" ")
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                 inputConnection.commitText(codeChar.toString(), 1)
                 val newText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text

@@ -148,7 +148,7 @@ object HintUtils {
                 "Swedish" to "sv",
             )
         val shorthand = languageShorthand[language] ?: "en" // default fallback to "en"
-        return "en -> $shorthand"
+        return "en -> $shorthand:"
     }
 
     /**
