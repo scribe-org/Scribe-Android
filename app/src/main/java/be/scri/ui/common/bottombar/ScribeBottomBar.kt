@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * The bottom bar that is displayed at the bottom of the screen for navigation purposes.
  */

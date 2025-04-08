@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * Custom keyboard implementation for handling keyboard layouts, rows and keys with XML-based configuration.
  */

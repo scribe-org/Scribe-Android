@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * The Select Languages subpage is for selecting the translation source language.
  */
+
 package be.scri.ui.screens
 
 import android.content.Context
