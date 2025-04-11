@@ -461,7 +461,7 @@ abstract class GeneralKeyboardIME(
     private fun updateCommandBarHintAndPrompt(isUserDarkMode: Boolean? = null) {
         val commandBarButton = keyboardBinding.commandBar
         val hintMessage = HintUtils.getCommandBarHint(currentState, language)
-        val promptText = HintUtils.getPromptText(currentState, language)
+        val promptText = HintUtils.getPromptText(currentState, language, context = this)
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
         commandBarButton.hint = hintMessage

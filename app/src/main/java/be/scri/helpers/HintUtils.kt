@@ -126,9 +126,10 @@ object HintUtils {
     fun getPromptText(
         currentState: GeneralKeyboardIME.ScribeState,
         language: String,
+        context: Context,
     ): String =
         when (currentState) {
-            GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslationPrompt(language)
+            GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslationPrompt(language, context)
             GeneralKeyboardIME.ScribeState.CONJUGATE -> getConjugationPrompt(language)
             GeneralKeyboardIME.ScribeState.PLURAL -> getPluralPrompt(language)
             else -> ""
@@ -140,7 +141,10 @@ object HintUtils {
      * @param language The language code (e.g., "English", "French").
      * @return The translation prompt text for the given language.
      */
-    private fun getTranslationPrompt(language: String): String {
+    private fun getTranslationPrompt(
+        language: String,
+        context: Context,
+    ): String {
         val languageShorthand =
             mapOf(
                 "English" to "en",
@@ -152,8 +156,14 @@ object HintUtils {
                 "Spanish" to "es",
                 "Swedish" to "sv",
             )
-        val shorthand = languageShorthand[language] ?: "en" // default fallback to "en"
-        return "en -> $shorthand"
+        val preferredLanguage =
+            PreferencesHelper.getPreferredTranslationLanguage(
+                context = context,
+                language = language,
+            )
+        val keyboardLanguage = languageShorthand[preferredLanguage]
+        val sourceLanguage = languageShorthand[language] ?: "en" // default fallback to "en"
+        return "$keyboardLanguage -> $sourceLanguage"
     }
 
     /**
