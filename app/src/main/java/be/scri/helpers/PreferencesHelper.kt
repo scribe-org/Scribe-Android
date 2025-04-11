@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+@file:Suppress("ktlint:standard:kdoc")
 
 package be.scri.helpers
 
@@ -354,5 +355,24 @@ object PreferencesHelper {
         val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
         val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), true)
         return isEnabled
+    }
+
+    /**
+     * Retrieves the preferred translation language for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the preferred translation language.
+     *
+     * @return The preferred translation language.
+     * */
+    fun getPreferredTranslationLanguage(
+        context: Context,
+        language: String,
+    ): String? {
+        val prefs = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        return prefs.getString(
+            PreferencesHelper.getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
+            "English",
+        )
     }
 }
