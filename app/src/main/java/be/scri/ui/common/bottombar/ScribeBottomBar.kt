@@ -6,20 +6,25 @@
 
 package be.scri.ui.common.bottombar
 
+import androidx.compose.foundation.interaction.Interaction
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import be.scri.R
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 @Composable
 fun ScribeBottomBar(
@@ -37,25 +42,14 @@ fun ScribeBottomBar(
             bottomBarScreens.forEachIndexed { index, item ->
                 val isSelected = pagerState.currentPage == index
 
-                val iconSize =
-                    if (isSelected) {
-                        26.dp
-                    } else {
-                        24.dp
-                    }
-
-                val textSize =
-                    if (isSelected) {
-                        13.sp
-                    } else {
-                        12.sp
-                    }
-
+                val iconSize = if (isSelected) 26.dp else 24.dp
+                val textSize = if (isSelected) 13.sp else 12.sp
+                val greyColor = colorResource(id = R.color.nav_item_grey)
                 val color =
                     if (isSelected) {
                         MaterialTheme.colorScheme.secondary
                     } else {
-                        MaterialTheme.colorScheme.onSurface
+                        greyColor
                     }
 
                 BottomNavigationItem(
@@ -88,7 +82,20 @@ fun ScribeBottomBar(
                     },
                     alwaysShowLabel = true,
                     selectedContentColor = MaterialTheme.colorScheme.secondary,
-                    unselectedContentColor = MaterialTheme.colorScheme.onSurface,
+                    unselectedContentColor = greyColor,
+                    interactionSource =
+                        remember {
+                            object : MutableInteractionSource {
+                                override val interactions =
+                                    MutableSharedFlow<Interaction>(
+                                        extraBufferCapacity = Int.MAX_VALUE,
+                                    )
+
+                                override suspend fun emit(interaction: Interaction) = Unit
+
+                                override fun tryEmit(interaction: Interaction): Boolean = true
+                            }
+                        },
                 )
             }
         }
