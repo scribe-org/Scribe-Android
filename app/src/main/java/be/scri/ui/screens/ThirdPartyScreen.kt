@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * The about screen to display third-party legal information for software used in the application.
  */

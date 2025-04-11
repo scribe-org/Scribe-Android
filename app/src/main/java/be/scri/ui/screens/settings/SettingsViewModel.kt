@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * This files handles the state and business logic for the settings screen.
  */

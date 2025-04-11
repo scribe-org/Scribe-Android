@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  *  A composable component that displays a clickable item with a title, optional description and an arrow icon.
  */

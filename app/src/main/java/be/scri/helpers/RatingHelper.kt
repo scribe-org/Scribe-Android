@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * A helper to facilitate rating the application on Google Play or F-Droid.
- */
-
 package be.scri.helpers
 
 import android.content.Context
@@ -15,6 +11,9 @@ import android.widget.Toast
 import be.scri.activities.MainActivity
 import com.google.android.play.core.review.ReviewManagerFactory
 
+/**
+ * A helper to facilitate rating the application on Google Play or F-Droid.
+ */
 object RatingHelper {
     /**
      * Retrieves the source from which the application was installed.

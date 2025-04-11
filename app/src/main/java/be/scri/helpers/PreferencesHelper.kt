@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * A helper to facilitate setting preferences for individual language keyboards.
- */
-
 package be.scri.helpers
 
 import android.app.UiModeManager
@@ -16,6 +12,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import be.scri.extensions.config
 
+/**
+ * A helper to facilitate setting preferences for individual language keyboards.
+ */
 @Suppress("TooManyFunctions")
 object PreferencesHelper {
     /**

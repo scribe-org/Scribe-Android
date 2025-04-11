@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * Provides items to the navigation bar.
  */

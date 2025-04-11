@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * The input method (IME) for the Italian language keyboard.
  */
+
 package be.scri.services
 
 import android.text.InputType

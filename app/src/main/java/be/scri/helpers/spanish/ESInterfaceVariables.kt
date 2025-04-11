@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+package be.scri.helpers.spanish
+
 /**
  * Interface variables for Spanish language keyboards.
  */
-
-package be.scri.helpers.spanish
-
 object ESInterfaceVariables {
     // MARK: Currency Symbols
 

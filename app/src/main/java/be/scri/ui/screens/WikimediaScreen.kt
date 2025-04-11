@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * The about screen for describing the relationship between Scribe and the Wikimedia movement.
  */
