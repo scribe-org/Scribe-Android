@@ -13,6 +13,11 @@ import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
 import be.scri.services.GeneralKeyboardIME
 
+/**
+ * Utility object for handling hint-related logic throughout the application.
+ *
+ * This may include methods for showing, formatting, or validating hints in forms or UI components.
+ */
 object HintUtils {
     /**
      * Resets the application hints, marking them as not shown in the shared preferences.

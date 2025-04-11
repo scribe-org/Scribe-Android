@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * Custom keyboard implementation for handling keyboard layouts, rows and keys with XML-based configuration.
  */
@@ -548,6 +548,9 @@ class KeyboardBase {
         a.recycle()
     }
 
+    /**
+     * Holds custom IME (Input Method Editor) action constants.
+     */
     object MyCustomActions {
         const val IME_ACTION_COMMAND = 0x00000008
     }

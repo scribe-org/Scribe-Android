@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * A helper to facilitate sharing of the application and contacting the team.
- */
-
 package be.scri.helpers
 
 import android.content.ActivityNotFoundException
@@ -12,6 +8,9 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
 
+/**
+ * A helper to facilitate sharing of the application and contacting the team.
+ */
 object ShareHelper {
     /**
      * Shares the link to the Scribe Android project repository.
