@@ -40,6 +40,7 @@ import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
+import be.scri.helpers.PreferencesHelper.getPreferredTranslationLanguage
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -459,7 +460,7 @@ abstract class GeneralKeyboardIME(
     private fun updateCommandBarHintAndPrompt(isUserDarkMode: Boolean? = null) {
         val commandBarEditText = keyboardBinding.commandBar
         val hintMessage = HintUtils.getCommandBarHint(currentState, language)
-        val promptText = HintUtils.getPromptText(currentState, language)
+        val promptText = HintUtils.getPromptText(currentState, language, context = this)
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
         commandBarEditText.hint = hintMessage
@@ -521,6 +522,8 @@ abstract class GeneralKeyboardIME(
                 setupIdleView()
                 handleTextSizeForSuggestion(binding)
                 initializeEmojiButtons()
+                keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+                keyboardView!!.setKeyboard(keyboard!!)
                 updateButtonVisibility(emojiAutoSuggestionEnabled)
                 updateButtonText(emojiAutoSuggestionEnabled, autoSuggestEmojis)
             }
@@ -539,37 +542,64 @@ abstract class GeneralKeyboardIME(
      * to have toolbar interface, allowing the user to interact with the toolbar.
      */
     private fun switchToToolBar() {
-        this.keyboardBinding = initializeKeyboardBinding()
+        keyboardBinding = initializeKeyboardBinding()
         val keyboardHolder = keyboardBinding.root
+
         setupToolBarTheme(keyboardBinding)
         handleTextSizeForSuggestion(binding)
-        var isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         binding.translateBtn.textSize = SUGGESTION_SIZE
-        when (isUserDarkMode) {
-            true -> {
-                keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_dark))
-                val color = ContextCompat.getColorStateList(this, R.color.light_key_color)
-                keyboardBinding.scribeKey.foregroundTintList = color
+
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        updateToolBarTheme(isDarkMode)
+
+        handleModeChange(keyboardSymbols, keyboardView, this)
+
+        val keyboardXmlId =
+            if (currentState == ScribeState.TRANSLATE) {
+                val language = getPreferredTranslationLanguage(this, language)
+                baseKeyboardOfAnyLanguage(language)
+            } else {
+                getKeyboardLayoutXML()
             }
 
-            false -> {
-                keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(R.color.special_key_light))
-                val colorLight = ContextCompat.getColorStateList(this, R.color.light_key_text_color)
-                keyboardBinding.scribeKey.foregroundTintList = colorLight
+        keyboard = KeyboardBase(this, keyboardXmlId, enterKeyType)
+        keyboardView =
+            keyboardBinding.keyboardView.apply {
+                setKeyboard(keyboard!!)
+                mOnKeyboardActionListener = this@GeneralKeyboardIME
             }
-        }
-        handleModeChange(keyboardSymbols, keyboardView, this)
-        keyboardView = keyboardBinding.keyboardView
-        keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.mOnKeyboardActionListener = this
+
         keyboardBinding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             switchToCommandToolBar()
             handleTextSizeForSuggestion(binding)
             updateUI()
         }
+
         setInputView(keyboardHolder)
-        updateCommandBarHintAndPrompt(isUserDarkMode)
+        updateCommandBarHintAndPrompt(isDarkMode)
+    }
+
+    /**
+     * Updates the toolbar theme based on the current system theme (dark or light).
+     *
+     * This function adjusts the toolbar's visual elements such as the top divider color
+     * and the tint of the custom scribe key, depending on whether dark mode is enabled.
+     *
+     * @param isDarkMode A boolean indicating if the system is in dark mode.
+     */
+    private fun updateToolBarTheme(isDarkMode: Boolean) {
+        val dividerColor = if (isDarkMode) R.color.special_key_dark else R.color.special_key_light
+        keyboardBinding.topKeyboardDivider.setBackgroundColor(getColor(dividerColor))
+
+        val tintColor =
+            if (isDarkMode) {
+                ContextCompat.getColorStateList(this, R.color.light_key_color)
+            } else {
+                ContextCompat.getColorStateList(this, R.color.light_key_text_color)
+            }
+
+        keyboardBinding.scribeKey.foregroundTintList = tintColor
     }
 
     /**
@@ -1644,6 +1674,32 @@ abstract class GeneralKeyboardIME(
             keyboardView!!.invalidateAllKeys()
         }
     }
+
+    /**
+     * Returns the XML layout resource ID for the base keyboard of the specified language.
+     *
+     * This function maps a given language name to its corresponding keyboard layout XML file.
+     * If the provided language is `null` or doesn't match any of the predefined options,
+     * the function defaults to returning the English keyboard layout.
+     *
+     * @param language The name of the language for which the base keyboard layout is requested.
+     *                 Expected values are: "English", "French", "German", "Italian",
+     *                 "Portuguese", "Russian", "Spanish", and "Swedish".
+     *
+     * @return The resource ID of the XML layout file for the corresponding keyboard.
+     */
+    private fun baseKeyboardOfAnyLanguage(language: String?): Int =
+        when (language) {
+            "English" -> R.xml.keys_letters_english
+            "French" -> R.xml.keys_letters_french
+            "German" -> R.xml.keys_letters_german
+            "Italian" -> R.xml.keys_letters_italian
+            "Portuguese" -> R.xml.keys_letters_portuguese
+            "Russian" -> R.xml.keys_letters_russian
+            "Spanish" -> R.xml.keys_letters_spanish
+            "Swedish" -> R.xml.keys_letters_swedish
+            else -> R.xml.keys_letters_english
+        }
 
     internal companion object {
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
