@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * Adds a custom item decoration (divider) to a RecyclerView, using a specified drawable and custom margins.
  */

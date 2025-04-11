@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+package be.scri.helpers.french
+
 /**
  * Interface variables for French language keyboards.
  */
-
-package be.scri.helpers.french
-
 object FRInterfaceVariables {
     // MARK: Currency Symbols
 

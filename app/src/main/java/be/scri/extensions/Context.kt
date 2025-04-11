@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * Functions for retrieving configuration settings and calculating color based on theme and background preferences.
  */
