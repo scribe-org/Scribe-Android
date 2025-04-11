@@ -120,7 +120,7 @@ android {
     }
 
     detekt {
-        toolVersion = "1.23.6"
+        toolVersion = "1.23.8"
         buildUponDefaultConfig = true
         allRules = false
         config = rootProject.files("detekt.yml")
