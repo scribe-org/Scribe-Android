@@ -357,6 +357,14 @@ object PreferencesHelper {
         return isEnabled
     }
 
+    /**
+     * Retrieves the preferred translation language for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the preferred translation language.
+     *
+     * @return The preferred translation language.
+     * */
     fun getPreferredTranslationLanguage(
         context: Context,
         language: String,
