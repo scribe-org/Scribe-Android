@@ -1672,6 +1672,19 @@ abstract class GeneralKeyboardIME(
         }
     }
 
+    /**
+     * Returns the XML layout resource ID for the base keyboard of the specified language.
+     *
+     * This function maps a given language name to its corresponding keyboard layout XML file.
+     * If the provided language is `null` or doesn't match any of the predefined options,
+     * the function defaults to returning the English keyboard layout.
+     *
+     * @param language The name of the language for which the base keyboard layout is requested.
+     *                 Expected values are: "English", "French", "German", "Italian",
+     *                 "Portuguese", "Russian", "Spanish", and "Swedish".
+     *
+     * @return The resource ID of the XML layout file for the corresponding keyboard.
+     */
     private fun baseKeyboardOfAnyLanguage(language: String?): Int =
         when (language) {
             "English" -> R.xml.keys_letters_english
