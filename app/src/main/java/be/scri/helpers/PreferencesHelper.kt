@@ -356,4 +356,15 @@ object PreferencesHelper {
         val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), true)
         return isEnabled
     }
+
+    fun getPreferredTranslationLanguage(
+        context: Context,
+        language: String,
+    ): String? {
+        val prefs = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        return prefs.getString(
+            PreferencesHelper.getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
+            "English",
+        )
+    }
 }
