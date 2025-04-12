@@ -107,7 +107,7 @@ fun HintDialogContent(
 
     Box(
         modifier =
-            modifier.padding(horizontal = 12.dp).background(
+            modifier.padding(horizontal = 4.dp).background(
                 brush =
                     Brush.verticalGradient(
                         colors =
