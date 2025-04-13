@@ -690,6 +690,7 @@ abstract class GeneralKeyboardIME(
             keyboardView?.invalidateAllKeys()
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.TRANSLATE
+
             updateUI()
         }
         binding.conjugateBtn.setOnClickListener {
@@ -1415,6 +1416,21 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
+     * Safely retrieves the translation of a word between source and destination languages.
+     *
+     * This function calls `getTranslationSourceAndDestination` and handles the null case
+     * by returning an empty string if the translation is null.
+     *
+     * @param language The language name (e.g., "english") to determine the source and destination languages.
+     * @param commandBarInput The word whose translation is to be fetched.
+     * @return The translation of the word in the destination language, or an empty string if no translation is found.
+     */
+    fun getTranslation(
+        language: String,
+        commandBarInput: String,
+    ): String = dbHelper.getTranslationSourceAndDestination(language, commandBarInput) ?: ""
+
+    /**
      * Retrieves the action ID associated with the IME (Input Method Editor) options.
      *
      * @return The action ID as an integer.
@@ -1456,6 +1472,7 @@ abstract class GeneralKeyboardIME(
             commandModeOutput =
                 when (currentState) {
                     ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
+                    ScribeState.TRANSLATE -> getTranslation(language, commandBarInput)
                     else -> commandBarInput
                 }
             if (commandModeOutput.length > commandBarInput.length) {

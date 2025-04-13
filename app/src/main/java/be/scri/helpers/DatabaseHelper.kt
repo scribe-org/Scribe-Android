@@ -3,6 +3,7 @@
 package be.scri.helpers
 
 import DataContract
+import android.annotation.SuppressLint
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -15,6 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper
  *
  * @param context The context used to access the app's resources and database.
  */
+@Suppress("TooManyFunctions")
 class DatabaseHelper(
     context: Context,
 ) : SQLiteOpenHelper(
@@ -148,4 +150,23 @@ class DatabaseHelper(
             getRequiredData(language),
             noun,
         )
+
+    /**
+     * Retrieves the translation of a given word between the source and destination languages.
+     *
+     * This function determines the source and destination language ISO codes based on the provided
+     * language name, and then fetches the translation of the specified word using those language codes.
+     *
+     * @param language The language name (e.g., "english") to determine the source and destination languages.
+     * @param word The word whose translation is to be fetched.
+     * @return The translation of the given word in the destination language,
+     * or an empty string if no translation is found.
+     */
+    fun getTranslationSourceAndDestination(
+        language: String,
+        word: String,
+    ): String {
+        val sourceAndDestination = dbManagers.translationDataManager.getSourceAndDestinationLanguage(language)
+        return dbManagers.translationDataManager.getTranslationDataForAWord(sourceAndDestination, word)
+    }
 }

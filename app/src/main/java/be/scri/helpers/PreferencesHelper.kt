@@ -371,7 +371,7 @@ object PreferencesHelper {
     ): String? {
         val prefs = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
         return prefs.getString(
-            PreferencesHelper.getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
+            getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
             "English",
         )
     }
