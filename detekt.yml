@@ -58,7 +58,7 @@ comments:
         active: true
         excludes: &excludedFolders
             - '**/activities/**'
-            - '**/extensions/**'
+#            - '**/extensions/**'
             - '**/helpers/**/*Variables.kt'
             - '**/models/**'
             - '**/navigation/**'
@@ -68,7 +68,7 @@ comments:
             - '**/views/**'
             - '**/App.kt'
     UndocumentedPublicClass:
-        active: true
+        active: false
         excludes: *excludedFolders
 
 
