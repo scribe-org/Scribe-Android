@@ -204,7 +204,7 @@ fun LanguageSettingsScreen(
                     .verticalScroll(scrollState),
         ) {
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_settings_keyboard_translation_select_source),
+                title = stringResource(R.string.app_settings_keyboard_translation_title),
                 cardItemsList = translationSourceLanguageList,
             )
             ItemCardContainerWithTitle(
