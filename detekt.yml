@@ -58,10 +58,8 @@ comments:
         active: true
         excludes: &excludedFolders
             - '**/activities/**'
-#            - '**/extensions/**'
             - '**/helpers/**/*Variables.kt'
             - '**/models/**'
-            - '**/navigation/**'
             - '**/services/**'
             - '**/test/**'
             - '**/ui/**'
