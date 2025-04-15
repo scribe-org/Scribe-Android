@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
 
 import android.graphics.Canvas
 import android.graphics.Rect
