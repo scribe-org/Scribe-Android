@@ -1,8 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 @file:Suppress("ktlint:standard:kdoc")
-/**
- * The base keyboard view for Scribe language keyboards application.
- */
 
 package be.scri.views
 
@@ -71,6 +68,9 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
 
+/**
+ * The base keyboard view for Scribe language keyboards application.
+ */
 @SuppressLint("UseCompatLoadingForDrawables")
 @Suppress("LargeClass", "LongMethod", "TooManyFunctions", "NestedBlockDepth", "CyclomaticComplexMethod")
 class KeyboardView
