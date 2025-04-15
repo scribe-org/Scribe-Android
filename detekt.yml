@@ -64,7 +64,7 @@ comments:
             - '**/ui/**'
             - '**/views/**'
     UndocumentedPublicClass:
-        active: false
+        active: true
         excludes: *excludedFolders
 
 
