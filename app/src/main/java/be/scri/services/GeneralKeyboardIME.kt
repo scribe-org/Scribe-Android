@@ -61,6 +61,12 @@ abstract class GeneralKeyboardIME(
     var language: String,
 ) : InputMethodService(),
     KeyboardView.OnKeyboardActionListener {
+    /**
+     * Returns the XML layout resource ID for the current keyboard layout.
+     * Subclasses must implement this to provide the appropriate keyboard XML layout.
+     *
+     * @return The resource ID of the keyboard layout XML file.
+     */
     abstract fun getKeyboardLayoutXML(): Int
 
     abstract val keyboardLetters: Int

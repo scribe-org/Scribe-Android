@@ -11,8 +11,16 @@ import android.graphics.Color
 import be.scri.R
 import be.scri.helpers.Config
 
+/**
+ * Lazily retrieves the [Config] object scoped to the application context.
+ */
 val Context.config: Config get() = Config.newInstance(applicationContext)
 
+/**
+ * Determines the stroke color based on the current theme and user preferences.
+ *
+ * @return A color integer suitable for use in outlining UI elements.
+ */
 fun Context.getStrokeColor(): Int =
     if (config.isUsingSystemTheme) {
         if (isUsingSystemDarkTheme()) {

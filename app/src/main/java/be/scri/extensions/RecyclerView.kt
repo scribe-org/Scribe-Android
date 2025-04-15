@@ -11,6 +11,12 @@ import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
 
+/**
+ * Adds a custom item decoration (divider) to the RecyclerView with specified drawable and margins.
+ *
+ * @receiver RecyclerView to which the item decoration will be added
+ * @param context Context used to access resources
+ */
 fun RecyclerView.addCustomItemDecoration(context: android.content.Context) {
     val itemDecoration =
         CustomDividerItemDecoration(

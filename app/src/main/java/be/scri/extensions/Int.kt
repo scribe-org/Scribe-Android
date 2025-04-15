@@ -16,6 +16,13 @@ private const val BLUE_COEFFICIENT = 114
 private const val COEFFICIENT_SUM = 1000
 private const val Y_THRESHOLD = 149
 
+/**
+ * Returns a contrasting color (either [Color.WHITE] or [DARK_GREY]) for the current color.
+ * This is useful for determining readable foreground text colors on backgrounds.
+ *
+ * @receiver Int The base color in ARGB or RGB format.
+ * @return Int A contrasting color for readability.
+ */
 fun Int.getContrastColor(): Int {
     val y =
         (
@@ -26,6 +33,13 @@ fun Int.getContrastColor(): Int {
     return if (y >= Y_THRESHOLD && this != Color.BLACK) DARK_GREY else Color.WHITE
 }
 
+/**
+ * Adjusts the alpha (transparency) of a color by a given factor.
+ *
+ * @receiver Int The color to adjust.
+ * @param factor Float The factor to multiply the alpha by (0f = fully transparent, 1f = original alpha).
+ * @return Int The color with modified alpha.
+ */
 fun Int.adjustAlpha(factor: Float): Int {
     val alpha = Math.round(Color.alpha(this) * factor)
     val red = Color.red(this)
@@ -34,12 +48,26 @@ fun Int.adjustAlpha(factor: Float): Int {
     return Color.argb(alpha, red, green, blue)
 }
 
+/**
+ * Generates a random integer within the specified closed range.
+ *
+ * @receiver ClosedRange<Int> The range to generate the random number in.
+ * @return Int A random integer within the specified range.
+ */
 fun ClosedRange<Int>.random() = Random().nextInt(endInclusive - start) + start
 
 // Taken from https://stackoverflow.com/a/40964456/1967672.
 private const val HSV_COMPONENT_COUNT = 3
 private const val DEFAULT_DARKEN_FACTOR = 8
 private const val FACTOR_DIVIDER = 100
+
+/**
+ * Darkens the color by a given factor using HSL conversion.
+ *
+ * @receiver Int The original color.
+ * @param factor Int The factor to darken the color by (default is 8).
+ * @return Int The darkened color.
+ */
 
 fun Int.darkenColor(factor: Int = DEFAULT_DARKEN_FACTOR): Int {
     if (this == Color.WHITE || this == Color.BLACK) {
@@ -57,6 +85,14 @@ fun Int.darkenColor(factor: Int = DEFAULT_DARKEN_FACTOR): Int {
     hsv = hsl2hsv(hsl)
     return Color.HSVToColor(hsv)
 }
+
+/**
+ * Lightens the color by a given factor using HSL conversion.
+ *
+ * @receiver Int The original color.
+ * @param factor Int The factor to lighten the color by (default is 8).
+ * @return Int The lightened color.
+ */
 
 fun Int.lightenColor(factor: Int = 8): Int {
     if (this == Color.WHITE || this == Color.BLACK) {
@@ -77,6 +113,12 @@ fun Int.lightenColor(factor: Int = 8): Int {
 
 private const val LIGHTNESS_THRESHOLD = 0.5f
 
+/**
+ * Converts a color from HSL to HSV.
+ *
+ * @param hsl FloatArray The color in HSL format.
+ * @return FloatArray The converted color in HSV format.
+ */
 private fun hsl2hsv(hsl: FloatArray): FloatArray {
     val hue = hsl[0]
     var sat = hsl[1]
@@ -84,6 +126,13 @@ private fun hsl2hsv(hsl: FloatArray): FloatArray {
     sat *= if (light < LIGHTNESS_THRESHOLD) light else 1 - light
     return floatArrayOf(hue, 2f * sat / (light + sat), light + sat)
 }
+
+/**
+ * Converts a color from HSV to HSL.
+ *
+ * @param hsv FloatArray The color in HSV format.
+ * @return FloatArray The converted color in HSL format.
+ */
 
 private fun hsv2hsl(hsv: FloatArray): FloatArray {
     val hue = hsv[0]
