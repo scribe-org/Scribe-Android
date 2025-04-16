@@ -62,6 +62,7 @@ comments:
             - '**/models/**'
             - '**/test/**'
             - '**/ui/**'
+            - '**/services/**'
             - '**/views/**'
     UndocumentedPublicClass:
         active: true
