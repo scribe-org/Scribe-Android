@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * A class defining different types of items used in the application interface.
- */
 
 package be.scri.ui.models
 
 import androidx.annotation.DrawableRes
 
+/**
+ * A class defining different types of items used in the application interface.
+ */
 sealed class ScribeItem(
     open val title: Int,
     open val desc: Int?,

@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The settings sub menu page for languages that allows for customization of language keyboard interfaces.
- */
 
 package be.scri.ui.screens
 
@@ -35,6 +31,9 @@ import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
+/**
+ * The settings sub menu page for languages that allows for customization of language keyboard interfaces.
+ */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LanguageSettingsScreen(
