@@ -15,7 +15,7 @@ import be.scri.ui.common.appcomponents.ActionBar
 import be.scri.ui.common.appcomponents.PageTitle
 
 /**
- * This is the base composable for all the screens.
+ * The base composable for all the screens.
  */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
