@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Handles application-level initialization and sets the default night mode based on user configuration.
- */
 
 package be.scri
 
@@ -40,6 +36,9 @@ import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Handles application-level initialization and sets the default night mode based on user configuration.
+ */
 @SuppressLint("ComposeModifierMissing")
 @Composable
 fun ScribeApp(
