@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Interface variables for Russian language keyboards.
- */
 
 package be.scri.helpers.russian
 
+/**
+ * Interface variables for Russian language keyboards.
+ */
 object RUInterfaceVariables {
     // MARK: Currency Symbols
 
