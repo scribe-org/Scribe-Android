@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Interface variables for Portuguese language keyboards.
- */
 
 package be.scri.helpers.portuguese
 
+/**
+ * Interface variables for Portuguese language keyboards.
+ */
 object PTInterfaceVariables {
     // MARK: Currency Symbols
 
