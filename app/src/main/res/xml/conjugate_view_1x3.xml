@@ -1,17 +1,20 @@
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:keyHeight="50%p">
+    android:keyHeight="33.33%p">
 
     <Row>
         <Key app:code="2001" app:keyIcon="@drawable/ic_left_arrow" app:keyWidth="10%p" />
-        <Key app:keyLabel="TL" app:code="1011" app:keyWidth="40%p" />
-        <Key app:keyLabel="TR" app:code="1012" app:keyWidth="40%p" />
+        <Key app:keyLabel="Top" app:code="1021" app:keyWidth="80%p" />
         <Key app:code="2002" app:keyIcon="@drawable/ic_right_arrow" app:keyWidth="10%p" />
     </Row>
     <Row>
         <Key app:code="2001" app:keyIcon="@drawable/ic_left_arrow" app:keyWidth="10%p" />
-        <Key app:keyLabel="BL" app:code="1013" app:keyWidth="40%p" />
-        <Key app:keyLabel="BR" app:code="1014" app:keyWidth="40%p" />
+        <Key app:keyLabel="Middle" app:code="1022" app:keyWidth="80%p" />
+        <Key app:code="2002" app:keyIcon="@drawable/ic_right_arrow" app:keyWidth="10%p" />
+    </Row>
+    <Row>
+        <Key app:code="2001" app:keyIcon="@drawable/ic_left_arrow" app:keyWidth="10%p" />
+        <Key app:keyLabel="Bottom" app:code="1023" app:keyWidth="80%p" />
         <Key app:code="2002" app:keyIcon="@drawable/ic_right_arrow" app:keyWidth="10%p" />
     </Row>
 </Keyboard>

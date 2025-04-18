@@ -569,7 +569,7 @@ abstract class GeneralKeyboardIME(
                 val language = getPreferredTranslationLanguage(this, language)
                 baseKeyboardOfAnyLanguage(language)
             } else if (currentState == ScribeState.CONJUGATE) {
-                R.xml.conjugate_view_2x2
+                R.xml.conjugate_view_1x3
             } else {
                 getKeyboardLayoutXML()
             }
@@ -724,7 +724,7 @@ abstract class GeneralKeyboardIME(
             currentState = ScribeState.CONJUGATE
             val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
             sharedPref.edit {
-                putString("conjugate_mode_type", "2x2")
+                putString("conjugate_mode_type", "3x3")
             }
             updateUI()
         }
