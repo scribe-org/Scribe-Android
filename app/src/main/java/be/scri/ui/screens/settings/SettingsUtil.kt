@@ -15,7 +15,6 @@ import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
 import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat.startActivity
 import be.scri.R
 import be.scri.helpers.PreferencesHelper
 

@@ -1,0 +1,14 @@
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:keyHeight="50%p">
+
+    <Row>
+        <Key app:keyLabel="TL" app:code="2001" app:keyWidth="50%p" />
+        <Key app:keyLabel="TR" app:code="2002" app:keyWidth="50%p" />
+    </Row>
+
+    <Row>
+        <Key app:keyLabel="BL" app:code="2003" app:keyWidth="50%p" />
+        <Key app:keyLabel="BR" app:code="2004" app:keyWidth="50%p" />
+    </Row>
+</Keyboard>

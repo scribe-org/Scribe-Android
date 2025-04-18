@@ -11,7 +11,6 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.inputmethodservice.InputMethodService
-import android.preference.PreferenceManager
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
@@ -201,7 +200,7 @@ abstract class GeneralKeyboardIME(
         onCreateInputView()
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         sharedPref.edit {
-            putBoolean("is_conjugate_mode", false)
+            putString("conjugate_mode_type", "none")
         }
         setupCommandBarTheme(binding)
     }
@@ -489,7 +488,7 @@ abstract class GeneralKeyboardIME(
         }
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         sharedPref.edit {
-            putBoolean("is_conjugate_mode", false)
+            putString("conjugate_mode_type", "none")
         }
         Log.d(
             "KeyboardUpdate",
@@ -516,7 +515,7 @@ abstract class GeneralKeyboardIME(
         }
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         sharedPref.edit {
-            putBoolean("is_conjugate_mode", false)
+            putString("conjugate_mode_type", "none")
         }
         setInputView(keyboardHolder)
     }
@@ -570,7 +569,7 @@ abstract class GeneralKeyboardIME(
                 val language = getPreferredTranslationLanguage(this, language)
                 baseKeyboardOfAnyLanguage(language)
             } else if (currentState == ScribeState.CONJUGATE) {
-                R.xml.conjugate_view_3x2
+                R.xml.conjugate_view_2x2
             } else {
                 getKeyboardLayoutXML()
             }
@@ -669,7 +668,7 @@ abstract class GeneralKeyboardIME(
             updateUI()
             val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
             sharedPref.edit {
-                putBoolean("is_conjugate_mode", false)
+                putString("conjugate_mode_type", "none")
             }
             binding.translateBtn.setTextColor(if (isUserDarkMode) Color.WHITE else Color.BLACK)
         }
@@ -701,9 +700,9 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "IDLE STATE")
             binding.translateBtn.setTextColor(Color.WHITE)
             disableAutoSuggest()
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
             sharedPref.edit {
-                putBoolean("is_conjugate_mode", false)
+                putString("conjugate_mode_type", "none")
             }
             binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
             updateUI()
@@ -714,7 +713,7 @@ abstract class GeneralKeyboardIME(
             updateCommandBarHintAndPrompt()
             val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
             sharedPref.edit {
-                putBoolean("is_conjugate_mode", false)
+                putString("conjugate_mode_type", "none")
             }
             currentState = ScribeState.TRANSLATE
             updateUI()
@@ -725,7 +724,7 @@ abstract class GeneralKeyboardIME(
             currentState = ScribeState.CONJUGATE
             val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
             sharedPref.edit {
-                putBoolean("is_conjugate_mode", true)
+                putString("conjugate_mode_type", "2x2")
             }
             updateUI()
         }
@@ -736,7 +735,7 @@ abstract class GeneralKeyboardIME(
             updateUI()
             val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
             sharedPref.edit {
-                putBoolean("is_conjugate_mode", false)
+                putString("conjugate_mode_type", "none")
             }
             if (language == "German") {
                 keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
