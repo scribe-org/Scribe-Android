@@ -697,8 +697,8 @@ class KeyboardView
                 }
                 if (code == EXTRA_PADDING) {
                     val density = context.resources.displayMetrics.density
-                    key.height = (0 * density).toInt()
-                    key.width = (0 * density).toInt()
+                    key.height = 0
+                    key.width = 0
                 }
 
                 val shadowRect =
@@ -716,7 +716,9 @@ class KeyboardView
                         (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
                         (key.y + key.height - vKeyMargin + shadowOffset - padding).toFloat(),
                     )
-                canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+                if (code != EXTRA_PADDING) {
+                    canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+                }
 
                 val backgroundColor =
                     when {
@@ -727,7 +729,9 @@ class KeyboardView
                         else -> keyBackgroundColor
                     }
                 keyBackgroundPaint.color = backgroundColor
-                canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                if (code != EXTRA_PADDING) {
+                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                }
 
                 // Switch the character to uppercase if shift is pressed.
                 val label = adjustCase(key.label)?.toString()
