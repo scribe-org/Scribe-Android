@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * This is the base composable for all the screens.
- */
 
 package be.scri.ui.common
 
@@ -18,6 +14,9 @@ import androidx.compose.ui.unit.dp
 import be.scri.ui.common.appcomponents.ActionBar
 import be.scri.ui.common.appcomponents.PageTitle
 
+/**
+ * The base composable for all the screens.
+ */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ScribeBaseScreen(

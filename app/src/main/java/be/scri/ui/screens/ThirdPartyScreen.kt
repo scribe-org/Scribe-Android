@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The about screen to display third-party legal information for software used in the application.
- */
 
 package be.scri.ui.screens
 
@@ -28,6 +24,9 @@ import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.theme.ScribeTypography
 
+/**
+ * The about screen to display third-party legal information for software used in the application.
+ */
 @SuppressLint("ComposeModifierReused")
 @Composable
 fun ThirdPartyScreen(

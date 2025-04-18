@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * A composable component that displays a row with a title as well as leading and trailing icons.
- */
 
 package be.scri.ui.common.components
 
@@ -27,6 +23,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * A composable component that displays a row with a title as well as leading and trailing icons.
+ */
 @Composable
 fun AboutPageItemComp(
     title: String,

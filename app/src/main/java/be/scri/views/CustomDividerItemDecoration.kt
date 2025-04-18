@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * A custom divider for use in recycle views.
- */
 
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -10,6 +6,9 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * A custom divider for use in recycle views.
+ */
 class CustomDividerItemDecoration(
     private val drawable: Drawable,
     private val width: Int,

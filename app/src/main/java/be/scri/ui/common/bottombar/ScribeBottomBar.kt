@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The bottom bar that is displayed at the bottom of the screen for navigation purposes.
- */
 
 package be.scri.ui.common.bottombar
 
@@ -26,6 +22,9 @@ import androidx.compose.ui.unit.sp
 import be.scri.R
 import kotlinx.coroutines.flow.MutableSharedFlow
 
+/**
+ * The bottom bar that is displayed at the bottom of the screen for navigation purposes.
+ */
 @Composable
 fun ScribeBottomBar(
     onItemClick: (Int) -> Unit,

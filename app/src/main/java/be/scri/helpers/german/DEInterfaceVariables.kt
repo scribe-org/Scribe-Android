@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Interface variables for German language keyboards.
- */
 
 package be.scri.helpers.german
 
+/**
+ * Interface variables for German language keyboards.
+ */
 object DEInterfaceVariables {
     // MARK: Currency Symbols
 

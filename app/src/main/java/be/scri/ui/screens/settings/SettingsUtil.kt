@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * This file provides utility functions for settings page.
- */
 
 package be.scri.ui.screens.settings
 
@@ -18,6 +14,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import be.scri.R
 import be.scri.helpers.PreferencesHelper
 
+/**
+ * This file provides utility functions for settings page.
+ */
 object SettingsUtil {
     fun checkKeyboardInstallation(context: Context): Boolean {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

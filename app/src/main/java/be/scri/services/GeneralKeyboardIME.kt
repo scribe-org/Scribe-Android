@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The base keyboard input method (IME) imported into all language keyboards.
- */
 
 package be.scri.services
 
@@ -57,11 +53,20 @@ import be.scri.views.KeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
+/**
+ * The base keyboard input method (IME) imported into all language keyboards.
+ */
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class GeneralKeyboardIME(
     var language: String,
 ) : InputMethodService(),
     KeyboardView.OnKeyboardActionListener {
+    /**
+     * Returns the XML layout resource ID for the current keyboard layout.
+     * Subclasses must implement this to provide the appropriate keyboard XML layout.
+     *
+     * @return The resource ID of the keyboard layout XML file.
+     */
     abstract fun getKeyboardLayoutXML(): Int
 
     abstract val keyboardLetters: Int
@@ -710,6 +715,7 @@ abstract class GeneralKeyboardIME(
             updateCommandBarHintAndPrompt()
             saveConjugateModeType("none")
             currentState = ScribeState.TRANSLATE
+
             updateUI()
         }
         binding.conjugateBtn.setOnClickListener {
@@ -731,7 +737,6 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-
     /**
      * Saves the conjugate mode type to the shared preferences.
      *
@@ -750,7 +755,6 @@ abstract class GeneralKeyboardIME(
             apply()
         }
     }
-
 
     /**
      * Sets up the theme for the command bar in the keyboard view.
@@ -1458,6 +1462,21 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
+     * Safely retrieves the translation of a word between source and destination languages.
+     *
+     * This function calls `getTranslationSourceAndDestination` and handles the null case
+     * by returning an empty string if the translation is null.
+     *
+     * @param language The language name (e.g., "english") to determine the source and destination languages.
+     * @param commandBarInput The word whose translation is to be fetched.
+     * @return The translation of the word in the destination language, or an empty string if no translation is found.
+     */
+    fun getTranslation(
+        language: String,
+        commandBarInput: String,
+    ): String = dbHelper.getTranslationSourceAndDestination(language, commandBarInput) ?: ""
+
+    /**
      * Retrieves the action ID associated with the IME (Input Method Editor) options.
      *
      * @return The action ID as an integer.
@@ -1499,6 +1518,7 @@ abstract class GeneralKeyboardIME(
             commandModeOutput =
                 when (currentState) {
                     ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
+                    ScribeState.TRANSLATE -> getTranslation(language, commandBarInput)
                     else -> commandBarInput
                 }
             if (commandModeOutput.length > commandBarInput.length) {

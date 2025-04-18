@@ -8,6 +8,7 @@ import GenderDataManager
 import PluralFormsManager
 import android.content.Context
 import be.scri.helpers.keyboardDBHelper.PrepositionDataManager
+import be.scri.helpers.keyboardDBHelper.TranslationDataManager
 
 /**
  * A helper class that manages various database-related operations
@@ -27,4 +28,5 @@ class DatabaseManagers(
     val genderManager = GenderDataManager(context)
     val pluralManager = PluralFormsManager(context)
     val prepositionManager = PrepositionDataManager(context)
+    val translationDataManager = TranslationDataManager(context)
 }
