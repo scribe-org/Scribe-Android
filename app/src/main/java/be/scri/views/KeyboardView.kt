@@ -71,6 +71,8 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
 
+
+
 @SuppressLint("UseCompatLoadingForDrawables")
 @Suppress("LargeClass", "LongMethod", "TooManyFunctions", "NestedBlockDepth", "CyclomaticComplexMethod")
 class KeyboardView
@@ -181,6 +183,7 @@ class KeyboardView
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
 
+
         private var mEnterKeyColor: Int = 0
 
         private var mSpecialKeyColor: Int? = null
@@ -258,6 +261,10 @@ class KeyboardView
             private const val SHADOW_OFFSET_Y = 9f
             private const val POPUP_OFFSET_MULTIPLIER = 2.5
             private const val EXTRA_DELAY = 200L
+            private const val DISPLAY_LEFT = 2002
+            private const val DISPLAY_RIGHT = 2001
+            private const val EXTRA_PADDING = 5000
+            private const val KEY_HEIGHT = 240
         }
 
         private var _keyboardCommandBinding: KeyboardViewCommandOptionsBinding? = null
@@ -688,11 +695,11 @@ class KeyboardView
                 val rectRadius = RECT_RADIUS
                 val shadowOffsetY = SHADOW_OFFSET_Y
 
-                if (code == 2002 || code == 2001) {
+                if ((code == DISPLAY_LEFT) || (code == DISPLAY_RIGHT)) {
                     val density = context.resources.displayMetrics.density
-                    key.height = (240 * density).toInt()
+                    key.height = (KEY_HEIGHT * density).toInt()
                 }
-                if (code == 5000) {
+                if (code == EXTRA_PADDING) {
                     val density = context.resources.displayMetrics.density
                     key.height = (0 * density).toInt()
                     key.width = (0 * density).toInt()
