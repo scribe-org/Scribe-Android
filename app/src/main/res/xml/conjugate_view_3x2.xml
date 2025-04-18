@@ -1,0 +1,22 @@
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:keyHeight="33.33%p">
+    <Row>
+        <Key app:code="2001" app:keyIcon="@drawable/ic_left_arrow" app:keyWidth="10%p" />
+        <Key app:keyLabel="FPS" app:code="1001" app:keyWidth="40%p" />
+        <Key app:keyLabel="FPP" app:code="1002" app:keyWidth="40%p" />
+        <Key app:code="2002" app:keyIcon="@drawable/ic_right_arrow" app:keyWidth="10%p" />
+    </Row>
+    <Row>
+        <Key app:code="5000" app:keyWidth="10%p" />
+        <Key app:keyLabel="SPS" app:code="1003" app:keyWidth="40%p" />
+        <Key app:keyLabel="SPP" app:code="1004" app:keyWidth="40%p" />
+
+    </Row>
+    <Row>
+        <Key app:code="5000" app:keyWidth="10%p" />
+        <Key app:keyLabel="TPS" app:code="1005" app:keyWidth="40%p" />
+        <Key app:keyLabel="TPP" app:code="1006" app:keyWidth="40%p" />
+
+    </Row>
+</Keyboard>

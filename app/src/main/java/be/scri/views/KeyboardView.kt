@@ -257,6 +257,10 @@ class KeyboardView
             private const val SHADOW_OFFSET_Y = 9f
             private const val POPUP_OFFSET_MULTIPLIER = 2.5
             private const val EXTRA_DELAY = 200L
+            private const val DISPLAY_LEFT = 2002
+            private const val DISPLAY_RIGHT = 2001
+            private const val EXTRA_PADDING = 5000
+            private const val KEY_HEIGHT = 240
         }
 
         private var _keyboardCommandBinding: KeyboardViewCommandOptionsBinding? = null
@@ -687,6 +691,16 @@ class KeyboardView
                 val rectRadius = RECT_RADIUS
                 val shadowOffsetY = SHADOW_OFFSET_Y
 
+                if ((code == DISPLAY_LEFT) || (code == DISPLAY_RIGHT)) {
+                    val density = context.resources.displayMetrics.density
+                    key.height = (KEY_HEIGHT * density).toInt()
+                }
+                if (code == EXTRA_PADDING) {
+                    val density = context.resources.displayMetrics.density
+                    key.height = 0
+                    key.width = 0
+                }
+
                 val shadowRect =
                     RectF(
                         (key.x + keyMargin + padding).toFloat(),
@@ -702,7 +716,9 @@ class KeyboardView
                         (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
                         (key.y + key.height - vKeyMargin + shadowOffset - padding).toFloat(),
                     )
-                canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+                if (code != EXTRA_PADDING) {
+                    canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+                }
 
                 val backgroundColor =
                     when {
@@ -713,7 +729,9 @@ class KeyboardView
                         else -> keyBackgroundColor
                     }
                 keyBackgroundPaint.color = backgroundColor
-                canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                if (code != EXTRA_PADDING) {
+                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                }
 
                 // Switch the character to uppercase if shift is pressed.
                 val label = adjustCase(key.label)?.toString()

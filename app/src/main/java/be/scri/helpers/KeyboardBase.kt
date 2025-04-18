@@ -127,7 +127,7 @@ class KeyboardBase {
             this.parent = parent
         }
 
-        constructor(res: Resources, parent: KeyboardBase, parser: XmlResourceParser?) {
+        constructor(res: Resources, parent: KeyboardBase, parser: XmlResourceParser?, context: Context) {
             this.parent = parent
             val a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.KeyboardBase)
             defaultWidth =
@@ -139,18 +139,30 @@ class KeyboardBase {
                 )
 
             val resources = Resources.getSystem()
+            val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+            val conjugateMode = sharedPreferences.getString("conjugate_mode_type", "2x1")
             defaultHeight =
-                when (resources.configuration.orientation) {
-                    Configuration.ORIENTATION_LANDSCAPE -> {
-                        res.getDimension(R.dimen.key_height_landscape).toInt()
+                if (conjugateMode != "none") {
+                    when (conjugateMode) {
+                        "2x2" -> res.getDimension(R.dimen.conjugate_view_key_height_2x2).toInt()
+                        "3x3" -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
+                        "2x1" -> res.getDimension(R.dimen.conjugate_view_key_height_2x1).toInt()
+                        else -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
                     }
+                } else {
+                    Log.i("≠", "The current state is not conjugate view")
+                    when (resources.configuration.orientation) {
+                        Configuration.ORIENTATION_LANDSCAPE -> {
+                            res.getDimension(R.dimen.key_height_landscape).toInt()
+                        }
 
-                    Configuration.ORIENTATION_PORTRAIT -> {
-                        res.getDimension(R.dimen.key_height).toInt()
-                    }
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            res.getDimension(R.dimen.key_height).toInt()
+                        }
 
-                    else -> {
-                        res.getDimension(R.dimen.key_height).toInt()
+                        else -> {
+                            res.getDimension(R.dimen.key_height).toInt()
+                        }
                     }
                 }
 
@@ -418,7 +430,8 @@ class KeyboardBase {
     private fun createRowFromXml(
         res: Resources,
         parser: XmlResourceParser?,
-    ): Row = Row(res, this, parser)
+        context: Context,
+    ): Row = Row(res, this, parser, context = context)
 
     /**
      * Creates a Key object from the XML resource parser and the specified coordinates.
@@ -466,7 +479,7 @@ class KeyboardBase {
                         TAG_ROW -> {
                             inRow = true
                             x = 0
-                            currentRow = createRowFromXml(res, parser)
+                            currentRow = createRowFromXml(res, parser, context)
                             mRows.add(currentRow)
                         }
 

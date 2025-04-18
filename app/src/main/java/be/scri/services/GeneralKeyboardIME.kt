@@ -24,6 +24,7 @@ import android.view.inputmethod.ExtractedTextRequest
 import android.widget.Button
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import be.scri.R
 import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
@@ -202,6 +203,10 @@ abstract class GeneralKeyboardIME(
         keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         onCreateInputView()
+        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putString("conjugate_mode_type", "none")
+        }
         setupCommandBarTheme(binding)
     }
 
@@ -486,7 +491,10 @@ abstract class GeneralKeyboardIME(
             promptTextView.setBackgroundColor(getColor(white))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(white))
         }
-
+        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putString("conjugate_mode_type", "none")
+        }
         Log.d(
             "KeyboardUpdate",
             "CommandBar Hint Updated: [State: $currentState, Language: $language, Hint: $hintMessage]",
@@ -509,6 +517,10 @@ abstract class GeneralKeyboardIME(
             currentState = ScribeState.IDLE
             setupSelectCommandView()
             updateUI()
+        }
+        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putString("conjugate_mode_type", "none")
         }
         setInputView(keyboardHolder)
     }
@@ -561,6 +573,8 @@ abstract class GeneralKeyboardIME(
             if (currentState == ScribeState.TRANSLATE) {
                 val language = getPreferredTranslationLanguage(this, language)
                 baseKeyboardOfAnyLanguage(language)
+            } else if (currentState == ScribeState.CONJUGATE) {
+                R.xml.conjugate_view_3x2
             } else {
                 getKeyboardLayoutXML()
             }
@@ -657,6 +671,10 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "SELECT COMMAND STATE")
             binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
             updateUI()
+            val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+            sharedPref.edit {
+                putString("conjugate_mode_type", "none")
+            }
             binding.translateBtn.setTextColor(if (isUserDarkMode) Color.WHITE else Color.BLACK)
         }
     }
@@ -687,6 +705,7 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "IDLE STATE")
             binding.translateBtn.setTextColor(Color.WHITE)
             disableAutoSuggest()
+            saveConjugateModeType("none")
             binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
             updateUI()
         }
@@ -694,6 +713,7 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "TRANSLATE STATE")
             keyboardView?.invalidateAllKeys()
             updateCommandBarHintAndPrompt()
+            saveConjugateModeType("none")
             currentState = ScribeState.TRANSLATE
 
             updateUI()
@@ -702,6 +722,7 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "CONJUGATE STATE")
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.CONJUGATE
+            saveConjugateModeType("3x2")
             updateUI()
         }
         binding.pluralBtn.setOnClickListener {
@@ -709,9 +730,29 @@ abstract class GeneralKeyboardIME(
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.PLURAL
             updateUI()
+            saveConjugateModeType("none")
             if (language == "German") {
                 keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
             }
+        }
+    }
+
+    /**
+     * Saves the conjugate mode type to the shared preferences.
+     *
+     * This function stores the given conjugate mode type in the shared preferences
+     * under the key "conjugate_mode_type". It uses asynchronous saving via `apply()`.
+     * This ensures the mode type is stored persistently and can be retrieved later
+     * across app sessions.
+     *
+     * @param mode The conjugate mode type to be saved, represented as a string.
+     *              This can be a mode like "none", "3x2", or any other mode type.
+     */
+    private fun saveConjugateModeType(mode: String) {
+        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("conjugate_mode_type", mode)
+            apply()
         }
     }
 
