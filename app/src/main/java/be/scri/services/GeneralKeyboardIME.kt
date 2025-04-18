@@ -11,6 +11,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.inputmethodservice.InputMethodService
+import android.preference.PreferenceManager
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
@@ -28,6 +29,7 @@ import android.view.inputmethod.ExtractedTextRequest
 import android.widget.Button
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import be.scri.R
 import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
@@ -197,6 +199,10 @@ abstract class GeneralKeyboardIME(
         keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         onCreateInputView()
+        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean("is_conjugate_mode", false)
+        }
         setupCommandBarTheme(binding)
     }
 
@@ -481,7 +487,10 @@ abstract class GeneralKeyboardIME(
             promptTextView.setBackgroundColor(getColor(white))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(white))
         }
-
+        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean("is_conjugate_mode", false)
+        }
         Log.d(
             "KeyboardUpdate",
             "CommandBar Hint Updated: [State: $currentState, Language: $language, Hint: $hintMessage]",
@@ -504,6 +513,10 @@ abstract class GeneralKeyboardIME(
             currentState = ScribeState.IDLE
             setupSelectCommandView()
             updateUI()
+        }
+        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean("is_conjugate_mode", false)
         }
         setInputView(keyboardHolder)
     }
@@ -556,6 +569,8 @@ abstract class GeneralKeyboardIME(
             if (currentState == ScribeState.TRANSLATE) {
                 val language = getPreferredTranslationLanguage(this, language)
                 baseKeyboardOfAnyLanguage(language)
+            } else if (currentState == ScribeState.CONJUGATE) {
+                R.xml.conjugate_view_3x2
             } else {
                 getKeyboardLayoutXML()
             }
@@ -652,6 +667,10 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "SELECT COMMAND STATE")
             binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
             updateUI()
+            val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+            sharedPref.edit {
+                putBoolean("is_conjugate_mode", false)
+            }
             binding.translateBtn.setTextColor(if (isUserDarkMode) Color.WHITE else Color.BLACK)
         }
     }
@@ -682,6 +701,10 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "IDLE STATE")
             binding.translateBtn.setTextColor(Color.WHITE)
             disableAutoSuggest()
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            sharedPref.edit {
+                putBoolean("is_conjugate_mode", false)
+            }
             binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
             updateUI()
         }
@@ -689,6 +712,10 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "TRANSLATE STATE")
             keyboardView?.invalidateAllKeys()
             updateCommandBarHintAndPrompt()
+            val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+            sharedPref.edit {
+                putBoolean("is_conjugate_mode", false)
+            }
             currentState = ScribeState.TRANSLATE
             updateUI()
         }
@@ -696,6 +723,10 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "CONJUGATE STATE")
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.CONJUGATE
+            val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+            sharedPref.edit {
+                putBoolean("is_conjugate_mode", true)
+            }
             updateUI()
         }
         binding.pluralBtn.setOnClickListener {
@@ -703,6 +734,10 @@ abstract class GeneralKeyboardIME(
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.PLURAL
             updateUI()
+            val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+            sharedPref.edit {
+                putBoolean("is_conjugate_mode", false)
+            }
             if (language == "German") {
                 keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
             }
@@ -1697,6 +1732,8 @@ abstract class GeneralKeyboardIME(
             "Swedish" -> R.xml.keys_letters_swedish
             else -> R.xml.keys_letters_english
         }
+
+    private fun getConjugateView(): Int = R.xml.keys_letter_german_without_accent_characters_and_without_period_and_comma
 
     internal companion object {
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
