@@ -9,9 +9,8 @@
         <Key app:code="2002" app:keyIcon="@drawable/ic_right_arrow" app:keyWidth="10%p" />
     </Row>
     <Row>
-        <Key app:code="2001" app:keyIcon="@drawable/ic_left_arrow" app:keyWidth="10%p" />
+        <Key app:code="5000"  />
         <Key app:keyLabel="BL" app:code="1013" app:keyWidth="40%p" />
         <Key app:keyLabel="BR" app:code="1014" app:keyWidth="40%p" />
-        <Key app:code="2002" app:keyIcon="@drawable/ic_right_arrow" app:keyWidth="10%p" />
     </Row>
 </Keyboard>

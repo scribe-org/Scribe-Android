@@ -688,6 +688,16 @@ class KeyboardView
                 val rectRadius = RECT_RADIUS
                 val shadowOffsetY = SHADOW_OFFSET_Y
 
+                if (code == 2002 || code == 2001) {
+                    val density = context.resources.displayMetrics.density
+                    key.height = (240 * density).toInt()
+                }
+                if (code == 5000) {
+                    val density = context.resources.displayMetrics.density
+                    key.height = (0 * density).toInt()
+                    key.width = (0 * density).toInt()
+                }
+
                 val shadowRect =
                     RectF(
                         (key.x + keyMargin + padding).toFloat(),

@@ -144,12 +144,13 @@ class KeyboardBase {
 
             val resources = Resources.getSystem()
             val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-            val conjugateMode = sharedPreferences.getString("conjugate_mode_type", "2x2")
+            val conjugateMode = sharedPreferences.getString("conjugate_mode_type", "2x1")
             defaultHeight =
                 if (conjugateMode != "none") {
                     when (conjugateMode) {
                         "2x2" -> res.getDimension(R.dimen.conjugate_view_key_height_2x2).toInt()
                         "3x3" -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
+                        "2x1" -> res.getDimension(R.dimen.conjugate_view_key_height_2x1).toInt()
                         else -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
                     }
                 } else {
