@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * This files handles the state and business logic for the settings screen.
- */
 
 package be.scri.ui.screens.settings
 
@@ -13,6 +9,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * This files handles the state and business logic for the settings screen.
+ */
 class SettingsViewModel(
     context: Context,
 ) : ViewModel() {

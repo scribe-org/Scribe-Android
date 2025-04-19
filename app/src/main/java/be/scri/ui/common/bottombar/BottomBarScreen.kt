@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Provides items to the navigation bar.
- */
 
 package be.scri.ui.common.bottombar
 
@@ -10,6 +6,9 @@ import androidx.annotation.DrawableRes
 import be.scri.R
 import be.scri.navigation.Screen
 
+/**
+ * Provides items to the navigation bar.
+ */
 sealed class BottomBarScreen(
     val route: String,
     @DrawableRes val icon: Int,

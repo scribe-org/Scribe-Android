@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The installation page of the application with details for installing Scribe keyboards and downloading data.
- */
 
 package be.scri.ui.screens
 
@@ -52,6 +48,9 @@ import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 
+/**
+ * The installation page of the application with details for installing Scribe keyboards and downloading data.
+ */
 @Suppress("MagicNumber")
 @Composable
 fun InstallationScreen(

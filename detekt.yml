@@ -63,7 +63,6 @@ comments:
             - '**/test/**'
             - '**/ui/**'
             - '**/views/**'
-            - '**/App.kt'
     UndocumentedPublicClass:
         active: false
         excludes: *excludedFolders

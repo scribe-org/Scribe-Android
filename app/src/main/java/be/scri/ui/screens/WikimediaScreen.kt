@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The about screen for describing the relationship between Scribe and the Wikimedia movement.
- */
 
 package be.scri.ui.screens
 
@@ -34,6 +30,9 @@ import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.theme.ScribeTypography
 
+/**
+ * The about screen for describing the relationship between Scribe and the Wikimedia movement.
+ */
 @Composable
 fun WikimediaScreen(
     onBackNavigation: () -> Unit,

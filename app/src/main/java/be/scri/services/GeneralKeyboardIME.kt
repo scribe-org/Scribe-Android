@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The base keyboard input method (IME) imported into all language keyboards.
- */
 
 package be.scri.services
 
@@ -56,6 +52,9 @@ import be.scri.views.KeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
+/**
+ * The base keyboard input method (IME) imported into all language keyboards.
+ */
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class GeneralKeyboardIME(
     var language: String,
