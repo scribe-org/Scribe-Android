@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Constants that are used throughout helper classes and objects.
- */
 
 package be.scri.helpers
 
+/**
+ * Constants that are used throughout helper classes and objects.
+ */
 const val SHIFT_OFF = 0
 const val SHIFT_ON_ONE_CHAR = 1
 const val SHIFT_ON_PERMANENT = 2

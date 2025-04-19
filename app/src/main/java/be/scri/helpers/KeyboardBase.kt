@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Custom keyboard implementation for handling keyboard layouts, rows and keys with XML-based configuration.
- */
 
 package be.scri.helpers
 
@@ -294,7 +290,7 @@ class KeyboardBase {
             a.recycle()
         }
 
-        /** Create an empty key with no attributes.  */
+        // Create an empty key with no attributes.
         init {
             height = parent.defaultHeight
             width = parent.defaultWidth

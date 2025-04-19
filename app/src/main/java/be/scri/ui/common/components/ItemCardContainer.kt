@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- *  A composable function that displays a list of items inside a card container.
- */
 
 package be.scri.ui.common.components
 
@@ -20,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
+/**
+ *  A composable function that displays a list of items inside a card container.
+ */
 @Composable
 fun ItemsCardContainer(
     cardItemsList: ScribeItemList,

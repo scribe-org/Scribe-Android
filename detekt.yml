@@ -60,11 +60,9 @@ comments:
             - '**/activities/**'
             - '**/helpers/**/*Variables.kt'
             - '**/models/**'
-            - '**/services/**'
             - '**/test/**'
             - '**/ui/**'
             - '**/views/**'
-            - '**/App.kt'
     UndocumentedPublicClass:
         active: false
         excludes: *excludedFolders

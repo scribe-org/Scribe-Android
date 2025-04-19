@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The base keyboard input method (IME) imported into all language keyboards.
- */
 
 package be.scri.services
 
@@ -56,11 +52,20 @@ import be.scri.views.KeyboardView
 
 // based on https://www.androidauthority.com/lets-build-custom-keyboard-android-832362/
 
+/**
+ * The base keyboard input method (IME) imported into all language keyboards.
+ */
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class GeneralKeyboardIME(
     var language: String,
 ) : InputMethodService(),
     KeyboardView.OnKeyboardActionListener {
+    /**
+     * Returns the XML layout resource ID for the current keyboard layout.
+     * Subclasses must implement this to provide the appropriate keyboard XML layout.
+     *
+     * @return The resource ID of the keyboard layout XML file.
+     */
     abstract fun getKeyboardLayoutXML(): Int
 
     abstract val keyboardLetters: Int

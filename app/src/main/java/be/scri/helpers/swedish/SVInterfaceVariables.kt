@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Interface variables for Swedish language keyboards.
- */
 
 package be.scri.helpers.swedish
 
+/**
+ * Interface variables for Swedish language keyboards.
+ */
 object SVInterfaceVariables {
     // MARK: Currency Symbols
 
