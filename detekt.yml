@@ -62,9 +62,10 @@ comments:
             - '**/models/**'
             - '**/test/**'
             - '**/ui/**'
+            - '**/services/**'
             - '**/views/**'
     UndocumentedPublicClass:
-        active: false
+        active: true
         excludes: *excludedFolders
 
 
