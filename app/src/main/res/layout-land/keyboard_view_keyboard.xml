@@ -50,7 +50,7 @@
             android:singleLine="true"
             android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="@+id/command_field"
-            app:layout_constraintEnd_toStartOf="@+id/command_bar"
+            app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
             app:layout_constraintStart_toEndOf="@+id/scribe_key"
             app:layout_constraintTop_toTopOf="@+id/command_field" />
 
@@ -62,34 +62,43 @@
             android:text="│"
             android:textFontWeight="500"
             android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/command_bar"
+            app:layout_constraintBaseline_toBaselineOf="@id/prompt_text"
             app:layout_constraintBottom_toBottomOf="@+id/prompt_text"
-            app:layout_constraintEnd_toStartOf="@+id/command_bar"
+            app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
             app:layout_constraintStart_toEndOf="@+id/prompt_text"
             app:layout_constraintTop_toTopOf="@+id/prompt_text" />
 
 
-        <Button
-            android:id="@+id/command_bar"
+        <LinearLayout
+            android:id="@+id/command_bar_layout"
             android:layout_width="0dp"
             android:layout_height="36dp"
-            android:textFontWeight="500"
-            android:layout_marginEnd="@dimen/tiny_margin"
             android:background="@drawable/cmd_bar_background_right_rounded"
-            android:contentDescription="@string/command_bar"
-            android:elevation="0dp"
-            android:stateListAnimator="@null"
-            android:textSize="16sp"
-            android:paddingStart="8dp"
-            android:paddingTop="4dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="4dp"
-            android:textAlignment="textStart"
-            app:layout_constraintBottom_toBottomOf="@+id/command_field"
-            app:layout_constraintEnd_toEndOf="@+id/command_field"
+            app:layout_constraintBottom_toBottomOf="@id/command_field"
+            app:layout_constraintEnd_toEndOf="@id/command_field"
             app:layout_constraintHorizontal_weight="50"
-            app:layout_constraintStart_toEndOf="@+id/prompt_text"
-            app:layout_constraintTop_toTopOf="@+id/command_field" />
+            app:layout_constraintStart_toEndOf="@id/prompt_text"
+            app:layout_constraintTop_toTopOf="@id/command_field"
+            android:layout_marginEnd="@dimen/tiny_margin">
+
+            <EditText
+                android:id="@+id/command_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:backgroundTint="@null"
+                android:contentDescription="@string/command_bar"
+                android:cursorVisible="true"
+                android:inputType="text"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:textAlignment="textStart"
+                android:textCursorDrawable="@drawable/ic_custom_cursor"
+                android:textFontWeight="500"
+                android:textSize="16sp" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/top_keyboard_divider"
