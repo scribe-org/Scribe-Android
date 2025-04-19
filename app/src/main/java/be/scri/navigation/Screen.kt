@@ -20,7 +20,7 @@ sealed class Screen(
     data object Settings : Screen("settings_screen")
 
     /**
-     * Screen for changing language preferences.
+     * Screen for changing language specific keyboard settings.
      */
     data object LanguageSettings : Screen("language_settings_screen")
 
@@ -35,18 +35,12 @@ sealed class Screen(
     data object PrivacyPolicy : Screen("privacy_policy_screen")
 
     /**
-     * Screen showing the app's privacy policy.
+     * Screen showing the relationship between Wikimedia and Scribe
      */
-
     data object WikimediaScribe : Screen("wikimedia_scribe_screen")
 
     /**
-     * Screen containing details about the Wikimedia Scribe feature.
+     * Screen containing the third party codes used in the application.
      */
     data object ThirdParty : Screen("third_party_screen")
-
-    /**
-     * Screen for selecting the translation source language.
-     */
-    data object TranslationSource : Screen("select_language_screen")
 }
