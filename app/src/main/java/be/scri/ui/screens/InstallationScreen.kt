@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -89,8 +90,9 @@ fun InstallationScreen(
                 modifier =
                     Modifier
                         .align(Alignment.CenterHorizontally)
-                        .width(222.dp)
-                        .height(107.dp),
+                        .padding(bottom = 16.dp)
+                        .width(248.dp)
+                        .height(122.dp),
                 contentScale = ContentScale.Fit,
             )
 
@@ -204,7 +206,7 @@ fun InstallationScreen(
                                     },
                                 ),
                         colorFilter =
-                            androidx.compose.ui.graphics.ColorFilter.tint(
+                            ColorFilter.tint(
                                 MaterialTheme.colorScheme.surfaceContainer,
                             ),
                     )
@@ -217,7 +219,7 @@ fun InstallationScreen(
                                 .padding(Dimensions.PaddingSmall)
                                 .size(26.dp),
                         colorFilter =
-                            androidx.compose.ui.graphics.ColorFilter.tint(
+                            ColorFilter.tint(
                                 MaterialTheme.colorScheme.onPrimary,
                             ),
                     )

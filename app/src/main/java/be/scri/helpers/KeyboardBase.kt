@@ -56,6 +56,9 @@ class KeyboardBase {
     /** Keyboard rows  */
     private val mRows = ArrayList<Row?>()
 
+    /**
+     * Constants for keyboard layouts and the function to retrieve them.
+     */
     companion object {
         private const val TAG_KEYBOARD = "Keyboard"
         private const val TAG_ROW = "Row"

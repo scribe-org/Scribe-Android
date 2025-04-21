@@ -32,6 +32,9 @@ class CustomAdapter(
     private val mList: List<Any>,
     private val context: Context,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    /**
+     * View types for menu options.
+     */
     companion object {
         private const val VIEW_TYPE_IMAGE = 0
         private const val VIEW_TYPE_SWITCH = 1
