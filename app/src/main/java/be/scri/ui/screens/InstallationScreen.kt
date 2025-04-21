@@ -91,8 +91,8 @@ fun InstallationScreen(
                     Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(bottom = 16.dp)
-                        .width(222.dp)
-                        .height(107.dp),
+                        .width(248.dp)
+                        .height(122.dp),
                 contentScale = ContentScale.Fit,
             )
 
