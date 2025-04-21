@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * This file provides utility functions for settings page.
- */
-
 package be.scri.ui.screens.settings
 
 import android.content.Context
@@ -15,10 +11,12 @@ import android.provider.Settings.ACTION_APP_LOCALE_SETTINGS
 import android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat.startActivity
 import be.scri.R
 import be.scri.helpers.PreferencesHelper
 
+/**
+ * This file provides utility functions for settings page.
+ */
 object SettingsUtil {
     fun checkKeyboardInstallation(context: Context): Boolean {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

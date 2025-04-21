@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * Custom keyboard implementation for handling keyboard layouts, rows and keys with XML-based configuration.
- */
-
 package be.scri.helpers
 
 import android.annotation.SuppressLint
@@ -81,6 +77,15 @@ class KeyboardBase {
         const val SHIFT_ON = 1
         const val SHIFT_LOCKED = 2
 
+        /**
+         * Retrieves the dimension or fraction value from the attributes, adjusting the base value if necessary.
+         *
+         * @param a the TypedArray containing the attributes
+         * @param index the index of the desired attribute
+         * @param base the base value for the fraction calculation
+         * @param defValue the default value to return if no valid dimension is found
+         * @return the calculated dimension or fraction value
+         */
         fun getDimensionOrFraction(
             a: TypedArray,
             index: Int,
@@ -122,7 +127,7 @@ class KeyboardBase {
             this.parent = parent
         }
 
-        constructor(res: Resources, parent: KeyboardBase, parser: XmlResourceParser?) {
+        constructor(res: Resources, parent: KeyboardBase, parser: XmlResourceParser?, context: Context) {
             this.parent = parent
             val a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.KeyboardBase)
             defaultWidth =
@@ -134,18 +139,30 @@ class KeyboardBase {
                 )
 
             val resources = Resources.getSystem()
+            val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+            val conjugateMode = sharedPreferences.getString("conjugate_mode_type", "2x1")
             defaultHeight =
-                when (resources.configuration.orientation) {
-                    Configuration.ORIENTATION_LANDSCAPE -> {
-                        res.getDimension(R.dimen.key_height_landscape).toInt()
+                if (conjugateMode != "none") {
+                    when (conjugateMode) {
+                        "2x2" -> res.getDimension(R.dimen.conjugate_view_key_height_2x2).toInt()
+                        "3x3" -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
+                        "2x1" -> res.getDimension(R.dimen.conjugate_view_key_height_2x1).toInt()
+                        else -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
                     }
+                } else {
+                    Log.i("≠", "The current state is not conjugate view")
+                    when (resources.configuration.orientation) {
+                        Configuration.ORIENTATION_LANDSCAPE -> {
+                            res.getDimension(R.dimen.key_height_landscape).toInt()
+                        }
 
-                    Configuration.ORIENTATION_PORTRAIT -> {
-                        res.getDimension(R.dimen.key_height).toInt()
-                    }
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            res.getDimension(R.dimen.key_height).toInt()
+                        }
 
-                    else -> {
-                        res.getDimension(R.dimen.key_height).toInt()
+                        else -> {
+                            res.getDimension(R.dimen.key_height).toInt()
+                        }
                     }
                 }
 
@@ -285,7 +302,7 @@ class KeyboardBase {
             a.recycle()
         }
 
-        /** Create an empty key with no attributes.  */
+        // Create an empty key with no attributes.
         init {
             height = parent.defaultHeight
             width = parent.defaultWidth
@@ -385,6 +402,12 @@ class KeyboardBase {
         mRows.add(row)
     }
 
+    /**
+     * Sets the keyboard shift state.
+     *
+     * @param shiftState the new shift state to apply
+     * @return true if the shift state was changed; false otherwise
+     */
     fun setShifted(shiftState: Int): Boolean {
         if (mShiftState != shiftState) {
             mShiftState =
@@ -397,11 +420,29 @@ class KeyboardBase {
         return false
     }
 
+    /**
+     * Creates a Row object from the XML resource parser.
+     *
+     * @param res the resources associated with the context
+     * @param parser the XML resource parser
+     * @return the created Row object
+     */
     private fun createRowFromXml(
         res: Resources,
         parser: XmlResourceParser?,
-    ): Row = Row(res, this, parser)
+        context: Context,
+    ): Row = Row(res, this, parser, context = context)
 
+    /**
+     * Creates a Key object from the XML resource parser and the specified coordinates.
+     *
+     * @param res the resources associated with the context
+     * @param parent the parent Row that this key belongs to
+     * @param x the x-coordinate of the key
+     * @param y the y-coordinate of the key
+     * @param parser the XML resource parser
+     * @return the created Key object
+     */
     private fun createKeyFromXml(
         res: Resources,
         parent: Row,
@@ -410,6 +451,13 @@ class KeyboardBase {
         parser: XmlResourceParser?,
     ): Key = Key(res, parent, x, y, parser)
 
+    /**
+     * Loads the keyboard configuration from the provided XML parser, populating the rows and keys.
+     * This method also handles edge cases like custom icons for the Enter key based on its type.
+     *
+     * @param context the application context
+     * @param parser the XML resource parser
+     */
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun loadKeyboard(
         context: Context,
@@ -431,7 +479,7 @@ class KeyboardBase {
                         TAG_ROW -> {
                             inRow = true
                             x = 0
-                            currentRow = createRowFromXml(res, parser)
+                            currentRow = createRowFromXml(res, parser, context)
                             mRows.add(currentRow)
                         }
 
@@ -490,6 +538,12 @@ class KeyboardBase {
         mHeight = y
     }
 
+    /**
+     * Parses the keyboard attributes such as key width, height, and horizontal gap from the XML resource.
+     *
+     * @param res the resources associated with the context
+     * @param parser the XML resource parser
+     */
     private fun parseKeyboardAttributes(
         res: Resources,
         parser: XmlResourceParser,
@@ -503,6 +557,9 @@ class KeyboardBase {
         a.recycle()
     }
 
+    /**
+     * Holds custom IME (Input Method Editor) action constants.
+     */
     object MyCustomActions {
         const val IME_ACTION_COMMAND = 0x00000008
     }

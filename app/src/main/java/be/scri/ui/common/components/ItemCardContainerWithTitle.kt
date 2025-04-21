@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- *  A composable function that displays a title above a list of items inside a card container.
- */
-
 package be.scri.ui.common.components
 
 import androidx.compose.foundation.layout.Column
@@ -18,6 +14,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.ui.models.ScribeItemList
 
+/**
+ *  A composable function that displays a title above a list of items inside a card container.
+ */
 @Composable
 fun ItemCardContainerWithTitle(
     title: String,
@@ -32,7 +31,7 @@ fun ItemCardContainerWithTitle(
             text = title,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
+            fontSize = 22.sp,
             modifier =
                 Modifier.padding(
                     start = 16.dp,

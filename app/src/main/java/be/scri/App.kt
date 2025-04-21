@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
+@file:Suppress("ktlint:standard:kdoc")
 /**
  * Handles application-level initialization and sets the default night mode based on user configuration.
  */
@@ -40,6 +40,23 @@ import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * The root composable function that sets up the app's theme, navigation, and screen layout.
+ *
+ * This function provides the primary navigation structure of the app using [NavHost] and configures
+ * the bottom navigation bar using a [HorizontalPager]. It supports screen transitions, hint dialogs,
+ * dark mode toggling, and navigation to secondary screens such as Privacy Policy, Wikimedia, and others.
+ *
+ * @param pagerState The pager state managing horizontal screen swipes.
+ * @param navController Navigation controller for composable destinations.
+ * @param onDarkModeChange Callback triggered when the user changes the dark mode setting.
+ * @param resetHints Callback to reset all hint dialog states.
+ * @param isHintChanged A map indicating which hints have been changed or dismissed.
+ * @param onDismiss Callback called when a hint dialog is dismissed.
+ * @param context The Android application context.
+ * @param isDarkTheme Flag to indicate if dark theme is enabled.
+ * @param modifier Optional layout modifier for UI customization.
+ */
 @SuppressLint("ComposeModifierMissing")
 @Composable
 fun ScribeApp(
@@ -228,6 +245,16 @@ fun ScribeApp(
         }
     }
 }
+
+/**
+ * Handles the back press behavior within the pager.
+ *
+ * If the user is not on the first page, pressing the back button will scroll
+ * the pager to the previous page instead of exiting the app.
+ *
+ * @param pagerState The pager state controlling the current screen.
+ * @param coroutineScope Coroutine scope used to launch the scroll animation.
+ */
 
 @Composable
 fun HandleBackPress(

@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * This file provide utility functions for the about page
- */
-
 package be.scri.ui.screens.about
 
 import android.content.Context
@@ -18,6 +14,9 @@ import be.scri.helpers.ShareHelper
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
+/**
+ * This file provide utility functions for the about page
+ */
 object AboutUtil {
     fun onShareScribeClick(context: Context) {
         ShareHelper.shareScribe(context)

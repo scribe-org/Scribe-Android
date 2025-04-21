@@ -20,6 +20,7 @@
 
     <color name="nav_bar_selected_color_light">@color/dark_scribe_color</color>
     <color name="nav_bar_selected_color_dark">@color/light_scribe_color</color>
+    <color name="nav_item_grey">#808080</color>
 
     <!-- Light theme -->
     <color name="light_key_color">#FFFFFFFF</color>

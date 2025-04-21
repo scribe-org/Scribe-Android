@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * A composable component that displays a switch alongside a title and description.
- */
-
 package be.scri.ui.common.components
 
 import androidx.compose.foundation.background
@@ -26,6 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * A composable component that displays a switch alongside a title and description.
+ */
 @Composable
 fun SwitchableItemComp(
     title: String,

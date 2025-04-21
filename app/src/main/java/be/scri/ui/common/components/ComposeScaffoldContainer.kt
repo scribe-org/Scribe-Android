@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * A composable function for a screen layout in the main activity.
- */
-
 package be.scri.ui.common.components
 
 import android.annotation.SuppressLint
@@ -27,6 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import be.scri.ui.theme.ScribeTypography
 
+/**
+ * A composable function for a screen layout in the main activity.
+ */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainActivityComposeScreen(

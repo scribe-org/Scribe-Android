@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+package be.scri.helpers.italian
+
 /**
  * Interface variables for Italian language keyboards.
  */
-
-package be.scri.helpers.italian
-
 object ITInterfaceVariables {
     // MARK: Currency Symbols
 

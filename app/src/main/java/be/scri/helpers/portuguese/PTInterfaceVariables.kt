@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+package be.scri.helpers.portuguese
+
 /**
  * Interface variables for Portuguese language keyboards.
  */
-
-package be.scri.helpers.portuguese
-
 object PTInterfaceVariables {
     // MARK: Currency Symbols
 

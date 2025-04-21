@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+package be.scri.helpers.english
+
 /**
  * Interface variables for English language keyboards.
  */
-
-package be.scri.helpers.english
-
 object ENInterfaceVariables {
     // MARK: Currency Symbols
 

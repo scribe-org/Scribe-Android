@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * A helper to facilitate resetting application hints if the user would like to see them again.
- */
-
 package be.scri.helpers
 
 import android.content.Context
@@ -17,7 +13,18 @@ import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
 import be.scri.services.GeneralKeyboardIME
 
+/**
+ * Utility object for handling hint-related logic throughout the application.
+ *
+ * This may include methods for showing, formatting, or validating hints in forms or UI components.
+ */
 object HintUtils {
+    /**
+     * Resets the application hints, marking them as not shown in the shared preferences.
+     * This is useful for users who want to see hints again.
+     *
+     * @param context The context used to access shared preferences.
+     */
     fun resetHints(context: Context) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
@@ -28,6 +35,13 @@ object HintUtils {
         }
     }
 
+    /**
+     * Retrieves the hint for the command bar based on the current state and the selected language.
+     *
+     * @param currentState The current state of the keyboard.
+     * @param language The language code (e.g., "English", "French").
+     * @return The appropriate hint message for the given state and language.
+     */
     fun getCommandBarHint(
         currentState: GeneralKeyboardIME.ScribeState,
         language: String,
@@ -36,6 +50,12 @@ object HintUtils {
         return hintMessageForState[language] ?: "" // return the placeholder or empty string if not found
     }
 
+    /**
+     * Maps the current state of the keyboard to its corresponding hints.
+     *
+     * @param currentState The current state of the keyboard.
+     * @return A map of language codes to hint strings for the current state.
+     */
     private fun getHintForState(currentState: GeneralKeyboardIME.ScribeState): Map<String, String> =
         when (currentState) {
             GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslateHints()
@@ -44,6 +64,11 @@ object HintUtils {
             else -> emptyMap()
         }
 
+    /**
+     * Provides the translation hints for different languages.
+     *
+     * @return A map of language codes to their translation hints.
+     */
     private fun getTranslateHints(): Map<String, String> =
         mapOf(
             "English" to ENInterfaceVariables.TRANSLATE_PLACEHOLDER,
@@ -56,6 +81,11 @@ object HintUtils {
             "Swedish" to SVInterfaceVariables.TRANSLATE_PLACEHOLDER,
         )
 
+    /**
+     * Provides the conjugation hints for different languages.
+     *
+     * @return A map of language codes to their conjugation hints.
+     */
     private fun getConjugateHints(): Map<String, String> =
         mapOf(
             "English" to ENInterfaceVariables.CONJUGATE_PLACEHOLDER,
@@ -68,6 +98,11 @@ object HintUtils {
             "Swedish" to SVInterfaceVariables.CONJUGATE_PLACEHOLDER,
         )
 
+    /**
+     * Provides the plural hints for different languages.
+     *
+     * @return A map of language codes to their plural hints.
+     */
     private fun getPluralHints(): Map<String, String> =
         mapOf(
             "English" to ENInterfaceVariables.PLURAL_PLACEHOLDER,
@@ -80,18 +115,36 @@ object HintUtils {
             "Swedish" to SVInterfaceVariables.PLURAL_PLACEHOLDER,
         )
 
+    /**
+     * Retrieves the prompt text for the given state and language.
+     * This text provides context to the user based on the current action.
+     *
+     * @param currentState The current state of the keyboard.
+     * @param language The language code (e.g., "English", "French").
+     * @return The appropriate prompt text for the given state and language.
+     */
     fun getPromptText(
         currentState: GeneralKeyboardIME.ScribeState,
         language: String,
+        context: Context,
     ): String =
         when (currentState) {
-            GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslationPrompt(language)
+            GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslationPrompt(language, context)
             GeneralKeyboardIME.ScribeState.CONJUGATE -> getConjugationPrompt(language)
             GeneralKeyboardIME.ScribeState.PLURAL -> getPluralPrompt(language)
             else -> ""
         }
 
-    private fun getTranslationPrompt(language: String): String {
+    /**
+     * Retrieves the translation prompt text for the given language.
+     *
+     * @param language The language code (e.g., "English", "French").
+     * @return The translation prompt text for the given language.
+     */
+    private fun getTranslationPrompt(
+        language: String,
+        context: Context,
+    ): String {
         val languageShorthand =
             mapOf(
                 "English" to "en",
@@ -103,10 +156,22 @@ object HintUtils {
                 "Spanish" to "es",
                 "Swedish" to "sv",
             )
-        val shorthand = languageShorthand[language] ?: "en" // default fallback to "en"
-        return "en -> $shorthand"
+        val preferredLanguage =
+            PreferencesHelper.getPreferredTranslationLanguage(
+                context = context,
+                language = language,
+            )
+        val keyboardLanguage = languageShorthand[preferredLanguage]
+        val sourceLanguage = languageShorthand[language] ?: "en" // default fallback to "en"
+        return "$keyboardLanguage -> $sourceLanguage"
     }
 
+    /**
+     * Retrieves the conjugation prompt text for the given language.
+     *
+     * @param language The language code (e.g., "English", "French").
+     * @return The conjugation prompt text for the given language.
+     */
     private fun getConjugationPrompt(language: String): String =
         when (language) {
             "English" -> ENInterfaceVariables.CONJUGATE_PROMPT
@@ -120,6 +185,12 @@ object HintUtils {
             else -> "Conjugate :"
         }
 
+    /**
+     * Retrieves the plural prompt text for the given language.
+     *
+     * @param language The language code (e.g., "English", "French").
+     * @return The plural prompt text for the given language.
+     */
     private fun getPluralPrompt(language: String): String =
         when (language) {
             "English" -> ENInterfaceVariables.PLURAL_PROMPT

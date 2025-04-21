@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * The about page of the application with links to the community as well as sub pages for detailed descriptions.
- */
-
 package be.scri.ui.screens.about
 
 import android.annotation.SuppressLint
@@ -27,6 +23,9 @@ import be.scri.ui.screens.about.AboutUtil.getCommunityList
 import be.scri.ui.screens.about.AboutUtil.getFeedbackAndSupportList
 import be.scri.ui.screens.about.AboutUtil.getLegalListItems
 
+/**
+ * The about page of the application with links to the community as well as sub pages for detailed descriptions.
+ */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AboutScreen(

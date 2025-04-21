@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * Common constants that are used throughout helper classes and objects.
- */
-
 package be.scri.helpers
 
+/**
+ * Constants that are used throughout helper classes and objects.
+ */
 val DARK_GREY = 0xFF333333.toInt()
 
 // Shared preferences.

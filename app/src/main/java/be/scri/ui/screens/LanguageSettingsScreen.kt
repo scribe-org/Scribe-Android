@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * The settings sub menu page for languages that allows for customization of language keyboard interfaces.
- */
-
 package be.scri.ui.screens
 
 import android.annotation.SuppressLint
@@ -23,12 +19,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.R
+import be.scri.helpers.DISABLE_ACCENT_CHARACTER
+import be.scri.helpers.EMOJI_SUGGESTIONS
+import be.scri.helpers.PERIOD_AND_COMMA
+import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
+import be.scri.helpers.SHOW_POPUP_ON_KEYPRESS
+import be.scri.helpers.VIBRATE_ON_KEYPRESS
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
+/**
+ * The settings sub menu page for languages that allows for customization of language keyboard interfaces.
+ */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LanguageSettingsScreen(
@@ -46,7 +51,7 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 sharedPref.getBoolean(
-                    "period_on_double_tap_$language",
+                    PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
                     false,
                 ),
             )
@@ -56,7 +61,7 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 sharedPref.getBoolean(
-                    "emoji_suggestions_$language",
+                    PreferencesHelper.getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language),
                     true,
                 ),
             )
@@ -66,7 +71,7 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 sharedPref.getBoolean(
-                    "disable_accent_characters_$language",
+                    PreferencesHelper.getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language),
                     false,
                 ),
             )
@@ -76,7 +81,7 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 sharedPref.getBoolean(
-                    "popup_on_keypress_$language",
+                    PreferencesHelper.getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language),
                     true,
                 ),
             )
@@ -86,7 +91,7 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 sharedPref.getBoolean(
-                    "vibrate_on_keypress_$language",
+                    PreferencesHelper.getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language),
                     true,
                 ),
             )
@@ -94,12 +99,17 @@ fun LanguageSettingsScreen(
 
     val periodAndCommaState =
         remember {
-            if (!sharedPref.contains("period_and_comma_$language")) {
-                sharedPref.edit().putBoolean("period_and_comma_$language", true).apply()
+            if (!sharedPref.contains(PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language))) {
+                sharedPref
+                    .edit()
+                    .putBoolean(
+                        PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language),
+                        true,
+                    ).apply()
             }
             mutableStateOf(
                 sharedPref.getBoolean(
-                    "period_and_comma_$language",
+                    PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language),
                     true,
                 ),
             )
@@ -193,7 +203,7 @@ fun LanguageSettingsScreen(
                     .verticalScroll(scrollState),
         ) {
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_settings_keyboard_translation_select_source),
+                title = stringResource(R.string.app_settings_keyboard_translation_title),
                 cardItemsList = translationSourceLanguageList,
             )
             ItemCardContainerWithTitle(

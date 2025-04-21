@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * Light and dark mode themes for the application.
- */
-
 package be.scri.ui.theme
 
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +39,9 @@ private val DarkColors =
         surfaceContainer = theme_dark_corner_button_color,
     )
 
+/**
+ * Light and dark mode themes for the application.
+ */
 @Composable
 fun ScribeTheme(
     useDarkTheme: Boolean,

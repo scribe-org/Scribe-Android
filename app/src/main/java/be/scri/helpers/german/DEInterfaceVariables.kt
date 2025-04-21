@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+package be.scri.helpers.german
+
 /**
  * Interface variables for German language keyboards.
  */
-
-package be.scri.helpers.german
-
 object DEInterfaceVariables {
     // MARK: Currency Symbols
 

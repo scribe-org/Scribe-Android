@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * A helper to facilitate setting preferences for individual language keyboards.
- */
-
 package be.scri.helpers
 
 import android.app.UiModeManager
@@ -16,25 +12,64 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import be.scri.extensions.config
 
+/**
+ * A helper to facilitate setting preferences for individual language keyboards.
+ */
 @Suppress("TooManyFunctions")
 object PreferencesHelper {
+    /**
+     * Sets the translation source language for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the translation source.
+     * @param translationSource The source language to set for translation.
+     */
     fun setTranslationSourceLanguage(
         context: Context,
         language: String,
         translationSource: String,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        sharedPref.edit { putString("translation_source_$language", translationSource) }
+        sharedPref.edit { putString(getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language), translationSource) }
     }
 
+    /**
+     * Retrieves the translation source language for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the translation source.
+     * @return The translation source language.
+     */
     fun getTranslationSourceLanguage(
         context: Context,
         language: String,
     ): String {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        return sharedPref.getString("translation_source_$language", "English") ?: "English"
+        return sharedPref.getString(
+            getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
+            "English",
+        ) ?: "English"
     }
 
+    /**
+     * Generates a language-specific preference key for storing preferences.
+     *
+     * @param key The base key.
+     * @param language The language for which to generate the preference key.
+     * @return The generated language-specific preference key.
+     */
+    fun getLanguageSpecificPreferenceKey(
+        key: String,
+        language: String,
+    ): String = "${key}_$language"
+
+    /**
+     * Sets the preference for enabling or disabling the period on spacebar double tap.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldEnablePeriodOnSpaceBarDoubleTap Whether to enable or disable the feature.
+     */
     fun setPeriodOnSpaceBarDoubleTapPreference(
         context: Context,
         language: String,
@@ -42,7 +77,10 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("period_on_double_tap_$language", shouldEnablePeriodOnSpaceBarDoubleTap)
+        editor.putBoolean(
+            getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
+            shouldEnablePeriodOnSpaceBarDoubleTap,
+        )
         editor.apply()
         Toast
             .makeText(
@@ -53,6 +91,13 @@ object PreferencesHelper {
             ).show()
     }
 
+    /**
+     * Sets the preference for disabling or enabling accent characters for a language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldDisableAccentCharacter Whether to disable or enable accent characters.
+     */
     fun setAccentCharacterPreference(
         context: Context,
         language: String,
@@ -60,7 +105,10 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("disable_accent_character_$language", shouldDisableAccentCharacter)
+        editor.putBoolean(
+            getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language),
+            shouldDisableAccentCharacter,
+        )
         editor.apply()
         Toast
             .makeText(
@@ -71,6 +119,13 @@ object PreferencesHelper {
             ).show()
     }
 
+    /**
+     * Sets the preference for enabling or disabling emoji auto-suggestions for a language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldShowEmojiSuggestions Whether to show or hide emoji suggestions.
+     */
     fun setEmojiAutoSuggestionsPreference(
         context: Context,
         language: String,
@@ -78,7 +133,7 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("emoji_suggestions_$language", shouldShowEmojiSuggestions)
+        editor.putBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), shouldShowEmojiSuggestions)
         editor.apply()
         Toast
             .makeText(
@@ -89,6 +144,13 @@ object PreferencesHelper {
             ).show()
     }
 
+    /**
+     * Sets the preference for enabling or disabling period and comma on the ABC keyboard layout for a language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldEnablePeriodAndComma Whether to enable or disable the period and comma feature.
+     */
     fun setCommaAndPeriodPreference(
         context: Context,
         language: String,
@@ -96,7 +158,7 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("period_and_comma_$language", shouldEnablePeriodAndComma)
+        editor.putBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), shouldEnablePeriodAndComma)
         editor.apply()
         Toast
             .makeText(
@@ -107,6 +169,13 @@ object PreferencesHelper {
             ).show()
     }
 
+    /**
+     * Sets the preference for enabling or disabling vibration on keypress for a language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldVibrateOnKeypress Whether to enable or disable vibration on keypress.
+     */
     fun setVibrateOnKeypress(
         context: Context,
         language: String,
@@ -114,7 +183,7 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("vibrate_on_keypress_$language", shouldVibrateOnKeypress)
+        editor.putBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), shouldVibrateOnKeypress)
         editor.apply()
         Toast
             .makeText(
@@ -126,6 +195,13 @@ object PreferencesHelper {
         context.config.vibrateOnKeypress = shouldVibrateOnKeypress
     }
 
+    /**
+     * Sets the preference for showing or hiding the popup on keypress for a language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldShowPopupOnKeypress Whether to show or hide the popup on keypress.
+     */
     fun setShowPopupOnKeypress(
         context: Context,
         language: String,
@@ -133,7 +209,7 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putBoolean("show_popup_on_keypress_$language", shouldShowPopupOnKeypress)
+        editor.putBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), shouldShowPopupOnKeypress)
         editor.apply()
         Toast
             .makeText(
@@ -145,6 +221,12 @@ object PreferencesHelper {
         context.config.showPopupOnKeypress = shouldShowPopupOnKeypress
     }
 
+    /**
+     * Sets the preference for enabling or disabling light/dark mode.
+     *
+     * @param context The application context.
+     * @param darkMode Whether to enable or disable dark mode.
+     */
     fun setLightDarkModePreference(
         context: Context,
         darkMode: Boolean,
@@ -155,6 +237,12 @@ object PreferencesHelper {
         editor.apply()
     }
 
+    /**
+     * Retrieves the user’s dark mode preference.
+     *
+     * @param context The application context.
+     * @return The dark mode setting as an integer value (AppCompatDelegate.MODE_NIGHT_YES or MODE_NIGHT_NO).
+     */
     fun getUserDarkModePreference(context: Context): Int {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
@@ -170,42 +258,80 @@ object PreferencesHelper {
         }
     }
 
+    /**
+     * Retrieves whether accent characters are disabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     * @return True if accent characters are disabled, false otherwise.
+     */
     fun getIsAccentCharacterDisabled(
         context: Context,
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isAccentCharacterDisabled = sharedPref.getBoolean("disable_accent_character_$language", false)
+        val isAccentCharacterDisabled =
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language), false)
         return isAccentCharacterDisabled
     }
 
+    /**
+     * Retrieves whether the preview feature is enabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     * @return True if the preview feature is enabled, false otherwise.
+     */
     fun getIsPreviewEnabled(
         context: Context,
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isPreviewEnabled = sharedPref.getBoolean("show_popup_on_keypress_$language", true)
+        val isPreviewEnabled =
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), true)
         return isPreviewEnabled
     }
 
+    /**
+     * Retrieves whether vibration on keypress is enabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     * @return True if vibration on keypress is enabled, false otherwise.
+     */
     fun getIsVibrateEnabled(
         context: Context,
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isPreviewEnabled = sharedPref.getBoolean("vibrate_on_keypress_$language", true)
+        val isPreviewEnabled =
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), true)
         return isPreviewEnabled
     }
 
+    /**
+     * Retrieves whether period and comma are enabled on the ABC keyboard layout for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     * @return True if period and comma are enabled, false otherwise.
+     */
     fun getEnablePeriodAndCommaABC(
         context: Context,
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isDisabledPeriodAndCommaABC = sharedPref.getBoolean("period_and_comma_$language", false)
+        val isDisabledPeriodAndCommaABC =
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), false)
         return isDisabledPeriodAndCommaABC
     }
 
+    /**
+     * Retrieves whether dark mode is enabled based on user preferences or system settings.
+     *
+     * @param context The application context.
+     * @return True if dark mode is enabled, false otherwise.
+     */
     fun getIsDarkModeOrNot(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
@@ -214,12 +340,38 @@ object PreferencesHelper {
         return isUserDarkMode
     }
 
+    /**
+     * Retrieves whether emoji suggestions are enabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     * @return True if emoji suggestions are enabled, false otherwise.
+     */
     fun getIsEmojiSuggestionsEnabled(
         context: Context,
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isEnabled = sharedPref.getBoolean("emoji_suggestions_$language", true)
+        val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), true)
         return isEnabled
+    }
+
+    /**
+     * Retrieves the preferred translation language for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the preferred translation language.
+     *
+     * @return The preferred translation language.
+     * */
+    fun getPreferredTranslationLanguage(
+        context: Context,
+        language: String,
+    ): String? {
+        val prefs = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        return prefs.getString(
+            getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
+            "English",
+        )
     }
 }

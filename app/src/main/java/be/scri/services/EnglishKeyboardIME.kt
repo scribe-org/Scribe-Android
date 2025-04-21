@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * The input method (IME) for the English language keyboard.
- */
-
 package be.scri.services
 
 import android.text.InputType
@@ -23,14 +19,23 @@ import be.scri.views.KeyboardView
  */
 class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     companion object {
+        /**
+         * Threshold value (in dp) for determining if the device is a tablet.
+         */
         const val SMALLEST_SCREEN_WIDTH_TABLET = 600
     }
 
+    /**
+     * Checks whether the current device is a tablet based on smallest screen width.
+     *
+     * @return Boolean true if the device is a tablet, false otherwise.
+     */
     private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
 
     /**
-     * Returns the XML layout resource for the keyboard based on user preferences.
-     * @return The resource ID of the keyboard layout XML.
+     * Returns the appropriate keyboard layout XML resource based on device type and user preferences.
+     *
+     * @return Int XML layout resource ID.
      */
     override fun getKeyboardLayoutXML(): Int =
         when {
@@ -39,27 +44,81 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
             else -> R.xml.keys_letters_english_without_period_and_comma
         }
 
+    /**
+     * Constant representing the letter keyboard mode.
+     */
     override val keyboardLetters = 0
+
+    /**
+     * Constant representing the symbol keyboard mode.
+     */
     override val keyboardSymbols = 1
+
+    /**
+     * Constant representing the shifted symbol keyboard mode.
+     */
     override val keyboardSymbolShift = 2
 
+    /**
+     * The active keyboard layout instance.
+     */
     override var keyboard: KeyboardBase? = null
+
+    /**
+     * The UI view component used to display the keyboard.
+     */
     override var keyboardView: KeyboardView? = null
+
+    /**
+     * Timestamp of the last time the shift key was pressed.
+     */
     override var lastShiftPressTS = 0L
+
+    /**
+     * The current mode of the keyboard (e.g., letters, symbols).
+     */
+
     override var keyboardMode = keyboardLetters
+
+    /**
+     * Defines the input type class (e.g., text, number).
+     */
     override var inputTypeClass = InputType.TYPE_CLASS_TEXT
+
+    /**
+     * Defines the type of Enter key action (e.g., none, done, send).
+     */
     override var enterKeyType = IME_ACTION_NONE
+
+    /**
+     * Indicates whether to switch back to letter mode after a symbol is typed.
+     */
+
     override var switchToLetters = false
+
+    /**
+     * Indicates whether there is text before the current cursor position.
+     */
     override var hasTextBeforeCursor = false
+
+    /**
+     * Binding for the command options layout used with the keyboard view.
+     */
     override lateinit var binding: KeyboardViewCommandOptionsBinding
 
     // Key handling logic extracted to a separate class
+
+    /**
+     * Instance of KeyHandler responsible for processing key input events.
+     */
     private val keyHandler = KeyHandler(this)
 
     /**
-     * Creates and returns the input view for the keyboard.
-     * @return The root view of the keyboard layout.
+     * Inflates and returns the keyboard view layout, sets up properties and listeners.
+     *
+     * @return View The root view of the keyboard UI.
      */
+
     override fun onCreateInputView(): View {
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         setupCommandBarTheme(binding)
@@ -80,16 +139,18 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     }
 
     /**
-     * Handles key press events on the keyboard.
-     * @param code The key code of the pressed key.
+     * Handles key input from the keyboard and delegates it to [KeyHandler].
+     *
+     * @param code The integer code of the key that was pressed.
      */
     override fun onKey(code: Int) {
         keyHandler.handleKey(code)
     }
 
     /**
-     * Initializes the keyboard and sets up the input view.
+     * Initializes the keyboard and sets up the input view upon service creation.
      */
+
     override fun onCreate() {
         super.onCreate()
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)

@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * The about screen that displays the privacy policy for the application.
- */
-
 package be.scri.ui.screens
 
 import androidx.compose.foundation.layout.Column
@@ -27,6 +23,9 @@ import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.theme.ScribeTypography
 
+/**
+ * The about screen that displays the privacy policy for the application.
+ */
 @Composable
 fun PrivacyPolicyScreen(
     onBackNavigation: () -> Unit,

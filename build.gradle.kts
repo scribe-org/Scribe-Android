@@ -10,6 +10,8 @@ buildscript {
         maven("https://plugins.gradle.org/m2/")
     }
 
+
+
     dependencies {
         classpath("io.nlopez.compose.rules:ktlint:0.4.17")
         classpath("com.android.tools.build:gradle:8.6.0")
@@ -23,9 +25,12 @@ buildscript {
 
 apply(plugin = "io.gitlab.arturbosch.detekt")
 apply(plugin = "org.jmailen.kotlinter")
+apply(plugin = "org.jetbrains.kotlinx.kover")
+
 
 plugins {
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply false
+    id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 
 allprojects {

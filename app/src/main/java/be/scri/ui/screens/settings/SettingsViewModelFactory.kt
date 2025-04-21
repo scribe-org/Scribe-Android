@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * This file provides context for the the viewmodel to change the settings.
- */
-
 package be.scri.ui.screens.settings
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
+/**
+ * This file provides context for the the viewmodel to change the settings.
+ */
 class SettingsViewModelFactory(
     private val context: Context,
 ) : ViewModelProvider.Factory {

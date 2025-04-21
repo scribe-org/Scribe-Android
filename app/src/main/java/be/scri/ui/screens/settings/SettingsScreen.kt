@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * The settings tab for the application including settings for language keyboards as sub menus.
- */
-
 package be.scri.ui.screens.settings
 
 import android.content.Context
@@ -39,6 +35,9 @@ import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 import be.scri.ui.screens.settings.SettingsUtil.getLocalizedLanguageName
 
+/**
+ * The settings tab for the application including settings for language keyboards as sub menus.
+ */
 @Composable
 fun SettingsScreen(
     onDarkModeChange: (Boolean) -> Unit,

@@ -1,8 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * The Select Languages subpage is for selecting the translation source language.
- */
 package be.scri.ui.screens
 
 import android.content.Context
@@ -34,6 +31,9 @@ import androidx.core.content.edit
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 
+/**
+ * The Select Languages subpage is for selecting the translation source language.
+ */
 @Composable
 fun SelectTranslationSourceLanguageScreen(
     currentLanguage: String,

@@ -1,9 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * Custom colors for use throughout the application.
- */
-
 package be.scri.ui.theme
 
 import androidx.compose.ui.graphics.Color
@@ -31,6 +27,9 @@ val theme_dark_switch_selector_color = Color(color = 0xFF2A1903)
 val theme_dark_unchecked_switch_selector_color = Color(color = 0xFF2D2D2D)
 val theme_dark_corner_button_color = Color(color = 0xFF2A1903)
 
+/**
+ * Custom colors for use throughout the application.
+ */
 @Suppress("MagicNumber")
 val BlueSky = Color(0xFF4478a9)
 
