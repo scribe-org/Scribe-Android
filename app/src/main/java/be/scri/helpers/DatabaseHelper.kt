@@ -26,6 +26,9 @@ class DatabaseHelper(
     ) {
     private val dbManagers = DatabaseManagers(context)
 
+    /**
+     * The database version of the application.
+     */
     companion object {
         private const val DATABASE_VERSION = 1
     }
