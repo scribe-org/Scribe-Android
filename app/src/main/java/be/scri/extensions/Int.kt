@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Functions for manipulating colors used within the application.
- */
 
 package be.scri.extensions
 
@@ -16,6 +12,9 @@ private const val BLUE_COEFFICIENT = 114
 private const val COEFFICIENT_SUM = 1000
 private const val Y_THRESHOLD = 149
 
+/**
+ * Functions for manipulating colors used within the application.
+ */
 fun Int.getContrastColor(): Int {
     val y =
         (

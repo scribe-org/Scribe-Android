@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Utility functions for managing visibility and haptic feedback in Android views.
- */
 
 package be.scri.extensions
 
 import android.view.HapticFeedbackConstants
 import android.view.View
 
+/**
+ * Utility functions for managing visibility and haptic feedback in Android views.
+ */
 fun View.beVisibleIf(beVisible: Boolean) = if (beVisible) beVisible() else beGone()
 
 fun View.beGoneIf(beGone: Boolean) = beVisibleIf(!beGone)

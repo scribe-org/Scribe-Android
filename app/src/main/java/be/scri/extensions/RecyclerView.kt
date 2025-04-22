@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Adds a custom item decoration (divider) to a RecyclerView, using a specified drawable and custom margins.
- */
 
 package be.scri.extensions
 
@@ -11,6 +7,9 @@ import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
 
+/**
+ * Adds a custom item decoration (divider) to a RecyclerView, using a specified drawable and custom margins.
+ */
 fun RecyclerView.addCustomItemDecoration(context: android.content.Context) {
     val itemDecoration =
         CustomDividerItemDecoration(

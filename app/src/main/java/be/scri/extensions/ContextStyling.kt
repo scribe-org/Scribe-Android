@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Functions for determining and retrieving proper text and colors based on user settings.
- */
 
 package be.scri.extensions
 
@@ -13,6 +9,10 @@ import be.scri.R
 import be.scri.helpers.DARK_GREY
 
 // Handle system default theme (Material You) specially as the color is taken from the system, not hardcoded by us.
+
+/**
+ * Functions for determining and retrieving proper text and colors based on user settings.
+ */
 fun Context.getProperTextColor() =
     if (baseConfig.isUsingSystemTheme) {
         resources.getColor(R.color.you_neutral_text_color, theme)
