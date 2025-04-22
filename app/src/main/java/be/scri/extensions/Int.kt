@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Functions for manipulating colors used within the application.
- */
 
 package be.scri.extensions
 
