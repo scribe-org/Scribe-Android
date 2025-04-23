@@ -45,6 +45,7 @@ import be.scri.helpers.english.ENInterfaceVariables
 import be.scri.helpers.french.FRInterfaceVariables
 import be.scri.helpers.german.DEInterfaceVariables
 import be.scri.helpers.italian.ITInterfaceVariables
+import be.scri.helpers.keyboardDBHelper.ConjugateDataManager
 import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
@@ -255,9 +256,18 @@ abstract class GeneralKeyboardIME(
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
 
+        // First set the keyboard
         keyboardView!!.setKeyboard(keyboard!!)
+
+        // Then set the key label
+        keyboardView!!.setKeyLabel("Hello World")
+
+        // Make sure to invalidate all keys, not just the view
+        keyboardView!!.invalidateAllKeys()
+
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
+
         return keyboardHolder
     }
 
@@ -312,9 +322,9 @@ abstract class GeneralKeyboardIME(
         emojiMaxKeywordLength = dbHelper.getEmojiMaxKeywordLength()
         pluralWords = dbHelper.checkIfWordIsPlural(languageAlias)!!
         nounKeywords = dbHelper.findGenderOfWord(languageAlias)
-
         caseAnnotation = dbHelper.findCaseAnnnotationForPreposition(languageAlias)
-
+        dbHelper.getConjugateData(languageAlias)
+        Log.i("ALPHA","The noun keywords are $nounKeywords")
         Log.i("MY-TAG", nounKeywords.toString())
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
@@ -341,6 +351,7 @@ abstract class GeneralKeyboardIME(
             }
 
             keyboardView!!.setKeyboard(keyboard!!)
+
             switchToLetters = false
         }
     }
@@ -537,6 +548,7 @@ abstract class GeneralKeyboardIME(
                 setupIdleView()
                 handleTextSizeForSuggestion(binding)
                 initializeEmojiButtons()
+                keyboardView!!.setKeyLabel("Hello world")
                 keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
                 keyboardView!!.setKeyboard(keyboard!!)
                 updateButtonVisibility(emojiAutoSuggestionEnabled)
@@ -575,6 +587,7 @@ abstract class GeneralKeyboardIME(
                 baseKeyboardOfAnyLanguage(language)
             } else if (currentState == ScribeState.CONJUGATE) {
                 R.xml.conjugate_view_3x2
+
             } else {
                 getKeyboardLayoutXML()
             }
@@ -724,6 +737,8 @@ abstract class GeneralKeyboardIME(
             currentState = ScribeState.CONJUGATE
             saveConjugateModeType("3x2")
             updateUI()
+            // Implemnet the function that renders the entire conjugate view with the 3x2 mode.
+            keyboardView!!.setKeyLabel("Hello world")
         }
         binding.pluralBtn.setOnClickListener {
             Log.i("MY-TAG", "PLURAL STATE")
@@ -774,6 +789,8 @@ abstract class GeneralKeyboardIME(
             }
         }
     }
+
+    
 
     /**
      * Initializes and returns the binding for the keyboard view.

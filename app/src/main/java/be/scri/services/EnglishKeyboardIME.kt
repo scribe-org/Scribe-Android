@@ -125,12 +125,14 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        keyboardView!!.setKeyLabel("Hello world")
         keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
         keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
         when (currentState) {
             ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
             else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
         }
+
         keyboardView!!.setKeyboardHolder()
         keyboardView?.mOnKeyboardActionListener = this
         initializeEmojiButtons()
