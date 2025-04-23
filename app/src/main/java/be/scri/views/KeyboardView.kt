@@ -189,6 +189,7 @@ class KeyboardView
         private var mTopSmallNumberMarginHeight = 0f
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
+        var mKeyLabel : String = "He"
 
         private var mEnterKeyColor: Int = 0
 
@@ -276,16 +277,8 @@ class KeyboardView
             private const val KEY_HEIGHT = 240
         }
 
-        private var _keyboardCommandBinding: KeyboardViewCommandOptionsBinding? = null
-        val keyboardCommandBinding: KeyboardViewCommandOptionsBinding
-            get() {
-                if (_keyboardCommandBinding == null) {
-                    _keyboardCommandBinding = KeyboardViewCommandOptionsBinding.inflate(LayoutInflater.from(context))
-                }
-                return _keyboardCommandBinding!!
-            }
         private var _popupBinding: KeyboardPopupKeyboardBinding? = null
-        val popupBinding: KeyboardPopupKeyboardBinding
+        private val popupBinding: KeyboardPopupKeyboardBinding
             get() {
                 if (_popupBinding == null) {
                     _popupBinding = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
@@ -341,6 +334,13 @@ class KeyboardView
             }
             return earlierValue
         }
+
+
+        fun setKeyLabel(label: String) {
+            mKeyLabel = label
+            invalidateAllKeys()
+        }
+
 
         private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
         val keyboardBinding: KeyboardViewKeyboardBinding
@@ -759,9 +759,16 @@ class KeyboardView
                 if (code != EXTRA_PADDING) {
                     canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
                 }
-
+                var label = adjustCase(key.label)?.toString()
                 // Switch the character to uppercase if shift is pressed.
-                val label = adjustCase(key.label)?.toString()
+
+
+                // Checkpoint3
+                if(code == 1001) {
+                    label = mKeyLabel
+
+                }
+
 
                 canvas.translate(key.x.toFloat(), key.y.toFloat())
                 if (label?.isNotEmpty() == true) {
