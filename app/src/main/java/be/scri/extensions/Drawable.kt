@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Extends the Drawable class to apply a color filter to a drawable using a specified color.
- */
 
 package be.scri.extensions
 

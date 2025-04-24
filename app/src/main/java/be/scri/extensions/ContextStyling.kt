@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Functions for determining and retrieving proper text and colors based on user settings.
- */
 
 package be.scri.extensions
 
