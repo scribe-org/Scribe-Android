@@ -1,48 +1,50 @@
 {
-    "numbers": { "singular": "plural" },
-    "genders":  {
-        "canonical": ["NOT_INCLUDED"],
-        "feminines": ["NOT_INCLUDED"],
-        "masculines": ["NOT_INCLUDED"],
-        "commons": ["NOT_INCLUDED"],
-        "neuters": ["NOT_INCLUDED"]
+  "numbers": { "singular": "plural" },
+  "genders": {
+    "canonical": ["NOT_INCLUDED"],
+    "feminines": ["NOT_INCLUDED"],
+    "masculines": ["NOT_INCLUDED"],
+    "commons": ["NOT_INCLUDED"],
+    "neuters": ["NOT_INCLUDED"]
+  },
+  "conjugations": {
+    "1": {
+      "title": "Present",
+      "1": { "I": "simplePresent" },
+      "2": { "you": "simplePresent" },
+      "3": { "he/she/it": "simplePresentThirdPersonSingular" },
+      "4": { "we": "simplePresent" },
+      "5": { "you all": "simplePresent" },
+      "6": { "they": "simplePresent" }
     },
-    "conjugations": {
-        "1": {
-            "title": "Present",
-            "1": { "I": "simplePresent" },
-            "2": { "you": "simplePresent" },
-            "3": { "he/she/it": "simplePresentThirdPersonSingular" },
-            "4": { "we": "simplePresent" },
-            "5": { "you all": "simplePresent" },
-            "6": { "they": "simplePresent" }
-        },
-        "2": {
-            "title": "Past",
-            "1": { "I": "simplePast" },
-            "2": { "you": "simplePast" },
-            "3": { "he/she/it": "simplePast" },
-            "4": { "we": "simplePast" },
-            "5": { "you all": "simplePast" },
-            "6": { "they": "simplePast" }
-        },
-        "3": {
-            "title": "Perfect",
-            "1": { "I": "presentParticiple simplePast" },
-            "2": { "you": "presentParticiple simplePast" },
-            "3": { "he/she/it": "presentParticiple simplePast" },
-            "4": { "we": "presentParticiple simplePast" },
-            "5": { "you all": "presentParticiple simplePast" },
-            "6": { "they": "presentParticiple simplePast" }
-        },
-        "4": {
-            "title": "Past Perfect",
-            "1": { "I": "pastParticiple simplePast" },
-            "2": { "you": "pastParticiple simplePast" },
-            "3": { "he/she/it": "pastParticiple simplePast" },
-            "4": { "we": "pastParticiple simplePast" },
-            "5": { "you all": "pastParticiple simplePast" },
-            "6": { "they": "pastParticiple simplePast" }
-        }
+    "2": {
+      "title": "Past",
+      "1": { "I": "simplePast" },
+      "2": { "you": "simplePast" },
+      "3": { "he/she/it": "simplePast" },
+      "4": { "we": "simplePast" },
+      "5": { "you all": "simplePast" },
+      "6": { "they": "simplePast" }
+    },
+    "3": {
+      "title": "Present Perfect",
+      "1": { "I": "[simplePresent have] presentParticiple" },
+      "2": { "you": "[simplePresent have] presentParticiple" },
+      "3": {
+        "he/she/it": "[simplePresentThirdPersonSingular have] presentParticiple"
+      },
+      "4": { "we": "[simplePresent have] presentParticiple" },
+      "5": { "you all": "[simplePresent have] presentParticiple" },
+      "6": { "they": "[simplePresent have] presentParticiple" }
+    },
+    "4": {
+      "title": "Past Perfect",
+      "1": { "I": "[simplePast have] pastParticiple" },
+      "2": { "you": "[simplePast have] pastParticiple" },
+      "3": { "he/she/it": "[simplePast have] pastParticiple" },
+      "4": { "we": "[simplePast have] pastParticiple" },
+      "5": { "you all": "[simplePast have] pastParticiple" },
+      "6": { "they": "[simplePast have] pastParticiple" }
     }
+  }
 }

@@ -1,39 +1,51 @@
 {
-    "numbers": { "nominativeSingular": "nominativePlural" },
-    "genders": {
-        "canonical": ["gender"],
-        "feminines": [],
-        "masculines": [],
-        "commons": [],
-        "neuters": []
+  "numbers": { "nominativeSingular": "nominativePlural" },
+  "genders": {
+    "canonical": ["gender"],
+    "feminines": [],
+    "masculines": [],
+    "commons": [],
+    "neuters": []
+  },
+  "conjugations": {
+    "1": {
+      "title": "Präsens",
+      "1": { "ich": "indicativePresentFirstPersonSingular" },
+      "2": { "du": "indicativePresentSecondPersonSingular" },
+      "3": { "er/sie/es": "indicativePresentThirdPersonSingular" },
+      "4": { "wir": "indicativePresentFirstPersonPlural" },
+      "5": { "ihr": "indicativePresentSecondPersonPlural" },
+      "6": { "sie/Sie": "indicativePresentThirdPersonPlural" }
     },
-    "conjugations": {
-        "1": {
-            "title": "Präsens",
-            "1": { "ich": "indicativePresentFirstPersonSingular" },
-            "2": { "du": "indicativePresentSecondPersonSingular" },
-            "3": { "er/sie/es": "indicativePresentThirdPersonSingular" },
-            "4": { "wir": "indicativePresentFirstPersonPlural" },
-            "5": { "ihr": "indicativePresentSecondPersonPlural" },
-            "6": { "sie/Sie": "indicativePresentThirdPersonPlural" }
-        },
-        "2": {
-            "title": "Preterite",
-            "1": { "ich": "indicativePreteriteFirstPersonSingular" },
-            "2": { "du": "indicativePreteriteFirstPersonPlural" },
-            "3": { "er/sie/es": "indicativePreteriteSecondPersonSingular" },
-            "4": { "wir": "indicativePreteriteSecondPersonPlural" },
-            "5": { "ihr": "indicativePreteriteThirdPersonSingular" },
-            "6": { "sie/Sie": "indicativePreteriteThirdPersonPlural" }
-        },
-        "3": {
-            "title": "Perfekt",
-            "1": { "ich": "[auxiliaryVerb] pastParticiple" },
-            "2": { "du": "[auxiliaryVerb] pastParticiple" },
-            "3": { "er/sie/es": "[auxiliaryVerb] pastParticiple" },
-            "4": { "wir": "[auxiliaryVerb] pastParticiple" },
-            "5": { "ihr": "[auxiliaryVerb] pastParticiple" },
-            "6": { "sie/Sie": "[auxiliaryVerb] pastParticiple" }
-        }
+    "2": {
+      "title": "Preterite",
+      "1": { "ich": "indicativePreteriteFirstPersonSingular" },
+      "2": { "du": "indicativePreteriteFirstPersonPlural" },
+      "3": { "er/sie/es": "indicativePreteriteSecondPersonSingular" },
+      "4": { "wir": "indicativePreteriteSecondPersonPlural" },
+      "5": { "ihr": "indicativePreteriteThirdPersonSingular" },
+      "6": { "sie/Sie": "indicativePreteriteThirdPersonPlural" }
+    },
+    "3": {
+      "title": "Perfekt",
+      "1": {
+        "ich": "[indicativePresentFirstPersonSingular auxiliaryVerb] pastParticiple"
+      },
+      "2": {
+        "du": "[indicativePresentSecondPersonSingular auxiliaryVerb] pastParticiple"
+      },
+      "3": {
+        "er/sie/es": "[indicativePresentThirdPersonSingular auxiliaryVerb] pastParticiple"
+      },
+      "4": {
+        "wir": "[indicativePresentFirstPersonPlural auxiliaryVerb] pastParticiple"
+      },
+      "5": {
+        "ihr": "[indicativePresentSecondPersonPlural auxiliaryVerb] pastParticiple"
+      },
+      "6": {
+        "sie/Sie": "[indicativePresentThirdPersonPlural auxiliaryVerb] pastParticiple  "
+      }
     }
+  }
 }
