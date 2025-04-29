@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers.keyboardDBHelper
 
 import DataContract
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import java.io.FileOutputStream
@@ -46,8 +48,6 @@ class ConjugateDataManager(
                         "thirdPersonPlural" to conjugation?.thirdPersonPlural,
                     )
 
-                Log.i("ALPHA", "Conjugation $intId: title is ${conjugation?.title}")
-                Log.i("ALPHA", "The word is $word")
                 result = mutableListOf()
                 for ((label, personMap) in persons) {
                     val personValue = personMap?.values?.firstOrNull()
@@ -109,114 +109,111 @@ class ConjugateDataManager(
         form: String?,
         language: String,
     ): String {
-        val dbPath = context.getDatabasePath("${language}LanguageData.sqlite")
+        var result = ""
+        val db = openDatabase(language)
 
+        db?.use { database ->
+            val verbCursor = getVerbCursor(database, word, language)
+
+            if (verbCursor != null && form != null) {
+                result =
+                    try {
+                        verbCursor.getString(verbCursor.getColumnIndexOrThrow(form))
+                    } catch (e: IllegalArgumentException) {
+                        Log.w("ConjugateDataManager", "Form column not found: $form", e)
+                        resolveFallbackForm(database, verbCursor, word, form, language)
+                    }
+            }
+        }
+
+        return result
+    }
+
+    private fun openDatabase(language: String): SQLiteDatabase? {
+        val dbPath = context.getDatabasePath("${language}LanguageData.sqlite")
         if (!dbPath.exists()) {
             dbPath.parentFile?.mkdirs()
             context.assets.open("data/${language}LanguageData.sqlite").use { inputStream ->
-                FileOutputStream(dbPath).use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
+                FileOutputStream(dbPath).use { it.write(inputStream.readBytes()) }
+            }
+        }
+        return SQLiteDatabase.openDatabase(dbPath.path, null, SQLiteDatabase.OPEN_READONLY)
+    }
+
+    private fun getVerbCursor(
+        db: SQLiteDatabase,
+        word: String,
+        language: String,
+    ): Cursor? {
+        val query =
+            if (language == "SV") {
+                "SELECT * FROM verbs WHERE verb = ?"
+            } else {
+                "SELECT * FROM verbs WHERE infinitive = ?"
+            }
+
+        val cursor = db.rawQuery(query, arrayOf(word))
+        return if (cursor.moveToFirst()) cursor else null
+    }
+
+    private fun resolveFallbackForm(
+        db: SQLiteDatabase,
+        verbCursor: Cursor,
+        word: String,
+        form: String,
+        language: String,
+    ): String {
+        val bracketRegex = Regex("""\[(.*?)\]""")
+        val wordsRegex = Regex("""\b(\w+)\s+(\w+)\b""")
+
+        val bracketPart = bracketRegex.find(form)?.groupValues?.get(1) ?: ""
+        val (first, second) = wordsRegex.find(bracketPart)?.destructured ?: return ""
+
+        val rest = form.replace(bracketRegex, "").trim()
+        val fallbackFields = mutableListOf(first, second, rest)
+
+        return if (language != "EN") {
+            resolveFallbackNonEnglish(db, verbCursor, word, fallbackFields)
+        } else {
+            resolveFallbackEnglish(db, verbCursor, fallbackFields)
+        }
+    }
+
+    private fun resolveFallbackNonEnglish(
+        db: SQLiteDatabase,
+        verbCursor: Cursor,
+        word: String,
+        fields: MutableList<String>,
+    ): String {
+        db.rawQuery("SELECT ${fields[1]} FROM verbs WHERE infinitive = ?", arrayOf(word)).use {
+            if (it.moveToFirst()) {
+                fields[1] = it.getString(it.getColumnIndexOrThrow(fields[1]))
             }
         }
 
-        val db = SQLiteDatabase.openDatabase(dbPath.path, null, SQLiteDatabase.OPEN_READONLY)
-        var result = ""
+        fields[2] = verbCursor.getString(verbCursor.getColumnIndexOrThrow(fields[2]))
 
-        db.use { database ->
-            val verbQuery =
-                if (language == "SV") {
-                    "SELECT * FROM verbs WHERE verb = ?"
-                } else {
-                    "SELECT * FROM verbs WHERE infinitive = ?"
-                }
-
-            database.rawQuery(verbQuery, arrayOf(word)).use { verbCursor ->
-                if (verbCursor.moveToFirst()) {
-                    if (form != null) {
-                        try {
-                            result = verbCursor.getString(verbCursor.getColumnIndexOrThrow(form))
-                        } catch (e: IllegalArgumentException) {
-                            if (language != "EN") {
-                                val bracketRegex = Regex("""\[(.*?)\]""")
-                                val wordsRegex = Regex("""\b(\w+)\s+(\w+)\b""")
-
-                                val bracketPart = bracketRegex.find(form)?.groupValues?.get(1)
-                                val matchResult = wordsRegex.find(bracketPart ?: "")
-
-                                val fallbackFields = mutableListOf<String>()
-
-                                if (matchResult != null) {
-                                    val (firstWord, secondWord) = matchResult.destructured
-                                    fallbackFields.add(firstWord)
-                                    fallbackFields.add(secondWord)
-                                    Log.i("MY-TAG", "Parsed words: $firstWord, $secondWord")
-                                }
-                                val rest = form.replace(bracketRegex, "").trim()
-                                if (rest.isNotEmpty()) {
-                                    fallbackFields.add(rest)
-                                }
-                                Log.i("MY-TAG", "The fallback fields are $fallbackFields")
-                                database.rawQuery("SELECT ${fallbackFields[1]} FROM verbs WHERE infinitive = ?", arrayOf(word)).use { auxiliaryVerbCursor ->
-                                    if (auxiliaryVerbCursor.moveToFirst()) {
-                                        fallbackFields[1] = auxiliaryVerbCursor.getString(auxiliaryVerbCursor.getColumnIndexOrThrow(fallbackFields[1]))
-                                    }
-                                }
-                                fallbackFields[2] = verbCursor.getString(verbCursor.getColumnIndexOrThrow(fallbackFields[2]))
-
-                                database
-                                    .rawQuery(
-                                        "SELECT ${fallbackFields[0]} FROM verbs WHERE wdLexemeID = ? ",
-                                        arrayOf(fallbackFields[1]),
-                                    ).use { formCursor ->
-                                        if (formCursor.moveToFirst()) {
-                                            fallbackFields[1] = formCursor.getString(formCursor.getColumnIndexOrThrow(fallbackFields[0]))
-                                        }
-                                    }
-
-                                result = fallbackFields[1] + " " + fallbackFields[2]
-                            } else {
-                                val bracketRegex = Regex("""\[(.*?)\]""")
-                                val wordsRegex = Regex("""\b(\w+)\s+(\w+)\b""")
-
-                                val bracketPart = bracketRegex.find(form)?.groupValues?.get(1)
-                                val matchResult = wordsRegex.find(bracketPart ?: "")
-
-                                val fallbackFields = mutableListOf<String>()
-
-                                if (matchResult != null) {
-                                    val (firstWord, secondWord) = matchResult.destructured
-                                    fallbackFields.add(firstWord)
-                                    fallbackFields.add(secondWord)
-                                    Log.i("MY-TAG", "Parsed words: $firstWord, $secondWord")
-                                }
-                                val rest = form.replace(bracketRegex, "").trim()
-                                if (rest.isNotEmpty()) {
-                                    fallbackFields.add(rest)
-                                }
-                                Log.i("MY-TAG", "The fallback fields are $fallbackFields")
-
-                                database
-                                    .rawQuery(
-                                        "SELECT ${fallbackFields[0]} FROM verbs WHERE infinitive = ?",
-                                        arrayOf(fallbackFields[1]),
-                                    ).use { auxiliaryVerbCursor ->
-                                        if (auxiliaryVerbCursor.moveToFirst()) {
-                                            fallbackFields[1] = auxiliaryVerbCursor.getString(auxiliaryVerbCursor.getColumnIndexOrThrow(fallbackFields[0]))
-                                        }
-                                    }
-
-                                fallbackFields[2] = verbCursor.getString(verbCursor.getColumnIndexOrThrow(fallbackFields[2]))
-
-                                Log.i("MY-TAG", "The updated fallback fields are $fallbackFields")
-
-                                result = fallbackFields[1] + " " + fallbackFields[2]
-                            }
-                        }
-                    }
-                }
+        db.rawQuery("SELECT ${fields[0]} FROM verbs WHERE wdLexemeID = ?", arrayOf(fields[1])).use {
+            if (it.moveToFirst()) {
+                fields[1] = it.getString(it.getColumnIndexOrThrow(fields[0]))
             }
         }
-        return result
+
+        return "${fields[1]} ${fields[2]}"
+    }
+
+    private fun resolveFallbackEnglish(
+        db: SQLiteDatabase,
+        verbCursor: Cursor,
+        fields: MutableList<String>,
+    ): String {
+        db.rawQuery("SELECT ${fields[0]} FROM verbs WHERE infinitive = ?", arrayOf(fields[1])).use {
+            if (it.moveToFirst()) {
+                fields[1] = it.getString(it.getColumnIndexOrThrow(fields[0]))
+            }
+        }
+
+        fields[2] = verbCursor.getString(verbCursor.getColumnIndexOrThrow(fields[2]))
+        return "${fields[1]} ${fields[2]}"
     }
 }

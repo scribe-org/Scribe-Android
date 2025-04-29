@@ -301,6 +301,7 @@ class KeyboardView
             private const val DISPLAY_RIGHT = 2001
             private const val EXTRA_PADDING = 5000
             private const val KEY_HEIGHT = 240
+            private const val I_1 = 50
         }
 
         private var popupBindingInternal: KeyboardPopupKeyboardBinding? = null
@@ -315,15 +316,11 @@ class KeyboardView
         var setPreview: Boolean = true
         var setVibrate: Boolean = true
 
-<<<<<<< HEAD
         /**
          * Sets the color of the Enter key based on a specific color or theme mode.
          * @param color The optional color to apply.
          * @param isDarkMode Whether the dark mode is enabled (optional).
          */
-=======
-        // Checkpoint 1
->>>>>>> 048c4ef (feat:Implement the label change in the views and add constants)
         fun setEnterKeyColor(
             color: Int? = null,
             isDarkMode: Boolean? = null,
@@ -344,17 +341,13 @@ class KeyboardView
                 }
             }
         }
-
-<<<<<<< HEAD
+    
         /**
          * Sets the icon of the Enter key based on current state.
          * @param state The current keyboard state.
          * @param earlierValue Previously assigned Enter key value (optional).
          * @return The updated Enter key value.
          */
-=======
-        // Checkpoint 2
->>>>>>> 048c4ef (feat:Implement the label change in the views and add constants)
         fun setEnterKeyIcon(
             state: ScribeState,
             earlierValue: Int? = null,
@@ -417,6 +410,21 @@ class KeyboardView
                 }
             }
         }
+
+        fun getKeyLabel(code: Int): String? =
+            when (code) {
+                KeyboardBase.CODE_FPS -> mKeyLabelFPS
+                KeyboardBase.CODE_FPP -> mKeyLabelFPP
+                KeyboardBase.CODE_SPS -> mKeyLabelSPS
+                KeyboardBase.CODE_SPP -> mKeyLabelSPP
+                KeyboardBase.CODE_TPS -> mKeyLabelTPS
+                KeyboardBase.CODE_TPP -> mKeyLabelTPP
+                KeyboardBase.CODE_TR -> mKeyLabelTR
+                KeyboardBase.CODE_TL -> mKeyLabelTL
+                KeyboardBase.CODE_BR -> mKeyLabelBR
+                KeyboardBase.CODE_BL -> mKeyLabelBL
+                else -> null
+            }
 
         private var keyboardBindingInternal: KeyboardViewKeyboardBinding? = null
         val keyboardBinding: KeyboardViewKeyboardBinding
@@ -753,7 +761,12 @@ class KeyboardView
                     } else {
                         R.color.special_key_light
                     }
-                val pressedColorResId = if (isUserDarkMode) R.color.dark_key_press_color else R.color.light_key_press_color
+                val pressedColorResId =
+                    if (isUserDarkMode) {
+                        R.color.dark_key_press_color
+                    } else {
+                        R.color.light_key_press_color
+                    }
                 val pressedColor = resources.getColor(pressedColorResId, context.theme)
                 val specialKeyColorValue = resources.getColor(mSpecialKeyColor!!, context.theme)
 
@@ -795,7 +808,11 @@ class KeyboardView
                     val shadowOffsetY = SHADOW_OFFSET_Y
 
                     if ((code == DISPLAY_LEFT) || (code == DISPLAY_RIGHT)) {
-                        val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+                        val sharedPreferences =
+                            context.getSharedPreferences(
+                                "keyboard_preferences",
+                                Context.MODE_PRIVATE,
+                            )
                         sharedPreferences.edit(commit = true) {
                             val currentValue = sharedPreferences.getInt("conjugate_index", 0)
                             val newValue =
@@ -928,7 +945,7 @@ class KeyboardView
                         if (key.topSmallNumber.isNotEmpty()) {
                             canvas.drawText(
                                 key.topSmallNumber,
-                                key.width - mTopSmallNumberMarginWidth - 50,
+                                key.width - mTopSmallNumberMarginWidth - I_1,
                                 mTopSmallNumberMarginHeight,
                                 smallLetterPaint,
                             )

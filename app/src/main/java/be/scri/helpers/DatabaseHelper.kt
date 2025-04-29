@@ -186,7 +186,12 @@ class DatabaseHelper(
     fun getConjugateData(
         language: String,
         word: String,
-    ): MutableMap<String, List<String>> = dbManagers.conjugateDataManager.getTheConjugateLabels(language, getRequiredData(language), word)
+    ): MutableMap<String, List<String>> =
+        dbManagers.conjugateDataManager.getTheConjugateLabels(
+            language,
+            getRequiredData(language),
+            word,
+        )
 
     /**
      * Retrieves conjugate labels for a given language.
@@ -199,5 +204,8 @@ class DatabaseHelper(
      * @see getRequiredData
      * @see dbManagers.conjugateDataManager.extractConjugateHeadings
      */
-    fun getConjugateLabels(language: String): Set<String> = dbManagers.conjugateDataManager.extractConjugateHeadings(getRequiredData(language))
+    fun getConjugateLabels(language: String): Set<String> =
+        dbManagers.conjugateDataManager.extractConjugateHeadings(
+            getRequiredData(language),
+        )
 }

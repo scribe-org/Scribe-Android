@@ -4,12 +4,14 @@ package be.scri.helpers
 
 import android.content.Context
 import android.util.Log
+import android.view.inputmethod.InputConnection
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
  * Handles key events for the EnglishKeyboardIME.
  */
+@Suppress("TooManyFunctions")
 class KeyHandler(
     private val ime: GeneralKeyboardIME,
 ) {
@@ -18,28 +20,59 @@ class KeyHandler(
      */
     fun handleKey(code: Int) {
         val inputConnection = ime.currentInputConnection
-        if (ime.keyboard == null || inputConnection == null) {
-            return
-        }
-        if (code != KeyboardBase.KEYCODE_SHIFT) {
-            ime.lastShiftPressTS = 0
-        }
+        if (!isValidState(inputConnection)) return
+
+        resetShiftIfNeeded(code)
 
         when (code) {
-            KeyboardBase.KEYCODE_TAB -> inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
+            KeyboardBase.KEYCODE_TAB -> commitTab(inputConnection)
             KeyboardBase.KEYCODE_CAPS_LOCK -> handleCapsLock()
             KeyboardBase.KEYCODE_DELETE -> handleDeleteKey()
             KeyboardBase.KEYCODE_SHIFT -> handleShiftKey()
             KeyboardBase.KEYCODE_ENTER -> handleEnterKey()
             KeyboardBase.KEYCODE_MODE_CHANGE -> handleModeChangeKey()
             KeyboardBase.KEYCODE_SPACE -> handleKeycodeSpace()
-            KeyboardBase.KEYCODE_LEFT_ARROW -> handleArrowKey(false)
-            KeyboardBase.KEYCODE_RIGHT_ARROW -> handleArrowKey(true)
-            KeyboardBase.DISPLAY_LEFT -> handleConjugateKeys(code, context = ime.applicationContext)
-            KeyboardBase.DISPLAY_RIGHT -> handleConjugateKeys(code, context = ime.applicationContext)
+            KeyboardBase.KEYCODE_LEFT_ARROW,
+            KeyboardBase.KEYCODE_RIGHT_ARROW,
+            -> handleArrowKey(code == KeyboardBase.KEYCODE_RIGHT_ARROW)
+            KeyboardBase.DISPLAY_LEFT,
+            KeyboardBase.DISPLAY_RIGHT,
+            -> handleConjugateKeys(code, context = ime.applicationContext)
+            KeyboardBase.CODE_FPS,
+            KeyboardBase.CODE_FPP,
+            KeyboardBase.CODE_SPS,
+            KeyboardBase.CODE_SPP,
+            KeyboardBase.CODE_TPS,
+            KeyboardBase.CODE_TPP,
+            KeyboardBase.CODE_TR,
+            KeyboardBase.CODE_TL,
+            KeyboardBase.CODE_BR,
+            KeyboardBase.CODE_BL,
+            KeyboardBase.CODE_1X1,
+            KeyboardBase.CODE_1X3_LEFT,
+            KeyboardBase.CODE_1X3_CENTER,
+            KeyboardBase.CODE_1X3_RIGHT,
+            KeyboardBase.CODE_2X1_TOP,
+            KeyboardBase.CODE_2X1_BOTTOM,
+            -> returnTheConjugateLabels(code)
             else -> handleDefaultKey(code)
         }
+
         updateKeyboardState(code)
+    }
+
+    private fun isValidState(inputConnection: InputConnection?): Boolean =
+        ime.keyboard != null &&
+            inputConnection != null
+
+    private fun resetShiftIfNeeded(code: Int) {
+        if (code != KeyboardBase.KEYCODE_SHIFT) {
+            ime.lastShiftPressTS = 0
+        }
+    }
+
+    private fun commitTab(inputConnection: InputConnection) {
+        inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
     }
 
     /**
@@ -179,6 +212,13 @@ class KeyHandler(
     private fun handleModeChangeKey() {
         ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime)
         ime.disableAutoSuggest()
+    }
+
+    private fun returnTheConjugateLabels(code: Int) {
+        ime.handleConjugateKeys(code)
+        ime.currentState = ScribeState.IDLE
+        ime.switchToCommandToolBar()
+        ime.updateUI()
     }
 
     /**

@@ -570,65 +570,85 @@ abstract class GeneralKeyboardIME(
         keyboardBinding = initializeKeyboardBinding()
         val keyboardHolder = keyboardBinding.root
 
+        applyToolBarVisualSettings()
+        handleModeChange(keyboardSymbols, keyboardView, this)
+
+        val keyboardXmlId = getKeyboardLayoutForState(currentState)
+        initializeKeyboard(keyboardXmlId)
+
+        setupScribeKeyListener()
+        val conjugateIndex = getValidatedConjugateIndex()
+        Log.i("MY-TAG", "I am outside the 2x2 and the conjugate output is $conjugateOutput")
+
+        setupConjugateKeysByLanguage(conjugateIndex)
+
+        setInputView(keyboardHolder)
+    }
+
+    private fun applyToolBarVisualSettings() {
         setupToolBarTheme(keyboardBinding)
         handleTextSizeForSuggestion(binding)
         binding.translateBtn.textSize = SUGGESTION_SIZE
-
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
         updateToolBarTheme(isDarkMode)
+    }
 
-        handleModeChange(keyboardSymbols, keyboardView, this)
-        // Checkpoint 1
-        val keyboardXmlId =
-            when (currentState) {
-                ScribeState.TRANSLATE -> {
-                    val language = getPreferredTranslationLanguage(this, language)
-                    baseKeyboardOfAnyLanguage(language)
-                }
-                ScribeState.SELECT_VERB_CONJUNCTION -> {
-                    saveConjugateModeType(language)
-                    when (language) {
-                        "English" -> R.xml.conjugate_view_3x2
-                        "Swedish" -> R.xml.conjugate_view_2x2
-                        "Russian" -> R.xml.conjugate_view_2x2
-                        else -> R.xml.conjugate_view_3x2
-                    }
-                }
-                else -> {
-                    getKeyboardLayoutXML()
+    private fun getKeyboardLayoutForState(state: ScribeState): Int =
+        when (state) {
+            ScribeState.TRANSLATE -> {
+                val language = getPreferredTranslationLanguage(this, language)
+                baseKeyboardOfAnyLanguage(language)
+            }
+            ScribeState.SELECT_VERB_CONJUNCTION -> {
+                saveConjugateModeType(language)
+                when (language) {
+                    "English" -> R.xml.conjugate_view_3x2
+                    "Swedish" -> R.xml.conjugate_view_2x2
+                    "Russian" -> R.xml.conjugate_view_2x2
+                    else -> R.xml.conjugate_view_3x2
                 }
             }
+            else -> getKeyboardLayoutXML()
+        }
 
-        keyboard = KeyboardBase(this, keyboardXmlId, enterKeyType)
+    private fun initializeKeyboard(xmlId: Int) {
+        keyboard = KeyboardBase(this, xmlId, enterKeyType)
         keyboardView =
             keyboardBinding.keyboardView.apply {
                 setKeyboard(keyboard!!)
                 mOnKeyboardActionListener = this@GeneralKeyboardIME
             }
+    }
 
+    private fun setupScribeKeyListener() {
         keyboardBinding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             switchToCommandToolBar()
             handleTextSizeForSuggestion(binding)
             updateUI()
         }
+    }
+
+    private fun getValidatedConjugateIndex(): Int {
         val prefs = getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        var conjugateIndex = prefs.getInt("conjugate_index", 0)
+        var index = prefs.getInt("conjugate_index", 0)
 
-        if (conjugateIndex < 0) {
-            conjugateIndex = 0
-            prefs.edit { putInt("conjugate_index", 0) }
-        } else if (conjugateIndex > conjugateOutput.keys.count() - 2) {
-            conjugateIndex = conjugateOutput.keys.count() - 2
-            prefs.edit { putInt("conjugate_index", conjugateOutput.keys.count() - 2) }
-        }
-        Log.i("MY-TAG", "I am outside the 2x2 and the conjugate output is $conjugateOutput")
-        when (language) {
-            "Swedish" -> setUpConjugateKeys(conjugateIndex, conjugateMode = "2x2", conjugateOutput = conjugateOutput, isDarkMode = isDarkMode)
-            else -> setUpConjugateKeys(conjugateIndex, conjugateMode = "3x2", conjugateOutput = conjugateOutput, isDarkMode = isDarkMode)
-        }
+        index = index.coerceIn(0, conjugateOutput.keys.count() - 2)
+        prefs.edit { putInt("conjugate_index", index) }
 
-        setInputView(keyboardHolder)
+        return index
+    }
+
+    private fun setupConjugateKeysByLanguage(conjugateIndex: Int) {
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        val mode = if (language == "Swedish") "2x2" else "3x2"
+
+        setUpConjugateKeys(
+            startIndex = conjugateIndex,
+            conjugateMode = mode,
+            conjugateOutput = conjugateOutput,
+            isDarkMode = isDarkMode,
+        )
     }
 
     private fun setUpConjugateKeys(
@@ -1741,6 +1761,14 @@ abstract class GeneralKeyboardIME(
             }
             commandBar.text = newText
         }
+    }
+
+    /**
+     * To return the conjugation based on the code
+     */
+    fun handleConjugateKeys(code: Int) {
+        val inputConnection = currentInputConnection
+        inputConnection.commitText(keyboardView?.getKeyLabel(code), 1)
     }
 
     /**
