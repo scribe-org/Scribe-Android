@@ -2,6 +2,7 @@
 
 package be.scri.helpers
 
+import android.content.Context
 import android.util.Log
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
@@ -34,6 +35,8 @@ class KeyHandler(
             KeyboardBase.KEYCODE_SPACE -> handleKeycodeSpace()
             KeyboardBase.KEYCODE_LEFT_ARROW -> handleArrowKey(false)
             KeyboardBase.KEYCODE_RIGHT_ARROW -> handleArrowKey(true)
+            KeyboardBase.DISPLAY_LEFT -> handleConjugateKeys(code, context = ime.applicationContext)
+            KeyboardBase.DISPLAY_RIGHT -> handleConjugateKeys(code, context = ime.applicationContext)
             else -> handleDefaultKey(code)
         }
         updateKeyboardState(code)
@@ -57,6 +60,40 @@ class KeyHandler(
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             ime.updateShiftKeyState()
         }
+    }
+
+    /**
+     * Handles left/right conjugate key presses.
+     *
+     * Updates the "conjugate_index" preference to cycle through conjugate options.
+     *
+     * @param code    The pressed key code (`KeyboardBase.DISPLAY_LEFT`, `KeyboardBase.DISPLAY_RIGHT`, or other).
+     * @param context Application context for accessing shared preferences.
+     *
+     * - `KeyboardBase.DISPLAY_LEFT`: Increments the conjugate index.
+     * - `KeyboardBase.DISPLAY_RIGHT`: Decrements the conjugate index.
+     * - Other: Index remains unchanged.
+     *
+     * The function also saves the new index and triggers the IME to update the toolbar.
+     */
+    private fun handleConjugateKeys(
+        code: Int,
+        context: Context,
+    ) {
+        Log.i("ALPHA", "Conjugate key was clicked")
+        val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val currentValue = sharedPreferences.getInt("conjugate_index", 0)
+        val newValue =
+            when (code) {
+                KeyboardBase.DISPLAY_LEFT -> currentValue + 1
+                KeyboardBase.DISPLAY_RIGHT -> currentValue - 1
+                else -> currentValue
+            }
+        editor.putInt("conjugate_index", newValue)
+        editor.apply()
+        ime.switchToToolBar()
+        Log.i("ALPHA", "$newValue")
     }
 
     /**
@@ -122,6 +159,10 @@ class KeyHandler(
     private fun handleEnterKey() {
         if (ime.currentState == ScribeState.IDLE || ime.currentState == ScribeState.SELECT_COMMAND) {
             ime.handleKeycodeEnter(ime.keyboardBinding, false)
+        } else if (ime.currentState == ScribeState.CONJUGATE) {
+            ime.handleKeycodeEnter(ime.keyboardBinding, false)
+            ime.currentState = ScribeState.SELECT_VERB_CONJUNCTION
+            ime.updateUI()
         } else {
             ime.handleKeycodeEnter(ime.keyboardBinding, true)
             ime.currentState = ScribeState.IDLE
