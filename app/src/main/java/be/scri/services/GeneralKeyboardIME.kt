@@ -637,13 +637,40 @@ abstract class GeneralKeyboardIME(
         conjugateOutput: Map<String, List<String>>,
         isDarkMode: Boolean,
     ) {
-        val keyCodeMap = mapOf(
-            "3x2" to listOf(1001, 1002, 1003, 1004, 1005, 1006),
-            "1x1" to listOf(1041),
-            "1x3" to listOf(1021, 1022, 1023),
-            "2x1" to listOf(1031, 1032),
-            "2x2" to listOf(1011, 1012, 1013, 1014),
-        )
+        val keyCodeMap =
+            mapOf(
+                "3x2" to
+                    listOf(
+                        KeyboardBase.CODE_FPS,
+                        KeyboardBase.CODE_FPP,
+                        KeyboardBase.CODE_SPS,
+                        KeyboardBase.CODE_SPP,
+                        KeyboardBase.CODE_TPS,
+                        KeyboardBase.CODE_TPP,
+                    ),
+                "1x1" to
+                    listOf(
+                        KeyboardBase.CODE_1X1,
+                    ),
+                "1x3" to
+                    listOf(
+                        KeyboardBase.CODE_1X3_LEFT,
+                        KeyboardBase.CODE_1X3_CENTER,
+                        KeyboardBase.CODE_1X3_RIGHT,
+                    ),
+                "2x1" to
+                    listOf(
+                        KeyboardBase.CODE_2X1_TOP,
+                        KeyboardBase.CODE_2X1_BOTTOM,
+                    ),
+                "2x2" to
+                    listOf(
+                        KeyboardBase.CODE_TL,
+                        KeyboardBase.CODE_TR,
+                        KeyboardBase.CODE_BL,
+                        KeyboardBase.CODE_BR,
+                    ),
+            )
 
         val keyCodes = keyCodeMap[conjugateMode] ?: return
         val entry = conjugateOutput.entries.elementAtOrNull(startIndex) ?: return
@@ -654,19 +681,17 @@ abstract class GeneralKeyboardIME(
             isUserDarkMode = isDarkMode,
             word = conjugateOutput["word"]?.firstOrNull(),
         )
-        Log.i("MY-TAG","I am executing for the 2x2 the conjugate labels are $conjugateOutput ")
+        Log.i("MY-TAG", "I am executing for the 2x2 the conjugate labels are $conjugateOutput ")
         val labelList = conjugateLabels.toList()
         keyCodes.forEachIndexed { index, code ->
             val label = values.getOrNull(index) ?: ""
             val labelView = labelList.getOrNull(index)
             if (labelView != null) {
                 keyboardView?.setKeyLabel(label, labelView, code)
-            }
-            else {
+            } else {
                 keyboardView?.setKeyLabel(label, " ", code)
             }
         }
-
     }
 
     /**
@@ -821,11 +846,12 @@ abstract class GeneralKeyboardIME(
      */
     private fun saveConjugateModeType(language: String) {
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-        val mode = when (language) {
-            "Swedish" -> "2x2"
-            "German", "French", "Russian", "Italian", "Spanish", "Portuguese", "English" -> "3x2"
-            else -> "none"
-        }
+        val mode =
+            when (language) {
+                "Swedish" -> "2x2"
+                "German", "French", "Russian", "Italian", "Spanish", "Portuguese", "English" -> "3x2"
+                else -> "none"
+            }
         sharedPref.edit {
             putString("conjugate_mode_type", mode)
         }
@@ -1583,7 +1609,14 @@ abstract class GeneralKeyboardIME(
         val isCommandBarMode = commandBarState == true
 
         if (isConjugate || isCommandBarMode) {
-            val rawInput = binding?.commandBar?.text?.toString()?.trim()?.dropLast(1).orEmpty()
+            val rawInput =
+                binding
+                    ?.commandBar
+                    ?.text
+                    ?.toString()
+                    ?.trim()
+                    ?.dropLast(1)
+                    .orEmpty()
 
             if (isConjugate) {
                 Log.i("ALPHA", "Inside CONJUGATE mode")
@@ -1591,11 +1624,12 @@ abstract class GeneralKeyboardIME(
                 currentState = ScribeState.SELECT_VERB_CONJUNCTION
             }
 
-            val processedOutput = when (currentState) {
-                ScribeState.PLURAL -> getPluralRepresentation(rawInput).orEmpty()
-                ScribeState.TRANSLATE -> getTranslation(language, rawInput)
-                else -> rawInput
-            }
+            val processedOutput =
+                when (currentState) {
+                    ScribeState.PLURAL -> getPluralRepresentation(rawInput).orEmpty()
+                    ScribeState.TRANSLATE -> getTranslation(language, rawInput)
+                    else -> rawInput
+                }
 
             if (isCommandBarMode) {
                 val output = if (processedOutput.length > rawInput.length) "$processedOutput " else processedOutput
@@ -1614,7 +1648,6 @@ abstract class GeneralKeyboardIME(
             }
         }
     }
-
 
     /**
      * Handles the change of input mode in the keyboard.

@@ -90,7 +90,12 @@ class KeyboardBase {
         const val CODE_TL = 1012
         const val CODE_BR = 1013
         const val CODE_BL = 1014
-
+        const val CODE_1X1 = 1041
+        const val CODE_1X3_LEFT = 1021
+        const val CODE_1X3_CENTER = 1022
+        const val CODE_1X3_RIGHT = 1023
+        const val CODE_2X1_TOP = 1031
+        const val CODE_2X1_BOTTOM = 1032
 
         /**
          * Retrieves the dimension or fraction value from the attributes, adjusting the base value if necessary.

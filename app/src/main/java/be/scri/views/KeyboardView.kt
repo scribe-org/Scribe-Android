@@ -303,13 +303,13 @@ class KeyboardView
             private const val KEY_HEIGHT = 240
         }
 
-        private var _popupBinding: KeyboardPopupKeyboardBinding? = null
+        private var popupBindingInternal: KeyboardPopupKeyboardBinding? = null
         private val popupBinding: KeyboardPopupKeyboardBinding
             get() {
-                if (_popupBinding == null) {
-                    _popupBinding = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
+                if (popupBindingInternal == null) {
+                    popupBindingInternal = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
                 }
-                return _popupBinding!!
+                return popupBindingInternal!!
             }
 
         var setPreview: Boolean = true
@@ -369,63 +369,62 @@ class KeyboardView
             return earlierValue
         }
 
-    fun setKeyLabel(
-        label: String,
-        smallTextLabel: String,
-        code: Int,
-    ) {
-        when (code) {
-            KeyboardBase.CODE_FPS -> {
-                mKeyLabelFPS = label
-                topSmallLabelFPS = smallTextLabel
-            }
-            KeyboardBase.CODE_FPP -> {
-                mKeyLabelFPP = label
-                topSmallLabelFPP = smallTextLabel
-            }
-            KeyboardBase.CODE_SPS -> {
-                mKeyLabelSPS = label
-                topSmallLabelSPS = smallTextLabel
-            }
-            KeyboardBase.CODE_SPP -> {
-                mKeyLabelSPP = label
-                topSmallLabelSPP = smallTextLabel
-            }
-            KeyboardBase.CODE_TPS -> {
-                mKeyLabelTPS = label
-                topSmallLabelTPS = smallTextLabel
-            }
-            KeyboardBase.CODE_TPP -> {
-                mKeyLabelTPP = label
-                topSmallLabelTPP = smallTextLabel
-            }
-            KeyboardBase.CODE_TR -> {
-                mKeyLabelTR = label
-                topSmallLabelTR = smallTextLabel
-            }
-            KeyboardBase.CODE_TL -> {
-                mKeyLabelTL = label
-                topSmallLabelTL = smallTextLabel
-            }
-            KeyboardBase.CODE_BR -> {
-                mKeyLabelBR = label
-                topSmallLabelBR = smallTextLabel
-            }
-            KeyboardBase.CODE_BL -> {
-                mKeyLabelBL = label
-                topSmallLabelBL = smallTextLabel
+        fun setKeyLabel(
+            label: String,
+            smallTextLabel: String,
+            code: Int,
+        ) {
+            when (code) {
+                KeyboardBase.CODE_FPS -> {
+                    mKeyLabelFPS = label
+                    topSmallLabelFPS = smallTextLabel
+                }
+                KeyboardBase.CODE_FPP -> {
+                    mKeyLabelFPP = label
+                    topSmallLabelFPP = smallTextLabel
+                }
+                KeyboardBase.CODE_SPS -> {
+                    mKeyLabelSPS = label
+                    topSmallLabelSPS = smallTextLabel
+                }
+                KeyboardBase.CODE_SPP -> {
+                    mKeyLabelSPP = label
+                    topSmallLabelSPP = smallTextLabel
+                }
+                KeyboardBase.CODE_TPS -> {
+                    mKeyLabelTPS = label
+                    topSmallLabelTPS = smallTextLabel
+                }
+                KeyboardBase.CODE_TPP -> {
+                    mKeyLabelTPP = label
+                    topSmallLabelTPP = smallTextLabel
+                }
+                KeyboardBase.CODE_TR -> {
+                    mKeyLabelTR = label
+                    topSmallLabelTR = smallTextLabel
+                }
+                KeyboardBase.CODE_TL -> {
+                    mKeyLabelTL = label
+                    topSmallLabelTL = smallTextLabel
+                }
+                KeyboardBase.CODE_BR -> {
+                    mKeyLabelBR = label
+                    topSmallLabelBR = smallTextLabel
+                }
+                KeyboardBase.CODE_BL -> {
+                    mKeyLabelBL = label
+                    topSmallLabelBL = smallTextLabel
+                }
             }
         }
-    }
 
-
-    private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
+        private var keyboardBindingInternal: KeyboardViewKeyboardBinding? = null
         val keyboardBinding: KeyboardViewKeyboardBinding
             get() {
-                if (_keyboardBinding == null) {
-                    _keyboardBinding = KeyboardViewKeyboardBinding.inflate(LayoutInflater.from(context))
+                if (keyboardBindingInternal == null) {
+                    keyboardBindingInternal = KeyboardViewKeyboardBinding.inflate(LayoutInflater.from(context))
                 }
-                return _keyboardBinding!!
+                return keyboardBindingInternal!!
             }
 
         init {
@@ -900,7 +899,6 @@ class KeyboardView
                             key.topSmallNumber = topSmallLabelBR
                         }
                     }
-
 
                     canvas.translate(key.x.toFloat(), key.y.toFloat())
                     if (label?.isNotEmpty() == true) {
