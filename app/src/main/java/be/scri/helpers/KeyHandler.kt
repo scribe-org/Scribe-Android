@@ -50,8 +50,8 @@ class KeyHandler(
     private fun updateKeyboardState(code: Int) {
         ime.lastWord = ime.getLastWordBeforeCursor()
         Log.d("Debug", "${ime.lastWord}")
-        ime.autoSuggestEmojis = ime.findEmojisForLastWord(ime.emojiKeywords, ime.lastWord)
-        ime.checkIfPluralWord = ime.findWhetherWordIsPlural(ime.pluralWords, ime.lastWord)
+        ime.autoSuggestEmojis = ime.emojiKeywords?.let { ime.findEmojisForLastWord(it, ime.lastWord) }
+        ime.checkIfPluralWord = ime.pluralWords?.let { ime.findWhetherWordIsPlural(it, ime.lastWord) } == true
 
         Log.i("MY-TAG", "${ime.checkIfPluralWord}")
         Log.d("Debug", "${ime.autoSuggestEmojis}")

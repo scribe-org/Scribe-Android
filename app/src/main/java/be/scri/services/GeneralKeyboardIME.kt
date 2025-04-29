@@ -45,7 +45,6 @@ import be.scri.helpers.english.ENInterfaceVariables
 import be.scri.helpers.french.FRInterfaceVariables
 import be.scri.helpers.german.DEInterfaceVariables
 import be.scri.helpers.italian.ITInterfaceVariables
-import be.scri.helpers.keyboardDBHelper.ConjugateDataManager
 import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
@@ -102,11 +101,13 @@ abstract class GeneralKeyboardIME(
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
 
     private lateinit var dbHelper: DatabaseHelper
-    lateinit var emojiKeywords: HashMap<String, MutableList<String>>
-    var emojiMaxKeywordLength: Int = 0
-    lateinit var nounKeywords: HashMap<String, List<String>>
-    lateinit var pluralWords: List<String>
-    lateinit var caseAnnotation: HashMap<String, MutableList<String>>
+    var emojiKeywords: HashMap<String, MutableList<String>>? = null
+    private lateinit var conjugateOutput: Map<String, List<String>>
+    private lateinit var conjugateLabels: Set<String>
+    private var emojiMaxKeywordLength: Int = 0
+    private lateinit var nounKeywords: HashMap<String, List<String>>
+    var pluralWords: List<String>? = null
+    private lateinit var caseAnnotation: HashMap<String, MutableList<String>>
     var emojiAutoSuggestionEnabled: Boolean = false
     var lastWord: String? = null
     var autoSuggestEmojis: MutableList<String>? = null
@@ -115,7 +116,7 @@ abstract class GeneralKeyboardIME(
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
     private val commandCursor = "│"
-    val prepAnnotationConversionDict =
+    private val prepAnnotationConversionDict =
         mapOf(
             "German" to mapOf("Acc" to "Akk"),
             "Russian" to
@@ -129,7 +130,7 @@ abstract class GeneralKeyboardIME(
                 ),
         )
 
-    val nounAnnotationConversionDict =
+    private val nounAnnotationConversionDict =
         mapOf(
             "Swedish" to mapOf("C" to "U"),
             "Russian" to
@@ -141,7 +142,7 @@ abstract class GeneralKeyboardIME(
                 ),
         )
 
-    val translatePlaceholder =
+    private val translatePlaceholder =
         mapOf(
             "EN" to ENInterfaceVariables.TRANSLATE_KEY_LBL,
             "ES" to ESInterfaceVariables.TRANSLATE_KEY_LBL,
@@ -153,7 +154,7 @@ abstract class GeneralKeyboardIME(
             "SV" to SVInterfaceVariables.TRANSLATE_KEY_LBL,
         )
 
-    val conjugatePlaceholder =
+    private val conjugatePlaceholder =
         mapOf(
             "EN" to ENInterfaceVariables.CONJUGATE_KEY_LBL,
             "ES" to ESInterfaceVariables.CONJUGATE_KEY_LBL,
@@ -165,7 +166,7 @@ abstract class GeneralKeyboardIME(
             "SV" to SVInterfaceVariables.CONJUGATE_KEY_LBL,
         )
 
-    val pluralPlaceholder =
+    private val pluralPlaceholder =
         mapOf(
             "EN" to ENInterfaceVariables.PLURAL_KEY_LBL,
             "ES" to ESInterfaceVariables.PLURAL_KEY_LBL,
@@ -179,7 +180,7 @@ abstract class GeneralKeyboardIME(
 
     internal var currentState: ScribeState = ScribeState.IDLE
     internal lateinit var keyboardBinding: KeyboardViewKeyboardBinding
-    var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
+    private var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
 
     enum class ScribeState {
         IDLE,
@@ -255,19 +256,10 @@ abstract class GeneralKeyboardIME(
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
-
-        // First set the keyboard
         keyboardView!!.setKeyboard(keyboard!!)
-
-        // Then set the key label
-        keyboardView!!.setKeyLabel("Hello World")
-
-        // Make sure to invalidate all keys, not just the view
         keyboardView!!.invalidateAllKeys()
-
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
-
         return keyboardHolder
     }
 
@@ -323,9 +315,8 @@ abstract class GeneralKeyboardIME(
         pluralWords = dbHelper.checkIfWordIsPlural(languageAlias)!!
         nounKeywords = dbHelper.findGenderOfWord(languageAlias)
         caseAnnotation = dbHelper.findCaseAnnnotationForPreposition(languageAlias)
-        dbHelper.getConjugateData(languageAlias)
-        Log.i("ALPHA","The noun keywords are $nounKeywords")
-        Log.i("MY-TAG", nounKeywords.toString())
+        conjugateOutput = dbHelper.getConjugateData(languageAlias, "wissen")
+        conjugateLabels = dbHelper.getConjugateLabels(languageAlias)
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
     }
@@ -479,10 +470,14 @@ abstract class GeneralKeyboardIME(
      * This function is responsible for modifying the UI elements of the command bar
      * to provide appropriate hints and prompts to the user.
      */
-    private fun updateCommandBarHintAndPrompt(isUserDarkMode: Boolean? = null) {
+    private fun updateCommandBarHintAndPrompt(
+        isUserDarkMode: Boolean? = null,
+        text: String? = null,
+        word: String? = null,
+    ) {
         val commandBarButton = keyboardBinding.commandBar
-        val hintMessage = HintUtils.getCommandBarHint(currentState, language)
-        val promptText = HintUtils.getPromptText(currentState, language, context = this)
+        val hintMessage = HintUtils.getCommandBarHint(currentState, language, word)
+        val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
         commandBarButton.hint = hintMessage
@@ -492,6 +487,7 @@ abstract class GeneralKeyboardIME(
             commandBarButton.setTextColor(getColor(white))
             commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
             promptTextView.setTextColor(getColor(white))
+
             promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
         } else {
@@ -541,14 +537,13 @@ abstract class GeneralKeyboardIME(
      * This function is responsible for refreshing or modifying the UI elements
      * of the keyboard based on the current state or input.
      */
-    fun updateUI() {
+    internal fun updateUI() {
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         when (currentState) {
             ScribeState.IDLE -> {
                 setupIdleView()
                 handleTextSizeForSuggestion(binding)
                 initializeEmojiButtons()
-                keyboardView!!.setKeyLabel("Hello world")
                 keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
                 keyboardView!!.setKeyboard(keyboard!!)
                 updateButtonVisibility(emojiAutoSuggestionEnabled)
@@ -557,6 +552,9 @@ abstract class GeneralKeyboardIME(
             ScribeState.SELECT_COMMAND -> {
                 binding.translateBtn.textSize = SUGGESTION_SIZE
                 setupSelectCommandView()
+            }
+            ScribeState.SELECT_VERB_CONJUNCTION -> {
+                switchToToolBar()
             }
             else -> switchToToolBar()
         }
@@ -568,7 +566,7 @@ abstract class GeneralKeyboardIME(
      * This function is responsible for changing the current input method
      * to have toolbar interface, allowing the user to interact with the toolbar.
      */
-    private fun switchToToolBar() {
+    internal fun switchToToolBar() {
         keyboardBinding = initializeKeyboardBinding()
         val keyboardHolder = keyboardBinding.root
 
@@ -580,16 +578,25 @@ abstract class GeneralKeyboardIME(
         updateToolBarTheme(isDarkMode)
 
         handleModeChange(keyboardSymbols, keyboardView, this)
-
+        // Checkpoint 1
         val keyboardXmlId =
-            if (currentState == ScribeState.TRANSLATE) {
-                val language = getPreferredTranslationLanguage(this, language)
-                baseKeyboardOfAnyLanguage(language)
-            } else if (currentState == ScribeState.CONJUGATE) {
-                R.xml.conjugate_view_3x2
-
-            } else {
-                getKeyboardLayoutXML()
+            when (currentState) {
+                ScribeState.TRANSLATE -> {
+                    val language = getPreferredTranslationLanguage(this, language)
+                    baseKeyboardOfAnyLanguage(language)
+                }
+                ScribeState.SELECT_VERB_CONJUNCTION -> {
+                    saveConjugateModeType(language)
+                    when (language) {
+                        "English" -> R.xml.conjugate_view_3x2
+                        "Swedish" -> R.xml.conjugate_view_2x2
+                        "Russian" -> R.xml.conjugate_view_2x2
+                        else -> R.xml.conjugate_view_3x2
+                    }
+                }
+                else -> {
+                    getKeyboardLayoutXML()
+                }
             }
 
         keyboard = KeyboardBase(this, keyboardXmlId, enterKeyType)
@@ -605,9 +612,61 @@ abstract class GeneralKeyboardIME(
             handleTextSizeForSuggestion(binding)
             updateUI()
         }
+        val prefs = getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
+        var conjugateIndex = prefs.getInt("conjugate_index", 0)
+
+        if (conjugateIndex < 0) {
+            conjugateIndex = 0
+            prefs.edit { putInt("conjugate_index", 0) }
+        } else if (conjugateIndex > conjugateOutput.keys.count() - 2) {
+            conjugateIndex = conjugateOutput.keys.count() - 2
+            prefs.edit { putInt("conjugate_index", conjugateOutput.keys.count() - 2) }
+        }
+        Log.i("MY-TAG", "I am outside the 2x2 and the conjugate output is $conjugateOutput")
+        when (language) {
+            "Swedish" -> setUpConjugateKeys(conjugateIndex, conjugateMode = "2x2", conjugateOutput = conjugateOutput, isDarkMode = isDarkMode)
+            else -> setUpConjugateKeys(conjugateIndex, conjugateMode = "3x2", conjugateOutput = conjugateOutput, isDarkMode = isDarkMode)
+        }
 
         setInputView(keyboardHolder)
-        updateCommandBarHintAndPrompt(isDarkMode)
+    }
+
+    private fun setUpConjugateKeys(
+        startIndex: Int,
+        conjugateMode: String,
+        conjugateOutput: Map<String, List<String>>,
+        isDarkMode: Boolean,
+    ) {
+        val keyCodeMap = mapOf(
+            "3x2" to listOf(1001, 1002, 1003, 1004, 1005, 1006),
+            "1x1" to listOf(1041),
+            "1x3" to listOf(1021, 1022, 1023),
+            "2x1" to listOf(1031, 1032),
+            "2x2" to listOf(1011, 1012, 1013, 1014),
+        )
+
+        val keyCodes = keyCodeMap[conjugateMode] ?: return
+        val entry = conjugateOutput.entries.elementAtOrNull(startIndex) ?: return
+        val values = entry.value
+
+        updateCommandBarHintAndPrompt(
+            text = entry.key,
+            isUserDarkMode = isDarkMode,
+            word = conjugateOutput["word"]?.firstOrNull(),
+        )
+        Log.i("MY-TAG","I am executing for the 2x2 the conjugate labels are $conjugateOutput ")
+        val labelList = conjugateLabels.toList()
+        keyCodes.forEachIndexed { index, code ->
+            val label = values.getOrNull(index) ?: ""
+            val labelView = labelList.getOrNull(index)
+            if (labelView != null) {
+                keyboardView?.setKeyLabel(label, labelView, code)
+            }
+            else {
+                keyboardView?.setKeyLabel(label, " ", code)
+            }
+        }
+
     }
 
     /**
@@ -735,10 +794,7 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", "CONJUGATE STATE")
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.CONJUGATE
-            saveConjugateModeType("3x2")
             updateUI()
-            // Implemnet the function that renders the entire conjugate view with the 3x2 mode.
-            keyboardView!!.setKeyLabel("Hello world")
         }
         binding.pluralBtn.setOnClickListener {
             Log.i("MY-TAG", "PLURAL STATE")
@@ -763,11 +819,15 @@ abstract class GeneralKeyboardIME(
      * @param mode The conjugate mode type to be saved, represented as a string.
      *              This can be a mode like "none", "3x2", or any other mode type.
      */
-    private fun saveConjugateModeType(mode: String) {
+    private fun saveConjugateModeType(language: String) {
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
+        val mode = when (language) {
+            "Swedish" -> "2x2"
+            "German", "French", "Russian", "Italian", "Spanish", "Portuguese", "English" -> "3x2"
+            else -> "none"
+        }
+        sharedPref.edit {
             putString("conjugate_mode_type", mode)
-            apply()
         }
     }
 
@@ -789,8 +849,6 @@ abstract class GeneralKeyboardIME(
             }
         }
     }
-
-    
 
     /**
      * Initializes and returns the binding for the keyboard view.
@@ -907,9 +965,7 @@ abstract class GeneralKeyboardIME(
             Log.i("MY-TAG", nounKeywords[word].toString())
             val gender = nounKeywords[lowerCaseWord]
             if (gender != null) {
-                Log.d("Debug", "Gender for '$word': $gender")
-                Log.i("MY-TAG", pluralWords.contains(lastWord).toString())
-                if (pluralWords.any { it.equals(lastWord, ignoreCase = true) }) {
+                if (pluralWords?.any { it.equals(lastWord, ignoreCase = true) } == true) {
                     Log.i("MY-TAG", "Plural Words : $pluralWords")
                     isSingularAndPlural = true
                     Log.i("MY-TAG", "isSingularPlural Updated to true")
@@ -1031,7 +1087,7 @@ abstract class GeneralKeyboardIME(
      * This function is responsible for providing suggestions for pluralizing words
      * based on the current context and user input.
      */
-    fun handlePluralAutoSuggest() {
+    private fun handlePluralAutoSuggest() {
         var(colorRes, text) = handleColorAndTextForNounType(nounType = "PL")
         text = "PL"
         colorRes = R.color.annotateOrange
@@ -1057,7 +1113,7 @@ abstract class GeneralKeyboardIME(
      * @param input The input data to be processed.
      * @return The result of processing the input.
      */
-    fun handleSingleType(
+    private fun handleSingleType(
         singleTypeSuggestion: List<String>?,
         type: String? = null,
     ) {
@@ -1111,7 +1167,7 @@ abstract class GeneralKeyboardIME(
      *
      * @param binding The binding object for the keyboard view command options.
      */
-    fun handleTextSize(binding: KeyboardViewCommandOptionsBinding) {
+    private fun handleTextSize(binding: KeyboardViewCommandOptionsBinding) {
         binding.translateBtn.textSize = NOUN_TYPE_SIZE
     }
 
@@ -1124,7 +1180,7 @@ abstract class GeneralKeyboardIME(
      * @param noun The noun to be processed.
      * @return The processed noun in the desired format.
      */
-    fun handleMultipleNounFormats(
+    private fun handleMultipleNounFormats(
         multipleTypeSuggestion: List<String>?,
         type: String? = null,
     ) {
@@ -1159,7 +1215,7 @@ abstract class GeneralKeyboardIME(
      *
      * @param text The input text that needs to be processed for nouns.
      */
-    fun handleTextForNouns(
+    private fun handleTextForNouns(
         leftType: String,
         rightType: String,
         binding: KeyboardViewCommandOptionsBinding,
@@ -1199,7 +1255,7 @@ abstract class GeneralKeyboardIME(
      *
      * @param text The input text to be processed for prepositions.
      */
-    fun handleTextForPreposition(
+    private fun handleTextForPreposition(
         leftType: String,
         rightType: String,
         binding: KeyboardViewCommandOptionsBinding,
@@ -1238,7 +1294,7 @@ abstract class GeneralKeyboardIME(
      * @return A pair containing an integer and a string. The integer represents the status code,
      *         and the string contains the annotated text.
      */
-    fun handleTextForCaseAnnotation(nounType: String): Pair<Int, String> {
+    private fun handleTextForCaseAnnotation(nounType: String): Pair<Int, String> {
         val suggestionMap =
             mapOf(
                 "genitive case" to Pair(md_grey_black_dark, processValuesForPreposition(language, "Gen")),
@@ -1260,7 +1316,7 @@ abstract class GeneralKeyboardIME(
      * @param nounType The type of noun for which the color and text need to be determined.
      * @return A pair containing the color (as an Int) and the text (as a String) corresponding to the noun type.
      */
-    fun handleColorAndTextForNounType(nounType: String): Pair<Int, String> {
+    private fun handleColorAndTextForNounType(nounType: String): Pair<Int, String> {
         val suggestionMap =
             mapOf(
                 "PL" to Pair(R.color.annotateOrange, "PL"),
@@ -1283,7 +1339,7 @@ abstract class GeneralKeyboardIME(
      * @param value The input value that needs to be processed for nouns.
      * @return The processed result after handling nouns.
      */
-    fun processValueForNouns(
+    private fun processValueForNouns(
         language: String,
         text: String,
     ): String {
@@ -1302,7 +1358,7 @@ abstract class GeneralKeyboardIME(
      * @param values The list of values to be processed.
      * @return The determined preposition based on the processed values.
      */
-    fun processValuesForPreposition(
+    private fun processValuesForPreposition(
         language: String,
         text: String,
     ): String {
@@ -1339,7 +1395,7 @@ abstract class GeneralKeyboardIME(
      *
      * @param binding The binding object for the keyboard view command options.
      */
-    fun handleTextSizeForSuggestion(binding: KeyboardViewCommandOptionsBinding) {
+    private fun handleTextSizeForSuggestion(binding: KeyboardViewCommandOptionsBinding) {
         binding.translateBtn.textSize = SUGGESTION_SIZE
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         if (isUserDarkMode) {
@@ -1376,7 +1432,7 @@ abstract class GeneralKeyboardIME(
                 // Case 2: Has previous word
                 hasSpace -> {
                     val lastWord = previousText.substring(lastSpaceIndex + 1)
-                    if (emojiKeywords.containsKey(lastWord.lowercase())) {
+                    if (emojiKeywords?.containsKey(lastWord.lowercase()) == true) {
                         inputConnection.deleteSurroundingText(lastWord.length, 0)
                         inputConnection.commitText(emoji, 1)
                     } else {
@@ -1386,7 +1442,7 @@ abstract class GeneralKeyboardIME(
 
                 // Case 3: Entire text is the word
                 else -> {
-                    if (emojiKeywords.containsKey(previousText.lowercase())) {
+                    if (emojiKeywords?.containsKey(previousText.lowercase()) == true) {
                         inputConnection.deleteSurroundingText(previousText.length, 0)
                         inputConnection.commitText(emoji, 1)
                     } else {
@@ -1523,26 +1579,32 @@ abstract class GeneralKeyboardIME(
         val inputConnection = currentInputConnection
         val imeOptionsActionId = getImeOptionsActionId()
 
-        if (commandBarState == true) {
-            val commandBarInput =
-                binding
-                    ?.commandBar
-                    ?.text
-                    .toString()
-                    .trim()
-                    .dropLast(1)
-            lateinit var commandModeOutput: String
-            commandModeOutput =
-                when (currentState) {
-                    ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
-                    ScribeState.TRANSLATE -> getTranslation(language, commandBarInput)
-                    else -> commandBarInput
-                }
-            if (commandModeOutput.length > commandBarInput.length) {
-                commandModeOutput = "$commandModeOutput "
+        val isConjugate = currentState == ScribeState.CONJUGATE
+        val isCommandBarMode = commandBarState == true
+
+        if (isConjugate || isCommandBarMode) {
+            val rawInput = binding?.commandBar?.text?.toString()?.trim()?.dropLast(1).orEmpty()
+
+            if (isConjugate) {
+                Log.i("ALPHA", "Inside CONJUGATE mode")
+                saveConjugateModeType(language)
+                currentState = ScribeState.SELECT_VERB_CONJUNCTION
             }
-            inputConnection.commitText(commandModeOutput, 1)
+
+            val processedOutput = when (currentState) {
+                ScribeState.PLURAL -> getPluralRepresentation(rawInput).orEmpty()
+                ScribeState.TRANSLATE -> getTranslation(language, rawInput)
+                else -> rawInput
+            }
+
+            if (isCommandBarMode) {
+                val output = if (processedOutput.length > rawInput.length) "$processedOutput " else processedOutput
+                inputConnection.commitText(output, 1)
+            }
+
             binding?.commandBar?.text = ""
+            conjugateOutput = dbHelper.getConjugateData(getLanguageAlias(language), processedOutput)
+            Log.i("ALPHA", "Processed input: $rawInput")
         } else {
             if (imeOptionsActionId != IME_ACTION_NONE) {
                 inputConnection.performEditorAction(imeOptionsActionId)
@@ -1552,6 +1614,7 @@ abstract class GeneralKeyboardIME(
             }
         }
     }
+
 
     /**
      * Handles the change of input mode in the keyboard.
