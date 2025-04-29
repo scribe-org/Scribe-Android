@@ -80,6 +80,16 @@ class KeyboardBase {
         const val SHIFT_LOCKED = 2
         const val DISPLAY_LEFT = 2002
         const val DISPLAY_RIGHT = 2001
+        const val CODE_FPS = 1001
+        const val CODE_FPP = 1002
+        const val CODE_SPS = 1003
+        const val CODE_SPP = 1004
+        const val CODE_TPS = 1005
+        const val CODE_TPP = 1006
+        const val CODE_TR = 1011
+        const val CODE_TL = 1012
+        const val CODE_BR = 1013
+        const val CODE_BL = 1014
 
 
         /**
