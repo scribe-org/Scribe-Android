@@ -29,6 +29,20 @@ class SettingsUtilTest {
     }
 
     @Test
+    fun testCheckKeyboardInstallation_False() {
+        val packageName = SettingsUtil.checkKeyboardInstallation(context)
+
+        assertFalse(packageName)
+    }
+
+    @Test
+    fun testGetKeyboardLanguage_Empty() {
+        val keyboardLanguages = SettingsUtil.getKeyboardLanguages(context)
+        val list = arrayListOf<String>()
+        assertEquals(list, keyboardLanguages)
+    }
+
+    @Test
     fun testSetLightDarkMode_SetsDarkModeCorrectly() {
         SettingsUtil.setLightDarkMode(true, context)
 
