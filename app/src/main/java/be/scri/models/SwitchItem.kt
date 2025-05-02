@@ -6,8 +6,14 @@
 
 package be.scri.models
 
+/**
+ * Base class for defining UI items in the application.
+ */
 sealed class Item
 
+/**
+ * Model representing a switch-based item with optional actions.
+ */
 data class SwitchItem(
     val title: String,
     val description: String? = null,
