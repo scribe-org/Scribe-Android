@@ -10,6 +10,10 @@
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Holds language-specific linguistic data used by the Scribe keyboard, such as number representations,
+ * gender categories, and verb conjugation forms.
+ */
 @Serializable
 data class DataContract(
     val numbers: Map<String, String>,
@@ -17,6 +21,9 @@ data class DataContract(
     val conjugations: Map<String, Conjugation>,
 )
 
+/**
+ * Represents different grammatical gender groupings.
+ */
 @Serializable
 data class Genders(
     val canonical: List<String>,
@@ -26,6 +33,9 @@ data class Genders(
     val neuters: List<String>,
 )
 
+/**
+ * Represents verb conjugations by person (1st, 2nd, 3rd) and number (singular/plural).
+ */
 @Serializable
 data class Conjugation(
     val title: String = "",
