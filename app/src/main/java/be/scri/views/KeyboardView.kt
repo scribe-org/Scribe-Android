@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("UnusedPrivateProperty")
 
 package be.scri.views
 
@@ -121,15 +120,13 @@ class KeyboardView
 
             /**
              * Checks if there is text before the current cursor position.
-             * @return true if there is text before the cursor, false otherwise.
+             * @return true if there is text before the cursor and false otherwise.
              */
-
             fun hasTextBeforeCursor(): Boolean
 
             /**
-             * Commits a period after a space character, used in double-tap spacebar scenarios.
+             * Enters a period after a space character, used in double-tap space bar scenarios.
              */
-
             fun commitPeriodAfterSpace()
         }
 
