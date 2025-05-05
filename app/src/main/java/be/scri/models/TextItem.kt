@@ -8,6 +8,9 @@ package be.scri.models
 
 import androidx.fragment.app.Fragment
 
+/**
+ * Model for a text-based item in the UI with optional action and navigation fragment.
+ */
 data class TextItem(
     val text: Int,
     val image: Int,
