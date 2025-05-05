@@ -79,6 +79,9 @@ class KeyboardView
         attrs: AttributeSet?,
         defStyleRes: Int = 0,
     ) : View(context, attrs, defStyleRes) {
+        /**
+         * Listener interface for keyboard actions such as key press, text input, or movement.
+         */
         interface OnKeyboardActionListener {
             /**
              * Called when the user presses a key. This is sent before the [.onKey] is called.
@@ -115,8 +118,15 @@ class KeyboardView
              */
             fun onText(text: String)
 
+            /**
+             * Checks if there is text before the current cursor position.
+             * @return true if there is text before the cursor and false otherwise.
+             */
             fun hasTextBeforeCursor(): Boolean
 
+            /**
+             * Enters a period after a space character, used in double-tap space bar scenarios.
+             */
             fun commitPeriodAfterSpace()
         }
 
@@ -226,6 +236,9 @@ class KeyboardView
         private val blue = (LIGHT_COLOR_BLUE_FACTOR * FULL_ALPHA).toInt()
         private val lightSpecialKey = Color.argb(alpha, red, green, blue)
 
+        /**
+         * Contains constants and configuration values used across KeyboardView.
+         */
         companion object {
             private val LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout()
             private val LONG_PRESSABLE_STATE_SET = intArrayOf(R.attr.state_long_pressable)
@@ -283,6 +296,11 @@ class KeyboardView
         var setPreview: Boolean = true
         var setVibrate: Boolean = true
 
+        /**
+         * Sets the color of the Enter key based on a specific color or theme mode.
+         * @param color The optional color to apply.
+         * @param isDarkMode Whether the dark mode is enabled (optional).
+         */
         fun setEnterKeyColor(
             color: Int? = null,
             isDarkMode: Boolean? = null,
@@ -304,6 +322,12 @@ class KeyboardView
             }
         }
 
+        /**
+         * Sets the icon of the Enter key based on current state.
+         * @param state The current keyboard state.
+         * @param earlierValue Previously assigned Enter key value (optional).
+         * @return The updated Enter key value.
+         */
         fun setEnterKeyIcon(
             state: ScribeState,
             earlierValue: Int? = null,
@@ -496,6 +520,9 @@ class KeyboardView
             }
         }
 
+        /**
+         * Triggers haptic feedback if vibration is enabled in settings.
+         */
         fun vibrateIfNeeded() {
             if (setVibrate) {
                 performHapticFeedback()

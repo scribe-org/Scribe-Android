@@ -62,7 +62,6 @@ comments:
             - '**/test/**'
             - '**/ui/**'
             - '**/services/**'
-            - '**/views/**'
     UndocumentedPublicClass:
         active: true
         excludes: *excludedFolders
