@@ -341,7 +341,7 @@ class KeyboardView
                 }
             }
         }
-    
+
         /**
          * Sets the icon of the Enter key based on current state.
          * @param state The current keyboard state.
