@@ -164,6 +164,10 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
     }
 }
 
+/**
+ * Defines commonly used dimensions for the Settings screen UI.
+ * Includes padding, text sizes, and elevation values.
+ */
 object Dimensions {
     val PaddingLarge = 20.dp
     val PaddingSmallXL = 12.dp

@@ -60,7 +60,6 @@ comments:
             - '**/helpers/**/*Variables.kt'
             - '**/models/**'
             - '**/test/**'
-            - '**/ui/**'
             - '**/services/**'
             - '**/views/**'
     UndocumentedPublicClass:
