@@ -57,6 +57,14 @@ fun PrivacyPolicyScreen(
     }
 }
 
+/**
+ * A composable UI layout that displays a scrollable Privacy Policy screen with a title
+ * and a card-wrapped content block.
+ *
+ * @param title The title text displayed at the top of the screen.
+ * @param modifier [Modifier] used to adjust layout behavior or styling from the caller.
+ * @param content A composable lambda that defines the screen's main content, rendered inside a [Card].
+ */
 @Composable
 fun PrivacyPolicyScreenContent(
     title: String,

@@ -42,6 +42,18 @@ import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 
+/**
+ * A dialog component that displays a hint message when the specified page is visible
+ * and the hint has not been shown before or when the hint has been changed.
+ *
+ * @param pagerState The state of the pager used for controlling page navigation.
+ * @param currentPageIndex The index of the current page to determine when the hint should be shown.
+ * @param sharedPrefsKey The key used to store the hint's visibility status in shared preferences.
+ * @param hintMessageResId The resource ID of the hint message to be displayed in the dialog.
+ * @param isHintChanged A boolean flag indicating whether the hint has been updated and should be shown again.
+ * @param onDismiss A lambda function that is triggered when the dialog is dismissed, passing the current page index.
+ * @param modifier An optional [Modifier] for customizing the UI layout and styling.
+ */
 @Composable
 fun HintDialog(
     pagerState: PagerState,
@@ -88,6 +100,17 @@ fun HintDialog(
     }
 }
 
+/**
+ * A composable function that creates the content of a hint dialog.
+ * It displays a hint message, an icon, and a dismiss button.
+ * The button and icon change based on whether the user is in dark or light mode.
+ * The content is styled with a gradient background and a shadow effect.
+ *
+ * @param text The hint that will be displayed in the dialog content.
+ * @param onDismiss A callback function that is triggered when the "OK" button is clicked, dismissing the dialog.
+ * @param isUserDarkMode A boolean value indicating whether the app is in dark mode.
+ * @param modifier An optional [Modifier] used to customize the layout and styling.
+ */
 @Suppress("MagicNumber")
 @Composable
 fun HintDialogContent(

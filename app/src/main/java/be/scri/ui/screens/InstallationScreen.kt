@@ -310,6 +310,10 @@ fun InstallationScreen(
     }
 }
 
+/**
+ * Defines commonly used dimensions for the Installation screen UI.
+ * Includes padding, text sizes, icon size, and elevation values.
+ */
 object Dimensions {
     val PaddingSmall = 8.dp
     val PaddingMedium = 16.dp
@@ -330,6 +334,9 @@ object Dimensions {
     const val LEFT_LAYOUT_DIRECTION = 0f
 }
 
+/**
+ * Defines commonly used alpha (transparency) values for UI elements.
+ */
 object Alpha {
     const val HIGH = 0.9f
     const val MEDIUM = 0.6f
