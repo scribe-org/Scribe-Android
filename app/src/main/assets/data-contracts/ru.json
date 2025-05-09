@@ -1,28 +1,39 @@
 {
     "numbers": { "nominativeSingular": "nominativePlural" },
     "genders": {
-        "canonical": ["gender"],
-        "feminines": [],
-        "masculines": [],
-        "commons": [],
-        "neuters": []
+      "canonical": ["gender"],
+      "feminines": [],
+      "masculines": [],
+      "commons": [],
+      "neuters": []
     },
     "conjugations": {
+      "1": {
+        "title": "Настоящее",
         "1": {
-            "title": "Настоящее",
-            "1": { "я": "indicativePresentFirstPersonSingular" },
-            "2": { "ты": "indicativePresentFirstPersonPlural" },
-            "3": { "он/она/оно": "indicativePresentSecondPersonSingular" },
-            "4": { "мы": "indicativePresentSecondPersonPlural" },
-            "5": { "вы": "indicativePresentThirdPersonSingular" },
-            "6": { "они": "indicativePresentThirdPersonPlural" }
-        },
-        "2": {
-            "title": "Прошедшее",
-            "1": { "я/ты/она": "feminineIndicativePast" },
-            "2": { "я/ты/он": "masculineIndicativePast" },
-            "3": { "оно": "neuterIndicativePast" },
-            "4": { "мы/вы/они": "indicativePastPlural" }
+          "title": "Настоящее",
+          "Simple": {
+            "я": "indicativePresentFirstPersonSingular",
+            "ты": "indicativePresentFirstPersonPlural",
+            "он/она/оно": "indicativePresentSecondPersonSingular",
+            "мы": "indicativePresentSecondPersonPlural",
+            "вы": "indicativePresentThirdPersonSingular",
+            "они": "indicativePresentThirdPersonPlural"
+          }
         }
+      },
+      "2": {
+        "title": "Прошедшее",
+        "1": {
+          "title": "Прошедшее",
+          "Simple": {
+            "я/ты/она": "feminineIndicativePast",
+            "я/ты/он": "masculineIndicativePast",
+            "оно": "neuterIndicativePast",
+            "мы/вы/они": "indicativePastPlural"
+          }
+        }
+      }
     }
-}
+  }
+  

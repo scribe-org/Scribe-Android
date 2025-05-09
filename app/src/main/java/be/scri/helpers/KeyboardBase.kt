@@ -71,7 +71,6 @@ class KeyboardBase {
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
-        const val SCALING_CONSTANT = 150
         const val KEYCODE_TAB = -30
         const val KEYCODE_CAPS_LOCK = -50
         const val KEYCODE_LEFT_ARROW = -55
@@ -79,6 +78,24 @@ class KeyboardBase {
         const val SHIFT_OFF = 0
         const val SHIFT_ON = 1
         const val SHIFT_LOCKED = 2
+        const val DISPLAY_LEFT = 2002
+        const val DISPLAY_RIGHT = 2001
+        const val CODE_FPS = 1001
+        const val CODE_FPP = 1002
+        const val CODE_SPS = 1003
+        const val CODE_SPP = 1004
+        const val CODE_TPS = 1005
+        const val CODE_TPP = 1006
+        const val CODE_TR = 1011
+        const val CODE_TL = 1012
+        const val CODE_BR = 1013
+        const val CODE_BL = 1014
+        const val CODE_1X1 = 1041
+        const val CODE_1X3_LEFT = 1021
+        const val CODE_1X3_CENTER = 1022
+        const val CODE_1X3_RIGHT = 1023
+        const val CODE_2X1_TOP = 1031
+        const val CODE_2X1_BOTTOM = 1032
 
         /**
          * Retrieves the dimension or fraction value from the attributes, adjusting the base value if necessary.

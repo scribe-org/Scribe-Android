@@ -131,6 +131,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
             ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
             else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
         }
+
         keyboardView!!.setKeyboardHolder()
         keyboardView?.mOnKeyboardActionListener = this
         initializeEmojiButtons()
