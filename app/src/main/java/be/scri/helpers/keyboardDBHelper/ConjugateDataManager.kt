@@ -29,46 +29,39 @@ class ConjugateDataManager(
         language: String,
         jsonData: DataContract?,
         word: String,
-    ): MutableMap<String, List<String>> {
+    ): MutableMap<String, MutableMap<String, Collection<String>>> {
         var result: MutableList<String>
         val conjugationIds = jsonData?.conjugations?.keys
         val result1: MutableMap<String, List<String>> = mutableMapOf()
-        if (conjugationIds != null) {
-            for (id in conjugationIds) {
-                val intId = id.toIntOrNull() ?: continue
-
-                val conjugation = jsonData.conjugations[id]
-                val persons =
-                    listOf(
-                        "firstPerson" to conjugation?.firstPerson,
-                        "secondPerson" to conjugation?.secondPerson,
-                        "thirdPersonSingular" to conjugation?.thirdPersonSingular,
-                        "firstPersonPlural" to conjugation?.firstPersonPlural,
-                        "secondPersonPlural" to conjugation?.secondPersonPlural,
-                        "thirdPersonPlural" to conjugation?.thirdPersonPlural,
+        Log.i("ISSUE-123","The conjugate data is ${jsonData?.conjugations}")
+        val conjugateForms: MutableMap<String , Collection<String>> = mutableMapOf()
+        val finalOutput: MutableMap <String , MutableMap<String,Collection<String>>> = mutableMapOf()
+        for (i in jsonData?.conjugations?.keys!!) {
+            val title = jsonData?.conjugations?.get(i)?.title
+            Log.i("MY-TAG","The keys for the task are ${jsonData?.conjugations?.keys}")
+            val label1 = jsonData.conjugations.get(i)
+            val label2 = label1?.conjugationTypes
+            val keys = label2?.keys
+            val conjugateForms: MutableMap<String , Collection<String>> = mutableMapOf()
+            for (key in keys!!) {
+                val conjugationType = label2[key]
+                val formTitle = conjugationType?.title ?: continue
+                val forms = conjugationType.conjugationForms.values.map { form ->
+                    getTheValueForTheConjugateWord(
+                        word = word,
+                        form = form,
+                        language = language
                     )
-
-                result = mutableListOf()
-                for ((label, personMap) in persons) {
-                    val personValue = personMap?.values?.firstOrNull()
-                    val resultValue =
-                        getTheValueForTheConjugateWord(
-                            word,
-                            personValue,
-                            language = language,
-                        )
-                    Log.i("ALPHA", "Conjugation $intId: $label is $personValue")
-                    Log.i("ALPHA", "Conjugation $intId: $label value is $resultValue")
-
-                    result.add(resultValue)
-                    result1[conjugation?.title!!] = result
                 }
+                conjugateForms[formTitle] = forms
             }
+            if (title != null) {
+                finalOutput[title] = conjugateForms
+            }
+            Log.i("CONJUGATE-ISSUE","The conjugate forms are $conjugateForms")
         }
-        extractConjugateHeadings(jsonData)
-        result1["word"] = listOf(word)
-        Log.i("MY-TAG", "the result1 is $result1")
-        return result1
+        Log.i("CONJUGATE-ISSUE","The final output is $finalOutput")
+        return finalOutput
     }
 
     /**
@@ -79,19 +72,19 @@ class ConjugateDataManager(
      */
     fun extractConjugateHeadings(jsonData: DataContract?): Set<String> {
         val conjugationIds = jsonData?.conjugations?.values
-
-        val keys =
-            conjugationIds
-                ?.flatMap { conjugation ->
-                    listOfNotNull(
-                        conjugation.firstPerson?.keys,
-                        conjugation.secondPerson?.keys,
-                        conjugation.thirdPersonSingular?.keys,
-                        conjugation.firstPersonPlural?.keys,
-                        conjugation.secondPersonPlural?.keys,
-                        conjugation.thirdPersonPlural?.keys,
-                    ).flatten()
-                }?.toSet() ?: emptySet()
+        val keys = setOf("HI","HI","HI","HI")
+//        val keys =
+//            conjugationIds
+//                ?.flatMap { conjugation ->
+//                    listOfNotNull(
+//                        conjugation.firstPerson?.keys,
+//                        conjugation.secondPerson?.keys,
+//                        conjugation.thirdPersonSingular?.keys,
+//                        conjugation.firstPersonPlural?.keys,
+//                        conjugation.secondPersonPlural?.keys,
+//                        conjugation.thirdPersonPlural?.keys,
+//                    ).flatten()
+//                }?.toSet() ?: emptySet()
         Log.i("BETA-TAG", "The conjugate labels are $keys")
         return keys
     }
@@ -155,7 +148,6 @@ class ConjugateDataManager(
         val cursor = db.rawQuery(query, arrayOf(word))
         return if (cursor.moveToFirst()) cursor else null
     }
-
     private fun resolveFallbackForm(
         db: SQLiteDatabase,
         verbCursor: Cursor,
@@ -163,19 +155,33 @@ class ConjugateDataManager(
         form: String,
         language: String,
     ): String {
-        val bracketRegex = Regex("""\[(.*?)\]""")
-        val wordsRegex = Regex("""\b(\w+)\s+(\w+)\b""")
-
-        val bracketPart = bracketRegex.find(form)?.groupValues?.get(1) ?: ""
-        val (first, second) = wordsRegex.find(bracketPart)?.destructured ?: return ""
-
-        val rest = form.replace(bracketRegex, "").trim()
-        val fallbackFields = mutableListOf(first, second, rest)
-
+        var fallbackFields: MutableList<String> = mutableListOf()
+        var resultList : MutableList<String> = mutableListOf()
+        if (language!= "EN") {
+            val bracketRegex = Regex("""\[(.*?)\]""")
+            val wordsRegex = Regex("""\b(\w+)\s+(\w+)\b""")
+            val bracketPart = bracketRegex.find(form)?.groupValues?.get(1) ?: ""
+            val (first, second) = wordsRegex.find(bracketPart)?.destructured ?: return ""
+            val rest = form.replace(bracketRegex, "").trim()
+            fallbackFields = mutableListOf(first, second, rest)
+        }
+        else {
+            val bracketRegex = Regex("""\[(.*?)]""")
+            val bracketContent = bracketRegex.find(form)?.groupValues?.get(1) ?: ""
+            val (first, second) = bracketContent.split(" ").let {
+                when (it.size) {
+                    0 -> "" to ""
+                    1 -> it[0] to ""
+                    else -> it[0] to it[1]
+                }
+            }
+            val rest = form.replace(bracketRegex, "").trim()
+            resultList =  mutableListOf(first, second, rest)
+        }
         return if (language != "EN") {
             resolveFallbackNonEnglish(db, verbCursor, word, fallbackFields)
         } else {
-            resolveFallbackEnglish(db, verbCursor, fallbackFields)
+            resolveFallbackEnglish( verbCursor, resultList )
         }
     }
 
@@ -203,17 +209,12 @@ class ConjugateDataManager(
     }
 
     private fun resolveFallbackEnglish(
-        db: SQLiteDatabase,
         verbCursor: Cursor,
         fields: MutableList<String>,
     ): String {
-        db.rawQuery("SELECT ${fields[0]} FROM verbs WHERE infinitive = ?", arrayOf(fields[1])).use {
-            if (it.moveToFirst()) {
-                fields[1] = it.getString(it.getColumnIndexOrThrow(fields[0]))
-            }
-        }
 
         fields[2] = verbCursor.getString(verbCursor.getColumnIndexOrThrow(fields[2]))
-        return "${fields[1]} ${fields[2]}"
+        Log.i("CONJUGATE-ISSUE","The fields are $fields")
+        return "${fields[0]} ${fields[1]} ${fields[2]}"
     }
 }

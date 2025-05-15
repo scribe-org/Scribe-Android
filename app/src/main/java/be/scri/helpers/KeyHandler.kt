@@ -54,7 +54,7 @@ class KeyHandler(
             KeyboardBase.CODE_1X3_RIGHT,
             KeyboardBase.CODE_2X1_TOP,
             KeyboardBase.CODE_2X1_BOTTOM,
-            -> returnTheConjugateLabels(code)
+            -> returnTheConjugateLabels(code , context = ime.applicationContext)
             else -> handleDefaultKey(code)
         }
 
@@ -214,11 +214,20 @@ class KeyHandler(
         ime.disableAutoSuggest()
     }
 
-    private fun returnTheConjugateLabels(code: Int) {
-        ime.handleConjugateKeys(code)
-        ime.currentState = ScribeState.IDLE
-        ime.switchToCommandToolBar()
-        ime.updateUI()
+    private fun returnTheConjugateLabels(code: Int ,   context: Context) {
+        if (!ime.returnIsSubsequentRequired()) {
+            ime.handleConjugateKeys(code , false)
+            ime.currentState = ScribeState.IDLE
+            ime.switchToCommandToolBar()
+            ime.updateUI()
+        }
+        else {
+
+            ime.setupConjugateKeysByLanguage(conjugateIndex = 0 , true)
+            ime.switchToToolBar(isSubsequentArea = true)
+            val word =  ime.handleConjugateKeys(code , true)
+            ime.setupConjugateSubView(ime.returnSubsequentData() , word)
+        }
     }
 
     /**

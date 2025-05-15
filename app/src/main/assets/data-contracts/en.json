@@ -7,67 +7,128 @@
     "commons": ["NOT_INCLUDED"],
     "neuters": ["NOT_INCLUDED"]
   },
-    "conjugations": {
-      "1": {
-        "title": "Present",
+  "conjugations": {
+    "1": {
+      "title": "Present",
+      "conjugationTypes": {
         "1": {
           "title": "Pr. Simple",
-          "Simple": {
-            "I/you/plural":"simplePresent",
-            "he/she/it":"simplePresentThirdPersonSingular"
+          "conjugationForms": {
+            "I/you/plural": "simplePresent",
+            "he/she/it": "simplePresentThirdPersonSingular"
           }
         },
         "2": {
           "title": "Pr. Perfect",
-          "Perfect": {
-            "I/you/plural":"have englishPastParticiple",
-            "he/she/it":"has englishPastParticiple"
+          "conjugationForms": {
+            "I/you/plural": "[have] pastParticiple",
+            "he/she/it": "[has] pastParticiple"
           }
         },
         "3": {
           "title": "Pr. Continuous",
-          "Continuous": {
-            "participle": "presentParticiple",
-            "you/plural": "are presentParticiple",
-            "I": "am presentParticiple",
-            "he/she/it": "is presentParticiple"
+          "conjugationForms": {
+            "I": "[am] presentParticiple",
+            "you/plural": "[are] presentParticiple",
+            "he/she/it": "[is] presentParticiple"
           }
         },
         "4": {
           "title": "Pr. Perf. Continuous",
-          "Perfect Continuous": {
-            "I/you/plural": "have been presentParticiple",
-            "he/she/it": "has been presentParticiple"
+          "conjugationForms": {
+            "I/you/plural": "[have been] presentParticiple",
+            "he/she/it": "[has been] presentParticiple"
           }
         }
-      },
-      "2": {
-        "title": "Past",
-        "1": {"Simple": "simplePast"},
-        "2": {"Perfect": "had "},
-        "3": {
-          "title": "Past Continuous",
-          "Continuous": {
-            "Participle": "presentParticiple",
-            "I/he/she/it": "was presentParticiple",
-            "you/plural": "were presentParticiple"
+      }
+    },
+    "2": {
+      "title": "Past",
+      "conjugationTypes": {
+        "1": {
+          "title": "Past Simple",
+          "conjugationForms": {
+            "all": "simplePast"
           }
         },
-        "4": {"Perfect Continuous": "had been presentParticiple"}
-      },
-      "3": {
-        "title": "Future",
-        "1": {"Simple": "will infinitive"},
-        "2": {"Perfect": "will have pastParticiple"},
-        "3": {"Continuous": "will be presentParticiple"},
-        "4": {"Perfect Continuous": "will have been presentParticiple"}
-      },
-      "4": {
-        "title": "Conditional",
-        "1": {"Simple": "would infinitive"},
-        "2": {"Perfect": "would have pastParticiple"},
-        "3": {"Continuous": "would be presentParticiple"},
-        "4": {"Perfect Continuous": "would have been presentParticiple"}
+        "2": {
+          "title": "Past Perfect",
+          "conjugationForms": {
+            "all": "[had] pastParticiple"
+          }
+        },
+        "3": {
+          "title": "Past Continuous",
+          "conjugationForms": {
+            "I/he/she/it": "[was] presentParticiple",
+            "you/plural": "[were] presentParticiple"
+          }
+        },
+        "4": {
+          "title": "Past Perf. Continuous",
+          "conjugationForms": {
+            "all": "[had been] presentParticiple"
+          }
+        }
+      }
+    },
+    "3": {
+      "title": "Future",
+      "conjugationTypes": {
+        "1": {
+          "title": "Fut. Simple",
+          "conjugationForms": {
+            "all": "[will] infinitive"
+          }
+        },
+        "2": {
+          "title": "Fut. Perfect",
+          "conjugationForms": {
+            "all": "[will have] pastParticiple"
+          }
+        },
+        "3": {
+          "title": "Fut. Continuous",
+          "conjugationForms": {
+            "all": "[will be] presentParticiple"
+          }
+        },
+        "4": {
+          "title": "Fut. Perf. Continuous",
+          "conjugationForms": {
+            "all": "[will have been] presentParticiple"
+          }
+        }
+      }
+    },
+    "4": {
+      "title": "Conditional",
+      "conjugationTypes": {
+        "1": {
+          "title": "Cond. Simple",
+          "conjugationForms": {
+            "all": "[would] infinitive"
+          }
+        },
+        "2": {
+          "title": "Cond. Perfect",
+          "conjugationForms": {
+            "all": "[would have] pastParticiple"
+          }
+        },
+        "3": {
+          "title": "Cond. Continuous",
+          "conjugationForms": {
+            "all": "[would be] presentParticiple"
+          }
+        },
+        "4": {
+          "title": "Cond. Perf. Continuous",
+          "conjugationForms": {
+            "all": "[would have been] presentParticiple"
+          }
+        }
       }
     }
+  }
 }

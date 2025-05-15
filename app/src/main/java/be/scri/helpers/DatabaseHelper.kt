@@ -186,7 +186,7 @@ class DatabaseHelper(
     fun getConjugateData(
         language: String,
         word: String,
-    ): MutableMap<String, List<String>> =
+    ): MutableMap<String, MutableMap<String, Collection<String>>> =
         dbManagers.conjugateDataManager.getTheConjugateLabels(
             language,
             getRequiredData(language),

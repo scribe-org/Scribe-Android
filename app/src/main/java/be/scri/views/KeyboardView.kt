@@ -205,6 +205,10 @@ class KeyboardView
         var mKeyLabelBL: String = "BL"
         var mKeyLabelBR: String = "BR"
 
+        var mKeyLabel1X3TOP: String = "TOP"
+        var mKeyLabel1X3BOTTOM: String = "BOTTOM"
+        var mKeyLabel1X3LEFT : String = "LEFT"
+
         var topSmallLabelFPS: String = ""
         var topSmallLabelFPP: String = ""
         var topSmallLabelSPS: String = ""
@@ -216,6 +220,9 @@ class KeyboardView
         var topSmallLabelTR: String = ""
         var topSmallLabelBL: String = ""
         var topSmallLabelBR: String = ""
+
+        var mKeyLabel2X1TOP: String = "LEFT"
+        var mKeyLabel2X1BOTTOM: String = "RIGHT"
 
         private var mEnterKeyColor: Int = 0
 
@@ -404,9 +411,24 @@ class KeyboardView
                     mKeyLabelBR = label
                     topSmallLabelBR = smallTextLabel
                 }
+                KeyboardBase.CODE_1X3_CENTER -> {
+                    mKeyLabel1X3TOP = label
+                }
+                KeyboardBase.CODE_1X3_LEFT -> {
+                    mKeyLabel1X3LEFT = label
+                }
+                KeyboardBase.CODE_1X3_RIGHT -> {
+                    mKeyLabel1X3BOTTOM = label
+                }
                 KeyboardBase.CODE_BL -> {
                     mKeyLabelBL = label
                     topSmallLabelBL = smallTextLabel
+                }
+                KeyboardBase.CODE_2X1_BOTTOM -> {
+                    mKeyLabel2X1BOTTOM = label
+                }
+                KeyboardBase.CODE_2X1_TOP -> {
+                    mKeyLabel2X1TOP = label
                 }
             }
         }
@@ -423,6 +445,11 @@ class KeyboardView
                 KeyboardBase.CODE_TL -> mKeyLabelTL
                 KeyboardBase.CODE_BR -> mKeyLabelBR
                 KeyboardBase.CODE_BL -> mKeyLabelBL
+                KeyboardBase.CODE_2X1_BOTTOM -> mKeyLabel2X1BOTTOM
+                KeyboardBase.CODE_2X1_TOP -> mKeyLabel2X1TOP
+                KeyboardBase.CODE_1X3_CENTER -> mKeyLabel1X3TOP
+                KeyboardBase.CODE_1X3_LEFT -> mKeyLabel1X3LEFT
+                KeyboardBase.CODE_1X3_RIGHT -> mKeyLabel1X3BOTTOM
                 else -> null
             }
 
@@ -914,6 +941,21 @@ class KeyboardView
                         KeyboardBase.CODE_BR -> {
                             label = mKeyLabelBR
                             key.topSmallNumber = topSmallLabelBR
+                        }
+                        KeyboardBase.CODE_2X1_TOP -> {
+                            label = mKeyLabel2X1TOP
+                        }
+                        KeyboardBase.CODE_2X1_BOTTOM -> {
+                            label = mKeyLabel2X1BOTTOM
+                        }
+                        KeyboardBase.CODE_1X3_CENTER -> {
+                            label = mKeyLabel1X3LEFT
+                        }
+                        KeyboardBase.CODE_1X3_LEFT -> {
+                            label = mKeyLabel1X3TOP
+                        }
+                        KeyboardBase.CODE_1X3_RIGHT -> {
+                            label = mKeyLabel1X3BOTTOM
                         }
                     }
 
