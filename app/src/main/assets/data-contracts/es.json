@@ -13,23 +13,26 @@
     "conjugations": {
       "1": {
         "title": "Presente",
-        "1": {
+        "conjugationTypes": {
+          "1": {
           "title": "Presente",
-          "Simple": {
+          "conjugationForms": {
             "yo": "indicativePresentFirstPersonSingular",
             "tú": "indicativePresentFirstPersonPlural",
             "él/ella/Ud.": "indicativePresentSecondPersonSingular",
             "nosotros": "indicativePresentSecondPersonPlural",
             "vosotros": "indicativePresentThirdPersonSingular",
             "ellos/ellas/Uds.": "indicativePresentThirdPersonPlural"
+            }
           }
         }
       },
       "2": {
         "title": "Pretérito",
-        "1": {
+        "conjugationTypes": {
+            "1": {
           "title": "Pretérito",
-          "Simple": {
+          "conjugationForms": {
             "yo": "preteriteFirstPersonSingular",
             "tú": "preteriteFirstPersonPlural",
             "él/ella/Ud.": "preteriteSecondPersonSingular",
@@ -38,12 +41,15 @@
             "ellos/ellas/Uds.": "preteriteThirdPersonPlural"
           }
         }
+        }
+        
       },
       "3": {
         "title": "Imperfecto",
-        "1": {
+        "conjugationTypes" : {
+          "1": {
           "title": "Imperfecto",
-          "Simple": {
+          "conjugationForms": {
             "yo": "pastImperfectFirstPersonSingular",
             "tú": "pastImperfectFirstPersonPlural",
             "él/ella/Ud.": "pastImperfectSecondPersonSingular",
@@ -52,6 +58,8 @@
             "ellos/ellas/Uds.": "pastImperfectThirdPersonPlural"
           }
         }
+        }
+        
       }
     }
   }

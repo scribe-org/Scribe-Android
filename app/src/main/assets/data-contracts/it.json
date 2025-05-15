@@ -10,9 +10,10 @@
     "conjugations": {
       "1": {
         "title": "Presente",
+        "conjugationTypes": {
         "1": {
           "title": "Presente",
-          "Simple": {
+          "conjugationForms": {
             "io": "presentIndicativeFirstPersonSingular",
             "tu": "presentIndicativeFirstPersonPlural",
             "lei/lui": "presentIndicativeSecondPersonSingular",
@@ -21,12 +22,15 @@
             "loro": "presentIndicativeThirdPersonPlural"
           }
         }
+        }
+        
       },
       "2": {
         "title": "Preterito",
-        "1": {
+        "conjugationTypes": {
+          "1": {
           "title": "Preterito",
-          "Simple": {
+          "conjugationForms": {
             "io": "preteriteFirstPersonSingular",
             "tu": "preteriteFirstPersonPlural",
             "lei/lui": "preteriteSecondPersonSingular",
@@ -35,12 +39,15 @@
             "loro": "preteriteThirdPersonPlural"
           }
         }
+        }
+        
       },
       "3": {
         "title": "Imperfetto",
-        "1": {
+         "conjugationTypes": {
+          "1": {
           "title": "Imperfetto",
-          "Simple": {
+          "conjugationForms": {
             "io": "pastImperfectFirstPersonSingular",
             "tu": "pastImperfectFirstPersonPlural",
             "lei/lui": "pastImperfectSecondPersonSingular",
@@ -49,6 +56,8 @@
             "loro": "pastImperfectThirdPersonPlural"
           }
         }
+         }
+        
       }
     }
   }
