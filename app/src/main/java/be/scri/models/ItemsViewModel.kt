@@ -9,6 +9,9 @@ package be.scri.models
 import android.app.Activity
 import androidx.annotation.StringRes
 
+/**
+ * ViewModel representing an item with optional actions and associated resources like images and URLs.
+ */
 data class ItemsViewModel(
     val image: Int,
     val text: Text,
@@ -17,6 +20,9 @@ data class ItemsViewModel(
     val activity: Class<out Activity>? = null,
     val action: (() -> Unit)? = null,
 ) : Item() {
+    /**
+     * ViewModel representing an item with optional actions and associated resources like images and URLs.
+     */
     class Text(
         @StringRes
         val resId: Int,

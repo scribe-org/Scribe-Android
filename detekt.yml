@@ -59,11 +59,9 @@ comments:
         excludes: &excludedFolders
             - '**/activities/**'
             - '**/helpers/**/*Variables.kt'
-            - '**/models/**'
             - '**/test/**'
             - '**/ui/**'
             - '**/services/**'
-            - '**/views/**'
     UndocumentedPublicClass:
         active: true
         excludes: *excludedFolders
