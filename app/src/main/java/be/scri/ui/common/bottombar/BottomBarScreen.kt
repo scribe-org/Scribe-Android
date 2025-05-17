@@ -14,18 +14,27 @@ sealed class BottomBarScreen(
     @DrawableRes val icon: Int,
     val label: String,
 ) {
+    /**
+     * Represents the Installation screen and its associated route.
+     */
     data object Installation : BottomBarScreen(
         Screen.Installation.route,
         R.drawable.material_keyboard,
         "Installation",
     )
 
+    /**
+     * Represents the Settings screen and its associated route.
+     */
     data object Settings : BottomBarScreen(
         Screen.Settings.route,
         R.drawable.material_settings,
         "Settings",
     )
 
+    /**
+     * Represents the About screen and its associated route.
+     */
     data object About : BottomBarScreen(
         Screen.About.route,
         R.drawable.material_info,

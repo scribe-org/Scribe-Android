@@ -257,6 +257,7 @@ dependencies {
     // Android testing framework
     androidTestImplementation("androidx.test:core-ktx:1.6.1")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
 
     // JUnit 5 dependencies
 //    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
@@ -264,7 +265,7 @@ dependencies {
 
     //  AndroidJUnit4 is included
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test:runner:1.6.1")
     androidTestImplementation("io.mockk:mockk-android:1.13.5")
 
     // Other libraries
