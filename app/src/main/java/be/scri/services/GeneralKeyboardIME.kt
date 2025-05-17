@@ -699,7 +699,6 @@ abstract class GeneralKeyboardIME(
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
         setupCommandBarTheme(binding)
-        binding.translateBtn.setTextColor(Color.BLACK)
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
             Log.i("MY-TAG", "IDLE STATE")
