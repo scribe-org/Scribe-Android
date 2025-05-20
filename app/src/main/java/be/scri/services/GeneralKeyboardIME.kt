@@ -21,6 +21,7 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
 import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
+import android.view.inputmethod.InputConnection
 import android.widget.Button
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -217,9 +218,7 @@ abstract class GeneralKeyboardIME(
      */
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
-        currentState = ScribeState.IDLE
-        switchToCommandToolBar()
-        updateUI()
+        moveToIdleState()
     }
 
     /**
@@ -315,7 +314,7 @@ abstract class GeneralKeyboardIME(
 
         caseAnnotation = dbHelper.findCaseAnnnotationForPreposition(languageAlias)
 
-        Log.i("MY-TAG", nounKeywords.toString())
+        Log.i(TAG, nounKeywords.toString())
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
     }
@@ -542,13 +541,60 @@ abstract class GeneralKeyboardIME(
                 updateButtonVisibility(emojiAutoSuggestionEnabled)
                 updateButtonText(emojiAutoSuggestionEnabled, autoSuggestEmojis)
             }
+
             ScribeState.SELECT_COMMAND -> {
                 binding.translateBtn.textSize = SUGGESTION_SIZE
                 setupSelectCommandView()
             }
+
+            ScribeState.INVALID -> {
+                setupInvalidView(isUserDarkMode)
+            }
+
             else -> switchToToolBar()
         }
         updateEnterKeyColor(isUserDarkMode)
+    }
+
+    private fun setupInvalidView(isUserDarkMode: Boolean) {
+        keyboardBinding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
+        keyboardBinding.scribeKey.setOnClickListener {
+            switchToCommandToolBar()
+            moveToSelectCommandState(isUserDarkMode)
+        }
+        keyboardBinding.ivInfo?.visibility = View.VISIBLE
+        setDefaultKeyboardLanguage()
+        val promptText = HintUtils.getInvalidHint(language = language)
+        val commandBarButton = keyboardBinding.commandBar
+        val promptTextView = keyboardBinding.promptText
+        promptTextView.text = promptText
+        commandBarButton.text = ""
+        commandBarButton.hint = ""
+        Log.i(TAG, "INVALID STATE ${commandBarButton.text}")
+    }
+
+    private fun setDefaultKeyboardLanguage() {
+        val keyboardXmlId = getKeyboardLayoutXML()
+        keyboard = KeyboardBase(this, keyboardXmlId, enterKeyType)
+        keyboardView =
+            keyboardBinding.keyboardView.apply {
+                setKeyboard(keyboard!!)
+                mOnKeyboardActionListener = this@GeneralKeyboardIME
+            }
+    }
+
+    private fun moveToSelectCommandState(isUserDarkMode: Boolean) {
+        currentState = ScribeState.SELECT_COMMAND
+        disableAutoSuggest()
+        updateButtonVisibility(false)
+        Log.i(TAG, "SELECT COMMAND STATE")
+        binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
+        updateUI()
+        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putString("conjugate_mode_type", "none")
+        }
+        binding.translateBtn.setTextColor(if (isUserDarkMode) Color.WHITE else Color.BLACK)
     }
 
     /**
@@ -592,7 +638,7 @@ abstract class GeneralKeyboardIME(
             handleTextSizeForSuggestion(binding)
             updateUI()
         }
-
+        keyboardBinding.ivInfo?.visibility = View.GONE
         setInputView(keyboardHolder)
         updateCommandBarHintAndPrompt(isDarkMode)
     }
@@ -665,17 +711,7 @@ abstract class GeneralKeyboardIME(
         setupCommandBarTheme(binding)
 
         binding.scribeKey.setOnClickListener {
-            currentState = ScribeState.SELECT_COMMAND
-            disableAutoSuggest()
-            updateButtonVisibility(false)
-            Log.i("MY-TAG", "SELECT COMMAND STATE")
-            binding.scribeKey.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
-            updateUI()
-            val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-            sharedPref.edit {
-                putString("conjugate_mode_type", "none")
-            }
-            binding.translateBtn.setTextColor(if (isUserDarkMode) Color.WHITE else Color.BLACK)
+            moveToSelectCommandState(isUserDarkMode)
         }
     }
 
@@ -702,7 +738,7 @@ abstract class GeneralKeyboardIME(
         binding.translateBtn.setTextColor(Color.BLACK)
         binding.scribeKey.setOnClickListener {
             currentState = ScribeState.IDLE
-            Log.i("MY-TAG", "IDLE STATE")
+            Log.i(TAG, "IDLE STATE")
             binding.translateBtn.setTextColor(Color.WHITE)
             disableAutoSuggest()
             saveConjugateModeType("none")
@@ -710,7 +746,7 @@ abstract class GeneralKeyboardIME(
             updateUI()
         }
         binding.translateBtn.setOnClickListener {
-            Log.i("MY-TAG", "TRANSLATE STATE")
+            Log.i(TAG, "TRANSLATE STATE")
             keyboardView?.invalidateAllKeys()
             updateCommandBarHintAndPrompt()
             saveConjugateModeType("none")
@@ -719,14 +755,14 @@ abstract class GeneralKeyboardIME(
             updateUI()
         }
         binding.conjugateBtn.setOnClickListener {
-            Log.i("MY-TAG", "CONJUGATE STATE")
+            Log.i(TAG, "CONJUGATE STATE")
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.CONJUGATE
             saveConjugateModeType("3x2")
             updateUI()
         }
         binding.pluralBtn.setOnClickListener {
-            Log.i("MY-TAG", "PLURAL STATE")
+            Log.i(TAG, "PLURAL STATE")
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.PLURAL
             updateUI()
@@ -809,7 +845,7 @@ abstract class GeneralKeyboardIME(
      *
      * @param isAutoSuggestEnabled A boolean indicating if auto-suggest is enabled.
      */
-    fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
+    private fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
         val isTablet =
             (
                 resources.configuration.screenLayout and
@@ -885,21 +921,21 @@ abstract class GeneralKeyboardIME(
     ): List<String>? {
         lastWord?.let { word ->
             val lowerCaseWord = word.lowercase()
-            Log.i("MY-TAG", word)
-            Log.i("MY-TAG", nounKeywords.keys.toString())
-            Log.i("MY-TAG", nounKeywords[word].toString())
+            Log.i(TAG, word)
+            Log.i(TAG, nounKeywords.keys.toString())
+            Log.i(TAG, nounKeywords[word].toString())
             val gender = nounKeywords[lowerCaseWord]
             if (gender != null) {
                 Log.d("Debug", "Gender for '$word': $gender")
-                Log.i("MY-TAG", pluralWords.contains(lastWord).toString())
+                Log.i(TAG, pluralWords.contains(lastWord).toString())
                 if (pluralWords.any { it.equals(lastWord, ignoreCase = true) }) {
-                    Log.i("MY-TAG", "Plural Words : $pluralWords")
+                    Log.i(TAG, "Plural Words : $pluralWords")
                     isSingularAndPlural = true
-                    Log.i("MY-TAG", "isSingularPlural Updated to true")
+                    Log.i(TAG, "isSingularPlural Updated to true")
                 } else {
                     isSingularAndPlural = false
-                    Log.i("MY-TAG", "Plural Words : $pluralWords")
-                    Log.i("MY-TAG", "isSingularPlural Updated to false")
+                    Log.i(TAG, "Plural Words : $pluralWords")
+                    Log.i(TAG, "isSingularPlural Updated to false")
                 }
                 return gender
             } else {
@@ -991,7 +1027,7 @@ abstract class GeneralKeyboardIME(
         if (isPlural) {
             handlePluralAutoSuggest()
         } else {
-            Log.i("MY-TAG", "These are the case annotations $caseAnnotationSuggestion")
+            Log.i(TAG, "These are the case annotations $caseAnnotationSuggestion")
             nounTypeSuggestion?.size?.let {
                 if (it > 1 || isSingularAndPlural) {
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
@@ -1044,7 +1080,7 @@ abstract class GeneralKeyboardIME(
         singleTypeSuggestion: List<String>?,
         type: String? = null,
     ) {
-        Log.i("MY-TAG", "Single suggestion activated $singleTypeSuggestion")
+        Log.i(TAG, "Single suggestion activated $singleTypeSuggestion")
         val text = singleTypeSuggestion?.get(0).toString()
         var (colorRes, buttonText) = Pair(R.color.transparent, "Suggestion")
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
@@ -1072,7 +1108,7 @@ abstract class GeneralKeyboardIME(
                 buttonText = newButtonText
             }
         }
-        Log.i("MY-TAG", "These are the colorRes and text $colorRes and $buttonText")
+        Log.i(TAG, "These are the colorRes and text $colorRes and $buttonText")
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtnRight.visibility = View.INVISIBLE
         binding.translateBtn.setTextColor(getColor(textColor))
@@ -1501,39 +1537,80 @@ abstract class GeneralKeyboardIME(
      */
     fun handleKeycodeEnter(
         binding: KeyboardViewKeyboardBinding? = null,
-        commandBarState: Boolean? = false,
+        commandBarState: Boolean = false,
     ) {
-        val inputConnection = currentInputConnection
+        val inputConnection = currentInputConnection ?: return
         val imeOptionsActionId = getImeOptionsActionId()
 
-        if (commandBarState == true) {
-            val commandBarInput =
-                binding
-                    ?.commandBar
-                    ?.text
-                    .toString()
-                    .trim()
-                    .dropLast(1)
-            lateinit var commandModeOutput: String
-            commandModeOutput =
-                when (currentState) {
-                    ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
-                    ScribeState.TRANSLATE -> getTranslation(language, commandBarInput)
-                    else -> commandBarInput
-                }
-            if (commandModeOutput.length > commandBarInput.length) {
-                commandModeOutput = "$commandModeOutput "
+        if (!commandBarState) {
+            handleNonCommandEnter(imeOptionsActionId, inputConnection)
+            return
+        }
+
+        val commandBarInput =
+            binding
+                ?.commandBar
+                ?.text
+                .toString()
+                .trim()
+                .dropLast(1)
+
+        var commandModeOutput =
+            when (currentState) {
+                ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
+                ScribeState.TRANSLATE -> getTranslation(language, commandBarInput)
+                else -> commandBarInput
             }
-            inputConnection.commitText(commandModeOutput, 1)
-            binding?.commandBar?.text = ""
+
+        if (commandModeOutput.isEmpty()) {
+            moveToInvalidState()
         } else {
-            if (imeOptionsActionId != IME_ACTION_NONE) {
-                inputConnection.performEditorAction(imeOptionsActionId)
-            } else {
-                inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
-                inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
+            applyCommandOutput(commandModeOutput, commandBarInput, inputConnection, binding)
+        }
+    }
+
+    internal fun moveToIdleState() {
+        Log.i(TAG, "IDLE STATE")
+        currentState = ScribeState.IDLE
+        switchToCommandToolBar()
+        updateUI()
+    }
+
+    private fun moveToInvalidState() {
+        currentState = ScribeState.INVALID
+        updateUI()
+    }
+
+    private fun applyCommandOutput(
+        commandModeOutput: String,
+        commandBarInput: String,
+        inputConnection: InputConnection,
+        binding: KeyboardViewKeyboardBinding?,
+    ) {
+        val outputBuilder = StringBuilder()
+        outputBuilder.apply {
+            append(commandModeOutput)
+            if (commandModeOutput.length > commandBarInput.length) {
+                append(" ")
             }
         }
+
+        inputConnection.commitText(outputBuilder.toString(), 1)
+        binding?.commandBar?.text = ""
+        moveToIdleState()
+    }
+
+    private fun handleNonCommandEnter(
+        imeOptionsActionId: Int,
+        inputConnection: InputConnection,
+    ) {
+        if (imeOptionsActionId != IME_ACTION_NONE) {
+            inputConnection.performEditorAction(imeOptionsActionId)
+        } else {
+            inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
+            inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
+        }
+        moveToIdleState()
     }
 
     /**
@@ -1762,6 +1839,7 @@ abstract class GeneralKeyboardIME(
         }
 
     internal companion object {
+        private const val TAG = "ScribeKeyboardLog"
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
         const val NOUN_TYPE_SIZE = 22f
