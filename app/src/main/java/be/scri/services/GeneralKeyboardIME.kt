@@ -888,8 +888,6 @@ abstract class GeneralKeyboardIME(
         }
         prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
         Log.i("CONJUGATE-ISSUE", "SharedPref value = ${prefs.getString("conjugate_mode_type", "3x1")}")
-
-
     }
 
 
