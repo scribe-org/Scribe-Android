@@ -11,12 +11,12 @@ import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.helpers.RatingHelper
 import be.scri.helpers.ShareHelper
+import be.scri.helpers.ShareHelperImpl
+import be.scri.helpers.ShareHelperInterface
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
-/**
- * A centralized object that stores all external URLs used in the About screen.
- */
+/** A centralized object that stores all external URLs used in the About screen. */
 object ExternalLinks {
     const val GITHUB_SCRIBE = "https://github.com/scribe-org/Scribe-Android"
     const val GITHUB_ISSUES = "$GITHUB_SCRIBE/issues"
@@ -25,15 +25,147 @@ object ExternalLinks {
     const val MASTODON = "https://wikis.world/@scribe"
 }
 
+/** some doc */
+fun buildCommunityList(
+    context: Context,
+    onShareScribeClick: () -> Unit,
+    onWikimediaAndScribeClick: () -> Unit,
+): List<ScribeItem.ExternalLinkItem> =
+    listOf(
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.github_logo,
+            title = R.string.app_about_community_github,
+            trailingIcon = R.drawable.external_link,
+            url = ExternalLinks.GITHUB_SCRIBE,
+            onClick = {
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(ExternalLinks.GITHUB_SCRIBE),
+                    )
+                context.startActivity(intent)
+            },
+        ),
+        // ... (same for others)
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.share_icon,
+            title = R.string.app_about_community_share_scribe,
+            trailingIcon = R.drawable.external_link,
+            url = null,
+            onClick = { onShareScribeClick() },
+        ),
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.wikimedia_logo_black,
+            title = R.string.app_about_community_wikimedia,
+            trailingIcon = R.drawable.right_arrow,
+            url = null,
+            onClick = { onWikimediaAndScribeClick() },
+        ),
+    )
+
+/** some doc */
+fun getLegalItemSpecs(): List<LegalItemSpec> =
+    listOf(
+        LegalItemSpec(
+            icon = R.drawable.shield_lock,
+            title = R.string.app_about_legal_privacy_policy,
+            destination = Destination.PrivacyPolicy,
+        ),
+        LegalItemSpec(
+            icon = R.drawable.license_icon,
+            title = R.string.app_about_legal_third_party,
+            destination = Destination.ThirdPartyLicenses,
+        ),
+    )
+
+/** some doc */
+fun feedbackAndSupportList(
+    context: Context,
+    onRateScribeClick: () -> Unit,
+    onMailClick: () -> Unit,
+    onResetHintsClick: () -> Unit,
+): List<ScribeItem.ExternalLinkItem> =
+    listOf(
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.star,
+            title = R.string.app_about_feedback_rate_scribe,
+            trailingIcon = R.drawable.external_link,
+            url = null,
+            onClick = { onRateScribeClick() },
+        ),
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.bug_report_icon,
+            title = R.string.app_about_feedback_bug_report,
+            trailingIcon = R.drawable.external_link,
+            url = ExternalLinks.GITHUB_ISSUES,
+            onClick = {
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(
+                            ExternalLinks.GITHUB_ISSUES,
+                        ),
+                    )
+                context.startActivity(intent)
+            },
+        ),
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.mail_icon,
+            title = R.string.app_about_feedback_email,
+            trailingIcon = R.drawable.external_link,
+            url = null,
+            onClick = { onMailClick() },
+        ),
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.bookmark_icon,
+            title = R.string.app_about_feedback_version,
+            //                    , BuildConfig.VERSION_NAME,
+            trailingIcon = R.drawable.external_link,
+            url = ExternalLinks.GITHUB_RELEASES,
+            onClick = {
+                val intent =
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(
+                            ExternalLinks.GITHUB_RELEASES,
+                        ),
+                    )
+                context.startActivity(intent)
+            },
+        ),
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.light_bulb_icon,
+            title = R.string.app_about_feedback_app_hints,
+            trailingIcon = R.drawable.counter_clockwise_icon,
+            url = null,
+            onClick = { onResetHintsClick() },
+        ),
+    )
+
+/** some doc */
+data class LegalItemSpec(
+    val icon: Int,
+    val title: Int,
+    val destination: Destination,
+)
+
+/** some doc */
+enum class Destination {
+    PrivacyPolicy,
+    ThirdPartyLicenses,
+}
+
 /** This file provide utility functions for the about page */
 object AboutUtil {
+    var shareHelper: ShareHelperInterface = ShareHelperImpl
+
     /**
      * Shares the Scribe app via the system's share sheet.
      *
      * @param context Context used to launch the sharing intent.
      */
     fun onShareScribeClick(context: Context) {
-        ShareHelper.shareScribe(context)
+        shareHelper.shareScribe(context)
     }
 
     /**
@@ -71,72 +203,7 @@ object AboutUtil {
     ): ScribeItemList =
         remember {
             ScribeItemList(
-                items =
-                    listOf(
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.github_logo,
-                            title = R.string.app_about_community_github,
-                            trailingIcon = R.drawable.external_link,
-                            url = ExternalLinks.GITHUB_SCRIBE,
-                            onClick = {
-                                val intent =
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(
-                                            ExternalLinks.GITHUB_SCRIBE,
-                                        ),
-                                    )
-                                context.startActivity(intent)
-                            },
-                        ),
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.matrix_icon,
-                            title = R.string.app_about_community_matrix,
-                            trailingIcon = R.drawable.external_link,
-                            url =
-                                ExternalLinks.MATRIX,
-                            onClick = {
-                                val intent =
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(
-                                            ExternalLinks.MATRIX,
-                                        ),
-                                    )
-                                context.startActivity(intent)
-                            },
-                        ),
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.mastodon_svg_icon,
-                            title = R.string.app_about_community_mastodon,
-                            trailingIcon = R.drawable.external_link,
-                            url = ExternalLinks.MASTODON,
-                            onClick = {
-                                val intent =
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(
-                                            ExternalLinks.MASTODON,
-                                        ),
-                                    )
-                                context.startActivity(intent)
-                            },
-                        ),
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.share_icon,
-                            title = R.string.app_about_community_share_scribe,
-                            trailingIcon = R.drawable.external_link,
-                            url = null,
-                            onClick = { onShareScribeClick() },
-                        ),
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.wikimedia_logo_black,
-                            title = R.string.app_about_community_wikimedia,
-                            trailingIcon = R.drawable.right_arrow,
-                            url = null,
-                            onClick = { onWikimediaAndScribeClick() },
-                        ),
-                    ),
+                items = buildCommunityList(context, onShareScribeClick, onWikimediaAndScribeClick),
             )
         }
 
@@ -159,62 +226,11 @@ object AboutUtil {
         remember {
             ScribeItemList(
                 items =
-                    listOf(
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.star,
-                            title = R.string.app_about_feedback_rate_scribe,
-                            trailingIcon = R.drawable.external_link,
-                            url = null,
-                            onClick = { onRateScribeClick() },
-                        ),
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.bug_report_icon,
-                            title = R.string.app_about_feedback_bug_report,
-                            trailingIcon = R.drawable.external_link,
-                            url = ExternalLinks.GITHUB_ISSUES,
-                            onClick = {
-                                val intent =
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(
-                                            ExternalLinks.GITHUB_ISSUES,
-                                        ),
-                                    )
-                                context.startActivity(intent)
-                            },
-                        ),
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.mail_icon,
-                            title = R.string.app_about_feedback_email,
-                            trailingIcon = R.drawable.external_link,
-                            url = null,
-                            onClick = { onMailClick() },
-                        ),
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.bookmark_icon,
-                            title = R.string.app_about_feedback_version,
-                            //                    , BuildConfig.VERSION_NAME,
-                            trailingIcon = R.drawable.external_link,
-                            url =
-                                ExternalLinks.GITHUB_RELEASES,
-                            onClick = {
-                                val intent =
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(
-                                            ExternalLinks.GITHUB_RELEASES,
-                                        ),
-                                    )
-                                context.startActivity(intent)
-                            },
-                        ),
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.light_bulb_icon,
-                            title = R.string.app_about_feedback_app_hints,
-                            trailingIcon = R.drawable.counter_clockwise_icon,
-                            url = null,
-                            onClick = { onResetHintsClick() },
-                        ),
+                    feedbackAndSupportList(
+                        context,
+                        onRateScribeClick,
+                        onMailClick,
+                        onResetHintsClick,
                     ),
             )
         }
@@ -232,24 +248,23 @@ object AboutUtil {
         onThirdPartyLicensesClick: () -> Unit,
     ): ScribeItemList =
         remember {
-            ScribeItemList(
-                items =
-                    listOf(
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.shield_lock,
-                            title = R.string.app_about_legal_privacy_policy,
-                            trailingIcon = R.drawable.right_arrow,
-                            url = null,
-                            onClick = { onPrivacyPolicyClick() },
-                        ),
-                        ScribeItem.ExternalLinkItem(
-                            leadingIcon = R.drawable.license_icon,
-                            title = R.string.app_about_legal_third_party,
-                            trailingIcon = R.drawable.right_arrow,
-                            url = null,
-                            onClick = { onThirdPartyLicensesClick() },
-                        ),
-                    ),
-            )
+            val items =
+                getLegalItemSpecs().map { spec ->
+                    val clickHandler =
+                        when (spec.destination) {
+                            Destination.PrivacyPolicy -> onPrivacyPolicyClick
+                            Destination.ThirdPartyLicenses -> onThirdPartyLicensesClick
+                        }
+
+                    ScribeItem.ExternalLinkItem(
+                        leadingIcon = spec.icon,
+                        title = spec.title,
+                        trailingIcon = R.drawable.right_arrow,
+                        url = null,
+                        onClick = clickHandler,
+                    )
+                }
+
+            ScribeItemList(items = items)
         }
 }

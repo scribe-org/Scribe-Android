@@ -8,13 +8,35 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
 
-/**
- * A helper to facilitate sharing of the application and contacting the team.
- */
+/** some doc */
+interface ShareHelperInterface {
+    /** some doc */
+    fun shareScribe(context: Context)
+}
+
+/** some doc */
+class ShareHelperImpl : ShareHelperInterface {
+    /** some doc
+     * some doc
+     * some doc
+     */
+    override fun shareScribe(context: Context) {
+        val sendIntent =
+            Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "Check out Scribe!")
+                type = "text/plain"
+            }
+        val shareIntent = Intent.createChooser(sendIntent, "Share Scribe via…")
+        context.startActivity(shareIntent)
+    }
+}
+
+/** A helper to facilitate sharing of the application and contacting the team. */
 object ShareHelper {
     /**
-     * Shares the link to the Scribe Android project repository.
-     * This method opens an intent chooser to allow the user to select an application to share the link.
+     * Shares the link to the Scribe Android project repository. This method opens an intent chooser
+     * to allow the user to select an application to share the link.
      *
      * @param context The application context.
      */
@@ -34,8 +56,8 @@ object ShareHelper {
     }
 
     /**
-     * Sends an email to the Scribe team.
-     * This method opens an intent chooser to allow the user to select an email client to send the email.
+     * Sends an email to the Scribe team. This method opens an intent chooser to allow the user to
+     * select an email client to send the email.
      *
      * @param context The application context.
      */
