@@ -15,7 +15,7 @@
 
         <Button
             android:id="@+id/scribe_key"
-            android:layout_width="@dimen/scribe_key_width"
+            android:layout_width="@dimen/select_command_scribe_key_width"
             android:layout_height="37dp"
             android:layout_marginStart="@dimen/small_margin"
             android:layout_marginEnd="4dp"

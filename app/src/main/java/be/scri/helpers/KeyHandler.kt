@@ -50,9 +50,9 @@ class KeyHandler(
         ime.autoSuggestEmojis = ime.findEmojisForLastWord(ime.emojiKeywords, ime.lastWord)
         ime.checkIfPluralWord = ime.findWhetherWordIsPlural(ime.pluralWords, ime.lastWord)
 
-        Log.i("MY-TAG", "${ime.checkIfPluralWord}")
+        Log.i(TAG, "${ime.checkIfPluralWord}")
         Log.d("Debug", "${ime.autoSuggestEmojis}")
-        Log.d("MY-TAG", "${ime.nounTypeSuggestion}")
+        Log.d(TAG, "${ime.nounTypeSuggestion}")
         ime.updateButtonText(ime.emojiAutoSuggestionEnabled, ime.autoSuggestEmojis)
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             ime.updateShiftKeyState()
@@ -82,11 +82,17 @@ class KeyHandler(
      * @param code the key code of the pressed key.
      */
     private fun handleDefaultKey(code: Int) {
-        if (ime.currentState == ScribeState.IDLE || ime.currentState == ScribeState.SELECT_COMMAND) {
-            ime.handleElseCondition(code, ime.keyboardMode, binding = null)
-        } else {
-            ime.handleElseCondition(code, ime.keyboardMode, ime.keyboardBinding, commandBarState = true)
+        when (ime.currentState) {
+            ScribeState.IDLE,
+            ScribeState.SELECT_COMMAND,
+            -> ime.handleElseCondition(code, ime.keyboardMode, binding = null)
+            ScribeState.INVALID -> {
+                ime.moveToIdleState()
+                ime.handleElseCondition(code, ime.keyboardMode, ime.keyboardBinding)
+            }
+            else -> ime.handleElseCondition(code, ime.keyboardMode, ime.keyboardBinding, commandBarState = true)
         }
+
         ime.disableAutoSuggest()
     }
 
@@ -120,13 +126,14 @@ class KeyHandler(
      * Executes different actions depending on the current state of the keyboard.
      */
     private fun handleEnterKey() {
-        if (ime.currentState == ScribeState.IDLE || ime.currentState == ScribeState.SELECT_COMMAND) {
+        Log.d(TAG, "handleEnterKey ${ime.currentState}")
+        if (ime.currentState == ScribeState.IDLE ||
+            ime.currentState == ScribeState.SELECT_COMMAND ||
+            ime.currentState == ScribeState.INVALID
+        ) {
             ime.handleKeycodeEnter(ime.keyboardBinding, false)
         } else {
             ime.handleKeycodeEnter(ime.keyboardBinding, true)
-            ime.currentState = ScribeState.IDLE
-            ime.switchToCommandToolBar()
-            ime.updateUI()
         }
         ime.disableAutoSuggest()
     }
@@ -172,5 +179,9 @@ class KeyHandler(
             ime.handleElseCondition(code, ime.keyboardMode, ime.keyboardBinding, commandBarState = true)
             ime.disableAutoSuggest()
         }
+    }
+
+    private companion object {
+        const val TAG = "KeyHandler"
     }
 }
