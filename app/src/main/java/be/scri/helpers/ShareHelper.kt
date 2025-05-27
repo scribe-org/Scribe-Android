@@ -8,17 +8,21 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
 
-/** some doc */
+/** Interface for sharing functionality. */
 interface ShareHelperInterface {
-    /** some doc */
+    /**
+     * Shares scribe.
+     * @param context The Android context used to perform the share action.
+     */
     fun shareScribe(context: Context)
 }
 
-/** some doc */
+/** Implementation of ShareHelperInterface to handle sharing a scribe. */
 class ShareHelperImpl : ShareHelperInterface {
-    /** some doc
-     * some doc
-     * some doc
+    /**
+     * Shares a text message about Scribe using Android's share intent.
+     *
+     * @param context The context from which to launch the share intent.
      */
     override fun shareScribe(context: Context) {
         val sendIntent =
