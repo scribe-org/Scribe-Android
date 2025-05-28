@@ -48,7 +48,6 @@ class KeyHandler(
         } else {
             handleDefaultKey(code)
         }
-
         if (code != KeyboardBase.KEYCODE_SPACE) {
             updateKeyboardStateAfterKeyPress(code)
         }
@@ -74,6 +73,7 @@ class KeyHandler(
      * Updates general keyboard state, like emoji suggestions (if applicable) and shift state.
      * Called after most key presses, except for SPACE.
      */
+
     private fun updateKeyboardStateAfterKeyPress(code: Int) {
         ime.lastWord = ime.getLastWordBeforeCursor()
 
@@ -271,5 +271,9 @@ class KeyHandler(
             // Emoji suggestions disabled or word is null/empty
             ime.updateButtonVisibility(false)
         }
+    }
+
+    private companion object {
+        const val TAG = "KeyHandler"
     }
 }
