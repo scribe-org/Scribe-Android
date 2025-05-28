@@ -844,7 +844,7 @@ abstract class GeneralKeyboardIME(
      *
      * @param isAutoSuggestEnabled A boolean indicating if auto-suggest is enabled.
      */
-    private fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
+    internal fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
         val isTablet =
             (
                 resources.configuration.screenLayout and
