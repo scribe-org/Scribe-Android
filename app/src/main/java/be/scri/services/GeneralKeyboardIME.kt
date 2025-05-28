@@ -973,40 +973,161 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Updates the first auto suggestion button based on the current input.
+     * Updates the first auto-suggestion button based on the current input.
      *
-     * This function is responsible for generating and displaying
-     * suggestions as the user types. It takes into account the
-     * current context and input to provide relevant suggestions.It shows wheather
-     * the word is plural or the gender of the word.
+     * This function is responsible for generating and displaying suggestions as the user types.
+     * It delegates different logical flows to specialized handlers based on the input state.
      *
-     * @param inputText The current text input by the user.
-     * @param cursorPosition The position of the cursor within the input text.
+     * @param nounTypeSuggestion List of noun type suggestions.
+     * @param isPlural Indicates whether the current word is plural.
+     * @param caseAnnotationSuggestion List of case annotation suggestions.
      */
     fun updateAutoSuggestText(
         nounTypeSuggestion: List<String>? = null,
         isPlural: Boolean = false,
         caseAnnotationSuggestion: MutableList<String>? = null,
     ) {
+        Log.i("MY-TAG", "updateAutoSuggestText: Noun: $nounTypeSuggestion, Case: $caseAnnotationSuggestion")
+
+        val handled =
+            when {
+                handlePluralIfNeeded(isPlural) -> true
+                handleSingleNounSuggestion(nounTypeSuggestion) -> true
+                handleSingleCaseSuggestion(caseAnnotationSuggestion) -> true
+                handleMultipleNouns(nounTypeSuggestion) -> true
+                handleMultipleCases(caseAnnotationSuggestion) -> true
+                handleFallbackSuggestions(nounTypeSuggestion, caseAnnotationSuggestion) -> true
+                else -> false
+            }
+
+        if (!handled) {
+            Log.i("MY-TAG", "No suggestions found, disabling/resetting auto-suggest UI.")
+            disableAutoSuggest()
+        }
+    }
+
+    /**
+     * Handles the plural suggestion case.
+     *
+     * If the word is plural, this function triggers plural-specific suggestions.
+     *
+     * @param isPlural Boolean indicating if the current input is plural.
+     * @return True if plural handling was applied, false otherwise.
+     */
+    private fun handlePluralIfNeeded(isPlural: Boolean): Boolean {
         if (isPlural) {
             handlePluralAutoSuggest()
-        } else {
-            Log.i("MY-TAG", "These are the case annotations $caseAnnotationSuggestion")
-            nounTypeSuggestion?.size?.let {
-                if (it > 1 || isSingularAndPlural) {
-                    handleMultipleNounFormats(nounTypeSuggestion, "noun")
-                } else {
-                    handleSingleType(nounTypeSuggestion, "noun")
-                }
-            }
-            caseAnnotationSuggestion?.size?.let {
-                if (it > 1) {
-                    handleMultipleNounFormats(caseAnnotationSuggestion, "preposition")
-                } else {
-                    handleSingleType(caseAnnotationSuggestion, "preposition")
-                }
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Handles a single noun suggestion if only one is present.
+     *
+     * Applies specific styling and display logic for a unique noun suggestion.
+     *
+     * @param nounTypeSuggestion List of noun suggestions.
+     * @return True if a single noun suggestion was applied, false otherwise.
+     */
+    private fun handleSingleNounSuggestion(nounTypeSuggestion: List<String>?): Boolean {
+        if (nounTypeSuggestion?.size == 1 && !isSingularAndPlural) {
+            val (colorRes, text) = handleColorAndTextForNounType(nounTypeSuggestion[0])
+            if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
+                Log.i("MY-TAG", "Applying specific single noun suggestion: $text")
+                handleSingleType(nounTypeSuggestion, "noun")
+                return true
             }
         }
+        return false
+    }
+
+    /**
+     * Handles a single case annotation suggestion if only one is present.
+     *
+     * Applies styling and display logic for a unique case annotation.
+     *
+     * @param caseAnnotationSuggestion List of case annotation suggestions.
+     * @return True if a single case suggestion was applied, false otherwise.
+     */
+    private fun handleSingleCaseSuggestion(caseAnnotationSuggestion: List<String>?): Boolean {
+        if (caseAnnotationSuggestion?.size == 1) {
+            val (colorRes, text) = handleTextForCaseAnnotation(caseAnnotationSuggestion[0])
+            if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
+                Log.i("MY-TAG", "Applying specific single case suggestion: $text")
+                handleSingleType(caseAnnotationSuggestion, "preposition")
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * Handles multiple noun type suggestions.
+     *
+     * Invokes logic to present all possible noun forms if multiple are available or if
+     * the noun can be both singular and plural.
+     *
+     * @param nounTypeSuggestion List of noun type suggestions.
+     * @return True if multiple noun suggestions were applied, false otherwise.
+     */
+    private fun handleMultipleNouns(nounTypeSuggestion: List<String>?): Boolean {
+        if ((nounTypeSuggestion?.size ?: 0) > 1 || isSingularAndPlural) {
+            Log.i("MY-TAG", "Applying multiple noun formats")
+            handleMultipleNounFormats(nounTypeSuggestion, "noun")
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Handles multiple case annotation suggestions.
+     *
+     * Displays all relevant case annotations when more than one is available.
+     *
+     * @param caseAnnotationSuggestion List of case annotation suggestions.
+     * @return True if multiple case suggestions were applied, false otherwise.
+     */
+    private fun handleMultipleCases(caseAnnotationSuggestion: List<String>?): Boolean {
+        if ((caseAnnotationSuggestion?.size ?: 0) > 1) {
+            Log.i("MY-TAG", "Applying multiple case formats")
+            handleMultipleNounFormats(caseAnnotationSuggestion, "preposition")
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Handles fallback suggestion logic when no clear condition is met.
+     *
+     * Attempts to apply default single-type suggestions if present,
+     * falling back to disabling suggestions if nothing is applicable.
+     *
+     * @param nounTypeSuggestion List of noun type suggestions.
+     * @param caseAnnotationSuggestion List of case annotation suggestions.
+     * @return True if any fallback suggestion was applied, false otherwise.
+     */
+    private fun handleFallbackSuggestions(
+        nounTypeSuggestion: List<String>?,
+        caseAnnotationSuggestion: List<String>?,
+    ): Boolean {
+        var appliedSomething = false
+
+        nounTypeSuggestion?.let {
+            handleSingleType(it, "noun")
+            val (_, text) = handleColorAndTextForNounType(it[0])
+            if (text != getString(R.string.suggestion)) appliedSomething = true
+        }
+
+        if (!appliedSomething) {
+            caseAnnotationSuggestion?.let {
+                handleSingleType(it, "preposition")
+                val (_, text) = handleTextForCaseAnnotation(it[0])
+                if (text != getString(R.string.suggestion)) appliedSomething = true
+            }
+        }
+
+        return appliedSomething
     }
 
     /**
