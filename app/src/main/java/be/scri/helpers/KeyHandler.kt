@@ -54,6 +54,11 @@ class KeyHandler(
         Log.d("Debug", "${ime.autoSuggestEmojis}")
         Log.d(TAG, "${ime.nounTypeSuggestion}")
         ime.updateButtonText(ime.emojiAutoSuggestionEnabled, ime.autoSuggestEmojis)
+
+        if (ime.currentState == ScribeState.IDLE || ime.currentState == ScribeState.SELECT_COMMAND) {
+            ime.updateAutoSuggestText(isPlural = ime.checkIfPluralWord)
+        }
+
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             ime.updateShiftKeyState()
         }
