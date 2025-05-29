@@ -2,66 +2,125 @@
 
 package be.scri.helpers
 
+import android.view.inputmethod.InputConnection
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
- * Handles key events for the GeneralKeyboardIME.
+ * Handles key events for the [GeneralKeyboardIME].
+ * This class processes raw key codes, determines the appropriate action based on the
+ * current keyboard state and the key pressed, and delegates to specific handlers
+ * or directly interacts with the [GeneralKeyboardIME] instance.
+ *
+ * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
  */
 class KeyHandler(
     private val ime: GeneralKeyboardIME,
 ) {
+    private val suggestionHandler = SuggestionHandler(ime)
+    private val spaceKeyProcessor = SpaceKeyProcessor(ime, suggestionHandler)
+
+    /** Tracks if the last key pressed was a space, used for "period on double space" logic. */
+    private var wasLastKeySpace: Boolean = false
+
     /**
-     * Processes the given key code and performs the corresponding action.
+     * Handles a key press event.
+     * This is the main entry point for processing key codes from the keyboard.
+     *
+     * @param code The key code of the key that was pressed (e.g., from [KeyboardBase]).
      */
     fun handleKey(code: Int) {
         val inputConnection = ime.currentInputConnection
-        if (ime.keyboard == null || inputConnection == null) return
+        if (ime.keyboard == null || inputConnection == null) {
+            wasLastKeySpace = false
+            return
+        }
 
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             ime.lastShiftPressTS = 0
         }
 
-        if (code == KeyboardBase.KEYCODE_TAB) {
-            inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
-        } else if (code == KeyboardBase.KEYCODE_CAPS_LOCK) {
-            handleCapsLockInternal()
-        } else if (code == KeyboardBase.KEYCODE_DELETE) {
-            handleDeleteKey()
-        } else if (code == KeyboardBase.KEYCODE_SHIFT) {
-            ime.handleKeyboardLetters(ime.keyboardMode, ime.keyboardView)
-            ime.keyboardView?.invalidateAllKeys()
-        } else if (code == KeyboardBase.KEYCODE_ENTER) {
-            handleEnterKey()
-        } else if (code == KeyboardBase.KEYCODE_MODE_CHANGE) {
-            ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime)
-            ime.disableAutoSuggest()
-            ime.updateButtonVisibility(false)
-            ime.nounTypeSuggestion = null
-            ime.checkIfPluralWord = false
-            ime.caseAnnotationSuggestion = null
-            ime.autoSuggestEmojis = null
-        } else if (code == KeyboardBase.KEYCODE_SPACE) {
-            handleKeycodeSpace()
-        } else if (code == KeyboardBase.KEYCODE_LEFT_ARROW || code == KeyboardBase.KEYCODE_RIGHT_ARROW) {
-            handleArrowKey(isRightArrow = (code == KeyboardBase.KEYCODE_RIGHT_ARROW))
-        } else {
-            handleDefaultKey(code)
-        }
-        if (code != KeyboardBase.KEYCODE_SPACE) {
-            updateKeyboardStateAfterKeyPress(code)
+        dispatchKeyPress(code, inputConnection)
+
+        if (shouldUpdateShiftKeyState(code)) {
+            ime.updateShiftKeyState()
         }
     }
 
     /**
-     * Handles the internal logic for toggling CAPS LOCK state.
+     * Dispatches the key press to the appropriate handler based on the key code.
+     * Manages the [wasLastKeySpace] flag based on the key pressed.
+     *
+     * @param code The key code of the pressed key.
+     * @param inputConnection The current input connection.
+     */
+    private fun dispatchKeyPress(
+        code: Int,
+        inputConnection: InputConnection,
+    ) {
+        val previousWasLastKeySpace = wasLastKeySpace
+        var resetWasLastKeySpaceByDefault = true
+
+        when (code) {
+            KeyboardBase.KEYCODE_TAB -> {
+                inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
+            }
+            KeyboardBase.KEYCODE_CAPS_LOCK -> {
+                handleCapsLockInternal()
+            }
+            KeyboardBase.KEYCODE_DELETE -> {
+                handleDeleteKey()
+            }
+            KeyboardBase.KEYCODE_SHIFT -> {
+                handleShiftKey()
+                resetWasLastKeySpaceByDefault = false
+                wasLastKeySpace = previousWasLastKeySpace
+            }
+            KeyboardBase.KEYCODE_ENTER -> {
+                handleEnterKey()
+            }
+            KeyboardBase.KEYCODE_MODE_CHANGE -> {
+                handleModeChangeKey()
+            }
+            KeyboardBase.KEYCODE_SPACE -> {
+                wasLastKeySpace = spaceKeyProcessor.processKeycodeSpace(previousWasLastKeySpace)
+                resetWasLastKeySpaceByDefault = false
+            }
+            KeyboardBase.KEYCODE_LEFT_ARROW, KeyboardBase.KEYCODE_RIGHT_ARROW -> {
+                handleArrowKey(code == KeyboardBase.KEYCODE_RIGHT_ARROW)
+            }
+            else -> {
+                handleDefaultKey(code)
+            }
+        }
+
+        if (resetWasLastKeySpaceByDefault) {
+            wasLastKeySpace = false
+        }
+    }
+
+    /**
+     * Determines if the shift key state should be updated after a key press.
+     * @param code The key code of the pressed key.
+     * @return True if the shift key state should be updated, false otherwise.
+     */
+    private fun shouldUpdateShiftKeyState(code: Int): Boolean =
+        code != KeyboardBase.KEYCODE_SHIFT &&
+            code != KeyboardBase.KEYCODE_CAPS_LOCK &&
+            (ime.currentState == ScribeState.IDLE || ime.currentState == ScribeState.SELECT_COMMAND)
+
+    /**
+     * Toggles the Caps Lock state of the keyboard.
+     * If Caps Lock is off, it's turned on (locked). If it's on (locked), it's turned off.
+     * Invalidates the keyboard view to reflect the change in key appearance.
      */
     private fun handleCapsLockInternal() {
         ime.keyboard?.let { kb ->
             val newState =
-                when (kb.mShiftState) {
-                    KeyboardBase.SHIFT_OFF -> KeyboardBase.SHIFT_LOCKED
-                    else -> KeyboardBase.SHIFT_OFF
+                if (kb.mShiftState == KeyboardBase.SHIFT_OFF) {
+                    KeyboardBase.SHIFT_LOCKED
+                } else {
+                    KeyboardBase.SHIFT_OFF
                 }
             if (kb.setShifted(newState)) {
                 ime.keyboardView?.invalidateAllKeys()
@@ -70,210 +129,105 @@ class KeyHandler(
     }
 
     /**
-     * Updates general keyboard state, like emoji suggestions (if applicable) and shift state.
-     * Called after most key presses, except for SPACE.
+     * Handles a default key press (e.g., letters, numbers, symbols).
+     * This is called for key codes not specifically handled by other specialized methods.
+     * It commits the character to the input connection or the command bar editor
+     * and updates suggestions accordingly.
+     *
+     * @param code The character code of the key pressed.
      */
-
-    private fun updateKeyboardStateAfterKeyPress(code: Int) {
-        ime.lastWord = ime.getLastWordBeforeCursor()
-
-        val isIdleAndNoSpecificSuggestions =
-            ime.currentState == ScribeState.IDLE &&
-                ime.nounTypeSuggestion == null &&
-                !ime.checkIfPluralWord &&
-                ime.caseAnnotationSuggestion == null
-
-        if (isIdleAndNoSpecificSuggestions) {
-            updateEmojiSuggestions(ime.lastWord)
-        }
-
-        if (code != KeyboardBase.KEYCODE_SHIFT) {
-            ime.updateShiftKeyState()
-        }
-    }
-
     private fun handleDefaultKey(code: Int) {
-        val isForToolbarCommandBar =
+        val isCommandBar =
             ime.currentState != ScribeState.IDLE &&
                 ime.currentState != ScribeState.SELECT_COMMAND
-        val currentBindingForCommandBar = if (isForToolbarCommandBar) ime.keyboardBinding else null
+        val binding = if (isCommandBar) ime.keyboardBinding else null
 
-        ime.handleElseCondition(
-            code,
-            ime.keyboardMode,
-            binding = currentBindingForCommandBar,
-            commandBarState = isForToolbarCommandBar,
-        )
-        // Inlined clearAllSuggestionStatesAndHideButton()
-        ime.disableAutoSuggest()
-        ime.updateButtonVisibility(false)
-        ime.nounTypeSuggestion = null
-        ime.checkIfPluralWord = false
-        ime.caseAnnotationSuggestion = null
-        ime.autoSuggestEmojis = null
-        // End Inlined
+        ime.handleElseCondition(code, ime.keyboardMode, binding, isCommandBar)
+
+        if (!isCommandBar) {
+            suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
+        } else {
+            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+        }
     }
 
+    /**
+     * Handles the "Delete" key press.
+     * Deletes text from the input connection or the command bar editor,
+     * and updates word suggestions if not in command bar mode.
+     */
     private fun handleDeleteKey() {
-        val isDeleteForCommandBar =
+        val isCommandBar =
             ime.currentState != ScribeState.IDLE &&
                 ime.currentState != ScribeState.SELECT_COMMAND
-        val bindingForDelete = if (isDeleteForCommandBar) ime.keyboardBinding else null
+        val binding = if (isCommandBar) ime.keyboardBinding else null
+        ime.handleDelete(isCommandBar, binding)
 
-        ime.handleDelete(
-            currentState = isDeleteForCommandBar,
-            binding = bindingForDelete,
-        )
-
-        if (!isDeleteForCommandBar) {
-            val newLastWord = ime.getLastWordBeforeCursor()
-            processWordSuggestions(newLastWord)
+        if (!isCommandBar) {
+            suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
         }
     }
 
+    /**
+     * Handles the "Shift" key press.
+     * Toggles the keyboard's shift state (e.g., off, on for one char, caps lock)
+     * by delegating to [GeneralKeyboardIME.handleKeyboardLetters] and
+     * invalidates the keyboard view to reflect the change.
+     */
+    private fun handleShiftKey() {
+        ime.handleKeyboardLetters(ime.keyboardMode, ime.keyboardView)
+        ime.keyboardView?.invalidateAllKeys()
+    }
+
+    /**
+     * Handles the "Enter" key press.
+     * Depending on the context (input field action, command bar), it either
+     * sends an enter key event, performs an editor action, or processes a command.
+     * Updates suggestions based on the resulting state of the IME.
+     */
     private fun handleEnterKey() {
-        val isCommandBarState =
-            ime.currentState != ScribeState.IDLE &&
-                ime.currentState != ScribeState.SELECT_COMMAND
-        val bindingForEnter = if (isCommandBarState) ime.keyboardBinding else null
+        val originalState = ime.currentState
+        val isCommandBar =
+            originalState != ScribeState.IDLE &&
+                originalState != ScribeState.SELECT_COMMAND
+        val binding = if (isCommandBar) ime.keyboardBinding else null
 
-        ime.handleKeycodeEnter(
-            binding = bindingForEnter,
-            commandBarState = isCommandBarState,
-        )
+        ime.handleKeycodeEnter(binding, isCommandBar)
 
-        if (isCommandBarState) {
-            ime.currentState = ScribeState.IDLE
-            ime.switchToCommandToolBar()
-            ime.updateUI()
-        }
-        // Inlined clearAllSuggestionStatesAndHideButton()
-        ime.disableAutoSuggest()
-        ime.updateButtonVisibility(false)
-        ime.nounTypeSuggestion = null
-        ime.checkIfPluralWord = false
-        ime.caseAnnotationSuggestion = null
-        ime.autoSuggestEmojis = null
-        // End Inlined
-    }
-
-    private fun handleArrowKey(isRightArrow: Boolean) {
-        ime.currentInputConnection?.let { ic ->
-            val currentPos = ic.getTextBeforeCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.length ?: 0
-            val newPos =
-                if (isRightArrow) {
-                    val textAfter = ic.getTextAfterCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.toString() ?: ""
-                    (currentPos + 1).coerceAtMost(currentPos + textAfter.length)
+        when (ime.currentState) {
+            ScribeState.IDLE, ScribeState.SELECT_COMMAND -> {
+                if (isCommandBar) {
+                    suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
                 } else {
-                    (currentPos - 1).coerceAtLeast(0)
+                    suggestionHandler.clearAllSuggestionsAndHideButtonUI()
                 }
-            ic.setSelection(newPos, newPos)
-        }
-        // Inlined clearAllSuggestionStatesAndHideButton()
-        ime.disableAutoSuggest()
-        ime.updateButtonVisibility(false)
-        ime.nounTypeSuggestion = null
-        ime.checkIfPluralWord = false
-        ime.caseAnnotationSuggestion = null
-        ime.autoSuggestEmojis = null
-        // End Inlined
-    }
-
-    private fun handleKeycodeSpace() {
-        val isCommandBarContext =
-            ime.currentState != ScribeState.IDLE &&
-                ime.currentState != ScribeState.SELECT_COMMAND
-
-        if (!isCommandBarContext) {
-            ime.handleElseCondition(
-                code = KeyboardBase.KEYCODE_SPACE,
-                keyboardMode = ime.keyboardMode,
-                binding = null,
-                commandBarState = false,
-            )
-            val wordBeforeSpace = ime.getLastWordBeforeCursor()
-            processWordSuggestions(wordBeforeSpace)
-        } else {
-            // Handle space in command bar
-            ime.handleElseCondition(
-                code = KeyboardBase.KEYCODE_SPACE,
-                keyboardMode = ime.keyboardMode,
-                binding = ime.keyboardBinding,
-                commandBarState = true,
-            )
-            // Inlined clearAllSuggestionStatesAndHideButton()
-            ime.disableAutoSuggest()
-            ime.updateButtonVisibility(false)
-            ime.nounTypeSuggestion = null
-            ime.checkIfPluralWord = false
-            ime.caseAnnotationSuggestion = null
-            ime.autoSuggestEmojis = null
-            // End Inlined
+            }
+            ScribeState.INVALID -> {
+                suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+            }
+            else -> { }
         }
     }
 
     /**
-     * Processes the given word to find and display relevant suggestions (noun type, plural, case, or emojis).
+     * Handles the "Mode Change" key press (e.g., to switch between letters and symbols).
+     * Delegates to [GeneralKeyboardIME.handleModeChange] to switch the keyboard layout
+     * and clears all current suggestions as the context changes.
      */
-    private fun processWordSuggestions(currentWord: String?) {
-        ime.nounTypeSuggestion = null
-        ime.checkIfPluralWord = false
-        ime.caseAnnotationSuggestion = null
-        ime.autoSuggestEmojis = null
-
-        if (!currentWord.isNullOrEmpty()) {
-            ime.lastWord = currentWord
-
-            val genderSuggestion = ime.findGenderForLastWord(ime.nounKeywords, currentWord)
-            val isPlural = ime.findWhetherWordIsPlural(ime.pluralWords, currentWord)
-            val caseSuggestion = ime.getCaseAnnotationForPreposition(ime.caseAnnotation, currentWord)
-
-            // Update IME state with new findings
-            ime.nounTypeSuggestion = genderSuggestion
-            ime.checkIfPluralWord = isPlural
-            ime.caseAnnotationSuggestion = caseSuggestion
-
-            if (genderSuggestion != null || isPlural || caseSuggestion != null) {
-                ime.updateAutoSuggestText(genderSuggestion, isPlural, caseSuggestion)
-                ime.updateButtonVisibility(false)
-            } else {
-                ime.disableAutoSuggest()
-                updateEmojiSuggestions(currentWord)
-            }
-        } else {
-            // Word is null or empty, clear all suggestions and hide button
-            ime.lastWord = currentWord
-
-            ime.disableAutoSuggest()
-            ime.updateButtonVisibility(false)
-            ime.nounTypeSuggestion = null
-            ime.checkIfPluralWord = false
-            ime.caseAnnotationSuggestion = null
-            ime.autoSuggestEmojis = null
-        }
+    private fun handleModeChangeKey() {
+        ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime)
+        suggestionHandler.clearAllSuggestionsAndHideButtonUI()
     }
 
     /**
-     * Checks for and displays emoji suggestions for the given word.
-     * This is used proactively or as a fallback.
+     * Handles "Left" or "Right" arrow key presses.
+     * Moves the cursor in the input field using IME methods and updates word suggestions
+     * based on the new cursor position.
+     *
+     * @param isRightArrow True if the right arrow key was pressed, false if the left arrow key.
      */
-    private fun updateEmojiSuggestions(word: String?) {
-        if (ime.emojiAutoSuggestionEnabled && !word.isNullOrEmpty()) {
-            val emojis = ime.findEmojisForLastWord(ime.emojiKeywords, word)
-            ime.autoSuggestEmojis = emojis
-            if (emojis?.isNotEmpty() == true) {
-                ime.updateButtonText(true, emojis)
-                ime.updateButtonVisibility(true)
-            } else {
-                ime.updateButtonVisibility(false)
-            }
-        } else {
-            // Emoji suggestions disabled or word is null/empty
-            ime.updateButtonVisibility(false)
-        }
-    }
-
-    private companion object {
-        const val TAG = "KeyHandler"
+    private fun handleArrowKey(isRightArrow: Boolean) {
+        if (isRightArrow) ime.moveCursorRight() else ime.moveCursorLeft()
+        suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
     }
 }

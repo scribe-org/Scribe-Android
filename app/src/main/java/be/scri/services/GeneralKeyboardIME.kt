@@ -26,6 +26,7 @@ import android.widget.Button
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.graphics.toColorInt
 import be.scri.R
 import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
@@ -96,7 +97,7 @@ abstract class GeneralKeyboardIME(
 
     private var genderSuggestionLeft: Button? = null
     private var genderSuggestionRight: Button? = null
-    private var isSingularAndPlural: Boolean = false
+    internal var isSingularAndPlural: Boolean = false
 
     // How quickly do we have to double-tap shift to enable permanent caps lock.
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
@@ -400,7 +401,7 @@ abstract class GeneralKeyboardIME(
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         when (isUserDarkMode) {
             true -> {
-                binding.commandField.setBackgroundColor(Color.parseColor("#1E1E1E"))
+                binding.commandField.setBackgroundColor("#1E1E1E".toColorInt())
             }
             else -> {
                 binding.commandField.setBackgroundColor(Color.parseColor("#d2d4da"))
@@ -1019,24 +1020,39 @@ abstract class GeneralKeyboardIME(
      */
     fun updateAutoSuggestText(
         nounTypeSuggestion: List<String>? = null,
-        isPlural: Boolean = false,
+        isPlural: Boolean = false, // From KeyHandler's direct check
         caseAnnotationSuggestion: MutableList<String>? = null,
     ) {
-        Log.i("MY-TAG", "updateAutoSuggestText: Noun: $nounTypeSuggestion, Case: $caseAnnotationSuggestion")
-
         val handled =
             when {
-                handlePluralIfNeeded(isPlural) -> true
-                handleSingleNounSuggestion(nounTypeSuggestion) -> true
-                handleSingleCaseSuggestion(caseAnnotationSuggestion) -> true
-                handleMultipleNouns(nounTypeSuggestion) -> true
-                handleMultipleCases(caseAnnotationSuggestion) -> true
-                handleFallbackSuggestions(nounTypeSuggestion, caseAnnotationSuggestion) -> true
+                ((nounTypeSuggestion?.size ?: 0) > 1 || this.isSingularAndPlural) -> {
+                    Log.i("MY-TAG", "Condition for handleMultipleNouns met.")
+                    handleMultipleNouns(nounTypeSuggestion)
+                }
+
+                handlePluralIfNeeded(isPlural) -> {
+                    true
+                }
+
+                handleSingleNounSuggestion(nounTypeSuggestion) -> {
+                    true
+                }
+
+                handleMultipleCases(caseAnnotationSuggestion) -> {
+                    true
+                }
+
+                handleSingleCaseSuggestion(caseAnnotationSuggestion) -> {
+                    true
+                }
+
+                handleFallbackSuggestions(nounTypeSuggestion, caseAnnotationSuggestion) -> {
+                    true
+                }
                 else -> false
             }
 
         if (!handled) {
-            Log.i("MY-TAG", "No suggestions found, disabling/resetting auto-suggest UI.")
             disableAutoSuggest()
         }
     }
@@ -1685,7 +1701,7 @@ abstract class GeneralKeyboardIME(
         if (commandModeOutput.isEmpty()) {
             moveToInvalidState()
         } else {
-            applyCommandOutput(commandModeOutput, commandBarInput, inputConnection, binding)
+            applyCommandOutput(commandModeOutput, inputConnection, binding)
         }
     }
 
@@ -1703,19 +1719,20 @@ abstract class GeneralKeyboardIME(
 
     private fun applyCommandOutput(
         commandModeOutput: String,
-        commandBarInput: String,
+        // commandBarInput: String,
         inputConnection: InputConnection,
         binding: KeyboardViewKeyboardBinding?,
     ) {
         val outputBuilder = StringBuilder()
-        outputBuilder.apply {
-            append(commandModeOutput)
-            if (commandModeOutput.length > commandBarInput.length) {
-                append(" ")
-            }
+        outputBuilder.append(commandModeOutput)
+
+        // New logic: Add a space if the command output is not empty
+        // and doesn't already end with a space.
+        if (commandModeOutput.isNotEmpty() && !commandModeOutput.endsWith(" ")) {
+            outputBuilder.append(" ")
         }
 
-        inputConnection.commitText(outputBuilder.toString(), 1)
+        inputConnection.commitText(outputBuilder.toString(), COMMIT_TEXT_CURSOR_POSITION)
         binding?.commandBar?.text = ""
         moveToIdleState()
     }
