@@ -1,3 +1,5 @@
+
+
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 package be.scri.services
@@ -388,6 +390,14 @@ abstract class GeneralKeyboardIME(
         updateButtonVisibility(emojiAutoSuggestionEnabled)
         setupIdleView()
         super.onStartInputView(editorInfo, restarting)
+        val textBefore =
+            currentInputConnection
+                ?.getTextBeforeCursor(1, 0)
+                ?.toString()
+                .orEmpty()
+        if (textBefore.isEmpty()) {
+            keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
+        }
         setupCommandBarTheme(binding)
     }
 
@@ -1734,6 +1744,11 @@ abstract class GeneralKeyboardIME(
                 }
             } else {
                 inputConnection.commitText("", 1)
+            }
+            val before = inputConnection.getTextBeforeCursor(1, 0)?.isEmpty() ?: true
+            if (before) {
+                keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
+                keyboardView!!.invalidateAllKeys()
             }
         }
     }
