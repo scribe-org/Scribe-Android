@@ -11,6 +11,7 @@
     <color name="light_icon_color">#000</color>
     <color name="light_scribe_blue">#FF75CEFA</color>
     <color name="dark_scribe_blue">#FF4CADE6</color>
+    <color name="theme_scribe_blue">@color/dark_scribe_blue</color>
     <color name="white">#ffffff</color>
     <color name="light_keyboard">#99FFFFFF</color>
     <color name="transparent">@android:color/transparent</color>
