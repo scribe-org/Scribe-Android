@@ -26,6 +26,7 @@ import android.widget.Button
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.graphics.toColorInt
 import be.scri.R
 import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
@@ -96,7 +97,7 @@ abstract class GeneralKeyboardIME(
 
     private var genderSuggestionLeft: Button? = null
     private var genderSuggestionRight: Button? = null
-    private var isSingularAndPlural: Boolean = false
+    internal var isSingularAndPlural: Boolean = false
 
     // How quickly do we have to double-tap shift to enable permanent caps lock.
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
@@ -408,7 +409,7 @@ abstract class GeneralKeyboardIME(
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         when (isUserDarkMode) {
             true -> {
-                binding.commandField.setBackgroundColor(Color.parseColor("#1E1E1E"))
+                binding.commandField.setBackgroundColor("#1E1E1E".toColorInt())
             }
             else -> {
                 binding.commandField.setBackgroundColor(Color.parseColor("#d2d4da"))
@@ -852,7 +853,7 @@ abstract class GeneralKeyboardIME(
      *
      * @param isAutoSuggestEnabled A boolean indicating if auto-suggest is enabled.
      */
-    private fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
+    internal fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
         val isTablet =
             (
                 resources.configuration.screenLayout and
@@ -1016,40 +1017,176 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Updates the first auto suggestion button based on the current input.
+     * Updates the first auto-suggestion button based on the current input.
      *
-     * This function is responsible for generating and displaying
-     * suggestions as the user types. It takes into account the
-     * current context and input to provide relevant suggestions.It shows wheather
-     * the word is plural or the gender of the word.
+     * This function is responsible for generating and displaying suggestions as the user types.
+     * It delegates different logical flows to specialized handlers based on the input state.
      *
-     * @param inputText The current text input by the user.
-     * @param cursorPosition The position of the cursor within the input text.
+     * @param nounTypeSuggestion List of noun type suggestions.
+     * @param isPlural Indicates whether the current word is plural.
+     * @param caseAnnotationSuggestion List of case annotation suggestions.
      */
     fun updateAutoSuggestText(
         nounTypeSuggestion: List<String>? = null,
-        isPlural: Boolean = false,
+        isPlural: Boolean = false, // From KeyHandler's direct check
         caseAnnotationSuggestion: MutableList<String>? = null,
     ) {
+        val handled =
+            when {
+                ((nounTypeSuggestion?.size ?: 0) > 1 || this.isSingularAndPlural) -> {
+                    Log.i("MY-TAG", "Condition for handleMultipleNouns met.")
+                    handleMultipleNouns(nounTypeSuggestion)
+                }
+
+                handlePluralIfNeeded(isPlural) -> {
+                    true
+                }
+
+                handleSingleNounSuggestion(nounTypeSuggestion) -> {
+                    true
+                }
+
+                handleMultipleCases(caseAnnotationSuggestion) -> {
+                    true
+                }
+
+                handleSingleCaseSuggestion(caseAnnotationSuggestion) -> {
+                    true
+                }
+
+                handleFallbackSuggestions(nounTypeSuggestion, caseAnnotationSuggestion) -> {
+                    true
+                }
+                else -> false
+            }
+
+        if (!handled) {
+            disableAutoSuggest()
+        }
+    }
+
+    /**
+     * Handles the plural suggestion case.
+     *
+     * If the word is plural, this function triggers plural-specific suggestions.
+     *
+     * @param isPlural Boolean indicating if the current input is plural.
+     * @return True if plural handling was applied, false otherwise.
+     */
+    private fun handlePluralIfNeeded(isPlural: Boolean): Boolean {
         if (isPlural) {
             handlePluralAutoSuggest()
-        } else {
-            Log.i(TAG, "These are the case annotations $caseAnnotationSuggestion")
-            nounTypeSuggestion?.size?.let {
-                if (it > 1 || isSingularAndPlural) {
-                    handleMultipleNounFormats(nounTypeSuggestion, "noun")
-                } else {
-                    handleSingleType(nounTypeSuggestion, "noun")
-                }
-            }
-            caseAnnotationSuggestion?.size?.let {
-                if (it > 1) {
-                    handleMultipleNounFormats(caseAnnotationSuggestion, "preposition")
-                } else {
-                    handleSingleType(caseAnnotationSuggestion, "preposition")
-                }
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Handles a single noun suggestion if only one is present.
+     *
+     * Applies specific styling and display logic for a unique noun suggestion.
+     *
+     * @param nounTypeSuggestion List of noun suggestions.
+     * @return True if a single noun suggestion was applied, false otherwise.
+     */
+    private fun handleSingleNounSuggestion(nounTypeSuggestion: List<String>?): Boolean {
+        if (nounTypeSuggestion?.size == 1 && !isSingularAndPlural) {
+            val (colorRes, text) = handleColorAndTextForNounType(nounTypeSuggestion[0])
+            if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
+                Log.i("MY-TAG", "Applying specific single noun suggestion: $text")
+                handleSingleType(nounTypeSuggestion, "noun")
+                return true
             }
         }
+        return false
+    }
+
+    /**
+     * Handles a single case annotation suggestion if only one is present.
+     *
+     * Applies styling and display logic for a unique case annotation.
+     *
+     * @param caseAnnotationSuggestion List of case annotation suggestions.
+     * @return True if a single case suggestion was applied, false otherwise.
+     */
+    private fun handleSingleCaseSuggestion(caseAnnotationSuggestion: List<String>?): Boolean {
+        if (caseAnnotationSuggestion?.size == 1) {
+            val (colorRes, text) = handleTextForCaseAnnotation(caseAnnotationSuggestion[0])
+            if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
+                Log.i("MY-TAG", "Applying specific single case suggestion: $text")
+                handleSingleType(caseAnnotationSuggestion, "preposition")
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * Handles multiple noun type suggestions.
+     *
+     * Invokes logic to present all possible noun forms if multiple are available or if
+     * the noun can be both singular and plural.
+     *
+     * @param nounTypeSuggestion List of noun type suggestions.
+     * @return True if multiple noun suggestions were applied, false otherwise.
+     */
+    private fun handleMultipleNouns(nounTypeSuggestion: List<String>?): Boolean {
+        if ((nounTypeSuggestion?.size ?: 0) > 1 || isSingularAndPlural) {
+            Log.i("MY-TAG", "Applying multiple noun formats")
+            handleMultipleNounFormats(nounTypeSuggestion, "noun")
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Handles multiple case annotation suggestions.
+     *
+     * Displays all relevant case annotations when more than one is available.
+     *
+     * @param caseAnnotationSuggestion List of case annotation suggestions.
+     * @return True if multiple case suggestions were applied, false otherwise.
+     */
+    private fun handleMultipleCases(caseAnnotationSuggestion: List<String>?): Boolean {
+        if ((caseAnnotationSuggestion?.size ?: 0) > 1) {
+            Log.i("MY-TAG", "Applying multiple case formats")
+            handleMultipleNounFormats(caseAnnotationSuggestion, "preposition")
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Handles fallback suggestion logic when no clear condition is met.
+     *
+     * Attempts to apply default single-type suggestions if present,
+     * falling back to disabling suggestions if nothing is applicable.
+     *
+     * @param nounTypeSuggestion List of noun type suggestions.
+     * @param caseAnnotationSuggestion List of case annotation suggestions.
+     * @return True if any fallback suggestion was applied, false otherwise.
+     */
+    private fun handleFallbackSuggestions(
+        nounTypeSuggestion: List<String>?,
+        caseAnnotationSuggestion: List<String>?,
+    ): Boolean {
+        var appliedSomething = false
+
+        nounTypeSuggestion?.let {
+            handleSingleType(it, "noun")
+            val (_, text) = handleColorAndTextForNounType(it[0])
+            if (text != getString(R.string.suggestion)) appliedSomething = true
+        }
+
+        if (!appliedSomething) {
+            caseAnnotationSuggestion?.let {
+                handleSingleType(it, "preposition")
+                val (_, text) = handleTextForCaseAnnotation(it[0])
+                if (text != getString(R.string.suggestion)) appliedSomething = true
+            }
+        }
+
+        return appliedSomething
     }
 
     /**
@@ -1572,7 +1709,7 @@ abstract class GeneralKeyboardIME(
         if (commandModeOutput.isEmpty()) {
             moveToInvalidState()
         } else {
-            applyCommandOutput(commandModeOutput, commandBarInput, inputConnection, binding)
+            applyCommandOutput(commandModeOutput, inputConnection, binding)
         }
     }
 
@@ -1590,19 +1727,20 @@ abstract class GeneralKeyboardIME(
 
     private fun applyCommandOutput(
         commandModeOutput: String,
-        commandBarInput: String,
+        // commandBarInput: String,
         inputConnection: InputConnection,
         binding: KeyboardViewKeyboardBinding?,
     ) {
         val outputBuilder = StringBuilder()
-        outputBuilder.apply {
-            append(commandModeOutput)
-            if (commandModeOutput.length > commandBarInput.length) {
-                append(" ")
-            }
+        outputBuilder.append(commandModeOutput)
+
+        // New logic: Add a space if the command output is not empty
+        // and doesn't already end with a space.
+        if (commandModeOutput.isNotEmpty() && !commandModeOutput.endsWith(" ")) {
+            outputBuilder.append(" ")
         }
 
-        inputConnection.commitText(outputBuilder.toString(), 1)
+        inputConnection.commitText(outputBuilder.toString(), COMMIT_TEXT_CURSOR_POSITION)
         binding?.commandBar?.text = ""
         moveToIdleState()
     }
