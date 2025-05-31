@@ -22,6 +22,7 @@
     <color name="switch_selector_color">@color/corner_polygon_color</color>
     <color name="switch_selector_color_false">@color/md_grey_800_dark</color>
     <color name="button_container_color">@color/you_button_background_color</color>
+    <color name="theme_scribe_blue">@color/dark_scribe_blue</color>
 
     <!-- Commons colors -->
     <color name="you_status_bar_color">#20333D</color>
