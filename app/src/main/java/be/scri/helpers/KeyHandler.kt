@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.inputmethod.InputConnection
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
+import org.intellij.lang.annotations.Language
 
 /**
  * Handles key events for the EnglishKeyboardIME.
@@ -18,7 +19,7 @@ class KeyHandler(
     /**
      * Processes the given key code and performs the corresponding action.
      */
-    fun handleKey(code: Int) {
+    fun handleKey(code: Int , language: String) {
         val inputConnection = ime.currentInputConnection
         if (!isValidState(inputConnection)) return
 
@@ -54,7 +55,10 @@ class KeyHandler(
             KeyboardBase.CODE_1X3_RIGHT,
             KeyboardBase.CODE_2X1_TOP,
             KeyboardBase.CODE_2X1_BOTTOM,
-            -> returnTheConjugateLabels(code , context = ime.applicationContext)
+            -> returnTheConjugateLabels(
+                code, context = ime.applicationContext,
+                language = language,
+            )
             else -> handleDefaultKey(code)
         }
 
@@ -214,18 +218,22 @@ class KeyHandler(
         ime.disableAutoSuggest()
     }
 
-    private fun returnTheConjugateLabels(code: Int ,   context: Context) {
+    private fun returnTheConjugateLabels(code: Int ,   context: Context , language: String) {
         if (!ime.returnIsSubsequentRequired()) {
             ime.handleConjugateKeys(code , false)
             ime.currentState = ScribeState.IDLE
             ime.switchToCommandToolBar()
             ime.updateUI()
+            ime.saveConjugateModeType(
+                language,
+                isSubsequentArea = false,
+                context = context,
+            )
         }
         else {
-
             ime.setupConjugateKeysByLanguage(conjugateIndex = 0 , true)
-            ime.switchToToolBar(isSubsequentArea = true)
-            val word =  ime.handleConjugateKeys(code , true)
+            ime.switchToToolBar(isSubsequentArea = false)
+            val word =  ime.handleConjugateKeys(code , false)
             ime.setupConjugateSubView(ime.returnSubsequentData() , word)
         }
     }

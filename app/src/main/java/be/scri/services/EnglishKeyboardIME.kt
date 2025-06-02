@@ -145,7 +145,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
      * @param code The integer code of the key that was pressed.
      */
     override fun onKey(code: Int) {
-        keyHandler.handleKey(code)
+        keyHandler.handleKey(code, language)
     }
 
     /**

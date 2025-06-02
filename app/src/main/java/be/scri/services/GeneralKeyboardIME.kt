@@ -220,9 +220,13 @@ abstract class GeneralKeyboardIME(
      */
     override fun onCreate() {
         super.onCreate()
+        Log.i("NEW-TAG","I am being called from onCreate()")
         keyboardBinding = KeyboardViewKeyboardBinding.inflate(layoutInflater)
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         onCreateInputView()
+        updateCommandBarHintAndPrompt()
+        saveConjugateModeType("none", context = applicationContext)
+        updateUI()
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         sharedPref.edit {
             putString("conjugate_mode_type", "none")
@@ -236,8 +240,12 @@ abstract class GeneralKeyboardIME(
      * @param finishingInput Boolean indicating whether the input is finishing.
      */
     override fun onFinishInputView(finishingInput: Boolean) {
+        Log.i("NEW-TAG","I am being called from onFinishInput()")
         super.onFinishInputView(finishingInput)
         currentState = ScribeState.IDLE
+        updateCommandBarHintAndPrompt()
+        saveConjugateModeType("none", context = applicationContext)
+        updateUI()
         switchToCommandToolBar()
         updateUI()
     }
@@ -248,7 +256,12 @@ abstract class GeneralKeyboardIME(
      * Override this method to set up any resources or configurations needed by the input method.
      */
     override fun onInitializeInterface() {
+        Log.i("NEW-TAG","I am being called from onInitializeInterface()")
         super.onInitializeInterface()
+        updateCommandBarHintAndPrompt()
+
+        saveConjugateModeType("none", context = applicationContext)
+        updateUI()
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
     }
 
@@ -271,10 +284,15 @@ abstract class GeneralKeyboardIME(
      * @return The view to be used as the input view for the IME.
      */
     override fun onCreateInputView(): View {
+        Log.i("NEW-TAG","I am being called from onCreateInputView()")
         binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        currentState = ScribeState.IDLE
+        updateCommandBarHintAndPrompt()
+        saveConjugateModeType("none", context = applicationContext)
+        updateUI()
         keyboardView!!.invalidateAllKeys()
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
@@ -305,7 +323,7 @@ abstract class GeneralKeyboardIME(
         restarting: Boolean,
     ) {
         super.onStartInput(attribute, restarting)
-
+        Log.i("NEW-TAG","I am being called from onStartInput()")
         inputTypeClass = attribute!!.inputType and TYPE_MASK_CLASS
         enterKeyType = attribute.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         currentEnterKeyType = enterKeyType
@@ -344,6 +362,7 @@ abstract class GeneralKeyboardIME(
      * It handles the actions to be performed on key release.
      */
     override fun onActionUp() {
+        Log.i("NEW-TAG","I am being called from onActionUp()")
         if (switchToLetters) {
             keyboardMode = keyboardLetters
             keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
@@ -539,7 +558,6 @@ abstract class GeneralKeyboardIME(
             setupSelectCommandView()
             updateUI()
         }
-        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         setInputView(keyboardHolder)
     }
 
@@ -555,6 +573,7 @@ abstract class GeneralKeyboardIME(
                 setupIdleView()
                 handleTextSizeForSuggestion(binding)
                 initializeEmojiButtons()
+                saveConjugateModeType("none", context = applicationContext)
                 keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
                 keyboardView!!.setKeyboard(keyboard!!)
                 updateButtonVisibility(emojiAutoSuggestionEnabled)
@@ -589,8 +608,6 @@ abstract class GeneralKeyboardIME(
 
         setupScribeKeyListener()
         val conjugateIndex = getValidatedConjugateIndex()
-        Log.i("MY-TAG", "I am outside the 2x2 and the conjugate output is $conjugateOutput")
-
 
         setupConjugateKeysByLanguage(conjugateIndex)
 
@@ -1041,7 +1058,7 @@ abstract class GeneralKeyboardIME(
      * @param mode The conjugate mode type to be saved, represented as a string.
      *              This can be a mode like "none", "3x2", or any other mode type.
      */
-    internal fun saveConjugateModeType(language: String, isSubsequentArea: Boolean = false, context: Context) {
+    internal fun saveConjugateModeType(language: String, isSubsequentArea: Boolean = false, context: Context ) {
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         val mode = if (!isSubsequentArea) {
             when (language) {
@@ -1050,7 +1067,7 @@ abstract class GeneralKeyboardIME(
                 else -> "none"
             }
         } else {
-            "2x1"
+            "none"
         }
         sharedPref.edit {
             putString("conjugate_mode_type", mode)

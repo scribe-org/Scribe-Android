@@ -10,7 +10,7 @@
     <dimen name="key_height_landscape">40dp</dimen>
     <dimen name="conjugate_view_key_height_3x3">80dp</dimen>
     <dimen name="conjugate_view_key_height_2x2">120dp</dimen>
-    <dimen name="conjugate_view_key_height_2x1">240dp</dimen>
+    <dimen name="conjugate_view_key_height_2x1">140dp</dimen>
     <dimen name="conjugate_view_key_height_1x1">240dp</dimen>
     <dimen name="vertical_correction">-10dp</dimen>
     <dimen name="clip_pin_size">28dp</dimen>
