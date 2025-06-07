@@ -207,7 +207,7 @@ class KeyboardView
 
         var mKeyLabel1X3TOP: String = "TOP"
         var mKeyLabel1X3BOTTOM: String = "BOTTOM"
-        var mKeyLabel1X3LEFT : String = "LEFT"
+        var mKeyLabel1X3LEFT: String = "LEFT"
 
         var topSmallLabelFPS: String = ""
         var topSmallLabelFPP: String = ""
@@ -369,6 +369,14 @@ class KeyboardView
             return earlierValue
         }
 
+        /**
+         * Sets the label and small text label for a specific key based on its code.
+         *
+         * @param label The main label to be displayed on the key.
+         * @param smallTextLabel The smaller text label to be displayed (often above or below the main label).
+         * @param code The unique integer code identifying the key (e.g., `KeyboardBase.CODE_FPS`).
+         *             This code determines which internal label variables are updated.
+         */
         fun setKeyLabel(
             label: String,
             smallTextLabel: String,
@@ -433,6 +441,12 @@ class KeyboardView
             }
         }
 
+        /**
+         * Returns the label for a key with the given code.
+         *
+         * @param code The code of the key.
+         * @return The label for the key, or null if the key code is not recognized.
+         */
         fun getKeyLabel(code: Int): String? =
             when (code) {
                 KeyboardBase.CODE_FPS -> mKeyLabelFPS

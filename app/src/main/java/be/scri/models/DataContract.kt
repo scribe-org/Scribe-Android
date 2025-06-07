@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 @file:Suppress("ktlint:standard:kdoc")
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -14,7 +13,7 @@ import kotlinx.serialization.Serializable
 data class DataContract(
     val numbers: Map<String, String>,
     val genders: Genders,
-    val conjugations: Map<String, TenseGroup>
+    val conjugations: Map<String, TenseGroup>,
 )
 
 /**
@@ -35,7 +34,7 @@ data class Genders(
 @Serializable
 data class TenseGroup(
     val title: String = "",
-    val conjugationTypes: Map<String, ConjugationCategory>
+    val conjugationTypes: Map<String, ConjugationCategory>,
 )
 
 /**
@@ -44,5 +43,5 @@ data class TenseGroup(
 @Serializable
 data class ConjugationCategory(
     val title: String = "",
-    val conjugationForms: Map<String, String> = emptyMap()
+    val conjugationForms: Map<String, String> = emptyMap(),
 )

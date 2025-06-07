@@ -81,7 +81,7 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
      * @param code The key code of the pressed key.
      */
     override fun onKey(code: Int) {
-        keyHandler.handleKey(code,language)
+        keyHandler.handleKey(code, language)
     }
 
     /**
