@@ -20,6 +20,7 @@
             android:layout_width="@dimen/command_state_scribe_key_width"
             android:layout_height="36dp"
             android:layout_marginStart="@dimen/small_margin"
+            android:backgroundTint="@color/theme_scribe_blue"
             android:background="@drawable/scribe_key_background_left_rounded"
             android:contentDescription="@string/scribe_key"
             android:foreground="@drawable/close"

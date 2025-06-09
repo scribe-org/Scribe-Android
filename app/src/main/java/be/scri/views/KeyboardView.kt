@@ -338,6 +338,7 @@ class KeyboardView
                 mKeyboard?.mEnterKeyType = earlierValue
             } else {
                 mKeyboard?.mEnterKeyType = MyCustomActions.IME_ACTION_COMMAND
+                mEnterKeyColor = resources.getColor(R.color.theme_scribe_blue, context.theme) // Set to theme_scribe_blue
             }
             return earlierValue
         }
