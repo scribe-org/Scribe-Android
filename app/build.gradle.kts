@@ -32,7 +32,7 @@ val kotlinVersion by extra("2.0.0")
 val mockkVersion by extra("1.13.13")
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "be.scri"
@@ -43,6 +43,16 @@ android {
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    packaging {
+        resources {
+            pickFirsts.add("META-INF/LICENSE*")
+            pickFirsts.add("META-INF/ASL2.0")
+            pickFirsts.add("META-INF/NOTICE*")
+            pickFirsts.add("META-INF/LGPL2.1")
+
+        }
     }
 
 
@@ -243,12 +253,14 @@ dependencies {
     testImplementation ("org.mockito:mockito-core:5.12.0")
     testImplementation ("org.mockito:mockito-inline:5.2.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("com.google.truth:truth:1.4.4")
 //    testImplementation ("org.mockito:mockito-junit-jupiter:5.12.0")
 
 
     // For Instrumentation Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.0")
     androidTestImplementation("io.mockk:mockk-android:$mockkVersion")
+    androidTestImplementation("com.google.truth:truth:1.4.4")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
 
     // Espresso for UI tests
