@@ -18,6 +18,7 @@ import be.scri.services.GeneralKeyboardIME
  *
  * This may include methods for showing, formatting, or validating hints in forms or UI components.
  */
+@Suppress("TooManyFunctions")
 object HintUtils {
     /**
      * Resets the application hints, marking them as not shown in the shared preferences.
@@ -116,6 +117,27 @@ object HintUtils {
             "Spanish" to ESInterfaceVariables.PLURAL_PLACEHOLDER,
             "Swedish" to SVInterfaceVariables.PLURAL_PLACEHOLDER,
         )
+
+    /**
+     * Provides invalid hint for selected language.
+     *
+     * @return A hint string for invalid commands.
+     */
+    fun getInvalidHint(
+        language: String,
+        defaultHint: String = ENInterfaceVariables.INVALID_COMMAND_MSG,
+    ): String =
+        when (language) {
+            "English" -> ENInterfaceVariables.INVALID_COMMAND_MSG
+            "French" -> FRInterfaceVariables.INVALID_COMMAND_MSG
+            "German" -> DEInterfaceVariables.INVALID_COMMAND_MSG
+            "Italian" -> ITInterfaceVariables.INVALID_COMMAND_MSG
+            "Portuguese" -> PTInterfaceVariables.INVALID_COMMAND_MSG
+            "Russian" -> RUInterfaceVariables.INVALID_COMMAND_MSG
+            "Spanish" -> ESInterfaceVariables.INVALID_COMMAND_MSG
+            "Swedish" -> SVInterfaceVariables.INVALID_COMMAND_MSG
+            else -> defaultHint
+        }
 
     /**
      * Retrieves the prompt text for the given state and language.

@@ -26,9 +26,17 @@ import be.scri.services.EnglishKeyboardIME
 import be.scri.ui.common.bottombar.bottomBarScreens
 import be.scri.ui.theme.ScribeTheme
 
+/**
+ * The main entry point of the app.
+ * Initializes theme settings, navigation, and sets up the main UI using Jetpack Compose.
+ */
 class MainActivity : ComponentActivity() {
     private var englishKeyboardIME: EnglishKeyboardIME? = null
 
+    /**
+     * Initializes the app on launch. Sets the theme based on user preferences, sets up edge-to-edge
+     * layout, and builds the UI using Compose.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
@@ -56,6 +64,12 @@ class MainActivity : ComponentActivity() {
 
             val isHintChangedMap = remember { mutableStateMapOf<Int, Boolean>() }
 
+            /**
+             * Updates the app's dark/light theme based on user preference and applies it
+             * immediately.
+             *
+             * @param darkMode Whether the dark mode should be enabled.
+             */
             fun updateTheme(darkMode: Boolean) {
                 setLightDarkModePreference(context, darkMode)
 

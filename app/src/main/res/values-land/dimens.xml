@@ -71,5 +71,6 @@
     <dimen name="cab_popup_menu_min_width">160dp</dimen>
     <dimen name="cab_item_min_width">80dp</dimen>
     <dimen name="fab_margin">14dp</dimen>
-    <dimen name="scribe_key_width">107dp</dimen>
+    <dimen name="select_command_scribe_key_width">107dp</dimen>
+    <dimen name="command_state_scribe_key_width">127dp</dimen>
 </resources>
