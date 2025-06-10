@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Functions for retrieving configuration settings and calculating color based on theme and background preferences.
- */
 
 package be.scri.extensions
 
@@ -11,8 +7,16 @@ import android.graphics.Color
 import be.scri.R
 import be.scri.helpers.Config
 
+/**
+ * Lazily retrieves the [Config] object scoped to the application context.
+ */
 val Context.config: Config get() = Config.newInstance(applicationContext)
 
+/**
+ * Determines the stroke color based on the current theme and user preferences.
+ *
+ * @return A color integer suitable for use in outlining UI elements.
+ */
 fun Context.getStrokeColor(): Int =
     if (config.isUsingSystemTheme) {
         if (isUsingSystemDarkTheme()) {

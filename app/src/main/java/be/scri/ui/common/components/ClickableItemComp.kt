@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- *  A composable component that displays a clickable item with a title, optional description and an arrow icon.
- */
 
 package be.scri.ui.common.components
 
@@ -27,6 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
 
+/**
+ *  A composable component that displays a clickable item with a title, optional description and an arrow icon.
+ */
 @Composable
 fun ClickableItemComp(
     title: String,

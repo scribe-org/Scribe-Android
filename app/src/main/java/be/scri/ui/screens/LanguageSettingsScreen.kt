@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The settings sub menu page for languages that allows for customization of language keyboard interfaces.
- */
 
 package be.scri.ui.screens
 
@@ -35,6 +31,9 @@ import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
+/**
+ * The settings sub menu page for languages that allows for customization of language keyboard interfaces.
+ */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LanguageSettingsScreen(
@@ -204,7 +203,7 @@ fun LanguageSettingsScreen(
                     .verticalScroll(scrollState),
         ) {
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_settings_keyboard_translation_select_source),
+                title = stringResource(R.string.app_settings_keyboard_translation_title),
                 cardItemsList = translationSourceLanguageList,
             )
             ItemCardContainerWithTitle(
@@ -225,6 +224,26 @@ fun LanguageSettingsScreen(
     }
 }
 
+/**
+ * Builds a list of toggleable functionality settings for the keyboard.
+ *
+ * These settings include:
+ * - Double-space for period
+ * - Emoji suggestions
+ * - Keypress vibration
+ * - Popup on keypress
+ *
+ * @param periodOnDoubleTapState Current state of the double-space period setting.
+ * @param onTogglePeriodOnDoubleTap Callback invoked when the double-space period is toggled.
+ * @param emojiSuggestionsState Current state of the emoji suggestions setting.
+ * @param onToggleEmojiSuggestions Callback invoked when emoji suggestions is toggled.
+ * @param togglePopUpOnKeyPress Current state of popup on keypress setting.
+ * @param onTogglePopUpOnKeyPress Callback invoked when popup on keypress is toggled.
+ * @param toggleVibrateOnKeyPress Current state of keypress vibration setting.
+ * @param onToggleVibrateOnKeyPress Callback invoked when keypress vibration is toggled.
+ *
+ * @return A list of [ScribeItem]s to be shown in the UI.
+ */
 @Composable
 private fun getFunctionalityListData(
     periodOnDoubleTapState: Boolean,
@@ -266,6 +285,21 @@ private fun getFunctionalityListData(
     return list
 }
 
+/**
+ * Returns a list of [ScribeItem]s representing layout-specific settings based on the selected [language].
+ *
+ * Includes toggles such as:
+ * - "Disable accent characters" (conditionally shown for German, Swedish, and Spanish)
+ * - "Period and comma" toggle (always included)
+ *
+ * @param language The currently selected language, used to determine which layout-specific settings to show.
+ * @param togglePeriodAndCommaState Current state of the "Period and comma" toggle.
+ * @param onTogglePeriodAndComma Callback invoked when the "Period and comma" toggle is changed.
+ * @param toggleDisableAccentCharacter Current state of the "Disable accent characters" toggle.
+ * @param onToggleDisableAccentCharacter Callback invoked when the "Disable accent characters" toggle is changed.
+ *
+ * @return A list of [ScribeItem]s to be displayed in the UI.
+ */
 @Composable
 private fun getLayoutListData(
     language: String,
@@ -301,6 +335,14 @@ private fun getLayoutListData(
     return list
 }
 
+/**
+ * Returns the string resource ID for the localized display name of a given language.
+ *
+ * If the specified language is not recognized, defaults to the English string resource.
+ *
+ * @param language The name of the language (e.g., "German", "French").
+ * @return The string resource ID corresponding to the localized name.
+ */
 fun getLanguageStringFromi18n(language: String): Int {
     val languageMap =
         mapOf(
@@ -315,6 +357,15 @@ fun getLanguageStringFromi18n(language: String): Int {
     return languageMap[language] ?: R.string.app__global_english
 }
 
+/**
+ * Builds a list of ScribeItems for the translation source language settings screen.
+ *
+ * This list contains items that allow users to select the source language used in keyboard translation.
+ * When the user selects the source language item, the provided [onTranslationLanguageSelect] callback is triggered.
+ *
+ * @param onTranslationLanguageSelect A lambda function invoked when the user clicks the "Select Source Language" item.
+ * @return A list of [ScribeItem]s to be displayed in the UI.
+ */
 @Composable
 private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: () -> Unit): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()

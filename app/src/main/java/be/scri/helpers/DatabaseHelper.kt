@@ -6,6 +6,7 @@ import DataContract
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 /**
  * A helper class to facilitate database calls for Scribe keyboard commands.
@@ -15,6 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper
  *
  * @param context The context used to access the app's resources and database.
  */
+@Suppress("TooManyFunctions")
 class DatabaseHelper(
     context: Context,
 ) : SQLiteOpenHelper(
@@ -25,6 +27,9 @@ class DatabaseHelper(
     ) {
     private val dbManagers = DatabaseManagers(context)
 
+    /**
+     * The database version of the application.
+     */
     companion object {
         private const val DATABASE_VERSION = 1
     }
@@ -69,7 +74,7 @@ class DatabaseHelper(
      * @param language The language for which the data is being fetched.
      * @return The [DataContract] containing the data for the specified language, or null if not found.
      */
-    fun getRequiredData(language: String): DataContract? =
+    private fun getRequiredData(language: String): DataContract? =
         dbManagers.contractLoader.loadContract(
             language,
         )
@@ -148,4 +153,30 @@ class DatabaseHelper(
             getRequiredData(language),
             noun,
         )
+
+    /**
+     * Retrieves the translation of a given word between the source and destination languages.
+     *
+     * This function determines the source and destination language ISO codes based on the provided
+     * language name, and then fetches the translation of the specified word using those language codes.
+     *
+     * @param language The language name (e.g., "english") to determine the source and destination languages.
+     * @param word The word whose translation is to be fetched.
+     * @return The translation of the given word in the destination language,
+     * or an empty string if no translation is found.
+     */
+    fun getTranslationSourceAndDestination(
+        language: String,
+        word: String,
+    ): String {
+        val sourceAndDestination = dbManagers.translationDataManager.getSourceAndDestinationLanguage(language)
+        return dbManagers.translationDataManager.getTranslationDataForAWord(sourceAndDestination, word)
+    }
+
+    fun getConjugateData(
+        language: String,
+    ) {
+        Log.i("alpha","The data contract is ${getRequiredData(language)}")
+        dbManagers.conjugateDataManager.getTheConjugateLabels(language,getRequiredData(language))
+    }
 }

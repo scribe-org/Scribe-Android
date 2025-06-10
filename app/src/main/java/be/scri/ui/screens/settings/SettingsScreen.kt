@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The settings tab for the application including settings for language keyboards as sub menus.
- */
 
 package be.scri.ui.screens.settings
 
@@ -39,6 +35,9 @@ import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 import be.scri.ui.screens.settings.SettingsUtil.getLocalizedLanguageName
 
+/**
+ * The settings tab for the application including settings for language keyboards as sub menus.
+ */
 @Composable
 fun SettingsScreen(
     onDarkModeChange: (Boolean) -> Unit,
@@ -165,6 +164,10 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
     }
 }
 
+/**
+ * Defines commonly used dimensions for the Settings screen UI.
+ * Includes padding, text sizes, and elevation values.
+ */
 object Dimensions {
     val PaddingLarge = 20.dp
     val PaddingSmallXL = 12.dp

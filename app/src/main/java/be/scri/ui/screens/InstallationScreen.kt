@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The installation page of the application with details for installing Scribe keyboards and downloading data.
- */
 
 package be.scri.ui.screens
 
@@ -38,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -52,6 +49,9 @@ import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 
+/**
+ * The installation page of the application with details for installing Scribe keyboards and downloading data.
+ */
 @Suppress("MagicNumber")
 @Composable
 fun InstallationScreen(
@@ -90,8 +90,9 @@ fun InstallationScreen(
                 modifier =
                     Modifier
                         .align(Alignment.CenterHorizontally)
-                        .width(222.dp)
-                        .height(107.dp),
+                        .padding(bottom = 16.dp)
+                        .width(248.dp)
+                        .height(122.dp),
                 contentScale = ContentScale.Fit,
             )
 
@@ -205,7 +206,7 @@ fun InstallationScreen(
                                     },
                                 ),
                         colorFilter =
-                            androidx.compose.ui.graphics.ColorFilter.tint(
+                            ColorFilter.tint(
                                 MaterialTheme.colorScheme.surfaceContainer,
                             ),
                     )
@@ -218,7 +219,7 @@ fun InstallationScreen(
                                 .padding(Dimensions.PaddingSmall)
                                 .size(26.dp),
                         colorFilter =
-                            androidx.compose.ui.graphics.ColorFilter.tint(
+                            ColorFilter.tint(
                                 MaterialTheme.colorScheme.onPrimary,
                             ),
                     )
@@ -309,6 +310,10 @@ fun InstallationScreen(
     }
 }
 
+/**
+ * Defines commonly used dimensions for the Installation screen UI.
+ * Includes padding, text sizes, icon size, and elevation values.
+ */
 object Dimensions {
     val PaddingSmall = 8.dp
     val PaddingMedium = 16.dp
@@ -329,6 +334,9 @@ object Dimensions {
     const val LEFT_LAYOUT_DIRECTION = 0f
 }
 
+/**
+ * Defines commonly used alpha (transparency) values for UI elements.
+ */
 object Alpha {
     const val HIGH = 0.9f
     const val MEDIUM = 0.6f

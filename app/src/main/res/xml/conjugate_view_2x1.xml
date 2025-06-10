@@ -1,0 +1,11 @@
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:keyHeight="100%p">
+
+    <Row>
+        <Key app:code="2001" app:keyIcon="@drawable/ic_left_arrow" app:keyWidth="10%p" />
+        <Key app:keyLabel="Left" app:code="1031" app:keyWidth="40%p" />
+        <Key app:keyLabel="Right" app:code="1032" app:keyWidth="40%p" />
+        <Key app:code="2002" app:keyIcon="@drawable/ic_right_arrow" app:keyWidth="10%p" />
+    </Row>
+</Keyboard>

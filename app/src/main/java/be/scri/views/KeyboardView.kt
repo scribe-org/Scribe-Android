@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * The base keyboard view for Scribe language keyboards application.
- */
 
 package be.scri.views
 
@@ -71,6 +67,9 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
 
+/**
+ * The base keyboard view for Scribe language keyboards application.
+ */
 @SuppressLint("UseCompatLoadingForDrawables")
 @Suppress("LargeClass", "LongMethod", "TooManyFunctions", "NestedBlockDepth", "CyclomaticComplexMethod")
 class KeyboardView
@@ -80,6 +79,9 @@ class KeyboardView
         attrs: AttributeSet?,
         defStyleRes: Int = 0,
     ) : View(context, attrs, defStyleRes) {
+        /**
+         * Listener interface for keyboard actions such as key press, text input, or movement.
+         */
         interface OnKeyboardActionListener {
             /**
              * Called when the user presses a key. This is sent before the [.onKey] is called.
@@ -116,8 +118,15 @@ class KeyboardView
              */
             fun onText(text: String)
 
+            /**
+             * Checks if there is text before the current cursor position.
+             * @return true if there is text before the cursor and false otherwise.
+             */
             fun hasTextBeforeCursor(): Boolean
 
+            /**
+             * Enters a period after a space character, used in double-tap space bar scenarios.
+             */
             fun commitPeriodAfterSpace()
         }
 
@@ -180,6 +189,7 @@ class KeyboardView
         private var mTopSmallNumberMarginHeight = 0f
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
+        var mKeyLabel : String = "He"
 
         private var mEnterKeyColor: Int = 0
 
@@ -227,6 +237,9 @@ class KeyboardView
         private val blue = (LIGHT_COLOR_BLUE_FACTOR * FULL_ALPHA).toInt()
         private val lightSpecialKey = Color.argb(alpha, red, green, blue)
 
+        /**
+         * Contains constants and configuration values used across KeyboardView.
+         */
         companion object {
             private val LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout()
             private val LONG_PRESSABLE_STATE_SET = intArrayOf(R.attr.state_long_pressable)
@@ -258,18 +271,14 @@ class KeyboardView
             private const val SHADOW_OFFSET_Y = 9f
             private const val POPUP_OFFSET_MULTIPLIER = 2.5
             private const val EXTRA_DELAY = 200L
+            private const val DISPLAY_LEFT = 2002
+            private const val DISPLAY_RIGHT = 2001
+            private const val EXTRA_PADDING = 5000
+            private const val KEY_HEIGHT = 240
         }
 
-        private var _keyboardCommandBinding: KeyboardViewCommandOptionsBinding? = null
-        val keyboardCommandBinding: KeyboardViewCommandOptionsBinding
-            get() {
-                if (_keyboardCommandBinding == null) {
-                    _keyboardCommandBinding = KeyboardViewCommandOptionsBinding.inflate(LayoutInflater.from(context))
-                }
-                return _keyboardCommandBinding!!
-            }
         private var _popupBinding: KeyboardPopupKeyboardBinding? = null
-        val popupBinding: KeyboardPopupKeyboardBinding
+        private val popupBinding: KeyboardPopupKeyboardBinding
             get() {
                 if (_popupBinding == null) {
                     _popupBinding = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
@@ -280,6 +289,11 @@ class KeyboardView
         var setPreview: Boolean = true
         var setVibrate: Boolean = true
 
+        /**
+         * Sets the color of the Enter key based on a specific color or theme mode.
+         * @param color The optional color to apply.
+         * @param isDarkMode Whether the dark mode is enabled (optional).
+         */
         fun setEnterKeyColor(
             color: Int? = null,
             isDarkMode: Boolean? = null,
@@ -301,6 +315,12 @@ class KeyboardView
             }
         }
 
+        /**
+         * Sets the icon of the Enter key based on current state.
+         * @param state The current keyboard state.
+         * @param earlierValue Previously assigned Enter key value (optional).
+         * @return The updated Enter key value.
+         */
         fun setEnterKeyIcon(
             state: ScribeState,
             earlierValue: Int? = null,
@@ -314,6 +334,13 @@ class KeyboardView
             }
             return earlierValue
         }
+
+
+        fun setKeyLabel(label: String) {
+            mKeyLabel = label
+            invalidateAllKeys()
+        }
+
 
         private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
         val keyboardBinding: KeyboardViewKeyboardBinding
@@ -493,6 +520,9 @@ class KeyboardView
             }
         }
 
+        /**
+         * Triggers haptic feedback if vibration is enabled in settings.
+         */
         fun vibrateIfNeeded() {
             if (setVibrate) {
                 performHapticFeedback()
@@ -688,6 +718,16 @@ class KeyboardView
                 val rectRadius = RECT_RADIUS
                 val shadowOffsetY = SHADOW_OFFSET_Y
 
+                if ((code == DISPLAY_LEFT) || (code == DISPLAY_RIGHT)) {
+                    val density = context.resources.displayMetrics.density
+                    key.height = (KEY_HEIGHT * density).toInt()
+                }
+                if (code == EXTRA_PADDING) {
+                    val density = context.resources.displayMetrics.density
+                    key.height = 0
+                    key.width = 0
+                }
+
                 val shadowRect =
                     RectF(
                         (key.x + keyMargin + padding).toFloat(),
@@ -703,7 +743,9 @@ class KeyboardView
                         (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
                         (key.y + key.height - vKeyMargin + shadowOffset - padding).toFloat(),
                     )
-                canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+                if (code != EXTRA_PADDING) {
+                    canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+                }
 
                 val backgroundColor =
                     when {
@@ -714,10 +756,19 @@ class KeyboardView
                         else -> keyBackgroundColor
                     }
                 keyBackgroundPaint.color = backgroundColor
-                canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
-
+                if (code != EXTRA_PADDING) {
+                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                }
+                var label = adjustCase(key.label)?.toString()
                 // Switch the character to uppercase if shift is pressed.
-                val label = adjustCase(key.label)?.toString()
+
+
+                // Checkpoint3
+                if(code == 1001) {
+                    label = mKeyLabel
+
+                }
+
 
                 canvas.translate(key.x.toFloat(), key.y.toFloat())
                 if (label?.isNotEmpty() == true) {

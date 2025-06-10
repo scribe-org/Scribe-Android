@@ -18,6 +18,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
 
+/**
+ * A reusable action bar component that displays a back button icon
+ * and a title text in a horizontal row.
+ *
+ * @param title The title displayed next to the back button.
+ * @param onClickAction Lambda function triggered when the back button is clicked.
+ * @param modifier Optional [Modifier] for styling and layout customization.
+ */
 @Composable
 fun ActionBar(
     title: String,

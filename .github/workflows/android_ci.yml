@@ -4,78 +4,77 @@ on:
         branches:
             - main
         types: [opened, reopened, synchronize]
+
 permissions:
-  pull-requests: write
-  contents: read
+    pull-requests: write
+    contents: read
+
 jobs:
     lint:
         runs-on: ubuntu-latest
-        name: Run lint and detekt   
+        name: Run lint and detekt
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
-        
-            - name: prepare app 
-              uses: ./.github/composite/prepareApp  
+
+            - name: prepare app
+              uses: ./.github/composite/prepareApp
 
             - name: Run ktlint
               run: ./gradlew lintKotlin
 
             - name: Run detekt
               run: ./gradlew detekt
+
     test:
         runs-on: ubuntu-latest
         name: Run tests
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
-              
-            - name: prepare app 
-              uses: ./.github/composite/prepareApp  
+
+            - name: prepare app
+              uses: ./.github/composite/prepareApp
 
             - name: Run ktlint
               run: ./gradlew test
-              
+
     collect_coverage:
-          runs-on: ubuntu-latest
-          steps:
+        runs-on: ubuntu-latest
+        steps:
             - name: Checkout Repository
               uses: actions/checkout@v4
-      
+
             - name: Set up JDK
               uses: actions/setup-java@v1
               with:
-                java-version: 17
-      
+                  java-version: 17
+
             - name: Grant execute permission for gradlew
               run: chmod +x gradlew
-      
+
             - name: Get coverage
               run: ./gradlew koverReport
-          
+
             - name: Run File-wise Coverage Parser Script
               run: python3 scripts/coverage_parser.py
-        
-            
-      
 
     build:
-      runs-on: ubuntu-latest
-      name: build app
-      steps: 
-      
+        runs-on: ubuntu-latest
+        name: build app
+        steps:
             - name: Checkout repository
               uses: actions/checkout@v4
-              
-            - name: prepare app 
-              uses: ./.github/composite/prepareApp  
-              
-            - name: build app  
+
+            - name: prepare app
+              uses: ./.github/composite/prepareApp
+
+            - name: build app
               run: ./gradlew assembleDebug
-              
+
             - name: Upload Debug Apk
               uses: actions/upload-artifact@v4
               if: success()
               with:
                   name: latest-apk
-                  path: "app/build/outputs/apk/core/debug/app-core-debug.apk"          
+                  path: "app/build/outputs/apk/core/debug/app-core-debug.apk"

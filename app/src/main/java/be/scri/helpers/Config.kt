@@ -15,6 +15,9 @@ import android.content.Context
 class Config(
     context: Context,
 ) : BaseConfig(context) {
+    /**
+     * Function for creating new instances of the class.
+     */
     companion object {
         /**
          * Creates a new instance of `Config`.

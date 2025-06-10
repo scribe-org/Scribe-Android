@@ -1,8 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-@file:Suppress("ktlint:standard:kdoc")
-/**
- * Light and dark mode themes for the application.
- */
 
 package be.scri.ui.theme
 
@@ -43,6 +39,9 @@ private val DarkColors =
         surfaceContainer = theme_dark_corner_button_color,
     )
 
+/**
+ * Light and dark mode themes for the application.
+ */
 @Composable
 fun ScribeTheme(
     useDarkTheme: Boolean,

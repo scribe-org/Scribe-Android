@@ -10,6 +10,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import be.scri.ui.theme.ScribeTypography
 
+/**
+ * A composable function that displays a styled page title.
+ *
+ * @param pageTitle The title text to display
+ * @param modifier An optional [Modifier] used to customize the layout and styling.
+ */
 @Composable
 fun PageTitle(
     pageTitle: String,

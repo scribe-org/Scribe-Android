@@ -20,6 +20,9 @@ open class BaseConfig(
 ) {
     protected val prefs = context.getSharedPrefs()
 
+    /**
+     * Function for creating new instances of the class.
+     */
     companion object {
         /**
          * Creates a new instance of `BaseConfig`.

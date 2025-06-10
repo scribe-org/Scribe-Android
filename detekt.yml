@@ -57,16 +57,9 @@ comments:
     UndocumentedPublicFunction:
         active: true
         excludes: &excludedFolders
-            - '**/activities/**'
-            - '**/extensions/**'
             - '**/helpers/**/*Variables.kt'
-            - '**/models/**'
-            - '**/navigation/**'
-            - '**/services/**'
             - '**/test/**'
-            - '**/ui/**'
-            - '**/views/**'
-            - '**/App.kt'
+            - '**/services/**'
     UndocumentedPublicClass:
         active: true
         excludes: *excludedFolders

@@ -17,7 +17,7 @@
 
         <Button
             android:id="@+id/scribe_key"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/command_state_scribe_key_width"
             android:layout_height="36dp"
             android:layout_marginStart="@dimen/small_margin"
             android:background="@drawable/scribe_key_background_left_rounded"
@@ -42,7 +42,6 @@
             android:textSize="16sp"
             android:gravity="center"
             android:minWidth="48dp"
-            android:maxWidth="120dp"
             android:paddingStart="8dp"
             android:paddingTop="4dp"
             android:paddingEnd="8dp"
@@ -98,6 +97,17 @@
                 android:textFontWeight="500"
                 android:textSize="16sp" />
         </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_info"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_info_vector"
+            android:tint="@color/you_primary_color"
+            app:layout_constraintBottom_toBottomOf="@+id/command_bar"
+            app:layout_constraintEnd_toEndOf="@+id/command_bar"
+            app:layout_constraintTop_toTopOf="@+id/command_bar"
+            android:layout_marginEnd="8dp"/>
 
         <ImageView
             android:id="@+id/top_keyboard_divider"
