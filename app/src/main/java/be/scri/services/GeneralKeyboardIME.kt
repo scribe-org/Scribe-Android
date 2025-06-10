@@ -114,6 +114,7 @@ abstract class GeneralKeyboardIME(
     var nounTypeSuggestion: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
+
     val prepAnnotationConversionDict =
         mapOf(
             "German" to mapOf("Acc" to "Akk"),
@@ -1564,24 +1565,28 @@ abstract class GeneralKeyboardIME(
         val imeOptionsActionId = getImeOptionsActionId()
 
         if (commandBarState == true) {
-            val commandBarInput =
-                binding
-                    ?.commandBar
-                    ?.text
-                    .toString()
-                    .trim()
-            lateinit var commandModeOutput: String
-            commandModeOutput =
-                when (currentState) {
-                    ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
-                    else -> commandBarInput
-                }
-            if (commandModeOutput.length > commandBarInput.length) {
-                commandModeOutput = "$commandModeOutput "
+            val commandBarInput = binding?.commandBar?.text.toString().trim()
+
+            val commandModeOutput = when (currentState) {
+                ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
+                else -> commandBarInput
             }
-            inputConnection.commitText(commandModeOutput, 1)
+            if (commandModeOutput.isEmpty()) {
+                moveToInvalidState()
+                return
+            }
+            val finalOutput = if (commandModeOutput.length > commandBarInput.length) {
+                "$commandModeOutput "
+            } else {
+                commandModeOutput
+            }
+            inputConnection.commitText(finalOutput, 1)
             binding?.commandBar?.setText("")
+            moveToIdleState()
+        } else {
+            handleNonCommandEnter(imeOptionsActionId, inputConnection)
         }
+
     }
 
     internal fun moveToIdleState() {
