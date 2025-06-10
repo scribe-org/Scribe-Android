@@ -590,7 +590,6 @@ abstract class GeneralKeyboardIME(
         val commandBarButton = keyboardBinding.commandBar
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
-        commandBarButton.text = ""
         commandBarButton.hint = ""
         Log.i(TAG, "INVALID STATE ${commandBarButton.text}")
     }
@@ -1586,8 +1585,6 @@ abstract class GeneralKeyboardIME(
             }
             inputConnection.commitText(commandModeOutput, 1)
             binding?.commandBar?.setText("")
-        } else {
-            applyCommandOutput(commandModeOutput, commandBarInput, inputConnection, binding)
         }
     }
 
@@ -1618,7 +1615,6 @@ abstract class GeneralKeyboardIME(
         }
 
         inputConnection.commitText(outputBuilder.toString(), 1)
-        binding?.commandBar?.text = ""
         moveToIdleState()
     }
 
