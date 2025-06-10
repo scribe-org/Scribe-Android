@@ -173,10 +173,8 @@ class DatabaseHelper(
         return dbManagers.translationDataManager.getTranslationDataForAWord(sourceAndDestination, word)
     }
 
-    fun getConjugateData(
-        language: String,
-    ) {
-        Log.i("alpha","The data contract is ${getRequiredData(language)}")
-        dbManagers.conjugateDataManager.getTheConjugateLabels(language,getRequiredData(language))
+    fun getConjugateData(language: String) {
+        Log.i("alpha", "The data contract is ${getRequiredData(language)}")
+        dbManagers.conjugateDataManager.getTheConjugateLabels(language, getRequiredData(language))
     }
 }

@@ -33,7 +33,6 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import be.scri.R
 import be.scri.databinding.KeyboardPopupKeyboardBinding
-import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.extensions.adjustAlpha
 import be.scri.extensions.applyColorFilter
@@ -189,7 +188,7 @@ class KeyboardView
         private var mTopSmallNumberMarginHeight = 0f
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
-        var mKeyLabel : String = "He"
+        var mKeyLabel: String = "He"
 
         private var mEnterKeyColor: Int = 0
 
@@ -335,12 +334,10 @@ class KeyboardView
             return earlierValue
         }
 
-
         fun setKeyLabel(label: String) {
             mKeyLabel = label
             invalidateAllKeys()
         }
-
 
         private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
         val keyboardBinding: KeyboardViewKeyboardBinding
@@ -762,13 +759,10 @@ class KeyboardView
                 var label = adjustCase(key.label)?.toString()
                 // Switch the character to uppercase if shift is pressed.
 
-
                 // Checkpoint3
-                if(code == 1001) {
+                if (code == 1001) {
                     label = mKeyLabel
-
                 }
-
 
                 canvas.translate(key.x.toFloat(), key.y.toFloat())
                 if (label?.isNotEmpty() == true) {
