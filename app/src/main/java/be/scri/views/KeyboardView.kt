@@ -33,7 +33,6 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import be.scri.R
 import be.scri.databinding.KeyboardPopupKeyboardBinding
-import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.extensions.adjustAlpha
 import be.scri.extensions.applyColorFilter
@@ -66,6 +65,8 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
+
+private const val CODE_KEY = 1001
 
 /**
  * The base keyboard view for Scribe language keyboards application.
@@ -189,6 +190,7 @@ class KeyboardView
         private var mTopSmallNumberMarginHeight = 0f
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
+        var mKeyLabel: String = "He"
 
         private var mEnterKeyColor: Int = 0
 
@@ -276,14 +278,6 @@ class KeyboardView
             private const val KEY_HEIGHT = 240
         }
 
-        private var _keyboardCommandBinding: KeyboardViewCommandOptionsBinding? = null
-        val keyboardCommandBinding: KeyboardViewCommandOptionsBinding
-            get() {
-                if (_keyboardCommandBinding == null) {
-                    _keyboardCommandBinding = KeyboardViewCommandOptionsBinding.inflate(LayoutInflater.from(context))
-                }
-                return _keyboardCommandBinding!!
-            }
         private var _popupBinding: KeyboardPopupKeyboardBinding? = null
         val popupBinding: KeyboardPopupKeyboardBinding
             get() {
@@ -341,6 +335,16 @@ class KeyboardView
                 mEnterKeyColor = resources.getColor(R.color.theme_scribe_blue, context.theme)
             }
             return earlierValue
+        }
+
+        /**
+         * Sets the label for this key.
+         *
+         * @param label The label to set for this key.
+         */
+        fun setKeyLabel(label: String) {
+            mKeyLabel = label
+            invalidateAllKeys()
         }
 
         private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
@@ -760,9 +764,13 @@ class KeyboardView
                 if (code != EXTRA_PADDING) {
                     canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
                 }
-
+                var label = adjustCase(key.label)?.toString()
                 // Switch the character to uppercase if shift is pressed.
-                val label = adjustCase(key.label)?.toString()
+
+                // Checkpoint3
+                if (code == CODE_KEY) {
+                    label = mKeyLabel
+                }
 
                 canvas.translate(key.x.toFloat(), key.y.toFloat())
                 if (label?.isNotEmpty() == true) {

@@ -114,7 +114,7 @@ abstract class GeneralKeyboardIME(
     var nounTypeSuggestion: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
-    private val commandCursor = "│"
+
     val prepAnnotationConversionDict =
         mapOf(
             "German" to mapOf("Acc" to "Akk"),
@@ -254,9 +254,18 @@ abstract class GeneralKeyboardIME(
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
 
+        // First set the keyboard
         keyboardView!!.setKeyboard(keyboard!!)
+
+        // Then set the key label
+        keyboardView!!.setKeyLabel("Hello World")
+
+        // Make sure to invalidate all keys, not just the view
+        keyboardView!!.invalidateAllKeys()
+
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
+
         return keyboardHolder
     }
 
@@ -311,10 +320,10 @@ abstract class GeneralKeyboardIME(
         emojiMaxKeywordLength = dbHelper.getEmojiMaxKeywordLength()
         pluralWords = dbHelper.checkIfWordIsPlural(languageAlias)!!
         nounKeywords = dbHelper.findGenderOfWord(languageAlias)
-
         caseAnnotation = dbHelper.findCaseAnnnotationForPreposition(languageAlias)
-
-        Log.i(TAG, nounKeywords.toString())
+        dbHelper.getConjugateData(languageAlias)
+        Log.i("ALPHA", "The noun keywords are $nounKeywords")
+        Log.i("MY-TAG", nounKeywords.toString())
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
     }
@@ -340,6 +349,7 @@ abstract class GeneralKeyboardIME(
             }
 
             keyboardView!!.setKeyboard(keyboard!!)
+
             switchToLetters = false
         }
     }
@@ -476,24 +486,27 @@ abstract class GeneralKeyboardIME(
      * to provide appropriate hints and prompts to the user.
      */
     private fun updateCommandBarHintAndPrompt(isUserDarkMode: Boolean? = null) {
-        val commandBarButton = keyboardBinding.commandBar
+        val commandBarEditText = keyboardBinding.commandBar
         val hintMessage = HintUtils.getCommandBarHint(currentState, language)
         val promptText = HintUtils.getPromptText(currentState, language, context = this)
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
-        commandBarButton.hint = hintMessage
+        commandBarEditText.hint = hintMessage
+
+        commandBarEditText.requestFocus()
 
         if (isUserDarkMode == true) {
-            commandBarButton.setHintTextColor(getColor(R.color.hint_white))
-            commandBarButton.setTextColor(getColor(white))
-            commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
+            commandBarEditText.setHintTextColor(getColor(R.color.hint_white))
+            commandBarEditText.setTextColor(getColor(white))
+            keyboardBinding.commandBarLayout.backgroundTintList =
+                ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
             promptTextView.setTextColor(getColor(white))
             promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
         } else {
-            commandBarButton.setHintTextColor(getColor(R.color.hint_black))
-            commandBarButton.setTextColor(Color.BLACK)
-            commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.white)
+            commandBarEditText.setHintTextColor(getColor(R.color.hint_black))
+            commandBarEditText.setTextColor(Color.BLACK)
+            keyboardBinding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, white)
             promptTextView.setTextColor(Color.BLACK)
             promptTextView.setBackgroundColor(getColor(white))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(white))
@@ -544,6 +557,7 @@ abstract class GeneralKeyboardIME(
                 setupIdleView()
                 handleTextSizeForSuggestion(binding)
                 initializeEmojiButtons()
+                keyboardView!!.setKeyLabel("Hello world")
                 keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
                 keyboardView!!.setKeyboard(keyboard!!)
                 updateButtonVisibility(emojiAutoSuggestionEnabled)
@@ -576,7 +590,6 @@ abstract class GeneralKeyboardIME(
         val commandBarButton = keyboardBinding.commandBar
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
-        commandBarButton.text = ""
         commandBarButton.hint = ""
         Log.i(TAG, "INVALID STATE ${commandBarButton.text}")
     }
@@ -767,6 +780,8 @@ abstract class GeneralKeyboardIME(
             currentState = ScribeState.CONJUGATE
             saveConjugateModeType("3x2")
             updateUI()
+            // Implemnet the function that renders the entire conjugate view with the 3x2 mode.
+            keyboardView!!.setKeyLabel("Hello world")
         }
         binding.pluralBtn.setOnClickListener {
             Log.i(TAG, "PLURAL STATE")
@@ -1549,30 +1564,34 @@ abstract class GeneralKeyboardIME(
         val inputConnection = currentInputConnection ?: return
         val imeOptionsActionId = getImeOptionsActionId()
 
-        if (!commandBarState) {
-            handleNonCommandEnter(imeOptionsActionId, inputConnection)
-            return
-        }
+        if (commandBarState == true) {
+            val commandBarInput =
+                binding
+                    ?.commandBar
+                    ?.text
+                    .toString()
+                    .trim()
 
-        val commandBarInput =
-            binding
-                ?.commandBar
-                ?.text
-                .toString()
-                .trim()
-                .dropLast(1)
-
-        var commandModeOutput =
-            when (currentState) {
-                ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
-                ScribeState.TRANSLATE -> getTranslation(language, commandBarInput)
-                else -> commandBarInput
+            val commandModeOutput =
+                when (currentState) {
+                    ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
+                    else -> commandBarInput
+                }
+            if (commandModeOutput.isEmpty()) {
+                moveToInvalidState()
+                return
             }
-
-        if (commandModeOutput.isEmpty()) {
-            moveToInvalidState()
+            val finalOutput =
+                if (commandModeOutput.length > commandBarInput.length) {
+                    "$commandModeOutput "
+                } else {
+                    commandModeOutput
+                }
+            inputConnection.commitText(finalOutput, 1)
+            binding?.commandBar?.setText("")
+            moveToIdleState()
         } else {
-            applyCommandOutput(commandModeOutput, commandBarInput, inputConnection, binding)
+            handleNonCommandEnter(imeOptionsActionId, inputConnection)
         }
     }
 
@@ -1586,25 +1605,6 @@ abstract class GeneralKeyboardIME(
     private fun moveToInvalidState() {
         currentState = ScribeState.INVALID
         updateUI()
-    }
-
-    private fun applyCommandOutput(
-        commandModeOutput: String,
-        commandBarInput: String,
-        inputConnection: InputConnection,
-        binding: KeyboardViewKeyboardBinding?,
-    ) {
-        val outputBuilder = StringBuilder()
-        outputBuilder.apply {
-            append(commandModeOutput)
-            if (commandModeOutput.length > commandBarInput.length) {
-                append(" ")
-            }
-        }
-
-        inputConnection.commitText(outputBuilder.toString(), 1)
-        binding?.commandBar?.text = ""
-        moveToIdleState()
     }
 
     private fun handleNonCommandEnter(
@@ -1708,9 +1708,10 @@ abstract class GeneralKeyboardIME(
                     keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
                 }
             } else {
-                newText = "${commandBar.text.trim().dropLast(2)}$commandCursor"
+                newText = "${commandBar.text.trim().dropLast(1)}"
             }
-            commandBar.text = newText
+            commandBar.setText(newText)
+            commandBar.setSelection(newText.length)
         }
     }
 
@@ -1801,13 +1802,14 @@ abstract class GeneralKeyboardIME(
                         binding.commandBar.paddingBottom,
                     )
                 }
-                val newText = "${commandBar.text.trim().dropLast(1)}$codeChar$commandCursor"
-                commandBar.text = newText
+                val newText = "${commandBar.text}$codeChar"
+                commandBar.setText(newText)
+                commandBar.setSelection(newText.length)
             }
         } else {
             // Handling space key logic.
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
-                binding?.commandBar?.text = " "
+                binding?.commandBar?.setText(" ")
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                 inputConnection.commitText(codeChar.toString(), 1)
                 val newText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
