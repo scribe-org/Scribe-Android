@@ -1565,28 +1565,34 @@ abstract class GeneralKeyboardIME(
         val imeOptionsActionId = getImeOptionsActionId()
 
         if (commandBarState == true) {
-            val commandBarInput = binding?.commandBar?.text.toString().trim()
+            val commandBarInput =
+                binding
+                    ?.commandBar
+                    ?.text
+                    .toString()
+                    .trim()
 
-            val commandModeOutput = when (currentState) {
-                ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
-                else -> commandBarInput
-            }
+            val commandModeOutput =
+                when (currentState) {
+                    ScribeState.PLURAL -> getPluralRepresentation(commandBarInput) ?: ""
+                    else -> commandBarInput
+                }
             if (commandModeOutput.isEmpty()) {
                 moveToInvalidState()
                 return
             }
-            val finalOutput = if (commandModeOutput.length > commandBarInput.length) {
-                "$commandModeOutput "
-            } else {
-                commandModeOutput
-            }
+            val finalOutput =
+                if (commandModeOutput.length > commandBarInput.length) {
+                    "$commandModeOutput "
+                } else {
+                    commandModeOutput
+                }
             inputConnection.commitText(finalOutput, 1)
             binding?.commandBar?.setText("")
             moveToIdleState()
         } else {
             handleNonCommandEnter(imeOptionsActionId, inputConnection)
         }
-
     }
 
     internal fun moveToIdleState() {
@@ -1599,24 +1605,6 @@ abstract class GeneralKeyboardIME(
     private fun moveToInvalidState() {
         currentState = ScribeState.INVALID
         updateUI()
-    }
-
-    private fun applyCommandOutput(
-        commandModeOutput: String,
-        commandBarInput: String,
-        inputConnection: InputConnection,
-        binding: KeyboardViewKeyboardBinding?,
-    ) {
-        val outputBuilder = StringBuilder()
-        outputBuilder.apply {
-            append(commandModeOutput)
-            if (commandModeOutput.length > commandBarInput.length) {
-                append(" ")
-            }
-        }
-
-        inputConnection.commitText(outputBuilder.toString(), 1)
-        moveToIdleState()
     }
 
     private fun handleNonCommandEnter(

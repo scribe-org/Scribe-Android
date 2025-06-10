@@ -30,5 +30,5 @@ class DatabaseManagers(
     val pluralManager = PluralFormsManager(context)
     val prepositionManager = PrepositionDataManager(context)
     val translationDataManager = TranslationDataManager(context)
-    val conjugateDataManager = ConjugateDataManager(context)
+    val conjugateDataManager = ConjugateDataManager()
 }

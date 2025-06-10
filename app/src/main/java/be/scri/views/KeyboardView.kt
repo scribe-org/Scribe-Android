@@ -66,6 +66,8 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
 
+private const val CODE_KEY = 1001
+
 /**
  * The base keyboard view for Scribe language keyboards application.
  */
@@ -277,7 +279,7 @@ class KeyboardView
         }
 
         private var _popupBinding: KeyboardPopupKeyboardBinding? = null
-        private val popupBinding: KeyboardPopupKeyboardBinding
+        val popupBinding: KeyboardPopupKeyboardBinding
             get() {
                 if (_popupBinding == null) {
                     _popupBinding = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
@@ -334,6 +336,11 @@ class KeyboardView
             return earlierValue
         }
 
+        /**
+         * Sets the label for this key.
+         *
+         * @param label The label to set for this key.
+         */
         fun setKeyLabel(label: String) {
             mKeyLabel = label
             invalidateAllKeys()
@@ -760,7 +767,7 @@ class KeyboardView
                 // Switch the character to uppercase if shift is pressed.
 
                 // Checkpoint3
-                if (code == 1001) {
+                if (code == CODE_KEY) {
                     label = mKeyLabel
                 }
 

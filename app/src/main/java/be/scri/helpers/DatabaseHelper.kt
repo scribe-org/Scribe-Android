@@ -173,8 +173,16 @@ class DatabaseHelper(
         return dbManagers.translationDataManager.getTranslationDataForAWord(sourceAndDestination, word)
     }
 
+    /**
+     * Retrieves and logs conjugate data for a given language.
+     *
+     * Determines required data using `getRequiredData`, logs it, and then fetches
+     * conjugate labels via `conjugateDataManager`.
+     *
+     * @param language The language for which to retrieve data (e.g., "en", "es").
+     */
     fun getConjugateData(language: String) {
         Log.i("alpha", "The data contract is ${getRequiredData(language)}")
-        dbManagers.conjugateDataManager.getTheConjugateLabels(language, getRequiredData(language))
+        dbManagers.conjugateDataManager.getTheConjugateLabels(getRequiredData(language))
     }
 }
