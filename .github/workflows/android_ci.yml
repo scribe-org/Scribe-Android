@@ -84,10 +84,10 @@ jobs:
         name: Run Android Instrumentation Tests
         steps:
             - name: Checkout repository
-              uses: checkout@v4
+              uses: actions/checkout@v4
 
             - name: prepare app
-              uses: ./.github/composite/prepare-app
+              uses: ./.github/composite/prepareApp
 
             - name: Set up JDK 17
               uses: actions/setup-java@v4
