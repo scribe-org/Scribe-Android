@@ -14,67 +14,89 @@ jobs:
         runs-on: ubuntu-latest
         name: Run lint and detekt
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+            -   name: Checkout repository
+                uses: actions/checkout@v4
 
-            - name: prepare app
-              uses: ./.github/composite/prepareApp
+            -   name: prepare app
+                uses: ./.github/composite/prepareApp
 
-            - name: Run ktlint
-              run: ./gradlew lintKotlin
+            -   name: Run ktlint
+                run: ./gradlew lintKotlin
 
-            - name: Run detekt
-              run: ./gradlew detekt
+            -   name: Run detekt
+                run: ./gradlew detekt
 
     test:
         runs-on: ubuntu-latest
         name: Run tests
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+            -   name: Checkout repository
+                uses: actions/checkout@v4
 
-            - name: prepare app
-              uses: ./.github/composite/prepareApp
+            -   name: prepare app
+                uses: ./.github/composite/prepareApp
 
-            - name: Run ktlint
-              run: ./gradlew test
+            -   name: Run ktlint
+                run: ./gradlew test
 
     collect_coverage:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v4
+            -   name: Checkout Repository
+                uses: actions/checkout@v4
 
-            - name: Set up JDK
-              uses: actions/setup-java@v1
-              with:
-                  java-version: 17
+            -   name: Set up JDK
+                uses: actions/setup-java@v1
+                with:
+                    java-version: 17
 
-            - name: Grant execute permission for gradlew
-              run: chmod +x gradlew
+            -   name: Grant execute permission for gradlew
+                run: chmod +x gradlew
 
-            - name: Get coverage
-              run: ./gradlew koverReport
+            -   name: Get coverage
+                run: ./gradlew koverReport
 
-            - name: Run File-wise Coverage Parser Script
-              run: python3 scripts/coverage_parser.py
+            -   name: Run File-wise Coverage Parser Script
+                run: python3 scripts/coverage_parser.py
 
     build:
         runs-on: ubuntu-latest
         name: build app
         steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v4
+
+            -   name: prepare app
+                uses: ./.github/composite/prepareApp
+
+            -   name: build app
+                run: ./gradlew assembleDebug
+
+            -   name: Upload Debug Apk
+                uses: actions/upload-artifact@v4
+                if: success()
+                with:
+                    name: latest-apk
+                    path: "app/build/outputs/apk/core/debug/app-core-debug.apk"
+
+    instrumentation_test:
+        runs-on: ubuntu-latest
+        name: Run Android Instrumentation Tests
+        steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: checkout@v4
 
-            - name: prepare app
-              uses: ./.github/composite/prepareApp
+            - name: Prepare app
+              uses: ./.github/composite/prepare-app
 
-            - name: build app
-              run: ./gradlew assembleDebug
-
-            - name: Upload Debug Apk
-              uses: actions/upload-artifact@v4
-              if: success()
+            - name: Set up JDK 17
+              uses: actions/setup-java@v4
               with:
-                  name: latest-apk
-                  path: "app/build/outputs/apk/core/debug/app-core-debug.apk"
+                  java-version: 17
+
+            - name: Set up Android Emulator
+              uses: reactivecircus/android-emulator-runner@v2
+              with:
+                api-level: 30
+                arch: x86_64
+                script: ./gradlew connectedAndroidTest
