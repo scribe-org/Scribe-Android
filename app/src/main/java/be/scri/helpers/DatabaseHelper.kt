@@ -204,8 +204,12 @@ class DatabaseHelper(
      * @see getRequiredData
      * @see dbManagers.conjugateDataManager.extractConjugateHeadings
      */
-    fun getConjugateLabels(language: String): Set<String> =
+    fun getConjugateLabels(
+        language: String,
+        word: String,
+    ): Set<String> =
         dbManagers.conjugateDataManager.extractConjugateHeadings(
             getRequiredData(language),
+            word,
         )
 }

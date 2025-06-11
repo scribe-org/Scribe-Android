@@ -357,7 +357,7 @@ abstract class GeneralKeyboardIME(
         nounKeywords = dbHelper.findGenderOfWord(languageAlias)
         caseAnnotation = dbHelper.findCaseAnnnotationForPreposition(languageAlias)
         conjugateOutput = dbHelper.getConjugateData(languageAlias, "describe")
-        conjugateLabels = dbHelper.getConjugateLabels(languageAlias)
+        conjugateLabels = dbHelper.getConjugateLabels(languageAlias, "describe")
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
     }
@@ -796,10 +796,11 @@ abstract class GeneralKeyboardIME(
             )
         val title = conjugateOutput.keys.elementAtOrNull(startIndex) ?: return
         val languageOutput = conjugateOutput[title] ?: return
+        val conjugateLabel = conjugateLabels.toList()
         if (language != "English") {
             keyCodeMap["3x2"]?.forEachIndexed { index, code ->
                 val value = languageOutput[title]?.elementAtOrNull(index) ?: return@forEachIndexed
-                keyboardView?.setKeyLabel(value, "HI", code)
+                keyboardView?.setKeyLabel(value, conjugateLabel[index], code)
             }
         } else {
             val keys = languageOutput.keys.toList()
@@ -838,7 +839,7 @@ abstract class GeneralKeyboardIME(
         updateCommandBarHintAndPrompt(
             text = title,
             isUserDarkMode = isDarkMode,
-            word = "hi",
+            word = conjugateLabels.last(),
         )
     }
 
@@ -1839,6 +1840,7 @@ abstract class GeneralKeyboardIME(
 
             binding?.commandBar?.text = ""
             conjugateOutput = dbHelper.getConjugateData(getLanguageAlias(language), processedOutput)
+            conjugateLabels = dbHelper.getConjugateLabels(getLanguageAlias(language), processedOutput)
             Log.i("ALPHA", "Processed input: $rawInput")
         } else {
 //            applyCommandOutput(commandModeOutput, commandBarInput, inputConnection, binding)

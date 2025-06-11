@@ -67,11 +67,20 @@ class ConjugateDataManager(
      * @param jsonData The data contract containing conjugation information
      * @return A set of unique conjugation heading strings
      */
-    fun extractConjugateHeadings(jsonData: DataContract?): Set<String> {
-//        val conjugationIds = jsonData?.conjugations?.values
-        val keys = setOf("HI", "HI", "HI", "HI")
-        Log.i("BETA-TAG", "The conjugate labels are $keys")
-        return keys
+    fun extractConjugateHeadings(
+        jsonData: DataContract?,
+        word: String,
+    ): Set<String> {
+        val allFormKeys = mutableSetOf<String>()
+
+        jsonData?.conjugations?.values?.forEach { tenseGroup ->
+            tenseGroup.conjugationTypes.values.forEach { conjugationCategory ->
+                allFormKeys.addAll(conjugationCategory.conjugationForms.keys)
+            }
+        }
+        allFormKeys.add(word)
+        Log.i("BETA-TAG", "The conjugate form keys are $allFormKeys")
+        return allFormKeys
     }
 
     /**
