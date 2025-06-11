@@ -31,6 +31,10 @@ import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.EditorInfo
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.core.content.edit
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.toColorInt
+import androidx.core.graphics.withSave
 import be.scri.R
 import be.scri.databinding.KeyboardPopupKeyboardBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
@@ -65,8 +69,6 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
-
-private const val CODE_KEY = 1001
 
 /**
  * The base keyboard view for Scribe language keyboards application.
@@ -192,6 +194,37 @@ class KeyboardView
         private var ignoreTouches = false
         var mKeyLabel: String = "He"
 
+        var mKeyLabelFPS: String = "FPS"
+        var mKeyLabelFPP: String = "FPP"
+        var mKeyLabelSPS: String = "SPS"
+        var mKeyLabelSPP: String = "SPP"
+        var mKeyLabelTPS: String = "TPS"
+        var mKeyLabelTPP: String = "TPP"
+
+        var mKeyLabelTL: String = "TL"
+        var mKeyLabelTR: String = "TR"
+        var mKeyLabelBL: String = "BL"
+        var mKeyLabelBR: String = "BR"
+
+        var mKeyLabel1X3TOP: String = "TOP"
+        var mKeyLabel1X3BOTTOM: String = "BOTTOM"
+        var mKeyLabel1X3LEFT: String = "LEFT"
+
+        var topSmallLabelFPS: String = ""
+        var topSmallLabelFPP: String = ""
+        var topSmallLabelSPS: String = ""
+        var topSmallLabelSPP: String = ""
+        var topSmallLabelTPS: String = ""
+        var topSmallLabelTPP: String = ""
+
+        var topSmallLabelTL: String = ""
+        var topSmallLabelTR: String = ""
+        var topSmallLabelBL: String = ""
+        var topSmallLabelBR: String = ""
+
+        var mKeyLabel2X1TOP: String = "LEFT"
+        var mKeyLabel2X1BOTTOM: String = "RIGHT"
+
         private var mEnterKeyColor: Int = 0
 
         private var mSpecialKeyColor: Int? = null
@@ -276,15 +309,16 @@ class KeyboardView
             private const val DISPLAY_RIGHT = 2001
             private const val EXTRA_PADDING = 5000
             private const val KEY_HEIGHT = 240
+            private const val I_1 = 50
         }
 
-        private var _popupBinding: KeyboardPopupKeyboardBinding? = null
-        val popupBinding: KeyboardPopupKeyboardBinding
+        private var popupBindingInternal: KeyboardPopupKeyboardBinding? = null
+        private val popupBinding: KeyboardPopupKeyboardBinding
             get() {
-                if (_popupBinding == null) {
-                    _popupBinding = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
+                if (popupBindingInternal == null) {
+                    popupBindingInternal = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
                 }
-                return _popupBinding!!
+                return popupBindingInternal!!
             }
 
         var setPreview: Boolean = true
@@ -338,22 +372,110 @@ class KeyboardView
         }
 
         /**
-         * Sets the label for this key.
+         * Sets the label and small text label for a specific key based on its code.
          *
-         * @param label The label to set for this key.
+         * @param label The main label to be displayed on the key.
+         * @param smallTextLabel The smaller text label to be displayed (often above or below the main label).
+         * @param code The unique integer code identifying the key (e.g., `KeyboardBase.CODE_FPS`).
+         *             This code determines which internal label variables are updated.
          */
-        fun setKeyLabel(label: String) {
-            mKeyLabel = label
-            invalidateAllKeys()
+        fun setKeyLabel(
+            label: String,
+            smallTextLabel: String,
+            code: Int,
+        ) {
+            when (code) {
+                KeyboardBase.CODE_FPS -> {
+                    mKeyLabelFPS = label
+                    topSmallLabelFPS = smallTextLabel
+                }
+                KeyboardBase.CODE_FPP -> {
+                    mKeyLabelFPP = label
+                    topSmallLabelFPP = smallTextLabel
+                }
+                KeyboardBase.CODE_SPS -> {
+                    mKeyLabelSPS = label
+                    topSmallLabelSPS = smallTextLabel
+                }
+                KeyboardBase.CODE_SPP -> {
+                    mKeyLabelSPP = label
+                    topSmallLabelSPP = smallTextLabel
+                }
+                KeyboardBase.CODE_TPS -> {
+                    mKeyLabelTPS = label
+                    topSmallLabelTPS = smallTextLabel
+                }
+                KeyboardBase.CODE_TPP -> {
+                    mKeyLabelTPP = label
+                    topSmallLabelTPP = smallTextLabel
+                }
+                KeyboardBase.CODE_TR -> {
+                    mKeyLabelTR = label
+                    topSmallLabelTR = smallTextLabel
+                }
+                KeyboardBase.CODE_TL -> {
+                    mKeyLabelTL = label
+                    topSmallLabelTL = smallTextLabel
+                }
+                KeyboardBase.CODE_BR -> {
+                    mKeyLabelBR = label
+                    topSmallLabelBR = smallTextLabel
+                }
+                KeyboardBase.CODE_1X3_CENTER -> {
+                    mKeyLabel1X3TOP = label
+                }
+                KeyboardBase.CODE_1X3_LEFT -> {
+                    mKeyLabel1X3LEFT = label
+                }
+                KeyboardBase.CODE_1X3_RIGHT -> {
+                    mKeyLabel1X3BOTTOM = label
+                }
+                KeyboardBase.CODE_BL -> {
+                    mKeyLabelBL = label
+                    topSmallLabelBL = smallTextLabel
+                }
+                KeyboardBase.CODE_2X1_BOTTOM -> {
+                    mKeyLabel2X1BOTTOM = label
+                }
+                KeyboardBase.CODE_2X1_TOP -> {
+                    mKeyLabel2X1TOP = label
+                }
+            }
         }
 
-        private var _keyboardBinding: KeyboardViewKeyboardBinding? = null
+        /**
+         * Returns the label for a key with the given code.
+         *
+         * @param code The code of the key.
+         * @return The label for the key, or null if the key code is not recognized.
+         */
+        fun getKeyLabel(code: Int): String? =
+            when (code) {
+                KeyboardBase.CODE_FPS -> mKeyLabelFPS
+                KeyboardBase.CODE_FPP -> mKeyLabelFPP
+                KeyboardBase.CODE_SPS -> mKeyLabelSPS
+                KeyboardBase.CODE_SPP -> mKeyLabelSPP
+                KeyboardBase.CODE_TPS -> mKeyLabelTPS
+                KeyboardBase.CODE_TPP -> mKeyLabelTPP
+                KeyboardBase.CODE_TR -> mKeyLabelTR
+                KeyboardBase.CODE_TL -> mKeyLabelTL
+                KeyboardBase.CODE_BR -> mKeyLabelBR
+                KeyboardBase.CODE_BL -> mKeyLabelBL
+                KeyboardBase.CODE_2X1_BOTTOM -> mKeyLabel2X1BOTTOM
+                KeyboardBase.CODE_2X1_TOP -> mKeyLabel2X1TOP
+                KeyboardBase.CODE_1X3_CENTER -> mKeyLabel1X3TOP
+                KeyboardBase.CODE_1X3_LEFT -> mKeyLabel1X3LEFT
+                KeyboardBase.CODE_1X3_RIGHT -> mKeyLabel1X3BOTTOM
+                else -> null
+            }
+
+        private var keyboardBindingInternal: KeyboardViewKeyboardBinding? = null
         val keyboardBinding: KeyboardViewKeyboardBinding
             get() {
-                if (_keyboardBinding == null) {
-                    _keyboardBinding = KeyboardViewKeyboardBinding.inflate(LayoutInflater.from(context))
+                if (keyboardBindingInternal == null) {
+                    keyboardBindingInternal = KeyboardViewKeyboardBinding.inflate(LayoutInflater.from(context))
                 }
-                return _keyboardBinding!!
+                return keyboardBindingInternal!!
             }
 
         init {
@@ -638,7 +760,7 @@ class KeyboardView
                     // Make sure our bitmap is at least 1x1.
                     val width = 1.coerceAtLeast(width)
                     val height = 1.coerceAtLeast(height)
-                    mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                    mBuffer = createBitmap(width, height)
                     mCanvas = Canvas(mBuffer!!)
                 }
                 invalidateAllKeys()
@@ -649,232 +771,318 @@ class KeyboardView
                 return
             }
 
-            mCanvas!!.save()
-            val canvas = mCanvas
-            canvas!!.clipRect(mDirtyRect)
-            val paint = mPaint
-            val keys = mKeys
-            val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-            val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-            val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-            val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
-            val keyBackgroundColor =
-                if (isUserDarkMode) {
-                    Color.DKGRAY
-                } else {
-                    Color.WHITE
-                }
-            mBackgroundColor =
-                if (isUserDarkMode) {
-                    Color.DKGRAY
-                } else {
-                    Color.WHITE
-                }
-            mTextColor =
-                if (keyBackgroundColor == Color.WHITE) {
-                    Color.BLACK
-                } else {
-                    Color.WHITE
-                }
-            mSpecialKeyColor =
-                if (isUserDarkMode) {
-                    R.color.special_key_dark
-                } else {
-                    R.color.special_key_light
-                }
-            val pressedColorResId = if (isUserDarkMode) R.color.dark_key_press_color else R.color.light_key_press_color
-            val pressedColor = resources.getColor(pressedColorResId, context.theme)
-            val specialKeyColorValue = resources.getColor(mSpecialKeyColor!!, context.theme)
-
-            paint.color = mTextColor
-            val keyBackgroundPaint =
-                Paint().apply {
-                    color = keyBackgroundColor
-                    style = Paint.Style.FILL
-                }
-            val smallLetterPaint =
-                Paint().apply {
-                    set(paint)
-                    color = mTextColor.adjustAlpha(ALPHA_ADJUSTMENT_FACTOR)
-                    textSize = mTopSmallNumberSize
-                    typeface = Typeface.DEFAULT
-                }
-            val shadowPaint =
-                Paint().apply {
-                    color = Color.BLACK
-                    alpha = SHADOW_ALPHA
-                    style = Paint.Style.FILL
-                }
-            mKeyboardBackgroundColor =
-                if (isUserDarkMode) {
-                    Color.parseColor("#1E1E1E")
-                } else {
-                    Color.parseColor("#d2d4da")
-                }
-            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-            canvas.drawColor(mKeyboardBackgroundColor)
-
-            val keyCount = keys.size
-            for (i in 0 until keyCount) {
-                val key = keys[i]
-                val code = key.code
-
-                val padding = KEY_PADDING
-                val rectRadius = RECT_RADIUS
-                val shadowOffsetY = SHADOW_OFFSET_Y
-
-                if ((code == DISPLAY_LEFT) || (code == DISPLAY_RIGHT)) {
-                    val density = context.resources.displayMetrics.density
-                    key.height = (KEY_HEIGHT * density).toInt()
-                }
-                if (code == EXTRA_PADDING) {
-                    val density = context.resources.displayMetrics.density
-                    key.height = 0
-                    key.width = 0
-                }
-
-                val shadowRect =
-                    RectF(
-                        (key.x + keyMargin + padding).toFloat(),
-                        (key.y + keyMargin + padding + shadowOffsetY).toFloat(),
-                        (key.x + key.width - keyMargin - padding).toFloat(),
-                        (key.y + key.height - vKeyMargin - padding + shadowOffsetY).toFloat(),
-                    )
-
-                val keyRect =
-                    RectF(
-                        (key.x + keyMargin - shadowOffset + padding).toFloat(),
-                        (key.y + keyMargin - shadowOffset + padding).toFloat(),
-                        (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
-                        (key.y + key.height - vKeyMargin + shadowOffset - padding).toFloat(),
-                    )
-                if (code != EXTRA_PADDING) {
-                    canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
-                }
-
-                val backgroundColor =
-                    when {
-                        key.pressed -> pressedColor
-                        code == KEYCODE_SHIFT && mKeyboard!!.mShiftState == SHIFT_LOCKED -> pressedColor
-                        code in listOf(KEYCODE_DELETE, KEYCODE_SHIFT, KEYCODE_MODE_CHANGE) -> specialKeyColorValue
-                        code == KEYCODE_ENTER -> mEnterKeyColor
-                        else -> keyBackgroundColor
-                    }
-                keyBackgroundPaint.color = backgroundColor
-                if (code != EXTRA_PADDING) {
-                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
-                }
-                var label = adjustCase(key.label)?.toString()
-                // Switch the character to uppercase if shift is pressed.
-
-                // Checkpoint3
-                if (code == CODE_KEY) {
-                    label = mKeyLabel
-                }
-
-                canvas.translate(key.x.toFloat(), key.y.toFloat())
-                if (label?.isNotEmpty() == true) {
-                    // For characters, use large font. For labels like "Done", use small font.
-                    if (label.length > 1) {
-                        paint.textSize = mLabelTextSize.toFloat()
-                        paint.typeface = Typeface.DEFAULT_BOLD
+            mCanvas!!.withSave {
+                val canvas = mCanvas
+                canvas!!.clipRect(mDirtyRect)
+                val paint = mPaint
+                val keys = mKeys
+                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val keyBackgroundColor =
+                    if (isUserDarkMode) {
+                        Color.DKGRAY
                     } else {
-                        paint.textSize = mKeyTextSize.toFloat()
-                        paint.typeface = Typeface.DEFAULT
+                        Color.WHITE
+                    }
+                mBackgroundColor =
+                    if (isUserDarkMode) {
+                        Color.DKGRAY
+                    } else {
+                        Color.WHITE
+                    }
+                mTextColor =
+                    if (keyBackgroundColor == Color.WHITE) {
+                        Color.BLACK
+                    } else {
+                        Color.WHITE
+                    }
+                mSpecialKeyColor =
+                    if (isUserDarkMode) {
+                        R.color.special_key_dark
+                    } else {
+                        R.color.special_key_light
+                    }
+                val pressedColorResId =
+                    if (isUserDarkMode) {
+                        R.color.dark_key_press_color
+                    } else {
+                        R.color.light_key_press_color
+                    }
+                val pressedColor = resources.getColor(pressedColorResId, context.theme)
+                val specialKeyColorValue = resources.getColor(mSpecialKeyColor!!, context.theme)
+
+                paint.color = mTextColor
+                val keyBackgroundPaint =
+                    Paint().apply {
+                        color = keyBackgroundColor
+                        style = Paint.Style.FILL
+                    }
+                val smallLetterPaint =
+                    Paint().apply {
+                        set(paint)
+                        color = mTextColor.adjustAlpha(ALPHA_ADJUSTMENT_FACTOR)
+                        textSize = mTopSmallNumberSize
+                        typeface = Typeface.DEFAULT
+                    }
+                val shadowPaint =
+                    Paint().apply {
+                        color = Color.BLACK
+                        alpha = SHADOW_ALPHA
+                        style = Paint.Style.FILL
+                    }
+                mKeyboardBackgroundColor =
+                    if (isUserDarkMode) {
+                        "#1E1E1E".toColorInt()
+                    } else {
+                        "#d2d4da".toColorInt()
+                    }
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                canvas.drawColor(mKeyboardBackgroundColor)
+
+                val keyCount = keys.size
+                for (i in 0 until keyCount) {
+                    val key = keys[i]
+                    val code = key.code
+
+                    val padding = KEY_PADDING
+                    val rectRadius = RECT_RADIUS
+                    val shadowOffsetY = SHADOW_OFFSET_Y
+
+                    if ((code == DISPLAY_LEFT) || (code == DISPLAY_RIGHT)) {
+                        val sharedPreferences =
+                            context.getSharedPreferences(
+                                "keyboard_preferences",
+                                Context.MODE_PRIVATE,
+                            )
+                        sharedPreferences.edit(commit = true) {
+                            val currentValue = sharedPreferences.getInt("conjugate_index", 0)
+                            val newValue =
+                                when (code) {
+                                    DISPLAY_LEFT -> currentValue + 1
+                                    DISPLAY_RIGHT -> currentValue - 1
+                                    else -> currentValue
+                                }
+                            putInt("conjugate_index", newValue)
+                        }
+                        val density = context.resources.displayMetrics.density
+                        key.height = (KEY_HEIGHT * density).toInt()
+                    }
+                    if (code == EXTRA_PADDING) {
+                        val density = context.resources.displayMetrics.density
+                        key.height = 0
+                        key.width = 0
                     }
 
-                    paint.color =
-                        if (key.focused) {
-                            mPrimaryColor.getContrastColor()
-                        } else {
-                            mTextColor
+                    val shadowRect =
+                        RectF(
+                            (key.x + keyMargin + padding).toFloat(),
+                            (key.y + keyMargin + padding + shadowOffsetY).toFloat(),
+                            (key.x + key.width - keyMargin - padding).toFloat(),
+                            (key.y + key.height - vKeyMargin - padding + shadowOffsetY).toFloat(),
+                        )
+
+                    val keyRect =
+                        RectF(
+                            (key.x + keyMargin - shadowOffset + padding).toFloat(),
+                            (key.y + keyMargin - shadowOffset + padding).toFloat(),
+                            (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
+                            (key.y + key.height - vKeyMargin + shadowOffset - padding).toFloat(),
+                        )
+                    if (code != EXTRA_PADDING) {
+                        canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+                    }
+
+                    val backgroundColor =
+                        when {
+                            key.pressed -> pressedColor
+                            code == KEYCODE_SHIFT && mKeyboard!!.mShiftState == SHIFT_LOCKED -> pressedColor
+                            code in listOf(KEYCODE_DELETE, KEYCODE_SHIFT, KEYCODE_MODE_CHANGE) -> specialKeyColorValue
+                            code == KEYCODE_ENTER -> mEnterKeyColor
+                            else -> keyBackgroundColor
+                        }
+                    keyBackgroundPaint.color = backgroundColor
+                    if (code != EXTRA_PADDING) {
+                        canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                    }
+                    var label = adjustCase(key.label)?.toString()
+                    // Switch the character to uppercase if shift is pressed.
+                    when (code) {
+                        KeyboardBase.CODE_FPS -> {
+                            label = mKeyLabelFPS
+                            key.topSmallNumber = topSmallLabelFPS
                         }
 
-                    canvas.drawText(
-                        label,
-                        (key.width / 2).toFloat(),
-                        key.height / 2 + (paint.textSize - paint.descent()) / 2,
-                        paint,
-                    )
+                        KeyboardBase.CODE_FPP -> {
+                            label = mKeyLabelFPP
+                            key.topSmallNumber = topSmallLabelFPP
+                        }
 
-                    if (key.topSmallNumber.isNotEmpty()) {
+                        KeyboardBase.CODE_SPS -> {
+                            label = mKeyLabelSPS
+                            key.topSmallNumber = topSmallLabelSPS
+                        }
+
+                        KeyboardBase.CODE_SPP -> {
+                            label = mKeyLabelSPP
+                            key.topSmallNumber = topSmallLabelSPP
+                        }
+
+                        KeyboardBase.CODE_TPS -> {
+                            label = mKeyLabelTPS
+                            key.topSmallNumber = topSmallLabelTPS
+                        }
+
+                        KeyboardBase.CODE_TPP -> {
+                            label = mKeyLabelTPP
+                            key.topSmallNumber = topSmallLabelTPP
+                        }
+
+                        KeyboardBase.CODE_TL -> {
+                            label = mKeyLabelTL
+                            key.topSmallNumber = topSmallLabelTL
+                        }
+
+                        KeyboardBase.CODE_TR -> {
+                            label = mKeyLabelTR
+                            key.topSmallNumber = topSmallLabelTR
+                        }
+
+                        KeyboardBase.CODE_BL -> {
+                            label = mKeyLabelBL
+                            key.topSmallNumber = topSmallLabelBL
+                        }
+
+                        KeyboardBase.CODE_BR -> {
+                            label = mKeyLabelBR
+                            key.topSmallNumber = topSmallLabelBR
+                        }
+                        KeyboardBase.CODE_2X1_TOP -> {
+                            label = mKeyLabel2X1TOP
+                        }
+                        KeyboardBase.CODE_2X1_BOTTOM -> {
+                            label = mKeyLabel2X1BOTTOM
+                        }
+                        KeyboardBase.CODE_1X3_CENTER -> {
+                            label = mKeyLabel1X3LEFT
+                        }
+                        KeyboardBase.CODE_1X3_LEFT -> {
+                            label = mKeyLabel1X3TOP
+                        }
+                        KeyboardBase.CODE_1X3_RIGHT -> {
+                            label = mKeyLabel1X3BOTTOM
+                        }
+                    }
+
+                    canvas.translate(key.x.toFloat(), key.y.toFloat())
+                    if (label?.isNotEmpty() == true) {
+                        // For characters, use large font. For labels like "Done", use small font.
+                        if (label.length > 1) {
+                            paint.textSize = mLabelTextSize.toFloat()
+                            paint.typeface = Typeface.DEFAULT_BOLD
+                        } else {
+                            paint.textSize = mKeyTextSize.toFloat()
+                            paint.typeface = Typeface.DEFAULT
+                        }
+
+                        paint.color =
+                            if (key.focused) {
+                                mPrimaryColor.getContrastColor()
+                            } else {
+                                mTextColor
+                            }
+
                         canvas.drawText(
-                            key.topSmallNumber,
-                            key.width - mTopSmallNumberMarginWidth,
-                            mTopSmallNumberMarginHeight,
-                            smallLetterPaint,
+                            label,
+                            (key.width / 2).toFloat(),
+                            key.height / 2 + (paint.textSize - paint.descent()) / 2,
+                            paint,
                         )
-                    }
 
-                    // Turn off drop shadow.
-                    paint.setShadowLayer(0f, 0f, 0f, 0)
-                } else if (key.icon != null && mKeyboard != null) {
-                    if (code == KEYCODE_SHIFT) {
-                        val drawableId =
-                            when (mKeyboard!!.mShiftState) {
-                                SHIFT_OFF -> R.drawable.ic_caps_outline_vector
-                                SHIFT_ON_ONE_CHAR -> R.drawable.ic_caps_vector
-                                SHIFT_LOCKED -> R.drawable.ic_caps_underlined_vector
-                                else -> R.drawable.ic_caps_outline_vector
-                            }
-                        key.icon = resources.getDrawable(drawableId, context.theme)
-                    } else if (code == KEYCODE_CAPS_LOCK) {
-                        val drawableId =
-                            when (mKeyboard!!.mShiftState) {
-                                SHIFT_LOCKED -> R.drawable.ic_caps_lock_on
-                                else -> R.drawable.ic_caps_lock_off
-                            }
-                        key.icon = resources.getDrawable(drawableId, context.theme)
-                        key.icon!!.applyColorFilter(mTextColor)
-                    }
+                        if (key.topSmallNumber.isNotEmpty()) {
+                            canvas.drawText(
+                                key.topSmallNumber,
+                                key.width - mTopSmallNumberMarginWidth - I_1,
+                                mTopSmallNumberMarginHeight,
+                                smallLetterPaint,
+                            )
+                        }
 
-                    if (code == KEYCODE_LEFT_ARROW || code == KEYCODE_RIGHT_ARROW) {
-                        val drawableId =
-                            when (code) {
-                                KEYCODE_LEFT_ARROW -> R.drawable.ic_left_arrow
-                                KEYCODE_RIGHT_ARROW -> R.drawable.ic_right_arrow
-                                else -> null
-                            }
-                        drawableId?.let {
-                            key.icon = resources.getDrawable(it, context.theme)
+                        // Turn off drop shadow.
+                        paint.setShadowLayer(0f, 0f, 0f, 0)
+                    } else if (key.icon != null && mKeyboard != null) {
+                        if (code == KEYCODE_SHIFT) {
+                            val drawableId =
+                                when (mKeyboard!!.mShiftState) {
+                                    SHIFT_OFF -> R.drawable.ic_caps_outline_vector
+                                    SHIFT_ON_ONE_CHAR -> R.drawable.ic_caps_vector
+                                    SHIFT_LOCKED -> R.drawable.ic_caps_underlined_vector
+                                    else -> R.drawable.ic_caps_outline_vector
+                                }
+                            key.icon = resources.getDrawable(drawableId, context.theme)
+                        } else if (code == KEYCODE_CAPS_LOCK) {
+                            val drawableId =
+                                when (mKeyboard!!.mShiftState) {
+                                    SHIFT_LOCKED -> R.drawable.ic_caps_lock_on
+                                    else -> R.drawable.ic_caps_lock_off
+                                }
+                            key.icon = resources.getDrawable(drawableId, context.theme)
                             key.icon!!.applyColorFilter(mTextColor)
                         }
-                    }
 
-                    if (code == KEYCODE_ENTER) {
-                        val drawableId =
-                            when (mKeyboard!!.mEnterKeyType) {
-                                EditorInfo.IME_ACTION_SEARCH ->
-                                    R.drawable.ic_search_vector
-                                EditorInfo.IME_ACTION_NEXT,
-                                EditorInfo.IME_ACTION_GO,
-                                ->
-                                    R.drawable.ic_arrow_right_vector
-                                EditorInfo.IME_ACTION_SEND ->
-                                    R.drawable.ic_send_vector
-                                MyCustomActions.IME_ACTION_COMMAND ->
-                                    R.drawable.play_button
-                                else ->
-                                    R.drawable.ic_enter_vector
+                        if (code == KEYCODE_LEFT_ARROW || code == KEYCODE_RIGHT_ARROW) {
+                            val drawableId =
+                                when (code) {
+                                    KEYCODE_LEFT_ARROW -> R.drawable.ic_left_arrow
+                                    KEYCODE_RIGHT_ARROW -> R.drawable.ic_right_arrow
+                                    else -> null
+                                }
+                            drawableId?.let {
+                                key.icon = resources.getDrawable(it, context.theme)
+                                key.icon!!.applyColorFilter(mTextColor)
                             }
-                        key.icon = resources.getDrawable(drawableId)
-                        key.icon!!.applyColorFilter(mTextColor)
-                    } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_TAB) {
-                        key.icon!!.applyColorFilter(mTextColor)
+                        }
+
+                        if (code == KEYCODE_ENTER) {
+                            val drawableId =
+                                when (mKeyboard!!.mEnterKeyType) {
+                                    EditorInfo.IME_ACTION_SEARCH ->
+                                        R.drawable.ic_search_vector
+
+                                    EditorInfo.IME_ACTION_NEXT,
+                                    EditorInfo.IME_ACTION_GO,
+                                    ->
+                                        R.drawable.ic_arrow_right_vector
+
+                                    EditorInfo.IME_ACTION_SEND ->
+                                        R.drawable.ic_send_vector
+
+                                    MyCustomActions.IME_ACTION_COMMAND ->
+                                        R.drawable.play_button
+
+                                    else ->
+                                        R.drawable.ic_enter_vector
+                                }
+                            key.icon = resources.getDrawable(drawableId)
+                            key.icon!!.applyColorFilter(mTextColor)
+                        } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_TAB) {
+                            key.icon!!.applyColorFilter(mTextColor)
+                        }
+
+                        // Controls where icons are located on their keys.
+                        val drawableX = (key.width - key.icon!!.intrinsicWidth) / 2
+                        val drawableY = (key.height - key.icon!!.intrinsicHeight) / 2
+                        canvas.translate(drawableX.toFloat(), drawableY.toFloat())
+                        key.icon!!.setBounds(0, 0, key.icon!!.intrinsicWidth, key.icon!!.intrinsicHeight)
+                        key.icon!!.draw(canvas)
+                        canvas.translate(-drawableX.toFloat(), -drawableY.toFloat())
                     }
-
-                    // Controls where icons are located on their keys.
-                    val drawableX = (key.width - key.icon!!.intrinsicWidth) / 2
-                    val drawableY = (key.height - key.icon!!.intrinsicHeight) / 2
-                    canvas.translate(drawableX.toFloat(), drawableY.toFloat())
-                    key.icon!!.setBounds(0, 0, key.icon!!.intrinsicWidth, key.icon!!.intrinsicHeight)
-                    key.icon!!.draw(canvas)
-                    canvas.translate(-drawableX.toFloat(), -drawableY.toFloat())
+                    canvas.translate(-key.x.toFloat(), -key.y.toFloat())
                 }
-                canvas.translate(-key.x.toFloat(), -key.y.toFloat())
-            }
 
-            mCanvas!!.restore()
+                mCanvas!!
+            }
             mDrawPending = false
             mDirtyRect.setEmpty()
         }
