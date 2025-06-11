@@ -70,8 +70,6 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
 
-private const val CODE_KEY = 1001
-
 /**
  * The base keyboard view for Scribe language keyboards application.
  */

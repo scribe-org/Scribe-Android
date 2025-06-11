@@ -6,7 +6,6 @@ import DataContract
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 
 /**
  * A helper class to facilitate database calls for Scribe keyboard commands.

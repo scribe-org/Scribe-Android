@@ -526,7 +526,7 @@ abstract class GeneralKeyboardIME(
         text: String? = null,
         word: String? = null,
     ) {
-        val commandBarButton = keyboardBinding.commandBar
+        val commandBarEditText = keyboardBinding.commandBar
         val hintMessage = HintUtils.getCommandBarHint(currentState, language, word)
         val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
         val promptTextView = keyboardBinding.promptText
@@ -1016,8 +1016,6 @@ abstract class GeneralKeyboardIME(
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.CONJUGATE
             updateUI()
-            // Implemnet the function that renders the entire conjugate view with the 3x2 mode.
-            keyboardView!!.setKeyLabel("Hello world")
         }
         binding.pluralBtn.setOnClickListener {
             Log.i(TAG, "PLURAL STATE")
@@ -1843,12 +1841,11 @@ abstract class GeneralKeyboardIME(
                 inputConnection.commitText(output, 1)
             }
 
-            binding?.commandBar?.text = ""
             conjugateOutput = dbHelper.getConjugateData(getLanguageAlias(language), processedOutput)
             conjugateLabels = dbHelper.getConjugateLabels(getLanguageAlias(language), processedOutput)
             Log.i("ALPHA", "Processed input: $rawInput")
         } else {
-//            applyCommandOutput(commandModeOutput, commandBarInput, inputConnection, binding)
+            handleNonCommandEnter(imeOptionsActionId, inputConnection)
         }
     }
 
@@ -1856,11 +1853,6 @@ abstract class GeneralKeyboardIME(
         Log.i(TAG, "IDLE STATE")
         currentState = ScribeState.IDLE
         switchToCommandToolBar()
-        updateUI()
-    }
-
-    private fun moveToInvalidState() {
-        currentState = ScribeState.INVALID
         updateUI()
     }
 
