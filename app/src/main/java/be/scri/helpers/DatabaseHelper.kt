@@ -6,6 +6,7 @@ import DataContract
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 /**
  * A helper class to facilitate database calls for Scribe keyboard commands.
@@ -73,7 +74,7 @@ class DatabaseHelper(
      * @param language The language for which the data is being fetched.
      * @return The [DataContract] containing the data for the specified language, or null if not found.
      */
-    fun getRequiredData(language: String): DataContract? =
+    private fun getRequiredData(language: String): DataContract? =
         dbManagers.contractLoader.loadContract(
             language,
         )
@@ -170,5 +171,18 @@ class DatabaseHelper(
     ): String {
         val sourceAndDestination = dbManagers.translationDataManager.getSourceAndDestinationLanguage(language)
         return dbManagers.translationDataManager.getTranslationDataForAWord(sourceAndDestination, word)
+    }
+
+    /**
+     * Retrieves and logs conjugate data for a given language.
+     *
+     * Determines required data using `getRequiredData`, logs it, and then fetches
+     * conjugate labels via `conjugateDataManager`.
+     *
+     * @param language The language for which to retrieve data (e.g., "en", "es").
+     */
+    fun getConjugateData(language: String) {
+        Log.i("alpha", "The data contract is ${getRequiredData(language)}")
+        dbManagers.conjugateDataManager.getTheConjugateLabels(getRequiredData(language))
     }
 }
