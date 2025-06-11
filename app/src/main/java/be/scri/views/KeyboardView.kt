@@ -70,6 +70,8 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
 
+private const val CODE_KEY = 1001
+
 /**
  * The base keyboard view for Scribe language keyboards application.
  */
@@ -192,6 +194,7 @@ class KeyboardView
         private var mTopSmallNumberMarginHeight = 0f
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
+        var mKeyLabel: String = "He"
 
         var mKeyLabelFPS: String = "FPS"
         var mKeyLabelFPP: String = "FPP"
@@ -365,6 +368,7 @@ class KeyboardView
                 mKeyboard?.mEnterKeyType = earlierValue
             } else {
                 mKeyboard?.mEnterKeyType = MyCustomActions.IME_ACTION_COMMAND
+                mEnterKeyColor = resources.getColor(R.color.theme_scribe_blue, context.theme)
             }
             return earlierValue
         }

@@ -301,6 +301,7 @@ abstract class GeneralKeyboardIME(
         keyboardView!!.invalidateAllKeys()
         keyboardView!!.setKeyboardHolder()
         keyboardView!!.mOnKeyboardActionListener = this
+
         return keyboardHolder
     }
 
@@ -530,20 +531,23 @@ abstract class GeneralKeyboardIME(
         val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
-        commandBarButton.hint = hintMessage
+        commandBarEditText.hint = hintMessage
+
+        commandBarEditText.requestFocus()
 
         if (isUserDarkMode == true) {
-            commandBarButton.setHintTextColor(getColor(R.color.hint_white))
-            commandBarButton.setTextColor(getColor(white))
-            commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
+            commandBarEditText.setHintTextColor(getColor(R.color.hint_white))
+            commandBarEditText.setTextColor(getColor(white))
+            keyboardBinding.commandBarLayout.backgroundTintList =
+                ContextCompat.getColorStateList(this, R.color.command_bar_color_dark)
             promptTextView.setTextColor(getColor(white))
 
             promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
         } else {
-            commandBarButton.setHintTextColor(getColor(R.color.hint_black))
-            commandBarButton.setTextColor(Color.BLACK)
-            commandBarButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.white)
+            commandBarEditText.setHintTextColor(getColor(R.color.hint_black))
+            commandBarEditText.setTextColor(Color.BLACK)
+            keyboardBinding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, white)
             promptTextView.setTextColor(Color.BLACK)
             promptTextView.setBackgroundColor(getColor(white))
             keyboardBinding.promptTextBorder.setBackgroundColor(getColor(white))
@@ -621,7 +625,6 @@ abstract class GeneralKeyboardIME(
         val commandBarButton = keyboardBinding.commandBar
         val promptTextView = keyboardBinding.promptText
         promptTextView.text = promptText
-        commandBarButton.text = ""
         commandBarButton.hint = ""
         Log.i(TAG, "INVALID STATE ${commandBarButton.text}")
     }
@@ -1013,6 +1016,8 @@ abstract class GeneralKeyboardIME(
             updateCommandBarHintAndPrompt()
             currentState = ScribeState.CONJUGATE
             updateUI()
+            // Implemnet the function that renders the entire conjugate view with the 3x2 mode.
+            keyboardView!!.setKeyLabel("Hello world")
         }
         binding.pluralBtn.setOnClickListener {
             Log.i(TAG, "PLURAL STATE")
@@ -1859,25 +1864,6 @@ abstract class GeneralKeyboardIME(
         updateUI()
     }
 
-    private fun applyCommandOutput(
-        commandModeOutput: String,
-        commandBarInput: String,
-        inputConnection: InputConnection,
-        binding: KeyboardViewKeyboardBinding?,
-    ) {
-        val outputBuilder = StringBuilder()
-        outputBuilder.apply {
-            append(commandModeOutput)
-            if (commandModeOutput.length > commandBarInput.length) {
-                append(" ")
-            }
-        }
-
-        inputConnection.commitText(outputBuilder.toString(), 1)
-        binding?.commandBar?.text = ""
-        moveToIdleState()
-    }
-
     private fun handleNonCommandEnter(
         imeOptionsActionId: Int,
         inputConnection: InputConnection,
@@ -1981,7 +1967,8 @@ abstract class GeneralKeyboardIME(
             } else {
                 newText = "${commandBar.text.trim().dropLast(DATA_SIZE_2)}$commandCursor"
             }
-            commandBar.text = newText
+            commandBar.setText(newText)
+            commandBar.setSelection(newText.length)
         }
     }
 
@@ -2086,13 +2073,14 @@ abstract class GeneralKeyboardIME(
                         binding.commandBar.paddingBottom,
                     )
                 }
-                val newText = "${commandBar.text.trim().dropLast(1)}$codeChar$commandCursor"
-                commandBar.text = newText
+                val newText = "${commandBar.text}$codeChar"
+                commandBar.setText(newText)
+                commandBar.setSelection(newText.length)
             }
         } else {
             // Handling space key logic.
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
-                binding?.commandBar?.text = " "
+                binding?.commandBar?.setText(" ")
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                 inputConnection.commitText(codeChar.toString(), 1)
                 val newText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text

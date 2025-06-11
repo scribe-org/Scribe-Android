@@ -125,6 +125,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
         val keyboardHolder = binding.root
         keyboardView = binding.keyboardView
         keyboardView!!.setKeyboard(keyboard!!)
+        keyboardView!!.setKeyLabel("Hello world")
         keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
         keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
         when (currentState) {
