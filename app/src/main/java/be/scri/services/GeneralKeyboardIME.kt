@@ -1820,7 +1820,6 @@ abstract class GeneralKeyboardIME(
                     ?.text
                     ?.toString()
                     ?.trim()
-                    ?.dropLast(1)
                     .orEmpty()
 
             if (isConjugate) {
@@ -1835,7 +1834,7 @@ abstract class GeneralKeyboardIME(
                     ScribeState.TRANSLATE -> getTranslation(language, rawInput)
                     else -> rawInput
                 }
-
+            Log.i("CONJUGATE-ISSUE", "The raw input is $rawInput")
             if (isCommandBarMode) {
                 val output = if (processedOutput.length > rawInput.length) "$processedOutput " else processedOutput
                 inputConnection.commitText(output, 1)
