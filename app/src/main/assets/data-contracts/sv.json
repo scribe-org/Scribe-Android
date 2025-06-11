@@ -10,20 +10,20 @@
         "commons": [],
         "neuters": []
     },
-    "conjugations": {
+       "conjugations": {
         "1": {
             "title": "Aktiv",
-            "1": { "": "activeInfinitive" },
-            "2": { "": "activePresent" },
-            "3": { "": "activePreterite" },
-            "4": { "": "activeSupine" }
+            "1": { "imperativ": "imperative" },
+            "2": { "presens": "activePresent" },
+            "3": { "dåtid": "activePreterite" },
+            "4": { "liggande": "activeSupine" }
         },
         "2": {
             "title": "Passiv",
-            "1": { "": "passiveInfinitive" },
-            "2": { "": "passivePresent" },
-            "3": { "": "passivePreterite" },
-            "4": { "": "passiveSupine" }
+            "1": { "infinitiv": "passiveInfinitive" },
+            "2": { "presens": "passivePresent" },
+            "3": { "liggande": "passivePreterite" },
+            "4": { "liggande": "passiveSupine" }
         }
     }
 }

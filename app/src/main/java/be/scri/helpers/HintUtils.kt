@@ -46,10 +46,12 @@ object HintUtils {
     fun getCommandBarHint(
         currentState: GeneralKeyboardIME.ScribeState,
         language: String,
-    ): String {
-        val hintMessageForState = getHintForState(currentState)
-        return hintMessageForState[language] ?: "" // return the placeholder or empty string if not found
-    }
+        word: String?,
+    ): String =
+        when (currentState) {
+            GeneralKeyboardIME.ScribeState.SELECT_VERB_CONJUNCTION -> word ?: ""
+            else -> getHintForState(currentState)[language] ?: ""
+        }
 
     /**
      * Maps the current state of the keyboard to its corresponding hints.
@@ -149,11 +151,13 @@ object HintUtils {
         currentState: GeneralKeyboardIME.ScribeState,
         language: String,
         context: Context,
+        text: String?,
     ): String =
         when (currentState) {
             GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslationPrompt(language, context)
             GeneralKeyboardIME.ScribeState.CONJUGATE -> getConjugationPrompt(language)
             GeneralKeyboardIME.ScribeState.PLURAL -> getPluralPrompt(language)
+            GeneralKeyboardIME.ScribeState.SELECT_VERB_CONJUNCTION -> text!!
             else -> ""
         }
 
