@@ -6,7 +6,6 @@ import DataContract
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 
 /**
  * A helper class to facilitate database calls for Scribe keyboard commands.
@@ -174,15 +173,43 @@ class DatabaseHelper(
     }
 
     /**
-     * Retrieves and logs conjugate data for a given language.
+     * Retrieves conjugation data for a word in a given language.
      *
-     * Determines required data using `getRequiredData`, logs it, and then fetches
-     * conjugate labels via `conjugateDataManager`.
+     * Delegates to [ConjugateDataManager] after fetching language-specific data.
      *
-     * @param language The language for which to retrieve data (e.g., "en", "es").
+     * @param language The language code (e.g., "en", "es").
+     * @param word The word to conjugate.
+     * @return A map of conjugation labels (e.g., "present") to lists of conjugated forms.
+     *         Returns an empty map if no data is found.
+     * @throws Exception If data retrieval fails.
      */
-    fun getConjugateData(language: String) {
-        Log.i("alpha", "The data contract is ${getRequiredData(language)}")
-        dbManagers.conjugateDataManager.getTheConjugateLabels(getRequiredData(language))
-    }
+    fun getConjugateData(
+        language: String,
+        word: String,
+    ): MutableMap<String, MutableMap<String, Collection<String>>> =
+        dbManagers.conjugateDataManager.getTheConjugateLabels(
+            language,
+            getRequiredData(language),
+            word,
+        )
+
+    /**
+     * Retrieves conjugate labels for a given language.
+     *
+     * Fetches data for the language and extracts conjugate headings.
+     *
+     * @param language The language code (e.g., "en", "es").
+     * @return A set of conjugate labels. Returns an empty set if none are found.
+     * @throws Exception if there's an error accessing or processing data.
+     * @see getRequiredData
+     * @see dbManagers.conjugateDataManager.extractConjugateHeadings
+     */
+    fun getConjugateLabels(
+        language: String,
+        word: String,
+    ): Set<String> =
+        dbManagers.conjugateDataManager.extractConjugateHeadings(
+            getRequiredData(language),
+            word,
+        )
 }
