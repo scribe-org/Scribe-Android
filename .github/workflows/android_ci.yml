@@ -89,11 +89,6 @@ jobs:
             - name: prepare app
               uses: ./.github/composite/prepareApp
 
-            - name: Debug ADB Devices
-              run: |
-                adb devices
-                adb shell getprop ro.build.fingerprint
-
             - name: Run UI tests on Emulator
               uses: reactivecircus/android-emulator-runner@v2
               with:
