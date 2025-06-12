@@ -98,41 +98,49 @@ jobs:
 
         - name: Run UI tests on Emulator
           uses: reactivecircus/android-emulator-runner@v2
+
+        - name: Run UI tests on Emulator
+          uses: reactivecircus/android-emulator-runner@v2
           with:
-            api-level: 29
-            target: google_apis
-            arch: x86_64
-            profile: Nexus 6
-            ram-size: 2048M
-            heap-size: 512M
-            disk-size: 6000M
-            emulator-options: "-no-window -no-audio -no-boot-anim -camera-back none -camera-front none -gpu swiftshader_indirect -no-snapshot -wipe-data -accel on"
-            disable-animations: true
-            force-avd-creation: false
-            script: |
-              echo "Waiting for emulator to be ready..."
+              api-level: 29
+              target: google_apis
+              arch: x86_64
+              profile: Nexus 6
+              ram-size: 2048M
+              heap-size: 512M
+              disk-size: 6000M
+              emulator-options: "-no-window -no-audio -no-boot-anim -camera-back none -camera-front none -gpu swiftshader_indirect -no-snapshot -wipe-data -accel on"
+              disable-animations: true
+              force-avd-creation: false
+              script: |
+                  #!/bin/bash
+                  echo "Waiting for emulator to be ready..."
 
-              timeout 300 adb wait-for-device || { echo "Timeout waiting for device"; exit 1; }
+                  timeout 300 adb wait-for-device || { echo "Timeout waiting for device"; exit 1; }
 
-              echo "Device detected, waiting for system to be ready..."
-              while [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1" ]; do
-                echo "Waiting for boot completion..."
-                sleep 5
-              done
+                  echo "Device detected, waiting for system to be ready..."
+                  while [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1" ]; do
+                      echo "Waiting for boot completion..."
+                      sleep 5
+                  done
 
-              while [ "$(adb shell getprop init.svc.bootanim 2>/dev/null | tr -d '\r')" != "stopped" ]; do
-                echo "Waiting for boot animation to stop..."
-                sleep 2
-              done
+                  while [ "$(adb shell getprop init.svc.bootanim 2>/dev/null | tr -d '\r')" != "stopped" ]; do
+                      echo "Waiting for boot animation to stop..."
+                      sleep 2
+                  done
 
-              echo "Unlocking device and disabling animations..."
-              adb shell input keyevent 82
-              adb shell settings put global window_animation_scale 0
-              adb shell settings put global transition_animation_scale 0
-              adb shell settings put global animator_duration_scale 0
-              adb shell settings put secure show_ime_with_hard_keyboard 0
-              adb shell settings put system screen_off_timeout 1800000
-              sleep 3
+                  echo "Emulator is ready! Setting up test environment..."
 
-              echo "Starting instrumented tests..."
-              ./gradlew connectedCoreDebugAndroidTest --stacktrace --info
+                  adb shell input keyevent 82
+
+                  adb shell settings put global window_animation_scale 0.0
+                  adb shell settings put global transition_animation_scale 0.0
+                  adb shell settings put global animator_duration_scale 0.0
+
+                  adb shell settings put secure show_ime_with_hard_keyboard 0
+                  adb shell settings put system screen_off_timeout 1800000
+
+                  sleep 3
+
+                  echo "Starting instrumented tests..."
+                  ./gradlew connectedCoreDebugAndroidTest --stacktrace --info
