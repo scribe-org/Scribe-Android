@@ -131,6 +131,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
             ScribeState.IDLE -> keyboardView!!.setEnterKeyColor(null)
             else -> keyboardView!!.setEnterKeyColor(R.color.dark_scribe_blue)
         }
+
         keyboardView!!.setKeyboardHolder()
         keyboardView?.mOnKeyboardActionListener = this
         initializeEmojiButtons()
@@ -144,7 +145,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
      * @param code The integer code of the key that was pressed.
      */
     override fun onKey(code: Int) {
-        keyHandler.handleKey(code)
+        keyHandler.handleKey(code, language)
     }
 
     /**

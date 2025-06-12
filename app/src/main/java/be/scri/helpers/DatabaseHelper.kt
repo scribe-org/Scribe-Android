@@ -73,7 +73,7 @@ class DatabaseHelper(
      * @param language The language for which the data is being fetched.
      * @return The [DataContract] containing the data for the specified language, or null if not found.
      */
-    fun getRequiredData(language: String): DataContract? =
+    private fun getRequiredData(language: String): DataContract? =
         dbManagers.contractLoader.loadContract(
             language,
         )
@@ -171,4 +171,45 @@ class DatabaseHelper(
         val sourceAndDestination = dbManagers.translationDataManager.getSourceAndDestinationLanguage(language)
         return dbManagers.translationDataManager.getTranslationDataForAWord(sourceAndDestination, word)
     }
+
+    /**
+     * Retrieves conjugation data for a word in a given language.
+     *
+     * Delegates to [ConjugateDataManager] after fetching language-specific data.
+     *
+     * @param language The language code (e.g., "en", "es").
+     * @param word The word to conjugate.
+     * @return A map of conjugation labels (e.g., "present") to lists of conjugated forms.
+     *         Returns an empty map if no data is found.
+     * @throws Exception If data retrieval fails.
+     */
+    fun getConjugateData(
+        language: String,
+        word: String,
+    ): MutableMap<String, MutableMap<String, Collection<String>>> =
+        dbManagers.conjugateDataManager.getTheConjugateLabels(
+            language,
+            getRequiredData(language),
+            word,
+        )
+
+    /**
+     * Retrieves conjugate labels for a given language.
+     *
+     * Fetches data for the language and extracts conjugate headings.
+     *
+     * @param language The language code (e.g., "en", "es").
+     * @return A set of conjugate labels. Returns an empty set if none are found.
+     * @throws Exception if there's an error accessing or processing data.
+     * @see getRequiredData
+     * @see dbManagers.conjugateDataManager.extractConjugateHeadings
+     */
+    fun getConjugateLabels(
+        language: String,
+        word: String,
+    ): Set<String> =
+        dbManagers.conjugateDataManager.extractConjugateHeadings(
+            getRequiredData(language),
+            word,
+        )
 }
