@@ -89,13 +89,20 @@ jobs:
             - name: prepare app
               uses: ./.github/composite/prepareApp
 
+            - name: Debug ADB Devices
+              run: |
+                adb devices
+                adb shell getprop ro.build.fingerprint
+
             - name: Run UI tests on Emulator
               uses: reactivecircus/android-emulator-runner@v2
               with:
                   api-level: 30
-                  target: google_apis
+                  target: google_apis_playstore
                   arch: x86_64
                   profile: pixel_4
-                  emulator-options: "-no-window -no-audio -no-boot-anim"
+                  ram-size: 3072M
+                  heap-size: 512M
+                  emulator-options: "-no-window -no-audio -no-boot-anim -camera-back none -camera-front none -gpu swiftshader_indirect"
                   disable-animations: true
-                  script: ./gradlew connectedCoreDebugAndroidTest
+                  script: adb wait-for-device && adb shell settings put global window_animation_scale 0 && ./gradlew connectedCoreDebugAndroidTest
