@@ -80,71 +80,63 @@ jobs:
                   path: "app/build/outputs/apk/core/debug/app-core-debug.apk"
 
     instrumentation_test:
-        runs-on: ubuntu-latest
-        name: Run Android Instrumentation Tests
-        timeout-minutes: 30
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+      runs-on: ubuntu-latest
+      name: Run Android Instrumentation Tests
+      timeout-minutes: 30
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
 
-            - name: prepare app
-              uses: ./.github/composite/prepareApp
+        - name: prepare app
+          uses: ./.github/composite/prepareApp
 
-            # Enable hardware acceleration for better emulator performance
-            - name: Enable KVM group perms
-              run: |
-                  echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-                  sudo udevadm control --reload-rules
-                  sudo udevadm trigger --name-match=kvm
+        - name: Enable KVM group perms
+          run: |
+            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+            sudo udevadm control --reload-rules
+            sudo udevadm trigger --name-match=kvm
 
-            - name: Run UI tests on Emulator
-              uses: reactivecircus/android-emulator-runner@v2
-              with:
-                  api-level: 29
-                  target: google_apis
-                  arch: x86_64
-                  profile: Nexus 6
-                  ram-size: 2048M
-                  heap-size: 512M
-                  disk-size: 6000M
-                  emulator-options: "-no-window -no-audio -no-boot-anim -camera-back none -camera-front none -gpu swiftshader_indirect -no-snapshot -wipe-data -accel on"
-                  disable-animations: true
-                  force-avd-creation: false
-                  script: |
-                      echo "Waiting for emulator to be ready..."
-                      
-                      # Wait for device with timeout
-                      timeout 300 adb wait-for-device || { echo "Timeout waiting for device"; exit 1; }
-                      
-                      # Additional wait for system to be fully ready
-                      echo "Device detected, waiting for system to be ready..."
-                      while [ "`adb shell getprop sys.boot_completed 2>/dev/null`" != "1" ]; do
-                          echo "Waiting for boot completion..."
-                          sleep 5
-                      done
-                      
-                      # Wait for package manager
-                      while [ "`adb shell getprop init.svc.bootanim 2>/dev/null`" != "stopped" ]; do
-                          echo "Waiting for boot animation to stop..."
-                          sleep 2
-                      done
-                      
-                      echo "Emulator is ready! Setting up test environment..."
-                      
-                      # Unlock the device
-                      adb shell input keyevent 82
-                      
-                      # Disable animations completely
-                      adb shell settings put global window_animation_scale 0.0
-                      adb shell settings put global transition_animation_scale 0.0
-                      adb shell settings put global animator_duration_scale 0.0
-                      
-                      # Additional emulator setup
-                      adb shell settings put secure show_ime_with_hard_keyboard 0
-                      adb shell settings put system screen_off_timeout 1800000
-                      
-                      # Wait a bit more for settings to take effect
-                      sleep 3
-                      
-                      echo "Starting instrumented tests..."
-                      ./gradlew connectedCoreDebugAndroidTest --stacktrace --info
+        - name: Start emulator
+          uses: reactivecircus/android-emulator-runner@v2
+          with:
+            api-level: 29
+            target: google_apis
+            arch: x86_64
+            profile: Nexus 6
+            ram-size: 2048M
+            heap-size: 512M
+            disk-size: 6000M
+            emulator-options: "-no-window -no-audio -no-boot-anim -camera-back none -camera-front none -gpu swiftshader_indirect -no-snapshot -wipe-data -accel on"
+            disable-animations: true
+            force-avd-creation: false
+            script: echo "Emulator started"
+
+        - name: Wait for emulator and run instrumented tests
+          shell: bash
+          run: |
+            echo "Waiting for emulator to be ready..."
+
+            timeout 300 adb wait-for-device || { echo "Timeout waiting for device"; exit 1; }
+
+            echo "Device detected, waiting for system to be ready..."
+            while [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1" ]; do
+              echo "Waiting for boot completion..."
+              sleep 5
+            done
+
+            while [ "$(adb shell getprop init.svc.bootanim 2>/dev/null | tr -d '\r')" != "stopped" ]; do
+              echo "Waiting for boot animation to stop..."
+              sleep 2
+            done
+
+            echo "Unlocking device and disabling animations..."
+            adb shell input keyevent 82
+            adb shell settings put global window_animation_scale 0
+            adb shell settings put global transition_animation_scale 0
+            adb shell settings put global animator_duration_scale 0
+            adb shell settings put secure show_ime_with_hard_keyboard 0
+            adb shell settings put system screen_off_timeout 1800000
+            sleep 3
+
+            echo "Starting instrumented tests..."
+            ./gradlew connectedCoreDebugAndroidTest --stacktrace --info
