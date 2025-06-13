@@ -1,34 +1,41 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
 package be.scri.helpers
 
-import ContractDataLoader
-import EmojiDataManager
-import GenderDataManager
-import PluralFormsManager
+import DataContract
 import android.content.Context
-import be.scri.helpers.keyboardDBHelper.ConjugateDataManager
-import be.scri.helpers.keyboardDBHelper.PrepositionDataManager
-import be.scri.helpers.keyboardDBHelper.TranslationDataManager
+import be.scri.helpers.data.ConjugateDataManager
+import be.scri.helpers.data.ContractDataLoader
+import be.scri.helpers.data.EmojiDataManager
+import be.scri.helpers.data.GenderDataManager
+import be.scri.helpers.data.PluralFormsManager
+import be.scri.helpers.data.PrepositionDataManager
+import be.scri.helpers.data.TranslationDataManager
 
 /**
- * A helper class that manages various database-related operations
- * and data managers for the Scribe keyboard.
- * This class provides access to all the necessary managers that interact
- * with the database for different features such as contracts, emojis, gender
- * data, plural forms, and prepositions.
- *
- * @param context The context used to access the app's resources and database.
+ * The primary entry point for all data-related operations.
+ * This class acts as a facade, providing simple access to specialized managers
+ * for features like emojis, gender, plurals, and conjugations.
+ * @param context The application context.
  */
 class DatabaseManagers(
     context: Context,
 ) {
-    val fileManager = DatabaseFileManager(context)
-    val contractLoader = ContractDataLoader(context)
-    val emojiManager = EmojiDataManager(context)
-    val genderManager = GenderDataManager(context)
-    val pluralManager = PluralFormsManager(context)
-    val prepositionManager = PrepositionDataManager(context)
-    val translationDataManager = TranslationDataManager(context)
-    val conjugateDataManager = ConjugateDataManager(context)
+    // Centralized providers for file and contract loading.
+    private val fileManager = DatabaseFileManager(context)
+    private val contractLoader = ContractDataLoader(context)
+
+    // Specialized data managers, ready for use.
+    val emojiManager = EmojiDataManager(fileManager)
+    val genderManager = GenderDataManager(fileManager)
+    val pluralManager = PluralFormsManager(fileManager)
+    val prepositionManager = PrepositionDataManager(fileManager)
+    val translationDataManager = TranslationDataManager(context, fileManager)
+    val conjugateDataManager = ConjugateDataManager(fileManager)
+
+    /**
+     * Retrieves the data contract for a given language.
+     * @param language The language code (e.g., "DE", "FR").
+     * @return A [DataContract] object, or null if not found.
+     */
+    fun getLanguageContract(language: String): DataContract? = contractLoader.loadContract(language)
 }

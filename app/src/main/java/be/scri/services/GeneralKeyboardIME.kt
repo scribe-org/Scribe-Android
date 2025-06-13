@@ -33,7 +33,7 @@ import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
-import be.scri.helpers.DatabaseHelper
+import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.HintUtils
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
@@ -111,9 +111,10 @@ abstract class GeneralKeyboardIME(
 
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
 
-    private lateinit var dbHelper: DatabaseHelper
+    // Use the new DatabaseManagers facade instead of the old helper.
+    private lateinit var dbManagers: DatabaseManagers
     private lateinit var suggestionHandler: SuggestionHandler
-    private var dataContract: DataContract? = null // <<< ADD THIS PROPERTY TO CACHE THE CONTRACT
+    private var dataContract: DataContract? = null
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
     private lateinit var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>
     private lateinit var conjugateLabels: Set<String>
@@ -211,6 +212,8 @@ abstract class GeneralKeyboardIME(
 
     override fun onCreate() {
         super.onCreate()
+        // REFACTOR: Initialize the new DatabaseManagers here, once.
+        dbManagers = DatabaseManagers(this)
         suggestionHandler = SuggestionHandler(this)
         val themedContext = androidx.appcompat.view.ContextThemeWrapper(this, R.style.AppTheme)
         val themedInflater = layoutInflater.cloneInContext(themedContext)
@@ -298,19 +301,19 @@ abstract class GeneralKeyboardIME(
                 }
             }
 
+        // REFACTOR: All data loading is now done through the new dbManagers facade.
         val languageAlias = getLanguageAlias(language)
-        dbHelper = DatabaseHelper(this)
-        dbHelper.loadDatabase(languageAlias)
+        dataContract = dbManagers.getLanguageContract(languageAlias)
 
-        dataContract = dbHelper.getLanguageContract(languageAlias)
-
-        emojiKeywords = dbHelper.getEmojiKeywords(languageAlias)
-        emojiMaxKeywordLength = dbHelper.getEmojiMaxKeywordLength()
-        pluralWords = dbHelper.checkIfWordIsPlural(languageAlias, dataContract)?.toSet()
-        nounKeywords = dbHelper.findGenderOfWord(languageAlias, dataContract)
-        caseAnnotation = dbHelper.findCaseAnnnotationForPreposition(languageAlias)
-        conjugateOutput = dbHelper.getConjugateData(languageAlias, "describe")
-        conjugateLabels = dbHelper.getConjugateLabels(languageAlias, "describe")
+        // Use the specialized managers for each data type.
+        emojiKeywords = dbManagers.emojiManager.getEmojiKeywords(languageAlias)
+        emojiMaxKeywordLength = dbManagers.emojiManager.maxKeywordLength
+        pluralWords = dbManagers.pluralManager.getAllPluralForms(languageAlias, dataContract)?.toSet()
+        nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
+        caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
+        // Dummy load for default state, will be replaced by user input.
+        conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
+        conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "describe")
 
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
@@ -787,7 +790,7 @@ abstract class GeneralKeyboardIME(
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
 
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
-        val separatorColor = Color.parseColor(if (isUserDarkMode) DARK_THEME else LIGHT_THEME)
+        val separatorColor = (if (isUserDarkMode) DARK_THEME else LIGHT_THEME).toColorInt()
 
         listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
             button.setBackgroundColor(getColor(R.color.transparent))
@@ -1452,8 +1455,9 @@ abstract class GeneralKeyboardIME(
     private fun getPluralRepresentation(word: String?): String? {
         if (word.isNullOrEmpty()) return null
         val languageAlias = getLanguageAlias(language)
-        val pluralRepresentationMap = dbHelper.getPluralRepresentation(languageAlias, dataContract, word)
-        return pluralRepresentationMap.values.filterNotNull().firstOrNull()
+        // REFACTOR: Use the new pluralManager
+        val pluralMap = dbManagers.pluralManager.getPluralRepresentation(languageAlias, dataContract, word)
+        return pluralMap.values.firstOrNull()
     }
 
     private fun getLanguageAlias(language: String): String =
@@ -1485,7 +1489,11 @@ abstract class GeneralKeyboardIME(
     fun getTranslation(
         language: String,
         commandBarInput: String,
-    ): String = dbHelper.getTranslationSourceAndDestination(language, commandBarInput)
+    ): String {
+        // REFACTOR: Use the new translationDataManager
+        val sourceDest = dbManagers.translationDataManager.getSourceAndDestinationLanguage(language)
+        return dbManagers.translationDataManager.getTranslationDataForAWord(sourceDest, commandBarInput)
+    }
 
     private fun getImeOptionsActionId(): Int =
         if (currentInputEditorInfo.imeOptions and IME_FLAG_NO_ENTER_ACTION != 0) {
@@ -1531,8 +1539,23 @@ abstract class GeneralKeyboardIME(
                 Log.i("ALPHA", "Inside CONJUGATE mode")
                 saveConjugateModeType(language)
                 currentState = ScribeState.SELECT_VERB_CONJUNCTION
-                conjugateOutput = dbHelper.getConjugateData(getLanguageAlias(language), rawInput)
-                conjugateLabels = dbHelper.getConjugateLabels(getLanguageAlias(language), rawInput)
+                val languageAlias = getLanguageAlias(language)
+                conjugateOutput =
+                    dbManagers
+                        .conjugateDataManager
+                        .getTheConjugateLabels(
+                            languageAlias,
+                            dataContract,
+                            rawInput,
+                        )
+
+                conjugateLabels =
+                    dbManagers
+                        .conjugateDataManager
+                        .extractConjugateHeadings(
+                            dataContract,
+                            rawInput,
+                        )
             } else {
                 handleNonCommandEnter(imeOptionsActionId, inputConnection)
             }
