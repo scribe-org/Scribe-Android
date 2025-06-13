@@ -2,6 +2,8 @@
 
 package be.scri.helpers
 
+import android.os.Handler
+import android.os.Looper
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
@@ -13,6 +15,16 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 class SuggestionHandler(
     private val ime: GeneralKeyboardIME,
 ) {
+    private val handler = Handler(Looper.getMainLooper())
+    private var suggestionRunnable: Runnable? = null
+
+    /**
+     * Companion object for holding constants related to suggestion handling.
+     */
+    companion object {
+        private const val SUGGESTION_DELAY_MS = 50L
+    }
+
     /**
      * Processes the given word to find and display relevant suggestions.
      * This includes noun gender, plurality, case annotations, and emojis based on the IME's state.
@@ -20,64 +32,71 @@ class SuggestionHandler(
      * @param currentWord The word currently being typed or the word before the cursor.
      */
     fun processWordSuggestions(currentWord: String?) {
-        clearAllSuggestionsAndHideButtonUI()
+        suggestionRunnable?.let { handler.removeCallbacks(it) }
 
-        if (ime.currentState != ScribeState.IDLE && ime.currentState != ScribeState.SELECT_COMMAND) {
-            return
-        }
+        suggestionRunnable =
+            Runnable {
+                if (ime.currentState != ScribeState.IDLE && ime.currentState != ScribeState.SELECT_COMMAND) {
+                    clearAllSuggestionsAndHideButtonUI()
+                    return@Runnable
+                }
 
-        ime.lastWord = currentWord
+                ime.lastWord = currentWord
 
-        if (currentWord.isNullOrEmpty()) return
+                if (currentWord.isNullOrEmpty()) {
+                    clearAllSuggestionsAndHideButtonUI()
+                    return@Runnable
+                }
 
-        val genderSuggestion = ime.findGenderForLastWord(ime.nounKeywords, currentWord)
-        val isPluralByDirectCheck = ime.findWhetherWordIsPlural(ime.pluralWords, currentWord)
-        val caseSuggestion = ime.getCaseAnnotationForPreposition(ime.caseAnnotation, currentWord)
+                val genderSuggestion = ime.findGenderForLastWord(ime.nounKeywords, currentWord)
+                val isPluralByDirectCheck = ime.findWhetherWordIsPlural(ime.pluralWords, currentWord)
+                val caseSuggestion = ime.getCaseAnnotationForPreposition(ime.caseAnnotation, currentWord)
+                val emojis =
+                    if (ime.emojiAutoSuggestionEnabled) {
+                        ime.findEmojisForLastWord(ime.emojiKeywords, currentWord)
+                    } else {
+                        null
+                    }
 
-        ime.nounTypeSuggestion = genderSuggestion
-        ime.checkIfPluralWord = isPluralByDirectCheck
-        ime.caseAnnotationSuggestion = caseSuggestion
+                val hasLinguisticSuggestion =
+                    genderSuggestion != null ||
+                        isPluralByDirectCheck ||
+                        caseSuggestion != null ||
+                        ime.isSingularAndPlural
 
-        val showSpecificSuggestion =
-            genderSuggestion != null ||
-                isPluralByDirectCheck ||
-                caseSuggestion != null ||
-                ime.isSingularAndPlural
+                val hasEmojiSuggestion = !emojis.isNullOrEmpty()
 
-        if (showSpecificSuggestion) {
-            ime.updateAutoSuggestText(
-                genderSuggestion,
-                isPluralByDirectCheck || ime.isSingularAndPlural,
-                caseSuggestion,
-            )
-        } else {
-            updateEmojiSuggestionsOnly(currentWord)
-        }
-    }
+                if (hasLinguisticSuggestion) {
+                    ime.nounTypeSuggestion = genderSuggestion
+                    ime.checkIfPluralWord = isPluralByDirectCheck
+                    ime.caseAnnotationSuggestion = caseSuggestion
+                    ime.updateAutoSuggestText(
+                        genderSuggestion,
+                        isPluralByDirectCheck || ime.isSingularAndPlural,
+                        caseSuggestion,
+                    )
+                } else {
+                    ime.disableAutoSuggest()
+                }
 
-    /**
-     * Specifically checks for and displays ONLY emoji suggestions for the given word.
-     * This is called if no other specific linguistic suggestions (gender, plural, case) are found.
-     *
-     * @param word The word to check for emoji suggestions.
-     */
-    private fun updateEmojiSuggestionsOnly(word: String?) {
-        if (ime.emojiAutoSuggestionEnabled && !word.isNullOrEmpty()) {
-            val emojis = ime.findEmojisForLastWord(ime.emojiKeywords, word)
-            if (!emojis.isNullOrEmpty()) {
-                ime.autoSuggestEmojis = emojis
-                ime.updateButtonText(true, emojis)
-                ime.updateButtonVisibility(true)
+                if (hasEmojiSuggestion) {
+                    ime.autoSuggestEmojis = emojis
+                    ime.updateButtonText(true, emojis)
+                    ime.updateButtonVisibility(true)
+                } else {
+                    ime.updateButtonVisibility(false)
+                }
             }
-        }
+
+        handler.postDelayed(suggestionRunnable!!, SUGGESTION_DELAY_MS)
     }
 
     /**
      * Clears all suggestion states (noun type, plurality, case, emojis) from the IME
-     * and hides suggestion-related UI elements by calling [GeneralKeyboardIME.disableAutoSuggest]
-     * and [GeneralKeyboardIME.updateButtonVisibility].
+     * and hides suggestion-related UI elements.
      */
     fun clearAllSuggestionsAndHideButtonUI() {
+        suggestionRunnable?.let { handler.removeCallbacks(it) }
         ime.disableAutoSuggest()
         ime.updateButtonVisibility(false)
         ime.nounTypeSuggestion = null

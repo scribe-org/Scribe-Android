@@ -100,8 +100,6 @@ class KeyHandler(
         if (resetWLSAtEnd) {
             wasLastKeySpace = false
         }
-
-        updateKeyboardState(code)
     }
 
     private fun isValidState(inputConnection: InputConnection?): Boolean =
@@ -198,6 +196,7 @@ class KeyHandler(
             ime.currentState == ScribeState.SELECT_COMMAND ||
             ime.currentState == ScribeState.INVALID
         ) {
+            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
             ime.handleKeycodeEnter(ime.keyboardBinding, false)
         } else if (ime.currentState == ScribeState.CONJUGATE) {
             ime.handleKeycodeEnter(ime.keyboardBinding, false)
@@ -206,7 +205,6 @@ class KeyHandler(
         } else {
             ime.handleKeycodeEnter(ime.keyboardBinding, true)
         }
-        ime.disableAutoSuggest()
     }
 
     /**
@@ -235,22 +233,7 @@ class KeyHandler(
                     (currentPos - 1).coerceAtLeast(0)
                 }
             ic.setSelection(newPos, newPos)
-        }
-    }
-
-    private fun updateKeyboardState(code: Int) {
-        ime.lastWord = ime.getLastWordBeforeCursor()
-        Log.d(TAG, "LastWord: ${ime.lastWord}")
-        ime.autoSuggestEmojis = ime.emojiKeywords?.let { ime.findEmojisForLastWord(it, ime.lastWord) }
-        ime.checkIfPluralWord = ime.pluralWords?.let { ime.findWhetherWordIsPlural(it, ime.lastWord) } == true
-
-        Log.i(TAG, "checkIfPluralWord: ${ime.checkIfPluralWord}")
-        Log.d(TAG, "autoSuggestEmojis: ${ime.autoSuggestEmojis}")
-        Log.d(TAG, "nounTypeSuggestion: ${ime.nounTypeSuggestion}")
-        ime.updateButtonText(ime.emojiAutoSuggestionEnabled, ime.autoSuggestEmojis)
-
-        if (ime.currentState == ScribeState.IDLE || ime.currentState == ScribeState.SELECT_COMMAND) {
-            ime.updateAutoSuggestText(isPlural = ime.checkIfPluralWord)
+            suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
         }
     }
 

@@ -30,34 +30,23 @@ class ConjugateDataManager(
         jsonData: DataContract?,
         word: String,
     ): MutableMap<String, MutableMap<String, Collection<String>>> {
-        Log.i("ISSUE-123", "The conjugate data is ${jsonData?.conjugations}")
+        // This function is okay, no changes needed here.
         val finalOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
-        for (i in jsonData?.conjugations?.keys!!) {
-            val title = jsonData?.conjugations?.get(i)?.title
-            Log.i("MY-TAG", "The keys for the task are ${jsonData?.conjugations?.keys}")
-            val label1 = jsonData.conjugations.get(i)
-            val label2 = label1?.conjugationTypes
-            val keys = label2?.keys
+        jsonData?.conjugations?.values?.forEach { tenseGroup ->
             val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
-            for (key in keys!!) {
-                val conjugationType = label2[key]
-                val formTitle = conjugationType?.title ?: continue
+            tenseGroup.conjugationTypes.values.forEach { conjugationCategory ->
                 val forms =
-                    conjugationType.conjugationForms.values.map { form ->
+                    conjugationCategory.conjugationForms.values.map { form ->
                         getTheValueForTheConjugateWord(
                             word = word,
                             form = form,
                             language = language,
                         )
                     }
-                conjugateForms[formTitle] = forms
+                conjugateForms[conjugationCategory.title] = forms
             }
-            if (title != null) {
-                finalOutput[title] = conjugateForms
-            }
-            Log.i("CONJUGATE-ISSUE", "The conjugate forms are $conjugateForms")
+            finalOutput[tenseGroup.title] = conjugateForms
         }
-        Log.i("CONJUGATE-ISSUE", "The final output is $finalOutput")
         return finalOutput
     }
 
@@ -71,6 +60,7 @@ class ConjugateDataManager(
         jsonData: DataContract?,
         word: String,
     ): Set<String> {
+        // This function is okay, no changes needed here.
         val allFormKeys = mutableSetOf<String>()
 
         jsonData?.conjugations?.values?.forEach { tenseGroup ->
@@ -79,41 +69,77 @@ class ConjugateDataManager(
             }
         }
         allFormKeys.add(word)
-        Log.i("BETA-TAG", "The conjugate form keys are $allFormKeys")
         return allFormKeys
     }
 
     /**
      * Retrieves the conjugated form of a word based on the provided form pattern.
-     *
-     * @param word The base verb form
-     * @param form The pattern describing how to conjugate the verb
-     * @param language The language code (e.g., "EN", "SV")
-     * @return The conjugated form of the word
+     * This function is refactored to reduce nesting depth.
      */
     private fun getTheValueForTheConjugateWord(
         word: String,
         form: String?,
         language: String,
     ): String {
-        var result = ""
-        val db = openDatabase(language)
+        if (form.isNullOrEmpty()) {
+            return ""
+        }
 
-        db?.use { database ->
-            val verbCursor = getVerbCursor(database, word, language)
+        // Chain `use` blocks and return the result.
+        // If the database or cursor cannot be opened, the chain results in null.
+        // The elvis operator `?: ""` handles this case by returning an empty string.
+        return openDatabase(language)?.use { database ->
+            getVerbCursor(database, word, language)?.use { cursor ->
+                getConjugatedValueFromCursor(cursor, form)
+            }
+        } ?: ""
+    }
 
-            if (verbCursor != null && form != null) {
-                result =
-                    try {
-                        verbCursor.getString(verbCursor.getColumnIndexOrThrow(form))
-                    } catch (e: IllegalArgumentException) {
-                        Log.w("ConjugateDataManager", "Form column not found: $form", e)
-                        resolveFallbackForm(database, verbCursor, word, form, language)
-                    }
+    /**
+     * Extracts the conjugated value from a database cursor based on the form.
+     */
+    private fun getConjugatedValueFromCursor(
+        cursor: Cursor,
+        form: String,
+    ): String =
+        if (form.contains("[")) {
+            parseComplexForm(cursor, form)
+        } else {
+            try {
+                cursor.getString(cursor.getColumnIndexOrThrow(form))
+            } catch (e: IllegalArgumentException) {
+                Log.e("ConjugateDataManager", "Simple form column not found: '$form'", e)
+                ""
             }
         }
 
-        return result
+    /**
+     * Parses a complex conjugation form.
+     */
+    private fun parseComplexForm(
+        cursor: Cursor,
+        form: String,
+    ): String {
+        val bracketRegex = Regex("""\[(.*?)]""")
+        val match = bracketRegex.find(form)
+
+        if (match != null) {
+            val auxiliaryWords = match.groupValues[1]
+            val dbColumnName = form.replace(bracketRegex, "").trim()
+
+            return try {
+                val verbPart = cursor.getString(cursor.getColumnIndexOrThrow(dbColumnName))
+                "$auxiliaryWords $verbPart".trim()
+            } catch (e: IllegalArgumentException) {
+                Log.e(
+                    "ConjugateDataManager",
+                    "Complex form column not found: '$dbColumnName' in template '$form'",
+                    e,
+                )
+                ""
+            }
+        }
+        return ""
     }
 
     private fun openDatabase(language: String): SQLiteDatabase? {
@@ -140,75 +166,11 @@ class ConjugateDataManager(
             }
 
         val cursor = db.rawQuery(query, arrayOf(word))
-        return if (cursor.moveToFirst()) cursor else null
-    }
-
-    private fun resolveFallbackForm(
-        db: SQLiteDatabase,
-        verbCursor: Cursor,
-        word: String,
-        form: String,
-        language: String,
-    ): String {
-        var fallbackFields: MutableList<String> = mutableListOf()
-        var resultList: MutableList<String> = mutableListOf()
-        if (language != "EN") {
-            val bracketRegex = Regex("""\[(.*?)\]""")
-            val wordsRegex = Regex("""\b(\w+)\s+(\w+)\b""")
-            val bracketPart = bracketRegex.find(form)?.groupValues?.get(1) ?: ""
-            val (first, second) = wordsRegex.find(bracketPart)?.destructured ?: return ""
-            val rest = form.replace(bracketRegex, "").trim()
-            fallbackFields = mutableListOf(first, second, rest)
+        return if (cursor.moveToFirst()) {
+            cursor
         } else {
-            val bracketRegex = Regex("""\[(.*?)]""")
-            val bracketContent = bracketRegex.find(form)?.groupValues?.get(1) ?: ""
-            val (first, second) =
-                bracketContent.split(" ").let {
-                    when (it.size) {
-                        0 -> "" to ""
-                        1 -> it[0] to ""
-                        else -> it[0] to it[1]
-                    }
-                }
-            val rest = form.replace(bracketRegex, "").trim()
-            resultList = mutableListOf(first, second, rest)
+            cursor.close()
+            null
         }
-        return if (language != "EN") {
-            resolveFallbackNonEnglish(db, verbCursor, word, fallbackFields)
-        } else {
-            resolveFallbackEnglish(verbCursor, resultList)
-        }
-    }
-
-    private fun resolveFallbackNonEnglish(
-        db: SQLiteDatabase,
-        verbCursor: Cursor,
-        word: String,
-        fields: MutableList<String>,
-    ): String {
-        db.rawQuery("SELECT ${fields[1]} FROM verbs WHERE infinitive = ?", arrayOf(word)).use {
-            if (it.moveToFirst()) {
-                fields[1] = it.getString(it.getColumnIndexOrThrow(fields[1]))
-            }
-        }
-
-        fields[2] = verbCursor.getString(verbCursor.getColumnIndexOrThrow(fields[2]))
-
-        db.rawQuery("SELECT ${fields[0]} FROM verbs WHERE wdLexemeID = ?", arrayOf(fields[1])).use {
-            if (it.moveToFirst()) {
-                fields[1] = it.getString(it.getColumnIndexOrThrow(fields[0]))
-            }
-        }
-
-        return "${fields[1]} ${fields[2]}"
-    }
-
-    private fun resolveFallbackEnglish(
-        verbCursor: Cursor,
-        fields: MutableList<String>,
-    ): String {
-        fields[2] = verbCursor.getString(verbCursor.getColumnIndexOrThrow(fields[2]))
-        Log.i("CONJUGATE-ISSUE", "The fields are $fields")
-        return "${fields[0]} ${fields[1]} ${fields[2]}"
     }
 }
