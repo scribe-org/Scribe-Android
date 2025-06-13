@@ -17,16 +17,16 @@ class GenderDataManager(
     /**
      * Gets gender-related word mappings for a language.
      * @param language The language code (e.g., "DE", "FR").
-     * @param jsonData The data contract defining gender fields.
+     * @param contract The data contract defining gender fields.
      * @return A map of base words to their gendered variations.
      */
     fun findGenderOfWord(
         language: String,
-        jsonData: DataContract?,
+        contract: DataContract?,
     ): HashMap<String, List<String>> =
-        jsonData?.let { contract ->
+        contract?.let {
             fileManager.getLanguageDatabase(language)?.use { db ->
-                processGenderData(db, contract)
+                processGenderData(db, it)
             }
         } ?: hashMapOf()
 
@@ -61,28 +61,29 @@ class GenderDataManager(
                     defaultGender = "feminine",
                 )
             }
-            else -> Log.w("GenderDataManager", "No valid gender columns found in contract.")
+            else -> Log.w("GenderDataManager", "No valid gender columns found in contract for language.")
         }
         return genderMap
     }
 
-    private fun hasCanonicalGender(jsonData: DataContract): Boolean =
-        jsonData.genders.canonical
+    private fun hasCanonicalGender(contract: DataContract): Boolean =
+        contract.genders.canonical
             .firstOrNull()
             ?.isNotEmpty() == true
 
-    private fun hasMasculineFeminine(jsonData: DataContract): Boolean {
-        val genders = jsonData.genders
+    private fun hasMasculineFeminine(contract: DataContract): Boolean {
+        val masculineList = contract.genders.masculines
+        val feminineList = contract.genders.feminines
 
-        val hasMasculines = genders.masculines.isNotEmpty()
-        val hasFeminines = genders.feminines.isNotEmpty()
+        val hasMasculine = masculineList.isNotEmpty()
+        val hasFeminine = feminineList.isNotEmpty()
 
-        return hasMasculines && hasFeminines
+        return hasMasculine && hasFeminine
     }
 
     /**
      * Queries the DB and iterates through the cursor to process noun genders.
-     * This function's complexity is now reduced.
+     * This function is now more defensive against invalid column names from the contract.
      */
     private fun processGenders(
         db: SQLiteDatabase,
@@ -91,22 +92,33 @@ class GenderDataManager(
         genderColumn: String? = null,
         defaultGender: String? = null,
     ) {
-        // Query only the columns we actually need.
-        val columnsToSelect = listOfNotNull(nounColumn, genderColumn).distinct()
-        if (columnsToSelect.isEmpty()) {
-            Log.e("GenderDataManager", "No valid noun or gender columns provided.")
+        // Ensure we have a valid noun column to proceed
+        if (nounColumn.isNullOrEmpty()) {
+            Log.e("GenderDataManager", "No valid noun column provided in contract.")
             return
         }
+
+        val columnsToSelect = listOfNotNull(nounColumn, genderColumn).distinct()
+
+        db.rawQuery("SELECT * FROM nouns LIMIT 1", null).use { tempCursor ->
+            for (column in columnsToSelect) {
+                if (tempCursor.getColumnIndex(column) == -1) {
+                    Log.e(
+                        "GenderDataManager",
+                        "Column '$column' specified in the data contract was NOT FOUND in the 'nouns' table" +
+                            " Skipping this gender processing step to prevent a crash.",
+                    )
+                    return
+                }
+            }
+        }
+
         val selection = columnsToSelect.joinToString(", ") { "`$it`" }
 
-        db.rawQuery("SELECT $selection FROM nouns", null)?.use { cursor ->
+        db.rawQuery("SELECT $selection FROM nouns", null).use { cursor ->
             val nounIndex = cursor.getColumnIndex(nounColumn)
+            // genderIndex will be valid because we checked it above.
             val genderIndex = genderColumn?.let { cursor.getColumnIndex(it) } ?: -1
-
-            if (nounIndex == -1) {
-                Log.e("GenderDataManager", "Required noun column '$nounColumn' not found.")
-                return
-            }
 
             while (cursor.moveToNext()) {
                 processGenderRow(cursor, nounIndex, genderIndex, defaultGender, genderMap)
@@ -116,7 +128,6 @@ class GenderDataManager(
 
     /**
      * Processes a single row from the cursor to extract and map gender data.
-     * This new helper function contains the logic from the old while-loop.
      */
     private fun processGenderRow(
         cursor: Cursor,

@@ -29,21 +29,23 @@ class TranslationDataManager(
      * Gets translation data for a given word.
      * @param sourceAndDestination A pair of (source, dest) ISO codes.
      * @param word The word to translate.
-     * @return The translated word, or an empty string if not found.
+     * @return The translated word, or the original word if no translation is needed/found.
      */
     fun getTranslationDataForAWord(
         sourceAndDestination: Pair<String?, String?>,
         word: String,
     ): String {
-        val sourceTable = generateLanguageNameForISOCode(sourceAndDestination.first ?: "en")
+        val (sourceCode, destCode) = sourceAndDestination
 
-        // The logic is now much flatter. We get the prerequisites and then delegate.
-        return sourceAndDestination.second?.let { destinationColumn ->
-            fileManager.getTranslationDatabase()?.use { db ->
-                // The deeply nested logic is now in a separate function.
-                queryForTranslation(db, sourceTable, destinationColumn, word)
-            }
-        } ?: "" // Return "" if destination column or DB is null.
+        if (sourceCode == destCode || sourceCode == null || destCode == null) {
+            return word
+        }
+
+        val sourceTable = generateLanguageNameForISOCode(sourceCode)
+
+        return fileManager.getTranslationDatabase()?.use { db ->
+            queryForTranslation(db, sourceTable, destCode, word)
+        } ?: ""
     }
 
     /**
@@ -68,13 +70,13 @@ class TranslationDataManager(
             WHERE word = ?
             """.trimIndent()
 
-        return db.rawQuery(query, arrayOf(word))?.use { cursor ->
+        return db.rawQuery(query, arrayOf(word)).use { cursor ->
             if (cursor.moveToFirst()) {
-                cursor.getString(cursor.getColumnIndexOrThrow(destColumn))
+                cursor.getString(cursor.getColumnIndexOrThrow(destColumn)) ?: ""
             } else {
                 ""
             }
-        } ?: ""
+        }
     }
 
     /**
@@ -89,6 +91,7 @@ class TranslationDataManager(
             "italian" -> "it"
             "portuguese" -> "pt"
             "russian" -> "ru"
+            "swedish" -> "sv"
             else -> "en"
         }
 
@@ -104,6 +107,7 @@ class TranslationDataManager(
             "it" -> "italian"
             "pt" -> "portuguese"
             "ru" -> "russian"
+            "sv" -> "swedish"
             else -> "english"
         }
 }

@@ -27,12 +27,11 @@ jacoco {
     toolVersion = "0.8.12"
 }
 
-val kotlinVersion by extra("2.0.0")
 val junit5Version by extra("5.11.2")
 val mockkVersion by extra("1.13.13")
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "be.scri"
@@ -123,8 +122,9 @@ android {
         toolVersion = "1.23.8"
         buildUponDefaultConfig = true
         allRules = false
-        config = rootProject.files("detekt.yml")
+        config.setFrom(rootProject.files("detekt.yml"))
     }
+
 
     kotlinter {
         failBuildWhenCannotAutoFormat = false
@@ -142,7 +142,7 @@ android {
             listOf(
                 // Data binding.
                 "**/R.class",
-                "**/R\$*.class",
+                "**/R$*.class",
                 "**/BuildConfig.*",
                 "**/Manifest*.*",
                 "**/*Test*.*",
@@ -156,9 +156,7 @@ android {
                 xml.required.set(true)
                 html.required.set(true)
             }
-            // Set source directories to the main source directory.
             sourceDirectories.setFrom(layout.projectDirectory.dir("src/main"))
-            // Set class directories to compiled Java and Kotlin classes, excluding specified exclusions.
             classDirectories.setFrom(
                 files(
                     fileTree(layout.buildDirectory.dir("intermediates/javac/")) {
@@ -169,7 +167,6 @@ android {
                     },
                 ),
             )
-            // Collect execution data from .exec and .ec files generated during test execution.
             executionData.setFrom(
                 files(
                     fileTree(layout.buildDirectory) { include(listOf("**/*.exec", "**/*.ec")) },
@@ -184,39 +181,39 @@ dependencies {
     lintChecks("com.slack.lint.compose:compose-lint-checks:1.4.2")
 
     // AndroidX dependencies
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.activity:activity-ktx:1.9.2")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.4")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.4")
-    debugImplementation("androidx.fragment:fragment-testing:1.8.5")
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.activity:activity-ktx:1.10.1")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.9.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.0")
+    debugImplementation("androidx.fragment:fragment-testing:1.8.8")
     implementation("androidx.test.ext:junit-ktx:1.2.1")
 
     // Room database
-    ksp("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-runtime:2.6.1")
+    ksp("androidx.room:room-compiler:2.7.1")
+    implementation("androidx.room:room-runtime:2.7.1")
 
     // Kotlin dependencies
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.0")
 
     // Layout and UI components
-    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
-    implementation("androidx.documentfile:documentfile:1.0.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+    implementation("androidx.documentfile:documentfile:1.1.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.exifinterface:exifinterface:1.3.7")
+    implementation("androidx.exifinterface:exifinterface:1.4.1")
     implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("com.google.android.play:core:1.10.3")
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("com.google.android.play:core-ktx:1.8.1")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
 
     // Jetpack Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material:1.7.6")
+    implementation("androidx.compose.material:material:1.8.2")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -227,6 +224,7 @@ dependencies {
     implementation("androidx.activity:activity-compose")
 
     // Navigation Compose
+    //noinspection GradleDependency
     implementation("androidx.navigation:navigation-compose:$2.8.4")
 
     // Testing libraries
@@ -235,8 +233,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // For Instrumentation Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
 
     // Espresso for UI tests
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -252,18 +250,23 @@ dependencies {
 
     //  AndroidJUnit4 is included
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test:runner:1.6.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("io.mockk:mockk-android:1.13.5")
 
     // Other libraries
     api("joda-time:joda-time:2.10.13")
     api("com.github.tibbi:RecyclerView-FastScroller:e7d3e150c4")
     api("com.github.tibbi:reprint:2cb206415d")
-    api("androidx.core:core-ktx:1.13.1")
+    api("androidx.core:core-ktx:1.16.0")
     api("com.google.code.gson:gson:2.10.1")
     api("com.github.bumptech.glide:glide:4.14.2")
     ksp("com.github.bumptech.glide:ksp:4.14.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // For Instrumentation Tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
 }
 
 tasks.register<Copy>("moveFromi18n") {
@@ -317,7 +320,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
 
     reports {
         html.required.set(true)
-        xml.outputLocation.set(file("${buildDir}/reports/jacoco/jacoco.xml"))
+        xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/jacoco.xml"))
         xml.required.set(true)
         csv.required.set(true)
     }
