@@ -3,8 +3,6 @@
 package be.scri.services
 
 import android.text.InputType
-import android.util.Log
-import android.view.View
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.databinding.KeyboardViewCommandOptionsBinding
@@ -36,40 +34,34 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
             else -> R.xml.keys_letter_italian_without_period_and_comma
         }
 
-    override lateinit var binding: KeyboardViewCommandOptionsBinding
-    override var keyboardView: KeyboardView? = null
+    // --- Fulfill the abstract contract from GeneralKeyboardIME ---
+    override val keyboardLetters: Int = 0
+    override val keyboardSymbols: Int = 1
+    override val keyboardSymbolShift: Int = 2
+
     override var keyboard: KeyboardBase? = null
-    override var enterKeyType = IME_ACTION_NONE
-    override val keyboardLetters = 0
-    override val keyboardSymbols = 1
-    override val keyboardSymbolShift = 2
-    override var lastShiftPressTS = 0L
-    override var keyboardMode = keyboardLetters
-    override var inputTypeClass = InputType.TYPE_CLASS_TEXT
-    override var switchToLetters = false
-    override var hasTextBeforeCursor = false
+    override var keyboardView: KeyboardView? = null
+    override var lastShiftPressTS: Long = 0L
+    override var keyboardMode: Int = keyboardLetters
+    override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
+    override var enterKeyType: Int = IME_ACTION_NONE
+    override var switchToLetters: Boolean = false
+    override var hasTextBeforeCursor: Boolean = false
+    override lateinit var binding: KeyboardViewCommandOptionsBinding
 
     // Key handling logic extracted to a separate class
-    private val keyHandler = KeyHandler(this)
+    private val keyHandler by lazy { KeyHandler(this) }
 
     /**
-     * Creates and returns the input view for the keyboard.
-     * @return The root view of the keyboard layout.
+     * Initializes the keyboard. Let the parent class handle the setup.
      */
-    override fun onCreateInputView(): View {
-        binding = KeyboardViewCommandOptionsBinding.inflate(layoutInflater)
-        val keyboardHolder = binding.root
-        Log.i("MY-TAG", "From Italian Keyboard IME")
-        keyboardView = binding.keyboardView
-        keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.setPreview = getIsPreviewEnabled(applicationContext, language)
-        keyboardView!!.setVibrate = getIsVibrateEnabled(applicationContext, language)
-        keyboardView!!.setKeyboardHolder()
-        setupCommandBarTheme(binding)
-        keyboardView!!.mOnKeyboardActionListener = this
-        initializeEmojiButtons()
-        updateUI()
-        return keyboardHolder
+    override fun onCreate() {
+        // 1. Let the parent class initialize everything first. This is crucial.
+        super.onCreate()
+
+        // 2. Now, apply any customizations specific to this keyboard.
+        keyboardView?.setPreview = getIsPreviewEnabled(applicationContext, language)
+        keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
     }
 
     /**
@@ -78,15 +70,5 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
      */
     override fun onKey(code: Int) {
         keyHandler.handleKey(code, language)
-    }
-
-    /**
-     * Initializes the keyboard and sets up the input view.
-     */
-    override fun onCreate() {
-        super.onCreate()
-        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
-        onCreateInputView()
-        setupCommandBarTheme(binding)
     }
 }
