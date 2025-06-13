@@ -23,9 +23,9 @@ class PrepositionDataManager(
             return hashMapOf()
         }
         return fileManager.getLanguageDatabase(language)?.use { db ->
-            db.rawQuery("SELECT preposition, grammaticalCase FROM prepositions", null)?.use { cursor ->
+            db.rawQuery("SELECT preposition, grammaticalCase FROM prepositions", null).use { cursor ->
                 processCursor(cursor)
-            } ?: hashMapOf() // Handle case where cursor is null
+            } // Handle case where cursor is null
         } ?: hashMapOf() // Handle case where database is null
     }
 

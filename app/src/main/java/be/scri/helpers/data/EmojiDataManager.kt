@@ -26,13 +26,13 @@ class EmojiDataManager(
 
         db.use {
             // Get max keyword length
-            it.rawQuery("SELECT MAX(LENGTH(word)) FROM emoji_keywords", null)?.use { cursor ->
+            it.rawQuery("SELECT MAX(LENGTH(word)) FROM emoji_keywords", null).use { cursor ->
                 if (cursor.moveToFirst()) {
                     maxKeywordLength = cursor.getInt(0)
                 }
             }
             // Get all emoji keywords
-            it.rawQuery("SELECT * FROM emoji_keywords", null)?.use { cursor ->
+            it.rawQuery("SELECT * FROM emoji_keywords", null).use { cursor ->
                 processEmojiCursor(cursor, emojiMap)
             }
         }

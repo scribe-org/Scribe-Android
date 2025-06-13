@@ -70,13 +70,13 @@ class PluralFormsManager(
                 "WHERE `$singularCol` = ? " +
                 "COLLATE NOCASE"
 
-        return db.rawQuery(query, arrayOf(noun))?.use { cursor ->
+        return db.rawQuery(query, arrayOf(noun)).use { cursor ->
             if (cursor.moveToFirst()) {
                 mapOf(cursor.getString(0) to cursor.getString(1))
             } else {
                 emptyMap()
             }
-        } ?: emptyMap()
+        }
     }
 
     /**
@@ -90,7 +90,7 @@ class PluralFormsManager(
         val columns = pluralColumns.joinToString(", ") { "`$it`" }
         val query = "SELECT $columns FROM nouns"
 
-        db.rawQuery(query, null)?.use { cursor ->
+        db.rawQuery(query, null).use { cursor ->
             if (!cursor.moveToFirst()) return@use
 
             do {
