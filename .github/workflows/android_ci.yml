@@ -12,31 +12,31 @@ permissions:
 jobs:
     lint:
         runs-on: ubuntu-latest
-        name: Run lint and detekt
+        name: Run Ktlint and Detekt
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: prepare app
+            - name: Prepare App
               uses: ./.github/composite/prepareApp
 
-            - name: Run ktlint
+            - name: Run Ktlint
               run: ./gradlew lintKotlin
 
-            - name: Run detekt
+            - name: Run Detekt
               run: ./gradlew detekt
 
     test:
         runs-on: ubuntu-latest
-        name: Run tests
+        name: Run Tests
         steps:
-            - name: Checkout repository
+            - name: Checkout Repository
               uses: actions/checkout@v4
 
-            - name: prepare app
+            - name: Prepare App
               uses: ./.github/composite/prepareApp
 
-            - name: Run ktlint
+            - name: Run Ktlint
               run: ./gradlew test
 
     collect_coverage:
@@ -50,10 +50,10 @@ jobs:
               with:
                   java-version: 17
 
-            - name: Grant execute permission for gradlew
+            - name: Grant Execute Permission for Gradle Wrapper
               run: chmod +x gradlew
 
-            - name: Get coverage
+            - name: Get Coverage
               run: ./gradlew koverReport
 
             - name: Run File-wise Coverage Parser Script
@@ -63,16 +63,16 @@ jobs:
         runs-on: ubuntu-latest
         name: build app
         steps:
-            - name: Checkout repository
+            - name: Checkout Repository
               uses: actions/checkout@v4
 
-            - name: prepare app
+            - name: Prepare App
               uses: ./.github/composite/prepareApp
 
-            - name: build app
+            - name: Build App
               run: ./gradlew assembleDebug
 
-            - name: Upload Debug Apk
+            - name: Upload Debug APK
               uses: actions/upload-artifact@v4
               if: success()
               with:
@@ -80,41 +80,41 @@ jobs:
                   path: "app/build/outputs/apk/core/debug/app-core-debug.apk"
 
     instrumentation_test:
-      runs-on: ubuntu-latest
-      name: Run Android Instrumentation Tests
-      timeout-minutes: 30
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v4
+        runs-on: ubuntu-latest
+        name: Run Android Instrumentation Tests
+        timeout-minutes: 30
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
 
-        - name: prepare app
-          uses: ./.github/composite/prepareApp
+            - name: Prepare App
+              uses: ./.github/composite/prepareApp
 
-        - name: Enable KVM group perms
-          run: |
-            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-            sudo udevadm control --reload-rules
-            sudo udevadm trigger --name-match=kvm
+            - name: Enable KVM Group Permissions
+              run: |
+                  echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+                  sudo udevadm control --reload-rules
+                  sudo udevadm trigger --name-match=kvm
 
-        - name: Run UI tests on Emulator
-          uses: reactivecircus/android-emulator-runner@v2
-          with:
-              api-level: 29
-              target: google_apis
-              arch: x86_64
-              profile: Nexus 6
-              ram-size: 2048M
-              heap-size: 512M
-              disk-size: 6000M
-              emulator-options: "-no-window -no-audio -no-boot-anim -camera-back none -camera-front none -gpu swiftshader_indirect -no-snapshot -wipe-data -accel on"
-              disable-animations: true
-              force-avd-creation: false
-              script: |
-                  adb wait-for-device
-                  sleep 30
-                  adb shell input keyevent 82
-                  adb shell settings put global window_animation_scale 0.0
-                  adb shell settings put global transition_animation_scale 0.0
-                  adb shell settings put global animator_duration_scale 0.0
-                  sleep 5
-                  ./gradlew connectedCoreDebugAndroidTest --stacktrace
+            - name: Run UI Tests on Emulator
+              uses: reactivecircus/android-emulator-runner@v2
+              with:
+                  api-level: 29
+                  target: google_apis
+                  arch: x86_64
+                  profile: Nexus 6
+                  ram-size: 2048M
+                  heap-size: 512M
+                  disk-size: 6000M
+                  emulator-options: "-no-window -no-audio -no-boot-anim -camera-back none -camera-front none -gpu swiftshader_indirect -no-snapshot -wipe-data -accel on"
+                  disable-animations: true
+                  force-avd-creation: false
+                  script: |
+                      adb wait-for-device
+                      sleep 30
+                      adb shell input keyevent 82
+                      adb shell settings put global window_animation_scale 0.0
+                      adb shell settings put global transition_animation_scale 0.0
+                      adb shell settings put global animator_duration_scale 0.0
+                      sleep 5
+                      ./gradlew connectedCoreDebugAndroidTest --stacktrace
