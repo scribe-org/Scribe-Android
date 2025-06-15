@@ -1,11 +1,11 @@
 {
   "numbers": { "singular": "plural" },
   "genders": {
-    "canonical": ["NOT_INCLUDED"],
-    "feminines": ["NOT_INCLUDED"],
-    "masculines": ["NOT_INCLUDED"],
-    "commons": ["NOT_INCLUDED"],
-    "neuters": ["NOT_INCLUDED"]
+    "canonical": [],
+    "feminines": [],
+    "masculines": [],
+    "commons": [],
+    "neuters": []
   },
   "conjugations": {
     "1": {

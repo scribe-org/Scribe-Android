@@ -39,4 +39,5 @@
     <color name="annotatePurple">#AC6DEC</color>
     <color name="annotateGreen">#85C26F</color>
     <color name="annotateOrange">#FD9F5D</color>
+    <color name="toolbar_background_color">@color/dark_keyboard_bg_color</color>
 </resources>
