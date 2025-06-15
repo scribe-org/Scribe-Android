@@ -77,6 +77,7 @@ class KeyboardBase {
         const val KEYCODE_LEFT_ARROW = -55
         const val KEYCODE_RIGHT_ARROW = -56
         const val SHIFT_OFF = 0
+        const val SHIFT_ON = 1
         const val SHIFT_ON_PERMANENT = 2
         const val SHIFT_LOCKED = 2
         const val DISPLAY_LEFT = 2002
