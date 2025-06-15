@@ -27,9 +27,11 @@ class DatabaseFileManager(
     }
 
     /**
-     * Gets a read-only database for a specific language.
-     * @param language The language code (e.g., "DE", "FR").
-     * @return An open, read-only SQLiteDatabase, or null on failure.
+     * Retrieves a read-only [SQLiteDatabase] instance for a specific language's data.
+     * It handles copying the database from assets if it doesn't exist locally.
+     *
+     * @param language The language code (e.g., "DE", "FR") used to determine the database filename.
+     * @return An open, read-only [SQLiteDatabase] instance, or `null` on failure.
      */
     fun getLanguageDatabase(language: String): SQLiteDatabase? {
         val dbName = "${language}LanguageData.sqlite"
@@ -37,8 +39,10 @@ class DatabaseFileManager(
     }
 
     /**
-     * Gets a read-only database for translations.
-     * @return An open, read-only SQLiteDatabase, or null on failure.
+     * Retrieves a read-only [SQLiteDatabase] instance for the translation data.
+     * It handles copying the database from assets if it doesn't exist locally.
+     *
+     * @return An open, read-only [SQLiteDatabase] instance, or `null` on failure.
      */
     fun getTranslationDatabase(): SQLiteDatabase? {
         val dbName = "TranslationData.sqlite"
@@ -46,10 +50,13 @@ class DatabaseFileManager(
     }
 
     /**
-     * Ensures a database file exists and opens it.
-     * @param dbName The name of the database file.
-     * @param assetPath The path to the file within the assets folder.
-     * @return An open, read-only SQLiteDatabase, or null on failure.
+     * A generic function to get a database. It ensures the database file exists in the app's
+     * private storage (copying it from assets if necessary) and then opens a read-only connection.
+     *
+     * @param dbName The filename of the database (e.g., "ENLanguageData.sqlite").
+     * @param assetPath The path to the database file within the app's assets folder
+     * (e.g., "data/ENLanguageData.sqlite").
+     * @return An open, read-only [SQLiteDatabase], or `null` if copying or opening fails.
      */
     private fun getDatabase(
         dbName: String,
@@ -73,12 +80,12 @@ class DatabaseFileManager(
     }
 
     /**
-     * Copies a database file from the assets folder to the app's database directory.
-     * This logic is extracted to reduce nesting in the getDatabase function.
+     * Copies a database file from the app's assets folder to its internal database directory.
+     * This is called when a database is accessed for the first time.
      *
-     * @param dbFile The destination file path.
-     * @param assetPath The path to the file within the assets folder.
-     * @return True if the copy was successful, false otherwise.
+     * @param dbFile The destination [File] in the app's database directory.
+     * @param assetPath The path to the source file within the assets folder.
+     * @return `true` if the copy was successful, `false` otherwise.
      */
     private fun copyDatabaseFromAssets(
         dbFile: File,

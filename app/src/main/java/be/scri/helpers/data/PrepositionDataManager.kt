@@ -13,10 +13,13 @@ class PrepositionDataManager(
     private val fileManager: DatabaseFileManager,
 ) {
     /**
-     * Gets case annotations for prepositions for a language.
-     * This feature is only supported for select languages (e.g., DE, RU).
-     * @param language The language code (e.g., "DE", "RU").
-     * @return A map where keys are prepositions and values are cases. Returns empty for unsupported languages.
+     * Retrieves a map of prepositions to their required grammatical cases for a specific language.
+     * This functionality is currently only supported for German ("DE") and Russian ("RU").
+     *
+     * @param language The language code.
+     * @return A [HashMap] where keys are prepositions and values are a list of required cases
+     * (e.g., "accusative case").
+     * Returns an empty map for unsupported languages or on failure.
      */
     fun getCaseAnnotations(language: String): HashMap<String, MutableList<String>> {
         if (language.uppercase() !in listOf("DE", "RU")) {
@@ -30,9 +33,10 @@ class PrepositionDataManager(
     }
 
     /**
-     * Processes a cursor to extract prepositions and their cases.
-     * @param cursor The cursor from the `prepositions` table query.
-     * @return A map of prepositions to their case annotations.
+     * Iterates through a database cursor from the `prepositions` table and populates a map with the results.
+     *
+     * @param cursor The cursor containing the preposition and grammatical case data.
+     * @return A [HashMap] mapping prepositions to a list of their cases.
      */
     private fun processCursor(cursor: Cursor): HashMap<String, MutableList<String>> {
         val result = HashMap<String, MutableList<String>>()

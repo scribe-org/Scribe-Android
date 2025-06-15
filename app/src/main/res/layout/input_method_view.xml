@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// SPDX-License-Identifier: GPL-3.0-or-later
+// This is the new, unified layout for the InputMethodService.
+// It combines the "command options" bar and the "toolbar" bar into a single file.
+// We will manage the visibility of 'command_options_bar' and 'toolbar_bar' from GeneralKeyboardIME.kt
+// to avoid re-inflating the view on state changes, which significantly improves performance.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/keyboard_holder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/you_keyboard_background_color">
+
+    <!-- ================================================================================= -->
+    <!--  Container for the "IDLE" and "SELECT_COMMAND" state (previously from keyboard_view_command_options.xml) -->
+    <!-- ================================================================================= -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/command_options_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/toolbar_background_color"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Scribe Key -->
+        <Button
+            android:id="@+id/scribe_key_options"
+            android:layout_width="@dimen/select_command_scribe_key_width"
+            android:layout_height="37dp"
+            android:layout_marginStart="@dimen/small_margin"
+            android:background="@drawable/cmd_key_background_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:contentDescription="@string/scribe_key"
+            android:drawablePadding="100dp"
+            android:foreground="@drawable/ic_scribe_icon_vector"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/light_key_text_color"
+            android:paddingEnd="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/separator_1"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Separator 1 -->
+        <View
+            android:id="@+id/separator_1"
+            android:layout_width="0.5dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/translate_btn"
+            app:layout_constraintStart_toEndOf="@+id/scribe_key_options"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Translate Button -->
+        <Button
+            android:id="@+id/translate_btn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/cmd_key_background_rounded"
+            android:contentDescription="@string/command_bar"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/separator_2"
+            app:layout_constraintStart_toEndOf="@+id/separator_1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Separator 2 -->
+        <View
+            android:id="@+id/separator_2"
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:background="@color/special_key_light"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/conjugate_btn"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintStart_toEndOf="@+id/translate_btn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <!-- Conjugate Button -->
+        <Button
+            android:id="@+id/conjugate_btn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/cmd_key_background_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:contentDescription="@string/command_bar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/separator_3"
+            app:layout_constraintStart_toEndOf="@+id/separator_2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Separator 3 -->
+        <View
+            android:id="@+id/separator_3"
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:background="@color/special_key_light"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/plural_btn"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintStart_toEndOf="@+id/conjugate_btn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <!-- Plural Button -->
+        <Button
+            android:id="@+id/plural_btn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_marginEnd="@dimen/tiny_margin"
+            android:background="@drawable/cmd_key_background_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:contentDescription="@string/command_bar"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/separator_3"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Gender suggestion buttons, constrained to the bounds of the translate button -->
+        <Button
+            android:id="@+id/translate_btn_left"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/gender_suggestion_button_left_background"
+            android:text=""
+            android:textSize="20sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/translate_btn"
+            app:layout_constraintEnd_toStartOf="@id/translate_btn_right"
+            app:layout_constraintStart_toStartOf="@id/translate_btn"
+            app:layout_constraintTop_toTopOf="@id/translate_btn" />
+
+        <Button
+            android:id="@+id/translate_btn_right"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/gender_suggestion_button_right_background"
+            android:text=""
+            android:textSize="20sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/translate_btn"
+            app:layout_constraintEnd_toEndOf="@id/translate_btn"
+            app:layout_constraintStart_toEndOf="@id/translate_btn_left"
+            app:layout_constraintTop_toTopOf="@id/translate_btn" />
+
+        <!-- Emoji buttons, constrained to the bounds of the plural button -->
+        <Button
+            android:id="@+id/emoji_btn_phone_1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:text=""
+            android:textSize="20sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_phone"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/plural_btn"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <View
+            android:id="@+id/separator_4"
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:background="@color/special_key_light"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_btn_phone_2"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_phone_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/emoji_space_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:text=""
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_btn_phone_2"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_phone_1"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <Button
+            android:id="@+id/emoji_btn_phone_2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:text=""
+            android:textSize="20sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toEndOf="@+id/plural_btn"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/emoji_space_phone"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <Button
+            android:id="@+id/emoji_btn_tablet_1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/emoji_tablet_background_rounded"
+            android:text=""
+            android:textSize="20sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_tablet_1"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/plural_btn"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <View
+            android:id="@+id/separator_5"
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:background="@color/special_key_light"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_tablet_1"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_tablet_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/emoji_space_tablet_1"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:text="  "
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_btn_tablet_2"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_tablet_1"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <Button
+            android:id="@+id/emoji_btn_tablet_2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/emoji_tablet_background_rounded"
+            android:text=""
+            android:textSize="20sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_tablet_2"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/emoji_space_tablet_1"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <View
+            android:id="@+id/separator_6"
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:background="@color/special_key_light"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_space_tablet_2"
+            app:layout_constraintHeight_percent="0.8"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_tablet_2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/emoji_space_tablet_2"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:text="  "
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toStartOf="@+id/emoji_btn_tablet_3"
+            app:layout_constraintStart_toEndOf="@+id/emoji_btn_tablet_2"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <Button
+            android:id="@+id/emoji_btn_tablet_3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/emoji_tablet_background_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:text=""
+            android:textSize="20sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/plural_btn"
+            app:layout_constraintEnd_toEndOf="@+id/plural_btn"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/emoji_space_tablet_2"
+            app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ================================================================================= -->
+    <!--  Container for the "TOOLBAR" state (Previously from keyboard_view_keyboard.xml)              -->
+    <!-- ================================================================================= -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/scribe_key_toolbar"
+            android:layout_width="@dimen/command_state_scribe_key_width"
+            android:layout_height="36dp"
+            android:layout_marginStart="@dimen/small_margin"
+            android:background="@drawable/scribe_key_background_left_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:contentDescription="@string/scribe_key"
+            android:foreground="@drawable/close"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/light_key_text_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/prompt_text"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/prompt_text"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@drawable/cmd_bar_prompt_background"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:minWidth="48dp"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textFontWeight="500"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
+            app:layout_constraintStart_toEndOf="@+id/scribe_key_toolbar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/prompt_text_border"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@drawable/cmd_bar_prompt_background"
+            android:text="│"
+            android:textFontWeight="500"
+            android:textSize="16sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/prompt_text"
+            app:layout_constraintBottom_toBottomOf="@id/prompt_text"
+            app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
+            app:layout_constraintStart_toEndOf="@id/prompt_text"
+            app:layout_constraintTop_toTopOf="@id/prompt_text" />
+
+        <LinearLayout
+            android:id="@+id/command_bar_layout"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="@dimen/tiny_margin"
+            android:background="@drawable/cmd_bar_background_right_rounded"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/prompt_text"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/command_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:backgroundTint="@null"
+                android:contentDescription="@string/command_bar"
+                android:cursorVisible="true"
+                android:inputType="text"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:textAlignment="textStart"
+                android:textCursorDrawable="@drawable/ic_custom_cursor"
+                android:textFontWeight="500"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_info"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_info_vector"
+            android:tint="@color/you_primary_color"
+            app:layout_constraintBottom_toBottomOf="@+id/command_bar_layout"
+            app:layout_constraintEnd_toEndOf="@+id/command_bar_layout"
+            app:layout_constraintTop_toTopOf="@+id/command_bar_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ================================================================================= -->
+    <!--  The Shared KeyboardView                                                          -->
+    <!-- ================================================================================= -->
+    <be.scri.views.KeyboardView
+        android:id="@+id/keyboard_view"
+        style="@style/KeyboardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/theme_dark_background_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

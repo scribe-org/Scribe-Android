@@ -16,9 +16,12 @@ class ContractDataLoader(
     private val context: Context,
 ) {
     /**
-     * Loads a data contract from an assets JSON file.
-     * @param language The language code (e.g., "DE", "EN") to load the contract for.
-     * @return The decoded [DataContract] object, or null on failure.
+     * Loads and deserializes a data contract from a JSON file in the assets folder.
+     * It gracefully handles file-not-found and JSON parsing errors by returning null.
+     *
+     * @param language The language code (e.g., "DE", "EN") used to determine the filename (e.g., "de.json").
+     * @return The decoded [DataContract] object if successful, or `null`
+     * if the file does not exist or cannot be parsed.
      */
     fun loadContract(language: String): DataContract? {
         val contractName = "${language.lowercase()}.json"

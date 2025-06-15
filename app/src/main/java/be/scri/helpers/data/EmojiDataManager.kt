@@ -16,22 +16,22 @@ class EmojiDataManager(
         private set
 
     /**
-     * Retrieves emoji keywords for a specified language.
-     * @param language The language code (e.g., "DE", "FR").
-     * @return A map of words to their associated emoji keywords.
+     * Retrieves a map of all emoji keywords for a specified language from the database.
+     * As a side effect, it also calculates and stores the maximum length of any keyword found.
+     *
+     * @param language The language code (e.g., "DE", "FR") to select the correct database.
+     * @return A [HashMap] where keys are lowercase words and values are a list of associated emoji strings.
      */
     fun getEmojiKeywords(language: String): HashMap<String, MutableList<String>> {
         val emojiMap = HashMap<String, MutableList<String>>()
         val db = fileManager.getLanguageDatabase(language) ?: return emojiMap
 
         db.use {
-            // Get max keyword length
             it.rawQuery("SELECT MAX(LENGTH(word)) FROM emoji_keywords", null).use { cursor ->
                 if (cursor.moveToFirst()) {
                     maxKeywordLength = cursor.getInt(0)
                 }
             }
-            // Get all emoji keywords
             it.rawQuery("SELECT * FROM emoji_keywords", null).use { cursor ->
                 processEmojiCursor(cursor, emojiMap)
             }
@@ -40,9 +40,10 @@ class EmojiDataManager(
     }
 
     /**
-     * Processes a cursor to populate the emoji keywords map.
-     * @param cursor The cursor from the `emoji_keywords` table query.
-     * @param emojiMap The map to populate with results.
+     * Iterates through a database cursor from the `emoji_keywords` table and populates a map.
+     *
+     * @param cursor The cursor containing the emoji keyword data.
+     * @param emojiMap The [HashMap] to populate with the results.
      */
     private fun processEmojiCursor(
         cursor: Cursor,

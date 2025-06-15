@@ -15,10 +15,11 @@ class GenderDataManager(
     private val fileManager: DatabaseFileManager,
 ) {
     /**
-     * Gets gender-related word mappings for a language.
-     * @param language The language code (e.g., "DE", "FR").
-     * @param contract The data contract defining gender fields.
-     * @return A map of base words to their gendered variations.
+     * Retrieves a map of words and their associated grammatical genders for a given language.
+     *
+     * @param language The language code (e.g., "DE", "FR") to select the correct database.
+     * @param contract The data contract for the language, which defines the gender-related database columns.
+     * @return A [HashMap] where keys are lowercase nouns and values are a list of their gender(s) (e.g., "masculine").
      */
     fun findGenderOfWord(
         language: String,
@@ -31,7 +32,12 @@ class GenderDataManager(
         } ?: hashMapOf()
 
     /**
-     * Processes gender data from the DB using a contract.
+     * The main processing function that dispatches to the correct gender-handling logic
+     * based on the structure defined in the [DataContract].
+     *
+     * @param db The SQLite database instance.
+     * @param contract The data contract defining how gender is stored for this language.
+     * @return A [HashMap] of nouns to their genders.
      */
     private fun processGenderData(
         db: SQLiteDatabase,
@@ -66,11 +72,21 @@ class GenderDataManager(
         return genderMap
     }
 
+    /**
+     * Checks if the data contract defines a single, canonical gender column.
+     * @param contract The data contract to check.
+     * @return `true` if a canonical gender column is specified, `false` otherwise.
+     */
     private fun hasCanonicalGender(contract: DataContract): Boolean =
         contract.genders.canonical
             .firstOrNull()
             ?.isNotEmpty() == true
 
+    /**
+     * Checks if the data contract defines separate columns for masculine and feminine genders.
+     * @param contract The data contract to check.
+     * @return `true` if both masculine and feminine columns are specified, `false` otherwise.
+     */
     private fun hasMasculineFeminine(contract: DataContract): Boolean {
         val masculineList = contract.genders.masculines
         val feminineList = contract.genders.feminines
@@ -82,8 +98,14 @@ class GenderDataManager(
     }
 
     /**
-     * Queries the DB and iterates through the cursor to process noun genders.
-     * This function is now more defensive against invalid column names from the contract.
+     * Queries the `nouns` table for gender information and populates the gender map.
+     * It is defensive and will not proceed if the columns specified in the contract do not exist in the table.
+     *
+     * @param db The SQLite database to query.
+     * @param nounColumn The name of the column containing the noun.
+     * @param genderMap The map to populate with results.
+     * @param genderColumn The name of the column containing the gender information (optional).
+     * @param defaultGender A default gender to assign if `genderColumn` is not provided (optional).
      */
     private fun processGenders(
         db: SQLiteDatabase,
@@ -92,7 +114,6 @@ class GenderDataManager(
         genderColumn: String? = null,
         defaultGender: String? = null,
     ) {
-        // Ensure we have a valid noun column to proceed
         if (nounColumn.isNullOrEmpty()) {
             Log.e("GenderDataManager", "No valid noun column provided in contract.")
             return
@@ -127,7 +148,14 @@ class GenderDataManager(
     }
 
     /**
-     * Processes a single row from the cursor to extract and map gender data.
+     * Processes a single row from the gender query cursor, extracting the noun and its
+     * gender, and adds the entry to the provided map.
+     *
+     * @param cursor The database cursor, positioned at the row to process.
+     * @param nounIndex The column index for the noun.
+     * @param genderIndex The column index for the gender, or -1 if not applicable.
+     * @param defaultGender A fallback gender to use if `genderIndex` is -1.
+     * @param genderMap The map to which the noun/gender pair will be added.
      */
     private fun processGenderRow(
         cursor: Cursor,

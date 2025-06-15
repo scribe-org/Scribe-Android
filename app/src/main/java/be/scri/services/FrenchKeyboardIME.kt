@@ -5,13 +5,11 @@ package be.scri.services
 import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
-import be.scri.databinding.KeyboardViewCommandOptionsBinding
 import be.scri.helpers.KeyHandler
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
-import be.scri.views.KeyboardView
 
 /**
  * The FrenchKeyboardIME class provides the input method for the French language keyboard.
@@ -30,20 +28,21 @@ class FrenchKeyboardIME : GeneralKeyboardIME("French") {
             else -> R.xml.keys_letter_french_without_period_and_comma
         }
 
-    // --- These properties correctly fulfill the abstract contract ---
     override val keyboardLetters: Int = 0
     override val keyboardSymbols: Int = 1
     override val keyboardSymbolShift: Int = 2
-
     override var keyboard: KeyboardBase? = null
-    override var keyboardView: KeyboardView? = null
     override var lastShiftPressTS: Long = 0L
     override var keyboardMode: Int = keyboardLetters
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
     override var hasTextBeforeCursor: Boolean = false
-    override lateinit var binding: KeyboardViewCommandOptionsBinding
+
+    // REFACTOR_FIX: The 'binding' and 'keyboardView' properties are no longer abstract in the parent class,
+    // so we must remove the overrides here. They are now inherited directly.
+    // override lateinit var binding: KeyboardViewCommandOptionsBinding // REMOVED
+    // override var keyboardView: KeyboardView? = null // REMOVED
 
     private val keyHandler by lazy { KeyHandler(this) }
 
@@ -51,10 +50,7 @@ class FrenchKeyboardIME : GeneralKeyboardIME("French") {
      * Initializes the keyboard. Let the parent class handle the setup.
      */
     override fun onCreate() {
-        // 1. Let the parent class initialize everything first.
         super.onCreate()
-
-        // 2. Now, apply any customizations specific to this keyboard.
         keyboardView?.setPreview = getIsPreviewEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
     }

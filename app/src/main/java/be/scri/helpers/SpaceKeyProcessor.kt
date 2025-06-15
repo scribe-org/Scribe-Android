@@ -48,7 +48,6 @@ class SpaceKeyProcessor(
         ime.handleElseCondition(
             code = KeyboardBase.KEYCODE_SPACE,
             keyboardMode = ime.keyboardMode,
-            binding = ime.keyboardBinding,
             commandBarState = true,
         )
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
@@ -100,7 +99,6 @@ class SpaceKeyProcessor(
         ime.handleElseCondition(
             code = KeyboardBase.KEYCODE_SPACE,
             keyboardMode = ime.keyboardMode,
-            binding = null,
             commandBarState = false,
         )
     }

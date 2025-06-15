@@ -33,9 +33,12 @@ class DatabaseManagers(
     val conjugateDataManager = ConjugateDataManager(fileManager)
 
     /**
-     * Retrieves the data contract for a given language.
-     * @param language The language code (e.g., "DE", "FR").
-     * @return A [DataContract] object, or null if not found.
+     * A facade method to load the data contract for a given language.
+     * It delegates the loading and parsing logic to the [ContractDataLoader].
+     *
+     * @param language The language code (e.g., "DE", "FR") for which to load the contract.
+     * @return A [DataContract] object containing the language's structural metadata, or `null`
+     * if not found or on error.
      */
     fun getLanguageContract(language: String): DataContract? = contractLoader.loadContract(language)
 }

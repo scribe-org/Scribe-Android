@@ -16,9 +16,11 @@ class TranslationDataManager(
     private val fileManager: DatabaseFileManager,
 ) {
     /**
-     * Gets source and destination language ISO codes from preferences.
-     * @param language The current keyboard language name (e.g., "english").
-     * @return A pair of (source, destination) ISO codes.
+     * Determines the source and destination language ISO codes for a translation operation.
+     * The source is derived from user preferences, and the destination is the current keyboard language.
+     *
+     * @param language The current keyboard language name (e.g., "English").
+     * @return A [Pair] containing the source and destination ISO codes (e.g., "en" to "fr").
      */
     fun getSourceAndDestinationLanguage(language: String): Pair<String?, String?> {
         val sourceLanguage = PreferencesHelper.getPreferredTranslationLanguage(context, language)
@@ -26,10 +28,12 @@ class TranslationDataManager(
     }
 
     /**
-     * Gets translation data for a given word.
-     * @param sourceAndDestination A pair of (source, dest) ISO codes.
-     * @param word The word to translate.
-     * @return The translated word, or the original word if no translation is needed/found.
+     * Retrieves the translation for a given word from the local translation database.
+     * If the source and destination languages are the same, it returns the original word.
+     *
+     * @param sourceAndDestination A [Pair] of source and destination ISO language codes.
+     * @param word The word to be translated.
+     * @return The translated word as a [String], or an empty string if no translation is found.
      */
     fun getTranslationDataForAWord(
         sourceAndDestination: Pair<String?, String?>,
@@ -49,12 +53,13 @@ class TranslationDataManager(
     }
 
     /**
-     * Executes the database query to find a translation for a word.
+     * Executes the raw SQL query to find a translation for a given word in the database.
      *
      * @param db The SQLite database instance.
-     * @param sourceTable The name of the table to query (e.g., "english").
-     * @param destColumn The name of the column containing the translation.
-     * @param word The word to search for.
+     * @param sourceTable The name of the table to query (derived from the source language, e.g., "english").
+     * @param destColumn The name of the column containing the translation
+     * (derived from the destination language ISO code, e.g., "fr").
+     * @param word The word to search for in the 'word' column of the source table.
      * @return The translated word, or an empty string if not found.
      */
     private fun queryForTranslation(
@@ -80,7 +85,10 @@ class TranslationDataManager(
     }
 
     /**
-     * Generates an ISO code from a full language name.
+     * Converts a full language name (e.g., "english") to its corresponding two-letter ISO 639-1 code.
+     *
+     * @param languageName The full name of the language.
+     * @return The two-letter ISO code as a [String]. Defaults to "en".
      */
     private fun generateISOCodeForLanguage(languageName: String): String =
         when (languageName.lowercase()) {
@@ -96,7 +104,10 @@ class TranslationDataManager(
         }
 
     /**
-     * Generates a full language name from an ISO code.
+     * Converts a two-letter ISO 639-1 code to its corresponding full language name used for table lookups.
+     *
+     * @param isoCode The two-letter ISO code.
+     * @return The full language name as a [String]. Defaults to "english".
      */
     private fun generateLanguageNameForISOCode(isoCode: String): String =
         when (isoCode.lowercase()) {

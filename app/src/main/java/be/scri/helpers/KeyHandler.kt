@@ -31,11 +31,11 @@ class KeyHandler(
     }
 
     /**
-     * Handles a key press event.
-     * This is the main entry point for processing key codes from the keyboard.
+     * Handles a key press event. This is the main entry point for processing key codes from the keyboard.
+     * It routes the key code to the appropriate handler method based on the code and the current IME state.
      *
-     * @param code The key code of the key that was pressed (e.g., from [KeyboardBase]).
-     * @param language The current language.
+     * @param code The integer code of the key that was pressed (e.g., from [KeyboardBase]).
+     * @param language The current keyboard language.
      */
     fun handleKey(
         code: Int,
@@ -72,7 +72,7 @@ class KeyHandler(
             -> handleArrowKey(code == KeyboardBase.KEYCODE_RIGHT_ARROW)
             KeyboardBase.DISPLAY_LEFT,
             KeyboardBase.DISPLAY_RIGHT,
-            -> handleConjugateKeys(code, context = ime.applicationContext)
+            -> handleConjugateCycleKeys(code, context = ime.applicationContext)
             KeyboardBase.CODE_FPS,
             KeyboardBase.CODE_FPP,
             KeyboardBase.CODE_SPS,
@@ -89,11 +89,7 @@ class KeyHandler(
             KeyboardBase.CODE_1X3_RIGHT,
             KeyboardBase.CODE_2X1_TOP,
             KeyboardBase.CODE_2X1_BOTTOM,
-            ->
-                returnTheConjugateLabels(
-                    code,
-                    language = language,
-                )
+            -> handleConjugateSelectionKey(code, language)
             else -> handleDefaultKey(code)
         }
 
@@ -102,23 +98,41 @@ class KeyHandler(
         }
     }
 
+    /**
+     * Checks if the IME is in a valid state to process key events.
+     * A valid state requires a non-null keyboard instance and an active input connection.
+     *
+     * @param inputConnection The current input connection.
+     * @return `true` if the state is valid, `false` otherwise.
+     */
     private fun isValidState(inputConnection: InputConnection?): Boolean =
         ime.keyboard != null &&
             inputConnection != null
 
+    /**
+     * Resets the shift key's double-tap timestamp if the pressed key is not the shift key itself.
+     * This is used to manage the "shift lock on double-tap" feature.
+     *
+     * @param code The integer code of the key that was pressed.
+     */
     private fun resetShiftIfNeeded(code: Int) {
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             ime.lastShiftPressTS = 0
         }
     }
 
+    /**
+     * Commits a tab character to the current input connection.
+     *
+     * @param inputConnection The active input connection.
+     */
     private fun commitTab(inputConnection: InputConnection) {
         inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
     }
 
     /**
-     * Handles the Caps Lock key event.
-     * Toggles the shift state between OFF and LOCKED, and invalidates the keyboard view.
+     * Toggles the state of the caps lock on the keyboard.
+     * If the shift state is off, it changes to locked; otherwise, it turns it off.
      */
     private fun handleCapsLock() {
         ime.keyboard?.let { kb ->
@@ -135,22 +149,16 @@ class KeyHandler(
     }
 
     /**
-     * Handles a default key press (e.g., letters, numbers, symbols).
-     * This is called for key codes not specifically handled by other specialized methods.
-     * It commits the character to the input connection or the command bar editor
-     * and updates suggestions accordingly.
+     * Handles a non-special character key press. It delegates the character insertion to the IME
+     * and then triggers a re-evaluation of word suggestions.
      *
      * @param code The character code of the key pressed.
      */
     private fun handleDefaultKey(code: Int) {
-        val isCommandBar =
-            ime.currentState != ScribeState.IDLE &&
-                ime.currentState != ScribeState.SELECT_COMMAND
-        val binding = if (isCommandBar) ime.keyboardBinding else null
+        val isCommandBarActive = ime.currentState != ScribeState.IDLE && ime.currentState != ScribeState.SELECT_COMMAND
+        ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
-        ime.handleElseCondition(code, ime.keyboardMode, binding, isCommandBar)
-
-        if (!isCommandBar) {
+        if (!isCommandBarActive) {
             suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
         } else {
             suggestionHandler.clearAllSuggestionsAndHideButtonUI()
@@ -158,27 +166,21 @@ class KeyHandler(
     }
 
     /**
-     * Handles the "Delete" key press.
-     * Deletes text from the input connection or the command bar editor,
-     * and updates word suggestions if not in command bar mode.
+     * Handles the delete/backspace key press. It delegates the deletion logic to the IME
+     * and then triggers a re-evaluation of word suggestions based on the new text.
      */
     private fun handleDeleteKey() {
-        val isCommandBar =
-            ime.currentState != ScribeState.IDLE &&
-                ime.currentState != ScribeState.SELECT_COMMAND
-        val binding = if (isCommandBar) ime.keyboardBinding else null
-        ime.handleDelete(isCommandBar, binding)
+        val isCommandBarActive = ime.currentState != ScribeState.IDLE && ime.currentState != ScribeState.SELECT_COMMAND
+        ime.handleDelete(isCommandBarActive)
 
-        if (!isCommandBar) {
+        if (!isCommandBarActive) {
             suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
         }
     }
 
     /**
-     * Handles the "Shift" key press.
-     * Toggles the keyboard's shift state (e.g., off, on for one char, caps lock)
-     * by delegating to [GeneralKeyboardIME.handleKeyboardLetters] and
-     * invalidates the keyboard view to reflect the change.
+     * Handles the shift key press. It delegates the logic for changing the shift state to the IME
+     * and then invalidates the keyboard view to reflect the change.
      */
     private fun handleShiftKey() {
         ime.handleKeyboardLetters(ime.keyboardMode, ime.keyboardView)
@@ -186,31 +188,16 @@ class KeyHandler(
     }
 
     /**
-     * Handles the "Enter" key press.
-     * Depending on the context (input field action, command bar), it either
-     * sends an enter key event, performs an editor action, or processes a command.
+     * Handles the enter key press by delegating the complex logic (e.g., command execution,
+     * editor action) to the main IME class.
      */
     private fun handleEnterKey() {
-        Log.d(TAG, "handleEnterKey ${ime.currentState}")
-        if (ime.currentState == ScribeState.IDLE ||
-            ime.currentState == ScribeState.SELECT_COMMAND ||
-            ime.currentState == ScribeState.INVALID
-        ) {
-            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
-            ime.handleKeycodeEnter(ime.keyboardBinding, false)
-        } else if (ime.currentState == ScribeState.CONJUGATE) {
-            ime.handleKeycodeEnter(ime.keyboardBinding, false)
-            ime.currentState = ScribeState.SELECT_VERB_CONJUNCTION
-            ime.updateUI()
-        } else {
-            ime.handleKeycodeEnter(ime.keyboardBinding, true)
-        }
+        ime.handleKeycodeEnter()
     }
 
     /**
-     * Handles the "Mode Change" key press (e.g., to switch between letters and symbols).
-     * Delegates to [GeneralKeyboardIME.handleModeChange] to switch the keyboard layout
-     * and clears all current suggestions as the context changes.
+     * Handles the mode change key press (e.g., switching to the symbol keyboard).
+     * It delegates the logic to the IME and clears any active suggestions.
      */
     private fun handleModeChangeKey() {
         ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime)
@@ -218,9 +205,10 @@ class KeyHandler(
     }
 
     /**
-     * Handles the Arrow key event (either left or right).
-     * Moves the cursor in the appropriate direction based on the pressed key.
-     * @param isRight true if the right arrow key is pressed, false if the left arrow key is pressed.
+     * Handles left and right arrow key presses to move the cursor within the input field
+     * and then updates suggestions based on the new cursor position.
+     *
+     * @param isRight `true` to move right, `false` to move left.
      */
     private fun handleArrowKey(isRight: Boolean) {
         ime.currentInputConnection?.let { ic ->
@@ -238,46 +226,53 @@ class KeyHandler(
     }
 
     /**
-     * Handles left/right conjugate key presses.
-     * Updates the "conjugate_index" preference to cycle through conjugate options.
+     * Handles the cycle keys (< >) in the conjugation view, which move between different
+     * tenses or moods (e.g., Present, Past, Future). It updates a shared preference to
+     * track the current index and refreshes the UI.
+     *
+     * @param code The key code, used to determine direction (left or right).
+     * @param context The application context to access SharedPreferences.
      */
-    private fun handleConjugateKeys(
+    private fun handleConjugateCycleKeys(
         code: Int,
         context: Context,
     ) {
-        Log.i(TAG, "Conjugate key was clicked: $code")
         val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        val currentValue = sharedPreferences.getInt("conjugate_index", 0)
-        val newValue =
-            when (code) {
-                KeyboardBase.DISPLAY_LEFT -> currentValue + 1
-                KeyboardBase.DISPLAY_RIGHT -> currentValue - 1
-                else -> currentValue
-            }
-        editor.putInt("conjugate_index", newValue)
+        var currentValue = sharedPreferences.getInt("conjugate_index", 0)
+
+        // Increment or decrement based on the key pressed
+        if (code == KeyboardBase.DISPLAY_LEFT) {
+            currentValue--
+        } else if (code == KeyboardBase.DISPLAY_RIGHT) {
+            currentValue++
+        }
+
+        editor.putInt("conjugate_index", currentValue)
         editor.apply()
-        ime.switchToToolBar()
-        Log.i(TAG, "New conjugate_index: $newValue")
+
+        ime.updateUI()
+        Log.i(TAG, "New conjugate_index: $currentValue")
     }
 
-    private fun returnTheConjugateLabels(
+    /**
+     * Handles a key press on a specific conjugation key (e.g., "1st Person Singular").
+     * If the conjugation has multiple forms, it triggers a sub-view; otherwise, it commits
+     * the selected form to the input field and returns to the idle state.
+     *
+     * @param code The key code of the selected conjugation.
+     * @param language The current keyboard language.
+     */
+    private fun handleConjugateSelectionKey(
         code: Int,
         language: String,
     ) {
         if (!ime.returnIsSubsequentRequired()) {
             ime.handleConjugateKeys(code, false)
-            ime.currentState = ScribeState.IDLE
-            ime.switchToCommandToolBar()
-            ime.updateUI()
-            ime.saveConjugateModeType(
-                language,
-                isSubsequentArea = false,
-            )
+            ime.moveToIdleState()
+            ime.saveConjugateModeType(language, isSubsequentArea = false)
         } else {
-            ime.setupConjugateKeysByLanguage(conjugateIndex = 0, true)
-            ime.switchToToolBar(isSubsequentArea = false)
-            val word = ime.handleConjugateKeys(code, false)
+            val word = ime.handleConjugateKeys(code, true)
             ime.setupConjugateSubView(ime.returnSubsequentData(), word)
         }
     }
