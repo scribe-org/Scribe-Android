@@ -18,6 +18,7 @@ import androidx.annotation.XmlRes
 import be.scri.R
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
+import kotlin.math.roundToInt
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard consists of rows of keys.
@@ -76,7 +77,7 @@ class KeyboardBase {
         const val KEYCODE_LEFT_ARROW = -55
         const val KEYCODE_RIGHT_ARROW = -56
         const val SHIFT_OFF = 0
-        const val SHIFT_ON = 1
+        const val SHIFT_ON_PERMANENT = 2
         const val SHIFT_LOCKED = 2
         const val DISPLAY_LEFT = 2002
         const val DISPLAY_RIGHT = 2001
@@ -96,6 +97,36 @@ class KeyboardBase {
         const val CODE_1X3_RIGHT = 1023
         const val CODE_2X1_TOP = 1031
         const val CODE_2X1_BOTTOM = 1032
+        private const val MAX_KEYS_PER_MINI_ROW = 10
+
+        // Sets for grouping key codes to reduce complexity in KeyHandler.
+        val NAVIGATION_KEYS =
+            setOf(
+                KEYCODE_LEFT_ARROW,
+                KEYCODE_RIGHT_ARROW,
+            )
+
+        val SCRIBE_VIEW_KEYS =
+            setOf(
+                DISPLAY_LEFT,
+                DISPLAY_RIGHT,
+                CODE_FPS,
+                CODE_FPP,
+                CODE_SPS,
+                CODE_SPP,
+                CODE_TPS,
+                CODE_TPP,
+                CODE_TR,
+                CODE_TL,
+                CODE_BR,
+                CODE_BL,
+                CODE_1X1,
+                CODE_1X3_LEFT,
+                CODE_1X3_CENTER,
+                CODE_1X3_RIGHT,
+                CODE_2X1_TOP,
+                CODE_2X1_BOTTOM,
+            )
 
         /**
          * Retrieves the dimension or fraction value from the attributes, adjusting the base value if necessary.
@@ -115,7 +146,7 @@ class KeyboardBase {
             val value = a.peekValue(index) ?: return defValue
             return when (value.type) {
                 TypedValue.TYPE_DIMENSION -> a.getDimensionPixelOffset(index, defValue)
-                TypedValue.TYPE_FRACTION -> Math.round(a.getFraction(index, base, base, defValue.toFloat()))
+                TypedValue.TYPE_FRACTION -> a.getFraction(index, base, base, defValue.toFloat()).roundToInt()
                 else -> defValue
             }
         }
@@ -322,7 +353,6 @@ class KeyboardBase {
             a.recycle()
         }
 
-        // Create an empty key with no attributes.
         init {
             height = parent.defaultHeight
             width = parent.defaultWidth

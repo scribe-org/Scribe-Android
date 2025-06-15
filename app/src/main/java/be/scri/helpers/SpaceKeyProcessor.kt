@@ -66,6 +66,11 @@ class SpaceKeyProcessor(
 
         val ic = ime.currentInputConnection ?: return
 
+        val wordBeforeSpace = ime.getLastWordBeforeCursor()
+
+        // Clear emoji suggestions since the word is now complete.
+        // suggestionHandler.processEmojiSuggestions(null)
+
         if (periodOnDoubleTapEnabled && wasLastKeySpace && ime.hasTextBeforeCursor()) {
             val textBeforeTwoChars = ic.getTextBeforeCursor(2, 0)?.toString()
 
@@ -87,7 +92,7 @@ class SpaceKeyProcessor(
         } else {
             commitNormalSpace()
         }
-        suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
+        suggestionHandler.processLinguisticSuggestions(wordBeforeSpace)
     }
 
     /**

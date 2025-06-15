@@ -40,7 +40,6 @@ import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
-import be.scri.helpers.PreferencesHelper.getPreferredTranslationLanguage
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -589,7 +588,6 @@ abstract class GeneralKeyboardIME(
 
         val langAlias = getLanguageAlias(language)
 
-        disableAutoSuggest()
         updateButtonVisibility(isAutoSuggestEnabled = false)
         setCommandButtonListeners()
 
@@ -600,6 +598,7 @@ abstract class GeneralKeyboardIME(
             button.background = ContextCompat.getDrawable(this, R.drawable.button_background_rounded)
             button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.theme_scribe_blue)
             button.setTextColor(buttonTextColor)
+            button.textSize = SUGGESTION_SIZE
         }
 
         binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
@@ -653,13 +652,13 @@ abstract class GeneralKeyboardIME(
                 R.drawable.close,
             )
 
-        val keyboardXmlId = getKeyboardLayoutForState(currentState)
-        initializeKeyboard(keyboardXmlId)
-
         var hintWord: String? = null
         var promptText: String? = null
 
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
+            val keyboardXmlId = getKeyboardLayoutForState(currentState)
+            initializeKeyboard(keyboardXmlId)
+
             val conjugateIndex = getValidatedConjugateIndex()
             setupConjugateKeysByLanguage(conjugateIndex)
             promptText = conjugateOutput.keys.elementAtOrNull(conjugateIndex)
@@ -678,18 +677,10 @@ abstract class GeneralKeyboardIME(
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
         binding.toolbarBar.setBackgroundColor(if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt())
         binding.ivInfo.visibility = View.VISIBLE
-        setDefaultKeyboardLanguage()
         binding.promptText.text = HintUtils.getInvalidHint(language = language)
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
-    }
-
-    /**
-     * Resets the keyboard to the default layout for the current language.
-     */
-    private fun setDefaultKeyboardLanguage() {
-        initializeKeyboard(getKeyboardLayoutXML())
     }
 
     /**
@@ -735,54 +726,21 @@ abstract class GeneralKeyboardIME(
         dataSize: Int = 0,
     ): Int =
         when (state) {
-            ScribeState.TRANSLATE -> {
-                baseKeyboardOfAnyLanguage(
-                    getPreferredTranslationLanguage(
-                        this,
-                        language,
-                    ),
-                )
-            }
-
             ScribeState.SELECT_VERB_CONJUNCTION -> {
                 saveConjugateModeType(language)
-
                 if (!isSubsequentArea && dataSize == 0) {
                     when (language) {
-                        "English",
-                        "Swedish",
-                        "Russian",
-                        -> {
-                            R.xml.conjugate_view_2x2
-                        }
-
-                        else -> {
-                            R.xml.conjugate_view_3x2
-                        }
+                        "English", "Swedish", "Russian" -> R.xml.conjugate_view_2x2
+                        else -> R.xml.conjugate_view_3x2
                     }
                 } else {
                     when (dataSize) {
-                        DATA_SIZE_2 -> {
-                            R.xml.conjugate_view_2x1
-                        }
-
-                        DATA_CONSTANT_3 -> {
-                            R.xml.conjugate_view_1x3
-                        }
-
-                        else -> {
-                            R.xml.conjugate_view_2x2
-                        }
+                        DATA_SIZE_2 -> R.xml.conjugate_view_2x1
+                        DATA_CONSTANT_3 -> R.xml.conjugate_view_1x3
+                        else -> R.xml.conjugate_view_2x2
                     }
                 }
             }
-
-            ScribeState.CONJUGATE,
-            ScribeState.PLURAL,
-            -> {
-                getKeyboardLayoutXML()
-            }
-
             else -> {
                 getKeyboardLayoutXML()
             }
@@ -1821,7 +1779,7 @@ abstract class GeneralKeyboardIME(
         if (commandModeOutput.isNotEmpty()) {
             val output = if (!commandModeOutput.endsWith(" ")) "$commandModeOutput " else commandModeOutput
             inputConnection.commitText(output, COMMIT_TEXT_CURSOR_POSITION)
-            suggestionHandler.processWordSuggestions(output.trim())
+            suggestionHandler.processLinguisticSuggestions(output.trim())
         }
         binding.commandBar.setText("")
         moveToIdleState()
@@ -1932,8 +1890,12 @@ abstract class GeneralKeyboardIME(
         code: Int,
         isSubsequentRequired: Boolean,
     ): String? {
-        if (!isSubsequentRequired) currentInputConnection?.commitText(keyboardView?.getKeyLabel(code), 1)
-        return keyboardView?.getKeyLabel(code)
+        val keyLabel = keyboardView?.getKeyLabel(code)
+        if (!isSubsequentRequired) {
+            currentInputConnection?.commitText(keyLabel, 1)
+            suggestionHandler.processLinguisticSuggestions(keyLabel)
+        }
+        return keyLabel
     }
 
     /**
@@ -2033,24 +1995,6 @@ abstract class GeneralKeyboardIME(
             keyboardView!!.invalidateAllKeys()
         }
     }
-
-    /**
-     * A utility function to get the resource ID for a base letter keyboard layout for any supported language.
-     * @param language The full name of the language (e.g., "English").
-     * @return The resource ID of the corresponding XML layout file.
-     */
-    private fun baseKeyboardOfAnyLanguage(language: String?): Int =
-        when (language) {
-            "English" -> R.xml.keys_letters_english
-            "French" -> R.xml.keys_letters_french
-            "German" -> R.xml.keys_letters_german
-            "Italian" -> R.xml.keys_letters_italian
-            "Portuguese" -> R.xml.keys_letters_portuguese
-            "Russian" -> R.xml.keys_letters_russian
-            "Spanish" -> R.xml.keys_letters_spanish
-            "Swedish" -> R.xml.keys_letters_swedish
-            else -> R.xml.keys_letters_english
-        }
 
     internal companion object {
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500

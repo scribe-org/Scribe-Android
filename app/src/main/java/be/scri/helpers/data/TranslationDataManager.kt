@@ -77,7 +77,7 @@ class TranslationDataManager(
 
         return db.rawQuery(query, arrayOf(word)).use { cursor ->
             if (cursor.moveToFirst()) {
-                cursor.getString(cursor.getColumnIndexOrThrow(destColumn)) ?: ""
+                cursor.getString(cursor.getColumnIndexOrThrow(destColumn))?.trimEnd() ?: ""
             } else {
                 ""
             }

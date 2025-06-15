@@ -52,6 +52,10 @@ class KeyHandler(
         val previousWasLastKeySpace = wasLastKeySpace
         var resetWLSAtEnd = true
 
+        if (code != KeyboardBase.KEYCODE_SPACE) {
+            suggestionHandler.clearLinguisticSuggestions()
+        }
+
         when (code) {
             KeyboardBase.KEYCODE_TAB -> commitTab(inputConnection)
             KeyboardBase.KEYCODE_CAPS_LOCK -> handleCapsLock()
@@ -67,29 +71,8 @@ class KeyHandler(
                 wasLastKeySpace = spaceKeyProcessor.processKeycodeSpace(previousWasLastKeySpace)
                 resetWLSAtEnd = false
             }
-            KeyboardBase.KEYCODE_LEFT_ARROW,
-            KeyboardBase.KEYCODE_RIGHT_ARROW,
-            -> handleArrowKey(code == KeyboardBase.KEYCODE_RIGHT_ARROW)
-            KeyboardBase.DISPLAY_LEFT,
-            KeyboardBase.DISPLAY_RIGHT,
-            -> handleConjugateCycleKeys(code, context = ime.applicationContext)
-            KeyboardBase.CODE_FPS,
-            KeyboardBase.CODE_FPP,
-            KeyboardBase.CODE_SPS,
-            KeyboardBase.CODE_SPP,
-            KeyboardBase.CODE_TPS,
-            KeyboardBase.CODE_TPP,
-            KeyboardBase.CODE_TR,
-            KeyboardBase.CODE_TL,
-            KeyboardBase.CODE_BR,
-            KeyboardBase.CODE_BL,
-            KeyboardBase.CODE_1X1,
-            KeyboardBase.CODE_1X3_LEFT,
-            KeyboardBase.CODE_1X3_CENTER,
-            KeyboardBase.CODE_1X3_RIGHT,
-            KeyboardBase.CODE_2X1_TOP,
-            KeyboardBase.CODE_2X1_BOTTOM,
-            -> handleConjugateSelectionKey(code, language)
+            in KeyboardBase.NAVIGATION_KEYS -> handleNavigationKey(code)
+            in KeyboardBase.SCRIBE_VIEW_KEYS -> handleScribeViewKey(code, language)
             else -> handleDefaultKey(code)
         }
 
@@ -155,12 +138,15 @@ class KeyHandler(
      * @param code The character code of the key pressed.
      */
     private fun handleDefaultKey(code: Int) {
-        val isCommandBarActive = ime.currentState != ScribeState.IDLE && ime.currentState != ScribeState.SELECT_COMMAND
+        val isCommandBarActive =
+            ime.currentState == ScribeState.TRANSLATE ||
+                ime.currentState == ScribeState.CONJUGATE ||
+                ime.currentState == ScribeState.PLURAL
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
-        if (!isCommandBarActive) {
-            suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
-        } else {
+        if (ime.currentState == ScribeState.IDLE) {
+            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+        } else if (isCommandBarActive) {
             suggestionHandler.clearAllSuggestionsAndHideButtonUI()
         }
     }
@@ -170,11 +156,15 @@ class KeyHandler(
      * and then triggers a re-evaluation of word suggestions based on the new text.
      */
     private fun handleDeleteKey() {
-        val isCommandBarActive = ime.currentState != ScribeState.IDLE && ime.currentState != ScribeState.SELECT_COMMAND
+        val isCommandBarActive =
+            ime.currentState == ScribeState.TRANSLATE ||
+                ime.currentState == ScribeState.CONJUGATE ||
+                ime.currentState == ScribeState.PLURAL
         ime.handleDelete(isCommandBarActive)
 
-        if (!isCommandBarActive) {
-            suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
+        // Only process suggestions if the state is exactly IDLE.
+        if (ime.currentState == ScribeState.IDLE) {
+            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
         }
     }
 
@@ -205,23 +195,39 @@ class KeyHandler(
     }
 
     /**
-     * Handles left and right arrow key presses to move the cursor within the input field
-     * and then updates suggestions based on the new cursor position.
-     *
-     * @param isRight `true` to move right, `false` to move left.
+     * Handles navigation keys (left/right arrows).
+     * @param code The key code, used to determine direction.
      */
-    private fun handleArrowKey(isRight: Boolean) {
+    private fun handleNavigationKey(code: Int) {
+        val isRight = code == KeyboardBase.KEYCODE_RIGHT_ARROW
         ime.currentInputConnection?.let { ic ->
             val currentPos = ic.getTextBeforeCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.length ?: 0
             val newPos =
                 if (isRight) {
                     val textAfter = ic.getTextAfterCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.toString() ?: ""
                     (currentPos + 1).coerceAtMost(currentPos + textAfter.length)
-                } else { // isLeft
+                } else {
                     (currentPos - 1).coerceAtLeast(0)
                 }
             ic.setSelection(newPos, newPos)
-            suggestionHandler.processWordSuggestions(ime.getLastWordBeforeCursor())
+            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+        }
+    }
+
+    /**
+     * Handles all special keys related to the Scribe command views (conjugation, etc.).
+     * @param code The key code of the pressed key.
+     * @param language The current keyboard language.
+     */
+    private fun handleScribeViewKey(
+        code: Int,
+        language: String,
+    ) {
+        when (code) {
+            KeyboardBase.DISPLAY_LEFT, KeyboardBase.DISPLAY_RIGHT ->
+                handleConjugateCycleKeys(code, ime.applicationContext)
+            else ->
+                handleConjugateSelectionKey(code, language)
         }
     }
 
@@ -241,7 +247,6 @@ class KeyHandler(
         val editor = sharedPreferences.edit()
         var currentValue = sharedPreferences.getInt("conjugate_index", 0)
 
-        // Increment or decrement based on the key pressed
         if (code == KeyboardBase.DISPLAY_LEFT) {
             currentValue--
         } else if (code == KeyboardBase.DISPLAY_RIGHT) {

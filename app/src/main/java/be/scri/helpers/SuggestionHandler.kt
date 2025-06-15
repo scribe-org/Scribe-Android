@@ -16,7 +16,8 @@ class SuggestionHandler(
     private val ime: GeneralKeyboardIME,
 ) {
     private val handler = Handler(Looper.getMainLooper())
-    private var suggestionRunnable: Runnable? = null
+    private var emojiSuggestionRunnable: Runnable? = null
+    private var linguisticSuggestionRunnable: Runnable? = null
 
     /**
      * Companion object for holding constants related to suggestion handling.
@@ -26,45 +27,36 @@ class SuggestionHandler(
     }
 
     /**
-     * Processes the given word to find and display relevant suggestions.
-     * This includes noun gender, plurality, case annotations, and emojis based on the IME's state.
+     * Processes the given word to find and display relevant LINGUISTIC suggestions.
+     * This includes noun gender, plurality, and case annotations.
+     * This is intended to be called AFTER a word is completed (e.g., after space).
      *
-     * @param currentWord The word currently being typed or the word before the cursor.
+     * @param completedWord The word that was just completed.
      */
-    fun processWordSuggestions(currentWord: String?) {
-        suggestionRunnable?.let { handler.removeCallbacks(it) }
+    fun processLinguisticSuggestions(completedWord: String?) {
+        linguisticSuggestionRunnable?.let { handler.removeCallbacks(it) }
 
-        suggestionRunnable =
+        linguisticSuggestionRunnable =
             Runnable {
-                if (ime.currentState != ScribeState.IDLE && ime.currentState != ScribeState.SELECT_COMMAND) {
+                if (ime.currentState != ScribeState.IDLE) {
                     clearAllSuggestionsAndHideButtonUI()
                     return@Runnable
                 }
 
-                ime.lastWord = currentWord
-
-                if (currentWord.isNullOrEmpty()) {
-                    clearAllSuggestionsAndHideButtonUI()
+                if (completedWord.isNullOrEmpty()) {
+                    clearLinguisticSuggestions()
                     return@Runnable
                 }
 
-                val genderSuggestion = ime.findGenderForLastWord(ime.nounKeywords, currentWord)
-                val isPluralByDirectCheck = ime.findWhetherWordIsPlural(ime.pluralWords, currentWord)
-                val caseSuggestion = ime.getCaseAnnotationForPreposition(ime.caseAnnotation, currentWord)
-                val emojis =
-                    if (ime.emojiAutoSuggestionEnabled) {
-                        ime.findEmojisForLastWord(ime.emojiKeywords, currentWord)
-                    } else {
-                        null
-                    }
+                val genderSuggestion = ime.findGenderForLastWord(ime.nounKeywords, completedWord)
+                val isPluralByDirectCheck = ime.findWhetherWordIsPlural(ime.pluralWords, completedWord)
+                val caseSuggestion = ime.getCaseAnnotationForPreposition(ime.caseAnnotation, completedWord)
 
                 val hasLinguisticSuggestion =
                     genderSuggestion != null ||
                         isPluralByDirectCheck ||
                         caseSuggestion != null ||
                         ime.isSingularAndPlural
-
-                val hasEmojiSuggestion = !emojis.isNullOrEmpty()
 
                 if (hasLinguisticSuggestion) {
                     ime.nounTypeSuggestion = genderSuggestion
@@ -78,6 +70,41 @@ class SuggestionHandler(
                 } else {
                     ime.disableAutoSuggest()
                 }
+            }
+        handler.postDelayed(linguisticSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+    }
+
+    /**
+     * Processes the given word to find and display relevant EMOJI suggestions.
+     * This is intended to be called AS the user types.
+     *
+     * @param currentWord The word currently being typed.
+     */
+    fun processEmojiSuggestions(currentWord: String?) {
+        emojiSuggestionRunnable?.let { handler.removeCallbacks(it) }
+
+        emojiSuggestionRunnable =
+            Runnable {
+                if (ime.currentState != ScribeState.IDLE) {
+                    clearAllSuggestionsAndHideButtonUI()
+                    return@Runnable
+                }
+
+                ime.lastWord = currentWord
+
+                if (currentWord.isNullOrEmpty()) {
+                    ime.updateButtonVisibility(false)
+                    return@Runnable
+                }
+
+                val emojis =
+                    if (ime.emojiAutoSuggestionEnabled) {
+                        ime.findEmojisForLastWord(ime.emojiKeywords, currentWord)
+                    } else {
+                        null
+                    }
+
+                val hasEmojiSuggestion = !emojis.isNullOrEmpty()
 
                 if (hasEmojiSuggestion) {
                     ime.autoSuggestEmojis = emojis
@@ -88,7 +115,20 @@ class SuggestionHandler(
                 }
             }
 
-        handler.postDelayed(suggestionRunnable!!, SUGGESTION_DELAY_MS)
+        handler.postDelayed(emojiSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+    }
+
+    /**
+     * Clears only the linguistic suggestions (gender, case, plural) from the UI.
+     * Leaves emoji suggestions untouched.
+     */
+    fun clearLinguisticSuggestions() {
+        linguisticSuggestionRunnable?.let { handler.removeCallbacks(it) }
+        ime.disableAutoSuggest()
+        ime.nounTypeSuggestion = null
+        ime.checkIfPluralWord = false
+        ime.caseAnnotationSuggestion = null
+        ime.isSingularAndPlural = false
     }
 
     /**
@@ -96,7 +136,9 @@ class SuggestionHandler(
      * and hides suggestion-related UI elements.
      */
     fun clearAllSuggestionsAndHideButtonUI() {
-        suggestionRunnable?.let { handler.removeCallbacks(it) }
+        emojiSuggestionRunnable?.let { handler.removeCallbacks(it) }
+        linguisticSuggestionRunnable?.let { handler.removeCallbacks(it) }
+
         ime.disableAutoSuggest()
         ime.updateButtonVisibility(false)
         ime.nounTypeSuggestion = null
