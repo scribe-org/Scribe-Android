@@ -16,7 +16,7 @@ plugins {
     id("org.jmailen.kotlinter")
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
-    id("de.mannodermaus.android-junit5") version "1.11.2.0"
+//    id("de.mannodermaus.android-junit5") version "1.11.2.0"
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("jacoco")
     kotlin("plugin.serialization") version "1.9.0"
@@ -28,11 +28,11 @@ jacoco {
 }
 
 val kotlinVersion by extra("2.0.0")
-val junit5Version by extra("5.11.2")
+//val junit5Version by extra("5.11.2")
 val mockkVersion by extra("1.13.13")
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "be.scri"
@@ -43,6 +43,16 @@ android {
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    packaging {
+        resources {
+            pickFirsts.add("META-INF/LICENSE*")
+            pickFirsts.add("META-INF/ASL2.0")
+            pickFirsts.add("META-INF/NOTICE*")
+            pickFirsts.add("META-INF/LGPL2.1")
+
+        }
     }
 
 
@@ -66,12 +76,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
     buildFeatures {
@@ -112,6 +122,9 @@ android {
 
     sourceSets {
         getByName("main").java.srcDirs("src/main/kotlin")
+        named("test") {
+            java.srcDirs("src/test/java", "src/test/kotlin")
+        }
     }
 
     lint {
@@ -230,12 +243,24 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$2.8.4")
 
     // Testing libraries
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
+//    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.13")
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.8.0") // Compose UI Testing for unit tests
+    testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.20")
+    testImplementation ("org.mockito:mockito-core:5.12.0")
+    testImplementation ("org.mockito:mockito-inline:5.2.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("com.google.truth:truth:1.4.4")
+//    testImplementation ("org.mockito:mockito-junit-jupiter:5.12.0")
+
 
     // For Instrumentation Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.0")
+    androidTestImplementation("io.mockk:mockk-android:$mockkVersion")
+    androidTestImplementation("com.google.truth:truth:1.4.4")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
 
     // Espresso for UI tests
@@ -247,8 +272,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
 
     // JUnit 5 dependencies
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
+//    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
+//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
 
     //  AndroidJUnit4 is included
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
@@ -307,9 +332,9 @@ tasks.withType(Test::class) {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
+//tasks.withType<Test> {
+//    useJUnitPlatform()
+//}
 
 tasks.register<JacocoReport>("jacocoTestReport") {
     group = "Reporting"
