@@ -536,27 +536,26 @@ abstract class GeneralKeyboardIME(
         )
 
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
-        val separatorColor = (if (isUserDarkMode) DARK_THEME else LIGHT_THEME).toColorInt()
 
         listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
             button.visibility = View.VISIBLE
-            button.background = ContextCompat.getDrawable(this, R.drawable.button_background_rounded)
-            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.transparent)
+            button.background = null
             button.setTextColor(textColor)
             button.text = getString(R.string.suggestion)
             button.textSize = SUGGESTION_SIZE
             button.setOnClickListener(null)
         }
 
-        val separatorWidthInDp = 1
-        val separatorWidthInPx = (resources.displayMetrics.density * separatorWidthInDp).toInt()
-        listOf(binding.separator2, binding.separator3).forEach {
-            it.setBackgroundColor(separatorColor)
-            val params = it.layoutParams
-            params.width = separatorWidthInPx
-            it.layoutParams = params
-            it.visibility = View.VISIBLE
+        listOf(binding.separator2, binding.separator3).forEach { separator ->
+            separator.setBackgroundColor(ContextCompat.getColor(this, R.color.special_key_light))
+            val params = separator.layoutParams
+            // Convert 0.5dp to pixels. coerceAtLeast(1) ensures it's never zero.
+            params.width = (SEPRATOR_WIDTH * resources.displayMetrics.density).toInt().coerceAtLeast(1)
+            separator.layoutParams = params
+
+            separator.visibility = View.VISIBLE
         }
+
         binding.separator1.visibility = View.GONE
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
@@ -598,9 +597,7 @@ abstract class GeneralKeyboardIME(
 
         listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
             button.visibility = View.VISIBLE
-            // Set the standard background
             button.background = ContextCompat.getDrawable(this, R.drawable.button_background_rounded)
-            // Then apply the tint
             button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.theme_scribe_blue)
             button.setTextColor(buttonTextColor)
         }
@@ -1058,7 +1055,6 @@ abstract class GeneralKeyboardIME(
         binding.separator5.visibility = if (emojiCount >= 1) View.VISIBLE else View.GONE
         binding.separator6.visibility = if (emojiCount >= 1) View.VISIBLE else View.GONE
 
-        // Ensure phone-specific views are gone
         emojiBtnPhone1?.visibility = View.GONE
         emojiBtnPhone2?.visibility = View.GONE
         binding.separator4.visibility = View.GONE
@@ -1076,7 +1072,6 @@ abstract class GeneralKeyboardIME(
 
         binding.separator4.visibility = if (emojiCount >= 1) View.VISIBLE else View.GONE
 
-        // Ensure tablet-specific views are gone
         emojiBtnTablet1?.visibility = View.GONE
         emojiBtnTablet2?.visibility = View.GONE
         emojiBtnTablet3?.visibility = View.GONE
@@ -1364,12 +1359,12 @@ abstract class GeneralKeyboardIME(
             isClickable = false
             setOnClickListener(null)
 
-            background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
-
             if (colorRes != R.color.transparent) {
+                background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
                 backgroundTintList = ContextCompat.getColorStateList(context, colorRes)
                 setTextColor(getColor(white))
             } else {
+                background = null
                 val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
                 backgroundTintList = ContextCompat.getColorStateList(context, R.color.transparent)
                 setTextColor(getColor(if (isUserDarkMode) white else md_grey_black_dark))
@@ -1587,8 +1582,7 @@ abstract class GeneralKeyboardIME(
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtn.visibility = View.VISIBLE
         binding.translateBtn.text = getString(R.string.suggestion)
-        binding.translateBtn.background = ContextCompat.getDrawable(this, R.drawable.button_background_rounded)
-        binding.translateBtn.backgroundTintList = ContextCompat.getColorStateList(this, R.color.transparent)
+        binding.translateBtn.background = null
         binding.translateBtn.setOnClickListener(null)
         binding.conjugateBtn.setOnClickListener(null)
         binding.pluralBtn.setOnClickListener(null)
@@ -2071,5 +2065,6 @@ abstract class GeneralKeyboardIME(
         private const val EMOJI_SUGGESTION_THRESHOLD_ONE = 1
         private const val EMOJI_SUGGESTION_THRESHOLD_TWO = 2
         private const val EMOJI_SUGGESTION_THRESHOLD_THREE = 3
+        private const val SEPRATOR_WIDTH = 0.5f
     }
 }
