@@ -33,7 +33,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override val keyboardSymbolShift: Int = 2
     override var keyboard: KeyboardBase? = null
     override var lastShiftPressTS: Long = 0L
-    override var keyboardMode: Int = keyboardLetters // Default to letters
+    override var keyboardMode: Int = keyboardLetters // default to letters
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
@@ -47,7 +47,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override fun onCreate() {
         super.onCreate()
 
-        // Add customizations specific to the English keyboard
+        // Add customizations specific to the English keyboard.
         keyboardView?.setPreview = getIsPreviewEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
     }

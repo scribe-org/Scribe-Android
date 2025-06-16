@@ -28,8 +28,8 @@ class PrepositionDataManager(
         return fileManager.getLanguageDatabase(language)?.use { db ->
             db.rawQuery("SELECT preposition, grammaticalCase FROM prepositions", null).use { cursor ->
                 processCursor(cursor)
-            } // Handle case where cursor is null
-        } ?: hashMapOf() // Handle case where database is null
+            } // handle case where cursor is null
+        } ?: hashMapOf() // handle case where database is null
     }
 
     /**

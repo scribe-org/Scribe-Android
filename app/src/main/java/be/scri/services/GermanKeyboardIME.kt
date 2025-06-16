@@ -41,7 +41,7 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
             R.xml.keys_letter_german_without_period_and_comma
         }
 
-    // --- Fulfill the abstract contract from GeneralKeyboardIME ---
+    // Fulfill the abstract contract from GeneralKeyboardIME.
     override val keyboardLetters: Int = 0
     override val keyboardSymbols: Int = 1
     override val keyboardSymbolShift: Int = 2
