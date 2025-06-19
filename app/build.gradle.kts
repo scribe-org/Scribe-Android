@@ -182,8 +182,9 @@ dependencies {
     detektPlugins("io.nlopez.compose.rules:detekt:0.4.17")
     lintChecks("com.slack.lint.compose:compose-lint-checks:1.4.2")
 
-    // MARK: AndroidX
-
+    // ==========================
+    // AndroidX Dependencies
+    // ==========================
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.0")
@@ -191,17 +192,21 @@ dependencies {
     debugImplementation("androidx.fragment:fragment-testing:1.8.8")
     implementation("androidx.test.ext:junit-ktx:1.2.1")
 
-    // MARK: Room Database
-
+    // ==========================
+    // Room Database
+    // ==========================
     ksp("androidx.room:room-compiler:2.7.1")
     implementation("androidx.room:room-runtime:2.7.1")
+    implementation("androidx.room:room-ktx:2.7.1")
 
-    // MARK: Kotlin
-
+    // ==========================
+    // Kotlin
+    // ==========================
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.0")
 
-    // MARK: Layout and UI
-
+    // ==========================
+    // Layout and UI
+    // ==========================
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation("androidx.documentfile:documentfile:1.1.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
@@ -214,61 +219,63 @@ dependencies {
     implementation("com.google.android.play:core-ktx:1.8.1")
     implementation("androidx.navigation:navigation-compose:2.9.0")
 
-    // MARK: Jetpack Compose
-
+    // ==========================
+    // Jetpack Compose
+    // ==========================
     val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material:1.8.2")
-    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    // MARK: Activity Compose
-
+    // ==========================
+    // Activity Compose
+    // ==========================
     implementation("androidx.activity:activity-compose")
 
-    // MARK: Navigation Compose
+    // ==========================
+    // Navigation Compose
+    // ==========================
+    implementation("androidx.navigation:navigation-compose:2.8.4")
 
-    //noinspection GradleDependency
-    implementation("androidx.navigation:navigation-compose:$2.8.4")
+    // ==========================
+    // Unit Testing
+    // ==========================
 
-    // MARK: Testing
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
-    testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-
-    // MARK: Instrumentation Tests
-
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
-
-    // MARK: UI Tests
-
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-
-    // MARK: Android Testing
-
-    androidTestImplementation("androidx.test:core-ktx:1.6.1")
-    androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
-
-    // MARK: JUnit 5
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
-    // MARK: AndroidJUnit4
+    // ==========================
+    // Instrumentation Tests
+    // ==========================
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
 
+    // ==========================
+    // UI Tests
+    // ==========================
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
+    // ==========================
+    // Android Testing
+    // ==========================
+    androidTestImplementation("androidx.test:core-ktx:1.6.1")
+    androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("io.mockk:mockk-android:1.13.5")
 
-    // MARK: Other
+    // ==========================
+    // Other
+    // ==========================
 
     api("joda-time:joda-time:2.10.13")
     api("com.github.tibbi:RecyclerView-FastScroller:e7d3e150c4")
