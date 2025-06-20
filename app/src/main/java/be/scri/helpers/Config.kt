@@ -36,10 +36,6 @@ class Config(
         get() = prefs.getBoolean(SHOW_POPUP_ON_KEYPRESS, true)
         set(showPopupOnKeypress) = prefs.edit().putBoolean(SHOW_POPUP_ON_KEYPRESS, showPopupOnKeypress).apply()
 
-    var darkTheme: Boolean
-        get() = prefs.getBoolean(DARK_THEME, true)
-        set(darkTheme) = prefs.edit().putBoolean(DARK_THEME, darkTheme).apply()
-
     var periodOnDoubleTap: Boolean
         get() = prefs.getBoolean(PERIOD_ON_DOUBLE_TAP, true)
         set(periodOnDoubleTap) = prefs.edit().putBoolean(PERIOD_ON_DOUBLE_TAP, periodOnDoubleTap).apply()

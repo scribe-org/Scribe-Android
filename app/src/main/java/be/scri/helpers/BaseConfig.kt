@@ -53,17 +53,6 @@ open class BaseConfig(
         get() = prefs.getInt(ACCENT_COLOR, context.resources.getColor(R.color.color_primary))
         set(accentColor) = prefs.edit().putInt(ACCENT_COLOR, accentColor).apply()
 
-    var useEnglish: Boolean
-        get() = prefs.getBoolean(USE_ENGLISH, false)
-        set(useEnglish) {
-            wasUseEnglishToggled = true
-            prefs.edit().putBoolean(USE_ENGLISH, useEnglish).commit()
-        }
-
-    var wasUseEnglishToggled: Boolean
-        get() = prefs.getBoolean(WAS_USE_ENGLISH_TOGGLED, false)
-        set(wasUseEnglishToggled) = prefs.edit().putBoolean(WAS_USE_ENGLISH_TOGGLED, wasUseEnglishToggled).apply()
-
     var isUsingSystemTheme: Boolean
         get() = prefs.getBoolean(IS_USING_SYSTEM_THEME, false)
         set(isUsingSystemTheme) = prefs.edit().putBoolean(IS_USING_SYSTEM_THEME, isUsingSystemTheme).apply()

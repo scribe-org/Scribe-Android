@@ -34,7 +34,7 @@ import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.DatabaseManagers
-import be.scri.helpers.HintUtils
+import be.scri.helpers.ui.HintUtils
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
@@ -549,7 +549,7 @@ abstract class GeneralKeyboardIME(
             separator.setBackgroundColor(ContextCompat.getColor(this, R.color.special_key_light))
             val params = separator.layoutParams
             // Convert 0.5dp to pixels. coerceAtLeast(1) ensures it's never zero.
-            params.width = (SEPRATOR_WIDTH * resources.displayMetrics.density).toInt().coerceAtLeast(1)
+            params.width = (SEPARATOR_WIDTH * resources.displayMetrics.density).toInt().coerceAtLeast(1)
             separator.layoutParams = params
 
             separator.visibility = View.VISIBLE
@@ -2009,6 +2009,6 @@ abstract class GeneralKeyboardIME(
         private const val EMOJI_SUGGESTION_THRESHOLD_ONE = 1
         private const val EMOJI_SUGGESTION_THRESHOLD_TWO = 2
         private const val EMOJI_SUGGESTION_THRESHOLD_THREE = 3
-        private const val SEPRATOR_WIDTH = 0.5f
+        private const val SEPARATOR_WIDTH = 0.5f
     }
 }

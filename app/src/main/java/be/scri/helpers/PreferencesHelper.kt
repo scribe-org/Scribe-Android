@@ -208,9 +208,9 @@ object PreferencesHelper {
         shouldShowPopupOnKeypress: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), shouldShowPopupOnKeypress)
-        editor.apply()
+        sharedPref.edit() {
+            putBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), shouldShowPopupOnKeypress)
+        }
         Toast
             .makeText(
                 context,
@@ -232,9 +232,9 @@ object PreferencesHelper {
         darkMode: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("dark_mode", darkMode)
-        editor.apply()
+        sharedPref.edit() {
+            putBoolean("dark_mode", darkMode)
+        }
     }
 
     /**

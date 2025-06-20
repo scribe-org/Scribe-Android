@@ -176,7 +176,7 @@ android {
     }
 }
 
-// MARK: Dependencies
+
 
 dependencies {
     detektPlugins("io.nlopez.compose.rules:detekt:0.4.17")
