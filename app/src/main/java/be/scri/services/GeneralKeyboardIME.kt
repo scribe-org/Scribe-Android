@@ -34,7 +34,15 @@ import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.DatabaseManagers
+import be.scri.helpers.EmojiUtils.insertEmoji
+import be.scri.helpers.EmojiUtils.isEmoji
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.LanguageMappingConstants.conjugatePlaceholder
+import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
+import be.scri.helpers.LanguageMappingConstants.nounAnnotationConversionDict
+import be.scri.helpers.LanguageMappingConstants.pluralPlaceholder
+import be.scri.helpers.LanguageMappingConstants.prepAnnotationConversionDict
+import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
@@ -43,14 +51,6 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
-import be.scri.helpers.english.ENInterfaceVariables
-import be.scri.helpers.french.FRInterfaceVariables
-import be.scri.helpers.german.DEInterfaceVariables
-import be.scri.helpers.italian.ITInterfaceVariables
-import be.scri.helpers.portuguese.PTInterfaceVariables
-import be.scri.helpers.russian.RUInterfaceVariables
-import be.scri.helpers.spanish.ESInterfaceVariables
-import be.scri.helpers.swedish.SVInterfaceVariables
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
 
@@ -114,65 +114,6 @@ abstract class GeneralKeyboardIME(
     var nounTypeSuggestion: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
-
-    private val prepAnnotationConversionDict =
-        mapOf(
-            "German" to
-                mapOf(
-                    "Acc" to "Akk",
-                ),
-            "Russian" to
-                mapOf(
-                    "Acc" to "Вин",
-                    "Dat" to "Дат",
-                    "Gen" to "Род",
-                    "Loc" to "Мес",
-                    "Pre" to "Пре",
-                    "Ins" to "Инс",
-                ),
-        )
-
-    private val nounAnnotationConversionDict =
-        mapOf(
-            "Swedish" to mapOf("C" to "U"),
-            "Russian" to mapOf("F" to "Ж", "M" to "М", "N" to "Н"),
-        )
-
-    private val translatePlaceholder =
-        mapOf(
-            "EN" to ENInterfaceVariables.TRANSLATE_KEY_LBL,
-            "ES" to ESInterfaceVariables.TRANSLATE_KEY_LBL,
-            "DE" to DEInterfaceVariables.TRANSLATE_KEY_LBL,
-            "IT" to ITInterfaceVariables.TRANSLATE_KEY_LBL,
-            "FR" to FRInterfaceVariables.TRANSLATE_KEY_LBL,
-            "PT" to PTInterfaceVariables.TRANSLATE_KEY_LBL,
-            "RU" to RUInterfaceVariables.TRANSLATE_KEY_LBL,
-            "SV" to SVInterfaceVariables.TRANSLATE_KEY_LBL,
-        )
-
-    private val conjugatePlaceholder =
-        mapOf(
-            "EN" to ENInterfaceVariables.CONJUGATE_KEY_LBL,
-            "ES" to ESInterfaceVariables.CONJUGATE_KEY_LBL,
-            "DE" to DEInterfaceVariables.CONJUGATE_KEY_LBL,
-            "IT" to ITInterfaceVariables.CONJUGATE_KEY_LBL,
-            "FR" to FRInterfaceVariables.CONJUGATE_KEY_LBL,
-            "PT" to PTInterfaceVariables.CONJUGATE_KEY_LBL,
-            "RU" to RUInterfaceVariables.CONJUGATE_KEY_LBL,
-            "SV" to SVInterfaceVariables.CONJUGATE_KEY_LBL,
-        )
-
-    private val pluralPlaceholder =
-        mapOf(
-            "EN" to ENInterfaceVariables.PLURAL_KEY_LBL,
-            "ES" to ESInterfaceVariables.PLURAL_KEY_LBL,
-            "DE" to DEInterfaceVariables.PLURAL_KEY_LBL,
-            "IT" to ITInterfaceVariables.PLURAL_KEY_LBL,
-            "FR" to FRInterfaceVariables.PLURAL_KEY_LBL,
-            "PT" to PTInterfaceVariables.PLURAL_KEY_LBL,
-            "RU" to RUInterfaceVariables.PLURAL_KEY_LBL,
-            "SV" to SVInterfaceVariables.PLURAL_KEY_LBL,
-        )
 
     internal var currentState: ScribeState = ScribeState.IDLE
     private var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
@@ -560,7 +501,7 @@ abstract class GeneralKeyboardIME(
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         initializeKeyboard(getKeyboardLayoutXML())
         updateButtonVisibility(emojiAutoSuggestionEnabled)
-        updateButtonText(emojiAutoSuggestionEnabled, autoSuggestEmojis)
+        updateEmojiSuggestion(emojiAutoSuggestionEnabled, autoSuggestEmojis)
 
         disableAutoSuggest()
     }
@@ -1113,39 +1054,50 @@ abstract class GeneralKeyboardIME(
      * @param isAutoSuggestEnabled `true` if suggestions are active.
      * @param autoSuggestEmojis The list of emojis to display.
      */
-    fun updateButtonText(
+    fun updateEmojiSuggestion(
         isAutoSuggestEnabled: Boolean,
         autoSuggestEmojis: MutableList<String>?,
     ) {
         if (currentState != ScribeState.IDLE) return
+
+        val tabletButtons = listOf(binding.emojiBtnTablet1, binding.emojiBtnTablet2, binding.emojiBtnTablet3)
+        val phoneButtons = listOf(binding.emojiBtnPhone1, binding.emojiBtnPhone2)
+
         if (isAutoSuggestEnabled && autoSuggestEmojis != null) {
-            val emoji1 = autoSuggestEmojis.getOrNull(0) ?: ""
-            val emoji2 = autoSuggestEmojis.getOrNull(1) ?: ""
-            val emoji3 = autoSuggestEmojis.getOrNull(DATA_SIZE_2) ?: ""
+            tabletButtons.forEachIndexed { index, button ->
+                val emoji = autoSuggestEmojis.getOrNull(index) ?: ""
+                button.text = emoji
+                button.setOnClickListener {
+                    if (emoji.isNotEmpty()) {
+                        insertEmoji(
+                            emoji,
+                            currentInputConnection,
+                            emojiKeywords,
+                            emojiMaxKeywordLength,
+                        )
+                    }
+                }
+            }
 
-            emojiBtnTablet1?.text = emoji1
-            emojiBtnTablet2?.text = emoji2
-            emojiBtnTablet3?.text = emoji3
-            emojiBtnPhone1?.text = emoji1
-            emojiBtnPhone2?.text = emoji2
-
-            binding.emojiBtnTablet1.setOnClickListener { if (emoji1.isNotEmpty()) insertEmoji(emoji1) }
-            binding.emojiBtnTablet2.setOnClickListener { if (emoji2.isNotEmpty()) insertEmoji(emoji2) }
-            binding.emojiBtnTablet3.setOnClickListener { if (emoji3.isNotEmpty()) insertEmoji(emoji3) }
-            binding.emojiBtnPhone1.setOnClickListener { if (emoji1.isNotEmpty()) insertEmoji(emoji1) }
-            binding.emojiBtnPhone2.setOnClickListener { if (emoji2.isNotEmpty()) insertEmoji(emoji2) }
+            phoneButtons.forEachIndexed { index, button ->
+                val emoji = autoSuggestEmojis.getOrNull(index) ?: ""
+                button.text = emoji
+                button.setOnClickListener {
+                    if (emoji.isNotEmpty()) {
+                        insertEmoji(
+                            emoji,
+                            currentInputConnection,
+                            emojiKeywords,
+                            emojiMaxKeywordLength,
+                        )
+                    }
+                }
+            }
         } else {
-            emojiBtnTablet1?.text = ""
-            emojiBtnTablet2?.text = ""
-            emojiBtnTablet3?.text = ""
-            emojiBtnPhone1?.text = ""
-            emojiBtnPhone2?.text = ""
-
-            binding.emojiBtnTablet1.setOnClickListener(null)
-            binding.emojiBtnTablet2.setOnClickListener(null)
-            binding.emojiBtnTablet3.setOnClickListener(null)
-            binding.emojiBtnPhone1.setOnClickListener(null)
-            binding.emojiBtnPhone2.setOnClickListener(null)
+            (tabletButtons + phoneButtons).forEach { button ->
+                button.text = ""
+                button.setOnClickListener(null)
+            }
         }
     }
 
@@ -1558,50 +1510,6 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Inserts an emoji into the text field, replacing the keyword that triggered it if found.
-     * @param emoji The emoji character to insert.
-     */
-    private fun insertEmoji(emoji: String) {
-        val ic = currentInputConnection ?: return
-        val maxLookBack = emojiMaxKeywordLength.coerceAtLeast(1)
-        ic.beginBatchEdit()
-        try {
-            val prevText = ic.getTextBeforeCursor(maxLookBack, 0)?.toString() ?: ""
-            val lastSpace = prevText.lastIndexOf(' ')
-            when {
-                prevText.isEmpty() ||
-                    (lastSpace != -1 && lastSpace == prevText.length - 1) -> {
-                    ic.commitText(emoji, 1)
-                }
-
-                lastSpace != -1 -> {
-                    val lastWord = prevText.substring(lastSpace + 1)
-
-                    if (
-                        emojiKeywords?.containsKey(lastWord.lowercase()) == true
-                    ) {
-                        ic.deleteSurroundingText(lastWord.length, 0)
-                    }
-
-                    ic.commitText(emoji, 1)
-                }
-
-                else -> {
-                    if (
-                        emojiKeywords?.containsKey(prevText.lowercase()) == true
-                    ) {
-                        ic.deleteSurroundingText(prevText.length, 0)
-                    }
-
-                    ic.commitText(emoji, 1)
-                }
-            }
-        } finally {
-            ic.endBatchEdit()
-        }
-    }
-
-    /**
      * Retrieves the plural form of a word from the database.
      * @param word The singular word to find the plural for.
      * @return The plural form as a string, or null if not found.
@@ -1612,24 +1520,6 @@ abstract class GeneralKeyboardIME(
         val pluralMap = dbManagers.pluralManager.getPluralRepresentation(langAlias, dataContract, word)
         return pluralMap.values.firstOrNull()
     }
-
-    /**
-     * Converts a full language name (e.g., "English") to its two-letter ISO alias (e.g., "EN").
-     * @param language The full name of the language.
-     * @return The two-letter alias.
-     */
-    private fun getLanguageAlias(language: String): String =
-        when (language) {
-            "English" -> "EN"
-            "French" -> "FR"
-            "German" -> "DE"
-            "Italian" -> "IT"
-            "Portuguese" -> "PT"
-            "Russian" -> "RU"
-            "Spanish" -> "ES"
-            "Swedish" -> "SV"
-            else -> ""
-        }
 
     /**
      * Moves the cursor in the input field.
@@ -1923,32 +1813,6 @@ abstract class GeneralKeyboardIME(
                 keyboardView!!.invalidateAllKeys()
             }
         }
-    }
-
-    /**
-     * Checks if the end of a string is likely an emoji.
-     * This is a heuristic check based on common emoji Unicode ranges.
-     * @param word The string to check.
-     * @return `true` if the end of the string contains an emoji character, `false` otherwise.
-     */
-    private fun isEmoji(word: String?): Boolean {
-        if (word.isNullOrEmpty() || word.length < DATA_SIZE_2) {
-            return false
-        }
-
-        val lastTwoChars =
-            word.substring(
-                word.length - DATA_SIZE_2,
-            )
-
-        val emojiRegex =
-            Regex(
-                "[\\uD83C\\uDF00-\\uD83E\\uDDFF]" +
-                    "|[\\u2600-\\u26FF]" +
-                    "|[\\u2700-\\u27BF]",
-            )
-
-        return emojiRegex.containsMatchIn(lastTwoChars)
     }
 
     /**

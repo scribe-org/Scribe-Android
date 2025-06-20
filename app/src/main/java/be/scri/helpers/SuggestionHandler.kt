@@ -108,7 +108,7 @@ class SuggestionHandler(
 
                 if (hasEmojiSuggestion) {
                     ime.autoSuggestEmojis = emojis
-                    ime.updateButtonText(true, emojis)
+                    ime.updateEmojiSuggestion(true, emojis)
                     ime.updateButtonVisibility(true)
                 } else {
                     ime.updateButtonVisibility(false)
