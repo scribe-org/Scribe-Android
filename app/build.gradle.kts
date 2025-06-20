@@ -15,7 +15,7 @@ plugins {
     id("kotlin-android")
     id("org.jmailen.kotlinter")
     id("io.gitlab.arturbosch.detekt")
-    id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
+    id("com.google.devtools.ksp") version "2.1.21-2.0.1" apply true
     id("de.mannodermaus.android-junit5") version "1.11.2.0"
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("jacoco")
@@ -195,14 +195,14 @@ dependencies {
     // ==========================
     // Room Database
     // ==========================
-    ksp("androidx.room:room-compiler:2.7.1")
-    implementation("androidx.room:room-runtime:2.7.1")
-    implementation("androidx.room:room-ktx:2.7.1")
+    ksp("androidx.room:room-compiler:2.7.2")
+    implementation("androidx.room:room-runtime:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
 
     // ==========================
     // Kotlin
     // ==========================
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0")
 
     // ==========================
     // Layout and UI
@@ -226,7 +226,7 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material:1.8.2")
+    implementation("androidx.compose.material:material:1.8.3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
@@ -240,7 +240,7 @@ dependencies {
     // ==========================
     // Navigation Compose
     // ==========================
-    implementation("androidx.navigation:navigation-compose:2.8.4")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
 
     // ==========================
     // Unit Testing
@@ -255,8 +255,8 @@ dependencies {
     // ==========================
     // Instrumentation Tests
     // ==========================
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.2")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
 
     // ==========================
     // UI Tests
@@ -271,18 +271,18 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("io.mockk:mockk-android:1.13.5")
+    androidTestImplementation("io.mockk:mockk-android:1.13.13")
 
     // ==========================
     // Other
     // ==========================
 
-    api("joda-time:joda-time:2.10.13")
+    api("joda-time:joda-time:2.12.7")
     api("com.github.tibbi:RecyclerView-FastScroller:e7d3e150c4")
     api("com.github.tibbi:reprint:2cb206415d")
     api("androidx.core:core-ktx:1.16.0")
-    api("com.google.code.gson:gson:2.10.1")
-    api("com.github.bumptech.glide:glide:4.14.2")
+    api("com.google.code.gson:gson:2.11.0")
+    api("com.github.bumptech.glide:glide:4.16.0")
     ksp("com.github.bumptech.glide:ksp:4.14.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")

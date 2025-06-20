@@ -14,11 +14,11 @@ buildscript {
 
     dependencies {
         classpath("io.nlopez.compose.rules:ktlint:0.4.17")
-        classpath("com.android.tools.build:gradle:8.6.0")
+        classpath("com.android.tools.build:gradle:8.9.3")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.6")
+        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8")
         classpath("org.jlleitschuh.gradle:ktlint-gradle:12.1.1")
-        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.6")
+        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8")
         classpath("org.jmailen.gradle:kotlinter-gradle:4.4.1")
     }
 }
@@ -29,7 +29,7 @@ apply(plugin = "org.jetbrains.kotlinx.kover")
 
 
 plugins {
-    id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply false
+    id("com.google.devtools.ksp") version "2.1.21-2.0.1" apply false
     id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 
