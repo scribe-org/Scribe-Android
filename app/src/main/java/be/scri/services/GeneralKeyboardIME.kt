@@ -33,15 +33,15 @@ import be.scri.R
 import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
+import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
+import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.EmojiUtils.isEmoji
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.LanguageMappingConstants.conjugatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
-import be.scri.helpers.LanguageMappingConstants.nounAnnotationConversionDict
 import be.scri.helpers.LanguageMappingConstants.pluralPlaceholder
-import be.scri.helpers.LanguageMappingConstants.prepAnnotationConversionDict
 import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
@@ -1157,7 +1157,7 @@ abstract class GeneralKeyboardIME(
      */
     private fun handleSingleNounSuggestion(nounTypeSuggestion: List<String>?): Boolean {
         if (nounTypeSuggestion?.size == 1 && !isSingularAndPlural) {
-            val (colorRes, text) = handleColorAndTextForNounType(nounTypeSuggestion[0])
+            val (colorRes, text) = handleColorAndTextForNounType(nounTypeSuggestion[0], language, applicationContext)
             if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
                 handleSingleType(nounTypeSuggestion, "noun")
                 return true
@@ -1173,7 +1173,12 @@ abstract class GeneralKeyboardIME(
      */
     private fun handleSingleCaseSuggestion(caseAnnotationSuggestion: List<String>?): Boolean {
         if (caseAnnotationSuggestion?.size == 1) {
-            val (colorRes, text) = handleTextForCaseAnnotation(caseAnnotationSuggestion[0])
+            val (colorRes, text) =
+                handleTextForCaseAnnotation(
+                    caseAnnotationSuggestion[0],
+                    language,
+                    applicationContext,
+                )
             if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
                 handleSingleType(caseAnnotationSuggestion, "preposition")
                 return true
@@ -1209,13 +1214,13 @@ abstract class GeneralKeyboardIME(
         var appliedSomething = false
         nounTypeSuggestion?.let {
             handleSingleType(it, "noun")
-            val (_, text) = handleColorAndTextForNounType(it[0])
+            val (_, text) = handleColorAndTextForNounType(it[0], language, applicationContext)
             if (text != getString(R.string.suggestion)) appliedSomething = true
         }
         if (!appliedSomething) {
             caseAnnotationSuggestion?.let {
                 handleSingleType(it, "preposition")
-                val (_, text) = handleTextForCaseAnnotation(it[0])
+                val (_, text) = handleTextForCaseAnnotation(it[0], language, applicationContext)
                 if (text != getString(R.string.suggestion)) appliedSomething = true
             }
         }
@@ -1254,8 +1259,8 @@ abstract class GeneralKeyboardIME(
 
         val (colorRes, buttonText) =
             when (type) {
-                "noun" -> handleColorAndTextForNounType(suggestionText)
-                "preposition" -> handleTextForCaseAnnotation(suggestionText)
+                "noun" -> handleColorAndTextForNounType(suggestionText, language, applicationContext)
+                "preposition" -> handleTextForCaseAnnotation(suggestionText, language, applicationContext)
                 else -> Pair(R.color.transparent, getString(R.string.suggestion))
             }
 
@@ -1310,8 +1315,12 @@ abstract class GeneralKeyboardIME(
     ): Pair<Pair<Int, String>, Pair<Int, String>>? {
         val (leftType, rightType) = getSuggestionTypes(type, suggestions)
         return when (type) {
-            "noun" -> handleColorAndTextForNounType(leftType) to handleColorAndTextForNounType(rightType)
-            "preposition" -> handleTextForCaseAnnotation(leftType) to handleTextForCaseAnnotation(rightType)
+            "noun" ->
+                handleColorAndTextForNounType(leftType, language, applicationContext) to
+                    handleColorAndTextForNounType(rightType, language, applicationContext)
+            "preposition" ->
+                handleTextForCaseAnnotation(leftType, language, applicationContext) to
+                    handleTextForCaseAnnotation(rightType, language, applicationContext)
             else -> null
         }
     }
@@ -1390,12 +1399,26 @@ abstract class GeneralKeyboardIME(
      * Handles the logic when a word has multiple possible genders or
      * cases but only one suggestion slot is available.
      * It picks the first valid suggestion to display.
-     * @param multipleTypeSuggestion The list of noun/gender suggestions.
+     * @param multipleTypeSuggestion The list of noun suggestions.
      */
     private fun handleFallbackOrSingleSuggestion(multipleTypeSuggestion: List<String>?) {
         val suggestionText = getString(R.string.suggestion)
-        val validNouns = multipleTypeSuggestion?.filter { handleColorAndTextForNounType(it).second != suggestionText }
-        val validCases = caseAnnotationSuggestion?.filter { handleTextForCaseAnnotation(it).second != suggestionText }
+        val validNouns =
+            multipleTypeSuggestion?.filter {
+                handleColorAndTextForNounType(
+                    it,
+                    language,
+                    applicationContext,
+                ).second != suggestionText
+            }
+        val validCases =
+            caseAnnotationSuggestion?.filter {
+                handleTextForCaseAnnotation(
+                    it,
+                    language,
+                    applicationContext,
+                ).second != suggestionText
+            }
         if (!validNouns.isNullOrEmpty()) {
             handleSingleType(validNouns, "noun")
         } else if (!validCases.isNullOrEmpty()) {
@@ -1424,65 +1447,6 @@ abstract class GeneralKeyboardIME(
         }
         setupDualSuggestionButtons(leftSuggestion, rightSuggestion)
     }
-
-    /**
-     * Maps a case annotation string (e.g., "genitive case") to a displayable text and color.
-     * @param nounType The case annotation string.
-     * @return A pair containing the color resource ID and the display text.
-     */
-    private fun handleTextForCaseAnnotation(nounType: String): Pair<Int, String> {
-        val color = R.color.annotateOrange
-        val suggestionMap =
-            mapOf(
-                "genitive case" to Pair(color, processValuesForPreposition(language, "Gen")),
-                "accusative case" to Pair(color, processValuesForPreposition(language, "Acc")),
-                "dative case" to Pair(color, processValuesForPreposition(language, "Dat")),
-                "locative case" to Pair(color, processValuesForPreposition(language, "Loc")),
-                "Prepositional case" to Pair(color, processValuesForPreposition(language, "Pre")),
-                "Instrumental case" to Pair(color, processValuesForPreposition(language, "Ins")),
-            )
-        return suggestionMap[nounType] ?: Pair(R.color.transparent, getString(R.string.suggestion))
-    }
-
-    /**
-     * Maps a noun type string (e.g., "masculine") to a displayable text and color.
-     * @param nounType The noun type or gender string.
-     * @return A pair containing the color resource ID and the display text.
-     */
-    private fun handleColorAndTextForNounType(nounType: String): Pair<Int, String> {
-        val suggestionMap =
-            mapOf(
-                "PL" to Pair(R.color.annotateOrange, "PL"),
-                "neuter" to Pair(R.color.annotateGreen, processValueForNouns(language, "N")),
-                "common of two genders" to Pair(R.color.annotatePurple, processValueForNouns(language, "C")),
-                "common" to Pair(R.color.annotatePurple, processValueForNouns(language, "C")),
-                "masculine" to Pair(R.color.annotateBlue, processValueForNouns(language, "M")),
-                "feminine" to Pair(R.color.annotateRed, processValueForNouns(language, "F")),
-            )
-        return suggestionMap[nounType] ?: Pair(R.color.transparent, getString(R.string.suggestion))
-    }
-
-    /**
-     * Processes a noun gender abbreviation for display, converting it based on language-specific conventions.
-     * @param language The current keyboard language.
-     * @param text The gender abbreviation (e.g., "M", "F", "N").
-     * @return The language-specific display text (e.g., "М" for Russian masculine).
-     */
-    private fun processValueForNouns(
-        language: String,
-        text: String,
-    ): String = nounAnnotationConversionDict[language]?.get(text) ?: text
-
-    /**
-     * Processes a preposition case abbreviation for display, converting it based on language-specific conventions.
-     * @param language The current keyboard language.
-     * @param text The case abbreviation (e.g., "Acc", "Dat").
-     * @return The language-specific display text (e.g., "Akk" for German accusative).
-     */
-    private fun processValuesForPreposition(
-        language: String,
-        text: String,
-    ): String = prepAnnotationConversionDict[language]?.get(text) ?: text
 
     /**
      * Disables all auto-suggestions and resets the suggestion buttons to their default, inactive state.
