@@ -34,7 +34,6 @@ import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.DatabaseManagers
-import be.scri.helpers.ui.HintUtils
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
@@ -52,6 +51,7 @@ import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
+import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
 
 private const val DATA_SIZE_2 = 2

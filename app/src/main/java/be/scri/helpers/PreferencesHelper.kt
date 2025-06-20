@@ -208,7 +208,7 @@ object PreferencesHelper {
         shouldShowPopupOnKeypress: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        sharedPref.edit() {
+        sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), shouldShowPopupOnKeypress)
         }
         Toast
@@ -232,7 +232,7 @@ object PreferencesHelper {
         darkMode: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        sharedPref.edit() {
+        sharedPref.edit {
             putBoolean("dark_mode", darkMode)
         }
     }
