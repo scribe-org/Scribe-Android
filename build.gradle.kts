@@ -29,7 +29,7 @@ apply(plugin = "org.jetbrains.kotlinx.kover")
 
 
 plugins {
-    id("com.google.devtools.ksp") version "2.1.21-2.0.1" apply false
+    id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply false
     id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 

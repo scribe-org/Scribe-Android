@@ -15,7 +15,7 @@ plugins {
     id("kotlin-android")
     id("org.jmailen.kotlinter")
     id("io.gitlab.arturbosch.detekt")
-    id("com.google.devtools.ksp") version "2.1.21-2.0.1" apply true
+    id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
     id("de.mannodermaus.android-junit5") version "1.11.2.0"
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("jacoco")
