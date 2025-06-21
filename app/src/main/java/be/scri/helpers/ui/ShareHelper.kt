@@ -1,22 +1,23 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
-package be.scri.helpers
+package be.scri.helpers.ui
 
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.ContextCompat
 
 /**
  * A helper to facilitate sharing of the application and contacting the team.
  */
 object ShareHelper {
     /**
-     * Shares the link to the Scribe Android project repository.
-     * This method opens an intent chooser to allow the user to select an application to share the link.
+     * Shares the Scribe GitHub repository link using an external app.
      *
-     * @param context The application context.
+     * Creates an ACTION_SEND intent with the repository URL and starts an activity chooser.
+     * Handles [ActivityNotFoundException] and [IllegalArgumentException].
+     *
+     * @param context The Context to launch the sharing intent from.
      */
     fun shareScribe(context: Context) {
         try {
@@ -25,7 +26,11 @@ object ShareHelper {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
                 }
-            startActivity(context, Intent.createChooser(sharingIntent, "Share via"), null)
+            ContextCompat.startActivity(
+                context,
+                Intent.createChooser(sharingIntent, "Share via"),
+                null,
+            )
         } catch (e: ActivityNotFoundException) {
             Log.e("AboutFragment", "No application found to share content", e)
         } catch (e: IllegalArgumentException) {
@@ -35,19 +40,27 @@ object ShareHelper {
 
     /**
      * Sends an email to the Scribe team.
-     * This method opens an intent chooser to allow the user to select an email client to send the email.
      *
-     * @param context The application context.
+     * Launches an email client with a pre-filled email to "team@scri.be"
+     * and subject "Hey Scribe!".
+     *
+     * @param context The context to launch the email intent from.
+     * @throws ActivityNotFoundException If no email client is installed.
+     * @throws IllegalArgumentException If there's an issue with the email intent arguments.
      */
     fun sendEmail(context: Context) {
         try {
             val intent =
                 Intent(Intent.ACTION_SEND).apply {
+                    type = "message/rfc822"
                     putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
                     putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
-                    type = "message/rfc822"
                 }
-            startActivity(context, Intent.createChooser(intent, "Choose an Email client:"), null)
+            ContextCompat.startActivity(
+                context,
+                Intent.createChooser(intent, "Choose an Email client:"),
+                null,
+            )
         } catch (e: ActivityNotFoundException) {
             Log.e("AboutFragment", "No email client found", e)
         } catch (e: IllegalArgumentException) {

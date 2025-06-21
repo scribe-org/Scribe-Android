@@ -10,20 +10,35 @@
         "commons": [],
         "neuters": []
     },
-       "conjugations": {
+    "conjugations": {
         "1": {
-            "title": "Aktiv",
-            "1": { "imperativ": "imperative" },
-            "2": { "presens": "activePresent" },
-            "3": { "dåtid": "activePreterite" },
-            "4": { "liggande": "activeSupine" }
+            "title": "Aktiv (Active Voice)",
+            "conjugationTypes": {
+                "1": {
+                    "title": "Active Forms",
+                    "conjugationForms": {
+                        "infinitiv": "activeInfinitive",
+                        "imperativ": "imperative",
+                        "presens": "activePresent",
+                        "preteritum (dåtid)": "activePreterite",
+                        "supinum (liggande)": "activeSupine"
+                    }
+                }
+            }
         },
         "2": {
-            "title": "Passiv",
-            "1": { "infinitiv": "passiveInfinitive" },
-            "2": { "presens": "passivePresent" },
-            "3": { "liggande": "passivePreterite" },
-            "4": { "liggande": "passiveSupine" }
+            "title": "Passiv (Passive Voice)",
+            "conjugationTypes": {
+                "1": {
+                    "title": "Passive Forms",
+                    "conjugationForms": {
+                        "infinitiv": "passiveInfinitive",
+                        "presens": "passivePresent",
+                        "preteritum (dåtid)": "passivePreterite",
+                        "supinum (liggande)": "passiveSupine"
+                    }
+                }
+            }
         }
     }
 }

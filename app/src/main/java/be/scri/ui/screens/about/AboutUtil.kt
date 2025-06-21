@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.helpers.RatingHelper
-import be.scri.helpers.ShareHelper
+import be.scri.helpers.ui.RatingHelper
+import be.scri.helpers.ui.ShareHelper
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
