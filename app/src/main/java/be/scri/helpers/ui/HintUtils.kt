@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-package be.scri.helpers
+package be.scri.helpers.ui
 
 import android.content.Context
+import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.english.ENInterfaceVariables
 import be.scri.helpers.french.FRInterfaceVariables
 import be.scri.helpers.german.DEInterfaceVariables
@@ -12,6 +13,7 @@ import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
 import be.scri.services.GeneralKeyboardIME
+import kotlin.collections.get
 
 /**
  * Utility object for handling hint-related logic throughout the application.

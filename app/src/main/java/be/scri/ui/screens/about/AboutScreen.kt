@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.R
-import be.scri.helpers.HintUtils
+import be.scri.helpers.ui.HintUtils
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.screens.about.AboutUtil.getCommunityList
