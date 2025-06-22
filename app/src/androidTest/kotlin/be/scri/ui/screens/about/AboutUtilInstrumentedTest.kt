@@ -25,21 +25,42 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * Instrumented tests for verifying the behavior of [AboutUtil] functions within an Android context.
+ *
+ * This class tests that various utility functions used in the About screen:
+ * - Trigger appropriate Intents
+ * - Handle context properly
+ * - Return expected list data
+ * - Execute callbacks correctly
+ *
+ * It uses Espresso Intents, ActivityScenario, and Compose test utilities.
+ */
 @RunWith(AndroidJUnit4::class)
 class AboutUtilInstrumentedTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    /**
+     * Initializes Espresso Intents before each test.
+     */
     @Before
     fun setup() {
         Intents.init()
     }
 
+    /**
+     * Releases Espresso Intents after each test to avoid leaks.
+     */
     @After
     fun tearDown() {
         Intents.release()
     }
 
+    /**
+     * Verifies that [AboutUtil.onShareScribeClick] does not crash when called
+     * and launches a share chooser intent from an Activity context.
+     */
     @Test
     fun test_onShareScribeClick_doesNotCrash() {
         // Use the app context
@@ -51,6 +72,10 @@ class AboutUtilInstrumentedTest {
         Intents.intended(hasAction(Intent.ACTION_CHOOSER))
     }
 
+    /**
+     * Verifies that [AboutUtil.onRateScribeClick] executes without crashing
+     * when invoked from an Activity context.
+     */
     @Test
     fun test_onRateScribeClick_doesNotCrash() {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
@@ -59,6 +84,9 @@ class AboutUtilInstrumentedTest {
         }
     }
 
+    /**
+     * Asserts that [AboutUtil.onMailClick] launches an email intent wrapped in a chooser.
+     */
     @Test
     fun test_onMailClick_launchesEmailIntent() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -80,6 +108,10 @@ class AboutUtilInstrumentedTest {
         )
     }
 
+    /**
+     * Tests [AboutUtil.getCommunityList] returns a valid list and
+     * triggers correct callbacks for Share and Wikimedia items.
+     */
     @Test
     fun testGetCommunityList() {
         println("Testing getCommunityList...")
@@ -138,6 +170,10 @@ class AboutUtilInstrumentedTest {
         println("getCommunityList test passed!")
     }
 
+    /**
+     * Tests [AboutUtil.getFeedbackAndSupportList] returns a valid list and
+     * executes all related click callbacks correctly.
+     */
     @Test
     fun testGetFeedbackAndSupportList() {
         println("Testing getFeedbackAndSupportList...")
@@ -200,6 +236,10 @@ class AboutUtilInstrumentedTest {
         println("getFeedbackAndSupportList test passed!")
     }
 
+    /**
+     * Tests [AboutUtil.getLegalListItems] returns legal items and triggers
+     * callbacks for privacy policy and licenses.
+     */
     @Test
     fun testGetLegalListItems() {
         println("Testing getLegalListItems...")
@@ -255,6 +295,9 @@ class AboutUtilInstrumentedTest {
         println("getLegalListItems test passed!")
     }
 
+    /**
+     * Asserts that all [ExternalLinks] constants are correctly defined and non-empty.
+     */
     @Test
     fun testExternalLinksConstants() {
         println("Testing ExternalLinks constants...")
