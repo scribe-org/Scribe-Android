@@ -43,9 +43,10 @@ class AboutUtilInstrumentedTest {
     @Test
     fun test_onShareScribeClick_doesNotCrash() {
         // Use the app context
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-
-        AboutUtil.onShareScribeClick(context)
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        scenario.onActivity { activity ->
+            AboutUtil.onShareScribeClick(activity)
+        }
 
         Intents.intended(hasAction(Intent.ACTION_CHOOSER))
     }
