@@ -21,13 +21,14 @@ object ShareHelper {
      */
     fun shareScribe(context: Context) {
         try {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
-                if (context !is Activity) {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val intent =
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
+                    if (context !is Activity) {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
                 }
-            }
 
             val chooser = Intent.createChooser(intent, "Share via")
             if (context !is Activity) {
@@ -55,14 +56,15 @@ object ShareHelper {
 
     fun sendEmail(context: Context) {
         try {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "message/rfc822"
-                putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
-                putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
-                if (context !is Activity) {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val intent =
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "message/rfc822"
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
+                    putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
+                    if (context !is Activity) {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
                 }
-            }
 
             val chooser = Intent.createChooser(intent, "Choose an Email client:")
             if (context !is Activity) {
