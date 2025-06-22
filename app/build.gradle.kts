@@ -27,7 +27,8 @@ jacoco {
     toolVersion = "0.8.12"
 }
 
-//val junit5Version by extra("5.11.2")
+val kotlinVersion by extra("2.0.0")
+val junit5Version by extra("5.11.2")
 val mockkVersion by extra("1.13.13")
 
 android {
