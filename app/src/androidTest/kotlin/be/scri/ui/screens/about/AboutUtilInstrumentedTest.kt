@@ -63,7 +63,7 @@ class AboutUtilInstrumentedTest {
      */
     @Test
     fun test_onShareScribeClick_doesNotCrash() {
-        // Use the app context
+        // Use the app context.
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         scenario.onActivity { activity ->
             AboutUtil.onShareScribeClick(activity)
@@ -129,11 +129,11 @@ class AboutUtilInstrumentedTest {
                         context = context,
                     )
 
-                // Test list is not empty
+                // Test list is not empty.
                 assertThat(communityList.items).isNotEmpty()
                 assertThat(communityList.items).hasSize(5)
 
-                // Test each item has required fields
+                // Test each item has required fields.
                 communityList.items.forEach { item ->
                     assertThat(item).isInstanceOf(ScribeItem.ExternalLinkItem::class.java)
                     val linkItem = item as ScribeItem.ExternalLinkItem
@@ -144,7 +144,7 @@ class AboutUtilInstrumentedTest {
                     assertThat(linkItem.onClick).isNotNull()
                 }
 
-                // Test specific items
+                // Test specific items.
                 val githubItem = communityList.items[0] as ScribeItem.ExternalLinkItem
                 assertThat(githubItem.leadingIcon).isEqualTo(R.drawable.github_logo)
                 assertThat(githubItem.title).isEqualTo(R.string.app_about_community_github)
@@ -157,13 +157,13 @@ class AboutUtilInstrumentedTest {
                 assertThat(wikimediaItem.leadingIcon).isEqualTo(R.drawable.wikimedia_logo_black)
                 assertThat(wikimediaItem.title).isEqualTo(R.string.app_about_community_wikimedia)
 
-                // Test onClick callbacks
+                // Test onClick callbacks.
                 shareItem.onClick()
                 wikimediaItem.onClick()
             }
         }
 
-        // Verify callbacks were triggered
+        // Verify callbacks were triggered.
         assertThat(shareClicked).isTrue()
         assertThat(wikimediaClicked).isTrue()
 
@@ -193,11 +193,11 @@ class AboutUtilInstrumentedTest {
                         context = context,
                     )
 
-                // Test list is not empty
+                // Test list is not empty.
                 assertThat(feedbackList.items).isNotEmpty()
                 assertThat(feedbackList.items).hasSize(5)
 
-                // Test each item has required fields
+                // Test each item has required fields.
                 feedbackList.items.forEach { item ->
                     assertThat(item).isInstanceOf(ScribeItem.ExternalLinkItem::class.java)
                     val linkItem = item as ScribeItem.ExternalLinkItem
@@ -208,7 +208,7 @@ class AboutUtilInstrumentedTest {
                     assertThat(linkItem.onClick).isNotNull()
                 }
 
-                // Test specific items
+                // Test specific items.
                 val rateItem = feedbackList.items[0] as ScribeItem.ExternalLinkItem
                 assertThat(rateItem.leadingIcon).isEqualTo(R.drawable.star)
                 assertThat(rateItem.title).isEqualTo(R.string.app_about_feedback_rate_scribe)
@@ -221,14 +221,14 @@ class AboutUtilInstrumentedTest {
                 assertThat(hintsItem.leadingIcon).isEqualTo(R.drawable.light_bulb_icon)
                 assertThat(hintsItem.title).isEqualTo(R.string.app_about_feedback_app_hints)
 
-                // Test onClick callbacks
+                // Test onClick callbacks.
                 rateItem.onClick()
                 mailItem.onClick()
                 hintsItem.onClick()
             }
         }
 
-        // Verify callbacks were triggered
+        // Verify callbacks were triggered.
         assertThat(rateClicked).isTrue()
         assertThat(mailClicked).isTrue()
         assertThat(resetHintsClicked).isTrue()
@@ -256,11 +256,11 @@ class AboutUtilInstrumentedTest {
                         onThirdPartyLicensesClick = { thirdPartyLicensesClicked = true },
                     )
 
-                // Test list is not empty
+                // Test list is not empty.
                 assertThat(legalList.items).isNotEmpty()
                 assertThat(legalList.items).hasSize(2)
 
-                // Test each item has required fields
+                // Test each item has required fields.
                 legalList.items.forEach { item ->
                     assertThat(item).isInstanceOf(ScribeItem.ExternalLinkItem::class.java)
                     val linkItem = item as ScribeItem.ExternalLinkItem
@@ -271,7 +271,7 @@ class AboutUtilInstrumentedTest {
                     assertThat(linkItem.onClick).isNotNull()
                 }
 
-                // Test specific items
+                // Test specific items.
                 val privacyItem = legalList.items[0] as ScribeItem.ExternalLinkItem
                 assertThat(privacyItem.leadingIcon).isEqualTo(R.drawable.shield_lock)
                 assertThat(privacyItem.title).isEqualTo(R.string.app_about_legal_privacy_policy)
@@ -282,13 +282,13 @@ class AboutUtilInstrumentedTest {
                 assertThat(licenseItem.title).isEqualTo(R.string.app_about_legal_third_party)
                 assertThat(licenseItem.trailingIcon).isEqualTo(R.drawable.right_arrow)
 
-                // Test onClick callbacks
+                // Test onClick callbacks.
                 privacyItem.onClick()
                 licenseItem.onClick()
             }
         }
 
-        // Verify callbacks were triggered
+        // Verify callbacks were triggered.
         assertThat(privacyPolicyClicked).isTrue()
         assertThat(thirdPartyLicensesClicked).isTrue()
 
@@ -302,7 +302,7 @@ class AboutUtilInstrumentedTest {
     fun testExternalLinksConstants() {
         println("Testing ExternalLinks constants...")
 
-        // Test that external links are properly defined
+        // Test that external links are properly defined.
         assertThat(be.scri.ui.screens.about.ExternalLinks.GITHUB_SCRIBE).isNotEmpty()
         assertThat(be.scri.ui.screens.about.ExternalLinks.GITHUB_ISSUES).isNotEmpty()
         assertThat(be.scri.ui.screens.about.ExternalLinks.GITHUB_RELEASES).isNotEmpty()
