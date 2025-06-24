@@ -17,7 +17,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
     id("de.mannodermaus.android-junit5") version "1.11.2.0"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
     id("jacoco")
     kotlin("plugin.serialization") version "1.9.0"
     id("org.jetbrains.kotlinx.kover") version "0.6.1"
@@ -27,6 +27,7 @@ jacoco {
     toolVersion = "0.8.12"
 }
 
+val kotlinVersion by extra("2.0.0")
 val junit5Version by extra("5.11.2")
 val mockkVersion by extra("1.13.13")
 
@@ -42,6 +43,16 @@ android {
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    packaging {
+        resources {
+            pickFirsts.add("META-INF/LICENSE*")
+            pickFirsts.add("META-INF/ASL2.0")
+            pickFirsts.add("META-INF/NOTICE*")
+            pickFirsts.add("META-INF/LGPL2.1")
+
+        }
     }
 
 
@@ -65,12 +76,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
     buildFeatures {
@@ -111,6 +122,9 @@ android {
 
     sourceSets {
         getByName("main").java.srcDirs("src/main/kotlin")
+        named("test") {
+            java.srcDirs("src/test/java", "src/test/kotlin")
+        }
     }
 
     lint {
@@ -202,7 +216,7 @@ dependencies {
     // ==========================
     // Kotlin
     // ==========================
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.21")
 
     // ==========================
     // Layout and UI
@@ -245,22 +259,27 @@ dependencies {
     // ==========================
     // Unit Testing
     // ==========================
-
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.13")
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.20")
+    testImplementation ("org.mockito:mockito-core:5.12.0")
+    testImplementation ("org.mockito:mockito-inline:5.2.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("com.google.truth:truth:1.4.4")
 
-    // ==========================
-    // Instrumentation Tests
-    // ==========================
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
 
     // ==========================
     // UI Tests
     // ==========================
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
+    androidTestImplementation("io.mockk:mockk-android:$mockkVersion")
+    androidTestImplementation("com.google.truth:truth:1.4.4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     // ==========================
@@ -271,21 +290,20 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("io.mockk:mockk-android:1.13.13")
+    androidTestImplementation("io.mockk:mockk-android:1.14.2")
 
     // ==========================
     // Other
     // ==========================
-
-    api("joda-time:joda-time:2.12.7")
+    api("joda-time:joda-time:2.14.0")
     api("com.github.tibbi:RecyclerView-FastScroller:e7d3e150c4")
     api("com.github.tibbi:reprint:2cb206415d")
     api("androidx.core:core-ktx:1.16.0")
-    api("com.google.code.gson:gson:2.11.0")
+    api("com.google.code.gson:gson:2.13.1")
     api("com.github.bumptech.glide:glide:4.16.0")
-    ksp("com.github.bumptech.glide:ksp:4.14.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    ksp("com.github.bumptech.glide:ksp:4.16.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 }
 
 tasks.register<Copy>("moveFromi18n") {
@@ -329,9 +347,6 @@ tasks.withType(Test::class) {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
 
 tasks.register<JacocoReport>("jacocoTestReport") {
     group = "Reporting"

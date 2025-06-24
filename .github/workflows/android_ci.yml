@@ -82,7 +82,7 @@ jobs:
     instrumentation_test:
         runs-on: ubuntu-latest
         name: Run Android Instrumentation Tests
-        timeout-minutes: 30
+        timeout-minutes: 50
         steps:
             - name: Checkout Repository
               uses: actions/checkout@v4
@@ -116,5 +116,7 @@ jobs:
                       adb shell settings put global window_animation_scale 0.0
                       adb shell settings put global transition_animation_scale 0.0
                       adb shell settings put global animator_duration_scale 0.0
-                      sleep 5
+                      adb shell pm list packages >/dev/null
+                      sleep 10
+                      adb shell getprop sys.boot_completed
                       ./gradlew connectedCoreDebugAndroidTest --stacktrace

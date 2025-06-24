@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers.ui
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat
 
 /**
  * A helper to facilitate sharing of the application and contacting the team.
@@ -21,20 +21,25 @@ object ShareHelper {
      */
     fun shareScribe(context: Context) {
         try {
-            val sharingIntent =
+            val intent =
                 Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, "https://github.com/scribe-org/Scribe-Android")
+                    if (context !is Activity) {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
                 }
-            ContextCompat.startActivity(
-                context,
-                Intent.createChooser(sharingIntent, "Share via"),
-                null,
-            )
+
+            val chooser = Intent.createChooser(intent, "Share via")
+            if (context !is Activity) {
+                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            context.startActivity(chooser)
         } catch (e: ActivityNotFoundException) {
-            Log.e("AboutFragment", "No application found to share content", e)
+            Log.e("ShareHelper", "No application found to share content", e)
         } catch (e: IllegalArgumentException) {
-            Log.e("AboutFragment", "Invalid argument for sharing", e)
+            Log.e("ShareHelper", "Invalid argument for sharing", e)
         }
     }
 
@@ -48,6 +53,7 @@ object ShareHelper {
      * @throws ActivityNotFoundException If no email client is installed.
      * @throws IllegalArgumentException If there's an issue with the email intent arguments.
      */
+
     fun sendEmail(context: Context) {
         try {
             val intent =
@@ -55,16 +61,21 @@ object ShareHelper {
                     type = "message/rfc822"
                     putExtra(Intent.EXTRA_EMAIL, arrayOf("team@scri.be"))
                     putExtra(Intent.EXTRA_SUBJECT, "Hey Scribe!")
+                    if (context !is Activity) {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
                 }
-            ContextCompat.startActivity(
-                context,
-                Intent.createChooser(intent, "Choose an Email client:"),
-                null,
-            )
+
+            val chooser = Intent.createChooser(intent, "Choose an Email client:")
+            if (context !is Activity) {
+                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            context.startActivity(chooser)
         } catch (e: ActivityNotFoundException) {
-            Log.e("AboutFragment", "No email client found", e)
+            Log.e("ShareHelper", "No email client found", e)
         } catch (e: IllegalArgumentException) {
-            Log.e("AboutFragment", "Invalid argument for sending email", e)
+            Log.e("ShareHelper", "Invalid argument for sending email", e)
         }
     }
 }
