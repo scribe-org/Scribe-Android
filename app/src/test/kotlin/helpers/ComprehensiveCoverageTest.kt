@@ -7,7 +7,7 @@ import android.provider.SyncStateContract.Constants
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.scri.activities.MainActivity
 import be.scri.helpers.AlphanumericComparator
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)

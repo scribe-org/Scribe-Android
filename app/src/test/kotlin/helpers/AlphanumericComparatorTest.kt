@@ -7,8 +7,8 @@
 package helpers
 
 import be.scri.helpers.AlphanumericComparator
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class AlphanumericComparatorTest {
     private val subject = AlphanumericComparator()
