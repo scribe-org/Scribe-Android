@@ -1526,6 +1526,15 @@ abstract class GeneralKeyboardIME(
      */
     fun handleKeycodeEnter() {
         val inputConnection = currentInputConnection ?: return
+
+        if (currentState == ScribeState.IDLE ||
+            currentState == ScribeState.SELECT_COMMAND ||
+            currentState == ScribeState.INVALID
+        ) {
+            handleDefaultEnter(inputConnection)
+            return
+        }
+
         val rawInput =
             binding.commandBar.text
                 ?.toString()
@@ -1534,13 +1543,12 @@ abstract class GeneralKeyboardIME(
 
         if (rawInput == null) {
             moveToIdleState()
-            return
-        }
-
-        when (currentState) {
-            ScribeState.PLURAL, ScribeState.TRANSLATE -> handlePluralOrTranslateState(rawInput, inputConnection)
-            ScribeState.CONJUGATE -> handleConjugateState(rawInput)
-            else -> handleDefaultEnter(inputConnection)
+        } else {
+            when (currentState) {
+                ScribeState.PLURAL, ScribeState.TRANSLATE -> handlePluralOrTranslateState(rawInput, inputConnection)
+                ScribeState.CONJUGATE -> handleConjugateState(rawInput)
+                else -> handleDefaultEnter(inputConnection)
+            }
         }
     }
 
