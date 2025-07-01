@@ -502,7 +502,7 @@ abstract class GeneralKeyboardIME(
         initializeKeyboard(getKeyboardLayoutXML())
         updateButtonVisibility(emojiAutoSuggestionEnabled)
         updateEmojiSuggestion(emojiAutoSuggestionEnabled, autoSuggestEmojis)
-
+        binding.commandBar.setText("")
         disableAutoSuggest()
     }
 
@@ -1539,7 +1539,7 @@ abstract class GeneralKeyboardIME(
             binding.commandBar.text
                 ?.toString()
                 ?.trim()
-                .takeIf { !it.isNullOrEmpty() }
+                ?.takeIf { it.isNotEmpty() }
 
         if (rawInput == null) {
             moveToIdleState()
