@@ -35,8 +35,4 @@ class Config(
     var showPopupOnKeypress: Boolean
         get() = prefs.getBoolean(SHOW_POPUP_ON_KEYPRESS, true)
         set(showPopupOnKeypress) = prefs.edit().putBoolean(SHOW_POPUP_ON_KEYPRESS, showPopupOnKeypress).apply()
-
-    var periodOnDoubleTap: Boolean
-        get() = prefs.getBoolean(PERIOD_ON_DOUBLE_TAP, true)
-        set(periodOnDoubleTap) = prefs.edit().putBoolean(PERIOD_ON_DOUBLE_TAP, periodOnDoubleTap).apply()
 }

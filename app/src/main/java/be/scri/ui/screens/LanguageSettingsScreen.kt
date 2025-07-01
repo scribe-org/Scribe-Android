@@ -21,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import be.scri.R
 import be.scri.helpers.DISABLE_ACCENT_CHARACTER
 import be.scri.helpers.EMOJI_SUGGESTIONS
-import be.scri.helpers.PERIOD_AND_COMMA
-import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.SHOW_POPUP_ON_KEYPRESS
 import be.scri.helpers.VIBRATE_ON_KEYPRESS
@@ -50,10 +48,7 @@ fun LanguageSettingsScreen(
     val periodOnDoubleTapState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
-                    false,
-                ),
+                PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context, language),
             )
         }
 
@@ -99,19 +94,8 @@ fun LanguageSettingsScreen(
 
     val periodAndCommaState =
         remember {
-            if (!sharedPref.contains(PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language))) {
-                sharedPref
-                    .edit()
-                    .putBoolean(
-                        PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language),
-                        true,
-                    ).apply()
-            }
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language),
-                    true,
-                ),
+                PreferencesHelper.getEnablePeriodAndCommaABC(context, language),
             )
         }
 
@@ -153,21 +137,21 @@ fun LanguageSettingsScreen(
             items =
                 getFunctionalityListData(
                     periodOnDoubleTapState = periodOnDoubleTapState.value,
-                    onTogglePeriodOnDoubleTap = { shouldDoubleSpacePeriod ->
-                        periodOnDoubleTapState.value = shouldDoubleSpacePeriod
+                    onTogglePeriodOnDoubleTap = { isEnabled ->
+                        periodOnDoubleTapState.value = isEnabled
                         PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(
                             context,
                             language,
-                            shouldDoubleSpacePeriod,
+                            isEnabled,
                         )
                     },
                     emojiSuggestionsState = emojiSuggestionsState.value,
-                    onToggleEmojiSuggestions = { shouldDoubleSpacePeriod ->
-                        emojiSuggestionsState.value = shouldDoubleSpacePeriod
+                    onToggleEmojiSuggestions = { isEnabled ->
+                        emojiSuggestionsState.value = isEnabled
                         PreferencesHelper.setEmojiAutoSuggestionsPreference(
                             context,
                             language,
-                            shouldDoubleSpacePeriod,
+                            isEnabled,
                         )
                     },
                     togglePopUpOnKeyPress = popupOnKeyPressState.value,

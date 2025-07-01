@@ -43,7 +43,6 @@ import be.scri.helpers.LanguageMappingConstants.conjugatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.LanguageMappingConstants.pluralPlaceholder
 import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
-import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
@@ -355,16 +354,8 @@ abstract class GeneralKeyboardIME(
      */
     override fun commitPeriodAfterSpace() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            val prefs = getSharedPreferences("app_preferences", MODE_PRIVATE)
-            if (
-                prefs.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(
-                        PERIOD_ON_DOUBLE_TAP,
-                        language,
-                    ),
-                    true,
-                )
-            ) {
+            val isPeriodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(this, language)
+            if (isPeriodOnDoubleTapEnabled) {
                 currentInputConnection?.apply {
                     deleteSurroundingText(1, 0)
                     commitText(". ", 1)

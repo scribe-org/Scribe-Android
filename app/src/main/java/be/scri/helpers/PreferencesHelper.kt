@@ -17,6 +17,8 @@ import be.scri.extensions.config
  */
 @Suppress("TooManyFunctions")
 object PreferencesHelper {
+    private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
+
     /**
      * Sets the translation source language for a given language.
      *
@@ -76,12 +78,12 @@ object PreferencesHelper {
         shouldEnablePeriodOnSpaceBarDoubleTap: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean(
-            getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
-            shouldEnablePeriodOnSpaceBarDoubleTap,
-        )
-        editor.apply()
+        sharedPref.edit {
+            putBoolean(
+                getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
+                shouldEnablePeriodOnSpaceBarDoubleTap,
+            )
+        }
         Toast
             .makeText(
                 context,
@@ -157,9 +159,9 @@ object PreferencesHelper {
         shouldEnablePeriodAndComma: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), shouldEnablePeriodAndComma)
-        editor.apply()
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), shouldEnablePeriodAndComma)
+        }
         Toast
             .makeText(
                 context,
@@ -321,9 +323,24 @@ object PreferencesHelper {
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isDisabledPeriodAndCommaABC =
-            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), false)
-        return isDisabledPeriodAndCommaABC
+        val isEnabledPeriodAndCommaABC =
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), true)
+        return isEnabledPeriodAndCommaABC
+    }
+
+    /**
+     * Retrieves whether period after double tap on space enabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     * @return True if double tap on space enabled for a given language, false otherwise.
+     */
+    fun getEnablePeriodOnSpaceBarDoubleTap(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), false)
     }
 
     /**
