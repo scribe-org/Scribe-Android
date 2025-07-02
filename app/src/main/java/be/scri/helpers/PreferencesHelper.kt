@@ -20,6 +20,10 @@ object PreferencesHelper {
     private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
     private const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
     private const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
+    private const val PERIOD_AND_COMMA = "period_and_comma"
+    private const val TRANSLATION_SOURCE = "translation_source"
+    private const val EMOJI_SUGGESTIONS = "emoji_suggestions"
+    private const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"
 
     /**
      * Sets the translation source language for a given language.

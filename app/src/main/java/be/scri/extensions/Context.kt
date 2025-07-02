@@ -5,12 +5,12 @@ package be.scri.extensions
 import android.content.Context
 import android.graphics.Color
 import be.scri.R
-import be.scri.helpers.Config
+import be.scri.helpers.BaseConfig
 
 /**
- * Lazily retrieves the [Config] object scoped to the application context.
+ * Lazily retrieves the [BaseConfig] object scoped to the application context.
  */
-val Context.config: Config get() = Config.newInstance(applicationContext)
+val Context.config: BaseConfig get() = BaseConfig.newInstance(applicationContext)
 
 /**
  * Determines the stroke color based on the current theme and user preferences.

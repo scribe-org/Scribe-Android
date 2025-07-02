@@ -3,7 +3,6 @@
 package be.scri.ui.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,8 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.R
-import be.scri.helpers.DISABLE_ACCENT_CHARACTER
-import be.scri.helpers.EMOJI_SUGGESTIONS
 import be.scri.helpers.PreferencesHelper
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
@@ -39,7 +36,6 @@ fun LanguageSettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
 
     val scrollState = rememberScrollState()
 
@@ -53,20 +49,14 @@ fun LanguageSettingsScreen(
     val emojiSuggestionsState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language),
-                    true,
-                ),
+                PreferencesHelper.getIsEmojiSuggestionsEnabled(context, language),
             )
         }
 
     val disableAccentCharacterState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language),
-                    false,
-                ),
+                PreferencesHelper.getIsAccentCharacterDisabled(context, language),
             )
         }
 
