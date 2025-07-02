@@ -46,6 +46,8 @@ import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
+import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
+import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -67,7 +69,7 @@ abstract class GeneralKeyboardIME(
     abstract val keyboardSymbols: Int
     abstract val keyboardSymbolShift: Int
 
-    abstract var keyboard: KeyboardBase?
+    open var keyboard: KeyboardBase? = null
     var keyboardView: KeyboardView? = null
     abstract var lastShiftPressTS: Long
     abstract var keyboardMode: Int
@@ -146,6 +148,7 @@ abstract class GeneralKeyboardIME(
         val inputView = binding.root
         keyboardView = binding.keyboardView
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -154,6 +157,12 @@ abstract class GeneralKeyboardIME(
         saveConjugateModeType("none")
         updateUI()
         return inputView
+    }
+
+    override fun onWindowShown() {
+        super.onWindowShown()
+        keyboardView?.setPreview = getIsPreviewEnabled(applicationContext, language)
+        keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
     }
 
     /**

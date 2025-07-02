@@ -18,6 +18,7 @@ import be.scri.extensions.config
 @Suppress("TooManyFunctions")
 object PreferencesHelper {
     private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
+    private const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
 
     /**
      * Sets the translation source language for a given language.
@@ -184,9 +185,9 @@ object PreferencesHelper {
         shouldVibrateOnKeypress: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), shouldVibrateOnKeypress)
-        editor.apply()
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), shouldVibrateOnKeypress)
+        }
         Toast
             .makeText(
                 context,
@@ -194,7 +195,6 @@ object PreferencesHelper {
                     if (shouldVibrateOnKeypress) "enabled" else "disabled",
                 Toast.LENGTH_SHORT,
             ).show()
-        context.config.vibrateOnKeypress = shouldVibrateOnKeypress
     }
 
     /**

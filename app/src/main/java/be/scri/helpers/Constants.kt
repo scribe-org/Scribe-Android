@@ -13,7 +13,6 @@ const val SHIFT_ON_PERMANENT = 2
 const val MAX_KEYS_PER_MINI_ROW = 9
 
 // Shared preferences.
-const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
 const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
 const val PERIOD_AND_COMMA = "period_and_comma"
 const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"

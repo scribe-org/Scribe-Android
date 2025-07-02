@@ -23,7 +23,6 @@ import be.scri.helpers.DISABLE_ACCENT_CHARACTER
 import be.scri.helpers.EMOJI_SUGGESTIONS
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.SHOW_POPUP_ON_KEYPRESS
-import be.scri.helpers.VIBRATE_ON_KEYPRESS
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
@@ -85,10 +84,7 @@ fun LanguageSettingsScreen(
     val vibrateOnKeyPressState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language),
-                    true,
-                ),
+                PreferencesHelper.getIsVibrateEnabled(context, language),
             )
         }
 
