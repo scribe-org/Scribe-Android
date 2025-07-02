@@ -10,13 +10,21 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
-import be.scri.extensions.config
 
 /**
  * A helper to facilitate setting preferences for individual language keyboards.
  */
 @Suppress("TooManyFunctions")
 object PreferencesHelper {
+    const val SCRIBE_PREFS = "app_preferences"
+    private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
+    private const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
+    private const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
+    private const val PERIOD_AND_COMMA = "period_and_comma"
+    private const val TRANSLATION_SOURCE = "translation_source"
+    private const val EMOJI_SUGGESTIONS = "emoji_suggestions"
+    private const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"
+
     /**
      * Sets the translation source language for a given language.
      *
@@ -29,7 +37,7 @@ object PreferencesHelper {
         language: String,
         translationSource: String,
     ) {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         sharedPref.edit { putString(getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language), translationSource) }
     }
 
@@ -44,7 +52,7 @@ object PreferencesHelper {
         context: Context,
         language: String,
     ): String {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getString(
             getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
             "English",
@@ -75,13 +83,13 @@ object PreferencesHelper {
         language: String,
         shouldEnablePeriodOnSpaceBarDoubleTap: Boolean,
     ) {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean(
-            getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
-            shouldEnablePeriodOnSpaceBarDoubleTap,
-        )
-        editor.apply()
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(
+                getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
+                shouldEnablePeriodOnSpaceBarDoubleTap,
+            )
+        }
         Toast
             .makeText(
                 context,
@@ -103,13 +111,13 @@ object PreferencesHelper {
         language: String,
         shouldDisableAccentCharacter: Boolean,
     ) {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean(
-            getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language),
-            shouldDisableAccentCharacter,
-        )
-        editor.apply()
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(
+                getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language),
+                shouldDisableAccentCharacter,
+            )
+        }
         Toast
             .makeText(
                 context,
@@ -131,10 +139,10 @@ object PreferencesHelper {
         language: String,
         shouldShowEmojiSuggestions: Boolean,
     ) {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), shouldShowEmojiSuggestions)
-        editor.apply()
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), shouldShowEmojiSuggestions)
+        }
         Toast
             .makeText(
                 context,
@@ -156,10 +164,10 @@ object PreferencesHelper {
         language: String,
         shouldEnablePeriodAndComma: Boolean,
     ) {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), shouldEnablePeriodAndComma)
-        editor.apply()
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), shouldEnablePeriodAndComma)
+        }
         Toast
             .makeText(
                 context,
@@ -181,10 +189,10 @@ object PreferencesHelper {
         language: String,
         shouldVibrateOnKeypress: Boolean,
     ) {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), shouldVibrateOnKeypress)
-        editor.apply()
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), shouldVibrateOnKeypress)
+        }
         Toast
             .makeText(
                 context,
@@ -192,7 +200,6 @@ object PreferencesHelper {
                     if (shouldVibrateOnKeypress) "enabled" else "disabled",
                 Toast.LENGTH_SHORT,
             ).show()
-        context.config.vibrateOnKeypress = shouldVibrateOnKeypress
     }
 
     /**
@@ -207,7 +214,7 @@ object PreferencesHelper {
         language: String,
         shouldShowPopupOnKeypress: Boolean,
     ) {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), shouldShowPopupOnKeypress)
         }
@@ -218,7 +225,6 @@ object PreferencesHelper {
                     if (shouldShowPopupOnKeypress) "enabled" else "disabled",
                 Toast.LENGTH_SHORT,
             ).show()
-        context.config.showPopupOnKeypress = shouldShowPopupOnKeypress
     }
 
     /**
@@ -231,7 +237,7 @@ object PreferencesHelper {
         context: Context,
         darkMode: Boolean,
     ) {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         sharedPref.edit {
             putBoolean("dark_mode", darkMode)
         }
@@ -244,7 +250,7 @@ object PreferencesHelper {
      * @return The dark mode setting as an integer value (AppCompatDelegate.MODE_NIGHT_YES or MODE_NIGHT_NO).
      */
     fun getUserDarkModePreference(context: Context): Int {
-        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
         val isSystemDarkTheme = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
@@ -269,7 +275,7 @@ object PreferencesHelper {
         context: Context,
         language: String,
     ): Boolean {
-        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val isAccentCharacterDisabled =
             sharedPref.getBoolean(getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language), false)
         return isAccentCharacterDisabled
@@ -282,11 +288,11 @@ object PreferencesHelper {
      * @param language The language for which to check the preference.
      * @return True if the preview feature is enabled, false otherwise.
      */
-    fun getIsPreviewEnabled(
+    fun isShowPopupOnKeypressEnabled(
         context: Context,
         language: String,
     ): Boolean {
-        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val isPreviewEnabled =
             sharedPref.getBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), true)
         return isPreviewEnabled
@@ -303,7 +309,7 @@ object PreferencesHelper {
         context: Context,
         language: String,
     ): Boolean {
-        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val isPreviewEnabled =
             sharedPref.getBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), true)
         return isPreviewEnabled
@@ -320,10 +326,25 @@ object PreferencesHelper {
         context: Context,
         language: String,
     ): Boolean {
-        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val isDisabledPeriodAndCommaABC =
-            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), false)
-        return isDisabledPeriodAndCommaABC
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
+        val isEnabledPeriodAndCommaABC =
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), true)
+        return isEnabledPeriodAndCommaABC
+    }
+
+    /**
+     * Retrieves whether period after double tap on space enabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     * @return True if double tap on space enabled for a given language, false otherwise.
+     */
+    fun getEnablePeriodOnSpaceBarDoubleTap(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), false)
     }
 
     /**
@@ -333,7 +354,7 @@ object PreferencesHelper {
      * @return True if dark mode is enabled, false otherwise.
      */
     fun getIsDarkModeOrNot(context: Context): Boolean {
-        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
         val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
@@ -351,7 +372,7 @@ object PreferencesHelper {
         context: Context,
         language: String,
     ): Boolean {
-        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), true)
         return isEnabled
     }
@@ -368,7 +389,7 @@ object PreferencesHelper {
         context: Context,
         language: String,
     ): String? {
-        val prefs = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         return prefs.getString(
             getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
             "English",

@@ -6,11 +6,8 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
-import be.scri.helpers.KeyboardBase
 import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
-import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
-import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 
 /**
  * The SpanishKeyboardIME class provides the input method for the Spanish language keyboard.
@@ -41,7 +38,6 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
     override val keyboardLetters: Int = 0
     override val keyboardSymbols: Int = 1
     override val keyboardSymbolShift: Int = 2
-    override var keyboard: KeyboardBase? = null
     override var lastShiftPressTS: Long = 0L
     override var keyboardMode: Int = keyboardLetters
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
@@ -50,12 +46,6 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
     override var hasTextBeforeCursor: Boolean = false
 
     private val keyHandler by lazy { KeyHandler(this) }
-
-    override fun onCreate() {
-        super.onCreate()
-        keyboardView?.setPreview = getIsPreviewEnabled(applicationContext, language)
-        keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
-    }
 
     override fun onKey(code: Int) {
         keyHandler.handleKey(code, language)

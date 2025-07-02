@@ -1711,7 +1711,6 @@ class KeyboardView
                         if (mKeys.getOrNull(mCurrentKey)?.code == KEYCODE_SPACE && !mIsLongPressingSpace) {
                             val currentTime = System.currentTimeMillis()
                             if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + EXTRA_DELAY &&
-                                context.config.periodOnDoubleTap &&
                                 mOnKeyboardActionListener!!.hasTextBeforeCursor()
                             ) {
                                 mOnKeyboardActionListener!!.commitPeriodAfterSpace()

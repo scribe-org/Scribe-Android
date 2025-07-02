@@ -6,10 +6,7 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
-import be.scri.helpers.KeyboardBase
 import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
-import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
-import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 
 /**
  * The EnglishKeyboardIME class provides the input method for the English language keyboard.
@@ -31,7 +28,6 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override val keyboardLetters: Int = 0
     override val keyboardSymbols: Int = 1
     override val keyboardSymbolShift: Int = 2
-    override var keyboard: KeyboardBase? = null
     override var lastShiftPressTS: Long = 0L
     override var keyboardMode: Int = keyboardLetters // default to letters
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
@@ -40,17 +36,6 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override var hasTextBeforeCursor: Boolean = false
 
     private val keyHandler by lazy { KeyHandler(this) }
-
-    /**
-     * Initializes the keyboard. This is where the magic happens.
-     */
-    override fun onCreate() {
-        super.onCreate()
-
-        // Add customizations specific to the English keyboard.
-        keyboardView?.setPreview = getIsPreviewEnabled(applicationContext, language)
-        keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
-    }
 
     /**
      * Handles key input from the keyboard and delegates it to [KeyHandler].

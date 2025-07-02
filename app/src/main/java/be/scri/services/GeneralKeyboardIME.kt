@@ -43,10 +43,11 @@ import be.scri.helpers.LanguageMappingConstants.conjugatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.LanguageMappingConstants.pluralPlaceholder
 import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
-import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
+import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
+import be.scri.helpers.PreferencesHelper.isShowPopupOnKeypressEnabled
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -68,7 +69,7 @@ abstract class GeneralKeyboardIME(
     abstract val keyboardSymbols: Int
     abstract val keyboardSymbolShift: Int
 
-    abstract var keyboard: KeyboardBase?
+    open var keyboard: KeyboardBase? = null
     var keyboardView: KeyboardView? = null
     abstract var lastShiftPressTS: Long
     abstract var keyboardMode: Int
@@ -147,6 +148,7 @@ abstract class GeneralKeyboardIME(
         val inputView = binding.root
         keyboardView = binding.keyboardView
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+        keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -155,6 +157,12 @@ abstract class GeneralKeyboardIME(
         saveConjugateModeType("none")
         updateUI()
         return inputView
+    }
+
+    override fun onWindowShown() {
+        super.onWindowShown()
+        keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
+        keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
     }
 
     /**
@@ -355,16 +363,8 @@ abstract class GeneralKeyboardIME(
      */
     override fun commitPeriodAfterSpace() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            val prefs = getSharedPreferences("app_preferences", MODE_PRIVATE)
-            if (
-                prefs.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(
-                        PERIOD_ON_DOUBLE_TAP,
-                        language,
-                    ),
-                    true,
-                )
-            ) {
+            val isPeriodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(this, language)
+            if (isPeriodOnDoubleTapEnabled) {
                 currentInputConnection?.apply {
                     deleteSurroundingText(1, 0)
                     commitText(". ", 1)

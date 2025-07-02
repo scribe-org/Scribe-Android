@@ -3,7 +3,6 @@
 package be.scri.ui.screens
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,13 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.R
-import be.scri.helpers.DISABLE_ACCENT_CHARACTER
-import be.scri.helpers.EMOJI_SUGGESTIONS
-import be.scri.helpers.PERIOD_AND_COMMA
-import be.scri.helpers.PERIOD_ON_DOUBLE_TAP
 import be.scri.helpers.PreferencesHelper
-import be.scri.helpers.SHOW_POPUP_ON_KEYPRESS
-import be.scri.helpers.VIBRATE_ON_KEYPRESS
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
@@ -43,75 +36,48 @@ fun LanguageSettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
 
     val scrollState = rememberScrollState()
 
     val periodOnDoubleTapState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
-                    false,
-                ),
+                PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context, language),
             )
         }
 
     val emojiSuggestionsState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language),
-                    true,
-                ),
+                PreferencesHelper.getIsEmojiSuggestionsEnabled(context, language),
             )
         }
 
     val disableAccentCharacterState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(DISABLE_ACCENT_CHARACTER, language),
-                    false,
-                ),
+                PreferencesHelper.getIsAccentCharacterDisabled(context, language),
             )
         }
 
     val popupOnKeyPressState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language),
-                    true,
-                ),
+                PreferencesHelper.isShowPopupOnKeypressEnabled(context, language),
             )
         }
 
     val vibrateOnKeyPressState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language),
-                    true,
-                ),
+                PreferencesHelper.getIsVibrateEnabled(context, language),
             )
         }
 
     val periodAndCommaState =
         remember {
-            if (!sharedPref.contains(PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language))) {
-                sharedPref
-                    .edit()
-                    .putBoolean(
-                        PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language),
-                        true,
-                    ).apply()
-            }
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language),
-                    true,
-                ),
+                PreferencesHelper.getEnablePeriodAndCommaABC(context, language),
             )
         }
 
@@ -153,30 +119,30 @@ fun LanguageSettingsScreen(
             items =
                 getFunctionalityListData(
                     periodOnDoubleTapState = periodOnDoubleTapState.value,
-                    onTogglePeriodOnDoubleTap = { shouldDoubleSpacePeriod ->
-                        periodOnDoubleTapState.value = shouldDoubleSpacePeriod
+                    onTogglePeriodOnDoubleTap = { isEnabled ->
+                        periodOnDoubleTapState.value = isEnabled
                         PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(
                             context,
                             language,
-                            shouldDoubleSpacePeriod,
+                            isEnabled,
                         )
                     },
                     emojiSuggestionsState = emojiSuggestionsState.value,
-                    onToggleEmojiSuggestions = { shouldDoubleSpacePeriod ->
-                        emojiSuggestionsState.value = shouldDoubleSpacePeriod
+                    onToggleEmojiSuggestions = { isEnabled ->
+                        emojiSuggestionsState.value = isEnabled
                         PreferencesHelper.setEmojiAutoSuggestionsPreference(
                             context,
                             language,
-                            shouldDoubleSpacePeriod,
+                            isEnabled,
                         )
                     },
                     togglePopUpOnKeyPress = popupOnKeyPressState.value,
-                    onTogglePopUpOnKeyPress = { shouldDisablePopUpOnKeyPress ->
-                        popupOnKeyPressState.value = shouldDisablePopUpOnKeyPress
+                    onTogglePopUpOnKeyPress = { isEnabled ->
+                        popupOnKeyPressState.value = isEnabled
                         PreferencesHelper.setShowPopupOnKeypress(
                             context,
                             language,
-                            shouldDisablePopUpOnKeyPress,
+                            isEnabled,
                         )
                     },
                     toggleVibrateOnKeyPress = vibrateOnKeyPressState.value,

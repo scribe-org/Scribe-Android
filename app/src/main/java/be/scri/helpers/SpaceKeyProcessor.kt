@@ -2,7 +2,6 @@
 
 package be.scri.helpers
 
-import android.inputmethodservice.InputMethodService
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
@@ -60,9 +59,7 @@ class SpaceKeyProcessor(
      * @param wasLastKeySpace True if the previous key pressed was a space.
      */
     private fun handleNormalSpaceInput(wasLastKeySpace: Boolean) {
-        val sharedPrefs = ime.getSharedPreferences("app_preferences", InputMethodService.MODE_PRIVATE)
-        val prefKey = PreferencesHelper.getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, ime.language)
-        val periodOnDoubleTapEnabled = sharedPrefs.getBoolean(prefKey, true)
+        val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
 
         val ic = ime.currentInputConnection ?: return
 
