@@ -27,8 +27,4 @@ class Config(
          */
         fun newInstance(context: Context) = Config(context)
     }
-
-    var showPopupOnKeypress: Boolean
-        get() = prefs.getBoolean(SHOW_POPUP_ON_KEYPRESS, true)
-        set(showPopupOnKeypress) = prefs.edit().putBoolean(SHOW_POPUP_ON_KEYPRESS, showPopupOnKeypress).apply()
 }

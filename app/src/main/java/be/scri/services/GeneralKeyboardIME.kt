@@ -46,8 +46,8 @@ import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
-import be.scri.helpers.PreferencesHelper.getIsPreviewEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
+import be.scri.helpers.PreferencesHelper.isShowPopupOnKeypressEnabled
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -161,7 +161,7 @@ abstract class GeneralKeyboardIME(
 
     override fun onWindowShown() {
         super.onWindowShown()
-        keyboardView?.setPreview = getIsPreviewEnabled(applicationContext, language)
+        keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
     }
 

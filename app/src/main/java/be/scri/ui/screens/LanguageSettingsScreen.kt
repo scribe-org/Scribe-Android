@@ -22,7 +22,6 @@ import be.scri.R
 import be.scri.helpers.DISABLE_ACCENT_CHARACTER
 import be.scri.helpers.EMOJI_SUGGESTIONS
 import be.scri.helpers.PreferencesHelper
-import be.scri.helpers.SHOW_POPUP_ON_KEYPRESS
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
@@ -74,10 +73,7 @@ fun LanguageSettingsScreen(
     val popupOnKeyPressState =
         remember {
             mutableStateOf(
-                sharedPref.getBoolean(
-                    PreferencesHelper.getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language),
-                    true,
-                ),
+                PreferencesHelper.isShowPopupOnKeypressEnabled(context, language),
             )
         }
 
@@ -151,12 +147,12 @@ fun LanguageSettingsScreen(
                         )
                     },
                     togglePopUpOnKeyPress = popupOnKeyPressState.value,
-                    onTogglePopUpOnKeyPress = { shouldDisablePopUpOnKeyPress ->
-                        popupOnKeyPressState.value = shouldDisablePopUpOnKeyPress
+                    onTogglePopUpOnKeyPress = { isEnabled ->
+                        popupOnKeyPressState.value = isEnabled
                         PreferencesHelper.setShowPopupOnKeypress(
                             context,
                             language,
-                            shouldDisablePopUpOnKeyPress,
+                            isEnabled,
                         )
                     },
                     toggleVibrateOnKeyPress = vibrateOnKeyPressState.value,
