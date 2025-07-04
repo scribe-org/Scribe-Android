@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.helpers.HintUtils
-import be.scri.helpers.RatingHelper
-import be.scri.helpers.ShareHelper
-import be.scri.helpers.ShareHelperInterface
+import be.scri.helpers.ui.HintUtils
+import be.scri.helpers.ui.RatingHelper
+import be.scri.helpers.ui.ShareHelper
+import be.scri.helpers.ui.ShareHelperInterface
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
@@ -138,6 +138,7 @@ class AboutUtilTest {
     fun testOnMailClick() {
         // Arrange
         mockkObject(ShareHelper)
+        every { ShareHelper.sendEmail(any()) } just Runs // Mock the method to do nothing
 
         // Act
         AboutUtil.onMailClick(context)

@@ -7,6 +7,34 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
+/** Interface for sharing functionality. */
+interface ShareHelperInterface {
+    /**
+     * Shares scribe.
+     * @param context The Android context used to perform the share action.
+     */
+    fun shareScribe(context: Context)
+}
+
+/** Implementation of ShareHelperInterface to handle sharing a scribe. */
+class ShareHelperImpl : ShareHelperInterface {
+    /**
+     * Shares a text message about Scribe using Android's share intent.
+     *
+     * @param context The context from which to launch the share intent.
+     */
+    override fun shareScribe(context: Context) {
+        val sendIntent =
+            Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "Check out Scribe!")
+                type = "text/plain"
+            }
+        val shareIntent = Intent.createChooser(sendIntent, "Share Scribe via…")
+        context.startActivity(shareIntent)
+    }
+}
+
 /**
  * A helper to facilitate sharing of the application and contacting the team.
  */
