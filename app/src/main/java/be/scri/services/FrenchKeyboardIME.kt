@@ -20,7 +20,7 @@ class FrenchKeyboardIME : GeneralKeyboardIME("French") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_french_tablet
-            isPeriodAndComaEnabled() -> R.xml.keys_letters_french
+            isPeriodAndCommaEnabled() -> R.xml.keys_letters_french
             else -> R.xml.keys_letter_french_without_period_and_comma
         }
 

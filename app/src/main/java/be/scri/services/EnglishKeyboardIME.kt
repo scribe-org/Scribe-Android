@@ -20,7 +20,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_english_tablet
-            isPeriodAndComaEnabled() -> R.xml.keys_letters_english
+            isPeriodAndCommaEnabled() -> R.xml.keys_letters_english
             else -> R.xml.keys_letters_english_without_period_and_comma
         }
 

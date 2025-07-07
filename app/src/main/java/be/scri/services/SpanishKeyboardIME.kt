@@ -22,13 +22,13 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
         when {
             isTablet() -> R.xml.keys_letters_spanish_tablet
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                !isPeriodAndComaEnabled() ->
+                !isPeriodAndCommaEnabled() ->
                 R.xml.keys_letter_spanish_without_accent_characters_and_without_period_and_comma
             !getIsAccentCharacterDisabled(applicationContext, language) &&
-                isPeriodAndComaEnabled() ->
+                isPeriodAndCommaEnabled() ->
                 R.xml.keys_letters_spanish
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                isPeriodAndComaEnabled() ->
+                isPeriodAndCommaEnabled() ->
                 R.xml.keys_letter_spanish_without_accent_character
             else ->
                 R.xml.keys_letter_spanish_without_period_and_comma

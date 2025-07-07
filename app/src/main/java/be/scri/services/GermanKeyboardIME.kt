@@ -22,15 +22,15 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         if (isTablet()) {
             R.xml.keys_letters_german_tablet
         } else if (getIsAccentCharacterDisabled(applicationContext, language) &&
-            !isPeriodAndComaEnabled()
+            !isPeriodAndCommaEnabled()
         ) {
             R.xml.keys_letter_german_without_accent_characters_and_without_period_and_comma
         } else if (!getIsAccentCharacterDisabled(applicationContext, language) &&
-            isPeriodAndComaEnabled()
+            isPeriodAndCommaEnabled()
         ) {
             R.xml.keys_letters_german
         } else if (getIsAccentCharacterDisabled(applicationContext, language) &&
-            isPeriodAndComaEnabled()
+            isPeriodAndCommaEnabled()
         ) {
             R.xml.keys_letter_german_without_accent_characters
         } else {

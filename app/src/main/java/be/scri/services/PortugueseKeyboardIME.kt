@@ -20,7 +20,7 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_portuguese_tablet
-            isPeriodAndComaEnabled() -> R.xml.keys_letters_portuguese
+            isPeriodAndCommaEnabled() -> R.xml.keys_letters_portuguese
             else -> R.xml.keys_letters_portuguese_without_period_and_comma
         }
 
