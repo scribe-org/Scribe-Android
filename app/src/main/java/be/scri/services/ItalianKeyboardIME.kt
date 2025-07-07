@@ -21,7 +21,7 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_italian_tablet
-            getEnablePeriodAndCommaABC(applicationContext, language) -> R.xml.keys_letters_italian
+            getEnablePeriodAndCommaABC(applicationContext, language) || isSearchBar() -> R.xml.keys_letters_italian
             else -> R.xml.keys_letter_italian_without_period_and_comma
         }
 

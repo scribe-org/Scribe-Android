@@ -119,6 +119,8 @@ abstract class GeneralKeyboardIME(
     internal var currentState: ScribeState = ScribeState.IDLE
     private var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
 
+    protected fun isSearchBar(): Boolean = enterKeyType == EditorInfo.IME_ACTION_SEARCH
+
     enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID }
 
     /**

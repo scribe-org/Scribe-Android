@@ -21,7 +21,7 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_russian_tablet
-            getEnablePeriodAndCommaABC(applicationContext, language) -> R.xml.keys_letters_russian
+            getEnablePeriodAndCommaABC(applicationContext, language) || isSearchBar() -> R.xml.keys_letters_russian
             else -> R.xml.keys_letters_russian_without_period_and_comma
         }
 
