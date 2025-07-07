@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import androidx.annotation.XmlRes
 import be.scri.R
+import be.scri.services.GeneralKeyboardIME
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import kotlin.math.roundToInt
@@ -522,6 +523,30 @@ class KeyboardBase {
         var key: Key? = null
         var currentRow: Row? = null
         val res = context.resources
+
+        // Get the IME instance to check the current keyboard mode
+        val imeInstance = context as? GeneralKeyboardIME
+        val language = imeInstance?.language
+        val currentKeyboardMode = imeInstance?.keyboardMode
+        val keyboardLettersMode = imeInstance?.keyboardLetters
+
+        val isSearchBar = mEnterKeyType == EditorInfo.IME_ACTION_SEARCH
+        val periodAndCommaEnabled: Boolean =
+            if (language != null) {
+                PreferencesHelper.getEnablePeriodAndCommaABC(context, language)
+            } else {
+                true
+            }
+
+        // ONLY hide the comma if we are on the main ABC keyboard in a search bar
+        val hideComma =
+            isSearchBar &&
+                !periodAndCommaEnabled &&
+                currentKeyboardMode == keyboardLettersMode
+
+        var widthToRedistribute = 0
+        var rowToAdjust: Row? = null
+
         try {
             var event: Int
             while (parser.next().also { event = it } != XmlResourceParser.END_DOCUMENT) {
@@ -537,6 +562,15 @@ class KeyboardBase {
                         TAG_KEY -> {
                             inKey = true
                             key = createKeyFromXml(res, currentRow!!, x, y, parser)
+
+                            if (hideComma && key.code == ','.code) {
+                                widthToRedistribute = key.width + key.gap
+                                rowToAdjust = currentRow
+
+                                key.width = 0
+                                key.gap = 0
+                            }
+
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
                                 val enterResourceId =
@@ -586,6 +620,25 @@ class KeyboardBase {
         } catch (e: IOException) {
             Log.e("KeyboardBase", "I/O error: ${e.message}")
         }
+
+        if (rowToAdjust != null && widthToRedistribute > 0) {
+            val spaceKey = rowToAdjust.mKeys.find { it.code == KEYCODE_SPACE }
+            spaceKey?.let {
+                it.width += widthToRedistribute
+
+                // After resizing the spacebar, we MUST realign ONLY the keys that come AFTER it in THIS ROW.
+                // This prevents affecting any other row.
+                val spaceKeyIndex = rowToAdjust.mKeys.indexOf(it)
+                if (spaceKeyIndex != -1) {
+                    for (i in (spaceKeyIndex + 1) until rowToAdjust.mKeys.size) {
+                        val prevKey = rowToAdjust.mKeys[i - 1]
+                        val currentKey = rowToAdjust.mKeys[i]
+                        currentKey.x = prevKey.x + prevKey.width + prevKey.gap
+                    }
+                }
+            }
+        }
+
         mHeight = y
     }
 
