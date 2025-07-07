@@ -6,7 +6,6 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
-import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 
 /**
  * The RussianKeyboardIME class provides the input method for the Russian language keyboard.
@@ -21,7 +20,7 @@ class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_russian_tablet
-            getEnablePeriodAndCommaABC(applicationContext, language) || isSearchBar() -> R.xml.keys_letters_russian
+            isPeriodAndComaEnabled() -> R.xml.keys_letters_russian
             else -> R.xml.keys_letters_russian_without_period_and_comma
         }
 

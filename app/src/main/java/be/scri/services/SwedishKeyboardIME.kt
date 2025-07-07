@@ -6,7 +6,6 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
-import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
 
 /**
@@ -23,14 +22,13 @@ class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
         when {
             isTablet() -> R.xml.keys_letters_swedish_tablet
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                !getEnablePeriodAndCommaABC(applicationContext, language) &&
-                !isSearchBar() ->
+                !isPeriodAndComaEnabled() ->
                 R.xml.keys_letter_swedish_without_accent_characters_and_without_period_and_comma
             !getIsAccentCharacterDisabled(applicationContext, language) &&
-                (getEnablePeriodAndCommaABC(applicationContext, language) || isSearchBar()) ->
+                isPeriodAndComaEnabled() ->
                 R.xml.keys_letters_swedish
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                (getEnablePeriodAndCommaABC(applicationContext, language) || isSearchBar()) ->
+                isPeriodAndComaEnabled() ->
                 R.xml.keys_letter_swedish_without_accent_characters
             else ->
                 R.xml.keys_letter_swedish_without_period_and_comma

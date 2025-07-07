@@ -121,6 +121,13 @@ abstract class GeneralKeyboardIME(
 
     protected fun isSearchBar(): Boolean = enterKeyType == EditorInfo.IME_ACTION_SEARCH
 
+    protected fun isPeriodAndCommaEnabled(): Boolean {
+        val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
+        val isInSearchBar = isSearchBar()
+
+        return isPreferenceEnabled || isInSearchBar
+    }
+
     enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID }
 
     /**
