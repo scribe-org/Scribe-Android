@@ -13,6 +13,36 @@ class PluralFormsManager(
     private val fileManager: DatabaseFileManager,
 ) {
     /**
+     * Checks if a word is already in its plural form.
+     *
+     * @param language The language code (e.g., "DE" for German)
+     * @param word The word to check
+     * @param jsonData The data contract for database columns
+     * @return Boolean indicating if the word is already plural
+     */
+    fun isAlreadyPlural(
+        language: String,
+        word: String,
+        jsonData: DataContract?
+    ): Boolean {
+        // First check language-specific patterns
+        if (language == "DE" && isGermanPlural(word)) {
+            return true
+        }
+        
+        // Then check against database plurals
+        return getAllPluralForms(language, jsonData)?.contains(word) == true
+    }
+
+    /**
+     * German-specific plural check helper
+     */
+    private fun isGermanPlural(word: String): Boolean {
+        return word.endsWith("en") || 
+               word.lowercase() in setOf("leben", "daten", "schmerzen")
+    }
+
+    /**
      * Retrieves a list of all known plural forms for a given language from the database.
      *
      * @param language The language code (e.g., "EN", "DE") to select the correct database.

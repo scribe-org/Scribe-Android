@@ -1563,7 +1563,14 @@ abstract class GeneralKeyboardIME(
     ) {
         val commandModeOutput =
             when (currentState) {
-                ScribeState.PLURAL -> getPluralRepresentation(rawInput).orEmpty()
+                ScribeState.PLURAL -> {
+                    if (isWordAlreadyPlural(rawInput)) {
+                        showToast(getString(R.string.already_plural))
+                        moveToIdleState()
+                        return
+                    }
+                    getPluralRepresentation(rawInput).orEmpty()
+                }
                 ScribeState.TRANSLATE -> getTranslation(language, rawInput)
                 else -> ""
             }
@@ -1573,6 +1580,25 @@ abstract class GeneralKeyboardIME(
             updateUI()
         } else {
             applyCommandOutput(commandModeOutput, inputConnection)
+        }
+    }
+
+    /**
+     * Checks if a word is already in plural form.
+     */
+    private fun isWordAlreadyPlural(word: String): Boolean {
+        return pluralWords?.contains(word.lowercase()) == true ||
+               (language == "German" && (word.endsWith("en") || 
+                word.lowercase() in setOf("leben", "daten", "schmerzen"))) ||
+               dbManagers.pluralManager.isAlreadyPlural(language, word, dataContract)
+    }
+
+    /**
+     * Shows a short toast message.
+     */
+    private fun showToast(message: String) {
+        Handler(Looper.getMainLooper()).post {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -1646,7 +1672,6 @@ abstract class GeneralKeyboardIME(
         binding.commandBar.setText("")
         moveToIdleState()
     }
-
     /**
      * Handles switching between the letter and symbol keyboards.
      * @param keyboardMode The current keyboard mode (letters or symbols).

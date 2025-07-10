@@ -307,3 +307,19 @@ Many thanks to all the [Scribe-Android contributors](https://github.com/scribe-o
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <br>
 </div>
+
+## Keyboard Commands
+
+### Plural Command
+- Detects already plural words (e.g. German "Leben")
+- Shows "Already plural" toast notification
+- Works for all supported languages
+- Returns keyboard to idle state after detection
+
+#### Examples:
+| Language | Input | Result |
+|----------|-------|--------|
+| German | Leben | Shows toast |
+| German | Haus | → "Häuser" |
+| English | sheep | Shows toast |
+| English | child | → "children" |
