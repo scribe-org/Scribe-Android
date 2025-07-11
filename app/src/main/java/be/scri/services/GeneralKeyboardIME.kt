@@ -1586,12 +1586,16 @@ abstract class GeneralKeyboardIME(
     /**
      * Checks if a word is already in plural form.
      */
-    private fun isWordAlreadyPlural(word: String): Boolean {
-        return pluralWords?.contains(word.lowercase()) == true ||
-               (language == "German" && (word.endsWith("en") || 
-                word.lowercase() in setOf("leben", "daten", "schmerzen"))) ||
-               dbManagers.pluralManager.isAlreadyPlural(language, word, dataContract)
-    }
+    private fun isWordAlreadyPlural(word: String): Boolean =
+        pluralWords?.contains(word.lowercase()) == true ||
+            (
+                language == "German" &&
+                    (
+                        word.endsWith("en") ||
+                            word.lowercase() in setOf("leben", "daten", "schmerzen")
+                    )
+            ) ||
+            dbManagers.pluralManager.isAlreadyPlural(language, word, dataContract)
 
     /**
      * Shows a short toast message.
@@ -1672,6 +1676,7 @@ abstract class GeneralKeyboardIME(
         binding.commandBar.setText("")
         moveToIdleState()
     }
+
     /**
      * Handles switching between the letter and symbol keyboards.
      * @param keyboardMode The current keyboard mode (letters or symbols).

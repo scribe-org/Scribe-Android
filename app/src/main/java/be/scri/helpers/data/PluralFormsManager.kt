@@ -23,13 +23,13 @@ class PluralFormsManager(
     fun isAlreadyPlural(
         language: String,
         word: String,
-        jsonData: DataContract?
+        jsonData: DataContract?,
     ): Boolean {
         // First check language-specific patterns
         if (language == "DE" && isGermanPlural(word)) {
             return true
         }
-        
+
         // Then check against database plurals
         return getAllPluralForms(language, jsonData)?.contains(word) == true
     }
@@ -37,10 +37,9 @@ class PluralFormsManager(
     /**
      * German-specific plural check helper
      */
-    private fun isGermanPlural(word: String): Boolean {
-        return word.endsWith("en") || 
-               word.lowercase() in setOf("leben", "daten", "schmerzen")
-    }
+    private fun isGermanPlural(word: String): Boolean =
+        word.endsWith("en") ||
+            word.lowercase() in setOf("leben", "daten", "schmerzen")
 
     /**
      * Retrieves a list of all known plural forms for a given language from the database.
