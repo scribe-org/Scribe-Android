@@ -1,4 +1,4 @@
-// Top-level build file
+// Top-level build.gradle.kts
 buildscript {
     val kotlinVersion = "2.0.0"
 
@@ -18,7 +18,8 @@ buildscript {
 
 plugins {
     id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply false
-    id("org.jetbrains.kotlinx.kover") version "0.7.6"
+    id("org.jetbrains.kotlinx.kover") version "0.7.6" apply false
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.1" apply false
 }
 
 allprojects {
@@ -33,9 +34,9 @@ allprojects {
 }
 
 tasks.register("clean", Delete::class) {
-    delete(layout.buildDirectory)
+    delete(rootProject.layout.buildDirectory)
 }
 
 kover {
-    disable()
+    isDisabled = false 
 }
