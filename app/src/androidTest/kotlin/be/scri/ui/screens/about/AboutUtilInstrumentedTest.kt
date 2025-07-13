@@ -131,7 +131,7 @@ class AboutUtilInstrumentedTest {
 
                 // Test list is not empty.
                 assertThat(communityList.items).isNotEmpty()
-                assertThat(communityList.items).hasSize(5)
+                assertThat(communityList.items).hasSize(3)
 
                 // Test each item has required fields.
                 communityList.items.forEach { item ->
@@ -149,11 +149,11 @@ class AboutUtilInstrumentedTest {
                 assertThat(githubItem.leadingIcon).isEqualTo(R.drawable.github_logo)
                 assertThat(githubItem.title).isEqualTo(R.string.app_about_community_github)
 
-                val shareItem = communityList.items[3] as ScribeItem.ExternalLinkItem
+                val shareItem = communityList.items[1] as ScribeItem.ExternalLinkItem
                 assertThat(shareItem.leadingIcon).isEqualTo(R.drawable.share_icon)
                 assertThat(shareItem.title).isEqualTo(R.string.app_about_community_share_scribe)
 
-                val wikimediaItem = communityList.items[4] as ScribeItem.ExternalLinkItem
+                val wikimediaItem = communityList.items[2] as ScribeItem.ExternalLinkItem
                 assertThat(wikimediaItem.leadingIcon).isEqualTo(R.drawable.wikimedia_logo_black)
                 assertThat(wikimediaItem.title).isEqualTo(R.string.app_about_community_wikimedia)
 
