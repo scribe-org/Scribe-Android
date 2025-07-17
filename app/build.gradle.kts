@@ -1,6 +1,8 @@
 import java.io.FileInputStream
 import java.util.Locale
 import java.util.Properties
+import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
+import org.gradle.testing.jacoco.tasks.JacocoReport
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties =
@@ -11,20 +13,14 @@ val keystoreProperties =
     }
 
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("org.jmailen.kotlinter")
-    id("io.gitlab.arturbosch.detekt")
-    id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply true
-    id("de.mannodermaus.android-junit5") version "1.11.2.0"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
-    id("jacoco")
-    kotlin("plugin.serialization") version "1.9.0"
-    id("org.jetbrains.kotlinx.kover") version "0.6.1"
-}
-
-jacoco {
-    toolVersion = "0.8.12"
+    id("com.android.application") version "8.9.3" // Android Gradle Plugin version
+    id("kotlin-android") version "2.0.0" // Kotlin Android Plugin version
+    id("org.jmailen.kotlinter") version "4.3.0" // Kotlinter plugin version
+    id("io.gitlab.arturbosch.detekt") version "1.23.8" // Detekt plugin version
+    id("com.google.devtools.ksp") version "2.0.0-1.0.22" // KSP plugin version
+    id("de.mannodermaus.android-junit5") version "1.11.2.0" // Android JUnit5 plugin version
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" // Kotlin Compose Compiler plugin version
+    kotlin("plugin.serialization") version "1.9.0" // Kotlin Serialization plugin version
 }
 
 val kotlinVersion by extra("2.0.0")
@@ -51,20 +47,6 @@ android {
             pickFirsts.add("META-INF/ASL2.0")
             pickFirsts.add("META-INF/NOTICE*")
             pickFirsts.add("META-INF/LGPL2.1")
-
-        }
-    }
-
-
-    kover {
-        verify {
-            rule {
-                isEnabled = true
-                name = "Coverage must be more than 60%"
-                bound {
-                    minValue = 60
-                }
-            }
         }
     }
 
@@ -104,8 +86,6 @@ android {
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debug"
-            enableUnitTestCoverage = true
-            enableAndroidTestCoverage = true
         }
         getByName("release") {
             isMinifyEnabled = true
@@ -139,7 +119,6 @@ android {
         config.setFrom(rootProject.files("detekt.yml"))
     }
 
-
     kotlinter {
         failBuildWhenCannotAutoFormat = false
         ignoreFailures = false
@@ -151,16 +130,6 @@ android {
         val variantName = this.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
         val unitTests = "test${variantName}UnitTest"
         val androidTests = "connected${variantName}AndroidTest"
-
-        val exclusions =
-            listOf(
-                // Data binding.
-                "**/R.class",
-                "**/R$*.class",
-                "**/BuildConfig.*",
-                "**/Manifest*.*",
-                "**/*Test*.*",
-            )
 
         tasks.register<JacocoReport>("jacoco${variantName}CodeCoverage") {
             dependsOn(listOf(unitTests, androidTests))
@@ -174,10 +143,26 @@ android {
             classDirectories.setFrom(
                 files(
                     fileTree(layout.buildDirectory.dir("intermediates/javac/")) {
-                        exclude(exclusions)
+                        exclude(
+                            listOf(
+                                "**/R.class",
+                                "**/R$*.class",
+                                "**/BuildConfig.*",
+                                "**/Manifest*.*",
+                                "**/*Test*.*",
+                            )
+                        )
                     },
                     fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/")) {
-                        exclude(exclusions)
+                        exclude(
+                            listOf(
+                                "**/R.class",
+                                "**/R$*.class",
+                                "**/BuildConfig.*",
+                                "**/Manifest*.*",
+                                "**/*Test*.*",
+                            )
+                        )
                     },
                 ),
             )
@@ -191,14 +176,10 @@ android {
 }
 
 
-
 dependencies {
     detektPlugins("io.nlopez.compose.rules:detekt:0.4.17")
     lintChecks("com.slack.lint.compose:compose-lint-checks:1.4.2")
 
-    // ==========================
-    // AndroidX Dependencies
-    // ==========================
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.0")
@@ -206,21 +187,12 @@ dependencies {
     debugImplementation("androidx.fragment:fragment-testing:1.8.8")
     implementation("androidx.test.ext:junit-ktx:1.2.1")
 
-    // ==========================
-    // Room Database
-    // ==========================
     ksp("androidx.room:room-compiler:2.7.2")
     implementation("androidx.room:room-runtime:2.7.2")
     implementation("androidx.room:room-ktx:2.7.2")
 
-    // ==========================
-    // Kotlin
-    // ==========================
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.21")
 
-    // ==========================
-    // Layout and UI
-    // ==========================
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation("androidx.documentfile:documentfile:1.1.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
@@ -233,9 +205,6 @@ dependencies {
     implementation("com.google.android.play:core-ktx:1.8.1")
     implementation("androidx.navigation:navigation-compose:2.9.0")
 
-    // ==========================
-    // Jetpack Compose
-    // ==========================
     val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -246,19 +215,10 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    // ==========================
-    // Activity Compose
-    // ==========================
     implementation("androidx.activity:activity-compose")
 
-    // ==========================
-    // Navigation Compose
-    // ==========================
     implementation("androidx.navigation:navigation-compose:2.9.0")
 
-    // ==========================
-    // Unit Testing
-    // ==========================
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("io.mockk:mockk:$mockkVersion")
@@ -267,24 +227,17 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.13")
     testImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.20")
-    testImplementation ("org.mockito:mockito-core:5.12.0")
-    testImplementation ("org.mockito:mockito-inline:5.2.0")
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     testImplementation("com.google.truth:truth:1.4.4")
 
-
-    // ==========================
-    // UI Tests
-    // ==========================
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
     androidTestImplementation("io.mockk:mockk-android:$mockkVersion")
     androidTestImplementation("com.google.truth:truth:1.4.4")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
-    // ==========================
-    // Android Testing
-    // ==========================
     androidTestImplementation("androidx.test:core-ktx:1.6.1")
     androidTestImplementation("androidx.test.ext:junit-ktx:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
@@ -292,9 +245,6 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("io.mockk:mockk-android:1.14.2")
 
-    // ==========================
-    // Other
-    // ==========================
     api("joda-time:joda-time:2.14.0")
     api("com.github.tibbi:RecyclerView-FastScroller:e7d3e150c4")
     api("com.github.tibbi:reprint:2cb206415d")
@@ -346,7 +296,6 @@ tasks.withType(Test::class) {
         excludes = listOf("jdk.internal.*")
     }
 }
-
 
 tasks.register<JacocoReport>("jacocoTestReport") {
     group = "Reporting"

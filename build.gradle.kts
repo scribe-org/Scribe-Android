@@ -1,4 +1,3 @@
-// Top-level build.gradle.kts
 buildscript {
     val kotlinVersion = "2.0.0"
 
@@ -11,15 +10,26 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:8.9.3")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:12.1.1")
+        classpath("org.jetbrains.kotlinx:kover-gradle-plugin:0.7.6") // Kover still needs to be here if configured at root
     }
 }
 
 plugins {
-    id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply false
-    id("org.jetbrains.kotlinx.kover") version "0.7.6" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.1" apply false
+    // Only Kover is applied at the root project level.
+    // Other plugins (Detekt, Kotlinter, KSP, etc.) will be applied directly in their respective modules.
+    id("org.jetbrains.kotlinx.kover") version "0.7.6" apply true
+}
+
+kover {
+    // Kover 0.7.x configuration remains the same
+}
+
+koverReport {
+    verify {
+        rule("Coverage must be more than 60%") {
+            minBound(60)
+        }
+    }
 }
 
 allprojects {
@@ -28,15 +38,9 @@ allprojects {
         mavenCentral()
         maven("https://jitpack.io")
     }
-
-    apply(plugin = "io.gitlab.arturbosch.detekt")
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    // No more `apply(plugin = ...)` here. Modules will declare their own plugins explicitly.
 }
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory)
-}
-
-kover {
-    isDisabled = false 
 }
