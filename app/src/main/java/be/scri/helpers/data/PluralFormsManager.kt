@@ -67,27 +67,35 @@ class PluralFormsManager(
         } ?: emptyMap()
 
     /**
-     * Helper to extract plural representation to avoid deep nesting in detekt.
+     * Helper to extract plural representation to avoid deep nesting and return-count detekt complaints.
+     *
+     * @param language The language code.
+     * @param numbers The mapping of singular to plural columns.
+     * @param noun The word to pluralize.
+     * @return A map with singular as key and plural as value (or empty if not found).
      */
     private fun getPluralFromNumbers(
         language: String,
         numbers: Map<String, String>,
         noun: String,
     ): Map<String, String?> {
-        val singularCol = numbers.keys.firstOrNull() ?: return emptyMap()
-        val pluralCol = numbers.values.firstOrNull() ?: return emptyMap()
-        val db = fileManager.getLanguageDatabase(language) ?: return emptyMap()
-        db.use { database ->
-            database.rawQuery(
-                "SELECT `$singularCol`, `$pluralCol` FROM nouns WHERE `$singularCol` = ? COLLATE NOCASE",
-                arrayOf(noun),
-            ).use { cursor ->
-                if (cursor.moveToFirst()) {
-                    return mapOf(cursor.getString(0) to cursor.getString(1))
+        var result: Map<String, String?> = emptyMap()
+        val singularCol = numbers.keys.firstOrNull()
+        val pluralCol = numbers.values.firstOrNull()
+        val db = fileManager.getLanguageDatabase(language)
+        if (singularCol != null && pluralCol != null && db != null) {
+            db.use { database ->
+                database.rawQuery(
+                    "SELECT `$singularCol`, `$pluralCol` FROM nouns WHERE `$singularCol` = ? COLLATE NOCASE",
+                    arrayOf(noun),
+                ).use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        result = mapOf(cursor.getString(0) to cursor.getString(1))
+                    }
                 }
             }
         }
-        return emptyMap()
+        return result
     }
 
     /**
