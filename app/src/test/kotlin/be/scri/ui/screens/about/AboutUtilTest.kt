@@ -71,7 +71,7 @@ class AboutUtilTest {
 
         assertEquals(5, list.size)
 
-        // checking the resource IDs are preserved, not string values
+        // Checking the resource IDs are preserved, not string values.
         assertEquals(R.string.app_about_feedback_rate_scribe, list[0].title)
         assertEquals(R.string.app_about_feedback_bug_report, list[1].title)
         assertEquals(R.string.app_about_feedback_email, list[2].title)
