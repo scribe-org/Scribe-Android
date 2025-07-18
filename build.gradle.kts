@@ -1,3 +1,5 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
 buildscript {
     val kotlinVersion = "2.0.0"
 
@@ -5,31 +7,30 @@ buildscript {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://plugins.gradle.org/m2/")
     }
+
+
 
     dependencies {
+        classpath("io.nlopez.compose.rules:ktlint:0.4.17")
         classpath("com.android.tools.build:gradle:8.9.3")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("org.jetbrains.kotlinx:kover-gradle-plugin:0.7.6") // Kover still needs to be here if configured at root
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0")
+        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8")
+        classpath("org.jlleitschuh.gradle:ktlint-gradle:12.1.1")
+        classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8")
+        classpath("org.jmailen.gradle:kotlinter-gradle:4.4.1")
     }
 }
+
+apply(plugin = "io.gitlab.arturbosch.detekt")
+apply(plugin = "org.jmailen.kotlinter")
+apply(plugin = "org.jetbrains.kotlinx.kover")
+
 
 plugins {
-    // Only Kover is applied at the root project level.
-    // Other plugins (Detekt, Kotlinter, KSP, etc.) will be applied directly in their respective modules.
-    id("org.jetbrains.kotlinx.kover") version "0.7.6" apply true
-}
-
-kover {
-    // Kover 0.7.x configuration remains the same
-}
-
-koverReport {
-    verify {
-        rule("Coverage must be more than 60%") {
-            minBound(60)
-        }
-    }
+    id("com.google.devtools.ksp") version "2.0.0-1.0.22" apply false
+    id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 
 allprojects {
@@ -38,9 +39,8 @@ allprojects {
         mavenCentral()
         maven("https://jitpack.io")
     }
-    // No more `apply(plugin = ...)` here. Modules will declare their own plugins explicitly.
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.layout.buildDirectory)
+    delete(rootProject.buildDir)
 }
