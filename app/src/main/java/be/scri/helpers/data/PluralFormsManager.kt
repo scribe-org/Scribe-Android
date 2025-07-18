@@ -63,23 +63,32 @@ class PluralFormsManager(
         noun: String,
     ): Map<String, String?> =
         jsonData?.numbers?.let { numbers ->
-            numbers.keys.firstOrNull()?.let { singularCol ->
-                numbers.values.firstOrNull()?.let { pluralCol ->
-                    fileManager.getLanguageDatabase(language)?.use { db ->
-                        db.rawQuery(
-                            "SELECT `$singularCol`, `$pluralCol` FROM nouns WHERE `$singularCol` = ? COLLATE NOCASE",
-                            arrayOf(noun),
-                        ).use { cursor ->
-                            if (cursor.moveToFirst()) {
-                                mapOf(cursor.getString(0) to cursor.getString(1))
-                            } else {
-                                emptyMap()
-                            }
-                        }
-                    }
+            getPluralFromNumbers(language, numbers, noun)
+        } ?: emptyMap()
+
+    /**
+     * Helper to extract plural representation to avoid deep nesting in detekt.
+     */
+    private fun getPluralFromNumbers(
+        language: String,
+        numbers: Map<String, String>,
+        noun: String,
+    ): Map<String, String?> {
+        val singularCol = numbers.keys.firstOrNull() ?: return emptyMap()
+        val pluralCol = numbers.values.firstOrNull() ?: return emptyMap()
+        val db = fileManager.getLanguageDatabase(language) ?: return emptyMap()
+        db.use { database ->
+            database.rawQuery(
+                "SELECT `$singularCol`, `$pluralCol` FROM nouns WHERE `$singularCol` = ? COLLATE NOCASE",
+                arrayOf(noun),
+            ).use { cursor ->
+                if (cursor.moveToFirst()) {
+                    return mapOf(cursor.getString(0) to cursor.getString(1))
                 }
             }
-        } ?: emptyMap()
+        }
+        return emptyMap()
+    }
 
     /**
      * Gets a cached list of plural forms for a given language and contract.
@@ -98,9 +107,7 @@ class PluralFormsManager(
                 jsonData?.numbers?.values?.toList()?.takeIf { it.isNotEmpty() }?.let { forms ->
                     fileManager.getLanguageDatabase(language)?.use { db ->
                         val result = mutableListOf<String>()
-                        val query = "SELECT ${
-                            forms.joinToString(", ") { "`$it`" }
-                        } FROM nouns"
+                        val query = "SELECT ${forms.joinToString(", ") { "`$it`" }} FROM nouns"
 
                         db.rawQuery(query, null).use { cursor ->
                             if (cursor.moveToFirst()) {
