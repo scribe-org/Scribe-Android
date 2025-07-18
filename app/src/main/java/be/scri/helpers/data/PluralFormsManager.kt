@@ -75,28 +75,38 @@ class PluralFormsManager(
      * @return A map with singular as key and plural as value (or empty if not found).
      */
     private fun getPluralFromNumbers(
-        language: String,
-        numbers: Map<String, String>,
-        noun: String,
-    ): Map<String, String?> {
-        var result: Map<String, String?> = emptyMap()
-        val singularCol = numbers.keys.firstOrNull()
-        val pluralCol = numbers.values.firstOrNull()
-        val db = fileManager.getLanguageDatabase(language)
-        if (singularCol != null && pluralCol != null && db != null) {
-            db.use { database ->
-                database.rawQuery(
-                    "SELECT `$singularCol`, `$pluralCol` FROM nouns WHERE `$singularCol` = ? COLLATE NOCASE",
-                    arrayOf(noun),
-                ).use { cursor ->
-                    if (cursor.moveToFirst()) {
-                        result = mapOf(cursor.getString(0) to cursor.getString(1))
-                    }
-                }
+    language: String,
+    numbers: Map<String, String>,
+    noun: String,
+): Map<String, String?> {
+    val singularCol = numbers.keys.firstOrNull() ?: return emptyMap()
+    val pluralCol = numbers.values.firstOrNull() ?: return emptyMap()
+    val db = fileManager.getLanguageDatabase(language) ?: return emptyMap()
+    return queryPluralFromDB(db, singularCol, pluralCol, noun)
+}
+
+/**
+ * Actually runs the DB query (in its own function to avoid nesting!).
+ */
+private fun queryPluralFromDB(
+    db: android.database.sqlite.SQLiteDatabase,
+    singularCol: String,
+    pluralCol: String,
+    noun: String,
+): Map<String, String?> {
+    var result: Map<String, String?> = emptyMap()
+    db.use { database ->
+        database.rawQuery(
+            "SELECT `$singularCol`, `$pluralCol` FROM nouns WHERE `$singularCol` = ? COLLATE NOCASE",
+            arrayOf(noun),
+        ).use { cursor ->
+            if (cursor.moveToFirst()) {
+                result = mapOf(cursor.getString(0) to cursor.getString(1))
             }
         }
-        return result
     }
+    return result
+}
 
     /**
      * Gets a cached list of plural forms for a given language and contract.
