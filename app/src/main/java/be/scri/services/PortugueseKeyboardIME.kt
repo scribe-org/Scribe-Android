@@ -6,7 +6,6 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
-import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 
 /**
  * The PortugueseKeyboardIME class provides the input method for the Portuguese language keyboard.
@@ -21,7 +20,7 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_portuguese_tablet
-            getEnablePeriodAndCommaABC(applicationContext, language) -> R.xml.keys_letters_portuguese
+            isPeriodAndCommaEnabled() -> R.xml.keys_letters_portuguese
             else -> R.xml.keys_letters_portuguese_without_period_and_comma
         }
 

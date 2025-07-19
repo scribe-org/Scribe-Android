@@ -844,6 +844,12 @@ class KeyboardView
                 val keyCount = keys.size
                 for (i in 0 until keyCount) {
                     val key = keys[i]
+
+                    // If a key has no width, it's effectively invisible. Don't draw it or its shadow.
+                    if (key.width == 0) {
+                        continue
+                    }
+
                     val code = key.code
 
                     val padding = KEY_PADDING
