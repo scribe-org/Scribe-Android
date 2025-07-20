@@ -83,7 +83,7 @@ class ConjugateDataManager(
         if (form.isNullOrEmpty()) return ""
         return fileManager.getLanguageDatabase(language)?.use { db ->
             getVerbCursor(db, word, language)?.use { cursor ->
-                getConjugatedValueFromCursor(cursor, form , language)
+                getConjugatedValueFromCursor(cursor, form, language)
             }
         } ?: ""
     }
@@ -99,10 +99,10 @@ class ConjugateDataManager(
     private fun getConjugatedValueFromCursor(
         cursor: Cursor,
         form: String,
-        language: String
+        language: String,
     ): String =
         if (form.contains("[")) {
-            parseComplexForm(cursor, form , language )
+            parseComplexForm(cursor, form, language)
         } else {
             try {
                 cursor.getString(cursor.getColumnIndexOrThrow(form))
@@ -124,7 +124,7 @@ class ConjugateDataManager(
     private fun parseComplexForm(
         cursor: Cursor,
         form: String,
-        language: String
+        language: String,
     ): String {
         val bracketRegex = Regex("""\[(.*?)]""")
         val match = bracketRegex.find(form) ?: return ""
@@ -135,21 +135,19 @@ class ConjugateDataManager(
         return try {
             val verbPart = cursor.getString(cursor.getColumnIndexOrThrow(dbColumnName))
             val words = auxiliaryWords.split(Regex("\\s+"))
-            val verbPart1 = cursor.getString(cursor.getColumnIndexOrThrow(words.firstOrNull()))
-            val verbPart2 = cursor.getString(cursor.getColumnIndexOrThrow(words.last()))
+            val verbType = cursor.getString(cursor.getColumnIndexOrThrow(words.last()))
             val db = fileManager.getLanguageDatabase(language = language)
 
             val wordPart1 = words.firstOrNull()
             var auxResult = ""
             wordPart1?.let {
-                val auxCursor = db?.rawQuery(
-                    "SELECT $wordPart1 FROM verbs WHERE wdLexemeId = ?",
-                    arrayOf(verbPart2)
-                )
+                val auxCursor =
+                    db?.rawQuery(
+                        "SELECT $wordPart1 FROM verbs WHERE wdLexemeId = ?",
+                        arrayOf(verbType),
+                    )
                 if (auxCursor?.moveToFirst() == true) {
                     auxResult = auxCursor.getString(0)
-                } else {
-                    auxResult = "print"
                 }
                 auxCursor?.close()
             }
@@ -160,12 +158,8 @@ class ConjugateDataManager(
         } catch (e: IllegalArgumentException) {
             Log.e("ConjugateDataManager", "Column '$dbColumnName' not found", e)
             ""
-        } catch (e: Exception) {
-            Log.e("ConjugateDataManager", "Error executing query", e)
-            ""
         }
     }
-
 
     /**
      * Creates and returns a database cursor pointing to the requested verb's data row.
