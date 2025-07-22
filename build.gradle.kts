@@ -14,7 +14,7 @@ buildscript {
 
     dependencies {
         classpath("io.nlopez.compose.rules:ktlint:0.4.17")
-        classpath("com.android.tools.build:gradle:8.9.3")
+        classpath("com.android.tools.build:gradle:8.7.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0")
         classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8")
         classpath("org.jlleitschuh.gradle:ktlint-gradle:12.1.1")
