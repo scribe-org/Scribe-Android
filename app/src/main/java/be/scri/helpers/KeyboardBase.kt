@@ -530,7 +530,7 @@ class KeyboardBase {
         val currentKeyboardMode = imeInstance?.keyboardMode
         val keyboardLettersMode = imeInstance?.keyboardLetters
 
-        val isSearchBar = mEnterKeyType == EditorInfo.IME_ACTION_SEARCH
+        val isSearchBar = imeInstance?.isSearchBar() == true
         val periodAndCommaEnabled: Boolean =
             if (language != null) {
                 PreferencesHelper.getEnablePeriodAndCommaABC(context, language)

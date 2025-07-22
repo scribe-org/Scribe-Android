@@ -54,6 +54,7 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
+import java.util.Locale
 
 private const val DATA_SIZE_2 = 2
 private const val DATA_CONSTANT_3 = 3
@@ -130,7 +131,7 @@ abstract class GeneralKeyboardIME(
      *
      * @return `true` if the current input field is likely a search or address bar, `false` otherwise.
      */
-    protected fun isSearchBar(): Boolean {
+    fun isSearchBar(): Boolean {
         val editorInfo = currentInputEditorInfo
 
         val isActionSearch = (enterKeyType == EditorInfo.IME_ACTION_SEARCH)
@@ -141,7 +142,7 @@ abstract class GeneralKeyboardIME(
             } ?: false
 
         val hasSearchHint =
-            editorInfo?.hintText?.toString()?.lowercase()?.let {
+            editorInfo?.hintText?.toString()?.lowercase(Locale.ROOT)?.let {
                 it.contains("search") || it.contains("address")
             } ?: false
 
