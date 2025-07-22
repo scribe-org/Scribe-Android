@@ -6,7 +6,6 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
-import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 
 /**
  * The ItalianKeyboardIME class provides the input method for the Italian language keyboard.
@@ -21,7 +20,7 @@ class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_italian_tablet
-            getEnablePeriodAndCommaABC(applicationContext, language) -> R.xml.keys_letters_italian
+            isPeriodAndCommaEnabled() -> R.xml.keys_letters_italian
             else -> R.xml.keys_letter_italian_without_period_and_comma
         }
 

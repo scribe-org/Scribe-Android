@@ -29,7 +29,8 @@ jobs:
 
                       The following is a checklist for maintainers to make sure this process goes as well as possible. Feel free to address the points below yourself in further commits if you realize that actions are needed :)
 
-                      - [ ] The linting and formatting workflows within the [PR checks](https://github.com/scribe-org/Scribe-Android/pull/${{ github.event.pull_request.number }}/checks) do not indicate new errors in the files changed
+                      - [ ] The linting, formatting and testing workflows within the [PR checks](https://github.com/scribe-org/Scribe-Android/pull/${{ github.event.pull_request.number }}/checks) do not indicate new errors in the files changed
+                          - Tests may need to be reran as they're at times not deterministic
 
                       - [ ] The [CHANGELOG](https://github.com/scribe-org/Scribe-Android/blob/main/CHANGELOG.md) has been updated with a description of the changes for the upcoming release and the corresponding issue (if necessary)
 

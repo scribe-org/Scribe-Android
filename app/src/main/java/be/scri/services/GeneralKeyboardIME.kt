@@ -54,6 +54,7 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
+import java.util.Locale
 
 private const val DATA_SIZE_2 = 2
 private const val DATA_CONSTANT_3 = 3
@@ -118,6 +119,42 @@ abstract class GeneralKeyboardIME(
 
     internal var currentState: ScribeState = ScribeState.IDLE
     private var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
+
+    /**
+     * This function is updated to reliably detect search bars in various apps,
+     * including browsers like Chrome and Firefox, not just fields with IME_ACTION_SEARCH.
+     * The logic is combined into a single return statement to satisfy the `detekt` ReturnCount rule.
+     * It checks multiple signals:
+     * 1. The explicit IME action for search.
+     * 2. The input type variation for URIs (common in address bars).
+     * 3. The hint text for keywords like "search" or "address".
+     *
+     * @return `true` if the current input field is likely a search or address bar, `false` otherwise.
+     */
+    fun isSearchBar(): Boolean {
+        val editorInfo = currentInputEditorInfo
+
+        val isActionSearch = (enterKeyType == EditorInfo.IME_ACTION_SEARCH)
+
+        val isUriType =
+            editorInfo?.let {
+                (it.inputType and InputType.TYPE_TEXT_VARIATION_URI) != 0
+            } ?: false
+
+        val hasSearchHint =
+            editorInfo?.hintText?.toString()?.lowercase(Locale.ROOT)?.let {
+                it.contains("search") || it.contains("address")
+            } ?: false
+
+        return isActionSearch || isUriType || hasSearchHint
+    }
+
+    protected fun isPeriodAndCommaEnabled(): Boolean {
+        val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
+        val isInSearchBar = isSearchBar()
+
+        return isPreferenceEnabled || isInSearchBar
+    }
 
     enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID }
 
