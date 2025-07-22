@@ -524,7 +524,7 @@ class KeyboardBase {
         var currentRow: Row? = null
         val res = context.resources
 
-        // Get the IME instance to check the current keyboard mode
+        // Get the IME instance to check the current keyboard mode.
         val imeInstance = context as? GeneralKeyboardIME
         val language = imeInstance?.language
         val currentKeyboardMode = imeInstance?.keyboardMode
@@ -538,7 +538,7 @@ class KeyboardBase {
                 true
             }
 
-        // ONLY hide the comma if we are on the main ABC keyboard in a search bar
+        // Only hide the comma if we are on the main ABC keyboard in a search bar.
         val hideComma =
             isSearchBar &&
                 !periodAndCommaEnabled &&
