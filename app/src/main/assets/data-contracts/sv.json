@@ -12,10 +12,10 @@
     },
     "conjugations": {
         "1": {
-            "title": "Active Voice",
+            "title": "Aktiv",
             "conjugationTypes": {
                 "1": {
-                    "title": "Active Voice",
+                    "title": "Aktiv",
                     "conjugationForms": {
                         "infinitiv": "activeInfinitive",
                         "imperativ": "imperative",
@@ -27,10 +27,10 @@
             }
         },
         "2": {
-            "title": "Passive Voice",
+            "title": "Passiv",
             "conjugationTypes": {
                 "1": {
-                    "title": "Passive Voice",
+                    "title": "Passiv",
                     "conjugationForms": {
                         "infinitiv": "passiveInfinitive",
                         "presens": "passivePresent",
