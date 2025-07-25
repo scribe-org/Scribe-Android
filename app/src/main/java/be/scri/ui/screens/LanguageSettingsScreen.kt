@@ -81,6 +81,13 @@ fun LanguageSettingsScreen(
             )
         }
 
+    val wordByWordDeletionState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getIsWordByWordDeletionEnabled(context, language),
+            )
+        }
+
     val translationSourceLanguageList =
         ScribeItemList(
             items =
@@ -154,6 +161,15 @@ fun LanguageSettingsScreen(
                             shouldVibrateOnKeyPress,
                         )
                     },
+                    wordByWordDeletionState = wordByWordDeletionState.value,
+                    onToggleWordByWordDeletion = { isEnabled ->
+                        wordByWordDeletionState.value = isEnabled
+                        PreferencesHelper.setWordByWordDeletionPreference(
+                            context,
+                            language,
+                            isEnabled,
+                        )
+                    },
                 ),
         )
 
@@ -198,6 +214,7 @@ fun LanguageSettingsScreen(
  * - Emoji suggestions
  * - Keypress vibration
  * - Popup on keypress
+ * - Word by word deletion
  *
  * @param periodOnDoubleTapState Current state of the double-space period setting.
  * @param onTogglePeriodOnDoubleTap Callback invoked when the double-space period is toggled.
@@ -207,6 +224,8 @@ fun LanguageSettingsScreen(
  * @param onTogglePopUpOnKeyPress Callback invoked when popup on keypress is toggled.
  * @param toggleVibrateOnKeyPress Current state of keypress vibration setting.
  * @param onToggleVibrateOnKeyPress Callback invoked when keypress vibration is toggled.
+ * @param wordByWordDeletionState Current state of word-by-word deletion setting.
+ * @param onToggleWordByWordDeletion Callback invoked when word-by-word deletion is toggled.
  *
  * @return A list of [ScribeItem]s to be shown in the UI.
  */
@@ -220,6 +239,8 @@ private fun getFunctionalityListData(
     onTogglePopUpOnKeyPress: (Boolean) -> Unit,
     toggleVibrateOnKeyPress: Boolean,
     onToggleVibrateOnKeyPress: (Boolean) -> Unit,
+    wordByWordDeletionState: Boolean,
+    onToggleWordByWordDeletion: (Boolean) -> Unit,
 ): List<ScribeItem> {
     val list =
         listOf(
@@ -246,6 +267,12 @@ private fun getFunctionalityListData(
                 desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
                 state = togglePopUpOnKeyPress,
                 onToggle = onTogglePopUpOnKeyPress,
+            ),
+            ScribeItem.SwitchItem(
+                title = R.string.app_settings_keyboard_functionality_delete_word_by_word,
+                desc = R.string.app_settings_keyboard_functionality_delete_word_by_word_description,
+                state = wordByWordDeletionState,
+                onToggle = onToggleWordByWordDeletion,
             ),
         )
     return list
