@@ -2915,4 +2915,6 @@
         <item name="colorAccent">@color/md_grey_black</item>
     </style>
 
+    <style name="MyKeyboardView"></style>
+
 </resources>

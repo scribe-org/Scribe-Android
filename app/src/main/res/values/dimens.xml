@@ -77,4 +77,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="select_command_scribe_key_width">65dp</dimen>
     <dimen name="command_state_scribe_key_width">75dp</dimen>
+    <dimen name="emoji_palette_btn_size" />
 </resources>
