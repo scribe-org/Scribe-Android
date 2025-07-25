@@ -36,23 +36,34 @@ import be.scri.ui.common.ScribeBaseScreen
  */
 @Composable
 fun DefaultCurrencySymbolScreen(
+    currentLanguage: String,
     currentSymbol: String,
     onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-    var selectedSymbol =
+    val selectedSymbol =
         remember {
-            mutableStateOf(sharedPref.getString("translation_source_$currentSymbol", "$") ?: "$")
+            mutableStateOf(sharedPref.getString("default_currency", "Dollar") ?: "Dollar")
         }
     val scrollState = rememberScrollState()
-    val options =
-        listOf("Dollar", "Euro", "Pound", "Rouble", "Rupee", "Won", "Yen")
-            .filterNot { it == currentSymbol }
+    val symbolMap =
+        mapOf(
+            "Dollar" to "$",
+            "Euro" to "€",
+            "Pound" to "£",
+            "Rouble" to "₽",
+            "Rupee" to "₹",
+            "Won" to "₩",
+            "Yen" to "¥",
+        )
+
+    val currentSymbolName = symbolMap.entries.find { it.value == currentSymbol }?.key ?: "Dollar"
+    val options = symbolMap.keys.filterNot { it == currentSymbolName }
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_settings_keyboard_layout_default_currency),
-        lastPage = currentSymbol,
+        lastPage = stringResource(id = getLanguageStringFromi18n(currentLanguage)),
         onBackNavigation = onBackNavigation,
         modifier = modifier,
     ) {
@@ -84,7 +95,7 @@ fun DefaultCurrencySymbolScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         selectedSymbol.value = option
-                                        sharedPref.edit { putString("translation_source_$currentSymbol", option) }
+                                        sharedPref.edit { putString("default_currency", option) }
                                     }.padding(vertical = 5.dp, horizontal = 8.dp),
                         ) {
                             Text(
@@ -92,11 +103,15 @@ fun DefaultCurrencySymbolScreen(
                                 style = MaterialTheme.typography.bodyLarge,
                             )
                             Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = symbolMap[option] ?: "",
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
                             RadioButton(
                                 selected = (option == selectedSymbol.value),
                                 onClick = {
                                     selectedSymbol.value = option
-                                    sharedPref.edit { putString("translation_source_$currentSymbol", option) }
+                                    sharedPref.edit { putString("default_currency", option) }
                                 },
                             )
                         }

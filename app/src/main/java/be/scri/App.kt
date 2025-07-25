@@ -203,7 +203,7 @@ fun ScribeApp(
                                 navController.navigate("translation_language_detail/$language")
                             },
                             onCurrencySelect = {
-                                navController.navigate("currency_symbol_detail/$symbol")
+                                navController.navigate("currency_symbol_detail/$symbol/$language")
                             },
                         )
                     }
@@ -220,14 +220,16 @@ fun ScribeApp(
                     )
                 }
 
-                composable("currency_symbol_detail/{symbolName}") { backStackEntry ->
+                composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
                     val symbol = backStackEntry.arguments?.getString("symbolName") ?: ""
+                    val language = backStackEntry.arguments?.getString("languageName") ?: ""
                     DefaultCurrencySymbolScreen(
+                        currentSymbol = symbol,
+                        currentLanguage = language,
                         onBackNavigation = {
                             navController.popBackStack()
                         },
                         modifier = Modifier.padding(innerPadding),
-                        currentSymbol = symbol,
                     )
                 }
 
