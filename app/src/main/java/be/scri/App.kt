@@ -205,11 +205,15 @@ fun ScribeApp(
                             },
                             onCurrencySelect = {
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 val currentSymbol = PreferencesHelper.getDefaultCurrencySymbol(context, language)
                                 navController.navigate("currency_symbol_detail/$currentSymbol/$language")
 =======
                                 navController.navigate("currency_symbol_detail/$symbol")
 >>>>>>> 245e67c (Added default currency symbol option)
+=======
+                                navController.navigate("currency_symbol_detail/$symbol/$language")
+>>>>>>> 2386e18 (Added Symbols Adjacent to Radio Buttons)
                             },
                         )
                     }
@@ -227,23 +231,36 @@ fun ScribeApp(
                 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
                     val language = backStackEntry.arguments?.getString("languageName") ?: ""
                     DefaultCurrencySymbolScreen(
                         currentLanguage = language,
 =======
                 composable("currency_symbol_detail/{symbolName}") { backStackEntry ->
+=======
+                composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
+>>>>>>> 2386e18 (Added Symbols Adjacent to Radio Buttons)
                     val symbol = backStackEntry.arguments?.getString("symbolName") ?: ""
+                    val language = backStackEntry.arguments?.getString("languageName") ?: ""
                     DefaultCurrencySymbolScreen(
+<<<<<<< HEAD
 >>>>>>> 245e67c (Added default currency symbol option)
+=======
+                        currentSymbol = symbol,
+                        currentLanguage = language,
+>>>>>>> 2386e18 (Added Symbols Adjacent to Radio Buttons)
                         onBackNavigation = {
                             navController.popBackStack()
                         },
                         modifier = Modifier.padding(innerPadding),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                         currentSymbol = symbol,
 >>>>>>> 245e67c (Added default currency symbol option)
+=======
+>>>>>>> 2386e18 (Added Symbols Adjacent to Radio Buttons)
                     )
                 }
 

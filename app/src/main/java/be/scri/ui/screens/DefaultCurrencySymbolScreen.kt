@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 package be.scri.ui.screens
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -26,13 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-<<<<<<< HEAD
 import be.scri.R
 import be.scri.helpers.PreferencesHelper
-=======
-import androidx.core.content.edit
-import be.scri.R
->>>>>>> 245e67c (Added default currency symbol option)
 import be.scri.ui.common.ScribeBaseScreen
 
 /**
@@ -40,16 +35,11 @@ import be.scri.ui.common.ScribeBaseScreen
  */
 @Composable
 fun DefaultCurrencySymbolScreen(
-<<<<<<< HEAD
     currentLanguage: String,
-=======
-    currentSymbol: String,
->>>>>>> 245e67c (Added default currency symbol option)
     onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-<<<<<<< HEAD
     val selectedSymbol =
         remember {
             mutableStateOf(PreferencesHelper.getDefaultCurrencyName(context, currentLanguage))
@@ -72,25 +62,6 @@ fun DefaultCurrencySymbolScreen(
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_settings_keyboard_layout_default_currency),
         lastPage = stringResource(id = getLanguageStringFromi18n(currentLanguage)),
-=======
-    val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-    var selectedSymbol =
-        remember {
-            mutableStateOf(sharedPref.getString("translation_source_$currentSymbol", "$") ?: "$")
-        }
-    val scrollState = rememberScrollState()
-    val options =
-        listOf("Dollar", "Euro", "Pound", "Rouble", "Rupee", "Won", "Yen")
-            .filterNot { it == currentSymbol }
-    ScribeBaseScreen(
-<<<<<<< HEAD
-        pageTitle = stringResource(R.string.app_settings_keyboard_translation_select_source_title),
-        lastPage = currentSymbol,
->>>>>>> 245e67c (Added default currency symbol option)
-=======
-        pageTitle = stringResource(R.string.app_settings_keyboard_layout_default_currency),
-        lastPage = stringResource(id = getLanguageStringFromi18n(currentLanguage)),
->>>>>>> cb4e1cc (Added default currency symbol option)
         onBackNavigation = onBackNavigation,
         modifier = modifier,
     ) {
@@ -102,15 +73,7 @@ fun DefaultCurrencySymbolScreen(
                     .background(MaterialTheme.colorScheme.background),
         ) {
             Text(
-<<<<<<< HEAD
-<<<<<<< HEAD
                 text = stringResource(R.string.app_settings_keyboard_layout_default_currency_caption),
-=======
-                text = stringResource(R.string.app_settings_keyboard_translation_select_source_caption),
->>>>>>> 245e67c (Added default currency symbol option)
-=======
-                text = stringResource(R.string.app_settings_keyboard_layout_default_currency_caption),
->>>>>>> cb4e1cc (Added default currency symbol option)
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 12.dp),
             )
@@ -130,11 +93,7 @@ fun DefaultCurrencySymbolScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         selectedSymbol.value = option
-<<<<<<< HEAD
                                         PreferencesHelper.setDefaultCurrencySymbol(context, currentLanguage, option)
-=======
-                                        sharedPref.edit { putString("translation_source_$currentSymbol", option) }
->>>>>>> 245e67c (Added default currency symbol option)
                                     }.padding(vertical = 5.dp, horizontal = 8.dp),
                         ) {
                             Text(
@@ -142,22 +101,15 @@ fun DefaultCurrencySymbolScreen(
                                 style = MaterialTheme.typography.bodyLarge,
                             )
                             Spacer(modifier = Modifier.weight(1f))
-<<<<<<< HEAD
                             Text(
                                 text = symbolMap[option] ?: "",
                                 style = MaterialTheme.typography.bodyLarge,
                             )
-=======
->>>>>>> 245e67c (Added default currency symbol option)
                             RadioButton(
                                 selected = (option == selectedSymbol.value),
                                 onClick = {
                                     selectedSymbol.value = option
-<<<<<<< HEAD
                                     PreferencesHelper.setDefaultCurrencySymbol(context, currentLanguage, option)
-=======
-                                    sharedPref.edit { putString("translation_source_$currentSymbol", option) }
->>>>>>> 245e67c (Added default currency symbol option)
                                 },
                             )
                         }
