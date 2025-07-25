@@ -66,5 +66,5 @@ comments:
 
 
 build:
-    exclude:
+    excludes:
         - '**/be/scri/views/MyRecyclerView.kt'
