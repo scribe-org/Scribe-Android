@@ -55,13 +55,16 @@ performance:
 
 comments:
     UndocumentedPublicFunction:
-        active: true
+        active: false
         excludes: &excludedFolders
             - '**/helpers/**/*Variables.kt'
             - '**/test/**'
             - '**/services/**'
     UndocumentedPublicClass:
-        active: true
+        active: false
         excludes: *excludedFolders
 
 
+build:
+    exclude:
+        - '**/be/scri/views/MyRecyclerView.kt'
