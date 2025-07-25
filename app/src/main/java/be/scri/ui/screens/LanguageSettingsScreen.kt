@@ -33,6 +33,7 @@ fun LanguageSettingsScreen(
     language: String,
     onBackNavigation: () -> Unit,
     onTranslationLanguageSelect: () -> Unit,
+    onCurrencySelect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -112,6 +113,7 @@ fun LanguageSettingsScreen(
                             shouldDisableAccentCharacter,
                         )
                     },
+                    onCurrencySelect = onCurrencySelect,
                 ),
         )
     val functionalityList =
@@ -273,6 +275,7 @@ private fun getLayoutListData(
     onTogglePeriodAndComma: (Boolean) -> Unit,
     toggleDisableAccentCharacter: Boolean,
     onToggleDisableAccentCharacter: (Boolean) -> Unit,
+    onCurrencySelect: () -> Unit,
 ): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
 
@@ -295,6 +298,16 @@ private fun getLayoutListData(
             desc = R.string.app_settings_keyboard_layout_period_and_comma_description,
             state = togglePeriodAndCommaState,
             onToggle = onTogglePeriodAndComma,
+        ),
+    )
+    list.add(
+        ScribeItem.ClickableItem(
+            title = R.string.app_settings_keyboard_layout_default_currency,
+            desc = R.string.app_settings_keyboard_layout_default_currency_description,
+            action = {
+                Log.d("Navigation", "onCurrencySelect clicked")
+                onCurrencySelect()
+            },
         ),
     )
 
