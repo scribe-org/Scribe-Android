@@ -24,6 +24,7 @@ object PreferencesHelper {
     private const val TRANSLATION_SOURCE = "translation_source"
     private const val EMOJI_SUGGESTIONS = "emoji_suggestions"
     private const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"
+    private const val WORD_BY_WORD_DELETION = "word_by_word_deletion"
 
     /**
      * Sets the translation source language for a given language.
@@ -228,6 +229,34 @@ object PreferencesHelper {
     }
 
     /**
+     * Sets the preference for enabling or disabling word-by-word deletion for a language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldEnableWordByWordDeletion Whether to enable or disable word-by-word deletion.
+     */
+    fun setWordByWordDeletionPreference(
+        context: Context,
+        language: String,
+        shouldEnableWordByWordDeletion: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(
+                getLanguageSpecificPreferenceKey(WORD_BY_WORD_DELETION, language),
+                shouldEnableWordByWordDeletion,
+            )
+        }
+        Toast
+            .makeText(
+                context,
+                "$language Word by Word Deletion " +
+                    if (shouldEnableWordByWordDeletion) "enabled" else "disabled",
+                Toast.LENGTH_SHORT,
+            ).show()
+    }
+
+    /**
      * Sets the preference for enabling or disabling light/dark mode.
      *
      * @param context The application context.
@@ -244,7 +273,7 @@ object PreferencesHelper {
     }
 
     /**
-     * Retrieves the user’s dark mode preference.
+     * Retrieves the user's dark mode preference.
      *
      * @param context The application context.
      * @return The dark mode setting as an integer value (AppCompatDelegate.MODE_NIGHT_YES or MODE_NIGHT_NO).
@@ -374,6 +403,22 @@ object PreferencesHelper {
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), true)
+        return isEnabled
+    }
+
+    /**
+     * Retrieves whether word-by-word deletion is enabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     * @return True if word-by-word deletion is enabled, false otherwise.
+     */
+    fun getIsWordByWordDeletionEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
+        val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(WORD_BY_WORD_DELETION, language), true)
         return isEnabled
     }
 
