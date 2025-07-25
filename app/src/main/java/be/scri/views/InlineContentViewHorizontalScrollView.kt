@@ -8,9 +8,7 @@ import android.widget.HorizontalScrollView
 import android.widget.inline.InlineContentView
 import androidx.annotation.AttrRes
 import androidx.core.view.allViews
-import org.fossify.commons.extensions.beInvisible
-import org.fossify.commons.extensions.beVisible
-import org.fossify.commons.helpers.isRPlus
+
 
 /**
  * [HorizontalScrollView] adapted for holding [InlineContentView] instances
@@ -43,33 +41,9 @@ class InlineContentViewHorizontalScrollView @JvmOverloads constructor(
         clipDescendantInlineContentViews()
     }
 
-    fun hideAllInlineContentViews() {
-        if (!isRPlus()) {
-            return
-        }
-        allViews.forEach {
-            if (it is InlineContentView) {
-                it.beInvisible()
-            }
-        }
-    }
-
-    fun showAllInlineContentViews() {
-        if (!isRPlus()) {
-            return
-        }
-        allViews.forEach {
-            if (it is InlineContentView) {
-                it.beVisible()
-            }
-        }
-    }
 
     private fun clipDescendantInlineContentViews() {
-        // This is only needed for InlineContentViews which are not available before this version
-        if (!isRPlus()) {
-            return
-        }
+
 
         allViews.forEach {
             if (it is InlineContentView) {
