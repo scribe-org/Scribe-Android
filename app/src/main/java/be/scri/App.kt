@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import be.scri.navigation.Screen
 import be.scri.ui.common.appcomponents.HintDialog
 import be.scri.ui.common.bottombar.ScribeBottomBar
+import be.scri.ui.screens.DefaultCurrencySymbolScreen
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
 import be.scri.ui.screens.PrivacyPolicyScreen
@@ -190,6 +191,7 @@ fun ScribeApp(
 
                 composable("${Screen.LanguageSettings.route}/{languageName}") {
                     val language = it.arguments?.getString("languageName")
+                    val symbol = it.arguments?.getString("symbolName")
                     if (language != null) {
                         LanguageSettingsScreen(
                             language = language,
@@ -199,6 +201,9 @@ fun ScribeApp(
                             modifier = Modifier.padding(innerPadding),
                             onTranslationLanguageSelect = {
                                 navController.navigate("translation_language_detail/$language")
+                            },
+                            onCurrencySelect = {
+                                navController.navigate("currency_symbol_detail/$symbol")
                             },
                         )
                     }
@@ -212,6 +217,17 @@ fun ScribeApp(
                         },
                         modifier = Modifier.padding(innerPadding),
                         currentLanguage = language,
+                    )
+                }
+
+                composable("currency_symbol_detail/{symbolName}") { backStackEntry ->
+                    val symbol = backStackEntry.arguments?.getString("symbolName") ?: ""
+                    DefaultCurrencySymbolScreen(
+                        onBackNavigation = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.padding(innerPadding),
+                        currentSymbol = symbol,
                     )
                 }
 
