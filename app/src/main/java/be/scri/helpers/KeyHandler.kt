@@ -57,6 +57,7 @@ class KeyHandler(
         }
 
         when (code) {
+            KeyboardBase.KEYCODE_EMOJI -> handleEmojiKey()
             KeyboardBase.KEYCODE_TAB -> commitTab(inputConnection)
             KeyboardBase.KEYCODE_CAPS_LOCK -> handleCapsLock()
             KeyboardBase.KEYCODE_DELETE -> handleDeleteKey()
@@ -113,6 +114,9 @@ class KeyHandler(
         inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
     }
 
+    private fun handleEmojiKey() {
+        Log.d(TAG, "Emoji key pressed")
+    }
     /**
      * Toggles the state of the caps lock on the keyboard.
      * If the shift state is off, it changes to locked; otherwise, it turns it off.
