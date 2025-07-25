@@ -83,9 +83,14 @@ fun DefaultCurrencySymbolScreen(
         listOf("Dollar", "Euro", "Pound", "Rouble", "Rupee", "Won", "Yen")
             .filterNot { it == currentSymbol }
     ScribeBaseScreen(
+<<<<<<< HEAD
         pageTitle = stringResource(R.string.app_settings_keyboard_translation_select_source_title),
         lastPage = currentSymbol,
 >>>>>>> 245e67c (Added default currency symbol option)
+=======
+        pageTitle = stringResource(R.string.app_settings_keyboard_layout_default_currency),
+        lastPage = stringResource(id = getLanguageStringFromi18n(currentLanguage)),
+>>>>>>> cb4e1cc (Added default currency symbol option)
         onBackNavigation = onBackNavigation,
         modifier = modifier,
     ) {
@@ -98,10 +103,14 @@ fun DefaultCurrencySymbolScreen(
         ) {
             Text(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 text = stringResource(R.string.app_settings_keyboard_layout_default_currency_caption),
 =======
                 text = stringResource(R.string.app_settings_keyboard_translation_select_source_caption),
 >>>>>>> 245e67c (Added default currency symbol option)
+=======
+                text = stringResource(R.string.app_settings_keyboard_layout_default_currency_caption),
+>>>>>>> cb4e1cc (Added default currency symbol option)
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 12.dp),
             )
