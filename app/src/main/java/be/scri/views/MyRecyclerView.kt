@@ -229,11 +229,9 @@ open class MyRecyclerView : RecyclerView {
 
     private fun getItemPosition(e: MotionEvent): Int {
         val v = findChildViewUnder(e.x, e.y) ?: return NO_POSITION
-
-        if (v.tag == null || v.tag !is ViewHolder) {
-            throw IllegalStateException("Make sure your adapter makes a call to super.onBindViewHolder(), and doesn't override itemView tags.")
+        check(v.tag is ViewHolder) {
+            "Make sure your adapter calls super.onBindViewHolder() and doesn't override itemView tags."
         }
-
         val holder = v.tag as ViewHolder
         return holder.adapterPosition
     }
