@@ -192,6 +192,7 @@ fun ScribeApp(
 
                 composable("${Screen.LanguageSettings.route}/{languageName}") {
                     val language = it.arguments?.getString("languageName")
+                    val symbol = it.arguments?.getString("symbolName")
                     if (language != null) {
                         LanguageSettingsScreen(
                             language = language,
@@ -203,8 +204,12 @@ fun ScribeApp(
                                 navController.navigate("translation_language_detail/$language")
                             },
                             onCurrencySelect = {
+<<<<<<< HEAD
                                 val currentSymbol = PreferencesHelper.getDefaultCurrencySymbol(context, language)
                                 navController.navigate("currency_symbol_detail/$currentSymbol/$language")
+=======
+                                navController.navigate("currency_symbol_detail/$symbol")
+>>>>>>> 245e67c (Added default currency symbol option)
                             },
                         )
                     }
@@ -221,14 +226,24 @@ fun ScribeApp(
                     )
                 }
 
+<<<<<<< HEAD
                 composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
                     val language = backStackEntry.arguments?.getString("languageName") ?: ""
                     DefaultCurrencySymbolScreen(
                         currentLanguage = language,
+=======
+                composable("currency_symbol_detail/{symbolName}") { backStackEntry ->
+                    val symbol = backStackEntry.arguments?.getString("symbolName") ?: ""
+                    DefaultCurrencySymbolScreen(
+>>>>>>> 245e67c (Added default currency symbol option)
                         onBackNavigation = {
                             navController.popBackStack()
                         },
                         modifier = Modifier.padding(innerPadding),
+<<<<<<< HEAD
+=======
+                        currentSymbol = symbol,
+>>>>>>> 245e67c (Added default currency symbol option)
                     )
                 }
 
