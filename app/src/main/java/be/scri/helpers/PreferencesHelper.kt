@@ -242,7 +242,10 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         sharedPref.edit {
-            putBoolean(getLanguageSpecificPreferenceKey(WORD_BY_WORD_DELETION, language), shouldEnableWordByWordDeletion)
+            putBoolean(
+                getLanguageSpecificPreferenceKey(WORD_BY_WORD_DELETION, language),
+                shouldEnableWordByWordDeletion,
+            )
         }
         Toast
             .makeText(

@@ -25,6 +25,22 @@ import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
 /**
+ * Data class to hold functionality settings state and callbacks
+ */
+private data class FunctionalitySettings(
+    val periodOnDoubleTapState: Boolean,
+    val onTogglePeriodOnDoubleTap: (Boolean) -> Unit,
+    val emojiSuggestionsState: Boolean,
+    val onToggleEmojiSuggestions: (Boolean) -> Unit,
+    val togglePopUpOnKeyPress: Boolean,
+    val onTogglePopUpOnKeyPress: (Boolean) -> Unit,
+    val toggleVibrateOnKeyPress: Boolean,
+    val onToggleVibrateOnKeyPress: (Boolean) -> Unit,
+    val wordByWordDeletionState: Boolean,
+    val onToggleWordByWordDeletion: (Boolean) -> Unit,
+)
+
+/**
  * The settings sub menu page for languages that allows for customization of language keyboard interfaces.
  */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -121,56 +137,60 @@ fun LanguageSettingsScreen(
                     },
                 ),
         )
+
+    // Create functionality settings object
+    val functionalitySettings =
+        FunctionalitySettings(
+            periodOnDoubleTapState = periodOnDoubleTapState.value,
+            onTogglePeriodOnDoubleTap = { isEnabled ->
+                periodOnDoubleTapState.value = isEnabled
+                PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(
+                    context,
+                    language,
+                    isEnabled,
+                )
+            },
+            emojiSuggestionsState = emojiSuggestionsState.value,
+            onToggleEmojiSuggestions = { isEnabled ->
+                emojiSuggestionsState.value = isEnabled
+                PreferencesHelper.setEmojiAutoSuggestionsPreference(
+                    context,
+                    language,
+                    isEnabled,
+                )
+            },
+            togglePopUpOnKeyPress = popupOnKeyPressState.value,
+            onTogglePopUpOnKeyPress = { isEnabled ->
+                popupOnKeyPressState.value = isEnabled
+                PreferencesHelper.setShowPopupOnKeypress(
+                    context,
+                    language,
+                    isEnabled,
+                )
+            },
+            toggleVibrateOnKeyPress = vibrateOnKeyPressState.value,
+            onToggleVibrateOnKeyPress = { shouldVibrateOnKeyPress ->
+                vibrateOnKeyPressState.value = shouldVibrateOnKeyPress
+                PreferencesHelper.setVibrateOnKeypress(
+                    context,
+                    language,
+                    shouldVibrateOnKeyPress,
+                )
+            },
+            wordByWordDeletionState = wordByWordDeletionState.value,
+            onToggleWordByWordDeletion = { isEnabled ->
+                wordByWordDeletionState.value = isEnabled
+                PreferencesHelper.setWordByWordDeletionPreference(
+                    context,
+                    language,
+                    isEnabled,
+                )
+            },
+        )
+
     val functionalityList =
         ScribeItemList(
-            items =
-                getFunctionalityListData(
-                    periodOnDoubleTapState = periodOnDoubleTapState.value,
-                    onTogglePeriodOnDoubleTap = { isEnabled ->
-                        periodOnDoubleTapState.value = isEnabled
-                        PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(
-                            context,
-                            language,
-                            isEnabled,
-                        )
-                    },
-                    emojiSuggestionsState = emojiSuggestionsState.value,
-                    onToggleEmojiSuggestions = { isEnabled ->
-                        emojiSuggestionsState.value = isEnabled
-                        PreferencesHelper.setEmojiAutoSuggestionsPreference(
-                            context,
-                            language,
-                            isEnabled,
-                        )
-                    },
-                    togglePopUpOnKeyPress = popupOnKeyPressState.value,
-                    onTogglePopUpOnKeyPress = { isEnabled ->
-                        popupOnKeyPressState.value = isEnabled
-                        PreferencesHelper.setShowPopupOnKeypress(
-                            context,
-                            language,
-                            isEnabled,
-                        )
-                    },
-                    toggleVibrateOnKeyPress = vibrateOnKeyPressState.value,
-                    onToggleVibrateOnKeyPress = { shouldVibrateOnKeyPress ->
-                        vibrateOnKeyPressState.value = shouldVibrateOnKeyPress
-                        PreferencesHelper.setVibrateOnKeypress(
-                            context,
-                            language,
-                            shouldVibrateOnKeyPress,
-                        )
-                    },
-                    wordByWordDeletionState = wordByWordDeletionState.value,
-                    onToggleWordByWordDeletion = { isEnabled ->
-                        wordByWordDeletionState.value = isEnabled
-                        PreferencesHelper.setWordByWordDeletionPreference(
-                            context,
-                            language,
-                            isEnabled,
-                        )
-                    },
-                ),
+            items = getFunctionalityListData(functionalitySettings),
         )
 
     ScribeBaseScreen(
@@ -216,63 +236,43 @@ fun LanguageSettingsScreen(
  * - Popup on keypress
  * - Word by word deletion
  *
- * @param periodOnDoubleTapState Current state of the double-space period setting.
- * @param onTogglePeriodOnDoubleTap Callback invoked when the double-space period is toggled.
- * @param emojiSuggestionsState Current state of the emoji suggestions setting.
- * @param onToggleEmojiSuggestions Callback invoked when emoji suggestions is toggled.
- * @param togglePopUpOnKeyPress Current state of popup on keypress setting.
- * @param onTogglePopUpOnKeyPress Callback invoked when popup on keypress is toggled.
- * @param toggleVibrateOnKeyPress Current state of keypress vibration setting.
- * @param onToggleVibrateOnKeyPress Callback invoked when keypress vibration is toggled.
- * @param wordByWordDeletionState Current state of word-by-word deletion setting.
- * @param onToggleWordByWordDeletion Callback invoked when word-by-word deletion is toggled.
+ * @param settings The functionality settings containing state and callbacks.
  *
  * @return A list of [ScribeItem]s to be shown in the UI.
  */
 @Composable
-private fun getFunctionalityListData(
-    periodOnDoubleTapState: Boolean,
-    onTogglePeriodOnDoubleTap: (Boolean) -> Unit,
-    emojiSuggestionsState: Boolean,
-    onToggleEmojiSuggestions: (Boolean) -> Unit,
-    togglePopUpOnKeyPress: Boolean,
-    onTogglePopUpOnKeyPress: (Boolean) -> Unit,
-    toggleVibrateOnKeyPress: Boolean,
-    onToggleVibrateOnKeyPress: (Boolean) -> Unit,
-    wordByWordDeletionState: Boolean,
-    onToggleWordByWordDeletion: (Boolean) -> Unit,
-): List<ScribeItem> {
+private fun getFunctionalityListData(settings: FunctionalitySettings): List<ScribeItem> {
     val list =
         listOf(
             ScribeItem.SwitchItem(
                 title = R.string.app_settings_keyboard_functionality_double_space_period,
                 desc = R.string.app_settings_keyboard_functionality_double_space_period_description,
-                state = periodOnDoubleTapState,
-                onToggle = onTogglePeriodOnDoubleTap,
+                state = settings.periodOnDoubleTapState,
+                onToggle = settings.onTogglePeriodOnDoubleTap,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.app_settings_keyboard_functionality_auto_suggest_emoji,
                 desc = R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description,
-                state = emojiSuggestionsState,
-                onToggle = onToggleEmojiSuggestions,
+                state = settings.emojiSuggestionsState,
+                onToggle = settings.onToggleEmojiSuggestions,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.app_settings_keyboard_keypress_vibration,
                 desc = R.string.app_settings_keyboard_keypress_vibration_description,
-                state = toggleVibrateOnKeyPress,
-                onToggle = onToggleVibrateOnKeyPress,
+                state = settings.toggleVibrateOnKeyPress,
+                onToggle = settings.onToggleVibrateOnKeyPress,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
                 desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
-                state = togglePopUpOnKeyPress,
-                onToggle = onTogglePopUpOnKeyPress,
+                state = settings.togglePopUpOnKeyPress,
+                onToggle = settings.onTogglePopUpOnKeyPress,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.app_settings_keyboard_functionality_delete_word_by_word,
                 desc = R.string.app_settings_keyboard_functionality_delete_word_by_word_description,
-                state = wordByWordDeletionState,
-                onToggle = onToggleWordByWordDeletion,
+                state = settings.wordByWordDeletionState,
+                onToggle = settings.onToggleWordByWordDeletion,
             ),
         )
     return list
