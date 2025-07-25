@@ -66,6 +66,7 @@ import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
+import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
@@ -1478,6 +1479,7 @@ class KeyboardView
                         val key = mKeys[mRepeatKeyIndex]
                         if (key.code == KEYCODE_DELETE) {
                             mHandler?.removeMessages(MSG_REPEAT)
+                            (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
                             mRepeatKeyIndex = NOT_A_KEY
                         }
                     }
@@ -1613,11 +1615,17 @@ class KeyboardView
                             if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
                                 mLastSpaceMoveX = -1
                             } else {
-                                repeatKey(true)
+                                // For delete key, send the initial key press but don't set repeating flag yet
+                                // The repeating flag will be set when the actual repeat starts
+                                detectAndSendKey(mCurrentKey, mKeys[mCurrentKey].x, mKeys[mCurrentKey].y, eventTime)
                             }
 
                             // Delivering the key could have caused an abort.
                             if (mAbortKey) {
+                                // Reset delete repeating flag when key is aborted
+                                if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
+                                    (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
+                                }
                                 mRepeatKeyIndex = NOT_A_KEY
                                 handled = true
                             }
@@ -1727,6 +1735,10 @@ class KeyboardView
                         }
 
                         invalidateKey(keyIndex)
+                        // Reset delete repeating flag when any key is released
+                        if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
+                            (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
+                        }
                         mRepeatKeyIndex = NOT_A_KEY
                         mOnKeyboardActionListener!!.onActionUp()
                         mIsLongPressingSpace = false
@@ -1734,6 +1746,10 @@ class KeyboardView
                     MotionEvent.ACTION_CANCEL -> {
                         mIsLongPressingSpace = false
                         mLastSpaceMoveX = 0
+                        // Reset delete repeating flag when action is cancelled
+                        if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
+                            (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
+                        }
                         removeMessages()
                         dismissPopupKeyboard()
                         mAbortKey = true
@@ -1758,6 +1774,10 @@ class KeyboardView
 
                 mIsLongPressingSpace = true
             } else {
+                // Set delete repeating flag when repeat actually starts (not on initial press)
+                if (!initialCall && key.code == KEYCODE_DELETE) {
+                    (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(true)
+                }
                 detectAndSendKey(mCurrentKey, key.x, key.y, mLastTapTime)
             }
             return true
