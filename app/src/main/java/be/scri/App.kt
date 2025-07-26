@@ -222,10 +222,8 @@ fun ScribeApp(
                 }
 
                 composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
-                    val symbol = backStackEntry.arguments?.getString("symbolName") ?: ""
                     val language = backStackEntry.arguments?.getString("languageName") ?: ""
                     DefaultCurrencySymbolScreen(
-                        currentSymbol = symbol,
                         currentLanguage = language,
                         onBackNavigation = {
                             navController.popBackStack()
