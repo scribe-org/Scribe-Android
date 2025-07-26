@@ -819,6 +819,13 @@ class KeyboardView
                     }
                 val pressedColor = resources.getColor(pressedColorResId, context.theme)
                 val specialKeyColorValue = resources.getColor(mSpecialKeyColor!!, context.theme)
+                val focusedColorResId =
+                    if (isUserDarkMode) {
+                        R.color.theme_scribe_blue
+                    } else {
+                        R.color.light_scribe_color
+                    }
+                val focusedColor = resources.getColor(focusedColorResId, context.theme)
 
                 paint.color = mTextColor
                 val keyBackgroundPaint =
@@ -909,6 +916,7 @@ class KeyboardView
 
                     val backgroundColor =
                         when {
+                            key.focused -> focusedColor
                             key.pressed -> pressedColor
                             code == KEYCODE_SHIFT && mKeyboard!!.mShiftState == SHIFT_LOCKED -> pressedColor
                             code in listOf(KEYCODE_DELETE, KEYCODE_SHIFT, KEYCODE_MODE_CHANGE) -> specialKeyColorValue
@@ -1004,6 +1012,8 @@ class KeyboardView
 
                         paint.color =
                             if (key.focused) {
+                                Color.WHITE
+                            } else if (key.focused) {
                                 mPrimaryColor.getContrastColor()
                             } else {
                                 mTextColor
