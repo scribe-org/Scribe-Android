@@ -25,6 +25,7 @@ object PreferencesHelper {
     private const val EMOJI_SUGGESTIONS = "emoji_suggestions"
     private const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"
     private const val WORD_BY_WORD_DELETION = "word_by_word_deletion"
+    private const val DEFAULT_CURRENCY = "default_currency"
 
     /**
      * Sets the translation source language for a given language.
@@ -439,5 +440,59 @@ object PreferencesHelper {
             getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
             "English",
         )
+    }
+
+    /**
+     * Sets the default currency symbol preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the currency preference.
+     * @param currencyName The name of the currency (e.g., "Dollar", "Euro").
+     */
+    fun setDefaultCurrencySymbol(
+        context: Context,
+        language: String,
+        currencyName: String,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putString(getLanguageSpecificPreferenceKey(DEFAULT_CURRENCY, language), currencyName)
+        }
+    }
+
+    /**
+     * Retrieves the default currency symbol preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the currency preference.
+     * @return The currency symbol (e.g., "$", "€").
+     */
+    fun getDefaultCurrencySymbol(context: Context, language: String): String {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val currencyName = sharedPref.getString(getLanguageSpecificPreferenceKey(DEFAULT_CURRENCY, language), "Dollar") ?: "Dollar"
+        
+        // Map currency names to symbols
+        return when (currencyName) {
+            "Dollar" -> "$"
+            "Euro" -> "€"
+            "Pound" -> "£"
+            "Rouble" -> "₽"
+            "Rupee" -> "₹"
+            "Won" -> "₩"
+            "Yen" -> "¥"
+            else -> "$"
+        }
+    }
+
+    /**
+     * Retrieves the default currency name preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the currency preference.
+     * @return The currency name (e.g., "Dollar", "Euro").
+     */
+    fun getDefaultCurrencyName(context: Context, language: String): String {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getString(getLanguageSpecificPreferenceKey(DEFAULT_CURRENCY, language), "Dollar") ?: "Dollar"
     }
 }

@@ -5,6 +5,7 @@ package be.scri.helpers
 import android.content.Context
 import android.util.Log
 import android.view.inputmethod.InputConnection
+import be.scri.helpers.PreferencesHelper
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
@@ -73,6 +74,7 @@ class KeyHandler(
             }
             in KeyboardBase.NAVIGATION_KEYS -> handleNavigationKey(code)
             in KeyboardBase.SCRIBE_VIEW_KEYS -> handleScribeViewKey(code, language)
+            KeyboardBase.CODE_CURRENCY -> handleCurrencyKey(language)
             else -> handleDefaultKey(code)
         }
 
@@ -163,6 +165,19 @@ class KeyHandler(
         ime.handleDelete(isCommandBarActive)
 
         // Only process suggestions if the state is exactly IDLE.
+        if (ime.currentState == ScribeState.IDLE) {
+            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+        }
+    }
+
+    /**
+     * Handles the currency symbol key press. It outputs the user's selected currency symbol for the current language.
+     */
+    private fun handleCurrencyKey(language: String) {
+        val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(ime.applicationContext, language)
+        ime.currentInputConnection?.commitText(currencySymbol, 1)
+        
+        // Process emoji suggestions if in idle state
         if (ime.currentState == ScribeState.IDLE) {
             suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
         }

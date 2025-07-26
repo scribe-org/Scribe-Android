@@ -38,6 +38,7 @@ import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
 import be.scri.ui.screens.settings.SettingsScreen
 import be.scri.ui.theme.ScribeTheme
+import be.scri.helpers.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -191,7 +192,6 @@ fun ScribeApp(
 
                 composable("${Screen.LanguageSettings.route}/{languageName}") {
                     val language = it.arguments?.getString("languageName")
-                    val symbol = it.arguments?.getString("symbolName")
                     if (language != null) {
                         LanguageSettingsScreen(
                             language = language,
@@ -203,7 +203,8 @@ fun ScribeApp(
                                 navController.navigate("translation_language_detail/$language")
                             },
                             onCurrencySelect = {
-                                navController.navigate("currency_symbol_detail/$symbol/$language")
+                                val currentSymbol = PreferencesHelper.getDefaultCurrencySymbol(context, language)
+                                navController.navigate("currency_symbol_detail/$currentSymbol/$language")
                             },
                         )
                     }

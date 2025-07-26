@@ -370,6 +370,11 @@ abstract class GeneralKeyboardIME(
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "describe")
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
+        
+        // Set up the currency symbol if we're using the symbols keyboard layout
+        if (keyboardXml == R.xml.keys_symbols) {
+            setupCurrencySymbol()
+        }
     }
 
     /**
@@ -732,6 +737,19 @@ abstract class GeneralKeyboardIME(
         keyboard = KeyboardBase(this, xmlId, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
         keyboardView?.requestLayout()
+        
+        // Set up the currency symbol if we're on the symbols keyboard
+        if (keyboardMode == keyboardSymbols) {
+            setupCurrencySymbol()
+        }
+    }
+
+    /**
+     * Sets up the currency symbol on the keyboard based on user preferences.
+     */
+    private fun setupCurrencySymbol() {
+        val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(this, language)
+        keyboardView?.setKeyLabel(currencySymbol, "", KeyboardBase.CODE_CURRENCY)
     }
 
     /**
@@ -1706,6 +1724,11 @@ abstract class GeneralKeyboardIME(
         keyboard = KeyboardBase(context, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
         keyboardView?.requestLayout()
+        
+        // Set up the currency symbol if we're using the symbols keyboard layout
+        if (keyboardXml == R.xml.keys_symbols) {
+            setupCurrencySymbol()
+        }
     }
 
     /**
@@ -1748,6 +1771,11 @@ abstract class GeneralKeyboardIME(
                 }
             keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
             keyboardView!!.setKeyboard(keyboard!!)
+            
+            // Set up the currency symbol if we're using the symbols keyboard layout
+            if (keyboardXml == R.xml.keys_symbols) {
+                setupCurrencySymbol()
+            }
         }
     }
 

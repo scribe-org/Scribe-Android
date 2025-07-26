@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import be.scri.R
+import be.scri.helpers.PreferencesHelper
 import be.scri.ui.common.ScribeBaseScreen
 
 /**
@@ -42,10 +43,9 @@ fun DefaultCurrencySymbolScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     val selectedSymbol =
         remember {
-            mutableStateOf(sharedPref.getString("default_currency", "Dollar") ?: "Dollar")
+            mutableStateOf(PreferencesHelper.getDefaultCurrencyName(context, currentLanguage))
         }
     val scrollState = rememberScrollState()
     val symbolMap =
@@ -59,8 +59,9 @@ fun DefaultCurrencySymbolScreen(
             "Yen" to "¥",
         )
 
-    val currentSymbolName = symbolMap.entries.find { it.value == currentSymbol }?.key ?: "Dollar"
-    val options = symbolMap.keys.filterNot { it == currentSymbolName }
+    // Show ALL currencies, don't filter any out
+    val options = symbolMap.keys.toList()
+    
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_settings_keyboard_layout_default_currency),
         lastPage = stringResource(id = getLanguageStringFromi18n(currentLanguage)),
@@ -95,7 +96,7 @@ fun DefaultCurrencySymbolScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         selectedSymbol.value = option
-                                        sharedPref.edit { putString("default_currency", option) }
+                                        PreferencesHelper.setDefaultCurrencySymbol(context, currentLanguage, option)
                                     }.padding(vertical = 5.dp, horizontal = 8.dp),
                         ) {
                             Text(
@@ -111,7 +112,7 @@ fun DefaultCurrencySymbolScreen(
                                 selected = (option == selectedSymbol.value),
                                 onClick = {
                                     selectedSymbol.value = option
-                                    sharedPref.edit { putString("default_currency", option) }
+                                    PreferencesHelper.setDefaultCurrencySymbol(context, currentLanguage, option)
                                 },
                             )
                         }
