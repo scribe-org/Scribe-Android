@@ -11,3 +11,7 @@ const val SHIFT_ON_PERMANENT = 2
 
 // Limit the count of alternative characters that show up at long pressing a key.
 const val MAX_KEYS_PER_MINI_ROW = 9
+
+const val RECENTLY_USED_EMOJIS = "recently_used_emojis"
+
+const val RECENT_EMOJIS_LIMIT = 36

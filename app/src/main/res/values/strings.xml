@@ -1530,7 +1530,16 @@
     <string name="switch_to_voice_typing" />
     <string name="emojis" />
     <string name="abc" />
-
+    <string name="smileys_and_emotions">Smileys &amp; Emotions</string>
+    <string name="people_and_body">People &amp; Body</string>
+    <string name="animals_and_nature">Animals &amp; Nature</string>
+    <string name="food_and_drink">Food &amp; Drink</string>
+    <string name="travel_and_places">Travel &amp; Places</string>
+    <string name="activities">Activities</string>
+    <string name="objects">Objects</string>
+    <string name="symbols">Symbols</string>
+    <string name="flags">Flags</string>
+    <string name="recently_used">Recently Used</string>
     <string-array name="months">
         <item>@string/january</item>
         <item>@string/february</item>

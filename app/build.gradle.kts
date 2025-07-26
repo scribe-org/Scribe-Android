@@ -199,6 +199,7 @@ dependencies {
     // ==========================
     // AndroidX Dependencies
     // ==========================
+    implementation("androidx.emoji2:emoji2:1.4.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.0")
