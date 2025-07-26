@@ -21,6 +21,7 @@ private val LightColors =
         tertiaryContainer = theme_light_switch_container_color,
         outlineVariant = theme_light_unchecked_switch_selector_color,
         surfaceContainer = theme_light_corner_button_color,
+        surfaceVariant = theme_light_success_color,
     )
 
 private val DarkColors =
@@ -37,6 +38,7 @@ private val DarkColors =
         tertiaryContainer = theme_dark_switch_container_color,
         outlineVariant = theme_dark_unchecked_switch_selector_color,
         surfaceContainer = theme_dark_corner_button_color,
+        surfaceVariant = theme_dark_success_color,
     )
 
 /**
