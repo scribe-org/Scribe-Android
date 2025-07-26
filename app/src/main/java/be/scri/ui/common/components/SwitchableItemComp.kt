@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SwitchableItemComp(
     title: String,
-    desc: String,
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    desc: String? = null,
 ) {
     val checkedThumbColor = MaterialTheme.colorScheme.primary
     val uncheckedThumbColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -86,12 +86,15 @@ fun SwitchableItemComp(
                     ),
             )
         }
-        Text(
-            text = desc,
-            fontSize = 12.sp,
-            color = Color.Gray,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 4.dp),
-        )
+
+        desc?.let { description ->
+            Text(
+                text = description,
+                fontSize = 12.sp,
+                color = Color.Gray,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
     }
 }
