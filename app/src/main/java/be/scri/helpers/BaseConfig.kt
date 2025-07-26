@@ -5,6 +5,7 @@ package be.scri.helpers
 import android.content.Context
 import be.scri.R
 import be.scri.extensions.getSharedPrefs
+import kotlin.apply
 
 /**
  * A configuration helper class for managing app settings.
@@ -56,4 +57,17 @@ open class BaseConfig(
     var isUsingSystemTheme: Boolean
         get() = prefs.getBoolean(IS_USING_SYSTEM_THEME, false)
         set(isUsingSystemTheme) = prefs.edit().putBoolean(IS_USING_SYSTEM_THEME, isUsingSystemTheme).apply()
+
+    var recentlyUsedEmojis: List<String>
+        get() = prefs.getString(RECENTLY_USED_EMOJIS, "\uD83D\uDC30")!!.split("|").filter { it.isNotEmpty() }
+        set(recentlyUsedEmojis) = prefs.edit().putString(
+            RECENTLY_USED_EMOJIS, recentlyUsedEmojis.joinToString("|")
+        ).apply()
+
+    fun addRecentEmoji(emoji: String) {
+        val recentEmojis = recentlyUsedEmojis.toMutableList()
+        recentEmojis.remove(emoji)
+        recentEmojis.add(0, emoji)
+        recentlyUsedEmojis = recentEmojis.take(RECENT_EMOJIS_LIMIT)
+    }
 }
