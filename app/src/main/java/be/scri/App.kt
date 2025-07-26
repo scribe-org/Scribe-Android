@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import be.scri.helpers.PreferencesHelper
 import be.scri.navigation.Screen
 import be.scri.ui.common.appcomponents.HintDialog
 import be.scri.ui.common.bottombar.ScribeBottomBar
@@ -38,7 +39,6 @@ import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
 import be.scri.ui.screens.settings.SettingsScreen
 import be.scri.ui.theme.ScribeTheme
-import be.scri.helpers.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

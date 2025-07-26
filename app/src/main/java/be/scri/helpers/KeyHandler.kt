@@ -5,7 +5,6 @@ package be.scri.helpers
 import android.content.Context
 import android.util.Log
 import android.view.inputmethod.InputConnection
-import be.scri.helpers.PreferencesHelper
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
@@ -176,7 +175,7 @@ class KeyHandler(
     private fun handleCurrencyKey(language: String) {
         val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(ime.applicationContext, language)
         ime.currentInputConnection?.commitText(currencySymbol, 1)
-        
+
         // Process emoji suggestions if in idle state
         if (ime.currentState == ScribeState.IDLE) {
             suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())

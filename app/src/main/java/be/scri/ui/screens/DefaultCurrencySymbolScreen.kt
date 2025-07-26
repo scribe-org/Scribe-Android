@@ -2,7 +2,6 @@
 
 package be.scri.ui.screens
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -27,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.edit
 import be.scri.R
 import be.scri.helpers.PreferencesHelper
 import be.scri.ui.common.ScribeBaseScreen
@@ -38,7 +36,6 @@ import be.scri.ui.common.ScribeBaseScreen
 @Composable
 fun DefaultCurrencySymbolScreen(
     currentLanguage: String,
-    currentSymbol: String,
     onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -61,7 +58,7 @@ fun DefaultCurrencySymbolScreen(
 
     // Show ALL currencies, don't filter any out
     val options = symbolMap.keys.toList()
-    
+
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_settings_keyboard_layout_default_currency),
         lastPage = stringResource(id = getLanguageStringFromi18n(currentLanguage)),

@@ -467,10 +467,20 @@ object PreferencesHelper {
      * @param language The language for which to get the currency preference.
      * @return The currency symbol (e.g., "$", "€").
      */
-    fun getDefaultCurrencySymbol(context: Context, language: String): String {
+    fun getDefaultCurrencySymbol(
+        context: Context,
+        language: String,
+    ): String {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
-        val currencyName = sharedPref.getString(getLanguageSpecificPreferenceKey(DEFAULT_CURRENCY, language), "Dollar") ?: "Dollar"
-        
+        val currencyName =
+            sharedPref.getString(
+                getLanguageSpecificPreferenceKey(
+                    DEFAULT_CURRENCY,
+                    language,
+                ),
+                "Dollar",
+            ) ?: "Dollar"
+
         // Map currency names to symbols
         return when (currencyName) {
             "Dollar" -> "$"
@@ -491,7 +501,10 @@ object PreferencesHelper {
      * @param language The language for which to get the currency preference.
      * @return The currency name (e.g., "Dollar", "Euro").
      */
-    fun getDefaultCurrencyName(context: Context, language: String): String {
+    fun getDefaultCurrencyName(
+        context: Context,
+        language: String,
+    ): String {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getString(getLanguageSpecificPreferenceKey(DEFAULT_CURRENCY, language), "Dollar") ?: "Dollar"
     }
