@@ -18,6 +18,7 @@ import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
@@ -483,12 +484,29 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() {
         if (!this::binding.isInitialized) return
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
+        Log.d("CommandBug", "updateUI called, currentState: $currentState")
+        Log.d("CommandBug", "Command bar text: '${binding.commandBar.text}'")
+
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView()
-            ScribeState.SELECT_COMMAND -> setupSelectCommandView()
+            ScribeState.IDLE -> {
+                Log.d("CommandBug", "Setting up IDLE view - command buttons will be hidden")
+                setupIdleView()
+            }
+            ScribeState.SELECT_COMMAND -> {
+                Log.d("CommandBug", "Setting up SELECT_COMMAND view - command buttons should be visible")
+                setupSelectCommandView()
+            }
+
             ScribeState.INVALID -> setupInvalidView()
+            ScribeState.TRANSLATE -> {
+                setupToolbarView()
+                // Add specific handling here to maintain translate button
+                binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
+                binding.translateBtn.visibility = View.VISIBLE
+            }
             else -> setupToolbarView()
         }
+
         updateEnterKeyColor(isUserDarkMode)
     }
 
@@ -551,6 +569,7 @@ abstract class GeneralKeyboardIME(
         binding.commandOptionsBar.visibility = View.VISIBLE
         binding.toolbarBar.visibility = View.GONE
 
+
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
 
         binding.commandOptionsBar.setBackgroundColor(
@@ -566,7 +585,7 @@ abstract class GeneralKeyboardIME(
 
         val langAlias = getLanguageAlias(language)
 
-        updateButtonVisibility(isAutoSuggestEnabled = false)
+        updateButtonVisibility(isAutoSuggestEnabled =false)
         setCommandButtonListeners()
 
         val buttonTextColor = if (isUserDarkMode) Color.WHITE else Color.BLACK
@@ -1432,6 +1451,8 @@ abstract class GeneralKeyboardIME(
         }
     }
 
+
+
     /**
      * Handles the logic when a word has multiple possible genders or
      * cases but only one suggestion slot is available.
@@ -1492,14 +1513,18 @@ abstract class GeneralKeyboardIME(
         binding.translateBtnRight.visibility = View.INVISIBLE
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtn.visibility = View.VISIBLE
-        binding.translateBtn.text = getString(R.string.suggestion)
-        binding.translateBtn.background = null
-        binding.translateBtn.setOnClickListener(null)
+
+        // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
+        if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
+            binding.translateBtn.text = getString(R.string.suggestion)
+            binding.translateBtn.background = null
+            binding.translateBtn.setOnClickListener(null)
+        }
+
         binding.conjugateBtn.setOnClickListener(null)
         binding.pluralBtn.setOnClickListener(null)
         handleTextSizeForSuggestion(binding.translateBtn)
     }
-
     /**
      * Sets the text size and color for a default, non-active suggestion button.
      * @param button The button to style.
