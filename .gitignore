@@ -6,7 +6,7 @@
 ######################
 .idea
 *.iml
-
+.venv
 # Gradle and build files
 ########################
 .gradle
