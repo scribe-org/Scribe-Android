@@ -16,6 +16,7 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -380,8 +381,8 @@ abstract class GeneralKeyboardIME(
         pluralWords = dbManagers.pluralManager.getAllPluralForms(languageAlias, dataContract)?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
-        conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
-        conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "describe")
+        conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "coacha")
+        conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
 
@@ -815,6 +816,7 @@ abstract class GeneralKeyboardIME(
             return
         }
 
+        Log.i("HELLO", "The output from the languageOutput is $languageOutput")
         if (language != "English") {
             setUpNonEnglishConjugateKeys(languageOutput, conjugateLabels.toList(), title)
         } else {
@@ -838,17 +840,30 @@ abstract class GeneralKeyboardIME(
         title: String,
     ) {
         val keyCodes =
-            listOf(
-                KeyboardBase.CODE_FPS,
-                KeyboardBase.CODE_FPP,
-                KeyboardBase.CODE_SPS,
-                KeyboardBase.CODE_SPP,
-                KeyboardBase.CODE_TPS,
-                KeyboardBase.CODE_TPP,
-            )
+            when (language) {
+                "Swedish" -> {
+                    listOf(
+                        KeyboardBase.CODE_TR,
+                        KeyboardBase.CODE_TL,
+                        KeyboardBase.CODE_BR,
+                        KeyboardBase.CODE_BL,
+                    )
+                }
+
+                else -> {
+                    listOf(
+                        KeyboardBase.CODE_FPS,
+                        KeyboardBase.CODE_FPP,
+                        KeyboardBase.CODE_SPS,
+                        KeyboardBase.CODE_SPP,
+                        KeyboardBase.CODE_TPS,
+                        KeyboardBase.CODE_TPP,
+                    )
+                }
+            }
 
         keyCodes.forEachIndexed { index, code ->
-            val value = languageOutput[title]?.elementAtOrNull(index) ?: return@forEachIndexed
+            val value = languageOutput[title]?.elementAtOrNull(index) ?: ""
             keyboardView?.setKeyLabel(value, conjugateLabel.getOrNull(index) ?: "", code)
         }
     }
