@@ -16,6 +16,7 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -502,12 +503,29 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() {
         if (!this::binding.isInitialized) return
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
+        Log.d("CommandBug", "updateUI called, currentState: $currentState")
+        Log.d("CommandBug", "Command bar text: '${binding.commandBar.text}'")
+
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView()
-            ScribeState.SELECT_COMMAND -> setupSelectCommandView()
+            ScribeState.IDLE -> {
+                Log.d("CommandBug", "Setting up IDLE view - command buttons will be hidden")
+                setupIdleView()
+            }
+            ScribeState.SELECT_COMMAND -> {
+                Log.d("CommandBug", "Setting up SELECT_COMMAND view - command buttons should be visible")
+                setupSelectCommandView()
+            }
+
             ScribeState.INVALID -> setupInvalidView()
+            ScribeState.TRANSLATE -> {
+                setupToolbarView()
+                // Add specific handling here to maintain translate button
+                binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
+                binding.translateBtn.visibility = View.VISIBLE
+            }
             else -> setupToolbarView()
         }
+
         updateEnterKeyColor(isUserDarkMode)
     }
 
@@ -1524,9 +1542,14 @@ abstract class GeneralKeyboardIME(
         binding.translateBtnRight.visibility = View.INVISIBLE
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtn.visibility = View.VISIBLE
-        binding.translateBtn.text = getString(R.string.suggestion)
-        binding.translateBtn.background = null
-        binding.translateBtn.setOnClickListener(null)
+
+        // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
+        if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
+            binding.translateBtn.text = getString(R.string.suggestion)
+            binding.translateBtn.background = null
+            binding.translateBtn.setOnClickListener(null)
+        }
+
         binding.conjugateBtn.setOnClickListener(null)
         binding.pluralBtn.setOnClickListener(null)
         handleTextSizeForSuggestion(binding.translateBtn)

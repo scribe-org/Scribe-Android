@@ -201,6 +201,7 @@ class KeyHandler(
             ime.currentState == ScribeState.TRANSLATE ||
                 ime.currentState == ScribeState.CONJUGATE ||
                 ime.currentState == ScribeState.PLURAL
+
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
         if (ime.currentState == ScribeState.IDLE) {
@@ -214,16 +215,16 @@ class KeyHandler(
      * Handles the delete/backspace key press. It delegates the deletion logic to the IME
      * and then triggers a re-evaluation of word suggestions based on the new text.
      */
+
     private fun handleDeleteKey() {
         val isCommandBarActive =
             ime.currentState == ScribeState.TRANSLATE ||
                 ime.currentState == ScribeState.CONJUGATE ||
                 ime.currentState == ScribeState.PLURAL
 
-        // Pass the repeat state to the delete handler
+        ime.handleDelete(isCommandBarActive)
         ime.handleDelete(isCommandBarActive, ime.isDeleteRepeating())
 
-        // Only process suggestions if the state is exactly IDLE.
         if (ime.currentState == ScribeState.IDLE) {
             suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
         }
