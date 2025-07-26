@@ -50,11 +50,32 @@ class KeyHandler(
         resetShiftIfNeeded(code)
 
         val previousWasLastKeySpace = wasLastKeySpace
+        var resetWLSAtEnd = true
+
         if (code != KeyboardBase.KEYCODE_SPACE) {
             suggestionHandler.clearLinguisticSuggestions()
         }
 
-        val resetWLSAtEnd = processKeyCode(code, language, inputConnection, previousWasLastKeySpace)
+        when (code) {
+            KeyboardBase.KEYCODE_EMOJI -> handleEmojiKey()
+            KeyboardBase.KEYCODE_TAB -> commitTab(inputConnection)
+            KeyboardBase.KEYCODE_CAPS_LOCK -> handleCapsLock()
+            KeyboardBase.KEYCODE_DELETE -> handleDeleteKey()
+            KeyboardBase.KEYCODE_SHIFT -> {
+                handleShiftKey()
+                wasLastKeySpace = previousWasLastKeySpace
+                resetWLSAtEnd = false
+            }
+            KeyboardBase.KEYCODE_ENTER -> handleEnterKey()
+            KeyboardBase.KEYCODE_MODE_CHANGE -> handleModeChangeKey()
+            KeyboardBase.KEYCODE_SPACE -> {
+                wasLastKeySpace = spaceKeyProcessor.processKeycodeSpace(previousWasLastKeySpace)
+                resetWLSAtEnd = false
+            }
+            in KeyboardBase.NAVIGATION_KEYS -> handleNavigationKey(code)
+            in KeyboardBase.SCRIBE_VIEW_KEYS -> handleScribeViewKey(code, language)
+            else -> handleDefaultKey(code)
+        }
 
         if (resetWLSAtEnd) {
             wasLastKeySpace = false
@@ -172,6 +193,9 @@ class KeyHandler(
         inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
     }
 
+    private fun handleEmojiKey() {
+        Log.d(TAG, "Emoji key pressed")
+    }
     /**
      * Toggles the state of the caps lock on the keyboard.
      * If the shift state is off, it changes to locked; otherwise, it turns it off.
