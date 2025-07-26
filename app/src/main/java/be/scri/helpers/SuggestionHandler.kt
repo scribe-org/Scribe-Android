@@ -141,7 +141,6 @@ class SuggestionHandler(
 
         ime.disableAutoSuggest()
 
-
         if (ime.currentState != ScribeState.SELECT_COMMAND) {
             ime.updateButtonVisibility(false)
         }

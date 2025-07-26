@@ -210,6 +210,7 @@ class KeyHandler(
             suggestionHandler.clearAllSuggestionsAndHideButtonUI()
         }
     }
+
     /**
      * Handles the delete/backspace key press. It delegates the deletion logic to the IME
      * and then triggers a re-evaluation of word suggestions based on the new text.
