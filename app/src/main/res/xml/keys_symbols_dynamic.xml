@@ -38,7 +38,7 @@
             app:keyLabel="\@" />
         <Key app:keyLabel="\#" />
         <Key
-            app:code="1050"
+            app:code="1007"
             app:keyLabel="$"
             app:popupCharacters="₽€¢£¥"
             app:popupKeyboard="@xml/keyboard_popup_template" />

@@ -226,6 +226,8 @@ class KeyboardView
         var mKeyLabel2X1TOP: String = "LEFT"
         var mKeyLabel2X1BOTTOM: String = "RIGHT"
 
+        var mCurrencySymbol: String = "$"
+
         private var mEnterKeyColor: Int = 0
 
         private var mSpecialKeyColor: Int? = null
@@ -441,6 +443,9 @@ class KeyboardView
                 KeyboardBase.CODE_2X1_TOP -> {
                     mKeyLabel2X1TOP = label
                 }
+                KeyboardBase.CODE_CURRENCY -> {
+                    mCurrencySymbol = label
+                }
             }
         }
 
@@ -467,6 +472,7 @@ class KeyboardView
                 KeyboardBase.CODE_1X3_CENTER -> mKeyLabel1X3TOP
                 KeyboardBase.CODE_1X3_LEFT -> mKeyLabel1X3LEFT
                 KeyboardBase.CODE_1X3_RIGHT -> mKeyLabel1X3BOTTOM
+                KeyboardBase.CODE_CURRENCY -> mCurrencySymbol
                 else -> null
             }
 
@@ -979,6 +985,9 @@ class KeyboardView
                         }
                         KeyboardBase.CODE_1X3_RIGHT -> {
                             label = mKeyLabel1X3BOTTOM
+                        }
+                        KeyboardBase.CODE_CURRENCY -> {
+                            label = mCurrencySymbol
                         }
                     }
 
