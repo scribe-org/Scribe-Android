@@ -418,7 +418,7 @@ object PreferencesHelper {
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
-        val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(WORD_BY_WORD_DELETION, language), true)
+        val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(WORD_BY_WORD_DELETION, language), false)
         return isEnabled
     }
 
