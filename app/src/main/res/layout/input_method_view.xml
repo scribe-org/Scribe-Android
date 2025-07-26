@@ -19,14 +19,14 @@
     <RelativeLayout
         android:id="@+id/emoji_palette_holder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/keyboard_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_bar">
+        app:layout_constraintTop_toBottomOf="parent">
 
         <RelativeLayout
             android:id="@+id/emoji_palette_top_bar"
