@@ -1559,6 +1559,7 @@ abstract class GeneralKeyboardIME(
      * Sets the text size and color for a default, non-active suggestion button.
      * @param button The button to style.
      */
+
     private fun handleTextSizeForSuggestion(button: Button) {
         button.textSize = SUGGESTION_SIZE
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)

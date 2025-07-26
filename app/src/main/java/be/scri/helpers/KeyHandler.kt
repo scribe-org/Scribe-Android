@@ -201,7 +201,6 @@ class KeyHandler(
             ime.currentState == ScribeState.TRANSLATE ||
                 ime.currentState == ScribeState.CONJUGATE ||
                 ime.currentState == ScribeState.PLURAL
-
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
         if (ime.currentState == ScribeState.IDLE) {
