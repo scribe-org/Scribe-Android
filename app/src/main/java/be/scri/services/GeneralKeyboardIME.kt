@@ -37,7 +37,6 @@ import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
-import be.scri.helpers.EmojiUtils.isEmoji
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.LanguageMappingConstants.conjugatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
@@ -78,6 +77,9 @@ abstract class GeneralKeyboardIME(
     abstract var enterKeyType: Int
     abstract var switchToLetters: Boolean
     abstract var hasTextBeforeCursor: Boolean
+
+    // Track if the delete key is currently being repeated (long press)
+    private var isDeleteRepeating: Boolean = false
 
     internal lateinit var binding: InputMethodViewBinding
 
@@ -320,6 +322,18 @@ abstract class GeneralKeyboardIME(
             switchToLetters = false
         }
     }
+
+    /**
+     * Sets the flag to indicate that the delete key is currently repeating (long press).
+     */
+    fun setDeleteRepeating(isRepeating: Boolean) {
+        isDeleteRepeating = isRepeating
+    }
+
+    /**
+     * Returns whether the delete key is currently repeating (long press).
+     */
+    fun isDeleteRepeating(): Boolean = isDeleteRepeating
 
     override fun moveCursorLeft() {
         moveCursor(false)
@@ -1801,18 +1815,24 @@ abstract class GeneralKeyboardIME(
      * Handles the logic for the Delete/Backspace key. It deletes characters from either
      * the main input field or the command bar, depending on the context.
      * @param isCommandBar `true` if the deletion should happen in the command bar.
+     * @param isLongPress `true` if this is a long press/repeat action, `false` for single tap.
      */
-    fun handleDelete(isCommandBar: Boolean = false) {
+    fun handleDelete(
+        isCommandBar: Boolean = false,
+        isLongPress: Boolean = false,
+    ) {
         if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR) keyboard!!.mShiftState = SHIFT_OFF
         if (isCommandBar) {
             handleCommandBarDelete()
         } else {
             val inputConnection = currentInputConnection ?: return
             if (TextUtils.isEmpty(inputConnection.getSelectedText(0))) {
-                if (isEmoji(getText())) {
-                    inputConnection.deleteSurroundingText(DATA_SIZE_2, 0)
+                val isWordByWordEnabled = PreferencesHelper.getIsWordByWordDeletionEnabled(applicationContext, language)
+                // Only use word-by-word deletion on long press when the feature is enabled
+                if (isWordByWordEnabled && isLongPress) {
+                    deleteWordByWord(inputConnection)
                 } else {
-                    inputConnection.deleteSurroundingText(1, 0)
+                    deleteSingleCharacter(inputConnection)
                 }
             } else {
                 inputConnection.commitText("", 1)
@@ -1821,6 +1841,84 @@ abstract class GeneralKeyboardIME(
                 keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
                 keyboardView!!.invalidateAllKeys()
             }
+        }
+    }
+
+    /**
+     * Deletes a single character.
+     */
+    private fun deleteSingleCharacter(inputConnection: InputConnection) {
+        inputConnection.deleteSurroundingText(1, 0)
+    }
+
+    /**
+     * Deletes an entire word, including any trailing whitespace.
+     * @param inputConnection The current input connection.
+     */
+    private fun deleteWordByWord(inputConnection: InputConnection) {
+        val textBeforeCursor = inputConnection.getTextBeforeCursor(MAX_TEXT_LENGTH, 0)?.toString() ?: ""
+
+        if (textBeforeCursor.isEmpty()) {
+            return
+        }
+
+        var deletionLength = 0
+        var index = textBeforeCursor.length - 1
+
+        // Skip any  whitespace
+        while (index >= 0 && textBeforeCursor[index].isWhitespace()) {
+            deletionLength++
+            index--
+        }
+
+        // If we only had whitespace, delete it
+        if (index < 0) {
+            if (deletionLength > 0) {
+                inputConnection.deleteSurroundingText(deletionLength, 0)
+            }
+            return
+        }
+
+        // Now delete the word characters
+        if (isWordCharacter(textBeforeCursor[index])) {
+            // Delete regular word characters (letters, numbers, some punctuation)
+            while (index >= 0 && isWordCharacter(textBeforeCursor[index])) {
+                deletionLength++
+                index--
+            }
+        } else {
+            // If the character at cursor is not a word character (e.g., special punctuation),
+            // delete just that single character instead of trying to delete a whole word
+            deletionLength++
+        }
+
+        if (deletionLength > 0) {
+            inputConnection.deleteSurroundingText(deletionLength, 0)
+        }
+    }
+
+    /**
+     * Determines if a character is considered part of a word for deletion purposes.
+     */
+    private fun isWordCharacter(char: Char): Boolean {
+        // Letters and digits are always word characters
+        if (char.isLetterOrDigit()) {
+            return true
+        }
+
+        // check if special characters are considered word
+        return when (Character.getType(char).toByte()) {
+            // Connector punctuation
+            Character.CONNECTOR_PUNCTUATION -> true
+            Character.DASH_PUNCTUATION -> true
+            // for other characters
+            Character.OTHER_PUNCTUATION -> {
+                char in "'\".,@#$%&*+=~`|\\/:;?!^"
+            }
+            Character.CURRENCY_SYMBOL -> true
+            Character.MATH_SYMBOL -> char in "+=<>~^"
+            Character.OTHER_SYMBOL -> char in "@#$%&*+=~`|\\/:;?!^"
+            else -> false
         }
     }
 

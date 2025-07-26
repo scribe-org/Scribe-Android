@@ -3,8 +3,8 @@
     <dimen name="popup_max_move_distance">60dp</dimen>
     <dimen name="top_small_number_margin_width">12dp</dimen>
     <dimen name="top_small_number_margin_height">18dp</dimen>
-    <dimen name="toolbar_height">42dp</dimen>
-    <dimen name="toolbar_icon_height">38dp</dimen>
+    <dimen name="toolbar_height">46dp</dimen>
+    <dimen name="toolbar_icon_height">32dp</dimen>
     <dimen name="clip_drag_icon_height">40dp</dimen>
     <dimen name="key_height">60dp</dimen>
     <dimen name="key_height_landscape">40dp</dimen>
@@ -77,4 +77,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="select_command_scribe_key_width">65dp</dimen>
     <dimen name="command_state_scribe_key_width">75dp</dimen>
+    <dimen name="emoji_palette_btn_size">42dp</dimen>
 </resources>

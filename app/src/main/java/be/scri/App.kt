@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import be.scri.navigation.Screen
 import be.scri.ui.common.appcomponents.HintDialog
 import be.scri.ui.common.bottombar.ScribeBottomBar
+import be.scri.ui.screens.DefaultCurrencySymbolScreen
 import be.scri.ui.screens.DownloadDataScreen
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
@@ -203,6 +204,7 @@ fun ScribeApp(
 
                 composable("${Screen.LanguageSettings.route}/{languageName}") {
                     val language = it.arguments?.getString("languageName")
+                    val symbol = it.arguments?.getString("symbolName")
                     if (language != null) {
                         LanguageSettingsScreen(
                             language = language,
@@ -212,6 +214,9 @@ fun ScribeApp(
                             modifier = Modifier.padding(innerPadding),
                             onTranslationLanguageSelect = {
                                 navController.navigate("translation_language_detail/$language")
+                            },
+                            onCurrencySelect = {
+                                navController.navigate("currency_symbol_detail/$symbol/$language")
                             },
                         )
                     }
@@ -225,6 +230,19 @@ fun ScribeApp(
                         },
                         modifier = Modifier.padding(innerPadding),
                         currentLanguage = language,
+                    )
+                }
+
+                composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
+                    val symbol = backStackEntry.arguments?.getString("symbolName") ?: ""
+                    val language = backStackEntry.arguments?.getString("languageName") ?: ""
+                    DefaultCurrencySymbolScreen(
+                        currentSymbol = symbol,
+                        currentLanguage = language,
+                        onBackNavigation = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
 
