@@ -2,29 +2,18 @@
 package be.scri.helpers.data
 
 import DataContract
+import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import be.scri.helpers.DatabaseFileManager
 
-/**
- * Manages verb conjugation data by interfacing with SQLite databases.
- * @param fileManager The central manager for database file access.
- */
 class ConjugateDataManager(
     private val fileManager: DatabaseFileManager,
+    private val context: Context,
 ) {
-    /**
-     * Retrieves a comprehensive map of conjugation data for a specific verb in a given language.
-     * The returned map is structured by tense/mood, then by conjugation type (e.g., "Indicative Present").
-     *
-     * @param language The language code (e.g., "EN", "SV") to determine the correct database.
-     * @param jsonData The data contract for the language, which defines the structure of conjugations.
-     * @param word The specific verb to look up conjugations for.
-     * @return A nested map where the outer key is the tense group title
-     * (e.g., "Indicative"), the inner key is the
-     * conjugation category title (e.g., "Present"), and the value is a collection of the conjugated forms.
-     */
+    private val TAG = "ConjugateLog"
+
     fun getTheConjugateLabels(
         language: String,
         jsonData: DataContract?,
@@ -42,17 +31,47 @@ class ConjugateDataManager(
             }
             finalOutput[tenseGroup.title] = conjugateForms
         }
+        Log.d(TAG, "Conjugations for '$word': $finalOutput")
+
+
+        val autoSuggestionManager = AutoSuggestionDataManager(context, language)
+
+        // We need the auto-suggestion database to get a cursor that processSuggestionRow understands.
+        val autoSuggestionDb: SQLiteDatabase? = fileManager.getLanguageDatabase(language)
+
+        if (autoSuggestionDb != null) {
+            val columnsToSelectForSuggestions = listOf(
+                AutoSuggestionDataManager.COLUMN_WORD,
+                AutoSuggestionDataManager.COLUMN_SUGGESTION1,
+                AutoSuggestionDataManager.COLUMN_SUGGESTION2,
+                AutoSuggestionDataManager.COLUMN_SUGGESTION3
+            )
+            val selectionForSuggestions = columnsToSelectForSuggestions.joinToString(", ") { "`$it`" }
+            val queryForSuggestions = "SELECT $selectionForSuggestions FROM ${AutoSuggestionDataManager.TABLE_AUTOSUGGESTIONS} WHERE ${AutoSuggestionDataManager.COLUMN_WORD} = ? COLLATE NOCASE"
+
+            var autoSuggestionCursor: Cursor? = null
+            try {
+                autoSuggestionCursor = autoSuggestionDb.rawQuery(queryForSuggestions, arrayOf(word))
+
+                if (autoSuggestionCursor.moveToFirst()) {
+                    // Here's the direct call to processSuggestionRow with the auto-suggestion cursor.
+                    val suggestionsFromDirectCall = autoSuggestionManager.processSuggestionRow(autoSuggestionCursor)
+                    Log.d(TAG, "Direct call to processSuggestionRow for '$word': $suggestionsFromDirectCall")
+                } else {
+                    Log.d(TAG, "No auto-suggestion cursor results for '$word' from direct query.")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error during direct call to processSuggestionRow: ${e.message}", e)
+            } finally {
+                autoSuggestionCursor?.close()
+            }
+        } else {
+            Log.e(TAG, "Failed to get auto-suggestion database for language: $language")
+        }
+
         return finalOutput
     }
 
-    /**
-     * Extracts a unique set of all conjugation form keys (e.g., "1ps", "2ps", "participle")
-     * from the data contract.
-     *
-     * @param jsonData The data contract containing the conjugation structure.
-     * @param word The base word, which is also added to the set.
-     * @return A `Set` of unique strings representing all possible conjugation form identifiers.
-     */
     fun extractConjugateHeadings(
         jsonData: DataContract?,
         word: String,
@@ -67,35 +86,21 @@ class ConjugateDataManager(
         return allFormKeys
     }
 
-    /**
-     * Retrieves the specific conjugated form of a word from the database.
-     *
-     * @param word The base word (verb) to look up.
-     * @param form The specific conjugation form identifier (e.g., "1ps", "past_participle").
-     * @param language The language code to select the correct database.
-     * @return The conjugated word as a [String], or an empty string if not found.
-     */
     private fun getTheValueForTheConjugateWord(
         word: String,
         form: String?,
         language: String,
     ): String {
         if (form.isNullOrEmpty()) return ""
-        return fileManager.getLanguageDatabase(language)?.use { db ->
+        val result = fileManager.getLanguageDatabase(language)?.use { db ->
             getVerbCursor(db, word, language)?.use { cursor ->
                 getConjugatedValueFromCursor(cursor, form)
             }
         } ?: ""
+        Log.d(TAG, "Fetched conjugated form for word '$word' with form '$form' in language '$language': '$result'")
+        return result
     }
 
-    /**
-     * Extracts a conjugated value from a database cursor for a given form.
-     * It handles both simple column lookups and complex forms that require parsing.
-     *
-     * @param cursor The database cursor positioned at the correct row for the verb.
-     * @param form The form identifier, which can be a simple column name or a complex string.
-     * @return The conjugated value, or an empty string on failure.
-     */
     private fun getConjugatedValueFromCursor(
         cursor: Cursor,
         form: String,
@@ -106,20 +111,11 @@ class ConjugateDataManager(
             try {
                 cursor.getString(cursor.getColumnIndexOrThrow(form))
             } catch (e: IllegalArgumentException) {
-                Log.e("ConjugateDataManager", "Simple form column not found: '$form'", e)
+                Log.e(TAG, "Simple form column not found: '$form'", e)
                 ""
             }
         }
 
-    /**
-     * Parses a complex conjugation form that includes an auxiliary part in brackets,
-     * such as "[have] past_participle". It combines the auxiliary word with the value
-     * from the specified database column.
-     *
-     * @param cursor The database cursor positioned at the correct row.
-     * @param form The complex form string to parse.
-     * @return The combined string (e.g., "have walked"), or an empty string on failure.
-     */
     private fun parseComplexForm(
         cursor: Cursor,
         form: String,
@@ -133,21 +129,11 @@ class ConjugateDataManager(
             val verbPart = cursor.getString(cursor.getColumnIndexOrThrow(dbColumnName))
             "$auxiliaryWords $verbPart".trim()
         } catch (e: IllegalArgumentException) {
-            Log.e("ConjugateDataManager", "Complex form column '$dbColumnName' not found", e)
+            Log.e(TAG, "Complex form column '$dbColumnName' not found", e)
             ""
         }
     }
 
-    /**
-     * Creates and returns a database cursor pointing to the requested verb's data row.
-     * Note: Handles a special case for Swedish ("SV") where the key column is 'verb' instead of 'infinitive'.
-     *
-     * @param db The SQLite database instance to query.
-     * @param word The verb to search for.
-     * @param language The language code, used for special query conditions.
-     * @return A [Cursor] positioned at the verb's row, or null if the verb is not found.
-     * The caller is responsible for closing the cursor.
-     */
     private fun getVerbCursor(
         db: SQLiteDatabase,
         word: String,
