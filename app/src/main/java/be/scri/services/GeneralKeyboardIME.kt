@@ -6,10 +6,16 @@ import DataContract
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
+import android.os.Handler
+import android.os.Looper
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
@@ -17,7 +23,9 @@ import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.View.generateViewId
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
@@ -25,10 +33,15 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.toColorInt
+import androidx.core.view.children
+import androidx.emoji2.text.EmojiCompat
+import androidx.emoji2.text.EmojiCompat.EMOJI_SUPPORTED
 import be.scri.R
 import be.scri.R.color.md_grey_black_dark
 import be.scri.R.color.white
@@ -52,8 +65,16 @@ import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.ui.HintUtils
+import be.scri.views.AutoGridLayoutManager
 import be.scri.views.KeyboardView
+import be.scribe.keyboard.helpers.EmojiData
+import be.scribe.keyboard.helpers.parseRawEmojiSpecsFile
+import com.bumptech.glide.util.Util.isOnMainThread
 import java.util.Locale
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import be.scri.databinding.ItemEmojiCategoryBinding
+import be.scribe.keyboard.helpers.getCategoryIconRes
+import org.fossify.keyboard.adapters.EmojisAdapter
 
 private const val DATA_SIZE_2 = 2
 private const val DATA_CONSTANT_3 = 3
@@ -1994,6 +2015,138 @@ abstract class GeneralKeyboardIME(
             keyboardView!!.invalidateAllKeys()
         }
     }
+
+    fun ensureBackgroundThread(callback: () -> Unit) {
+        if (isOnMainThread()) {
+            Thread {
+                callback()
+            }.start()
+        } else {
+            callback()
+        }
+    }
+
+    private fun setupEmojis() {
+        ensureBackgroundThread {
+            val fullEmojiList = parseRawEmojiSpecsFile(applicationContext, "media/emoji_spec.txt")
+            val systemFontPaint = Paint().apply {
+                typeface = Typeface.DEFAULT
+            }
+
+            val emojis = fullEmojiList.filter { emoji ->
+                systemFontPaint.hasGlyph(emoji.emoji) || (EmojiCompat.get().loadState == EmojiCompat.LOAD_STATE_SUCCEEDED && EmojiCompat.get()
+                    .getEmojiMatch(emoji.emoji, 0) == EMOJI_SUPPORTED)
+            }
+
+            Handler(Looper.getMainLooper()).post {
+                setupEmojiAdapter(emojis)
+            }
+        }
+    }
+
+    private fun setupEmojiAdapter(emojis: List<EmojiData>) {
+        val emojiCategories = prepareEmojiCategories(emojis)
+        var emojiItems = prepareEmojiItems(emojiCategories)
+
+        val emojiLayoutManager = AutoGridLayoutManager(
+            context = applicationContext,
+            itemWidth = applicationContext.resources.getDimensionPixelSize(R.dimen.emoji_item_size)
+        ).apply {
+            spanSizeLookup = object : SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (emojiItems[position] is EmojisAdapter.Item.Category) {
+                        spanCount
+                    } else {
+                        1
+                    }
+                }
+            }
+        }
+
+        val emojiCategoryIds = mutableMapOf<Int, String>()
+        val emojiCategoryColor = Color.BLACK
+        binding?.emojiCategoriesStrip?.apply {
+            weightSum = emojiCategories.count().toFloat()
+            val strip = this
+            removeAllViews()
+            emojiCategories.entries.forEach { (category, _) ->
+                ItemEmojiCategoryBinding.inflate(
+                    LayoutInflater.from(context),
+                    this,
+                    true
+                ).
+root.apply {
+                    id = generateViewId()
+                    emojiCategoryIds[id] = category
+                    setImageResource(getCategoryIconRes(category))
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        1f
+                    )
+                    setOnClickListener {
+//                        strip.children.filterIsInstance<ImageButton>().forEach {
+//                        }
+//                        applyColorFilter(mPrimaryColor)
+                        binding?.emojisList?.stopScroll()
+                        emojiLayoutManager.scrollToPositionWithOffset(
+                            emojiItems.indexOfFirst { it is EmojisAdapter.Item.Category && it.value == category },
+                            0
+                        )
+                    }
+//                    applyColorFilter(emojiCategoryColor)
+                }
+
+            }
+        }
+
+        binding?.emojisList?.apply {
+            layoutManager = emojiLayoutManager
+            adapter = EmojisAdapter(context = safeStorageContext, items = emojiItems) { emoji ->
+                mOnKeyboardActionListener!!.onText(emoji.emoji)
+                vibrateIfNeeded()
+
+                context.config.addRecentEmoji(emoji.emoji)
+                (adapter as? EmojisAdapter)?.apply {
+                    emojiItems = prepareEmojiItems(prepareEmojiCategories(emojis))
+                    updateItems(emojiItems)
+                }
+            }
+
+            clearOnScrollListeners()
+            onScroll { offset ->
+                keyboardViewBinding!!.emojiPaletteTopBar.elevation = when {
+                    offset > 4 -> context.resources.getDimensionPixelSize(R.dimen.one_dp).toFloat()
+                    else -> 0f
+                }
+
+                emojiLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    .also { firstVisibleIndex ->
+                        emojiItems
+                            .withIndex()
+                            .lastOrNull { it.value is EmojisAdapter.Item.Category && it.index <= firstVisibleIndex }
+                            ?.also { activeCategory ->
+                                val id = emojiCategoryIds.entries.first {
+                                    it.value == (activeCategory.value as EmojisAdapter.Item.Category).value
+                                }.key
+
+                                binding
+                                    ?.emojiCategoriesStrip
+                                    ?.children
+                                    ?.filterIsInstance<ImageButton>()
+                                    ?.forEach { button ->
+                                        val selected = button.id == id
+                                        button.applyColorFilter(
+                                            if (selected) mPrimaryColor else emojiCategoryColor
+                                        )
+                                    }
+                            }
+                    }
+            }
+        }
+    }
+
+    fun Drawable.applyColorFilter(color: Int) = mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
     internal companion object {
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
