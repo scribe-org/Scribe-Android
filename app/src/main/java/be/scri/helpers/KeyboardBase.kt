@@ -99,6 +99,7 @@ class KeyboardBase {
         const val CODE_1X3_RIGHT = 1023
         const val CODE_2X1_TOP = 1031
         const val CODE_2X1_BOTTOM = 1032
+        const val CODE_CURRENCY = 1050
         private const val MAX_KEYS_PER_MINI_ROW = 10
 
         // Sets for grouping key codes to reduce complexity in KeyHandler.

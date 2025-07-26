@@ -50,35 +50,94 @@ class KeyHandler(
         resetShiftIfNeeded(code)
 
         val previousWasLastKeySpace = wasLastKeySpace
-        var resetWLSAtEnd = true
-
         if (code != KeyboardBase.KEYCODE_SPACE) {
             suggestionHandler.clearLinguisticSuggestions()
         }
 
-        when (code) {
-            KeyboardBase.KEYCODE_TAB -> commitTab(inputConnection)
-            KeyboardBase.KEYCODE_CAPS_LOCK -> handleCapsLock()
-            KeyboardBase.KEYCODE_DELETE -> handleDeleteKey()
-            KeyboardBase.KEYCODE_SHIFT -> {
-                handleShiftKey()
-                wasLastKeySpace = previousWasLastKeySpace
-                resetWLSAtEnd = false
-            }
-            KeyboardBase.KEYCODE_ENTER -> handleEnterKey()
-            KeyboardBase.KEYCODE_MODE_CHANGE -> handleModeChangeKey()
-            KeyboardBase.KEYCODE_SPACE -> {
-                wasLastKeySpace = spaceKeyProcessor.processKeycodeSpace(previousWasLastKeySpace)
-                resetWLSAtEnd = false
-            }
-            in KeyboardBase.NAVIGATION_KEYS -> handleNavigationKey(code)
-            in KeyboardBase.SCRIBE_VIEW_KEYS -> handleScribeViewKey(code, language)
-            else -> handleDefaultKey(code)
-        }
+        val resetWLSAtEnd = processKeyCode(code, language, inputConnection, previousWasLastKeySpace)
 
         if (resetWLSAtEnd) {
             wasLastKeySpace = false
         }
+    }
+
+    /**
+     * Processes the key code and returns whether to reset wasLastKeySpace at the end.
+     *
+     * @param code The key code to process.
+     * @param language The current keyboard language.
+     * @param inputConnection The current input connection.
+     * @param previousWasLastKeySpace The previous state of wasLastKeySpace.
+     * @return True to reset wasLastKeySpace, false to preserve it.
+     */
+    private fun processKeyCode(
+        code: Int,
+        language: String,
+        inputConnection: InputConnection,
+        previousWasLastKeySpace: Boolean,
+    ): Boolean =
+        when (code) {
+            KeyboardBase.KEYCODE_TAB -> {
+                commitTab(inputConnection)
+                true
+            }
+            KeyboardBase.KEYCODE_CAPS_LOCK -> {
+                handleCapsLock()
+                true
+            }
+            KeyboardBase.KEYCODE_DELETE -> {
+                handleDeleteKey()
+                true
+            }
+            KeyboardBase.KEYCODE_SHIFT -> handleShiftKeyPress(previousWasLastKeySpace)
+            KeyboardBase.KEYCODE_ENTER -> {
+                handleEnterKey()
+                true
+            }
+            KeyboardBase.KEYCODE_MODE_CHANGE -> {
+                handleModeChangeKey()
+                true
+            }
+            KeyboardBase.KEYCODE_SPACE -> handleSpaceKeyPress(previousWasLastKeySpace)
+            in KeyboardBase.NAVIGATION_KEYS -> {
+                handleNavigationKey(code)
+                true
+            }
+            in KeyboardBase.SCRIBE_VIEW_KEYS -> {
+                handleScribeViewKey(code, language)
+                true
+            }
+            KeyboardBase.CODE_CURRENCY -> {
+                handleCurrencyKey(language)
+                true
+            }
+            else -> {
+                handleDefaultKey(code)
+                true
+            }
+        }
+
+    /**
+     * Handles the shift key press and returns whether to reset wasLastKeySpace at the end.
+     *
+     * @param previousWasLastKeySpace The previous state of wasLastKeySpace.
+     * @return False to preserve wasLastKeySpace state, true to reset it.
+     */
+    private fun handleShiftKeyPress(previousWasLastKeySpace: Boolean): Boolean {
+        handleShiftKey()
+        wasLastKeySpace = previousWasLastKeySpace
+        return false
+    }
+
+    /**
+     * Handles the space key press and returns whether to reset wasLastKeySpace at the end.
+     *
+     * @param previousWasLastKeySpace The previous state of wasLastKeySpace.
+     * @return False to preserve wasLastKeySpace state, true to reset it.
+     */
+    private fun handleSpaceKeyPress(previousWasLastKeySpace: Boolean): Boolean {
+        wasLastKeySpace = spaceKeyProcessor.processKeycodeSpace(previousWasLastKeySpace)
+        return false
     }
 
     /**
@@ -163,7 +222,21 @@ class KeyHandler(
                 ime.currentState == ScribeState.PLURAL
 
         ime.handleDelete(isCommandBarActive)
+        ime.handleDelete(isCommandBarActive, ime.isDeleteRepeating())
 
+        if (ime.currentState == ScribeState.IDLE) {
+            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+        }
+    }
+
+    /**
+     * Handles the currency symbol key press. It outputs the user's selected currency symbol for the current language.
+     */
+    private fun handleCurrencyKey(language: String) {
+        val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(ime.applicationContext, language)
+        ime.currentInputConnection?.commitText(currencySymbol, 1)
+
+        // Process emoji suggestions if in idle state
         if (ime.currentState == ScribeState.IDLE) {
             suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
         }
