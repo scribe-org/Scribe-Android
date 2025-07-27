@@ -79,7 +79,7 @@ class AutoSuggestionDataManager(
         }
     }
 
-    private fun processSuggestionRow(cursor: Cursor): List<String> {
+    internal fun processSuggestionRow(cursor: Cursor): List<String> {
         val suggestions = mutableListOf<String>()
 
         val suggestion1Index = cursor.getColumnIndex(COLUMN_SUGGESTION1)

@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import be.scri.helpers.DatabaseFileManager
+import be.scri.helpers.data.AutoSuggestionDataManager
 
 class ConjugateDataManager(
     private val fileManager: DatabaseFileManager,
@@ -41,13 +42,12 @@ class ConjugateDataManager(
 
         if (autoSuggestionDb != null) {
             val columnsToSelectForSuggestions = listOf(
-                AutoSuggestionDataManager.COLUMN_WORD,
-                AutoSuggestionDataManager.COLUMN_SUGGESTION1,
-                AutoSuggestionDataManager.COLUMN_SUGGESTION2,
-                AutoSuggestionDataManager.COLUMN_SUGGESTION3
+                "autosuggestion_0",
+                "autosuggestion_1",
+                "autosuggestion_2"
             )
             val selectionForSuggestions = columnsToSelectForSuggestions.joinToString(", ") { "`$it`" }
-            val queryForSuggestions = "SELECT $selectionForSuggestions FROM ${AutoSuggestionDataManager.TABLE_AUTOSUGGESTIONS} WHERE ${AutoSuggestionDataManager.COLUMN_WORD} = ? COLLATE NOCASE"
+            val queryForSuggestions = "SELECT $selectionForSuggestions FROM ${"autosuggestions"} WHERE ${"word"} = ? COLLATE NOCASE"
 
             var autoSuggestionCursor: Cursor? = null
             try {
