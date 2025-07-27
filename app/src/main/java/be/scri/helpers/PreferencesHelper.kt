@@ -365,6 +365,15 @@ object PreferencesHelper {
         return isPreviewEnabled
     }
 
+    fun getIsSoundEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences((SCRIBE_PREFS, MODE_PRIVATE))
+        val isSoundEnabled =
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS,language), true)
+        return isSoundEnabled
+    }
     /**
      * Retrieves whether period and comma are enabled on the ABC keyboard layout for a given language.
      *
