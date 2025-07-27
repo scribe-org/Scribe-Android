@@ -355,4 +355,20 @@ class KeyHandler(
             ime.setupConjugateSubView(ime.returnSubsequentData(), word)
         }
     }
+    /**
+     * Handles default key presses (regular characters, numbers, symbols).
+     * Commits the character to the input connection and processes suggestions.
+     *
+     * @param code The key code representing the character to input.
+     */
+    private fun handleDefaultKey(code: Int) {
+        val character = code.toChar().toString()
+        ime.currentInputConnection?.commitText(character, GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
+    
+    // Process emoji suggestions if in idle state
+    if (ime.currentState == ScribeState.IDLE) {
+        suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+    }
+}
+ 
 }
