@@ -7,7 +7,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import be.scri.helpers.DatabaseFileManager
-import be.scri.helpers.data.AutoSuggestionDataManager
 
 class ConjugateDataManager(
     private val fileManager: DatabaseFileManager,
@@ -34,18 +33,18 @@ class ConjugateDataManager(
         }
         Log.d(TAG, "Conjugations for '$word': $finalOutput")
 
-
         val autoSuggestionManager = AutoSuggestionDataManager(context, language)
 
         // We need the auto-suggestion database to get a cursor that processSuggestionRow understands.
         val autoSuggestionDb: SQLiteDatabase? = fileManager.getLanguageDatabase(language)
 
         if (autoSuggestionDb != null) {
-            val columnsToSelectForSuggestions = listOf(
-                "autosuggestion_0",
-                "autosuggestion_1",
-                "autosuggestion_2"
-            )
+            val columnsToSelectForSuggestions =
+                listOf(
+                    "autosuggestion_0",
+                    "autosuggestion_1",
+                    "autosuggestion_2",
+                )
             val selectionForSuggestions = columnsToSelectForSuggestions.joinToString(", ") { "`$it`" }
             val queryForSuggestions = "SELECT $selectionForSuggestions FROM ${"autosuggestions"} WHERE ${"word"} = ? COLLATE NOCASE"
 
@@ -92,11 +91,12 @@ class ConjugateDataManager(
         language: String,
     ): String {
         if (form.isNullOrEmpty()) return ""
-        val result = fileManager.getLanguageDatabase(language)?.use { db ->
-            getVerbCursor(db, word, language)?.use { cursor ->
-                getConjugatedValueFromCursor(cursor, form)
-            }
-        } ?: ""
+        val result =
+            fileManager.getLanguageDatabase(language)?.use { db ->
+                getVerbCursor(db, word, language)?.use { cursor ->
+                    getConjugatedValueFromCursor(cursor, form)
+                }
+            } ?: ""
         Log.d(TAG, "Fetched conjugated form for word '$word' with form '$form' in language '$language': '$result'")
         return result
     }

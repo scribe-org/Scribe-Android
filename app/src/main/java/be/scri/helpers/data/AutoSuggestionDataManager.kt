@@ -10,7 +10,6 @@ class AutoSuggestionDataManager(
     context: Context,
     private val language: String,
 ) : SQLiteOpenHelper(context, getDatabaseName(language), null, 1) {
-
     companion object {
         private const val TABLE_AUTOSUGGESTIONS = "autosuggestions"
         private const val COLUMN_WORD = "word"
@@ -19,8 +18,8 @@ class AutoSuggestionDataManager(
         private const val COLUMN_SUGGESTION3 = "autosuggestion_2"
         private const val COLUMN_EMOJIS = "emojis"
 
-        private fun getDatabaseName(language: String): String {
-            return when (language.lowercase()) {
+        private fun getDatabaseName(language: String): String =
+            when (language.lowercase()) {
                 "en" -> "ENLanguageData.sqlite"
                 "fr" -> "FRLanguageData.sqlite"
                 "de" -> "DELanguageData.sqlite"
@@ -31,13 +30,16 @@ class AutoSuggestionDataManager(
                 "sv" -> "SVLanguageData.sqlite"
                 else -> "ENLanguageData.sqlite"
             }
-        }
     }
 
     override fun onCreate(db: SQLiteDatabase) {
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+    override fun onUpgrade(
+        db: SQLiteDatabase,
+        oldVersion: Int,
+        newVersion: Int,
+    ) {
     }
 
     fun getSuggestions(word: String): List<String>? {
@@ -51,7 +53,10 @@ class AutoSuggestionDataManager(
         }
     }
 
-    private fun processSuggestionData(db: SQLiteDatabase, word: String): List<String>? {
+    private fun processSuggestionData(
+        db: SQLiteDatabase,
+        word: String,
+    ): List<String>? {
         val columnsToSelect = listOf(COLUMN_WORD, COLUMN_SUGGESTION1, COLUMN_SUGGESTION2, COLUMN_SUGGESTION3)
 
         db.rawQuery("SELECT * FROM $TABLE_AUTOSUGGESTIONS LIMIT 1", null).use { tempCursor ->
@@ -60,7 +65,7 @@ class AutoSuggestionDataManager(
                     Log.e(
                         "AutoSuggestionDataManager",
                         "Column '$column' specified was NOT FOUND in the '$TABLE_AUTOSUGGESTIONS' table. " +
-                            "Skipping suggestion processing to prevent a crash."
+                            "Skipping suggestion processing to prevent a crash.",
                     )
                     return null
                 }
