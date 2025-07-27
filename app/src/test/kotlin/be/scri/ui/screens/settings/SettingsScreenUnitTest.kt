@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class DimensionsTest {
+class SettingsScreenUnitTest {
     @Test
     fun `PaddingLarge has correct value`() {
         assertEquals(20.dp, Dimensions.PaddingLarge)
