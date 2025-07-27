@@ -10,6 +10,7 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.confirmVerified
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,10 +36,15 @@ class KeyboardTest {
     @Test
     fun testBackspaceKeyCallsHandleDelete() {
         every { mockIME.currentState } returns ScribeState.IDLE
+        every { mockIME.isDeleteRepeating() } returns false
+        every { mockIME.getLastWordBeforeCursor() } returns "" // <-- Stubbed as it's called in IDLE mode
 
         keyHandler.handleKey(KeyboardBase.KEYCODE_DELETE, "en")
 
-        verify(exactly = 1) { mockIME.handleDelete(false) }
+        verify(exactly = 1) { mockIME.lastShiftPressTS = 0L } // <-- New: Always called by handleKey
+        verify(exactly = 1) { mockIME.handleDelete(false, false) }
+        verify(exactly = 1) { mockIME.getLastWordBeforeCursor() } // <-- New: Called in IDLE mode
+        confirmVerified(mockIME)
     }
 
     @Test
@@ -48,6 +54,8 @@ class KeyboardTest {
         keyHandler.handleKey(KeyboardBase.KEYCODE_DELETE, "en")
 
         verify(exactly = 1) { mockIME.handleDelete(true) }
+        confirmVerified(mockIME)
+
     }
 
     @Test
@@ -57,6 +65,8 @@ class KeyboardTest {
         keyHandler.handleKey(KeyboardBase.KEYCODE_DELETE, "en")
 
         verify(exactly = 1) { mockIME.handleDelete(true) }
+        confirmVerified(mockIME)
+
     }
 
     @Test
@@ -66,6 +76,8 @@ class KeyboardTest {
         keyHandler.handleKey(KeyboardBase.KEYCODE_DELETE, "en")
 
         verify(exactly = 1) { mockIME.handleDelete(true) }
+        confirmVerified(mockIME)
+
     }
 
     @Test
@@ -95,6 +107,7 @@ class KeyboardTest {
 
         verify(exactly = 1) { mockIME.handleDelete(false) }
         verify(exactly = 1) { mockIME.getLastWordBeforeCursor() }
+        confirmVerified(mockIME)
     }
 
     @Test
@@ -105,6 +118,8 @@ class KeyboardTest {
 
         verify(exactly = 1) { mockIME.handleDelete(true) }
         verify(exactly = 0) { mockIME.getLastWordBeforeCursor() }
+        confirmVerified(mockIME)
+
     }
 
     @Test
@@ -116,6 +131,7 @@ class KeyboardTest {
         }
 
         verify(exactly = 3) { mockIME.handleDelete(false) }
+        confirmVerified(mockIME)
     }
 
     @Test
@@ -126,6 +142,8 @@ class KeyboardTest {
         keyHandler.handleKey(KeyboardBase.KEYCODE_DELETE, "en")
 
         verify(exactly = 1) { mockIME.handleDelete(false) }
+        confirmVerified(mockIME)
+
     }
 
     @Test
