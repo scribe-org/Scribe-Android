@@ -40,6 +40,8 @@
     <string name="show_clipboard_content">Show clipboard content if available</string>
     <string name="show_popup">Show a popup on keypress</string>
     <string name="vibrate_on_keypress">Vibrate on keypress</string>
+    <string name="sound_on_keypress">Sound on key press</string>
+    <string name="sound_on_keypress_description">Plays an audio cue on key press</string>
     <string name="keyboard_language">Keyboard language</string>
     <string name="dark_mode">Dark theme</string>
     <string name="period_on_space_bar">Double Tap on SpaceBar for Period</string>

@@ -2,8 +2,12 @@
 
 package be.scri.extensions
 
+import android.content.res.AssetFileDescriptor
+import android.media.SoundPool
 import android.view.HapticFeedbackConstants
+import android.view.SoundEffectConstants
 import android.view.View
+import be.scri.R
 
 /**
  * Sets the view's visibility to VISIBLE if [beVisible] is true; otherwise, sets it to GONE.
@@ -45,3 +49,32 @@ fun View.beGone() {
  * @receiver View on which to perform haptic feedback
  */
 fun View.performHapticFeedback() = performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
+
+private var soundPool: SoundPool? = null
+private var soundId: Int = 0
+private var soundLoaded = false
+private var initialized = false
+
+fun View.performSoundFeedback() {
+    val context = this.context
+
+    if (!initialized) {
+        soundPool = SoundPool.Builder().setMaxStreams(1).build().also { pool ->
+            try {
+                val afd: AssetFileDescriptor = context.assets.openFd("media/click.wav")
+                soundId = pool.load(afd, 1)
+                pool.setOnLoadCompleteListener { _, _, status ->
+                    soundLoaded = (status == 0)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        initialized = true
+    }
+
+    if (soundLoaded) {
+        soundPool?.play(soundId, 1f, 1f, 0, 0, 1f)
+    }
+}

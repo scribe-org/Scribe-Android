@@ -6,6 +6,7 @@ import android.app.UiModeManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
@@ -369,9 +370,9 @@ object PreferencesHelper {
         context: Context,
         language: String,
     ): Boolean {
-        val sharedPref = context.getSharedPreferences((SCRIBE_PREFS, MODE_PRIVATE))
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val isSoundEnabled =
-            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS,language), true)
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS,language), false)
         return isSoundEnabled
     }
     /**
