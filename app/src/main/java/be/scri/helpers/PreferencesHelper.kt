@@ -6,7 +6,6 @@ import android.app.UiModeManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
@@ -214,14 +213,14 @@ object PreferencesHelper {
     ) {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         sharedPref.edit {
-            putBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS,language), shouldSoundOnKeypress)
+            putBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS, language), shouldSoundOnKeypress)
         }
         Toast
             .makeText(
                 context,
                 "$language sound on key press " +
                     if (shouldSoundOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_SHORT,
             ).show()
     }
 
@@ -372,9 +371,10 @@ object PreferencesHelper {
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val isSoundEnabled =
-            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS,language), false)
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS, language), false)
         return isSoundEnabled
     }
+
     /**
      * Retrieves whether period and comma are enabled on the ABC keyboard layout for a given language.
      *

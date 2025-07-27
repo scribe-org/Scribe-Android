@@ -65,7 +65,6 @@ fun LanguageSettingsScreen(
             )
         }
 
-
     val emojiSuggestionsState =
         remember {
             mutableStateOf(
@@ -97,7 +96,7 @@ fun LanguageSettingsScreen(
     val soundOnKeyPressState =
         remember {
             mutableStateOf(
-                PreferencesHelper.getIsSoundEnabled(context,language),
+                PreferencesHelper.getIsSoundEnabled(context, language),
             )
         }
 
@@ -190,8 +189,7 @@ fun LanguageSettingsScreen(
                 )
             },
             toggleSoundOnKeyPress = soundOnKeyPressState.value,
-            onToggleSoundOnKeyPress = {
-                shouldSoundOnKeyPress ->
+            onToggleSoundOnKeyPress = { shouldSoundOnKeyPress ->
                 soundOnKeyPressState.value = shouldSoundOnKeyPress
                 PreferencesHelper.setSoundOnKeypress(
                     context,
@@ -208,7 +206,6 @@ fun LanguageSettingsScreen(
                     isEnabled,
                 )
             },
-
         )
 
     val functionalityList =

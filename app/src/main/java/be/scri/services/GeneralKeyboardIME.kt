@@ -189,7 +189,7 @@ abstract class GeneralKeyboardIME(
         keyboardView = binding.keyboardView
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
-        keyboardView?.setSound = getIsSoundEnabled(applicationContext,language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -204,7 +204,7 @@ abstract class GeneralKeyboardIME(
         super.onWindowShown()
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
-        keyboardView?.setSound = getIsSoundEnabled(applicationContext,language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
     }
 
     /**
@@ -302,6 +302,7 @@ abstract class GeneralKeyboardIME(
         if (primaryCode != 0) keyboardView?.vibrateIfNeeded()
         if (primaryCode != 0) keyboardView?.soundIfNeeded()
     }
+
     /**
      * Called when a key is released. Handles the logic
      * to switch back to the letter keyboard

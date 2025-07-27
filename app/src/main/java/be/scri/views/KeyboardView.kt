@@ -25,7 +25,6 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.SoundEffectConstants
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.accessibility.AccessibilityEvent
@@ -52,7 +51,6 @@ import be.scri.extensions.getProperPrimaryColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
 import be.scri.extensions.performHapticFeedback
-import be.scri.extensions.performSoundFeedback
 import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
@@ -671,7 +669,7 @@ class KeyboardView
 
         fun soundIfNeeded() {
             Log.d("Souncheck", "soundIfNeeded: $setSound")
-            if(setSound) {
+            if (setSound) {
                 performSoundFeedback()
             }
         }
