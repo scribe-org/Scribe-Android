@@ -77,5 +77,11 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="select_command_scribe_key_width">65dp</dimen>
     <dimen name="command_state_scribe_key_width">75dp</dimen>
+
     <dimen name="emoji_palette_btn_size">42dp</dimen>
+    <dimen name="emoji_item_size">42dp</dimen>
+    <dimen name="emoji_category_item_size">24dp</dimen>
+    <dimen name="suggestion_max_width">200dp</dimen><!-- text size used at keys with longer labels, like "123" -->
+    <dimen name="emoji_text_size">30sp</dimen>
+    <dimen name="emoji_category_text_size">13sp</dimen>
 </resources>
