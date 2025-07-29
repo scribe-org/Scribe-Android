@@ -283,8 +283,8 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
                 onToggle = settings.onToggleVibrateOnKeyPress,
             ),
             ScribeItem.SwitchItem(
-                title = R.string.sound_on_keypress,
-                desc = R.string.sound_on_keypress_description,
+                title = R.string.app_settings_keyboard_keypress_sound,
+                desc = R.string.app_settings_keyboard_keypress_sound_description,
                 state = settings.toggleSoundOnKeyPress,
                 onToggle = settings.onToggleSoundOnKeyPress,
             ),
