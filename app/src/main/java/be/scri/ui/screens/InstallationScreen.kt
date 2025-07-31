@@ -57,6 +57,7 @@ import be.scri.ui.common.ScribeBaseScreen
 fun InstallationScreen(
     isDark: Boolean,
     context: Context,
+    onNavigateToDownloadData: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val layoutDirection = LocalLayoutDirection.current
@@ -243,7 +244,10 @@ fun InstallationScreen(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(bottom = Dimensions.PaddingSmall),
+                        .padding(bottom = Dimensions.PaddingSmall)
+                        .clickable {
+                            onNavigateToDownloadData()
+                        },
                 shape = RoundedCornerShape(Dimensions.PaddingLarge),
                 colors =
                     CardDefaults.cardColors(
