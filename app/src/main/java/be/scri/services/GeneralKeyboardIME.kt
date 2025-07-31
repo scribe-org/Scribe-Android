@@ -1130,7 +1130,7 @@ abstract class GeneralKeyboardIME(
     fun findWhetherWordIsPlural(
         pluralWords: Set<String>?,
         lastWord: String?,
-    ): Boolean = pluralWords?.contains(lastWord) == true
+    ): Boolean = pluralWords?.contains(lastWord?.lowercase()) == true
 
     /**
      * Finds the required grammatical case(s) for a preposition.
