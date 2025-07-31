@@ -10,7 +10,6 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.confirmVerified
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,7 +31,7 @@ class KeyboardTest {
 
         keyHandler = KeyHandler(mockIME)
     }
-    
+
     @Test
     fun testBackspaceReducesStringLengthByOne() {
         val initialText = "Hello World"
