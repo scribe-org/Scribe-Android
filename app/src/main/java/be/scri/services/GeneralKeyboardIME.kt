@@ -52,6 +52,7 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
+import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
 import java.util.Locale
@@ -159,7 +160,7 @@ abstract class GeneralKeyboardIME(
         return isPreferenceEnabled || isInSearchBar
     }
 
-    enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID }
+    enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID, ALREADY_PLURAL }
 
     /**
      * Returns whether the current conjugation state requires a subsequent selection view.
@@ -510,6 +511,7 @@ abstract class GeneralKeyboardIME(
             ScribeState.IDLE -> setupIdleView()
             ScribeState.SELECT_COMMAND -> setupSelectCommandView()
             ScribeState.INVALID -> setupInvalidView()
+            ScribeState.ALREADY_PLURAL -> setupAlreadyPluralView()
             else -> setupToolbarView()
         }
         updateEnterKeyColor(isUserDarkMode)
@@ -682,6 +684,28 @@ abstract class GeneralKeyboardIME(
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
+    }
+
+    /**
+     * Configures the UI for the `ALREADY_PLURAL` state, which is shown when the user
+     * attempts to pluralize a word that is already plural.
+     */
+    private fun setupAlreadyPluralView() {
+        binding.commandOptionsBar.visibility = View.GONE
+        binding.toolbarBar.visibility = View.VISIBLE
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        binding.toolbarBar.setBackgroundColor(
+            if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
+        )
+        binding.ivInfo.visibility = View.VISIBLE
+        binding.promptText.text = ALREADY_PLURAL_MSG
+        binding.commandBar.hint = ""
+        binding.scribeKeyToolbar.foreground =
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.ic_scribe_icon_vector,
+            )
+        binding.scribeKeyToolbar.setOnClickListener { moveToIdleState() }
     }
 
     /**
@@ -1554,8 +1578,18 @@ abstract class GeneralKeyboardIME(
     private fun getPluralRepresentation(word: String?): String? {
         if (word.isNullOrEmpty()) return null
         val langAlias = getLanguageAlias(language)
+        val lowercaseWord = word.lowercase()
+
+        // Check if the word is already plural FIRST
+        val isAlreadyPlural = pluralWords?.contains(lowercaseWord) == true
+        if (isAlreadyPlural) {
+            return ALREADY_PLURAL_MSG
+        }
+
+        // If not plural, try to find the plural form in singular column
         val pluralMap = dbManagers.pluralManager.getPluralRepresentation(langAlias, dataContract, word)
-        return pluralMap.values.firstOrNull()
+        val pluralResult = pluralMap.values.firstOrNull()
+        return pluralResult
     }
 
     /**
@@ -1574,7 +1608,7 @@ abstract class GeneralKeyboardIME(
      * @param commandBarInput The word to be translated (source word).
      * @return The translated word as a string.
      */
-    fun getTranslation(
+    private fun getTranslation(
         language: String,
         commandBarInput: String,
     ): String {
@@ -1636,7 +1670,17 @@ abstract class GeneralKeyboardIME(
     ) {
         val commandModeOutput =
             when (currentState) {
-                ScribeState.PLURAL -> getPluralRepresentation(rawInput).orEmpty()
+                ScribeState.PLURAL -> {
+                    when (val pluralResult = getPluralRepresentation(rawInput)) {
+                        ALREADY_PLURAL_MSG -> {
+                            currentState = ScribeState.ALREADY_PLURAL
+                            updateUI()
+                            return
+                        }
+                        null -> ""
+                        else -> pluralResult
+                    }
+                }
                 ScribeState.TRANSLATE -> getTranslation(language, rawInput)
                 else -> ""
             }
