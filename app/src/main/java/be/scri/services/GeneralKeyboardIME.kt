@@ -111,6 +111,7 @@ abstract class GeneralKeyboardIME(
     private lateinit var conjugateLabels: Set<String>
     private var emojiMaxKeywordLength: Int = 0
     internal lateinit var nounKeywords: HashMap<String, List<String>>
+    internal lateinit var suggestionWords: HashMap<String, List<String>>
     var pluralWords: Set<String>? = null
     internal lateinit var caseAnnotation: HashMap<String, MutableList<String>>
     var emojiAutoSuggestionEnabled: Boolean = false
@@ -118,6 +119,7 @@ abstract class GeneralKeyboardIME(
     var autoSuggestEmojis: MutableList<String>? = null
     var caseAnnotationSuggestion: MutableList<String>? = null
     var nounTypeSuggestion: List<String>? = null
+    var wordSuggestions: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
 
@@ -143,12 +145,12 @@ abstract class GeneralKeyboardIME(
         val isUriType =
             editorInfo?.let {
                 (it.inputType and InputType.TYPE_TEXT_VARIATION_URI) != 0
-            } ?: false
+            } == true
 
         val hasSearchHint =
             editorInfo?.hintText?.toString()?.lowercase(Locale.ROOT)?.let {
                 it.contains("search") || it.contains("address")
-            } ?: false
+            } == true
 
         return isActionSearch || isUriType || hasSearchHint
     }
@@ -384,6 +386,16 @@ abstract class GeneralKeyboardIME(
         emojiMaxKeywordLength = dbManagers.emojiManager.maxKeywordLength
         pluralWords = dbManagers.pluralManager.getAllPluralForms(languageAlias, dataContract)?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
+        suggestionWords =
+            hashMapOf(
+                "hello" to listOf("world", "there"),
+                "good" to listOf("morning", "job"),
+                "how" to listOf("are", "is"),
+                "thank" to listOf("you", "god"),
+                "i" to listOf("am", "think", "know"),
+                "she" to listOf("is", "was"),
+                "they" to listOf("are", "were"),
+            )
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
         conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "coacha")
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
@@ -1153,6 +1165,25 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
+     * Finds the next suggestions for the last typed word.
+     * @param wordSuggestions The map of words to their suggestions.
+     * @param lastWord The word to look up.
+     * @return A list of gender strings (e.g., "masculine", "neuter"), or null if not a known noun.
+     */
+    fun getNextWordSuggestions(
+        wordSuggestions: HashMap<String, List<String>>,
+        lastWord: String?,
+    ): List<String>? {
+        lastWord?.let {
+            val suggestions = wordSuggestions[it.lowercase()]
+            if (suggestions != null) {
+                return suggestions
+            }
+        }
+        return null
+    }
+
+    /**
      * Checks if the last word is a known plural form.
      * @param pluralWords The set of all known plural words.
      * @param lastWord The word to check.
@@ -1239,6 +1270,7 @@ abstract class GeneralKeyboardIME(
         nounTypeSuggestion: List<String>? = null,
         isPlural: Boolean = false,
         caseAnnotationSuggestion: MutableList<String>? = null,
+        wordSuggestions: List<String>? = null,
     ) {
         if (currentState != ScribeState.IDLE) {
             disableAutoSuggest()
@@ -1260,6 +1292,12 @@ abstract class GeneralKeyboardIME(
                 handleMultipleCases(caseAnnotationSuggestion) -> true
                 handleSingleCaseSuggestion(caseAnnotationSuggestion) -> true
                 handleFallbackSuggestions(nounTypeSuggestion, caseAnnotationSuggestion) -> true
+                handleWordSuggestions(
+                    wordSuggestions = wordSuggestions,
+                    nounTypeSuggestion = nounTypeSuggestion,
+                    caseAnnotationSuggestion = caseAnnotationSuggestion,
+                    isPlural = isPlural,
+                ) -> true
                 else -> false
             }
         if (!handled) disableAutoSuggest()
@@ -1272,9 +1310,12 @@ abstract class GeneralKeyboardIME(
      */
     private fun handlePluralIfNeeded(isPlural: Boolean): Boolean {
         if (isPlural) {
+            Log.d("PluralDebug", "isplural")
             handlePluralAutoSuggest()
             return true
         }
+        Log.d("PluralDebug", "notplural")
+
         return false
     }
 
@@ -1359,6 +1400,7 @@ abstract class GeneralKeyboardIME(
      * Configures the UI to show a "PL" (Plural) suggestion.
      */
     private fun handlePluralAutoSuggest() {
+        Log.d("PluralDebug", "Plural suggestions")
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtnRight.visibility = View.INVISIBLE
 
@@ -1372,6 +1414,70 @@ abstract class GeneralKeyboardIME(
             isClickable = false
             setOnClickListener(null)
         }
+    }
+
+    private fun setSuggestionButton(
+        button: Button,
+        text: String,
+    ) {
+        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
+        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
+        button.text = text
+        button.visibility = View.VISIBLE
+        button.textSize = SUGGESTION_SIZE
+        button.setOnClickListener(null)
+        button.background = null
+        button.setTextColor(textColor)
+        button.setOnClickListener {
+            currentInputConnection?.commitText("$text ", 1)
+            moveToIdleState()
+        }
+    }
+
+    private fun handleWordSuggestions(
+        nounTypeSuggestion: List<String>? = null,
+        isPlural: Boolean = false,
+        caseAnnotationSuggestion: MutableList<String>? = null,
+        wordSuggestions: List<String>? = null,
+    ): Boolean {
+        if (wordSuggestions.isNullOrEmpty()) {
+            return false
+        }
+        val suggestions =
+            listOfNotNull(
+                wordSuggestions.getOrNull(0),
+                wordSuggestions.getOrNull(1),
+                wordSuggestions.getOrNull(2),
+            )
+        val suggestion1 = suggestions.getOrNull(0) ?: ""
+        val suggestion2 = suggestions.getOrNull(1) ?: ""
+        val suggestion3 = suggestions.getOrNull(2) ?: ""
+
+        Log.d("suggestion 1", suggestion1)
+        Log.d("suggestion 2", suggestion2)
+        Log.d("suggestion 3", suggestion3)
+        val hasLinguisticSuggestion =
+            nounTypeSuggestion != null ||
+                isPlural ||
+                caseAnnotationSuggestion != null ||
+                isSingularAndPlural
+        Log.d("lS", hasLinguisticSuggestion.toString())
+        val emojiCount = autoSuggestEmojis?.size ?: 0
+        setSuggestionButton(binding.conjugateBtn, suggestion1)
+        when {
+            hasLinguisticSuggestion && emojiCount != 0 -> {
+                updateButtonVisibility(true)
+            }
+
+            hasLinguisticSuggestion && emojiCount == 0 -> {
+                setSuggestionButton(binding.pluralBtn, suggestion2)
+            }
+            else -> {
+                setSuggestionButton(binding.translateBtn, suggestion2)
+                setSuggestionButton(binding.pluralBtn, suggestion3)
+            }
+        }
+        return true
     }
 
     /**
