@@ -45,6 +45,7 @@ import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
+import be.scri.helpers.PreferencesHelper.getIsSoundEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.helpers.PreferencesHelper.isShowPopupOnKeypressEnabled
 import be.scri.helpers.SHIFT_OFF
@@ -188,6 +189,7 @@ abstract class GeneralKeyboardIME(
         keyboardView = binding.keyboardView
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -202,6 +204,7 @@ abstract class GeneralKeyboardIME(
         super.onWindowShown()
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
     }
 
     /**
@@ -297,6 +300,7 @@ abstract class GeneralKeyboardIME(
      */
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) keyboardView?.vibrateIfNeeded()
+        if (primaryCode != 0) keyboardView?.soundIfNeeded()
     }
 
     /**
@@ -384,6 +388,11 @@ abstract class GeneralKeyboardIME(
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "describe")
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
+
+        // Set up the currency symbol if we're using the symbols keyboard layout
+        if (keyboardXml == R.xml.keys_symbols) {
+            setupCurrencySymbol()
+        }
     }
 
     /**
@@ -746,6 +755,19 @@ abstract class GeneralKeyboardIME(
         keyboard = KeyboardBase(this, xmlId, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
         keyboardView?.requestLayout()
+
+        // Set up the currency symbol if we're on the symbols keyboard
+        if (keyboardMode == keyboardSymbols) {
+            setupCurrencySymbol()
+        }
+    }
+
+    /**
+     * Sets up the currency symbol on the keyboard based on user preferences.
+     */
+    private fun setupCurrencySymbol() {
+        val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(this, language)
+        keyboardView?.setKeyLabel(currencySymbol, "", KeyboardBase.CODE_CURRENCY)
     }
 
     /**
@@ -1720,6 +1742,11 @@ abstract class GeneralKeyboardIME(
         keyboard = KeyboardBase(context, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
         keyboardView?.requestLayout()
+
+        // Set up the currency symbol if we're using the symbols keyboard layout
+        if (keyboardXml == R.xml.keys_symbols) {
+            setupCurrencySymbol()
+        }
     }
 
     /**
@@ -1762,6 +1789,11 @@ abstract class GeneralKeyboardIME(
                 }
             keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
             keyboardView!!.setKeyboard(keyboard!!)
+
+            // Set up the currency symbol if we're using the symbols keyboard layout
+            if (keyboardXml == R.xml.keys_symbols) {
+                setupCurrencySymbol()
+            }
         }
     }
 

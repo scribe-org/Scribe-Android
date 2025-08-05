@@ -19,12 +19,15 @@ object PreferencesHelper {
     const val SCRIBE_PREFS = "app_preferences"
     private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
     private const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
+
+    private const val SOUND_ON_KEYPRESS = "sound_on_keypress"
     private const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
     private const val PERIOD_AND_COMMA = "period_and_comma"
     private const val TRANSLATION_SOURCE = "translation_source"
     private const val EMOJI_SUGGESTIONS = "emoji_suggestions"
     private const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"
     private const val WORD_BY_WORD_DELETION = "word_by_word_deletion"
+    private const val DEFAULT_CURRENCY = "default_currency"
 
     /**
      * Sets the translation source language for a given language.
@@ -203,6 +206,24 @@ object PreferencesHelper {
             ).show()
     }
 
+    fun setSoundOnKeypress(
+        context: Context,
+        language: String,
+        shouldSoundOnKeypress: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS, language), shouldSoundOnKeypress)
+        }
+        Toast
+            .makeText(
+                context,
+                "$language sound on key press " +
+                    if (shouldSoundOnKeypress) "enabled" else "disabled",
+                Toast.LENGTH_SHORT,
+            ).show()
+    }
+
     /**
      * Sets the preference for showing or hiding the popup on keypress for a language.
      *
@@ -344,6 +365,16 @@ object PreferencesHelper {
         return isPreviewEnabled
     }
 
+    fun getIsSoundEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
+        val isSoundEnabled =
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS, language), false)
+        return isSoundEnabled
+    }
+
     /**
      * Retrieves whether period and comma are enabled on the ABC keyboard layout for a given language.
      *
@@ -439,5 +470,72 @@ object PreferencesHelper {
             getLanguageSpecificPreferenceKey(TRANSLATION_SOURCE, language),
             "English",
         )
+    }
+
+    /**
+     * Sets the default currency symbol preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the currency preference.
+     * @param currencyName The name of the currency (e.g., "Dollar", "Euro").
+     */
+    fun setDefaultCurrencySymbol(
+        context: Context,
+        language: String,
+        currencyName: String,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putString(getLanguageSpecificPreferenceKey(DEFAULT_CURRENCY, language), currencyName)
+        }
+    }
+
+    /**
+     * Retrieves the default currency symbol preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the currency preference.
+     * @return The currency symbol (e.g., "$", "€").
+     */
+    fun getDefaultCurrencySymbol(
+        context: Context,
+        language: String,
+    ): String {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val currencyName =
+            sharedPref.getString(
+                getLanguageSpecificPreferenceKey(
+                    DEFAULT_CURRENCY,
+                    language,
+                ),
+                "Dollar",
+            ) ?: "Dollar"
+
+        // Map currency names to symbols
+        return when (currencyName) {
+            "Dollar" -> "$"
+            "Euro" -> "€"
+            "Pound" -> "£"
+            "Rouble" -> "₽"
+            "Rupee" -> "₹"
+            "Won" -> "₩"
+            "Yen" -> "¥"
+            else -> "$"
+        }
+    }
+
+    /**
+     * Retrieves the default currency name preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the currency preference.
+     * @return The currency name (e.g., "Dollar", "Euro").
+     */
+    fun getDefaultCurrencyName(
+        context: Context,
+        language: String,
+    ): String {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getString(getLanguageSpecificPreferenceKey(DEFAULT_CURRENCY, language), "Dollar") ?: "Dollar"
     }
 }
