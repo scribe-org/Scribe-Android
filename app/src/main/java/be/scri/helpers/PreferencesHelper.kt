@@ -19,6 +19,8 @@ object PreferencesHelper {
     const val SCRIBE_PREFS = "app_preferences"
     private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
     private const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
+
+    private const val SOUND_ON_KEYPRESS = "sound_on_keypress"
     private const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
     private const val PERIOD_AND_COMMA = "period_and_comma"
     private const val TRANSLATION_SOURCE = "translation_source"
@@ -204,6 +206,24 @@ object PreferencesHelper {
             ).show()
     }
 
+    fun setSoundOnKeypress(
+        context: Context,
+        language: String,
+        shouldSoundOnKeypress: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS, language), shouldSoundOnKeypress)
+        }
+        Toast
+            .makeText(
+                context,
+                "$language sound on key press " +
+                    if (shouldSoundOnKeypress) "enabled" else "disabled",
+                Toast.LENGTH_SHORT,
+            ).show()
+    }
+
     /**
      * Sets the preference for showing or hiding the popup on keypress for a language.
      *
@@ -345,6 +365,16 @@ object PreferencesHelper {
         return isPreviewEnabled
     }
 
+    fun getIsSoundEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
+        val isSoundEnabled =
+            sharedPref.getBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS, language), false)
+        return isSoundEnabled
+    }
+
     /**
      * Retrieves whether period and comma are enabled on the ABC keyboard layout for a given language.
      *
@@ -419,7 +449,7 @@ object PreferencesHelper {
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
-        val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(WORD_BY_WORD_DELETION, language), true)
+        val isEnabled = sharedPref.getBoolean(getLanguageSpecificPreferenceKey(WORD_BY_WORD_DELETION, language), false)
         return isEnabled
     }
 

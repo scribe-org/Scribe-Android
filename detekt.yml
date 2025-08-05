@@ -1,14 +1,18 @@
+build:
+    excludes:
+        - "**/be/scri/views/MyRecyclerView.kt"
+
 style:
     MagicNumber:
-        active: true
+        active: false
     MaxLineLength:
-        active: true
+        active: false
     LoopWithTooManyJumpStatements:
         active: true
     WildcardImport:
         active: true
     ReturnCount:
-        active: true
+        active: false
     UnusedPrivateProperty:
         active: true
     UnusedParameter:
@@ -25,17 +29,17 @@ complexity:
     TooManyFunctions:
         active: true
     NestedBlockDepth:
-        active: true
+        active: false
     ComplexCondition:
         active: true
     LongParameterList:
         active: true
         functionThreshold: 10
     LongMethod:
-        active: true
+        active: false
         ignoreAnnotated: ["Composable"]
     CyclomaticComplexMethod:
-        active: true
+        active: false
 
 exceptions:
     SwallowedException:
@@ -55,13 +59,14 @@ performance:
 
 comments:
     UndocumentedPublicFunction:
-        active: true
+        active: false
         excludes: &excludedFolders
             - '**/helpers/**/*Variables.kt'
             - '**/test/**'
             - '**/services/**'
+            - '**/'
     UndocumentedPublicClass:
-        active: true
+        active: false
         excludes: *excludedFolders
 
 

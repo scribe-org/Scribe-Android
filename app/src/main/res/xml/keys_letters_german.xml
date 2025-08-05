@@ -102,11 +102,9 @@
             app:keyLabel="l"
             app:keyWidth="9.05%p" />
         <Key
-            app:code="1"
             app:keyLabel="ö"
             app:keyWidth="9.05%p" />
         <Key
-            app:code = "2"
             app:keyEdgeFlags="right"
             app:keyLabel="ä"
             app:keyWidth="9.05%p" />

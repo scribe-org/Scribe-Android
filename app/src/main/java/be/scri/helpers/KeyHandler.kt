@@ -219,7 +219,9 @@ class KeyHandler(
             ime.currentState == ScribeState.TRANSLATE ||
                 ime.currentState == ScribeState.CONJUGATE ||
                 ime.currentState == ScribeState.PLURAL
-        ime.handleDelete(isCommandBarActive)
+
+        // Pass the repeat state to the delete handler
+        ime.handleDelete(isCommandBarActive, ime.isDeleteRepeating())
 
         // Only process suggestions if the state is exactly IDLE.
         if (ime.currentState == ScribeState.IDLE) {

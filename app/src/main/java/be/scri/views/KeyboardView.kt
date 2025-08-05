@@ -20,6 +20,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -50,6 +51,7 @@ import be.scri.extensions.getProperPrimaryColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
 import be.scri.extensions.performHapticFeedback
+import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
@@ -66,6 +68,7 @@ import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
+import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 import java.util.Arrays
 import java.util.Locale
@@ -325,6 +328,8 @@ class KeyboardView
 
         var setPreview: Boolean = true
         var setVibrate: Boolean = true
+
+        var setSound: Boolean = false
 
         /**
          * Sets the color of the Enter key based on a specific color or theme mode.
@@ -662,6 +667,13 @@ class KeyboardView
             }
         }
 
+        fun soundIfNeeded() {
+            Log.d("Souncheck", "soundIfNeeded: $setSound")
+            if (setSound) {
+                performSoundFeedback()
+            }
+        }
+
         /**
          * Sets the state of the shift key of the keyboard, if any.
          * @param shifted whether or not to enable the state of the shift key
@@ -818,6 +830,13 @@ class KeyboardView
                     }
                 val pressedColor = resources.getColor(pressedColorResId, context.theme)
                 val specialKeyColorValue = resources.getColor(mSpecialKeyColor!!, context.theme)
+                val focusedColorResId =
+                    if (isUserDarkMode) {
+                        R.color.theme_scribe_blue
+                    } else {
+                        R.color.light_scribe_color
+                    }
+                val focusedColor = resources.getColor(focusedColorResId, context.theme)
 
                 paint.color = mTextColor
                 val keyBackgroundPaint =
@@ -908,6 +927,7 @@ class KeyboardView
 
                     val backgroundColor =
                         when {
+                            key.focused -> focusedColor
                             key.pressed -> pressedColor
                             code == KEYCODE_SHIFT && mKeyboard!!.mShiftState == SHIFT_LOCKED -> pressedColor
                             code in listOf(KEYCODE_DELETE, KEYCODE_SHIFT, KEYCODE_MODE_CHANGE) -> specialKeyColorValue
@@ -1003,6 +1023,8 @@ class KeyboardView
 
                         paint.color =
                             if (key.focused) {
+                                Color.WHITE
+                            } else if (key.focused) {
                                 mPrimaryColor.getContrastColor()
                             } else {
                                 mTextColor
@@ -1487,6 +1509,7 @@ class KeyboardView
                         val key = mKeys[mRepeatKeyIndex]
                         if (key.code == KEYCODE_DELETE) {
                             mHandler?.removeMessages(MSG_REPEAT)
+                            (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
                             mRepeatKeyIndex = NOT_A_KEY
                         }
                     }
@@ -1622,11 +1645,17 @@ class KeyboardView
                             if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
                                 mLastSpaceMoveX = -1
                             } else {
-                                repeatKey(true)
+                                // For delete key, send the initial key press but don't set repeating flag yet
+                                // The repeating flag will be set when the actual repeat starts
+                                detectAndSendKey(mCurrentKey, mKeys[mCurrentKey].x, mKeys[mCurrentKey].y, eventTime)
                             }
 
                             // Delivering the key could have caused an abort.
                             if (mAbortKey) {
+                                // Reset delete repeating flag when key is aborted
+                                if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
+                                    (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
+                                }
                                 mRepeatKeyIndex = NOT_A_KEY
                                 handled = true
                             }
@@ -1736,6 +1765,10 @@ class KeyboardView
                         }
 
                         invalidateKey(keyIndex)
+                        // Reset delete repeating flag when any key is released
+                        if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
+                            (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
+                        }
                         mRepeatKeyIndex = NOT_A_KEY
                         mOnKeyboardActionListener!!.onActionUp()
                         mIsLongPressingSpace = false
@@ -1743,6 +1776,10 @@ class KeyboardView
                     MotionEvent.ACTION_CANCEL -> {
                         mIsLongPressingSpace = false
                         mLastSpaceMoveX = 0
+                        // Reset delete repeating flag when action is cancelled
+                        if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
+                            (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
+                        }
                         removeMessages()
                         dismissPopupKeyboard()
                         mAbortKey = true
@@ -1767,6 +1804,10 @@ class KeyboardView
 
                 mIsLongPressingSpace = true
             } else {
+                // Set delete repeating flag when repeat actually starts (not on initial press)
+                if (!initialCall && key.code == KEYCODE_DELETE) {
+                    (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(true)
+                }
                 detectAndSendKey(mCurrentKey, key.x, key.y, mLastTapTime)
             }
             return true
