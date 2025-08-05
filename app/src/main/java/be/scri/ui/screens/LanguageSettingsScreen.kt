@@ -36,6 +36,8 @@ private data class FunctionalitySettings(
     val onTogglePopUpOnKeyPress: (Boolean) -> Unit,
     val toggleVibrateOnKeyPress: Boolean,
     val onToggleVibrateOnKeyPress: (Boolean) -> Unit,
+    val toggleSoundOnKeyPress: Boolean,
+    val onToggleSoundOnKeyPress: (Boolean) -> Unit,
     val wordByWordDeletionState: Boolean,
     val onToggleWordByWordDeletion: (Boolean) -> Unit,
 )
@@ -88,6 +90,13 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 PreferencesHelper.getIsVibrateEnabled(context, language),
+            )
+        }
+
+    val soundOnKeyPressState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getIsSoundEnabled(context, language),
             )
         }
 
@@ -179,6 +188,15 @@ fun LanguageSettingsScreen(
                     shouldVibrateOnKeyPress,
                 )
             },
+            toggleSoundOnKeyPress = soundOnKeyPressState.value,
+            onToggleSoundOnKeyPress = { shouldSoundOnKeyPress ->
+                soundOnKeyPressState.value = shouldSoundOnKeyPress
+                PreferencesHelper.setSoundOnKeypress(
+                    context,
+                    language,
+                    shouldSoundOnKeyPress,
+                )
+            },
             wordByWordDeletionState = wordByWordDeletionState.value,
             onToggleWordByWordDeletion = { isEnabled ->
                 wordByWordDeletionState.value = isEnabled
@@ -263,6 +281,12 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
                 desc = R.string.app_settings_keyboard_keypress_vibration_description,
                 state = settings.toggleVibrateOnKeyPress,
                 onToggle = settings.onToggleVibrateOnKeyPress,
+            ),
+            ScribeItem.SwitchItem(
+                title = R.string.app_settings_keyboard_keypress_sound,
+                desc = R.string.app_settings_keyboard_keypress_sound_description,
+                state = settings.toggleSoundOnKeyPress,
+                onToggle = settings.onToggleSoundOnKeyPress,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
