@@ -382,9 +382,11 @@ abstract class GeneralKeyboardIME(
         dataContract = dbManagers.getLanguageContract(languageAlias)
         emojiKeywords = dbManagers.emojiManager.getEmojiKeywords(languageAlias)
         emojiMaxKeywordLength = dbManagers.emojiManager.maxKeywordLength
-        pluralWords = dbManagers.pluralManager.getAllPluralForms(languageAlias, dataContract)
-            ?.map { it.lowercase() }
-            ?.toSet()
+        pluralWords =
+            dbManagers.pluralManager
+                .getAllPluralForms(languageAlias, dataContract)
+                ?.map { it.lowercase() }
+                ?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
         conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
