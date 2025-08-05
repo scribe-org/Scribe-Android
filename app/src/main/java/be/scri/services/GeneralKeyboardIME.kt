@@ -45,6 +45,7 @@ import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
+import be.scri.helpers.PreferencesHelper.getIsSoundEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.helpers.PreferencesHelper.isShowPopupOnKeypressEnabled
 import be.scri.helpers.SHIFT_OFF
@@ -188,6 +189,7 @@ abstract class GeneralKeyboardIME(
         keyboardView = binding.keyboardView
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -202,6 +204,7 @@ abstract class GeneralKeyboardIME(
         super.onWindowShown()
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
     }
 
     /**
@@ -297,6 +300,7 @@ abstract class GeneralKeyboardIME(
      */
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) keyboardView?.vibrateIfNeeded()
+        if (primaryCode != 0) keyboardView?.soundIfNeeded()
     }
 
     /**

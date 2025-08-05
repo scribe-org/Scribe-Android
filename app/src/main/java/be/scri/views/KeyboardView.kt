@@ -20,6 +20,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -50,6 +51,7 @@ import be.scri.extensions.getProperPrimaryColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
 import be.scri.extensions.performHapticFeedback
+import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
@@ -326,6 +328,8 @@ class KeyboardView
 
         var setPreview: Boolean = true
         var setVibrate: Boolean = true
+
+        var setSound: Boolean = false
 
         /**
          * Sets the color of the Enter key based on a specific color or theme mode.
@@ -660,6 +664,13 @@ class KeyboardView
         fun vibrateIfNeeded() {
             if (setVibrate) {
                 performHapticFeedback()
+            }
+        }
+
+        fun soundIfNeeded() {
+            Log.d("Souncheck", "soundIfNeeded: $setSound")
+            if (setSound) {
+                performSoundFeedback()
             }
         }
 
