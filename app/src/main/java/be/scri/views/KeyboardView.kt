@@ -20,6 +20,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -50,6 +51,7 @@ import be.scri.extensions.getProperPrimaryColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
 import be.scri.extensions.performHapticFeedback
+import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
@@ -226,6 +228,8 @@ class KeyboardView
         var mKeyLabel2X1TOP: String = "LEFT"
         var mKeyLabel2X1BOTTOM: String = "RIGHT"
 
+        var mCurrencySymbol: String = "$"
+
         private var mEnterKeyColor: Int = 0
 
         private var mSpecialKeyColor: Int? = null
@@ -324,6 +328,8 @@ class KeyboardView
 
         var setPreview: Boolean = true
         var setVibrate: Boolean = true
+
+        var setSound: Boolean = false
 
         /**
          * Sets the color of the Enter key based on a specific color or theme mode.
@@ -441,6 +447,9 @@ class KeyboardView
                 KeyboardBase.CODE_2X1_TOP -> {
                     mKeyLabel2X1TOP = label
                 }
+                KeyboardBase.CODE_CURRENCY -> {
+                    mCurrencySymbol = label
+                }
             }
         }
 
@@ -467,6 +476,7 @@ class KeyboardView
                 KeyboardBase.CODE_1X3_CENTER -> mKeyLabel1X3TOP
                 KeyboardBase.CODE_1X3_LEFT -> mKeyLabel1X3LEFT
                 KeyboardBase.CODE_1X3_RIGHT -> mKeyLabel1X3BOTTOM
+                KeyboardBase.CODE_CURRENCY -> mCurrencySymbol
                 else -> null
             }
 
@@ -657,6 +667,13 @@ class KeyboardView
             }
         }
 
+        fun soundIfNeeded() {
+            Log.d("Souncheck", "soundIfNeeded: $setSound")
+            if (setSound) {
+                performSoundFeedback()
+            }
+        }
+
         /**
          * Sets the state of the shift key of the keyboard, if any.
          * @param shifted whether or not to enable the state of the shift key
@@ -813,6 +830,13 @@ class KeyboardView
                     }
                 val pressedColor = resources.getColor(pressedColorResId, context.theme)
                 val specialKeyColorValue = resources.getColor(mSpecialKeyColor!!, context.theme)
+                val focusedColorResId =
+                    if (isUserDarkMode) {
+                        R.color.theme_scribe_blue
+                    } else {
+                        R.color.light_scribe_color
+                    }
+                val focusedColor = resources.getColor(focusedColorResId, context.theme)
 
                 paint.color = mTextColor
                 val keyBackgroundPaint =
@@ -903,6 +927,7 @@ class KeyboardView
 
                     val backgroundColor =
                         when {
+                            key.focused -> focusedColor
                             key.pressed -> pressedColor
                             code == KEYCODE_SHIFT && mKeyboard!!.mShiftState == SHIFT_LOCKED -> pressedColor
                             code in listOf(KEYCODE_DELETE, KEYCODE_SHIFT, KEYCODE_MODE_CHANGE) -> specialKeyColorValue
@@ -980,6 +1005,9 @@ class KeyboardView
                         KeyboardBase.CODE_1X3_RIGHT -> {
                             label = mKeyLabel1X3BOTTOM
                         }
+                        KeyboardBase.CODE_CURRENCY -> {
+                            label = mCurrencySymbol
+                        }
                     }
 
                     canvas.translate(key.x.toFloat(), key.y.toFloat())
@@ -995,6 +1023,8 @@ class KeyboardView
 
                         paint.color =
                             if (key.focused) {
+                                Color.WHITE
+                            } else if (key.focused) {
                                 mPrimaryColor.getContrastColor()
                             } else {
                                 mTextColor
