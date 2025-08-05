@@ -2,8 +2,6 @@
 
 package be.scri.services
 
-import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.mockk.every
@@ -16,7 +14,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class GeneralKeyboardIMETest {
-    private lateinit var ime: TestGeneralKeyboardIME
+    private lateinit var ime: GeneralKeyboardIME
     private lateinit var inputConnection: InputConnection
 
     @Before
@@ -26,7 +24,15 @@ class GeneralKeyboardIMETest {
                 every { getTextBeforeCursor(any(), any()) } returns ""
             }
 
-        ime = TestGeneralKeyboardIME("English", inputConnection)
+        ime =
+            mockk(relaxed = true) {
+                every { getCurrentInputConnection() } returns inputConnection
+
+                every { hasTextBeforeCursor } answers {
+                    val text = inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0)?.toString() ?: ""
+                    text.isNotEmpty() && text.trim() != "." && text.trim() != ""
+                }
+            }
     }
 
     @Test
@@ -50,72 +56,4 @@ class GeneralKeyboardIMETest {
 
         assertFalse(ime.hasTextBeforeCursor)
     }
-}
-
-class TestGeneralKeyboardIME(
-    language: String,
-    private val testInputConnection: InputConnection,
-) : GeneralKeyboardIME(language) {
-    override fun getKeyboardLayoutXML(): Int = 0
-
-    override val keyboardLetters: Int = 0
-
-    override val keyboardSymbols: Int = 0
-
-    override val keyboardSymbolShift: Int = 0
-
-    override var lastShiftPressTS: Long = 0
-
-    override var keyboardMode: Int = 0
-
-    override var inputTypeClass: Int = 0
-
-    override var enterKeyType: Int = 0
-
-    override var switchToLetters: Boolean = false
-
-    override fun getCurrentInputConnection(): InputConnection? = testInputConnection
-
-    override var hasTextBeforeCursor: Boolean
-        get() {
-            val text = testInputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0)?.toString() ?: ""
-            return text.isNotEmpty() && text.trim() != "." && text.trim() != ""
-        }
-        set(value) {}
-
-    override fun onCreate() {}
-
-    override fun onInitializeInterface() {}
-
-    override fun onBindInput() {}
-
-    override fun onUnbindInput() {}
-
-    override fun onCreateInputView(): View = mockk()
-
-    override fun onStartInput(
-        attribute: EditorInfo?,
-        restarting: Boolean,
-    ) {}
-
-    override fun onStartInputView(
-        attribute: EditorInfo?,
-        restarting: Boolean,
-    ) {}
-
-    override fun onFinishInputView(finishingInput: Boolean) {}
-
-    override fun onFinishInput() {}
-
-    override fun onPress(primaryCode: Int) {}
-
-    override fun onActionUp() {}
-
-    override fun moveCursorLeft() {}
-
-    override fun moveCursorRight() {}
-
-    override fun onText(text: String) {}
-
-    override fun onKey(code: Int) {}
 }
