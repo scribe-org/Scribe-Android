@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import be.scri.helpers.PreferencesHelper
 import be.scri.navigation.Screen
 import be.scri.ui.common.appcomponents.HintDialog
 import be.scri.ui.common.bottombar.ScribeBottomBar
@@ -204,7 +205,6 @@ fun ScribeApp(
 
                 composable("${Screen.LanguageSettings.route}/{languageName}") {
                     val language = it.arguments?.getString("languageName")
-                    val symbol = it.arguments?.getString("symbolName")
                     if (language != null) {
                         LanguageSettingsScreen(
                             language = language,
@@ -216,7 +216,8 @@ fun ScribeApp(
                                 navController.navigate("translation_language_detail/$language")
                             },
                             onCurrencySelect = {
-                                navController.navigate("currency_symbol_detail/$symbol/$language")
+                                val currentSymbol = PreferencesHelper.getDefaultCurrencySymbol(context, language)
+                                navController.navigate("currency_symbol_detail/$currentSymbol/$language")
                             },
                         )
                     }
@@ -234,10 +235,8 @@ fun ScribeApp(
                 }
 
                 composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
-                    val symbol = backStackEntry.arguments?.getString("symbolName") ?: ""
                     val language = backStackEntry.arguments?.getString("languageName") ?: ""
                     DefaultCurrencySymbolScreen(
-                        currentSymbol = symbol,
                         currentLanguage = language,
                         onBackNavigation = {
                             navController.popBackStack()
