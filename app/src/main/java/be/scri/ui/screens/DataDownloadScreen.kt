@@ -30,18 +30,13 @@ import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.CircleClickableItemComp
 import be.scri.ui.common.components.LanguageItemComp
 import be.scri.ui.common.components.SwitchableItemComp
-import be.scri.ui.theme.theme_light_button_color
 
-/**
- * The Download Data screen for managing language data downloads.
- */
 @Composable
 fun DownloadDataScreen(
     onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
-
     val checkForNewData = remember { mutableStateOf(false) }
     val regularlyUpdateData = remember { mutableStateOf(true) }
 
@@ -56,7 +51,7 @@ fun DownloadDataScreen(
                 Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Column {
                 Text(
@@ -64,14 +59,8 @@ fun DownloadDataScreen(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
-                    modifier =
-                        Modifier.padding(
-                            start = 16.dp,
-                            top = 16.dp,
-                            bottom = 10.dp,
-                        ),
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 10.dp),
                 )
-
                 Surface(
                     modifier =
                         Modifier
@@ -80,9 +69,7 @@ fun DownloadDataScreen(
                     shape = RoundedCornerShape(12.dp),
                     color = MaterialTheme.colorScheme.surface,
                 ) {
-                    Column(
-                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 4.dp),
-                    ) {
+                    Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
                         CircleClickableItemComp(
                             title = stringResource(R.string.app_download_menu_ui_update_data_check_new),
                             onClick = { checkForNewData.value = !checkForNewData.value },
@@ -92,11 +79,7 @@ fun DownloadDataScreen(
                         HorizontalDivider(
                             color = Color.Gray.copy(alpha = 0.3f),
                             thickness = 1.dp,
-                            modifier =
-                                Modifier.padding(
-                                    vertical = 8.dp,
-                                    horizontal = 12.dp,
-                                ),
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
                         )
 
                         SwitchableItemComp(
@@ -113,12 +96,7 @@ fun DownloadDataScreen(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
-                    modifier =
-                        Modifier.padding(
-                            start = 16.dp,
-                            top = 16.dp,
-                            bottom = 10.dp,
-                        ),
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 10.dp),
                 )
 
                 Surface(
@@ -129,146 +107,35 @@ fun DownloadDataScreen(
                     shape = RoundedCornerShape(12.dp),
                     color = MaterialTheme.colorScheme.surface,
                 ) {
-                    Column(
-                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 4.dp),
-                    ) {
-                        LanguageItemComp(
-                            title = stringResource(R.string.app_download_menu_ui_select_all_languages),
-                            onClick = { /* Handle all languages click */ },
-                            statusText = "Up to date",
-                            titleFontWeight = FontWeight.Bold,
-                            titleFontSize = 20.sp,
-                        )
+                    Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
+                        val languages =
+                            listOf(
+                                Triple("all", stringResource(R.string.app_download_menu_ui_select_all_languages), false),
+                                Triple("german", stringResource(R.string.app__global_german), false),
+                                Triple("english", stringResource(R.string.app__global_english), false),
+                                Triple("spanish", stringResource(R.string.app__global_spanish), false),
+                                Triple("french", stringResource(R.string.app__global_french), false),
+                                Triple("italian", stringResource(R.string.app__global_italian), false),
+                                Triple("portuguese", stringResource(R.string.app__global_portuguese), false),
+                                Triple("russian", stringResource(R.string.app__global_russian), false),
+                                Triple("swedish", stringResource(R.string.app__global_swedish), false),
+                            )
 
-                        HorizontalDivider(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            thickness = 1.dp,
-                            modifier =
-                                Modifier.padding(
-                                    vertical = 8.dp,
-                                    horizontal = 12.dp,
-                                ),
-                        )
-
-                        LanguageItemComp(
-                            title = stringResource(R.string.app__global_german),
-                            onClick = { /* Handle German click */ },
-                            statusText = "Up to date",
-                        )
-
-                        HorizontalDivider(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            thickness = 1.dp,
-                            modifier =
-                                Modifier.padding(
-                                    vertical = 8.dp,
-                                    horizontal = 12.dp,
-                                ),
-                        )
-
-                        LanguageItemComp(
-                            title = stringResource(R.string.app__global_english),
-                            onClick = { /* Handle English click */ },
-                            statusText = "Download data",
-                            statusColor = theme_light_button_color,
-                        )
-
-                        HorizontalDivider(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            thickness = 1.dp,
-                            modifier =
-                                Modifier.padding(
-                                    vertical = 8.dp,
-                                    horizontal = 12.dp,
-                                ),
-                        )
-
-                        LanguageItemComp(
-                            title = stringResource(R.string.app__global_spanish),
-                            onClick = { /* Handle Spanish click */ },
-                            statusText = "Up to date",
-                        )
-
-                        HorizontalDivider(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            thickness = 1.dp,
-                            modifier =
-                                Modifier.padding(
-                                    vertical = 8.dp,
-                                    horizontal = 12.dp,
-                                ),
-                        )
-
-                        LanguageItemComp(
-                            title = stringResource(R.string.app__global_french),
-                            onClick = { /* Handle French click */ },
-                            statusText = "Up to date",
-                        )
-
-                        HorizontalDivider(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            thickness = 1.dp,
-                            modifier =
-                                Modifier.padding(
-                                    vertical = 8.dp,
-                                    horizontal = 12.dp,
-                                ),
-                        )
-
-                        LanguageItemComp(
-                            title = stringResource(R.string.app__global_italian),
-                            onClick = { /* Handle Italian click */ },
-                            statusText = "Up to date",
-                        )
-
-                        HorizontalDivider(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            thickness = 1.dp,
-                            modifier =
-                                Modifier.padding(
-                                    vertical = 8.dp,
-                                    horizontal = 12.dp,
-                                ),
-                        )
-
-                        LanguageItemComp(
-                            title = stringResource(R.string.app__global_portuguese),
-                            onClick = { /* Handle Portuguese click */ },
-                            statusText = "Up to date",
-                        )
-
-                        HorizontalDivider(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            thickness = 1.dp,
-                            modifier =
-                                Modifier.padding(
-                                    vertical = 8.dp,
-                                    horizontal = 12.dp,
-                                ),
-                        )
-
-                        LanguageItemComp(
-                            title = stringResource(R.string.app__global_russian),
-                            onClick = { /* Handle Russian click */ },
-                            statusText = "Up to date",
-                        )
-
-                        HorizontalDivider(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            thickness = 1.dp,
-                            modifier =
-                                Modifier.padding(
-                                    vertical = 8.dp,
-                                    horizontal = 12.dp,
-                                ),
-                        )
-
-                        LanguageItemComp(
-                            title = stringResource(R.string.app__global_swedish),
-                            onClick = { /* Handle Swedish click */ },
-                            statusText = "Download data",
-                            statusColor = theme_light_button_color,
-                        )
+                        languages.forEachIndexed { index, (key, title, isDark) ->
+                            LanguageItemComp(
+                                title = title,
+                                onClick = {
+                                },
+                                isDarkTheme = isDark,
+                            )
+                            if (index < languages.lastIndex) {
+                                HorizontalDivider(
+                                    color = Color.Gray.copy(alpha = 0.3f),
+                                    thickness = 1.dp,
+                                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+                                )
+                            }
+                        }
                     }
                 }
             }
