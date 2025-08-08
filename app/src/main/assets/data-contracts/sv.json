@@ -18,7 +18,6 @@
                     "title": "Aktiv",
                     "conjugationForms": {
                         "infinitiv": "activeInfinitive",
-                        "imperativ": "imperative",
                         "presens": "activePresent",
                         "preteritum (dåtid)": "activePreterite",
                         "supinum (liggande)": "activeSupine"
