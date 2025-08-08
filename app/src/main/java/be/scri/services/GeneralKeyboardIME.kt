@@ -1606,7 +1606,6 @@ abstract class GeneralKeyboardIME(
                 rawInput.lowercase(),
             )
 
-
         conjugateLabels =
             dbManagers.conjugateDataManager.extractConjugateHeadings(
                 dataContract,
