@@ -12,30 +12,29 @@
     },
     "conjugations": {
         "1": {
-            "title": "Aktiv (Active Voice)",
+            "title": "Aktiv",
             "conjugationTypes": {
                 "1": {
-                    "title": "Active Forms",
+                    "title": "Aktiv",
                     "conjugationForms": {
                         "infinitiv": "activeInfinitive",
-                        "imperativ": "imperative",
                         "presens": "activePresent",
-                        "preteritum (dåtid)": "activePreterite",
-                        "supinum (liggande)": "activeSupine"
+                        "preteritum": "activePreterite",
+                        "supinum": "activeSupine"
                     }
                 }
             }
         },
         "2": {
-            "title": "Passiv (Passive Voice)",
+            "title": "Passiv",
             "conjugationTypes": {
                 "1": {
-                    "title": "Passive Forms",
+                    "title": "Passiv",
                     "conjugationForms": {
                         "infinitiv": "passiveInfinitive",
                         "presens": "passivePresent",
-                        "preteritum (dåtid)": "passivePreterite",
-                        "supinum (liggande)": "passiveSupine"
+                        "preteritum": "passivePreterite",
+                        "supinum": "passiveSupine"
                     }
                 }
             }
