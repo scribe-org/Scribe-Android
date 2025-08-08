@@ -191,39 +191,18 @@ class KeyHandler(
     }
 
     /**
-     * Handles a non-special character key press. It delegates the character insertion to the IME
-     * and then triggers a re-evaluation of word suggestions.
-     *
-     * @param code The character code of the key pressed.
-     */
-    private fun handleDefaultKey(code: Int) {
-        val isCommandBarActive =
-            ime.currentState == ScribeState.TRANSLATE ||
-                ime.currentState == ScribeState.CONJUGATE ||
-                ime.currentState == ScribeState.PLURAL
-        ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
-
-        if (ime.currentState == ScribeState.IDLE) {
-            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
-        } else if (isCommandBarActive) {
-            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
-        }
-    }
-
-    /**
      * Handles the delete/backspace key press. It delegates the deletion logic to the IME
      * and then triggers a re-evaluation of word suggestions based on the new text.
      */
+
     private fun handleDeleteKey() {
         val isCommandBarActive =
             ime.currentState == ScribeState.TRANSLATE ||
                 ime.currentState == ScribeState.CONJUGATE ||
                 ime.currentState == ScribeState.PLURAL
 
-        // Pass the repeat state to the delete handler
-        ime.handleDelete(isCommandBarActive, ime.isDeleteRepeating())
+        ime.handleDelete(isCommandBarActive, ime.isDeleteRepeating()) // Pass the actual repeating status
 
-        // Only process suggestions if the state is exactly IDLE.
         if (ime.currentState == ScribeState.IDLE) {
             suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
         }
@@ -353,6 +332,22 @@ class KeyHandler(
         } else {
             val word = ime.handleConjugateKeys(code, true)
             ime.setupConjugateSubView(ime.returnSubsequentData(), word)
+        }
+    }
+
+    /**
+     * Handles default key presses (regular characters, numbers, symbols).
+     * Commits the character to the input connection and processes suggestions.
+     *
+     * @param code The key code representing the character to input.
+     */
+    private fun handleDefaultKey(code: Int) {
+        val character = code.toChar().toString()
+        ime.currentInputConnection?.commitText(character, GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
+
+        // Process emoji suggestions if in idle state
+        if (ime.currentState == ScribeState.IDLE) {
+            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
         }
     }
 }

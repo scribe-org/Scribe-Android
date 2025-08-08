@@ -140,7 +140,11 @@ class SuggestionHandler(
         linguisticSuggestionRunnable?.let { handler.removeCallbacks(it) }
 
         ime.disableAutoSuggest()
-        ime.updateButtonVisibility(false)
+
+        if (ime.currentState != ScribeState.SELECT_COMMAND) {
+            ime.updateButtonVisibility(false)
+        }
+
         ime.nounTypeSuggestion = null
         ime.checkIfPluralWord = false
         ime.caseAnnotationSuggestion = null
