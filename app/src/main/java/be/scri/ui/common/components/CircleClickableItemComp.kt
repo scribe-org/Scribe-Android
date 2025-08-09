@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,7 +38,6 @@ fun CircleClickableItemComp(
     Box(
         modifier =
             modifier
-                .fillMaxWidth()
                 .clickable(onClick = onClick),
     ) {
         Column(
@@ -45,11 +46,11 @@ fun CircleClickableItemComp(
                     .fillMaxWidth()
                     .padding(
                         horizontal = 12.dp,
-                        vertical = 10.dp,
+                        vertical = 5.dp,
                     ).clip(RoundedCornerShape(8.dp)),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
@@ -60,32 +61,12 @@ fun CircleClickableItemComp(
                     style = MaterialTheme.typography.bodyMedium,
                 )
 
-                Box(
-                    modifier =
-                        Modifier
-                            .size(24.dp)
-                            .background(
-                                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
-                                shape = CircleShape,
-                            ).border(
-                                width = if (isSelected) 0.dp else 2.dp,
-                                color = if (isSelected) Color.Transparent else Color.Gray.copy(alpha = 0.5f),
-                                shape = CircleShape,
-                            ).clickable(onClick = onClick),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (isSelected) {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .size(8.dp)
-                                    .background(
-                                        color = MaterialTheme.colorScheme.onPrimary,
-                                        shape = CircleShape,
-                                    ),
-                        )
-                    }
-                }
+                RadioButton(
+                    selected = isSelected,
+                    onClick = {
+                        onClick()
+                    },
+                )
             }
         }
     }

@@ -92,7 +92,7 @@ private fun DownloadButtonContent(
                 when (downloadState) {
                     DownloadState.Ready -> "Download"
                     DownloadState.Downloading -> "Downloading"
-                    DownloadState.Completed -> "Done"
+                    DownloadState.Completed -> "Up to Date"
                 },
             fontSize = 13.sp,
             fontWeight = FontWeight.Medium,
