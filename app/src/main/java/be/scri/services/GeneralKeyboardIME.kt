@@ -414,6 +414,8 @@ abstract class GeneralKeyboardIME(
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
 
         moveToIdleState()
+        val window = window?.window ?: return
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.dark_keyboard_bg_color)
         val textBefore = currentInputConnection?.getTextBeforeCursor(1, 0)?.toString().orEmpty()
         if (textBefore.isEmpty()) keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
     }

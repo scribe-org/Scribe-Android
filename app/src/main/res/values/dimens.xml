@@ -6,7 +6,7 @@
     <dimen name="toolbar_height">46dp</dimen>
     <dimen name="toolbar_icon_height">32dp</dimen>
     <dimen name="clip_drag_icon_height">40dp</dimen>
-    <dimen name="key_height">60dp</dimen>
+    <dimen name="key_height">55dp</dimen>
     <dimen name="key_height_landscape">40dp</dimen>
     <dimen name="conjugate_view_key_height_3x3">80dp</dimen>
     <dimen name="conjugate_view_key_height_2x2">120dp</dimen>
@@ -17,7 +17,7 @@
 
     <dimen name="command_button_corner_radius">14dp</dimen>
 
-    <dimen name="keyboard_text_size">22sp</dimen>
+    <dimen name="keyboard_text_size">27sp</dimen>
     <dimen name="preview_text_size">26sp</dimen>
     <dimen name="label_text_size">16sp</dimen> <!-- text size used at keys with longer labels, like "?123" -->
 

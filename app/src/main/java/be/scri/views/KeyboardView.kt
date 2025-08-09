@@ -306,15 +306,15 @@ class KeyboardView
             private const val ALPHA_ADJUSTMENT_FACTOR = 0.8f
             private const val SHADOW_ALPHA = 100
             private const val KEY_PADDING = 5
-            private const val RECT_RADIUS = 15f
+            private const val RECT_RADIUS = 20f
             private const val SHADOW_OFFSET_Y = 9f
             private const val POPUP_OFFSET_MULTIPLIER = 2.5
             private const val EXTRA_DELAY = 200L
             private const val DISPLAY_LEFT = 2002
             private const val DISPLAY_RIGHT = 2001
             private const val EXTRA_PADDING = 5000
-            private const val KEY_HEIGHT = 240
-            private const val I_1 = 50
+            private const val KEY_HEIGHT = 100
+            private const val I_1 = 0
         }
 
         private var popupBindingInternal: KeyboardPopupKeyboardBinding? = null
@@ -562,7 +562,12 @@ class KeyboardView
             }
         }
 
-        override fun onVisibilityChanged(
+
+
+
+
+
+    override fun onVisibilityChanged(
             changedView: View,
             visibility: Int,
         ) {
@@ -729,11 +734,15 @@ class KeyboardView
                 if (MeasureSpec.getSize(widthMeasureSpec) < width + MARGIN_ADJUSTMENT) {
                     width = MeasureSpec.getSize(widthMeasureSpec)
                 }
-                setMeasuredDimension(width, mKeyboard!!.mHeight)
+
+                val extraBottomPaddingPx = (resources.displayMetrics.density * 10).toInt()
+
+                setMeasuredDimension(width, mKeyboard!!.mHeight + extraBottomPaddingPx)
             }
         }
 
-        /**
+
+    /**
          * Compute the average distance between adjacent keys (horizontally and vertically)
          * and square it to get the proximity threshold.
          * We use a square here and in computing the touch distance from a key's center to avoid taking a square root.
@@ -1795,7 +1804,10 @@ class KeyboardView
             return handled || true
         }
 
-        private fun repeatKey(initialCall: Boolean): Boolean {
+
+
+
+    private fun repeatKey(initialCall: Boolean): Boolean {
             val key = mKeys[mRepeatKeyIndex]
             if (!initialCall && key.code == KEYCODE_SPACE) {
                 if (!mIsLongPressingSpace) {
