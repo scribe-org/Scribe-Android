@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.ui.common.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -15,6 +16,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,19 +41,24 @@ import be.scri.R
 fun DownloadDataOptionComp(
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
-    downloadState: DownloadState = DownloadState.Ready,
-    onClick: () -> Unit = {},
 ) {
+    var downloadState by remember { mutableStateOf(DownloadState.Ready) }
     val colorScheme = MaterialTheme.colorScheme
 
     val backgroundColor = getBackgroundColor(downloadState, isDarkTheme, colorScheme)
     val textColor = getTextColor(downloadState, isDarkTheme, colorScheme)
     val iconColor = getIconColor(isDarkTheme, textColor)
-    val borderColor = getBorderColor(isDarkTheme, textColor, backgroundColor)
 
     Button(
-        onClick = { if (downloadState == DownloadState.Ready) onClick() },
-        enabled = downloadState != DownloadState.Downloading,
+        onClick = {
+            downloadState =
+                when (downloadState) {
+                    DownloadState.Ready -> DownloadState.Downloading
+                    DownloadState.Downloading -> DownloadState.Completed
+                    DownloadState.Completed -> DownloadState.Ready
+                }
+        },
+        enabled = true,
         colors =
             ButtonDefaults.buttonColors(
                 containerColor = backgroundColor,
@@ -56,12 +66,12 @@ fun DownloadDataOptionComp(
                 disabledContainerColor = backgroundColor,
                 disabledContentColor = textColor,
             ),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(8.dp),
         modifier =
             modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .border(1.dp, borderColor, RoundedCornerShape(12.dp)),
+                .height(40.dp)
+                .width(150.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
     ) {
         DownloadButtonContent(downloadState, iconColor)
     }
@@ -74,19 +84,20 @@ private fun DownloadButtonContent(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.wrapContentWidth(),
     ) {
         Text(
             text =
                 when (downloadState) {
-                    DownloadState.Ready -> "Download data"
-                    DownloadState.Downloading -> "Downloading..."
-                    DownloadState.Completed -> "Up to date"
+                    DownloadState.Ready -> "Download"
+                    DownloadState.Downloading -> "Downloading"
+                    DownloadState.Completed -> "Up to Date"
                 },
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier.weight(1f),
+            maxLines = 1,
         )
 
         DownloadStateIcon(downloadState, iconColor)
@@ -123,12 +134,6 @@ private fun getIconColor(
     isDarkTheme: Boolean,
     textColor: Color,
 ): Color = if (isDarkTheme) textColor else Color.Black
-
-private fun getBorderColor(
-    isDarkTheme: Boolean,
-    textColor: Color,
-    backgroundColor: Color,
-): Color = if (isDarkTheme) textColor else backgroundColor
 
 /**
  * Icon to show for the current download state.
