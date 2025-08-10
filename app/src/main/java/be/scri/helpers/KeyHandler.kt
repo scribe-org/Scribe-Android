@@ -341,13 +341,21 @@ class KeyHandler(
      *
      * @param code The key code representing the character to input.
      */
-    private fun handleDefaultKey(code: Int) {
-        val character = code.toChar().toString()
-        ime.currentInputConnection?.commitText(character, GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
 
-        // Process emoji suggestions if in idle state
+    private fun handleDefaultKey(code: Int) {
+        val isCommandBarActive = when (ime.currentState) {
+            ScribeState.TRANSLATE,
+            ScribeState.CONJUGATE,
+            ScribeState.PLURAL -> true  // Use command bar for actual commands
+            else -> false  // Use main input field for IDLE and SELECT_COMMAND
+        }
+
+        ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
+
         if (ime.currentState == ScribeState.IDLE) {
             suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+        } else if (isCommandBarActive) {
+            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
         }
     }
 }
