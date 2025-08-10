@@ -314,8 +314,8 @@ class KeyboardView
             private const val DISPLAY_RIGHT = 2001
             private const val EXTRA_PADDING = 5000
             private const val KEY_HEIGHT = 100
-            private const val I_1 = 0
-            private const val LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT = 370
+            private var leftShiftForLabel = 0
+            private const val LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT = 340
         }
 
         private var popupBindingInternal: KeyboardPopupKeyboardBinding? = null
@@ -873,6 +873,7 @@ class KeyboardView
                 val keyCount = keys.size
                 for (i in 0 until keyCount) {
                     val key = keys[i]
+                    leftShiftForLabel = 0
 
                     // If a key has no width, it's effectively invisible. Don't draw it or its shadow.
                     if (key.width == 0) {
@@ -947,70 +948,86 @@ class KeyboardView
                     when (code) {
                         KeyboardBase.CODE_FPS -> {
                             label = mKeyLabelFPS
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelFPS
                         }
 
                         KeyboardBase.CODE_FPP -> {
                             label = mKeyLabelFPP
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelFPP
                         }
 
                         KeyboardBase.CODE_SPS -> {
                             label = mKeyLabelSPS
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelSPS
                         }
 
                         KeyboardBase.CODE_SPP -> {
                             label = mKeyLabelSPP
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelSPP
                         }
 
                         KeyboardBase.CODE_TPS -> {
                             label = mKeyLabelTPS
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelTPS
                         }
 
                         KeyboardBase.CODE_TPP -> {
                             label = mKeyLabelTPP
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelTPP
                         }
 
                         KeyboardBase.CODE_TL -> {
                             label = mKeyLabelTL
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelTL
                         }
 
                         KeyboardBase.CODE_TR -> {
                             label = mKeyLabelTR
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelTR
                         }
 
                         KeyboardBase.CODE_BL -> {
                             label = mKeyLabelBL
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelBL
                         }
 
                         KeyboardBase.CODE_BR -> {
                             label = mKeyLabelBR
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelBR
                         }
                         KeyboardBase.CODE_2X1_TOP -> {
                             label = mKeyLabel2X1TOP
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_2X1_BOTTOM -> {
                             label = mKeyLabel2X1BOTTOM
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_1X3_CENTER -> {
                             label = mKeyLabel1X3LEFT
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_1X3_LEFT -> {
                             label = mKeyLabel1X3TOP
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_1X3_RIGHT -> {
                             label = mKeyLabel1X3BOTTOM
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_CURRENCY -> {
                             label = mCurrencySymbol
+                            leftShiftForLabel = 30
                         }
                     }
 
@@ -1044,7 +1061,7 @@ class KeyboardView
                         if (key.topSmallNumber.isNotEmpty()) {
                             canvas.drawText(
                                 key.topSmallNumber,
-                                key.width - mTopSmallNumberMarginWidth - I_1,
+                                key.width - mTopSmallNumberMarginWidth - leftShiftForLabel,
                                 mTopSmallNumberMarginHeight,
                                 smallLetterPaint,
                             )
