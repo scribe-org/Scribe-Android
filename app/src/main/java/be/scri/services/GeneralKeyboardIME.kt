@@ -1665,10 +1665,14 @@ abstract class GeneralKeyboardIME(
     fun handleKeycodeEnter() {
         val inputConnection = currentInputConnection ?: return
 
-        if (currentState == ScribeState.IDLE ||
-            currentState == ScribeState.SELECT_COMMAND ||
-            currentState == ScribeState.INVALID
-        ) {
+        // Handle states that should return to idle instead of performing Enter action
+        if (currentState == ScribeState.INVALID || currentState == ScribeState.ALREADY_PLURAL) {
+            moveToIdleState()
+            return
+        }
+
+        // Handle states that should perform normal Enter action
+        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleDefaultEnter(inputConnection)
             return
         }
