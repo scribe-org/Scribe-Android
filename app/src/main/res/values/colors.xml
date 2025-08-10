@@ -14,6 +14,7 @@
     <color name="theme_scribe_blue">@color/dark_scribe_blue</color>
     <color name="white">#ffffff</color>
     <color name="light_keyboard">#99FFFFFF</color>
+    <color name="navigation_bar_color">@color/light_keyboard_bg_color</color>
     <color name="transparent">@android:color/transparent</color>
     <color name="special_key_light">#aeb3be</color>
     <color name="special_key_dark">#202020</color>

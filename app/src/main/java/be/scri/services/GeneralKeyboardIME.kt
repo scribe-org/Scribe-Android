@@ -46,6 +46,7 @@ import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
+import be.scri.helpers.PreferencesHelper.getIsSoundEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.helpers.PreferencesHelper.isShowPopupOnKeypressEnabled
 import be.scri.helpers.SHIFT_OFF
@@ -189,6 +190,7 @@ abstract class GeneralKeyboardIME(
         keyboardView = binding.keyboardView
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -203,6 +205,7 @@ abstract class GeneralKeyboardIME(
         super.onWindowShown()
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
     }
 
     /**
@@ -298,6 +301,7 @@ abstract class GeneralKeyboardIME(
      */
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) keyboardView?.vibrateIfNeeded()
+        if (primaryCode != 0) keyboardView?.soundIfNeeded()
     }
 
     /**
@@ -411,8 +415,35 @@ abstract class GeneralKeyboardIME(
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
 
         moveToIdleState()
+        val window = window?.window ?: return
+        var color = R.color.dark_keyboard_bg_color
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        color =
+            if (isDarkMode) {
+                R.color.dark_keyboard_bg_color
+            } else {
+                R.color.light_keyboard_bg_color
+            }
+
+        window.navigationBarColor = ContextCompat.getColor(this, color)
+
+        val decorView = window.decorView
+        var flags = decorView.systemUiVisibility
+        flags =
+            if (isLightColor(window.navigationBarColor)) {
+                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            } else {
+                flags and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+            }
+        decorView.systemUiVisibility = flags
         val textBefore = currentInputConnection?.getTextBeforeCursor(1, 0)?.toString().orEmpty()
         if (textBefore.isEmpty()) keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
+    }
+
+    private fun isLightColor(color: Int): Boolean {
+        val darkness =
+            1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
+        return darkness < 0.5
     }
 
     /**
