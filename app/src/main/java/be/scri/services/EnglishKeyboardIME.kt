@@ -6,7 +6,6 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
-import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 
 /**
  * The EnglishKeyboardIME class provides the input method for the English language keyboard.
@@ -21,7 +20,7 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_english_tablet
-            getEnablePeriodAndCommaABC(applicationContext, language) -> R.xml.keys_letters_english
+            isPeriodAndCommaEnabled() -> R.xml.keys_letters_english
             else -> R.xml.keys_letters_english_without_period_and_comma
         }
 

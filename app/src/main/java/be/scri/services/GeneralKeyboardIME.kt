@@ -38,7 +38,6 @@ import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
-import be.scri.helpers.EmojiUtils.isEmoji
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.LanguageMappingConstants.conjugatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
@@ -47,6 +46,7 @@ import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
+import be.scri.helpers.PreferencesHelper.getIsSoundEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.helpers.PreferencesHelper.isShowPopupOnKeypressEnabled
 import be.scri.helpers.SHIFT_OFF
@@ -55,6 +55,7 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
+import java.util.Locale
 
 private const val DATA_SIZE_2 = 2
 private const val DATA_CONSTANT_3 = 3
@@ -78,6 +79,9 @@ abstract class GeneralKeyboardIME(
     abstract var enterKeyType: Int
     abstract var switchToLetters: Boolean
     abstract var hasTextBeforeCursor: Boolean
+
+    // Track if the delete key is currently being repeated (long press)
+    private var isDeleteRepeating: Boolean = false
 
     internal lateinit var binding: InputMethodViewBinding
 
@@ -120,6 +124,42 @@ abstract class GeneralKeyboardIME(
     internal var currentState: ScribeState = ScribeState.IDLE
     private var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
 
+    /**
+     * This function is updated to reliably detect search bars in various apps,
+     * including browsers like Chrome and Firefox, not just fields with IME_ACTION_SEARCH.
+     * The logic is combined into a single return statement to satisfy the `detekt` ReturnCount rule.
+     * It checks multiple signals:
+     * 1. The explicit IME action for search.
+     * 2. The input type variation for URIs (common in address bars).
+     * 3. The hint text for keywords like "search" or "address".
+     *
+     * @return `true` if the current input field is likely a search or address bar, `false` otherwise.
+     */
+    fun isSearchBar(): Boolean {
+        val editorInfo = currentInputEditorInfo
+
+        val isActionSearch = (enterKeyType == EditorInfo.IME_ACTION_SEARCH)
+
+        val isUriType =
+            editorInfo?.let {
+                (it.inputType and InputType.TYPE_TEXT_VARIATION_URI) != 0
+            } ?: false
+
+        val hasSearchHint =
+            editorInfo?.hintText?.toString()?.lowercase(Locale.ROOT)?.let {
+                it.contains("search") || it.contains("address")
+            } ?: false
+
+        return isActionSearch || isUriType || hasSearchHint
+    }
+
+    protected fun isPeriodAndCommaEnabled(): Boolean {
+        val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
+        val isInSearchBar = isSearchBar()
+
+        return isPreferenceEnabled || isInSearchBar
+    }
+
     enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID }
 
     /**
@@ -150,6 +190,7 @@ abstract class GeneralKeyboardIME(
         keyboardView = binding.keyboardView
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -164,6 +205,7 @@ abstract class GeneralKeyboardIME(
         super.onWindowShown()
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
     }
 
     /**
@@ -259,6 +301,7 @@ abstract class GeneralKeyboardIME(
      */
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) keyboardView?.vibrateIfNeeded()
+        if (primaryCode != 0) keyboardView?.soundIfNeeded()
     }
 
     /**
@@ -284,6 +327,18 @@ abstract class GeneralKeyboardIME(
             switchToLetters = false
         }
     }
+
+    /**
+     * Sets the flag to indicate that the delete key is currently repeating (long press).
+     */
+    fun setDeleteRepeating(isRepeating: Boolean) {
+        isDeleteRepeating = isRepeating
+    }
+
+    /**
+     * Returns whether the delete key is currently repeating (long press).
+     */
+    fun isDeleteRepeating(): Boolean = isDeleteRepeating
 
     override fun moveCursorLeft() {
         moveCursor(false)
@@ -334,6 +389,11 @@ abstract class GeneralKeyboardIME(
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
+
+        // Set up the currency symbol if we're using the symbols keyboard layout
+        if (keyboardXml == R.xml.keys_symbols) {
+            setupCurrencySymbol()
+        }
     }
 
     /**
@@ -355,8 +415,35 @@ abstract class GeneralKeyboardIME(
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
 
         moveToIdleState()
+        val window = window?.window ?: return
+        var color = R.color.dark_keyboard_bg_color
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        color =
+            if (isDarkMode) {
+                R.color.dark_keyboard_bg_color
+            } else {
+                R.color.light_keyboard_bg_color
+            }
+
+        window.navigationBarColor = ContextCompat.getColor(this, color)
+
+        val decorView = window.decorView
+        var flags = decorView.systemUiVisibility
+        flags =
+            if (isLightColor(window.navigationBarColor)) {
+                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            } else {
+                flags and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+            }
+        decorView.systemUiVisibility = flags
         val textBefore = currentInputConnection?.getTextBeforeCursor(1, 0)?.toString().orEmpty()
         if (textBefore.isEmpty()) keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
+    }
+
+    private fun isLightColor(color: Int): Boolean {
+        val darkness =
+            1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
+        return darkness < 0.5
     }
 
     /**
@@ -696,6 +783,19 @@ abstract class GeneralKeyboardIME(
         keyboard = KeyboardBase(this, xmlId, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
         keyboardView?.requestLayout()
+
+        // Set up the currency symbol if we're on the symbols keyboard
+        if (keyboardMode == keyboardSymbols) {
+            setupCurrencySymbol()
+        }
+    }
+
+    /**
+     * Sets up the currency symbol on the keyboard based on user preferences.
+     */
+    private fun setupCurrencySymbol() {
+        val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(this, language)
+        keyboardView?.setKeyLabel(currencySymbol, "", KeyboardBase.CODE_CURRENCY)
     }
 
     /**
@@ -1684,6 +1784,11 @@ abstract class GeneralKeyboardIME(
         keyboard = KeyboardBase(context, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
         keyboardView?.requestLayout()
+
+        // Set up the currency symbol if we're using the symbols keyboard layout
+        if (keyboardXml == R.xml.keys_symbols) {
+            setupCurrencySymbol()
+        }
     }
 
     /**
@@ -1726,6 +1831,11 @@ abstract class GeneralKeyboardIME(
                 }
             keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
             keyboardView!!.setKeyboard(keyboard!!)
+
+            // Set up the currency symbol if we're using the symbols keyboard layout
+            if (keyboardXml == R.xml.keys_symbols) {
+                setupCurrencySymbol()
+            }
         }
     }
 
@@ -1779,18 +1889,24 @@ abstract class GeneralKeyboardIME(
      * Handles the logic for the Delete/Backspace key. It deletes characters from either
      * the main input field or the command bar, depending on the context.
      * @param isCommandBar `true` if the deletion should happen in the command bar.
+     * @param isLongPress `true` if this is a long press/repeat action, `false` for single tap.
      */
-    fun handleDelete(isCommandBar: Boolean = false) {
+    fun handleDelete(
+        isCommandBar: Boolean = false,
+        isLongPress: Boolean = false,
+    ) {
         if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR) keyboard!!.mShiftState = SHIFT_OFF
         if (isCommandBar) {
             handleCommandBarDelete()
         } else {
             val inputConnection = currentInputConnection ?: return
             if (TextUtils.isEmpty(inputConnection.getSelectedText(0))) {
-                if (isEmoji(getText())) {
-                    inputConnection.deleteSurroundingText(DATA_SIZE_2, 0)
+                val isWordByWordEnabled = PreferencesHelper.getIsWordByWordDeletionEnabled(applicationContext, language)
+                // Only use word-by-word deletion on long press when the feature is enabled
+                if (isWordByWordEnabled && isLongPress) {
+                    deleteWordByWord(inputConnection)
                 } else {
-                    inputConnection.deleteSurroundingText(1, 0)
+                    deleteSingleCharacter(inputConnection)
                 }
             } else {
                 inputConnection.commitText("", 1)
@@ -1799,6 +1915,84 @@ abstract class GeneralKeyboardIME(
                 keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
                 keyboardView!!.invalidateAllKeys()
             }
+        }
+    }
+
+    /**
+     * Deletes a single character.
+     */
+    private fun deleteSingleCharacter(inputConnection: InputConnection) {
+        inputConnection.deleteSurroundingText(1, 0)
+    }
+
+    /**
+     * Deletes an entire word, including any trailing whitespace.
+     * @param inputConnection The current input connection.
+     */
+    private fun deleteWordByWord(inputConnection: InputConnection) {
+        val textBeforeCursor = inputConnection.getTextBeforeCursor(MAX_TEXT_LENGTH, 0)?.toString() ?: ""
+
+        if (textBeforeCursor.isEmpty()) {
+            return
+        }
+
+        var deletionLength = 0
+        var index = textBeforeCursor.length - 1
+
+        // Skip any  whitespace
+        while (index >= 0 && textBeforeCursor[index].isWhitespace()) {
+            deletionLength++
+            index--
+        }
+
+        // If we only had whitespace, delete it
+        if (index < 0) {
+            if (deletionLength > 0) {
+                inputConnection.deleteSurroundingText(deletionLength, 0)
+            }
+            return
+        }
+
+        // Now delete the word characters
+        if (isWordCharacter(textBeforeCursor[index])) {
+            // Delete regular word characters (letters, numbers, some punctuation)
+            while (index >= 0 && isWordCharacter(textBeforeCursor[index])) {
+                deletionLength++
+                index--
+            }
+        } else {
+            // If the character at cursor is not a word character (e.g., special punctuation),
+            // delete just that single character instead of trying to delete a whole word
+            deletionLength++
+        }
+
+        if (deletionLength > 0) {
+            inputConnection.deleteSurroundingText(deletionLength, 0)
+        }
+    }
+
+    /**
+     * Determines if a character is considered part of a word for deletion purposes.
+     */
+    private fun isWordCharacter(char: Char): Boolean {
+        // Letters and digits are always word characters
+        if (char.isLetterOrDigit()) {
+            return true
+        }
+
+        // check if special characters are considered word
+        return when (Character.getType(char).toByte()) {
+            // Connector punctuation
+            Character.CONNECTOR_PUNCTUATION -> true
+            Character.DASH_PUNCTUATION -> true
+            // for other characters
+            Character.OTHER_PUNCTUATION -> {
+                char in "'\".,@#$%&*+=~`|\\/:;?!^"
+            }
+            Character.CURRENCY_SYMBOL -> true
+            Character.MATH_SYMBOL -> char in "+=<>~^"
+            Character.OTHER_SYMBOL -> char in "@#$%&*+=~`|\\/:;?!^"
+            else -> false
         }
     }
 

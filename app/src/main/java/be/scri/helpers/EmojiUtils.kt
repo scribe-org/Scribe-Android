@@ -2,6 +2,7 @@
 package be.scri.helpers
 
 import android.view.inputmethod.InputConnection
+import java.util.Locale
 
 /**
  * Utility object for handling emoji-related operations.
@@ -59,7 +60,7 @@ object EmojiUtils {
                 lastSpace != -1 -> {
                     val lastWord = prevText.substring(lastSpace + 1)
 
-                    if (emojiKeywords?.containsKey(lastWord.lowercase()) == true) {
+                    if (emojiKeywords?.containsKey(lastWord.lowercase(Locale.ROOT)) == true) {
                         ic.deleteSurroundingText(lastWord.length, 0)
                     }
 
@@ -67,7 +68,7 @@ object EmojiUtils {
                 }
 
                 else -> {
-                    if (emojiKeywords?.containsKey(prevText.lowercase()) == true) {
+                    if (emojiKeywords?.containsKey(prevText.lowercase(Locale.ROOT)) == true) {
                         ic.deleteSurroundingText(prevText.length, 0)
                     }
 

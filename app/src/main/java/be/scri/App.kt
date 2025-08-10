@@ -25,9 +25,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import be.scri.helpers.PreferencesHelper
 import be.scri.navigation.Screen
 import be.scri.ui.common.appcomponents.HintDialog
 import be.scri.ui.common.bottombar.ScribeBottomBar
+import be.scri.ui.screens.DefaultCurrencySymbolScreen
+import be.scri.ui.screens.DownloadDataScreen
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
 import be.scri.ui.screens.PrivacyPolicyScreen
@@ -112,6 +115,9 @@ fun ScribeApp(
                                     InstallationScreen(
                                         isDark = isDarkTheme,
                                         context = context,
+                                        onNavigateToDownloadData = {
+                                            navController.navigate("download_data")
+                                        },
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
@@ -188,6 +194,15 @@ fun ScribeApp(
                     }
                 }
 
+                composable("download_data") {
+                    DownloadDataScreen(
+                        onBackNavigation = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                }
+
                 composable("${Screen.LanguageSettings.route}/{languageName}") {
                     val language = it.arguments?.getString("languageName")
                     if (language != null) {
@@ -199,6 +214,10 @@ fun ScribeApp(
                             modifier = Modifier.padding(innerPadding),
                             onTranslationLanguageSelect = {
                                 navController.navigate("translation_language_detail/$language")
+                            },
+                            onCurrencySelect = {
+                                val currentSymbol = PreferencesHelper.getDefaultCurrencySymbol(context, language)
+                                navController.navigate("currency_symbol_detail/$currentSymbol/$language")
                             },
                         )
                     }
@@ -212,6 +231,17 @@ fun ScribeApp(
                         },
                         modifier = Modifier.padding(innerPadding),
                         currentLanguage = language,
+                    )
+                }
+
+                composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
+                    val language = backStackEntry.arguments?.getString("languageName") ?: ""
+                    DefaultCurrencySymbolScreen(
+                        currentLanguage = language,
+                        onBackNavigation = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
 

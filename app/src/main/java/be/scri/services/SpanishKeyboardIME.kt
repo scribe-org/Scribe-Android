@@ -6,7 +6,6 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
-import be.scri.helpers.PreferencesHelper.getEnablePeriodAndCommaABC
 import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
 
 /**
@@ -23,13 +22,13 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
         when {
             isTablet() -> R.xml.keys_letters_spanish_tablet
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                !getEnablePeriodAndCommaABC(applicationContext, language) ->
+                !isPeriodAndCommaEnabled() ->
                 R.xml.keys_letter_spanish_without_accent_characters_and_without_period_and_comma
             !getIsAccentCharacterDisabled(applicationContext, language) &&
-                getEnablePeriodAndCommaABC(applicationContext, language) ->
+                isPeriodAndCommaEnabled() ->
                 R.xml.keys_letters_spanish
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                getEnablePeriodAndCommaABC(applicationContext, language) ->
+                isPeriodAndCommaEnabled() ->
                 R.xml.keys_letter_spanish_without_accent_character
             else ->
                 R.xml.keys_letter_spanish_without_period_and_comma
