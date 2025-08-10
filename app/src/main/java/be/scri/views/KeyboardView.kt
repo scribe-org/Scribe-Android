@@ -315,6 +315,7 @@ class KeyboardView
             private const val EXTRA_PADDING = 5000
             private const val KEY_HEIGHT = 100
             private const val I_1 = 0
+            private const val LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT = 370
         }
 
         private var popupBindingInternal: KeyboardPopupKeyboardBinding? = null
@@ -562,12 +563,7 @@ class KeyboardView
             }
         }
 
-
-
-
-
-
-    override fun onVisibilityChanged(
+        override fun onVisibilityChanged(
             changedView: View,
             visibility: Int,
         ) {
@@ -741,8 +737,7 @@ class KeyboardView
             }
         }
 
-
-    /**
+        /**
          * Compute the average distance between adjacent keys (horizontally and vertically)
          * and square it to get the proximity threshold.
          * We use a square here and in computing the touch distance from a key's center to avoid taking a square root.
@@ -907,7 +902,7 @@ class KeyboardView
                             putInt("conjugate_index", newValue)
                         }
                         val density = context.resources.displayMetrics.density
-                        key.height = (KEY_HEIGHT * density).toInt()
+                        key.height = (KEY_HEIGHT * density).toInt() + LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT
                     }
                     if (code == EXTRA_PADDING) {
                         val density = context.resources.displayMetrics.density
@@ -1804,10 +1799,7 @@ class KeyboardView
             return handled || true
         }
 
-
-
-
-    private fun repeatKey(initialCall: Boolean): Boolean {
+        private fun repeatKey(initialCall: Boolean): Boolean {
             val key = mKeys[mRepeatKeyIndex]
             if (!initialCall && key.code == KEYCODE_SPACE) {
                 if (!mIsLongPressingSpace) {
