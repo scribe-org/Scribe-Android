@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later 
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 package be.scri.services
 
@@ -386,16 +386,7 @@ abstract class GeneralKeyboardIME(
         emojiMaxKeywordLength = dbManagers.emojiManager.maxKeywordLength
         pluralWords = dbManagers.pluralManager.getAllPluralForms(languageAlias, dataContract)?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
-        suggestionWords =
-            hashMapOf(
-                "hello" to listOf("world", "there"),
-                "good" to listOf("morning", "job"),
-                "how" to listOf("are", "is"),
-                "thank" to listOf("you", "god"),
-                "i" to listOf("am", "think", "know"),
-                "she" to listOf("is", "was"),
-                "they" to listOf("are", "were"),
-            )
+        suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
         conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "coacha")
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
