@@ -83,7 +83,7 @@ class ConjugateDataManager(
         if (form.isNullOrEmpty()) return ""
         return fileManager.getLanguageDatabase(language)?.use { db ->
             getVerbCursor(db, word, language)?.use { cursor ->
-                getConjugatedValueFromCursor(cursor, form)
+                getConjugatedValueFromCursor(cursor, form, language)
             }
         } ?: ""
     }
@@ -99,9 +99,10 @@ class ConjugateDataManager(
     private fun getConjugatedValueFromCursor(
         cursor: Cursor,
         form: String,
+        language: String,
     ): String =
         if (form.contains("[")) {
-            parseComplexForm(cursor, form)
+            parseComplexForm(cursor, form, language)
         } else {
             try {
                 cursor.getString(cursor.getColumnIndexOrThrow(form))
@@ -123,17 +124,39 @@ class ConjugateDataManager(
     private fun parseComplexForm(
         cursor: Cursor,
         form: String,
+        language: String,
     ): String {
         val bracketRegex = Regex("""\[(.*?)]""")
         val match = bracketRegex.find(form) ?: return ""
 
         val auxiliaryWords = match.groupValues[1]
         val dbColumnName = form.replace(bracketRegex, "").trim()
+
         return try {
             val verbPart = cursor.getString(cursor.getColumnIndexOrThrow(dbColumnName))
-            "$auxiliaryWords $verbPart".trim()
+            val words = auxiliaryWords.split(Regex("\\s+"))
+            val verbType = cursor.getString(cursor.getColumnIndexOrThrow(words.last()))
+            val db = fileManager.getLanguageDatabase(language = language)
+
+            val wordPart1 = words.firstOrNull()
+            var auxResult = ""
+            wordPart1?.let {
+                val auxCursor =
+                    db?.rawQuery(
+                        "SELECT $wordPart1 FROM verbs WHERE wdLexemeId = ?",
+                        arrayOf(verbType),
+                    )
+                if (auxCursor?.moveToFirst() == true) {
+                    auxResult = auxCursor.getString(0)
+                }
+                auxCursor?.close()
+            }
+
+            val result = "$auxResult $verbPart".trim()
+            Log.d("DEBUG", "Returning: $result")
+            result
         } catch (e: IllegalArgumentException) {
-            Log.e("ConjugateDataManager", "Complex form column '$dbColumnName' not found", e)
+            Log.e("ConjugateDataManager", "Column '$dbColumnName' not found", e)
             ""
         }
     }

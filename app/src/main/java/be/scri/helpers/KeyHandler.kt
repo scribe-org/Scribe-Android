@@ -320,10 +320,9 @@ class KeyHandler(
         val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         var currentValue = sharedPreferences.getInt("conjugate_index", 0)
-
-        if (code == KeyboardBase.DISPLAY_LEFT) {
+        if (code == KeyboardBase.DISPLAY_RIGHT) {
             currentValue--
-        } else if (code == KeyboardBase.DISPLAY_RIGHT) {
+        } else if (code == KeyboardBase.DISPLAY_LEFT) {
             currentValue++
         }
 
