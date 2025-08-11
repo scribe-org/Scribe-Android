@@ -343,12 +343,14 @@ class KeyHandler(
      */
 
     private fun handleDefaultKey(code: Int) {
-        val isCommandBarActive = when (ime.currentState) {
-            ScribeState.TRANSLATE,
-            ScribeState.CONJUGATE,
-            ScribeState.PLURAL -> true  // Use command bar for actual commands
-            else -> false  // Use main input field for IDLE and SELECT_COMMAND
-        }
+        val isCommandBarActive =
+            when (ime.currentState) {
+                ScribeState.TRANSLATE,
+                ScribeState.CONJUGATE,
+                ScribeState.PLURAL,
+                -> true // Use command bar for actual commands
+                else -> false // Use main input field for IDLE and SELECT_COMMAND
+            }
 
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
