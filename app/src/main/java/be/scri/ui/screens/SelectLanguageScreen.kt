@@ -49,14 +49,7 @@ fun SelectTranslationSourceLanguageScreen(
 
     val scrollState = rememberScrollState()
     val options =
-        listOf("English",
-"French",
-"German",
-"Italian",
-"Portuguese",
-"Russian",
-"Spanish",
-"Swedish")
+        listOf("English","French","German","Italian","Portuguese","Russian","Spanish","Swedish")
             .filterNot { it == getDisplayLanguageName(currentLanguage) }
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_settings_keyboard_translation_select_source_title),
