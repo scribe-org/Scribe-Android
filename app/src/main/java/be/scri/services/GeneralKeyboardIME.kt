@@ -1579,10 +1579,12 @@ abstract class GeneralKeyboardIME(
             binding.translateBtn.text = getString(R.string.suggestion)
             binding.translateBtn.background = null
             binding.translateBtn.setOnClickListener(null)
+
+            binding.conjugateBtn.setOnClickListener(null)
+            binding.pluralBtn.setOnClickListener(null)
         }
 
-        binding.conjugateBtn.setOnClickListener(null)
-        binding.pluralBtn.setOnClickListener(null)
+
         handleTextSizeForSuggestion(binding.translateBtn)
     }
 
