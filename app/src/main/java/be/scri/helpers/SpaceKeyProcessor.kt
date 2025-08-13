@@ -60,27 +60,26 @@ class SpaceKeyProcessor(
      */
     private fun handleNormalSpaceInput(wasLastKeySpace: Boolean) {
         val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
-
         val ic = ime.currentInputConnection ?: return
-
         val wordBeforeSpace = ime.getLastWordBeforeCursor()
-
-        // Clear emoji suggestions since the word is now complete.
-        // suggestionHandler.processEmojiSuggestions(null)
+        // Get char before space
+        val twoCharsBeforeCursor = ic.getTextBeforeCursor(2, 0)?.toString()
+        val charBeforeSpace = if (twoCharsBeforeCursor?.length == 2) twoCharsBeforeCursor[0] else null
+        val isPunctuationBeforeSpace = charBeforeSpace == '.' || charBeforeSpace == '?' || charBeforeSpace == '!'
 
         if (periodOnDoubleTapEnabled && wasLastKeySpace && ime.hasTextBeforeCursor()) {
             val textBeforeTwoChars = ic.getTextBeforeCursor(2, 0)?.toString()
 
             if (meetsTwoCharDoubleSpacePeriodCondition(textBeforeTwoChars)) {
                 val oneCharBefore = ic.getTextBeforeCursor(1, 0)?.toString()
-                if (oneCharBefore == " ") {
+                if (oneCharBefore == " " && !isPunctuationBeforeSpace) {
                     ime.commitPeriodAfterSpace()
                 } else {
                     commitNormalSpace()
                 }
             } else {
                 val textBeforeOneChar = ic.getTextBeforeCursor(1, 0)?.toString()
-                if (textBeforeOneChar != null && textBeforeOneChar.length == 1 && textBeforeOneChar == " ") {
+                if (textBeforeOneChar == " " && !isPunctuationBeforeSpace) {
                     ime.commitPeriodAfterSpace()
                 } else {
                     commitNormalSpace()
@@ -89,8 +88,10 @@ class SpaceKeyProcessor(
         } else {
             commitNormalSpace()
         }
+
         suggestionHandler.processLinguisticSuggestions(wordBeforeSpace)
     }
+
 
     /**
      * Commits a single space character to the input connection.
