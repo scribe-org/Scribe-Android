@@ -92,7 +92,6 @@ class SpaceKeyProcessor(
         suggestionHandler.processLinguisticSuggestions(wordBeforeSpace)
     }
 
-
     /**
      * Commits a single space character to the input connection.
      * This is used when "period on double tap" conditions are not met, the feature is disabled,
