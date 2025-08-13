@@ -1584,7 +1584,6 @@ abstract class GeneralKeyboardIME(
             binding.pluralBtn.setOnClickListener(null)
         }
 
-
         handleTextSizeForSuggestion(binding.translateBtn)
     }
 
