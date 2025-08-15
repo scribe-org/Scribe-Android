@@ -16,7 +16,6 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -534,16 +533,12 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() {
         if (!this::binding.isInitialized) return
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-        Log.d("CommandBug", "updateUI called, currentState: $currentState")
-        Log.d("CommandBug", "Command bar text: '${binding.commandBar.text}'")
 
         when (currentState) {
             ScribeState.IDLE -> {
-                Log.d("CommandBug", "Setting up IDLE view - command buttons will be hidden")
                 setupIdleView()
             }
             ScribeState.SELECT_COMMAND -> {
-                Log.d("CommandBug", "Setting up SELECT_COMMAND view - command buttons should be visible")
                 setupSelectCommandView()
             }
 
