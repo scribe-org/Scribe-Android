@@ -800,7 +800,7 @@ abstract class GeneralKeyboardIME(
                 saveConjugateModeType(language)
                 if (!isSubsequentArea && dataSize == 0) {
                     when (language) {
-                        "English", "Swedish", "Russian" -> R.xml.conjugate_view_2x2
+                        "English", "Russian", "Swedish" -> R.xml.conjugate_view_2x2
                         else -> R.xml.conjugate_view_3x2
                     }
                 } else {
@@ -1031,8 +1031,8 @@ abstract class GeneralKeyboardIME(
         val mode =
             if (!isSubsequentArea) {
                 when (language) {
-                    "Swedish", "English", "Russian" -> "2x2"
-                    "German", "French", "Italian", "Spanish", "Portuguese" -> "3x2"
+                    "English", "Russian", "Swedish" -> "2x2"
+                    "German", "French", "Italian", "Portuguese", "Spanish" -> "3x2"
                     else -> "none"
                 }
             } else {
