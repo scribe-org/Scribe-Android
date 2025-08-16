@@ -310,7 +310,7 @@ class SettingsScreenInstrumentedTest {
 
     @Test
     fun settingsScreen_multipleLanguages_allDisplayed() {
-        val testLanguages = listOf("English", "French", "German", "Spanish", "Italian")
+        val testLanguages = listOf("English", "French", "German", "Italian", "Spanish")
         every { mockViewModel.isKeyboardInstalled } returns MutableStateFlow(true)
         every { mockViewModel.languages } returns MutableStateFlow(testLanguages)
 
