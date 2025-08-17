@@ -4,9 +4,9 @@
     <dimen name="key_height">72dp</dimen>
     <dimen name="key_height_landscape">54dp</dimen>
 
-    <dimen name="keyboard_text_size">23sp</dimen>
-    <dimen name="preview_text_size">27sp</dimen>
-    <dimen name="label_text_size">16sp</dimen>
+    <dimen name="keyboard_text_size">26sp</dimen>
+    <dimen name="preview_text_size">30sp</dimen>
+    <dimen name="label_text_size">18sp</dimen>
 
     <dimen name="tiny_margin">2dp</dimen>
     <dimen name="small_margin">4dp</dimen>

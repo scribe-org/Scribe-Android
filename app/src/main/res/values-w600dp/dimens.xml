@@ -13,7 +13,7 @@
 
     <dimen name="command_button_corner_radius">14dp</dimen>
 
-    <dimen name="keyboard_text_size">22sp</dimen>
+    <dimen name="keyboard_text_size">24sp</dimen>
     <dimen name="preview_text_size">28sp</dimen>
     <dimen name="label_text_size">17sp</dimen>
 
