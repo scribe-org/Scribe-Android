@@ -585,7 +585,7 @@ abstract class GeneralKeyboardIME(
             button.visibility = View.VISIBLE
             button.background = null
             button.setTextColor(textColor)
-            button.text = getString(R.string.suggestion)
+            button.text = ""
             button.textSize = SUGGESTION_SIZE
             button.setOnClickListener(null)
         }
@@ -1318,7 +1318,7 @@ abstract class GeneralKeyboardIME(
     private fun handleSingleNounSuggestion(nounTypeSuggestion: List<String>?): Boolean {
         if (nounTypeSuggestion?.size == 1 && !isSingularAndPlural) {
             val (colorRes, text) = handleColorAndTextForNounType(nounTypeSuggestion[0], language, applicationContext)
-            if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
+            if (text != "" || colorRes != R.color.transparent) {
                 handleSingleType(nounTypeSuggestion, "noun")
                 return true
             }
@@ -1339,7 +1339,7 @@ abstract class GeneralKeyboardIME(
                     language,
                     applicationContext,
                 )
-            if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
+            if (text != "" || colorRes != R.color.transparent) {
                 handleSingleType(caseAnnotationSuggestion, "preposition")
                 return true
             }
@@ -1375,13 +1375,13 @@ abstract class GeneralKeyboardIME(
         nounTypeSuggestion?.let {
             handleSingleType(it, "noun")
             val (_, text) = handleColorAndTextForNounType(it[0], language, applicationContext)
-            if (text != getString(R.string.suggestion)) appliedSomething = true
+            if (text != "") appliedSomething = true
         }
         if (!appliedSomething) {
             caseAnnotationSuggestion?.let {
                 handleSingleType(it, "preposition")
                 val (_, text) = handleTextForCaseAnnotation(it[0], language, applicationContext)
-                if (text != getString(R.string.suggestion)) appliedSomething = true
+                if (text != "") appliedSomething = true
             }
         }
         return appliedSomething
@@ -1486,7 +1486,7 @@ abstract class GeneralKeyboardIME(
             when (type) {
                 "noun" -> handleColorAndTextForNounType(suggestionText, language, applicationContext)
                 "preposition" -> handleTextForCaseAnnotation(suggestionText, language, applicationContext)
-                else -> Pair(R.color.transparent, getString(R.string.suggestion))
+                else -> Pair(R.color.transparent, "")
             }
 
         binding.translateBtnLeft.visibility = View.INVISIBLE
@@ -1627,7 +1627,7 @@ abstract class GeneralKeyboardIME(
      * @param multipleTypeSuggestion The list of noun suggestions.
      */
     private fun handleFallbackOrSingleSuggestion(multipleTypeSuggestion: List<String>?) {
-        val suggestionText = getString(R.string.suggestion)
+        val suggestionText = ""
         val validNouns =
             multipleTypeSuggestion?.filter {
                 handleColorAndTextForNounType(
@@ -1665,7 +1665,7 @@ abstract class GeneralKeyboardIME(
     ) {
         val suggestionPairs = getSuggestionPairs(type, multipleTypeSuggestion) ?: return
         val (leftSuggestion, rightSuggestion) = suggestionPairs
-        val suggestionText = getString(R.string.suggestion)
+        val suggestionText = ""
         if (leftSuggestion.second == suggestionText || rightSuggestion.second == suggestionText) {
             handleFallbackOrSingleSuggestion(multipleTypeSuggestion)
             return
@@ -1683,7 +1683,7 @@ abstract class GeneralKeyboardIME(
 
         // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
         if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
-            binding.translateBtn.text = getString(R.string.suggestion)
+            binding.translateBtn.text = ""
             binding.translateBtn.background = null
             binding.translateBtn.setOnClickListener(null)
 
