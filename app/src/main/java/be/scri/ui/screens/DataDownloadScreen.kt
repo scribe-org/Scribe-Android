@@ -111,13 +111,13 @@ fun DownloadDataScreen(
                         val languages =
                             listOf(
                                 Triple("all", stringResource(R.string.app_download_menu_ui_select_all_languages), false),
-                                Triple("german", stringResource(R.string.app__global_german), false),
                                 Triple("english", stringResource(R.string.app__global_english), false),
-                                Triple("spanish", stringResource(R.string.app__global_spanish), false),
                                 Triple("french", stringResource(R.string.app__global_french), false),
+                                Triple("german", stringResource(R.string.app__global_german), false),
                                 Triple("italian", stringResource(R.string.app__global_italian), false),
                                 Triple("portuguese", stringResource(R.string.app__global_portuguese), false),
                                 Triple("russian", stringResource(R.string.app__global_russian), false),
+                                Triple("spanish", stringResource(R.string.app__global_spanish), false),
                                 Triple("swedish", stringResource(R.string.app__global_swedish), false),
                             )
 

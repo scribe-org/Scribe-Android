@@ -94,12 +94,12 @@ object SettingsUtil {
         return imm.enabledInputMethodList.mapNotNull { inputMethod ->
             when (inputMethod.serviceName) {
                 "be.scri.services.EnglishKeyboardIME" -> "English"
-                "be.scri.services.GermanKeyboardIME" -> "German"
-                "be.scri.services.RussianKeyboardIME" -> "Russian"
-                "be.scri.services.SpanishKeyboardIME" -> "Spanish"
                 "be.scri.services.FrenchKeyboardIME" -> "French"
+                "be.scri.services.GermanKeyboardIME" -> "German"
                 "be.scri.services.ItalianKeyboardIME" -> "Italian"
                 "be.scri.services.PortugueseKeyboardIME" -> "Portuguese"
+                "be.scri.services.RussianKeyboardIME" -> "Russian"
+                "be.scri.services.SpanishKeyboardIME" -> "Spanish"
                 "be.scri.services.SwedishKeyboardIME" -> "Swedish"
                 else -> null
             }
@@ -117,10 +117,10 @@ object SettingsUtil {
             "English" -> R.string.app__global_english
             "French" -> R.string.app__global_french
             "German" -> R.string.app__global_german
-            "Russian" -> R.string.app__global_russian
-            "Spanish" -> R.string.app__global_spanish
             "Italian" -> R.string.app__global_italian
             "Portuguese" -> R.string.app__global_portuguese
+            "Russian" -> R.string.app__global_russian
+            "Spanish" -> R.string.app__global_spanish
             "Swedish" -> R.string.app__global_swedish
             else -> return R.string.language
         }
