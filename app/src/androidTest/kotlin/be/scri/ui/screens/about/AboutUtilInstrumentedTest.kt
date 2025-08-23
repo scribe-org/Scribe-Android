@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.ui.screens.about
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
@@ -63,7 +65,10 @@ class AboutUtilInstrumentedTest {
      */
     @Test
     fun test_onShareScribeClick_doesNotCrash() {
-        // Use the app context.
+        Intents
+            .intending(hasAction(Intent.ACTION_CHOOSER))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         scenario.onActivity { activity ->
             AboutUtil.onShareScribeClick(activity)
