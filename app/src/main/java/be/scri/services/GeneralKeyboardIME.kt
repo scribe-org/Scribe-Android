@@ -1267,9 +1267,22 @@ abstract class GeneralKeyboardIME(
             disableAutoSuggest()
             return
         }
-
+        val hasWordSuggestions = !wordSuggestions.isNullOrEmpty()
+        val hasLinguisticSuggestions =
+            nounTypeSuggestion != null ||
+                isPlural ||
+                caseAnnotationSuggestion != null ||
+                isSingularAndPlural
         val handled =
             when {
+                hasWordSuggestions && hasLinguisticSuggestions -> {
+                    handleWordSuggestions(
+                        wordSuggestions = wordSuggestions,
+                        nounTypeSuggestion = nounTypeSuggestion,
+                        caseAnnotationSuggestion = caseAnnotationSuggestion,
+                        isPlural = isPlural,
+                    )
+                }
                 (isPlural && nounTypeSuggestion != null) -> {
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
                     true
@@ -1283,12 +1296,6 @@ abstract class GeneralKeyboardIME(
                 handleMultipleCases(caseAnnotationSuggestion) -> true
                 handleSingleCaseSuggestion(caseAnnotationSuggestion) -> true
                 handleFallbackSuggestions(nounTypeSuggestion, caseAnnotationSuggestion) -> true
-                handleWordSuggestions(
-                    wordSuggestions = wordSuggestions,
-                    nounTypeSuggestion = nounTypeSuggestion,
-                    caseAnnotationSuggestion = caseAnnotationSuggestion,
-                    isPlural = isPlural,
-                ) -> true
                 else -> false
             }
         if (!handled) disableAutoSuggest()
