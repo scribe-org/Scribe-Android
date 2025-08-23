@@ -18,6 +18,7 @@ class SuggestionHandler(
     private val handler = Handler(Looper.getMainLooper())
     private var emojiSuggestionRunnable: Runnable? = null
     private var linguisticSuggestionRunnable: Runnable? = null
+    private var wordSuggestionRunnable: Runnable? = null
 
     /**
      * Companion object for holding constants related to suggestion handling.
@@ -72,6 +73,39 @@ class SuggestionHandler(
                 }
             }
         handler.postDelayed(linguisticSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+    }
+
+    fun processWordSuggestions(completedWord: String?) {
+        wordSuggestionRunnable?.let { handler.removeCallbacks(it) }
+
+        wordSuggestionRunnable =
+            Runnable {
+                if (ime.currentState != ScribeState.IDLE) {
+                    clearAllSuggestionsAndHideButtonUI()
+                    return@Runnable
+                }
+
+                if (completedWord.isNullOrEmpty()) {
+                    clearLinguisticSuggestions()
+                    return@Runnable
+                }
+
+                val nextWordSuggestion = ime.getNextWordSuggestions(ime.suggestionWords, completedWord)
+
+                if (nextWordSuggestion != null) {
+                    ime.wordSuggestions = nextWordSuggestion
+                    ime.updateAutoSuggestText(
+                        ime.nounTypeSuggestion,
+                        ime.checkIfPluralWord || ime.isSingularAndPlural,
+                        ime.caseAnnotationSuggestion,
+                        nextWordSuggestion,
+                    )
+                } else {
+                    ime.disableAutoSuggest()
+                }
+            }
+
+        handler.postDelayed(wordSuggestionRunnable!!, SUGGESTION_DELAY_MS)
     }
 
     /**
