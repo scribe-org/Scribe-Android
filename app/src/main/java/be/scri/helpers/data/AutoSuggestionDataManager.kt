@@ -3,7 +3,6 @@
 package be.scri.helpers.data
 
 import android.database.sqlite.SQLiteDatabase
-import android.util.Log
 import be.scri.helpers.DatabaseFileManager
 
 class AutoSuggestionDataManager(
@@ -18,11 +17,9 @@ class AutoSuggestionDataManager(
         val suggestionMap = HashMap<String, List<String>>()
         val columnsToSelect = listOf("word", "autosuggestion_0", "autosuggestion_1", "autosuggestion_2")
 
-        // Defensive column check
         db.rawQuery("SELECT * FROM autosuggestions LIMIT 1", null).use { tempCursor ->
             for (column in columnsToSelect) {
                 if (tempCursor.getColumnIndex(column) == -1) {
-                    Log.e("AutoSuggestionDataManager", "Missing column '$column' in autosuggestions table")
                     return suggestionMap
                 }
             }
