@@ -56,6 +56,7 @@ import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
 import java.util.Locale
+import kotlin.toString
 
 private const val DATA_SIZE_2 = 2
 private const val DATA_CONSTANT_3 = 3
@@ -1421,6 +1422,7 @@ abstract class GeneralKeyboardIME(
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
         button.text = text
+        button.isAllCaps = false
         button.visibility = View.VISIBLE
         button.textSize = SUGGESTION_SIZE
         button.setOnClickListener(null)
@@ -1450,16 +1452,11 @@ abstract class GeneralKeyboardIME(
         val suggestion1 = suggestions.getOrNull(0) ?: ""
         val suggestion2 = suggestions.getOrNull(1) ?: ""
         val suggestion3 = suggestions.getOrNull(2) ?: ""
-
-        Log.d("suggestion 1", suggestion1)
-        Log.d("suggestion 2", suggestion2)
-        Log.d("suggestion 3", suggestion3)
         val hasLinguisticSuggestion =
             nounTypeSuggestion != null ||
                 isPlural ||
                 caseAnnotationSuggestion != null ||
                 isSingularAndPlural
-        Log.d("lS", hasLinguisticSuggestion.toString())
         val emojiCount = autoSuggestEmojis?.size ?: 0
         setSuggestionButton(binding.conjugateBtn, suggestion1)
         when {
