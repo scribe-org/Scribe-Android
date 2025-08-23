@@ -13,9 +13,9 @@
 
     <dimen name="command_button_corner_radius">12dp</dimen>
 
-    <dimen name="keyboard_text_size">20sp</dimen>
-    <dimen name="preview_text_size">24sp</dimen>
-    <dimen name="label_text_size">15sp</dimen>
+    <dimen name="keyboard_text_size">18sp</dimen>
+    <dimen name="preview_text_size">18sp</dimen>
+    <dimen name="label_text_size">12sp</dimen>
 
     <!-- Commons dimens -->
     <dimen name="one_dp">1dp</dimen>
