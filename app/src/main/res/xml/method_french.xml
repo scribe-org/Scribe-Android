@@ -2,8 +2,7 @@
     android:settingsActivity="be.scri.activities.SettingsActivity"
     android:icon="@mipmap/ic_launcher" >
     <subtype
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app._global.french"
-        android:imeSubtypeLocale="fr"
-        android:imeSubtypeMode="keyboard" />
+        android:label="1. Français"
+        android:imeSubtypeLocale="Français"
+        android:imeSubtypeMode="keyboard"/>
 </input-method>
