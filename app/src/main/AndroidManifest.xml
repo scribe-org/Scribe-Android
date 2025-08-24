@@ -44,19 +44,6 @@
                 android:resource="@xml/method_english" />
         </service>
         <service
-            android:name=".services.GermanKeyboardIME"
-            android:exported="true"
-            android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
-            <intent-filter>
-                <action android:name="android.view.InputMethod" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.view.im"
-                android:resource="@xml/method_german" />
-        </service>
-        <service
             android:name=".services.FrenchKeyboardIME"
             android:exported="true"
             android:label="Scribe"
@@ -70,7 +57,7 @@
                 android:resource="@xml/method_french" />
         </service>
         <service
-            android:name=".services.ItalianKeyboardIME"
+            android:name=".services.GermanKeyboardIME"
             android:exported="true"
             android:label="Scribe"
             android:permission="android.permission.BIND_INPUT_METHOD" >
@@ -80,8 +67,9 @@
 
             <meta-data
                 android:name="android.view.im"
-                android:resource="@xml/method_italian" />
+                android:resource="@xml/method_german" />
         </service>
+
         <service
             android:name=".services.PortugueseKeyboardIME"
             android:exported="true"
@@ -133,6 +121,19 @@
             <meta-data
                 android:name="android.view.im"
                 android:resource="@xml/method_swedish" />
+        </service>
+        <service
+            android:name=".services.ItalianKeyboardIME"
+            android:exported="true"
+            android:label="Scribe"
+            android:permission="android.permission.BIND_INPUT_METHOD" >
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method_italian" />
         </service>
     </application>
 

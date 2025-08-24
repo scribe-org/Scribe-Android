@@ -23,6 +23,7 @@
     <color name="switch_selector_color_false">@color/md_grey_800_dark</color>
     <color name="button_container_color">@color/you_button_background_color</color>
     <color name="theme_scribe_blue">@color/dark_scribe_blue</color>
+    <color name="navigation_bar_color">@color/dark_keyboard_bg_color</color>
 
     <!-- Commons colors -->
     <color name="you_status_bar_color">#20333D</color>

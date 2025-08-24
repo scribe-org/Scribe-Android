@@ -1,9 +1,8 @@
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
-    android:settingsActivity="be.scri.activities.SettingsActivity"
     android:icon="@mipmap/ic_launcher" >
     <subtype
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app._global.russian"
-        android:imeSubtypeLocale="ru"
+        android:label="Русский"
+        android:imeSubtypeLocale="Русский"
         android:imeSubtypeMode="keyboard" />
 </input-method>

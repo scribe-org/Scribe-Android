@@ -34,7 +34,7 @@ class SpaceKeyProcessor(
             handleSpaceInCommandBar()
             false
         } else {
-            handleNormalSpaceInput(currentWasLastKeySpace)
+            handleSpaceOutsideCommandBar(currentWasLastKeySpace)
             true
         }
     }
@@ -58,7 +58,7 @@ class SpaceKeyProcessor(
      * otherwise commits a normal space. Updates word suggestions.
      * @param wasLastKeySpace True if the previous key pressed was a space.
      */
-    private fun handleNormalSpaceInput(wasLastKeySpace: Boolean) {
+    private fun handleSpaceOutsideCommandBar(wasLastKeySpace: Boolean) {
         val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
         val ic = ime.currentInputConnection ?: return
         val wordBeforeSpace = ime.getLastWordBeforeCursor()
@@ -78,7 +78,7 @@ class SpaceKeyProcessor(
                     ime.commitPeriodAfterSpace()
                     shouldEnableAutoCapitalization = true
                 } else {
-                    commitNormalSpace()
+                    insertSpace()
                 }
             } else {
                 val textBeforeOneChar = ic.getTextBeforeCursor(1, 0)?.toString()
@@ -86,11 +86,11 @@ class SpaceKeyProcessor(
                     ime.commitPeriodAfterSpace()
                     shouldEnableAutoCapitalization = true
                 } else {
-                    commitNormalSpace()
+                    insertSpace()
                 }
             }
         } else {
-            commitNormalSpace()
+          insertSpace()
 
             val textAfterSpace = ic.getTextBeforeCursor(2, 0)?.toString()
             if (textAfterSpace?.length == 2) {
@@ -105,9 +105,11 @@ class SpaceKeyProcessor(
         if (shouldEnableAutoCapitalization) {
             ime.keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
             ime.keyboardView?.invalidateAllKeys()
+
         }
 
         suggestionHandler.processLinguisticSuggestions(wordBeforeSpace)
+        suggestionHandler.processWordSuggestions(wordBeforeSpace)
     }
 
     /**
@@ -115,7 +117,7 @@ class SpaceKeyProcessor(
      * This is used when "period on double tap" conditions are not met, the feature is disabled,
      * or a simple space is intended.
      */
-    private fun commitNormalSpace() {
+    private fun insertSpace() {
         ime.handleElseCondition(
             code = KeyboardBase.KEYCODE_SPACE,
             keyboardMode = ime.keyboardMode,

@@ -112,9 +112,9 @@ class TranslationDataManager(
     private fun generateLanguageNameForISOCode(isoCode: String): String =
         when (isoCode.lowercase()) {
             "en" -> "english"
-            "fr" -> "french"
             "de" -> "german"
             "es" -> "spanish"
+            "fr" -> "french"
             "it" -> "italian"
             "pt" -> "portuguese"
             "ru" -> "russian"
