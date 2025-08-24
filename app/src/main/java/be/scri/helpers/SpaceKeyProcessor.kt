@@ -67,6 +67,8 @@ class SpaceKeyProcessor(
         val charBeforeSpace = if (twoCharsBeforeCursor?.length == 2) twoCharsBeforeCursor[0] else null
         val isPunctuationBeforeSpace = charBeforeSpace == '.' || charBeforeSpace == '?' || charBeforeSpace == '!'
 
+        var shouldEnableAutoCapitalization = false
+
         if (periodOnDoubleTapEnabled && wasLastKeySpace && ime.hasTextBeforeCursor()) {
             val textBeforeTwoChars = ic.getTextBeforeCursor(2, 0)?.toString()
 
@@ -74,6 +76,7 @@ class SpaceKeyProcessor(
                 val oneCharBefore = ic.getTextBeforeCursor(1, 0)?.toString()
                 if (oneCharBefore == " " && !isPunctuationBeforeSpace) {
                     ime.commitPeriodAfterSpace()
+                    shouldEnableAutoCapitalization = true
                 } else {
                     commitNormalSpace()
                 }
@@ -81,12 +84,27 @@ class SpaceKeyProcessor(
                 val textBeforeOneChar = ic.getTextBeforeCursor(1, 0)?.toString()
                 if (textBeforeOneChar == " " && !isPunctuationBeforeSpace) {
                     ime.commitPeriodAfterSpace()
+                    shouldEnableAutoCapitalization = true
                 } else {
                     commitNormalSpace()
                 }
             }
         } else {
             commitNormalSpace()
+
+            val textAfterSpace = ic.getTextBeforeCursor(2, 0)?.toString()
+            if (textAfterSpace?.length == 2) {
+                val punctuationChar = textAfterSpace[0]
+                val spaceChar = textAfterSpace[1]
+                if (spaceChar == ' ' && (punctuationChar == '.' || punctuationChar == '?' || punctuationChar == '!')) {
+                    shouldEnableAutoCapitalization = true
+                }
+            }
+        }
+        
+        if (shouldEnableAutoCapitalization) {
+            ime.keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
+            ime.keyboardView?.invalidateAllKeys()
         }
 
         suggestionHandler.processLinguisticSuggestions(wordBeforeSpace)
