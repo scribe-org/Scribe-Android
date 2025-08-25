@@ -1125,7 +1125,7 @@ abstract class GeneralKeyboardIME(
             }
         }
 
-        // Hide other separators and phone-specific views
+        // Hide other separators and phone-specific views.
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
         emojiBtnPhone1?.visibility = View.GONE
@@ -1165,7 +1165,7 @@ abstract class GeneralKeyboardIME(
 
         binding.separator4.visibility = if (emojiCount > 1) View.VISIBLE else View.GONE
 
-        // Hide tablet-specific views
+        // Hide tablet-specific views.
         emojiBtnTablet1?.visibility = View.GONE
         emojiSpaceTablet1?.visibility = View.GONE
         emojiBtnTablet2?.visibility = View.GONE
