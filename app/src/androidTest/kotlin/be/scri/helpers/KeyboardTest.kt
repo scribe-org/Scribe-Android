@@ -1,8 +1,18 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-package be.scri.ui
+// SPDX-License-License-Identifier: GPL-3.0-or-later
+package be.scri.helpers
 
 import android.view.inputmethod.InputConnection
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressKey
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import be.scri.R
+import be.scri.activities.MainActivity
 import be.scri.helpers.KeyHandler
 import be.scri.helpers.KeyboardBase
 import be.scri.services.GeneralKeyboardIME
@@ -11,9 +21,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import android.view.KeyEvent
 
+// Unit tests for KeyHandler
 @RunWith(AndroidJUnit4::class)
 class KeyboardTest {
     private lateinit var mockIME: GeneralKeyboardIME
@@ -154,5 +167,30 @@ class KeyboardTest {
 
         verify(exactly = 1) { mockIME.handleDelete(false) }
         verify(exactly = 1) { mockInputConnection.deleteSurroundingText(1, 0) }
+    }
+
+    @Test
+    fun testEnterKeyBehavior() {
+        every { mockIME.currentState } returns ScribeState.IDLE
+        keyHandler.handleKey(KeyboardBase.KEYCODE_ENTER, "en")
+        verify(exactly = 0) { mockInputConnection.commitText(any(), any()) }
+        verify(exactly = 0) { mockInputConnection.sendKeyEvent(any()) }
+    }
+}
+
+// Instrumentation test for Enter key
+@RunWith(AndroidJUnit4::class)
+class EnterKeyTest {
+    @get:Rule
+    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+
+    @Test
+    fun testEnterKeyBehaviorInCommandBar() {
+        onView(withId(R.id.command_bar)).perform(
+            typeText("Hello"),
+            closeSoftKeyboard(),
+            pressKey(KeyEvent.KEYCODE_ENTER)
+        )
+        onView(withId(R.id.command_bar)).check(matches(withText("")))
     }
 }
