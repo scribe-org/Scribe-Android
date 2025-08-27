@@ -732,6 +732,17 @@ abstract class GeneralKeyboardIME(
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
+        binding.ivInfo.setOnClickListener { showInvalidInfo() }
+    }
+
+    /**
+     * Show information about Wikidata when the user clicks the information icon.
+     */
+    private fun showInvalidInfo() {
+        binding.ivInfo.isClickable = true
+        binding.ivInfo.isFocusable = true
+        keyboardView?.findViewById<View>(R.id.keyboard_view)?.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.VISIBLE // Use main binding
     }
 
     /**

@@ -518,6 +518,58 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ================================================================================= -->
+    <!--  Container for the "INVALID" state -->
+    <!-- ================================================================================= -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/invalid_info_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/toolbar_background_color"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Scribe Key (Close) -->
+        <Button
+            android:id="@+id/scribe_key_close"
+            android:layout_width="@dimen/command_state_scribe_key_width"
+            android:layout_height="36dp"
+            android:layout_marginStart="@dimen/small_margin"
+            android:background="@drawable/scribe_key_background_left_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:contentDescription="@string/scribe_key"
+            android:foreground="@drawable/close"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/light_key_text_color"
+            android:paddingEnd="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Full width TextView -->
+        <TextView
+            android:id="@+id/invalid_text"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/cmd_bar_background_right_rounded"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textFontWeight="500"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/scribe_key_close"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ================================================================================= -->
     <!--  The Shared KeyboardView                                                          -->
     <!-- ================================================================================= -->
     <be.scri.views.KeyboardView
