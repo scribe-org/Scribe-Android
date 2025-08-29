@@ -744,6 +744,18 @@ abstract class GeneralKeyboardIME(
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
         binding.ivInfo.setOnClickListener { showInvalidInfo() }
+        binding.scribeKeyClose.setOnClickListener { hideInvalidInfo() }
+    }
+
+    /**
+     * Hide information about Wikidata and/or invalid state field.
+     */
+    private fun hideInvalidInfo() {
+        binding.ivInfo.isClickable = true
+        binding.ivInfo.isFocusable = true
+        keyboardView?.findViewById<View>(R.id.keyboard_view)?.visibility = View.VISIBLE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.invalidText.text = HintUtils.getInvalidHint(language = language)
     }
 
     /**
