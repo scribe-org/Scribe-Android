@@ -571,6 +571,7 @@
             android:id="@+id/info_wiki"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="240dp"
             android:layout_marginTop="8dp"
             android:layout_marginStart="@dimen/small_margin"
             android:layout_marginEnd="@dimen/tiny_margin"
@@ -583,7 +584,7 @@
 
             <!-- Left Button -->
             <Button
-                android:id="@+id/myButton1"
+                android:id="@+id/button_left"
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/rounded_all_corners"
@@ -592,63 +593,62 @@
 
             <!-- Middle TextView -->
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:orientation="vertical"
+            android:background="@drawable/rounded_all_corners">
+            
+            <TextView
+                android:id="@+id/middle_textview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:orientation="vertical"
-                android:background="@drawable/rounded_all_corners"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:gravity="center"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+            
+            <LinearLayout
+                android:id="@+id/page_indicators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
                 android:gravity="center">
-                
-                <TextView
-                    android:id="@+id/middle_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:text="Wikidata is a collaboratively edited knowledge graph that's maintained by the Wikimedia Foundation. It serves as a source of open data for projects like Wikipedia and countless others."
-                    android:gravity="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-                
-                <LinearLayout
-                    android:id="@+id/page_indicators"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/dot_active" />
                     
-                    <View
-                        android:layout_width="6dp"
-                        android:layout_height="6dp"
-                        android:layout_margin="4dp"
-                        android:background="@drawable/dot_active" />
-                        
-                    <View
-                        android:layout_width="6dp"
-                        android:layout_height="6dp"
-                        android:layout_margin="4dp"
-                        android:background="@drawable/dot_inactive" />
-                        
-                    <View
-                        android:layout_width="6dp"
-                        android:layout_height="6dp"
-                        android:layout_margin="4dp"
-                        android:background="@drawable/dot_inactive" />
-                        
-                </LinearLayout>
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/dot_inactive" />
+                    
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/dot_inactive" />
+                    
             </LinearLayout>
+</LinearLayout>
 
             <!-- Right Button -->
             <Button
-                android:id="@+id/myButton2"
+                android:id="@+id/button_right"
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/rounded_all_corners"

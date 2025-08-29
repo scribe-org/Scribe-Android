@@ -26,6 +26,8 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -126,6 +128,15 @@ abstract class GeneralKeyboardIME(
 
     internal var currentState: ScribeState = ScribeState.IDLE
     private var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
+
+    private var currentPage = 0
+    private val totalPages = 3
+    private val explanationStrings =
+        arrayOf(
+            R.string.keyboard_not_in_wikidata_explanation_1,
+            R.string.keyboard_not_in_wikidata_explanation_2,
+            R.string.keyboard_not_in_wikidata_explanation_3,
+        )
 
     /**
      * This function is updated to reliably detect search bars in various apps,
@@ -742,7 +753,52 @@ abstract class GeneralKeyboardIME(
         binding.ivInfo.isClickable = true
         binding.ivInfo.isFocusable = true
         keyboardView?.findViewById<View>(R.id.keyboard_view)?.visibility = View.GONE
-        binding.invalidInfoBar.visibility = View.VISIBLE // Use main binding
+        binding.invalidInfoBar.visibility = View.VISIBLE
+        binding.invalidText.text = HintUtils.getInvalidHint(language = language)
+        setupWikidataButtons()
+        updateWikidataPage()
+    }
+
+    /**
+     * Set navigation functionality with the left and right arrow button.
+     */
+    private fun setupWikidataButtons() {
+        binding.invalidInfoBar.findViewById<Button>(R.id.button_left).setOnClickListener {
+            if (currentPage > 0) {
+                currentPage--
+                updateWikidataPage()
+            }
+        }
+
+        binding.invalidInfoBar.findViewById<Button>(R.id.button_right).setOnClickListener {
+            if (currentPage < totalPages - 1) {
+                currentPage++
+                updateWikidataPage()
+            }
+        }
+    }
+
+    /**
+     * Update Wikidata information based on current navigation state.
+     */
+    private fun updateWikidataPage() {
+        binding.invalidInfoBar.findViewById<TextView>(R.id.middle_textview).setText(explanationStrings[currentPage])
+        updateDotIndicators()
+    }
+
+    /**
+     * Update page indicators to show which Wikidata explanation the user is currently viewing.
+     */
+    private fun updateDotIndicators() {
+        val pageIndicators = binding.invalidInfoBar.findViewById<LinearLayout>(R.id.page_indicators)
+        for (i in 0 until pageIndicators.childCount) {
+            val dot = pageIndicators.getChildAt(i)
+            dot.background =
+                ContextCompat.getDrawable(
+                    this,
+                    if (i == currentPage) R.drawable.dot_active else R.drawable.dot_inactive,
+                )
+        }
     }
 
     /**
