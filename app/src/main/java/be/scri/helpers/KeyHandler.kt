@@ -22,6 +22,7 @@ class KeyHandler(
 ) {
     private val suggestionHandler = SuggestionHandler(ime)
     private val spaceKeyProcessor = SpaceKeyProcessor(ime, suggestionHandler)
+    private val conjugateHandler = ConjugateHandler(ime)
 
     /** Tracks if the last key pressed was a space, used for "period on double space" logic. */
     private var wasLastKeySpace: Boolean = false
@@ -324,13 +325,13 @@ class KeyHandler(
         code: Int,
         language: String,
     ) {
-        if (!ime.returnIsSubsequentRequired()) {
-            ime.handleConjugateKeys(code, false)
+        if (!conjugateHandler.returnIsSubsequentRequired()) {
+            conjugateHandler.handleConjugateKeys(code, false)
             ime.moveToIdleState()
-            ime.saveConjugateModeType(language, isSubsequentArea = false)
+            conjugateHandler.saveConjugateModeType(language, isSubsequentArea = false)
         } else {
-            val word = ime.handleConjugateKeys(code, true)
-            ime.setupConjugateSubView(ime.returnSubsequentData(), word)
+            val word = conjugateHandler.handleConjugateKeys(code, true)
+            conjugateHandler.setupConjugateSubView(conjugateHandler.returnSubsequentData(), word)
         }
     }
 

@@ -36,6 +36,7 @@ import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
+import be.scri.helpers.ConjugateHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
@@ -100,14 +101,13 @@ abstract class GeneralKeyboardIME(
     private var genderSuggestionRight: Button? = null
 
     internal var isSingularAndPlural: Boolean = false
-    private var subsequentAreaRequired: Boolean = false
-    private var subsequentData: MutableList<List<String>> = mutableListOf()
 
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
 
-    private lateinit var dbManagers: DatabaseManagers
-    private lateinit var suggestionHandler: SuggestionHandler
-    private var dataContract: DataContract? = null
+    internal lateinit var dbManagers: DatabaseManagers
+    internal lateinit var suggestionHandler: SuggestionHandler
+    internal lateinit var conjugateHandler: ConjugateHandler
+    internal var dataContract: DataContract? = null
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
     private lateinit var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>
     private lateinit var conjugateLabels: Set<String>
@@ -167,21 +167,13 @@ abstract class GeneralKeyboardIME(
     enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID, ALREADY_PLURAL }
 
     /**
-     * Returns whether the current conjugation state requires a subsequent selection view.
-     * This is used, for example, when a conjugation form has multiple options (e.g., "am/is/are" in English).
-     * @return `true` if a subsequent selection screen is needed, `false` otherwise.
-     */
-    internal fun returnIsSubsequentRequired(): Boolean = subsequentAreaRequired
-
-    internal fun returnSubsequentData(): List<List<String>> = subsequentData
-
-    /**
      * Called when the service is first created. Initializes database and suggestion handlers.
      */
     override fun onCreate() {
         super.onCreate()
         dbManagers = DatabaseManagers(this)
         suggestionHandler = SuggestionHandler(this)
+        conjugateHandler = ConjugateHandler(this)
     }
 
     /**
@@ -201,7 +193,7 @@ abstract class GeneralKeyboardIME(
         initializeUiElements()
         setupClickListeners()
         currentState = ScribeState.IDLE
-        saveConjugateModeType("none")
+        conjugateHandler.saveConjugateModeType("none")
         updateUI()
         return inputView
     }
@@ -255,7 +247,7 @@ abstract class GeneralKeyboardIME(
     private fun setCommandButtonListeners() {
         binding.translateBtn.setOnClickListener {
             currentState = ScribeState.TRANSLATE
-            saveConjugateModeType("none")
+            conjugateHandler.saveConjugateModeType("none")
             updateUI()
         }
         binding.conjugateBtn.setOnClickListener {
@@ -264,7 +256,7 @@ abstract class GeneralKeyboardIME(
         }
         binding.pluralBtn.setOnClickListener {
             currentState = ScribeState.PLURAL
-            saveConjugateModeType("none")
+            conjugateHandler.saveConjugateModeType("none")
             if (language == "German") keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
             updateUI()
         }
@@ -715,7 +707,7 @@ abstract class GeneralKeyboardIME(
             initializeKeyboard(keyboardXmlId)
 
             val conjugateIndex = getValidatedConjugateIndex()
-            setupConjugateKeysByLanguage(conjugateIndex)
+            conjugateHandler.setupConjugateKeysByLanguage(conjugateIndex)
             promptText = conjugateOutput.keys.elementAtOrNull(conjugateIndex)
             hintWord = conjugateLabels.lastOrNull()
         }
@@ -776,7 +768,7 @@ abstract class GeneralKeyboardIME(
     private fun moveToSelectCommandState() {
         clearSuggestionData()
         currentState = ScribeState.SELECT_COMMAND
-        saveConjugateModeType("none")
+        conjugateHandler.saveConjugateModeType("none")
         updateUI()
     }
 
@@ -786,7 +778,7 @@ abstract class GeneralKeyboardIME(
     internal fun moveToIdleState() {
         clearSuggestionData()
         currentState = ScribeState.IDLE
-        saveConjugateModeType("none")
+        conjugateHandler.saveConjugateModeType("none")
         if (this::binding.isInitialized) updateUI()
     }
 
@@ -804,7 +796,7 @@ abstract class GeneralKeyboardIME(
     ): Int =
         when (state) {
             ScribeState.SELECT_VERB_CONJUNCTION -> {
-                saveConjugateModeType(language)
+                conjugateHandler.saveConjugateModeType(language)
                 if (!isSubsequentArea && dataSize == 0) {
                     when (language) {
                         "English", "Russian", "Swedish" -> R.xml.conjugate_view_2x2
@@ -827,7 +819,7 @@ abstract class GeneralKeyboardIME(
      * Initializes or re-initializes the keyboard with a new layout.
      * @param xmlId The resource ID of the keyboard layout XML.
      */
-    private fun initializeKeyboard(xmlId: Int) {
+    internal fun initializeKeyboard(xmlId: Int) {
         keyboard = KeyboardBase(this, xmlId, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
         keyboardView?.requestLayout()
@@ -858,194 +850,6 @@ abstract class GeneralKeyboardIME(
         index = if (maxIndex >= 0) index.coerceIn(0, maxIndex) else 0
         prefs.edit { putInt("conjugate_index", index) }
         return index
-    }
-
-    /**
-     * A wrapper to set up the conjugation key labels for the current language and index.
-     * @param conjugateIndex The index of the conjugation tense/mood to display.
-     * @param isSubsequentArea `true` if setting up a secondary view.
-     */
-    internal fun setupConjugateKeysByLanguage(
-        conjugateIndex: Int,
-        isSubsequentArea: Boolean = false,
-    ) {
-        setUpConjugateKeys(
-            startIndex = conjugateIndex,
-            isSubsequentArea = isSubsequentArea,
-        )
-    }
-
-    /**
-     * Sets the labels for the special conjugation keys based on the selected tense/mood.
-     * @param startIndex The index of the conjugation tense/mood from the loaded data.
-     * @param isSubsequentArea `true` if this is for a secondary conjugation view.
-     */
-    private fun setUpConjugateKeys(
-        startIndex: Int,
-        isSubsequentArea: Boolean,
-    ) {
-        if (!this::conjugateOutput.isInitialized || !this::conjugateLabels.isInitialized) {
-            return
-        }
-
-        val title = conjugateOutput.keys.elementAtOrNull(startIndex)
-        val languageOutput = title?.let { conjugateOutput[it] }
-
-        if (conjugateLabels.isEmpty() || title == null || languageOutput == null) {
-            return
-        }
-
-        Log.i("HELLO", "The output from the languageOutput is $languageOutput")
-        if (language != "English") {
-            setUpNonEnglishConjugateKeys(languageOutput, conjugateLabels.toList(), title)
-        } else {
-            setUpEnglishConjugateKeys(languageOutput, isSubsequentArea)
-        }
-
-        if (isSubsequentArea) {
-            keyboardView?.setKeyLabel("HI", "HI", KeyboardBase.CODE_FPS)
-        }
-    }
-
-    /**
-     * Sets up conjugation key labels for non-English languages, which typically follow a 3x2 grid layout.
-     * @param languageOutput The map of conjugation forms for the selected tense.
-     * @param conjugateLabel The list of labels for each person/number (e.g., "1ps", "2ps").
-     * @param title The title of the current tense/mood.
-     */
-    private fun setUpNonEnglishConjugateKeys(
-        languageOutput: Map<String, Collection<String>>,
-        conjugateLabel: List<String>,
-        title: String,
-    ) {
-        val keyCodes =
-            when (language) {
-                "Swedish" -> {
-                    listOf(
-                        KeyboardBase.CODE_TR,
-                        KeyboardBase.CODE_TL,
-                        KeyboardBase.CODE_BR,
-                        KeyboardBase.CODE_BL,
-                    )
-                }
-
-                else -> {
-                    listOf(
-                        KeyboardBase.CODE_FPS,
-                        KeyboardBase.CODE_FPP,
-                        KeyboardBase.CODE_SPS,
-                        KeyboardBase.CODE_SPP,
-                        KeyboardBase.CODE_TPS,
-                        KeyboardBase.CODE_TPP,
-                    )
-                }
-            }
-
-        keyCodes.forEachIndexed { index, code ->
-            val value = languageOutput[title]?.elementAtOrNull(index) ?: ""
-            keyboardView?.setKeyLabel(value, conjugateLabel.getOrNull(index) ?: "", code)
-        }
-    }
-
-    /**
-     * Sets up conjugation key labels for English, which has a more complex structure,
-     * potentially requiring a subsequent selection view.
-     * @param languageOutput The map of conjugation forms for the selected tense.
-     * @param isSubsequentArea `true` if this is for a secondary view.
-     */
-    private fun setUpEnglishConjugateKeys(
-        languageOutput: Map<String, Collection<String>>,
-        isSubsequentArea: Boolean,
-    ) {
-        val keys = languageOutput.keys.toList()
-        val sharedPreferences = this.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-
-        val keyMapping =
-            listOf(
-                Triple(0, KeyboardBase.CODE_TL, "CODE_TL"),
-                Triple(1, KeyboardBase.CODE_TR, "CODE_TR"),
-                Triple(DATA_SIZE_2, KeyboardBase.CODE_BL, "CODE_BL"),
-                Triple(DATA_CONSTANT_3, KeyboardBase.CODE_BR, "CODE_BR"),
-            )
-
-        if (!isSubsequentArea) {
-            keyMapping.forEach { (_, code, _) -> keyboardView?.setKeyLabel("HI", "HI", code) }
-        }
-
-        subsequentAreaRequired = false
-        keyMapping.forEach { (index, code, prefKey) ->
-            val outputKey = keys.getOrNull(index)
-            val output = outputKey?.let { languageOutput[it] }
-
-            if (output != null) {
-                if (output.size > 1) {
-                    subsequentAreaRequired = true
-                    subsequentData.add(output.toList())
-                    sharedPreferences.edit { putString("1", prefKey) }
-                } else {
-                    sharedPreferences.edit { putString("0", prefKey) }
-                }
-                keyboardView?.setKeyLabel(output.firstOrNull().toString(), "HI", code)
-            }
-        }
-    }
-
-    /**
-     * Sets up a secondary "sub-view" for conjugation when a single key has multiple options.
-     * @param data The full dataset of subsequent options.
-     * @param word The specific word selected from the primary view, used to filter the data.
-     */
-    internal fun setupConjugateSubView(
-        data: List<List<String>>,
-        word: String?,
-    ) {
-        val uniqueData = data.distinct()
-        val filteredData = uniqueData.filter { sublist -> sublist.contains(word) }
-        val flattenList = filteredData.flatten()
-        saveConjugateModeType(language = language, true)
-        val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
-        val keyboardXmlId = getKeyboardLayoutForState(currentState, true, flattenList.size)
-        initializeKeyboard(keyboardXmlId)
-        prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
-        when (flattenList.size) {
-            DATA_SIZE_2 -> {
-                keyboardView?.setKeyLabel(flattenList[0], "HI", KeyboardBase.CODE_2X1_TOP)
-                keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_2X1_BOTTOM)
-                subsequentAreaRequired = false
-            }
-            DATA_CONSTANT_3 -> {
-                keyboardView?.setKeyLabel(flattenList[0], "HI", KeyboardBase.CODE_1X3_RIGHT)
-                keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_1X3_CENTER)
-                keyboardView?.setKeyLabel(flattenList[DATA_SIZE_2], "HI", KeyboardBase.CODE_1X3_RIGHT)
-                subsequentAreaRequired = false
-            }
-        }
-        prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
-        binding.ivInfo.visibility = View.GONE
-    }
-
-    /**
-     * Saves the type of conjugation layout being used (e.g., "2x2", "3x2") to shared preferences.
-     * @param language The current keyboard language.
-     * @param isSubsequentArea `true` if this is for a secondary view.
-     */
-    internal fun saveConjugateModeType(
-        language: String,
-        isSubsequentArea: Boolean = false,
-    ) {
-        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        val mode =
-            if (!isSubsequentArea) {
-                when (language) {
-                    "English", "Russian", "Swedish" -> "2x2"
-                    "German", "French", "Italian", "Portuguese", "Spanish" -> "3x2"
-                    else -> "none"
-                }
-            } else {
-                "none"
-            }
-        sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
 
     /**
@@ -1869,7 +1673,7 @@ abstract class GeneralKeyboardIME(
         } else {
             when (currentState) {
                 ScribeState.PLURAL, ScribeState.TRANSLATE -> handlePluralOrTranslateState(rawInput, inputConnection)
-                ScribeState.CONJUGATE -> handleConjugateState(rawInput)
+                ScribeState.CONJUGATE -> conjugateHandler.handleConjugateState(rawInput)
                 else -> handleDefaultEnter(inputConnection)
             }
         }
@@ -1907,41 +1711,6 @@ abstract class GeneralKeyboardIME(
         } else {
             applyCommandOutput(commandModeOutput, inputConnection)
         }
-    }
-
-    /**
-     * Handles the Enter key press when in the `CONJUGATE` state. It fetches the
-     * conjugation data for the entered verb and transitions to the selection view.
-     * @param rawInput The verb entered in the command bar.
-     */
-    private fun handleConjugateState(rawInput: String) {
-        val languageAlias = getLanguageAlias(language)
-
-        conjugateOutput =
-            dbManagers.conjugateDataManager.getTheConjugateLabels(
-                languageAlias,
-                dataContract,
-                rawInput.lowercase(),
-            )
-
-        conjugateLabels =
-            dbManagers.conjugateDataManager.extractConjugateHeadings(
-                dataContract,
-                rawInput.lowercase(),
-            )
-
-        currentState =
-            if (
-                conjugateOutput.isEmpty() ||
-                conjugateOutput.values.all { it.isEmpty() }
-            ) {
-                ScribeState.INVALID
-            } else {
-                saveConjugateModeType(language)
-                ScribeState.SELECT_VERB_CONJUNCTION
-            }
-
-        updateUI()
     }
 
     /**
@@ -2074,25 +1843,6 @@ abstract class GeneralKeyboardIME(
         ) {
             keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         }
-    }
-
-    /**
-     * Handles a key press on one of the special conjugation keys.
-     * It either commits the text directly or prepares for a subsequent selection view.
-     * @param code The key code of the pressed key.
-     * @param isSubsequentRequired `true` if a sub-view is needed for more options.
-     * @return The label of the key that was pressed.
-     */
-    fun handleConjugateKeys(
-        code: Int,
-        isSubsequentRequired: Boolean,
-    ): String? {
-        val keyLabel = keyboardView?.getKeyLabel(code)
-        if (!isSubsequentRequired) {
-            currentInputConnection?.commitText(keyLabel, 1)
-            suggestionHandler.processLinguisticSuggestions(keyLabel)
-        }
-        return keyLabel
     }
 
     /**
