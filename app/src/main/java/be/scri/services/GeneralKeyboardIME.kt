@@ -2059,20 +2059,12 @@ abstract class GeneralKeyboardIME(
             commandBar.text.delete(start - 1, start)
         }
 
-        if (commandBar.text.isEmpty()) {
-            binding.commandBar.setPadding(
-                binding.commandBar.paddingRight,
-                commandBar.paddingTop,
-                binding.commandBar.paddingRight,
-                commandBar.paddingBottom,
-            )
-
-            if (
-                language == "German" &&
-                this.currentState == ScribeState.PLURAL
-            ) {
-                keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
-            }
+        if (
+            commandBar.text.isEmpty() &&
+            language == "German" &&
+            this.currentState == ScribeState.PLURAL
+        ) {
+            keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         }
     }
 
@@ -2225,15 +2217,6 @@ abstract class GeneralKeyboardIME(
         }
         if (commandBarState) {
             val commandBar = binding.commandBar
-            if (commandBar.text.isEmpty()) {
-                binding.commandBar.setPadding(
-                    0,
-                    commandBar.paddingTop,
-                    commandBar.paddingRight,
-                    commandBar.paddingBottom,
-                )
-            }
-
             commandBar.text.insert(commandBar.selectionStart, codeChar.toString())
         } else {
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
