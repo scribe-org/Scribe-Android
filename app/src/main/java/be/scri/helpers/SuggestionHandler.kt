@@ -2,9 +2,15 @@
 
 package be.scri.helpers
 
+import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
+import android.view.View
+import android.widget.Button
+import androidx.core.graphics.toColorInt
+import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.services.GeneralKeyboardIME
+import be.scri.services.GeneralKeyboardIME.Companion.SUGGESTION_SIZE
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
@@ -184,5 +190,65 @@ class SuggestionHandler(
         ime.caseAnnotationSuggestion = null
         ime.autoSuggestEmojis = null
         ime.isSingularAndPlural = false
+    }
+
+    internal fun handleWordSuggestions(
+        nounTypeSuggestion: List<String>? = null,
+        isPlural: Boolean = false,
+        caseAnnotationSuggestion: MutableList<String>? = null,
+        wordSuggestions: List<String>? = null,
+    ): Boolean {
+        if (wordSuggestions.isNullOrEmpty()) {
+            return false
+        }
+        val suggestions =
+            listOfNotNull(
+                wordSuggestions.getOrNull(0),
+                wordSuggestions.getOrNull(1),
+                wordSuggestions.getOrNull(2),
+            )
+        val suggestion1 = suggestions.getOrNull(0) ?: ""
+        val suggestion2 = suggestions.getOrNull(1) ?: ""
+        val suggestion3 = suggestions.getOrNull(2) ?: ""
+        val hasLinguisticSuggestion =
+            nounTypeSuggestion != null ||
+                isPlural ||
+                caseAnnotationSuggestion != null ||
+                ime.isSingularAndPlural
+        val emojiCount = ime.autoSuggestEmojis?.size ?: 0
+        setSuggestionButton(ime.binding.conjugateBtn, suggestion1)
+        when {
+            hasLinguisticSuggestion && emojiCount != 0 -> {
+                ime.updateButtonVisibility(true)
+            }
+
+            hasLinguisticSuggestion && emojiCount == 0 -> {
+                setSuggestionButton(ime.binding.pluralBtn, suggestion2)
+            }
+            else -> {
+                setSuggestionButton(ime.binding.translateBtn, suggestion2)
+                setSuggestionButton(ime.binding.pluralBtn, suggestion3)
+            }
+        }
+        return true
+    }
+
+    private fun setSuggestionButton(
+        button: Button,
+        text: String,
+    ) {
+        val isUserDarkMode = getIsDarkModeOrNot(ime.applicationContext)
+        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
+        button.text = text
+        button.isAllCaps = false
+        button.visibility = View.VISIBLE
+        button.textSize = SUGGESTION_SIZE
+        button.setOnClickListener(null)
+        button.background = null
+        button.setTextColor(textColor)
+        button.setOnClickListener {
+            ime.currentInputConnection?.commitText("$text ", 1)
+            ime.moveToIdleState()
+        }
     }
 }

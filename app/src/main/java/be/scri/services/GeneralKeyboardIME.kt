@@ -1283,60 +1283,6 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    private fun setSuggestionButton(
-        button: Button,
-        text: String,
-    ) {
-        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
-        button.text = text
-        button.isAllCaps = false
-        button.visibility = View.VISIBLE
-        button.textSize = SUGGESTION_SIZE
-        button.setOnClickListener(null)
-        button.background = null
-        button.setTextColor(textColor)
-        button.setOnClickListener {
-            currentInputConnection?.commitText("$text ", 1)
-            moveToIdleState()
-        }
-    }
-
-    private fun handleWordSuggestions(
-        hasLinguisticSuggestions: Boolean,
-        wordSuggestions: List<String>? = null,
-    ): Boolean {
-        if (wordSuggestions.isNullOrEmpty()) {
-            return false
-        }
-        val suggestions =
-            listOfNotNull(
-                wordSuggestions.getOrNull(0),
-                wordSuggestions.getOrNull(1),
-                wordSuggestions.getOrNull(2),
-            )
-        val suggestion1 = suggestions.getOrNull(0) ?: ""
-        val suggestion2 = suggestions.getOrNull(1) ?: ""
-        val suggestion3 = suggestions.getOrNull(2) ?: ""
-
-        val emojiCount = autoSuggestEmojis?.size ?: 0
-        setSuggestionButton(binding.conjugateBtn, suggestion1)
-        when {
-            hasLinguisticSuggestions && emojiCount != 0 -> {
-                updateButtonVisibility(true)
-            }
-
-            hasLinguisticSuggestions && emojiCount == 0 -> {
-                setSuggestionButton(binding.pluralBtn, suggestion2)
-            }
-            else -> {
-                setSuggestionButton(binding.translateBtn, suggestion2)
-                setSuggestionButton(binding.pluralBtn, suggestion3)
-            }
-        }
-        return true
-    }
-
     /**
      * Configures a single suggestion button with the appropriate text and color based on the suggestion type.
      * @param singleTypeSuggestion The list containing the single suggestion to display.
