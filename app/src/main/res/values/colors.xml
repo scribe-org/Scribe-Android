@@ -512,6 +512,10 @@
     <color name="text_color">#000</color>
     <color name="icon_color">#000</color>
     <color name="card_view_color">#FFF</color>
+    <color name="button_color">#FFF</color>
+    <color name="key_color">#FFFFFFFF</color>
+    <color name="key_press_color">#FFE9E9E9</color>
+    <color name="key_text_color">#95000000</color>
     <color name="hint_text_color">#FDAD0D</color>
     <color name="hint_surface_color">@color/you_hint_surface_color</color>
     <color name="menu_option_color">#878472</color>

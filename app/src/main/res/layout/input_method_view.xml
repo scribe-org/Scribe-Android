@@ -587,7 +587,7 @@
                 android:id="@+id/button_left"
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/rounded_all_corners"
+                android:background="@drawable/button_click_effect"
                 android:foreground="@drawable/ic_left_arrow"
                 android:foregroundGravity="center" />
 
@@ -599,6 +599,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:orientation="vertical"
+            android:backgroundTint="@color/button_color"
             android:background="@drawable/rounded_all_corners">
             
             <TextView
@@ -613,7 +614,7 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:gravity="center"
-                android:textColor="@android:color/black"
+                android:textColor="@color/key_text_color"
                 android:textSize="16sp" />
             
             <LinearLayout
@@ -644,14 +645,14 @@
                     android:background="@drawable/dot_inactive" />
                     
             </LinearLayout>
-</LinearLayout>
+        </LinearLayout>
 
             <!-- Right Button -->
             <Button
                 android:id="@+id/button_right"
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/rounded_all_corners"
+                android:background="@drawable/button_click_effect"
                 android:foreground="@drawable/ic_right_arrow"
                 android:foregroundGravity="center" />
 
