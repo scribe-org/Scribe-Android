@@ -191,7 +191,7 @@ object HintUtils {
             )
         val keyboardLanguage = languageShorthand[preferredLanguage]
         val sourceLanguage = languageShorthand[language] ?: "en" // default fallback to "en"
-        return "$keyboardLanguage -> $sourceLanguage"
+        return "$keyboardLanguage -> $sourceLanguage: "
     }
 
     /**
