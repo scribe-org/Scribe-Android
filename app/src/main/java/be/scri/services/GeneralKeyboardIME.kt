@@ -1333,7 +1333,6 @@ abstract class GeneralKeyboardIME(
             disableAutoSuggest()
             return
         }
-        val hasWordSuggestions = !wordSuggestions.isNullOrEmpty()
         val hasLinguisticSuggestions =
             nounTypeSuggestion != null ||
                 isPlural ||
@@ -1341,14 +1340,6 @@ abstract class GeneralKeyboardIME(
                 isSingularAndPlural
         val handled =
             when {
-                hasWordSuggestions && hasLinguisticSuggestions -> {
-                    handleWordSuggestions(
-                        wordSuggestions = wordSuggestions,
-                        nounTypeSuggestion = nounTypeSuggestion,
-                        caseAnnotationSuggestion = caseAnnotationSuggestion,
-                        isPlural = isPlural,
-                    )
-                }
                 (isPlural && nounTypeSuggestion != null) -> {
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
                     true
@@ -1365,6 +1356,10 @@ abstract class GeneralKeyboardIME(
                 else -> false
             }
         if (!handled) disableAutoSuggest()
+        handleWordSuggestions(
+            wordSuggestions = wordSuggestions,
+            hasLinguisticSuggestions = hasLinguisticSuggestions
+        )
     }
 
     /**
@@ -1500,9 +1495,7 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun handleWordSuggestions(
-        nounTypeSuggestion: List<String>? = null,
-        isPlural: Boolean = false,
-        caseAnnotationSuggestion: MutableList<String>? = null,
+        hasLinguisticSuggestions: Boolean,
         wordSuggestions: List<String>? = null,
     ): Boolean {
         if (wordSuggestions.isNullOrEmpty()) {
@@ -1517,19 +1510,15 @@ abstract class GeneralKeyboardIME(
         val suggestion1 = suggestions.getOrNull(0) ?: ""
         val suggestion2 = suggestions.getOrNull(1) ?: ""
         val suggestion3 = suggestions.getOrNull(2) ?: ""
-        val hasLinguisticSuggestion =
-            nounTypeSuggestion != null ||
-                isPlural ||
-                caseAnnotationSuggestion != null ||
-                isSingularAndPlural
+
         val emojiCount = autoSuggestEmojis?.size ?: 0
         setSuggestionButton(binding.conjugateBtn, suggestion1)
         when {
-            hasLinguisticSuggestion && emojiCount != 0 -> {
+            hasLinguisticSuggestions && emojiCount != 0 -> {
                 updateButtonVisibility(true)
             }
 
-            hasLinguisticSuggestion && emojiCount == 0 -> {
+            hasLinguisticSuggestions && emojiCount == 0 -> {
                 setSuggestionButton(binding.pluralBtn, suggestion2)
             }
             else -> {
