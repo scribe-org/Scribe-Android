@@ -1358,7 +1358,7 @@ abstract class GeneralKeyboardIME(
         if (!handled) disableAutoSuggest()
         handleWordSuggestions(
             wordSuggestions = wordSuggestions,
-            hasLinguisticSuggestions = hasLinguisticSuggestions
+            hasLinguisticSuggestions = hasLinguisticSuggestions,
         )
     }
 
