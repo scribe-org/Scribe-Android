@@ -187,7 +187,7 @@ class EnterKeyTest {
         onView(withId(R.id.command_bar)).perform(
             typeText("Hello"),
             closeSoftKeyboard(),
-            pressKey(KeyEvent.KEYCODE_ENTER)
+            pressKey(KeyEvent.KEYCODE_ENTER),
         )
         onView(withId(R.id.command_bar)).check(matches(withText("")))
     }
