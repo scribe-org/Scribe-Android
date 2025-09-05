@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers
 
+import android.view.KeyEvent
 import android.view.inputmethod.InputConnection
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
@@ -13,8 +14,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.helpers.KeyHandler
-import be.scri.helpers.KeyboardBase
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 import io.mockk.every
@@ -24,7 +23,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import android.view.KeyEvent
 
 // Unit tests for KeyHandler
 @RunWith(AndroidJUnit4::class)
