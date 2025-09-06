@@ -587,11 +587,12 @@ abstract class GeneralKeyboardIME(
 
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
 
-        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
+        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEachIndexed { index, button ->
             button.visibility = View.VISIBLE
             button.background = null
             button.setTextColor(textColor)
-            button.text = ""
+            button.text = HintUtils.getBaseAutoSuggestions(language).getOrNull(index)
+            button.isAllCaps = false
             button.textSize = SUGGESTION_SIZE
             button.setOnClickListener(null)
         }
@@ -1741,10 +1742,11 @@ abstract class GeneralKeyboardIME(
 
         // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
         if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
-            binding.translateBtn.text = ""
+            binding.translateBtn.text = HintUtils.getBaseAutoSuggestions(language)[0]
+            binding.conjugateBtn.text = HintUtils.getBaseAutoSuggestions(language)[1]
+            binding.pluralBtn.text = HintUtils.getBaseAutoSuggestions(language)[2]
             binding.translateBtn.background = null
             binding.translateBtn.setOnClickListener(null)
-
             binding.conjugateBtn.setOnClickListener(null)
             binding.pluralBtn.setOnClickListener(null)
         }
