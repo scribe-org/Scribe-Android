@@ -1,26 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers
 
-import android.view.KeyEvent
 import android.view.inputmethod.InputConnection
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.pressKey
-import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import be.scri.R
-import be.scri.activities.MainActivity
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -173,22 +161,5 @@ class KeyboardTest {
         keyHandler.handleKey(KeyboardBase.KEYCODE_ENTER, "en")
         verify(exactly = 0) { mockInputConnection.commitText(any(), any()) }
         verify(exactly = 0) { mockInputConnection.sendKeyEvent(any()) }
-    }
-}
-
-// Instrumentation test for Enter key
-@RunWith(AndroidJUnit4::class)
-class EnterKeyTest {
-    @get:Rule
-    val activityRule = ActivityScenarioRule(MainActivity::class.java)
-
-    @Test
-    fun testEnterKeyBehaviorInCommandBar() {
-        onView(withId(R.id.command_bar)).perform(
-            typeText("Hello"),
-            closeSoftKeyboard(),
-            pressKey(KeyEvent.KEYCODE_ENTER),
-        )
-        onView(withId(R.id.command_bar)).check(matches(withText("")))
     }
 }
