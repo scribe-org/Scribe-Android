@@ -2,15 +2,13 @@
 
 package be.scri.helpers
 
-import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
-import android.view.View
-import android.widget.Button
-import androidx.core.graphics.toColorInt
-import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
+import be.scri.R
+import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
+import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
+import be.scri.helpers.ui.SuggestionsHelper
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.Companion.SUGGESTION_SIZE
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
@@ -25,6 +23,11 @@ class SuggestionHandler(
     private var emojiSuggestionRunnable: Runnable? = null
     private var linguisticSuggestionRunnable: Runnable? = null
     private var wordSuggestionRunnable: Runnable? = null
+    private val suggestionHelper = SuggestionsHelper(ime)
+
+    internal var isSingularAndPlural: Boolean = false
+    var pluralWords: Set<String>? = null
+
 
     /**
      * Companion object for holding constants related to suggestion handling.
@@ -55,8 +58,8 @@ class SuggestionHandler(
                     return@Runnable
                 }
 
-                val genderSuggestion = ime.findGenderForLastWord(ime.nounKeywords, completedWord)
-                val isPluralByDirectCheck = ime.findWhetherWordIsPlural(ime.pluralWords, completedWord)
+                val genderSuggestion = findGenderForLastWord(ime.nounKeywords, completedWord)
+                val isPluralByDirectCheck = findWhetherWordIsPlural(ime.pluralWords, completedWord)
                 val caseSuggestion = ime.getCaseAnnotationForPreposition(ime.caseAnnotation, completedWord)
 
                 val hasLinguisticSuggestion =
@@ -81,6 +84,37 @@ class SuggestionHandler(
         handler.postDelayed(linguisticSuggestionRunnable!!, SUGGESTION_DELAY_MS)
     }
 
+    /**
+     * Finds the grammatical gender(s) for the last typed word.
+     * @param nounKeywords The map of nouns to their genders.
+     * @param lastWord The word to look up.
+     * @return A list of gender strings (e.g., "masculine", "neuter"), or null if not a known noun.
+     */
+    fun findGenderForLastWord(
+        nounKeywords: HashMap<String, List<String>>,
+        lastWord: String?,
+    ): List<String>? {
+        lastWord?.let {
+            val gender = nounKeywords[it.lowercase()]
+            if (gender != null) {
+                isSingularAndPlural = pluralWords?.contains(it.lowercase()) == true
+                return gender
+            }
+        }
+        return null
+    }
+
+    /**
+     * Checks if the last word is a known plural form.
+     * @param pluralWords The set of all known plural words.
+     * @param lastWord The word to check.
+     * @return `true` if the word is in the plural set, `false` otherwise.
+     */
+    fun findWhetherWordIsPlural(
+        pluralWords: Set<String>?,
+        lastWord: String?,
+    ): Boolean = pluralWords?.contains(lastWord?.lowercase()) == true
+
     fun processWordSuggestions(completedWord: String?) {
         wordSuggestionRunnable?.let { handler.removeCallbacks(it) }
 
@@ -96,7 +130,7 @@ class SuggestionHandler(
                     return@Runnable
                 }
 
-                val nextWordSuggestion = ime.getNextWordSuggestions(ime.suggestionWords, completedWord)
+                val nextWordSuggestion = completedWord.lowercase().let { ime.suggestionWords[it] }
 
                 if (nextWordSuggestion != null) {
                     ime.wordSuggestions = nextWordSuggestion
@@ -148,7 +182,7 @@ class SuggestionHandler(
 
                 if (hasEmojiSuggestion) {
                     ime.autoSuggestEmojis = emojis
-                    ime.updateEmojiSuggestion(true, emojis)
+                    suggestionHelper.updateEmojiSuggestion(true, emojis)
                     ime.updateButtonVisibility(true)
                 } else {
                     ime.updateButtonVisibility(false)
@@ -192,63 +226,80 @@ class SuggestionHandler(
         ime.isSingularAndPlural = false
     }
 
-    internal fun handleWordSuggestions(
-        nounTypeSuggestion: List<String>? = null,
-        isPlural: Boolean = false,
-        caseAnnotationSuggestion: MutableList<String>? = null,
-        wordSuggestions: List<String>? = null,
-    ): Boolean {
-        if (wordSuggestions.isNullOrEmpty()) {
-            return false
-        }
-        val suggestions =
-            listOfNotNull(
-                wordSuggestions.getOrNull(0),
-                wordSuggestions.getOrNull(1),
-                wordSuggestions.getOrNull(2),
-            )
-        val suggestion1 = suggestions.getOrNull(0) ?: ""
-        val suggestion2 = suggestions.getOrNull(1) ?: ""
-        val suggestion3 = suggestions.getOrNull(2) ?: ""
-        val hasLinguisticSuggestion =
-            nounTypeSuggestion != null ||
-                isPlural ||
-                caseAnnotationSuggestion != null ||
-                ime.isSingularAndPlural
-        val emojiCount = ime.autoSuggestEmojis?.size ?: 0
-        setSuggestionButton(ime.binding.conjugateBtn, suggestion1)
-        when {
-            hasLinguisticSuggestion && emojiCount != 0 -> {
-                ime.updateButtonVisibility(true)
-            }
-
-            hasLinguisticSuggestion && emojiCount == 0 -> {
-                setSuggestionButton(ime.binding.pluralBtn, suggestion2)
-            }
-            else -> {
-                setSuggestionButton(ime.binding.translateBtn, suggestion2)
-                setSuggestionButton(ime.binding.pluralBtn, suggestion3)
+    /**
+     * A helper function to handle displaying a single noun gender suggestion.
+     * @param nounTypeSuggestion A list containing a single gender string.
+     * @return `true` if a suggestion was displayed, `false` otherwise.
+     */
+    internal fun handleSingleNounSuggestion(nounTypeSuggestion: List<String>?): Boolean {
+        if (nounTypeSuggestion?.size == 1 && !isSingularAndPlural) {
+            val (colorRes, text) = handleColorAndTextForNounType(nounTypeSuggestion[0], ime.language, ime.applicationContext)
+            if (text != "" || colorRes != R.color.transparent) {
+                ime.handleSingleType(nounTypeSuggestion, "noun")
+                return true
             }
         }
-        return true
+        return false
     }
 
-    private fun setSuggestionButton(
-        button: Button,
-        text: String,
-    ) {
-        val isUserDarkMode = getIsDarkModeOrNot(ime.applicationContext)
-        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
-        button.text = text
-        button.isAllCaps = false
-        button.visibility = View.VISIBLE
-        button.textSize = SUGGESTION_SIZE
-        button.setOnClickListener(null)
-        button.background = null
-        button.setTextColor(textColor)
-        button.setOnClickListener {
-            ime.currentInputConnection?.commitText("$text ", 1)
-            ime.moveToIdleState()
+    /**
+     * A helper function to handle displaying a single preposition case suggestion.
+     * @param caseAnnotationSuggestion A list containing a single case annotation string.
+     * @return `true` if a suggestion was displayed, `false` otherwise.
+     */
+    internal fun handleSingleCaseSuggestion(caseAnnotationSuggestion: List<String>?): Boolean {
+        if (caseAnnotationSuggestion?.size == 1) {
+            val (colorRes, text) =
+                handleTextForCaseAnnotation(
+                    caseAnnotationSuggestion[0],
+                    ime.language,
+                    ime.applicationContext,
+                )
+            if (text != "" || colorRes != R.color.transparent) {
+                ime.handleSingleType(caseAnnotationSuggestion, "preposition")
+                return true
+            }
         }
+        return false
+    }
+
+    /**
+     * A helper function to handle displaying multiple preposition case suggestions.
+     * @param caseAnnotationSuggestion A list containing multiple case annotation strings.
+     * @return `true` if suggestions were displayed, `false` otherwise.
+     */
+    internal fun handleMultipleCases(caseAnnotationSuggestion: List<String>?): Boolean {
+        if ((caseAnnotationSuggestion?.size ?: 0) > 1) {
+            ime.handleMultipleNounFormats(caseAnnotationSuggestion, "preposition")
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Handles fallback logic when multiple suggestions are available but only one can be shown,
+     * or when the primary suggestion type isn't displayable.
+     * @param nounTypeSuggestion The list of noun suggestions.
+     * @param caseAnnotationSuggestion The list of case suggestions.
+     * @return `true` if a fallback suggestion was applied, `false` otherwise.
+     */
+    internal fun handleFallbackSuggestions(
+        nounTypeSuggestion: List<String>?,
+        caseAnnotationSuggestion: List<String>?,
+    ): Boolean {
+        var appliedSomething = false
+        nounTypeSuggestion?.let {
+            ime.handleSingleType(it, "noun")
+            val (_, text) = handleColorAndTextForNounType(it[0], ime.language, ime.applicationContext)
+            if (text != "") appliedSomething = true
+        }
+        if (!appliedSomething) {
+            caseAnnotationSuggestion?.let {
+                ime.handleSingleType(it, "preposition")
+                val (_, text) = handleTextForCaseAnnotation(it[0], ime.language, ime.applicationContext)
+                if (text != "") appliedSomething = true
+            }
+        }
+        return appliedSomething
     }
 }
