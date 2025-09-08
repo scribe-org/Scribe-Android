@@ -254,7 +254,7 @@ Many thanks to all the [Scribe-Android contributors](https://github.com/scribe-o
 
 ### Code
 
-The Scribe team would like to thank all the great software that made Scribe-Android's development possible.
+The Scribe community would like to thank all the great software that made Scribe-Android's development possible.
 
 <details><summary><strong>List of referenced code</strong></summary>
 <p>
