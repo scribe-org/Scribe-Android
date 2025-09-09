@@ -1550,6 +1550,8 @@
     <string name="switch_to_voice_typing" />
     <string name="emojis" />
     <string name="abc" />
+    <string name="app_settings_keyboard_functionality_disable_swipe_alt_keys">Disable swipe for alternate keys</string>
+    <string name="app_settings_keyboard_functionality_disable_swipe_alt_keys_description">Changes the selection of alt. keys from hold and swipe to hold and press.</string>
 
     <string-array name="months">
         <item>@string/january</item>

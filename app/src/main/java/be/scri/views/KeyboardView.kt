@@ -195,6 +195,7 @@ class KeyboardView
         private var mTopSmallNumberMarginHeight = 0f
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
+
         var mKeyLabel: String = "He"
 
         var mKeyLabelFPS: String = "FPS"
@@ -331,6 +332,7 @@ class KeyboardView
         var setVibrate: Boolean = true
 
         var setSound: Boolean = false
+        var setDisableSwipe: Boolean = false
 
         /**
          * Sets the color of the Enter key based on a specific color or theme mode.
@@ -1492,7 +1494,7 @@ class KeyboardView
                     }
 
                 val keysCnt = mMiniKeyboard!!.mKeys.size
-                var selectedKeyIndex = Math.floor((me.x - miniKeyboardX) / popupKey.width.toDouble()).toInt()
+                var selectedKeyIndex = Math.floor((me.rawX - miniKeyboardX) / popupKey.width.toDouble()).toInt()
                 if (keysCnt > MAX_KEYS_PER_MINI_ROW) {
                     selectedKeyIndex += MAX_KEYS_PER_MINI_ROW
                 }
@@ -1537,12 +1539,11 @@ class KeyboardView
                 }
                 return true
             }
-
-            // Handle moving between alternative popup characters by swiping.
+            // Handle moving between alternative popup characters by swiping or pressing.
             if (mPopupKeyboard.isShowing) {
                 when (action) {
                     MotionEvent.ACTION_MOVE -> {
-                        if (mMiniKeyboard != null) {
+                        if (mMiniKeyboard != null && !setDisableSwipe) {
                             val coords = intArrayOf(0, 0)
                             mMiniKeyboard!!.getLocationOnScreen(coords)
                             val keysCnt = mMiniKeyboard!!.mKeys.size
@@ -1585,14 +1586,27 @@ class KeyboardView
                             }
                         }
                     }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        mMiniKeyboard?.mKeys?.firstOrNull { it.focused }?.apply {
-                            mOnKeyboardActionListener!!.onKey(code)
+                    MotionEvent.ACTION_UP -> {
+                        if (!setDisableSwipe) {
+                            mMiniKeyboard?.mKeys?.firstOrNull { it.focused }?.apply {
+                                mOnKeyboardActionListener!!.onKey(code)
+                            }
+                            mMiniKeyboardSelectedKeyIndex = -1
+                            dismissPopupKeyboard()
+                        } else {
+                            for (key in mMiniKeyboard!!.mKeys) {
+                                key.focused = false
+                            }
+                            mMiniKeyboard!!.invalidateAllKeys()
+                            mMiniKeyboardSelectedKeyIndex = -1 // Reset for hygiene
                         }
+                    }
+                    MotionEvent.ACTION_CANCEL -> {
                         mMiniKeyboardSelectedKeyIndex = -1
                         dismissPopupKeyboard()
                     }
                 }
+                return true
             }
 
             return onModifiedTouchEvent(me)

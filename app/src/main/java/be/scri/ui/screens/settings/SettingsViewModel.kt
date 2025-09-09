@@ -31,6 +31,9 @@ class SettingsViewModel(
     private val _isUserDarkMode = MutableStateFlow(sharedPrefs.getBoolean("dark_mode", false))
     val isUserDarkMode: StateFlow<Boolean> = _isUserDarkMode
 
+    private val _disableSwipeAltKeys = MutableStateFlow(sharedPrefs.getBoolean("disable_swipe_alt_keys", false))
+    val disableSwipeAltKeys: StateFlow<Boolean> = _disableSwipeAltKeys
+
     init {
         viewModelScope.launch { refreshSettings(context) }
     }
