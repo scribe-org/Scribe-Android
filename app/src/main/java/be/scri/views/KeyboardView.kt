@@ -332,7 +332,7 @@ class KeyboardView
         var setVibrate: Boolean = true
 
         var setSound: Boolean = false
-        var setDisableSwipe: Boolean = false
+        var setHoldForAltCharacters: Boolean = false
 
         /**
          * Sets the color of the Enter key based on a specific color or theme mode.
@@ -1543,7 +1543,7 @@ class KeyboardView
             if (mPopupKeyboard.isShowing) {
                 when (action) {
                     MotionEvent.ACTION_MOVE -> {
-                        if (mMiniKeyboard != null && !setDisableSwipe) {
+                        if (mMiniKeyboard != null && setHoldForAltCharacters) {
                             val coords = intArrayOf(0, 0)
                             mMiniKeyboard!!.getLocationOnScreen(coords)
                             val keysCnt = mMiniKeyboard!!.mKeys.size
@@ -1587,7 +1587,7 @@ class KeyboardView
                         }
                     }
                     MotionEvent.ACTION_UP -> {
-                        if (!setDisableSwipe) {
+                        if (setHoldForAltCharacters) {
                             mMiniKeyboard?.mKeys?.firstOrNull { it.focused }?.apply {
                                 mOnKeyboardActionListener!!.onKey(code)
                             }
@@ -1598,7 +1598,7 @@ class KeyboardView
                                 key.focused = false
                             }
                             mMiniKeyboard!!.invalidateAllKeys()
-                            mMiniKeyboardSelectedKeyIndex = -1 // Reset for hygiene
+                            mMiniKeyboardSelectedKeyIndex = -1 // reset for hygiene
                         }
                     }
                     MotionEvent.ACTION_CANCEL -> {

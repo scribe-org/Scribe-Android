@@ -40,8 +40,8 @@ private data class FunctionalitySettings(
     val onToggleSoundOnKeyPress: (Boolean) -> Unit,
     val wordByWordDeletionState: Boolean,
     val onToggleWordByWordDeletion: (Boolean) -> Unit,
-    val disableSwipeAltKeysState: Boolean,
-    val onToggleDisableSwipeAltKeys: (Boolean) -> Unit,
+    val holdForAltKeysState: Boolean,
+    val onToggleHoldForAltKeys: (Boolean) -> Unit,
 )
 
 /**
@@ -116,7 +116,7 @@ fun LanguageSettingsScreen(
             )
         }
 
-    val disableSwipeAltKeysState =
+    val holdForAltKeysState =
         remember {
             mutableStateOf(
                 PreferencesHelper.getHoldKeyStyle(context, language),
@@ -215,13 +215,13 @@ fun LanguageSettingsScreen(
                     isEnabled,
                 )
             },
-            disableSwipeAltKeysState = disableSwipeAltKeysState.value,
-            onToggleDisableSwipeAltKeys = { disableSwipeAltKeys ->
-                disableSwipeAltKeysState.value = disableSwipeAltKeys
+            holdForAltKeysState = holdForAltKeysState.value,
+            onToggleHoldForAltKeys = { holdForAltKeys ->
+                holdForAltKeysState.value = holdForAltKeys
                 PreferencesHelper.setHoldKeyStyle(
                     context,
                     language,
-                    disableSwipeAltKeys,
+                    holdForAltKeys,
                 )
             },
         )
@@ -319,10 +319,10 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
                 onToggle = settings.onToggleWordByWordDeletion,
             ),
             ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_functionality_disable_swipe_alt_keys,
-                desc = R.string.app_settings_keyboard_functionality_disable_swipe_alt_keys_description,
-                state = settings.disableSwipeAltKeysState,
-                onToggle = settings.onToggleDisableSwipeAltKeys,
+                title = R.string.app_settings_keyboard_functionality_hold_for_alt_chars,
+                desc = R.string.app_settings_keyboard_functionality_hold_for_alt_chars_description,
+                state = settings.holdForAltKeysState,
+                onToggle = settings.onToggleHoldForAltKeys,
             ),
         )
     return list

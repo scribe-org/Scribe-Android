@@ -27,7 +27,7 @@ object PreferencesHelper {
     private const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"
     private const val WORD_BY_WORD_DELETION = "word_by_word_deletion"
     private const val DEFAULT_CURRENCY = "default_currency"
-    private const val DISABLE_SWIPE_ALT_KEYS = "disable_swipe_alt_keys"
+    private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
 
     /**
      * Sets the translation source language for a given language.
@@ -544,22 +544,22 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to get the currency preference.
-     * @param disableSwipeAltKeys Whether to disable swipe selection on hold key.
+     * @param holdForAltKeys Whether to disable swipe selection on hold key.
      */
     fun setHoldKeyStyle(
         context: Context,
         language: String,
-        disableSwipeAltKeys: Boolean,
+        holdForAltKeys: Boolean,
     ) {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         sharedPref.edit {
-            putBoolean(getLanguageSpecificPreferenceKey(DISABLE_SWIPE_ALT_KEYS, language), disableSwipeAltKeys)
+            putBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), holdForAltKeys)
         }
         Toast
             .makeText(
                 context,
-                "$language Disable Swipe Alt Keys " +
-                    if (disableSwipeAltKeys) "enabled" else "disabled",
+                "$language hold for alternate characters " +
+                    if (holdForAltKeys) "enabled" else "disabled",
                 Toast.LENGTH_SHORT,
             ).show()
     }
@@ -576,6 +576,6 @@ object PreferencesHelper {
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
-        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(DISABLE_SWIPE_ALT_KEYS, language), false)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), true)
     }
 }

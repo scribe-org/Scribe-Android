@@ -195,7 +195,7 @@ abstract class GeneralKeyboardIME(
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
-        keyboardView?.setDisableSwipe = getHoldKeyStyle(applicationContext, language)
+        keyboardView?.setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -211,7 +211,7 @@ abstract class GeneralKeyboardIME(
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
-        keyboardView?.setDisableSwipe = getHoldKeyStyle(applicationContext, language)
+        keyboardView?.setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
     }
 
     /**
