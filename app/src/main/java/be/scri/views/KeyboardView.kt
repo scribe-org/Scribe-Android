@@ -175,7 +175,7 @@ class KeyboardView
 
         private var hoverHandler: Handler? = Handler(Looper.getMainLooper())
         private var hoverRunnable: Runnable? = null
-        private val HOVER_DELAY = 400L
+        private val hoverDelay = 400L
 
         private val mPaint: Paint
         private var mDownTime = 0L
@@ -1577,7 +1577,7 @@ class KeyboardView
                                                 dismissPopupKeyboard()
                                             }
                                     }
-                                    hoverHandler?.postDelayed(hoverRunnable!!, HOVER_DELAY)
+                                    hoverHandler?.postDelayed(hoverRunnable!!, hoverDelay)
                                 } else {
                                     val key = miniKeyboard.mKeys[selectedKeyIndex]
                                     mOnKeyboardActionListener?.onKey(key.code)
