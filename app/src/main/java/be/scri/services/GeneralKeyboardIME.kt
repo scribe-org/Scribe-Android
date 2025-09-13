@@ -57,7 +57,6 @@ import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
 import java.util.Locale
-import kotlin.toString
 
 private const val DATA_SIZE_2 = 2
 private const val DATA_CONSTANT_3 = 3
@@ -588,11 +587,12 @@ abstract class GeneralKeyboardIME(
 
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
 
-        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
+        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEachIndexed { index, button ->
             button.visibility = View.VISIBLE
             button.background = null
             button.setTextColor(textColor)
-            button.text = ""
+            button.text = HintUtils.getBaseAutoSuggestions(language).getOrNull(index)
+            button.isAllCaps = false
             button.textSize = SUGGESTION_SIZE
             button.setOnClickListener(null)
         }
@@ -1092,29 +1092,45 @@ abstract class GeneralKeyboardIME(
     private fun updateTabletButtonVisibility(emojiCount: Int) {
         pluralBtn?.visibility = if (emojiCount > 0) View.INVISIBLE else View.VISIBLE
 
-        emojiBtnTablet1?.visibility =
-            if (emojiCount >= EMOJI_SUGGESTION_THRESHOLD_ONE) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
+        when (emojiCount) {
+            0 -> {
+                emojiBtnTablet1?.visibility = View.GONE
+                emojiSpaceTablet1?.visibility = View.GONE
+                emojiBtnTablet2?.visibility = View.GONE
+                emojiSpaceTablet2?.visibility = View.GONE
+                emojiBtnTablet3?.visibility = View.GONE
             }
-        emojiBtnTablet2?.visibility =
-            if (emojiCount >= EMOJI_SUGGESTION_THRESHOLD_TWO) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
+            1 -> {
+                // Single emoji case: Show button 1, hide others to allow centering.
+                emojiBtnTablet1?.visibility = View.VISIBLE
+                emojiSpaceTablet1?.visibility = View.GONE
+                emojiBtnTablet2?.visibility = View.GONE
+                emojiSpaceTablet2?.visibility = View.GONE
+                emojiBtnTablet3?.visibility = View.GONE
             }
-        emojiBtnTablet3?.visibility =
-            if (emojiCount >= EMOJI_SUGGESTION_THRESHOLD_THREE) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
+            2 -> {
+                // Two emoji case: Show first two buttons and first separator.
+                emojiBtnTablet1?.visibility = View.VISIBLE
+                emojiSpaceTablet1?.visibility = View.VISIBLE
+                emojiBtnTablet2?.visibility = View.VISIBLE
+                emojiSpaceTablet2?.visibility = View.GONE
+                emojiBtnTablet3?.visibility = View.GONE
             }
+            else -> { // 3 or more emojis
+                // Full display case.
+                emojiBtnTablet1?.visibility = View.VISIBLE
+                emojiSpaceTablet1?.visibility = View.VISIBLE
+                emojiBtnTablet2?.visibility = View.VISIBLE
+                emojiSpaceTablet2?.visibility = View.VISIBLE
+                emojiBtnTablet3?.visibility = View.VISIBLE
+            }
+        }
 
-        binding.separator5.visibility = if (emojiCount >= 1) View.VISIBLE else View.GONE
-        binding.separator6.visibility = if (emojiCount >= 1) View.VISIBLE else View.GONE
-
+        // Hide other separators and phone-specific views.
+        binding.separator5.visibility = View.GONE
+        binding.separator6.visibility = View.GONE
         emojiBtnPhone1?.visibility = View.GONE
+        emojiSpacePhone?.visibility = View.GONE
         emojiBtnPhone2?.visibility = View.GONE
         binding.separator4.visibility = View.GONE
     }
@@ -1126,13 +1142,35 @@ abstract class GeneralKeyboardIME(
     private fun updatePhoneButtonVisibility(emojiCount: Int) {
         pluralBtn?.visibility = if (emojiCount > 0) View.INVISIBLE else View.VISIBLE
 
-        emojiBtnPhone1?.visibility = if (emojiCount >= 1) View.VISIBLE else View.INVISIBLE
-        emojiBtnPhone2?.visibility = if (emojiCount >= 2) View.VISIBLE else View.INVISIBLE
+        when {
+            emojiCount == 1 -> {
+                // Single emoji case: Show button 1, hide separator and button 2.
+                // Assuming parent layout centers the single visible item.
+                emojiBtnPhone1?.visibility = View.VISIBLE
+                emojiSpacePhone?.visibility = View.GONE
+                emojiBtnPhone2?.visibility = View.GONE
+            }
+            emojiCount >= 2 -> {
+                // Multiple emoji case: Show button 1, separator, and button 2.
+                emojiBtnPhone1?.visibility = View.VISIBLE
+                emojiSpacePhone?.visibility = View.VISIBLE
+                emojiBtnPhone2?.visibility = View.VISIBLE
+            }
+            else -> { // emojiCount is 0 or less
+                // No emoji case: Hide everything related to phone emojis.
+                emojiBtnPhone1?.visibility = View.GONE
+                emojiSpacePhone?.visibility = View.GONE
+                emojiBtnPhone2?.visibility = View.GONE
+            }
+        }
 
-        binding.separator4.visibility = if (emojiCount >= 1) View.VISIBLE else View.GONE
+        binding.separator4.visibility = if (emojiCount > 1) View.VISIBLE else View.GONE
 
+        // Hide tablet-specific views.
         emojiBtnTablet1?.visibility = View.GONE
+        emojiSpaceTablet1?.visibility = View.GONE
         emojiBtnTablet2?.visibility = View.GONE
+        emojiSpaceTablet2?.visibility = View.GONE
         emojiBtnTablet3?.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
@@ -1296,7 +1334,6 @@ abstract class GeneralKeyboardIME(
             disableAutoSuggest()
             return
         }
-        val hasWordSuggestions = !wordSuggestions.isNullOrEmpty()
         val hasLinguisticSuggestions =
             nounTypeSuggestion != null ||
                 isPlural ||
@@ -1304,14 +1341,6 @@ abstract class GeneralKeyboardIME(
                 isSingularAndPlural
         val handled =
             when {
-                hasWordSuggestions && hasLinguisticSuggestions -> {
-                    handleWordSuggestions(
-                        wordSuggestions = wordSuggestions,
-                        nounTypeSuggestion = nounTypeSuggestion,
-                        caseAnnotationSuggestion = caseAnnotationSuggestion,
-                        isPlural = isPlural,
-                    )
-                }
                 (isPlural && nounTypeSuggestion != null) -> {
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
                     true
@@ -1328,6 +1357,10 @@ abstract class GeneralKeyboardIME(
                 else -> false
             }
         if (!handled) disableAutoSuggest()
+        handleWordSuggestions(
+            wordSuggestions = wordSuggestions,
+            hasLinguisticSuggestions = hasLinguisticSuggestions,
+        )
     }
 
     /**
@@ -1463,9 +1496,7 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun handleWordSuggestions(
-        nounTypeSuggestion: List<String>? = null,
-        isPlural: Boolean = false,
-        caseAnnotationSuggestion: MutableList<String>? = null,
+        hasLinguisticSuggestions: Boolean,
         wordSuggestions: List<String>? = null,
     ): Boolean {
         if (wordSuggestions.isNullOrEmpty()) {
@@ -1480,19 +1511,15 @@ abstract class GeneralKeyboardIME(
         val suggestion1 = suggestions.getOrNull(0) ?: ""
         val suggestion2 = suggestions.getOrNull(1) ?: ""
         val suggestion3 = suggestions.getOrNull(2) ?: ""
-        val hasLinguisticSuggestion =
-            nounTypeSuggestion != null ||
-                isPlural ||
-                caseAnnotationSuggestion != null ||
-                isSingularAndPlural
+
         val emojiCount = autoSuggestEmojis?.size ?: 0
         setSuggestionButton(binding.conjugateBtn, suggestion1)
         when {
-            hasLinguisticSuggestion && emojiCount != 0 -> {
+            hasLinguisticSuggestions && emojiCount != 0 -> {
                 updateButtonVisibility(true)
             }
 
-            hasLinguisticSuggestion && emojiCount == 0 -> {
+            hasLinguisticSuggestions && emojiCount == 0 -> {
                 setSuggestionButton(binding.pluralBtn, suggestion2)
             }
             else -> {
@@ -1715,10 +1742,11 @@ abstract class GeneralKeyboardIME(
 
         // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
         if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
-            binding.translateBtn.text = ""
+            binding.translateBtn.text = HintUtils.getBaseAutoSuggestions(language)[0]
+            binding.conjugateBtn.text = HintUtils.getBaseAutoSuggestions(language)[1]
+            binding.pluralBtn.text = HintUtils.getBaseAutoSuggestions(language)[2]
             binding.translateBtn.background = null
             binding.translateBtn.setOnClickListener(null)
-
             binding.conjugateBtn.setOnClickListener(null)
             binding.pluralBtn.setOnClickListener(null)
         }
@@ -2022,20 +2050,12 @@ abstract class GeneralKeyboardIME(
             commandBar.text.delete(start - 1, start)
         }
 
-        if (commandBar.text.isEmpty()) {
-            binding.commandBar.setPadding(
-                binding.commandBar.paddingRight,
-                commandBar.paddingTop,
-                binding.commandBar.paddingRight,
-                commandBar.paddingBottom,
-            )
-
-            if (
-                language == "German" &&
-                this.currentState == ScribeState.PLURAL
-            ) {
-                keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
-            }
+        if (
+            commandBar.text.isEmpty() &&
+            language == "German" &&
+            this.currentState == ScribeState.PLURAL
+        ) {
+            keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         }
     }
 
@@ -2188,15 +2208,6 @@ abstract class GeneralKeyboardIME(
         }
         if (commandBarState) {
             val commandBar = binding.commandBar
-            if (commandBar.text.isEmpty()) {
-                binding.commandBar.setPadding(
-                    0,
-                    commandBar.paddingTop,
-                    commandBar.paddingRight,
-                    commandBar.paddingBottom,
-                )
-            }
-
             commandBar.text.insert(commandBar.selectionStart, codeChar.toString())
         } else {
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
@@ -2224,9 +2235,6 @@ abstract class GeneralKeyboardIME(
         const val MAX_TEXT_LENGTH = 1000
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         private const val COMMAND_BUTTON_SPACING_DP = 4
-        private const val EMOJI_SUGGESTION_THRESHOLD_ONE = 1
-        private const val EMOJI_SUGGESTION_THRESHOLD_TWO = 2
-        private const val EMOJI_SUGGESTION_THRESHOLD_THREE = 3
         private const val SEPARATOR_WIDTH = 0.5f
     }
 }
