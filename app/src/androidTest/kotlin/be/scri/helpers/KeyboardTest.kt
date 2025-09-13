@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-package be.scri.ui
+package be.scri.helpers
 
 import android.view.inputmethod.InputConnection
 import android.widget.Button
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import be.scri.helpers.KeyHandler
-import be.scri.helpers.KeyboardBase
-import be.scri.helpers.SuggestionHandler
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 import io.mockk.every
@@ -16,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+// Unit tests for KeyHandler
 @RunWith(AndroidJUnit4::class)
 class KeyboardTest {
     private lateinit var mockIME: GeneralKeyboardIME
@@ -72,6 +70,14 @@ class KeyboardTest {
 
         verify(exactly = 1) { mockIME.handleDelete(false) }
         verify(exactly = 1) { mockInputConnection.deleteSurroundingText(1, 0) }
+    }
+
+    @Test
+    fun testEnterKeyBehavior() {
+        every { mockIME.currentState } returns ScribeState.IDLE
+        keyHandler.handleKey(KeyboardBase.KEYCODE_ENTER, "en")
+        verify(exactly = 0) { mockInputConnection.commitText(any(), any()) }
+        verify(exactly = 0) { mockInputConnection.sendKeyEvent(any()) }
     }
 
     @Test
