@@ -53,6 +53,7 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
+import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
 import java.util.Locale
@@ -111,6 +112,7 @@ abstract class GeneralKeyboardIME(
     private lateinit var conjugateLabels: Set<String>
     private var emojiMaxKeywordLength: Int = 0
     internal lateinit var nounKeywords: HashMap<String, List<String>>
+    internal lateinit var suggestionWords: HashMap<String, List<String>>
     var pluralWords: Set<String>? = null
     internal lateinit var caseAnnotation: HashMap<String, MutableList<String>>
     var emojiAutoSuggestionEnabled: Boolean = false
@@ -118,6 +120,7 @@ abstract class GeneralKeyboardIME(
     var autoSuggestEmojis: MutableList<String>? = null
     var caseAnnotationSuggestion: MutableList<String>? = null
     var nounTypeSuggestion: List<String>? = null
+    var wordSuggestions: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
 
@@ -143,12 +146,12 @@ abstract class GeneralKeyboardIME(
         val isUriType =
             editorInfo?.let {
                 (it.inputType and InputType.TYPE_TEXT_VARIATION_URI) != 0
-            } ?: false
+            } == true
 
         val hasSearchHint =
             editorInfo?.hintText?.toString()?.lowercase(Locale.ROOT)?.let {
                 it.contains("search") || it.contains("address")
-            } ?: false
+            } == true
 
         return isActionSearch || isUriType || hasSearchHint
     }
@@ -160,7 +163,7 @@ abstract class GeneralKeyboardIME(
         return isPreferenceEnabled || isInSearchBar
     }
 
-    enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID }
+    enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID, ALREADY_PLURAL }
 
     /**
      * Returns whether the current conjugation state requires a subsequent selection view.
@@ -382,8 +385,13 @@ abstract class GeneralKeyboardIME(
         dataContract = dbManagers.getLanguageContract(languageAlias)
         emojiKeywords = dbManagers.emojiManager.getEmojiKeywords(languageAlias)
         emojiMaxKeywordLength = dbManagers.emojiManager.maxKeywordLength
-        pluralWords = dbManagers.pluralManager.getAllPluralForms(languageAlias, dataContract)?.toSet()
+        pluralWords =
+            dbManagers.pluralManager
+                .getAllPluralForms(languageAlias, dataContract)
+                ?.map { it.lowercase() }
+                ?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
+        suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
         conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "coacha")
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
@@ -550,6 +558,7 @@ abstract class GeneralKeyboardIME(
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
                 binding.translateBtn.visibility = View.VISIBLE
             }
+            ScribeState.ALREADY_PLURAL -> setupAlreadyPluralView()
             else -> setupToolbarView()
         }
 
@@ -578,11 +587,12 @@ abstract class GeneralKeyboardIME(
 
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
 
-        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
+        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEachIndexed { index, button ->
             button.visibility = View.VISIBLE
             button.background = null
             button.setTextColor(textColor)
-            button.text = getString(R.string.suggestion)
+            button.text = HintUtils.getBaseAutoSuggestions(language).getOrNull(index)
+            button.isAllCaps = false
             button.textSize = SUGGESTION_SIZE
             button.setOnClickListener(null)
         }
@@ -723,6 +733,28 @@ abstract class GeneralKeyboardIME(
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
+    }
+
+    /**
+     * Configures the UI for the `ALREADY_PLURAL` state, which is shown when the user
+     * attempts to pluralize a word that is already plural.
+     */
+    private fun setupAlreadyPluralView() {
+        binding.commandOptionsBar.visibility = View.GONE
+        binding.toolbarBar.visibility = View.VISIBLE
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        binding.toolbarBar.setBackgroundColor(
+            if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
+        )
+        binding.ivInfo.visibility = View.VISIBLE
+        binding.promptText.text = ALREADY_PLURAL_MSG
+        binding.commandBar.hint = ""
+        binding.scribeKeyToolbar.foreground =
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.ic_scribe_icon_vector,
+            )
+        binding.scribeKeyToolbar.setOnClickListener { moveToIdleState() }
     }
 
     /**
@@ -1060,29 +1092,45 @@ abstract class GeneralKeyboardIME(
     private fun updateTabletButtonVisibility(emojiCount: Int) {
         pluralBtn?.visibility = if (emojiCount > 0) View.INVISIBLE else View.VISIBLE
 
-        emojiBtnTablet1?.visibility =
-            if (emojiCount >= EMOJI_SUGGESTION_THRESHOLD_ONE) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
+        when (emojiCount) {
+            0 -> {
+                emojiBtnTablet1?.visibility = View.GONE
+                emojiSpaceTablet1?.visibility = View.GONE
+                emojiBtnTablet2?.visibility = View.GONE
+                emojiSpaceTablet2?.visibility = View.GONE
+                emojiBtnTablet3?.visibility = View.GONE
             }
-        emojiBtnTablet2?.visibility =
-            if (emojiCount >= EMOJI_SUGGESTION_THRESHOLD_TWO) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
+            1 -> {
+                // Single emoji case: Show button 1, hide others to allow centering.
+                emojiBtnTablet1?.visibility = View.VISIBLE
+                emojiSpaceTablet1?.visibility = View.GONE
+                emojiBtnTablet2?.visibility = View.GONE
+                emojiSpaceTablet2?.visibility = View.GONE
+                emojiBtnTablet3?.visibility = View.GONE
             }
-        emojiBtnTablet3?.visibility =
-            if (emojiCount >= EMOJI_SUGGESTION_THRESHOLD_THREE) {
-                View.VISIBLE
-            } else {
-                View.INVISIBLE
+            2 -> {
+                // Two emoji case: Show first two buttons and first separator.
+                emojiBtnTablet1?.visibility = View.VISIBLE
+                emojiSpaceTablet1?.visibility = View.VISIBLE
+                emojiBtnTablet2?.visibility = View.VISIBLE
+                emojiSpaceTablet2?.visibility = View.GONE
+                emojiBtnTablet3?.visibility = View.GONE
             }
+            else -> { // 3 or more emojis
+                // Full display case.
+                emojiBtnTablet1?.visibility = View.VISIBLE
+                emojiSpaceTablet1?.visibility = View.VISIBLE
+                emojiBtnTablet2?.visibility = View.VISIBLE
+                emojiSpaceTablet2?.visibility = View.VISIBLE
+                emojiBtnTablet3?.visibility = View.VISIBLE
+            }
+        }
 
-        binding.separator5.visibility = if (emojiCount >= 1) View.VISIBLE else View.GONE
-        binding.separator6.visibility = if (emojiCount >= 1) View.VISIBLE else View.GONE
-
+        // Hide other separators and phone-specific views.
+        binding.separator5.visibility = View.GONE
+        binding.separator6.visibility = View.GONE
         emojiBtnPhone1?.visibility = View.GONE
+        emojiSpacePhone?.visibility = View.GONE
         emojiBtnPhone2?.visibility = View.GONE
         binding.separator4.visibility = View.GONE
     }
@@ -1094,13 +1142,35 @@ abstract class GeneralKeyboardIME(
     private fun updatePhoneButtonVisibility(emojiCount: Int) {
         pluralBtn?.visibility = if (emojiCount > 0) View.INVISIBLE else View.VISIBLE
 
-        emojiBtnPhone1?.visibility = if (emojiCount >= 1) View.VISIBLE else View.INVISIBLE
-        emojiBtnPhone2?.visibility = if (emojiCount >= 2) View.VISIBLE else View.INVISIBLE
+        when {
+            emojiCount == 1 -> {
+                // Single emoji case: Show button 1, hide separator and button 2.
+                // Assuming parent layout centers the single visible item.
+                emojiBtnPhone1?.visibility = View.VISIBLE
+                emojiSpacePhone?.visibility = View.GONE
+                emojiBtnPhone2?.visibility = View.GONE
+            }
+            emojiCount >= 2 -> {
+                // Multiple emoji case: Show button 1, separator, and button 2.
+                emojiBtnPhone1?.visibility = View.VISIBLE
+                emojiSpacePhone?.visibility = View.VISIBLE
+                emojiBtnPhone2?.visibility = View.VISIBLE
+            }
+            else -> { // emojiCount is 0 or less
+                // No emoji case: Hide everything related to phone emojis.
+                emojiBtnPhone1?.visibility = View.GONE
+                emojiSpacePhone?.visibility = View.GONE
+                emojiBtnPhone2?.visibility = View.GONE
+            }
+        }
 
-        binding.separator4.visibility = if (emojiCount >= 1) View.VISIBLE else View.GONE
+        binding.separator4.visibility = if (emojiCount > 1) View.VISIBLE else View.GONE
 
+        // Hide tablet-specific views.
         emojiBtnTablet1?.visibility = View.GONE
+        emojiSpaceTablet1?.visibility = View.GONE
         emojiBtnTablet2?.visibility = View.GONE
+        emojiSpaceTablet2?.visibility = View.GONE
         emojiBtnTablet3?.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
@@ -1153,6 +1223,25 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
+     * Finds the next suggestions for the last typed word.
+     * @param wordSuggestions The map of words to their suggestions.
+     * @param lastWord The word to look up.
+     * @return A list of gender strings (e.g., "masculine", "neuter"), or null if not a known noun.
+     */
+    fun getNextWordSuggestions(
+        wordSuggestions: HashMap<String, List<String>>,
+        lastWord: String?,
+    ): List<String>? {
+        lastWord?.let {
+            val suggestions = wordSuggestions[it.lowercase()]
+            if (suggestions != null) {
+                return suggestions
+            }
+        }
+        return null
+    }
+
+    /**
      * Checks if the last word is a known plural form.
      * @param pluralWords The set of all known plural words.
      * @param lastWord The word to check.
@@ -1161,7 +1250,7 @@ abstract class GeneralKeyboardIME(
     fun findWhetherWordIsPlural(
         pluralWords: Set<String>?,
         lastWord: String?,
-    ): Boolean = pluralWords?.contains(lastWord) == true
+    ): Boolean = pluralWords?.contains(lastWord?.lowercase()) == true
 
     /**
      * Finds the required grammatical case(s) for a preposition.
@@ -1239,12 +1328,17 @@ abstract class GeneralKeyboardIME(
         nounTypeSuggestion: List<String>? = null,
         isPlural: Boolean = false,
         caseAnnotationSuggestion: MutableList<String>? = null,
+        wordSuggestions: List<String>? = null,
     ) {
         if (currentState != ScribeState.IDLE) {
             disableAutoSuggest()
             return
         }
-
+        val hasLinguisticSuggestions =
+            nounTypeSuggestion != null ||
+                isPlural ||
+                caseAnnotationSuggestion != null ||
+                isSingularAndPlural
         val handled =
             when {
                 (isPlural && nounTypeSuggestion != null) -> {
@@ -1263,6 +1357,10 @@ abstract class GeneralKeyboardIME(
                 else -> false
             }
         if (!handled) disableAutoSuggest()
+        handleWordSuggestions(
+            wordSuggestions = wordSuggestions,
+            hasLinguisticSuggestions = hasLinguisticSuggestions,
+        )
     }
 
     /**
@@ -1272,9 +1370,12 @@ abstract class GeneralKeyboardIME(
      */
     private fun handlePluralIfNeeded(isPlural: Boolean): Boolean {
         if (isPlural) {
+            Log.d("PluralDebug", "isplural")
             handlePluralAutoSuggest()
             return true
         }
+        Log.d("PluralDebug", "notplural")
+
         return false
     }
 
@@ -1286,7 +1387,7 @@ abstract class GeneralKeyboardIME(
     private fun handleSingleNounSuggestion(nounTypeSuggestion: List<String>?): Boolean {
         if (nounTypeSuggestion?.size == 1 && !isSingularAndPlural) {
             val (colorRes, text) = handleColorAndTextForNounType(nounTypeSuggestion[0], language, applicationContext)
-            if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
+            if (text != "" || colorRes != R.color.transparent) {
                 handleSingleType(nounTypeSuggestion, "noun")
                 return true
             }
@@ -1307,7 +1408,7 @@ abstract class GeneralKeyboardIME(
                     language,
                     applicationContext,
                 )
-            if (text != getString(R.string.suggestion) || colorRes != R.color.transparent) {
+            if (text != "" || colorRes != R.color.transparent) {
                 handleSingleType(caseAnnotationSuggestion, "preposition")
                 return true
             }
@@ -1343,13 +1444,13 @@ abstract class GeneralKeyboardIME(
         nounTypeSuggestion?.let {
             handleSingleType(it, "noun")
             val (_, text) = handleColorAndTextForNounType(it[0], language, applicationContext)
-            if (text != getString(R.string.suggestion)) appliedSomething = true
+            if (text != "") appliedSomething = true
         }
         if (!appliedSomething) {
             caseAnnotationSuggestion?.let {
                 handleSingleType(it, "preposition")
                 val (_, text) = handleTextForCaseAnnotation(it[0], language, applicationContext)
-                if (text != getString(R.string.suggestion)) appliedSomething = true
+                if (text != "") appliedSomething = true
             }
         }
         return appliedSomething
@@ -1359,6 +1460,7 @@ abstract class GeneralKeyboardIME(
      * Configures the UI to show a "PL" (Plural) suggestion.
      */
     private fun handlePluralAutoSuggest() {
+        Log.d("PluralDebug", "Plural suggestions")
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtnRight.visibility = View.INVISIBLE
 
@@ -1372,6 +1474,60 @@ abstract class GeneralKeyboardIME(
             isClickable = false
             setOnClickListener(null)
         }
+    }
+
+    private fun setSuggestionButton(
+        button: Button,
+        text: String,
+    ) {
+        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
+        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
+        button.text = text
+        button.isAllCaps = false
+        button.visibility = View.VISIBLE
+        button.textSize = SUGGESTION_SIZE
+        button.setOnClickListener(null)
+        button.background = null
+        button.setTextColor(textColor)
+        button.setOnClickListener {
+            currentInputConnection?.commitText("$text ", 1)
+            moveToIdleState()
+        }
+    }
+
+    private fun handleWordSuggestions(
+        hasLinguisticSuggestions: Boolean,
+        wordSuggestions: List<String>? = null,
+    ): Boolean {
+        if (wordSuggestions.isNullOrEmpty()) {
+            return false
+        }
+        val suggestions =
+            listOfNotNull(
+                wordSuggestions.getOrNull(0),
+                wordSuggestions.getOrNull(1),
+                wordSuggestions.getOrNull(2),
+            )
+        val suggestion1 = suggestions.getOrNull(0) ?: ""
+        val suggestion2 = suggestions.getOrNull(1) ?: ""
+        val suggestion3 = suggestions.getOrNull(2) ?: ""
+
+        val emojiCount = autoSuggestEmojis?.size ?: 0
+        setSuggestionButton(binding.conjugateBtn, suggestion1)
+        when {
+            hasLinguisticSuggestions && emojiCount != 0 -> {
+                updateButtonVisibility(true)
+            }
+
+            hasLinguisticSuggestions && emojiCount == 0 -> {
+                setSuggestionButton(binding.pluralBtn, suggestion2)
+            }
+            else -> {
+                setSuggestionButton(binding.translateBtn, suggestion2)
+                setSuggestionButton(binding.pluralBtn, suggestion3)
+            }
+        }
+        return true
     }
 
     /**
@@ -1389,7 +1545,7 @@ abstract class GeneralKeyboardIME(
             when (type) {
                 "noun" -> handleColorAndTextForNounType(suggestionText, language, applicationContext)
                 "preposition" -> handleTextForCaseAnnotation(suggestionText, language, applicationContext)
-                else -> Pair(R.color.transparent, getString(R.string.suggestion))
+                else -> Pair(R.color.transparent, "")
             }
 
         binding.translateBtnLeft.visibility = View.INVISIBLE
@@ -1530,7 +1686,7 @@ abstract class GeneralKeyboardIME(
      * @param multipleTypeSuggestion The list of noun suggestions.
      */
     private fun handleFallbackOrSingleSuggestion(multipleTypeSuggestion: List<String>?) {
-        val suggestionText = getString(R.string.suggestion)
+        val suggestionText = ""
         val validNouns =
             multipleTypeSuggestion?.filter {
                 handleColorAndTextForNounType(
@@ -1568,7 +1724,7 @@ abstract class GeneralKeyboardIME(
     ) {
         val suggestionPairs = getSuggestionPairs(type, multipleTypeSuggestion) ?: return
         val (leftSuggestion, rightSuggestion) = suggestionPairs
-        val suggestionText = getString(R.string.suggestion)
+        val suggestionText = ""
         if (leftSuggestion.second == suggestionText || rightSuggestion.second == suggestionText) {
             handleFallbackOrSingleSuggestion(multipleTypeSuggestion)
             return
@@ -1586,10 +1742,11 @@ abstract class GeneralKeyboardIME(
 
         // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
         if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
-            binding.translateBtn.text = getString(R.string.suggestion)
+            binding.translateBtn.text = HintUtils.getBaseAutoSuggestions(language)[0]
+            binding.conjugateBtn.text = HintUtils.getBaseAutoSuggestions(language)[1]
+            binding.pluralBtn.text = HintUtils.getBaseAutoSuggestions(language)[2]
             binding.translateBtn.background = null
             binding.translateBtn.setOnClickListener(null)
-
             binding.conjugateBtn.setOnClickListener(null)
             binding.pluralBtn.setOnClickListener(null)
         }
@@ -1616,8 +1773,18 @@ abstract class GeneralKeyboardIME(
     private fun getPluralRepresentation(word: String?): String? {
         if (word.isNullOrEmpty()) return null
         val langAlias = getLanguageAlias(language)
+        val lowercaseWord = word.lowercase()
+
+        // Check if the word is already plural FIRST
+        val isAlreadyPlural = pluralWords?.contains(lowercaseWord) == true
+        if (isAlreadyPlural) {
+            return ALREADY_PLURAL_MSG
+        }
+
+        // If not plural, try to find the plural form in singular column
         val pluralMap = dbManagers.pluralManager.getPluralRepresentation(langAlias, dataContract, word)
-        return pluralMap.values.firstOrNull()
+        val pluralResult = pluralMap.values.firstOrNull()
+        return pluralResult
     }
 
     /**
@@ -1636,7 +1803,7 @@ abstract class GeneralKeyboardIME(
      * @param commandBarInput The word to be translated (source word).
      * @return The translated word as a string.
      */
-    fun getTranslation(
+    private fun getTranslation(
         language: String,
         commandBarInput: String,
     ): String {
@@ -1662,10 +1829,14 @@ abstract class GeneralKeyboardIME(
     fun handleKeycodeEnter() {
         val inputConnection = currentInputConnection ?: return
 
-        if (currentState == ScribeState.IDLE ||
-            currentState == ScribeState.SELECT_COMMAND ||
-            currentState == ScribeState.INVALID
-        ) {
+        // Handle states that should return to idle instead of performing Enter action
+        if (currentState == ScribeState.INVALID || currentState == ScribeState.ALREADY_PLURAL) {
+            moveToIdleState()
+            return
+        }
+
+        // Handle states that should perform normal Enter action
+        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleDefaultEnter(inputConnection)
             return
         }
@@ -1698,7 +1869,17 @@ abstract class GeneralKeyboardIME(
     ) {
         val commandModeOutput =
             when (currentState) {
-                ScribeState.PLURAL -> getPluralRepresentation(rawInput).orEmpty()
+                ScribeState.PLURAL -> {
+                    when (val pluralResult = getPluralRepresentation(rawInput)) {
+                        ALREADY_PLURAL_MSG -> {
+                            currentState = ScribeState.ALREADY_PLURAL
+                            updateUI()
+                            return
+                        }
+                        null -> ""
+                        else -> pluralResult
+                    }
+                }
                 ScribeState.TRANSLATE -> getTranslation(language, rawInput)
                 else -> ""
             }
@@ -1869,20 +2050,12 @@ abstract class GeneralKeyboardIME(
             commandBar.text.delete(start - 1, start)
         }
 
-        if (commandBar.text.isEmpty()) {
-            binding.commandBar.setPadding(
-                binding.commandBar.paddingRight,
-                commandBar.paddingTop,
-                binding.commandBar.paddingRight,
-                commandBar.paddingBottom,
-            )
-
-            if (
-                language == "German" &&
-                this.currentState == ScribeState.PLURAL
-            ) {
-                keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
-            }
+        if (
+            commandBar.text.isEmpty() &&
+            language == "German" &&
+            this.currentState == ScribeState.PLURAL
+        ) {
+            keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         }
     }
 
@@ -2035,15 +2208,6 @@ abstract class GeneralKeyboardIME(
         }
         if (commandBarState) {
             val commandBar = binding.commandBar
-            if (commandBar.text.isEmpty()) {
-                binding.commandBar.setPadding(
-                    0,
-                    commandBar.paddingTop,
-                    commandBar.paddingRight,
-                    commandBar.paddingBottom,
-                )
-            }
-
             commandBar.text.insert(commandBar.selectionStart, codeChar.toString())
         } else {
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
@@ -2071,9 +2235,6 @@ abstract class GeneralKeyboardIME(
         const val MAX_TEXT_LENGTH = 1000
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         private const val COMMAND_BUTTON_SPACING_DP = 4
-        private const val EMOJI_SUGGESTION_THRESHOLD_ONE = 1
-        private const val EMOJI_SUGGESTION_THRESHOLD_TWO = 2
-        private const val EMOJI_SUGGESTION_THRESHOLD_THREE = 3
         private const val SEPARATOR_WIDTH = 0.5f
     }
 }
