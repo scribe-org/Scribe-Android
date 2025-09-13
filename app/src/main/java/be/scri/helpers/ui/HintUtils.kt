@@ -141,6 +141,19 @@ object HintUtils {
             else -> defaultHint
         }
 
+    fun getBaseAutoSuggestions(language: String): List<String> =
+        when (language) {
+            "English" -> ENInterfaceVariables.BASE_AUTOSUGGESTIONS
+            "French" -> FRInterfaceVariables.BASE_AUTOSUGGESTIONS
+            "German" -> DEInterfaceVariables.BASE_AUTOSUGGESTIONS
+            "Italian" -> ITInterfaceVariables.BASE_AUTOSUGGESTIONS
+            "Portuguese" -> PTInterfaceVariables.BASE_AUTOSUGGESTIONS
+            "Russian" -> RUInterfaceVariables.BASE_AUTOSUGGESTIONS
+            "Spanish" -> ESInterfaceVariables.BASE_AUTOSUGGESTIONS
+            "Swedish" -> SVInterfaceVariables.BASE_AUTOSUGGESTIONS
+            else -> ENInterfaceVariables.BASE_AUTOSUGGESTIONS
+        }
+
     /**
      * Retrieves the prompt text for the given state and language.
      * This text provides context to the user based on the current action.
@@ -191,7 +204,7 @@ object HintUtils {
             )
         val keyboardLanguage = languageShorthand[preferredLanguage]
         val sourceLanguage = languageShorthand[language] ?: "en" // default fallback to "en"
-        return "$keyboardLanguage -> $sourceLanguage"
+        return "$keyboardLanguage -> $sourceLanguage: "
     }
 
     /**

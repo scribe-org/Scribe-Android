@@ -590,11 +590,12 @@ abstract class GeneralKeyboardIME(
 
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
 
-        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
+        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEachIndexed { index, button ->
             button.visibility = View.VISIBLE
             button.background = null
             button.setTextColor(textColor)
-            button.text = ""
+            button.text = HintUtils.getBaseAutoSuggestions(language).getOrNull(index)
+            button.isAllCaps = false
             button.textSize = SUGGESTION_SIZE
             button.setOnClickListener(null)
         }
@@ -1336,7 +1337,6 @@ abstract class GeneralKeyboardIME(
             disableAutoSuggest()
             return
         }
-        val hasWordSuggestions = !wordSuggestions.isNullOrEmpty()
         val hasLinguisticSuggestions =
             nounTypeSuggestion != null ||
                 isPlural ||
@@ -1344,14 +1344,6 @@ abstract class GeneralKeyboardIME(
                 isSingularAndPlural
         val handled =
             when {
-                hasWordSuggestions && hasLinguisticSuggestions -> {
-                    handleWordSuggestions(
-                        wordSuggestions = wordSuggestions,
-                        nounTypeSuggestion = nounTypeSuggestion,
-                        caseAnnotationSuggestion = caseAnnotationSuggestion,
-                        isPlural = isPlural,
-                    )
-                }
                 (isPlural && nounTypeSuggestion != null) -> {
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
                     true
@@ -1368,6 +1360,10 @@ abstract class GeneralKeyboardIME(
                 else -> false
             }
         if (!handled) disableAutoSuggest()
+        handleWordSuggestions(
+            wordSuggestions = wordSuggestions,
+            hasLinguisticSuggestions = hasLinguisticSuggestions,
+        )
     }
 
     /**
@@ -1503,9 +1499,7 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun handleWordSuggestions(
-        nounTypeSuggestion: List<String>? = null,
-        isPlural: Boolean = false,
-        caseAnnotationSuggestion: MutableList<String>? = null,
+        hasLinguisticSuggestions: Boolean,
         wordSuggestions: List<String>? = null,
     ): Boolean {
         if (wordSuggestions.isNullOrEmpty()) {
@@ -1520,19 +1514,15 @@ abstract class GeneralKeyboardIME(
         val suggestion1 = suggestions.getOrNull(0) ?: ""
         val suggestion2 = suggestions.getOrNull(1) ?: ""
         val suggestion3 = suggestions.getOrNull(2) ?: ""
-        val hasLinguisticSuggestion =
-            nounTypeSuggestion != null ||
-                isPlural ||
-                caseAnnotationSuggestion != null ||
-                isSingularAndPlural
+
         val emojiCount = autoSuggestEmojis?.size ?: 0
         setSuggestionButton(binding.conjugateBtn, suggestion1)
         when {
-            hasLinguisticSuggestion && emojiCount != 0 -> {
+            hasLinguisticSuggestions && emojiCount != 0 -> {
                 updateButtonVisibility(true)
             }
 
-            hasLinguisticSuggestion && emojiCount == 0 -> {
+            hasLinguisticSuggestions && emojiCount == 0 -> {
                 setSuggestionButton(binding.pluralBtn, suggestion2)
             }
             else -> {
@@ -1755,10 +1745,11 @@ abstract class GeneralKeyboardIME(
 
         // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
         if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
-            binding.translateBtn.text = ""
+            binding.translateBtn.text = HintUtils.getBaseAutoSuggestions(language)[0]
+            binding.conjugateBtn.text = HintUtils.getBaseAutoSuggestions(language)[1]
+            binding.pluralBtn.text = HintUtils.getBaseAutoSuggestions(language)[2]
             binding.translateBtn.background = null
             binding.translateBtn.setOnClickListener(null)
-
             binding.conjugateBtn.setOnClickListener(null)
             binding.pluralBtn.setOnClickListener(null)
         }
@@ -2062,20 +2053,12 @@ abstract class GeneralKeyboardIME(
             commandBar.text.delete(start - 1, start)
         }
 
-        if (commandBar.text.isEmpty()) {
-            binding.commandBar.setPadding(
-                binding.commandBar.paddingRight,
-                commandBar.paddingTop,
-                binding.commandBar.paddingRight,
-                commandBar.paddingBottom,
-            )
-
-            if (
-                language == "German" &&
-                this.currentState == ScribeState.PLURAL
-            ) {
-                keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
-            }
+        if (
+            commandBar.text.isEmpty() &&
+            language == "German" &&
+            this.currentState == ScribeState.PLURAL
+        ) {
+            keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         }
     }
 
@@ -2228,15 +2211,6 @@ abstract class GeneralKeyboardIME(
         }
         if (commandBarState) {
             val commandBar = binding.commandBar
-            if (commandBar.text.isEmpty()) {
-                binding.commandBar.setPadding(
-                    0,
-                    commandBar.paddingTop,
-                    commandBar.paddingRight,
-                    commandBar.paddingBottom,
-                )
-            }
-
             commandBar.text.insert(commandBar.selectionStart, codeChar.toString())
         } else {
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
