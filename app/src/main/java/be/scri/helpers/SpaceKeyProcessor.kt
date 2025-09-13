@@ -90,7 +90,7 @@ class SpaceKeyProcessor(
                 }
             }
         } else {
-          insertSpace()
+            insertSpace()
 
             val textAfterSpace = ic.getTextBeforeCursor(2, 0)?.toString()
             if (textAfterSpace?.length == 2) {
@@ -101,11 +101,10 @@ class SpaceKeyProcessor(
                 }
             }
         }
-        
+
         if (shouldEnableAutoCapitalization) {
             ime.keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
             ime.keyboardView?.invalidateAllKeys()
-
         }
 
         suggestionHandler.processLinguisticSuggestions(wordBeforeSpace)
