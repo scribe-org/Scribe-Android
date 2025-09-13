@@ -54,7 +54,6 @@ fun SettingsScreen(
     val vibrateOnKeypress by viewModel.vibrateOnKeypress.collectAsState()
     val popupOnKeypress by viewModel.popupOnKeypress.collectAsState()
     val isUserDarkMode by viewModel.isUserDarkMode.collectAsState()
-    val holdForAltKeys by viewModel.holdForAltKeys.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
