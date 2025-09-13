@@ -17,6 +17,5 @@
         <Key app:code="5000" app:keyWidth="10%p" />
         <Key app:keyLabel="TPS" app:code="1005" app:keyWidth="40%p" />
         <Key app:keyLabel="TPP" app:code="1006" app:keyWidth="40%p" />
-
     </Row>
 </Keyboard>

@@ -20,6 +20,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -50,6 +51,7 @@ import be.scri.extensions.getProperPrimaryColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
 import be.scri.extensions.performHapticFeedback
+import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
@@ -304,15 +306,16 @@ class KeyboardView
             private const val ALPHA_ADJUSTMENT_FACTOR = 0.8f
             private const val SHADOW_ALPHA = 100
             private const val KEY_PADDING = 5
-            private const val RECT_RADIUS = 15f
+            private const val RECT_RADIUS = 20f
             private const val SHADOW_OFFSET_Y = 9f
             private const val POPUP_OFFSET_MULTIPLIER = 2.5
             private const val EXTRA_DELAY = 200L
             private const val DISPLAY_LEFT = 2002
             private const val DISPLAY_RIGHT = 2001
             private const val EXTRA_PADDING = 5000
-            private const val KEY_HEIGHT = 240
-            private const val I_1 = 50
+            private const val KEY_HEIGHT = 100
+            private var leftShiftForLabel = 0
+            private const val LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT = 340
         }
 
         private var popupBindingInternal: KeyboardPopupKeyboardBinding? = null
@@ -326,6 +329,8 @@ class KeyboardView
 
         var setPreview: Boolean = true
         var setVibrate: Boolean = true
+
+        var setSound: Boolean = false
 
         /**
          * Sets the color of the Enter key based on a specific color or theme mode.
@@ -663,6 +668,13 @@ class KeyboardView
             }
         }
 
+        fun soundIfNeeded() {
+            Log.d("Souncheck", "soundIfNeeded: $setSound")
+            if (setSound) {
+                performSoundFeedback()
+            }
+        }
+
         /**
          * Sets the state of the shift key of the keyboard, if any.
          * @param shifted whether or not to enable the state of the shift key
@@ -718,7 +730,10 @@ class KeyboardView
                 if (MeasureSpec.getSize(widthMeasureSpec) < width + MARGIN_ADJUSTMENT) {
                     width = MeasureSpec.getSize(widthMeasureSpec)
                 }
-                setMeasuredDimension(width, mKeyboard!!.mHeight)
+
+                val extraBottomPaddingPx = (resources.displayMetrics.density * 10).toInt()
+
+                setMeasuredDimension(width, mKeyboard!!.mHeight + extraBottomPaddingPx)
             }
         }
 
@@ -858,6 +873,7 @@ class KeyboardView
                 val keyCount = keys.size
                 for (i in 0 until keyCount) {
                     val key = keys[i]
+                    leftShiftForLabel = 0
 
                     // If a key has no width, it's effectively invisible. Don't draw it or its shadow.
                     if (key.width == 0) {
@@ -887,7 +903,7 @@ class KeyboardView
                             putInt("conjugate_index", newValue)
                         }
                         val density = context.resources.displayMetrics.density
-                        key.height = (KEY_HEIGHT * density).toInt()
+                        key.height = (KEY_HEIGHT * density).toInt() + LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT
                     }
                     if (code == EXTRA_PADDING) {
                         val density = context.resources.displayMetrics.density
@@ -932,70 +948,86 @@ class KeyboardView
                     when (code) {
                         KeyboardBase.CODE_FPS -> {
                             label = mKeyLabelFPS
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelFPS
                         }
 
                         KeyboardBase.CODE_FPP -> {
                             label = mKeyLabelFPP
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelFPP
                         }
 
                         KeyboardBase.CODE_SPS -> {
                             label = mKeyLabelSPS
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelSPS
                         }
 
                         KeyboardBase.CODE_SPP -> {
                             label = mKeyLabelSPP
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelSPP
                         }
 
                         KeyboardBase.CODE_TPS -> {
                             label = mKeyLabelTPS
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelTPS
                         }
 
                         KeyboardBase.CODE_TPP -> {
                             label = mKeyLabelTPP
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelTPP
                         }
 
                         KeyboardBase.CODE_TL -> {
                             label = mKeyLabelTL
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelTL
                         }
 
                         KeyboardBase.CODE_TR -> {
                             label = mKeyLabelTR
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelTR
                         }
 
                         KeyboardBase.CODE_BL -> {
                             label = mKeyLabelBL
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelBL
                         }
 
                         KeyboardBase.CODE_BR -> {
                             label = mKeyLabelBR
+                            leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelBR
                         }
                         KeyboardBase.CODE_2X1_TOP -> {
                             label = mKeyLabel2X1TOP
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_2X1_BOTTOM -> {
                             label = mKeyLabel2X1BOTTOM
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_1X3_CENTER -> {
                             label = mKeyLabel1X3LEFT
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_1X3_LEFT -> {
                             label = mKeyLabel1X3TOP
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_1X3_RIGHT -> {
                             label = mKeyLabel1X3BOTTOM
+                            leftShiftForLabel = 30
                         }
                         KeyboardBase.CODE_CURRENCY -> {
                             label = mCurrencySymbol
+                            leftShiftForLabel = 30
                         }
                     }
 
@@ -1029,7 +1061,7 @@ class KeyboardView
                         if (key.topSmallNumber.isNotEmpty()) {
                             canvas.drawText(
                                 key.topSmallNumber,
-                                key.width - mTopSmallNumberMarginWidth - I_1,
+                                key.width - mTopSmallNumberMarginWidth - leftShiftForLabel,
                                 mTopSmallNumberMarginHeight,
                                 smallLetterPaint,
                             )

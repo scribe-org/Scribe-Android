@@ -16,6 +16,7 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -45,6 +46,7 @@ import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
+import be.scri.helpers.PreferencesHelper.getIsSoundEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
 import be.scri.helpers.PreferencesHelper.isShowPopupOnKeypressEnabled
 import be.scri.helpers.SHIFT_OFF
@@ -188,6 +190,7 @@ abstract class GeneralKeyboardIME(
         keyboardView = binding.keyboardView
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -202,6 +205,7 @@ abstract class GeneralKeyboardIME(
         super.onWindowShown()
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
     }
 
     /**
@@ -297,6 +301,7 @@ abstract class GeneralKeyboardIME(
      */
     override fun onPress(primaryCode: Int) {
         if (primaryCode != 0) keyboardView?.vibrateIfNeeded()
+        if (primaryCode != 0) keyboardView?.soundIfNeeded()
     }
 
     /**
@@ -380,8 +385,8 @@ abstract class GeneralKeyboardIME(
         pluralWords = dbManagers.pluralManager.getAllPluralForms(languageAlias, dataContract)?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
-        conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
-        conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "describe")
+        conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "coacha")
+        conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
 
@@ -410,8 +415,35 @@ abstract class GeneralKeyboardIME(
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
 
         moveToIdleState()
+        val window = window?.window ?: return
+        var color = R.color.dark_keyboard_bg_color
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        color =
+            if (isDarkMode) {
+                R.color.dark_keyboard_bg_color
+            } else {
+                R.color.light_keyboard_bg_color
+            }
+
+        window.navigationBarColor = ContextCompat.getColor(this, color)
+
+        val decorView = window.decorView
+        var flags = decorView.systemUiVisibility
+        flags =
+            if (isLightColor(window.navigationBarColor)) {
+                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            } else {
+                flags and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
+            }
+        decorView.systemUiVisibility = flags
         val textBefore = currentInputConnection?.getTextBeforeCursor(1, 0)?.toString().orEmpty()
         if (textBefore.isEmpty()) keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
+    }
+
+    private fun isLightColor(color: Int): Boolean {
+        val darkness =
+            1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
+        return darkness < 0.5
     }
 
     /**
@@ -502,12 +534,25 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() {
         if (!this::binding.isInitialized) return
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
+
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView()
-            ScribeState.SELECT_COMMAND -> setupSelectCommandView()
+            ScribeState.IDLE -> {
+                setupIdleView()
+            }
+            ScribeState.SELECT_COMMAND -> {
+                setupSelectCommandView()
+            }
+
             ScribeState.INVALID -> setupInvalidView()
+            ScribeState.TRANSLATE -> {
+                setupToolbarView()
+                // Add specific handling here to maintain translate button
+                binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
+                binding.translateBtn.visibility = View.VISIBLE
+            }
             else -> setupToolbarView()
         }
+
         updateEnterKeyColor(isUserDarkMode)
     }
 
@@ -727,7 +772,7 @@ abstract class GeneralKeyboardIME(
                 saveConjugateModeType(language)
                 if (!isSubsequentArea && dataSize == 0) {
                     when (language) {
-                        "English", "Swedish", "Russian" -> R.xml.conjugate_view_2x2
+                        "English", "Russian", "Swedish" -> R.xml.conjugate_view_2x2
                         else -> R.xml.conjugate_view_3x2
                     }
                 } else {
@@ -815,6 +860,7 @@ abstract class GeneralKeyboardIME(
             return
         }
 
+        Log.i("HELLO", "The output from the languageOutput is $languageOutput")
         if (language != "English") {
             setUpNonEnglishConjugateKeys(languageOutput, conjugateLabels.toList(), title)
         } else {
@@ -838,17 +884,30 @@ abstract class GeneralKeyboardIME(
         title: String,
     ) {
         val keyCodes =
-            listOf(
-                KeyboardBase.CODE_FPS,
-                KeyboardBase.CODE_FPP,
-                KeyboardBase.CODE_SPS,
-                KeyboardBase.CODE_SPP,
-                KeyboardBase.CODE_TPS,
-                KeyboardBase.CODE_TPP,
-            )
+            when (language) {
+                "Swedish" -> {
+                    listOf(
+                        KeyboardBase.CODE_TR,
+                        KeyboardBase.CODE_TL,
+                        KeyboardBase.CODE_BR,
+                        KeyboardBase.CODE_BL,
+                    )
+                }
+
+                else -> {
+                    listOf(
+                        KeyboardBase.CODE_FPS,
+                        KeyboardBase.CODE_FPP,
+                        KeyboardBase.CODE_SPS,
+                        KeyboardBase.CODE_SPP,
+                        KeyboardBase.CODE_TPS,
+                        KeyboardBase.CODE_TPP,
+                    )
+                }
+            }
 
         keyCodes.forEachIndexed { index, code ->
-            val value = languageOutput[title]?.elementAtOrNull(index) ?: return@forEachIndexed
+            val value = languageOutput[title]?.elementAtOrNull(index) ?: ""
             keyboardView?.setKeyLabel(value, conjugateLabel.getOrNull(index) ?: "", code)
         }
     }
@@ -944,8 +1003,8 @@ abstract class GeneralKeyboardIME(
         val mode =
             if (!isSubsequentArea) {
                 when (language) {
-                    "Swedish", "English", "Russian" -> "2x2"
-                    "German", "French", "Italian", "Spanish", "Portuguese" -> "3x2"
+                    "English", "Russian", "Swedish" -> "2x2"
+                    "German", "French", "Italian", "Portuguese", "Spanish" -> "3x2"
                     else -> "none"
                 }
             } else {
@@ -1524,11 +1583,17 @@ abstract class GeneralKeyboardIME(
         binding.translateBtnRight.visibility = View.INVISIBLE
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtn.visibility = View.VISIBLE
-        binding.translateBtn.text = getString(R.string.suggestion)
-        binding.translateBtn.background = null
-        binding.translateBtn.setOnClickListener(null)
-        binding.conjugateBtn.setOnClickListener(null)
-        binding.pluralBtn.setOnClickListener(null)
+
+        // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
+        if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
+            binding.translateBtn.text = getString(R.string.suggestion)
+            binding.translateBtn.background = null
+            binding.translateBtn.setOnClickListener(null)
+
+            binding.conjugateBtn.setOnClickListener(null)
+            binding.pluralBtn.setOnClickListener(null)
+        }
+
         handleTextSizeForSuggestion(binding.translateBtn)
     }
 
@@ -1536,6 +1601,7 @@ abstract class GeneralKeyboardIME(
      * Sets the text size and color for a default, non-active suggestion button.
      * @param button The button to style.
      */
+
     private fun handleTextSizeForSuggestion(button: Button) {
         button.textSize = SUGGESTION_SIZE
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
@@ -1657,13 +1723,13 @@ abstract class GeneralKeyboardIME(
             dbManagers.conjugateDataManager.getTheConjugateLabels(
                 languageAlias,
                 dataContract,
-                rawInput,
+                rawInput.lowercase(),
             )
 
         conjugateLabels =
             dbManagers.conjugateDataManager.extractConjugateHeadings(
                 dataContract,
-                rawInput,
+                rawInput.lowercase(),
             )
 
         currentState =
