@@ -96,7 +96,7 @@ class SpaceKeyProcessor(
             if (textAfterSpace?.length == 2) {
                 val punctuationChar = textAfterSpace[0]
                 val spaceChar = textAfterSpace[1]
-                if (spaceChar == ' ' && (punctuationChar == '.' || punctuationChar == '?' || punctuationChar == '!')) {
+                if (spaceChar == ' ' && punctuationChar in listOf('.', '?', '!')) {
                     shouldEnableAutoCapitalization = true
                 }
             }
