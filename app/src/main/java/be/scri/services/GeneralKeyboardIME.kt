@@ -176,6 +176,7 @@ abstract class GeneralKeyboardIME(
         dbManagers = DatabaseManagers(this)
         suggestionHandler = SuggestionHandler(this)
         conjugateHandler = ConjugateHandler(this)
+        suggestionsHelper = SuggestionsHelper(this)
     }
 
     /**
@@ -848,7 +849,7 @@ abstract class GeneralKeyboardIME(
      */
     internal fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
         if (currentState != ScribeState.IDLE) {
-            setupDefaultButtonVisibility()
+            suggestionsHelper.setupDefaultButtonVisibility()
             return
         }
 
@@ -866,26 +867,10 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Sets the default visibility for buttons when not in the `IDLE` state.
-     * Hides all suggestion-related buttons.
-     */
-    private fun setupDefaultButtonVisibility() {
-        pluralBtn?.visibility = View.VISIBLE
-        emojiBtnPhone1?.visibility = View.GONE
-        emojiBtnPhone2?.visibility = View.GONE
-        emojiBtnTablet1?.visibility = View.GONE
-        emojiBtnTablet2?.visibility = View.GONE
-        emojiBtnTablet3?.visibility = View.GONE
-        binding.separator4.visibility = View.GONE
-        binding.separator5.visibility = View.GONE
-        binding.separator6.visibility = View.GONE
-    }
-
-    /**
      * Handles the logic for showing/hiding suggestion buttons specifically on tablet layouts.
      * @param emojiCount The number of available emoji suggestions.
      */
-    private fun updateTabletButtonVisibility(emojiCount: Int) {
+    internal fun updateTabletButtonVisibility(emojiCount: Int) {
         pluralBtn?.visibility = if (emojiCount > 0) View.INVISIBLE else View.VISIBLE
 
         when (emojiCount) {
@@ -935,7 +920,7 @@ abstract class GeneralKeyboardIME(
      * Handles the logic for showing/hiding suggestion buttons specifically on phone layouts.
      * @param emojiCount The number of available emoji suggestions.
      */
-    private fun updatePhoneButtonVisibility(emojiCount: Int) {
+    internal fun updatePhoneButtonVisibility(emojiCount: Int) {
         pluralBtn?.visibility = if (emojiCount > 0) View.INVISIBLE else View.VISIBLE
 
         when {
@@ -985,34 +970,6 @@ abstract class GeneralKeyboardIME(
     fun getLastWordBeforeCursor(): String? = getText()?.trim()?.split("\\s+".toRegex())?.lastOrNull()
 
     /**
-     * Finds associated emojis for the last typed word.
-     * @param emojiKeywords The map of keywords to emojis.
-     * @param lastWord The word to look up.
-     * @return A mutable list of emoji suggestions, or null if none are found.
-     */
-    fun findEmojisForLastWord(
-        emojiKeywords: HashMap<String, MutableList<String>>?,
-        lastWord: String?,
-    ): MutableList<String>? {
-        lastWord?.let { return emojiKeywords?.get(it.lowercase()) }
-        return null
-    }
-
-    /**
-     * Finds the required grammatical case(s) for a preposition.
-     * @param caseAnnotation The map of prepositions to their required cases.
-     * @param lastWord The word to look up (which should be a preposition).
-     * @return A mutable list of case suggestions (e.g., "accusative case"), or null if not found.
-     */
-    fun getCaseAnnotationForPreposition(
-        caseAnnotation: HashMap<String, MutableList<String>>,
-        lastWord: String?,
-    ): MutableList<String>? {
-        lastWord?.let { return caseAnnotation[it.lowercase()] }
-        return null
-    }
-
-    /**
      * The main dispatcher for displaying linguistic auto-suggestions (gender, case, plurality).
      * @param nounTypeSuggestion The detected gender(s) of the last word.
      * @param isPlural `true` if the last word is plural.
@@ -1051,7 +1008,7 @@ abstract class GeneralKeyboardIME(
                 else -> false
             }
         if (!handled) disableAutoSuggest()
-        handleWordSuggestions(
+        suggestionsHelper.handleWordSuggestions(
             wordSuggestions = wordSuggestions,
             hasLinguisticSuggestions = hasLinguisticSuggestions,
         )

@@ -76,9 +76,9 @@ class KeyboardTest {
 
     @Test
     fun processSuggestions() {
-        every { mockIME.findGenderForLastWord(any(), "in") } returns listOf("Neuter")
-        every { mockIME.findWhetherWordIsPlural(any(), "in") } returns false
-        every { mockIME.getCaseAnnotationForPreposition(any(), "in") } returns null
+        every { mockIME.suggestionHandler.findGenderForLastWord(any(), "in") } returns listOf("Neuter")
+        every { mockIME.suggestionHandler.findWhetherWordIsPlural(any(), "in") } returns false
+        every { mockIME.suggestionHandler.getCaseAnnotationForPreposition(any(), "in") } returns null
 
         every { mockIME.updateAutoSuggestText(any(), any(), any(), any()) } answers {
             conjugateBtn.text = "der"

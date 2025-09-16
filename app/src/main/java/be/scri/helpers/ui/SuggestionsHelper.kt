@@ -1,39 +1,23 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 package be.scri.helpers.ui
 
-import be.scri.services.GeneralKeyboardIME
 import android.graphics.Color
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.Button
 import androidx.core.graphics.toColorInt
-import be.scri.R.color.md_grey_black_dark
-import be.scri.R.color.white
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
+import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.Companion.SUGGESTION_SIZE
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
-class SuggestionsHelper (
+@Suppress("TooManyFunctions", "LargeClass")
+class SuggestionsHelper(
     private val ime: GeneralKeyboardIME,
-
 ) {
-    private val handler = Handler(Looper.getMainLooper())
-    private var emojiSuggestionRunnable: Runnable? = null
-    private var linguisticSuggestionRunnable: Runnable? = null
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
     private var emojiMaxKeywordLength: Int = 0
-    private var wordSuggestionRunnable: Runnable? = null
-    internal var isSingularAndPlural: Boolean = false
-    var pluralWords: Set<String>? = null
-
-
-    /**
-     * Companion object for holding constants related to suggestion handling.
-     */
-    companion object {
-        private const val SUGGESTION_DELAY_MS = 50L
-    }
 
     internal fun setSuggestionButton(
         button: Button,
@@ -55,10 +39,8 @@ class SuggestionsHelper (
     }
 
     internal fun handleWordSuggestions(
-        nounTypeSuggestion: List<String>? = null,
-        isPlural: Boolean = false,
-        caseAnnotationSuggestion: MutableList<String>? = null,
         wordSuggestions: List<String>? = null,
+        hasLinguisticSuggestions: Boolean,
     ): Boolean {
         if (wordSuggestions.isNullOrEmpty()) {
             return false
@@ -67,19 +49,14 @@ class SuggestionsHelper (
         val suggestion2 = wordSuggestions.getOrNull(1) ?: ""
         val suggestion3 = wordSuggestions.getOrNull(2) ?: ""
 
-        val hasLinguisticSuggestion =
-            nounTypeSuggestion != null ||
-                isPlural ||
-                caseAnnotationSuggestion != null ||
-                ime.isSingularAndPlural
         val emojiCount = ime.autoSuggestEmojis?.size ?: 0
         setSuggestionButton(ime.binding.conjugateBtn, suggestion1)
         when {
-            hasLinguisticSuggestion && emojiCount != 0 -> {
+            hasLinguisticSuggestions && emojiCount != 0 -> {
                 ime.updateButtonVisibility(true)
             }
 
-            hasLinguisticSuggestion && emojiCount == 0 -> {
+            hasLinguisticSuggestions && emojiCount == 0 -> {
                 setSuggestionButton(ime.binding.pluralBtn, suggestion2)
             }
             else -> {
@@ -142,4 +119,19 @@ class SuggestionsHelper (
         }
     }
 
+    /**
+     * Sets the default visibility for buttons when not in the `IDLE` state.
+     * Hides all suggestion-related buttons.
+     */
+    internal fun setupDefaultButtonVisibility() {
+        ime.binding.pluralBtn.visibility = View.VISIBLE
+        ime.binding.emojiBtnPhone1.visibility = View.GONE
+        ime.binding.emojiBtnPhone2.visibility = View.GONE
+        ime.binding.emojiBtnTablet1.visibility = View.GONE
+        ime.binding.emojiBtnTablet2.visibility = View.GONE
+        ime.binding.emojiBtnTablet3.visibility = View.GONE
+        ime.binding.separator4.visibility = View.GONE
+        ime.binding.separator5.visibility = View.GONE
+        ime.binding.separator6.visibility = View.GONE
+    }
 }

@@ -16,6 +16,7 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
  *
  * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
  */
+@Suppress("TooManyFunctions", "LargeClass")
 class SuggestionHandler(
     private val ime: GeneralKeyboardIME,
 ) {
@@ -27,7 +28,6 @@ class SuggestionHandler(
 
     internal var isSingularAndPlural: Boolean = false
     var pluralWords: Set<String>? = null
-
 
     /**
      * Companion object for holding constants related to suggestion handling.
@@ -60,7 +60,7 @@ class SuggestionHandler(
 
                 val genderSuggestion = findGenderForLastWord(ime.nounKeywords, completedWord)
                 val isPluralByDirectCheck = findWhetherWordIsPlural(ime.pluralWords, completedWord)
-                val caseSuggestion = ime.getCaseAnnotationForPreposition(ime.caseAnnotation, completedWord)
+                val caseSuggestion = getCaseAnnotationForPreposition(ime.caseAnnotation, completedWord)
 
                 val hasLinguisticSuggestion =
                     genderSuggestion != null ||
@@ -82,6 +82,34 @@ class SuggestionHandler(
                 }
             }
         handler.postDelayed(linguisticSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+    }
+
+    /**
+     * Finds associated emojis for the last typed word.
+     * @param emojiKeywords The map of keywords to emojis.
+     * @param lastWord The word to look up.
+     * @return A mutable list of emoji suggestions, or null if none are found.
+     */
+    fun findEmojisForLastWord(
+        emojiKeywords: HashMap<String, MutableList<String>>?,
+        lastWord: String?,
+    ): MutableList<String>? {
+        lastWord?.let { return emojiKeywords?.get(it.lowercase()) }
+        return null
+    }
+
+    /**
+     * Finds the required grammatical case(s) for a preposition.
+     * @param caseAnnotation The map of prepositions to their required cases.
+     * @param lastWord The word to look up (which should be a preposition).
+     * @return A mutable list of case suggestions (e.g., "accusative case"), or null if not found.
+     */
+    fun getCaseAnnotationForPreposition(
+        caseAnnotation: HashMap<String, MutableList<String>>,
+        lastWord: String?,
+    ): MutableList<String>? {
+        lastWord?.let { return caseAnnotation[it.lowercase()] }
+        return null
     }
 
     /**
@@ -173,7 +201,7 @@ class SuggestionHandler(
 
                 val emojis =
                     if (ime.emojiAutoSuggestionEnabled) {
-                        ime.findEmojisForLastWord(ime.emojiKeywords, currentWord)
+                        findEmojisForLastWord(ime.emojiKeywords, currentWord)
                     } else {
                         null
                     }

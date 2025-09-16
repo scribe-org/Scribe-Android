@@ -18,6 +18,7 @@ private const val DATA_CONSTANT_3 = 3
  * Handles all conjugation-related functionality for the Scribe keyboard.
  * This includes managing conjugation data, keyboard layouts, and UI updates for verb conjugation.
  */
+@Suppress("TooManyFunctions", "LargeClass")
 class ConjugateHandler(
     private val ime: GeneralKeyboardIME,
 ) {
