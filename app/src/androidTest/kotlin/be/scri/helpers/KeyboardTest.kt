@@ -2,9 +2,11 @@
 package be.scri.ui
 
 import android.view.inputmethod.InputConnection
+import android.widget.Button
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import be.scri.helpers.KeyHandler
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.SuggestionHandler
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 import io.mockk.every
@@ -19,6 +21,10 @@ class KeyboardTest {
     private lateinit var mockIME: GeneralKeyboardIME
     private lateinit var mockInputConnection: InputConnection
     private lateinit var keyHandler: KeyHandler
+    private lateinit var suggestionHandler: SuggestionHandler
+    private lateinit var translateBtn: Button
+    private lateinit var conjugateBtn: Button
+    private lateinit var pluralBtn: Button
 
     @Before
     fun setUp() {
@@ -28,8 +34,16 @@ class KeyboardTest {
         every { mockIME.currentInputConnection } returns mockInputConnection
         every { mockIME.keyboard } returns mockk(relaxed = true)
         every { mockIME.currentState } returns ScribeState.IDLE
+        every { mockIME.language } returns "German"
 
         keyHandler = KeyHandler(mockIME)
+        suggestionHandler = SuggestionHandler(mockIME)
+        translateBtn = mockk(relaxed = true)
+        conjugateBtn = mockk(relaxed = true)
+        pluralBtn = mockk(relaxed = true)
+        every { mockIME.binding.translateBtn } returns translateBtn
+        every { mockIME.binding.conjugateBtn } returns conjugateBtn
+        every { mockIME.binding.pluralBtn } returns pluralBtn
     }
 
     @Test
@@ -58,5 +72,24 @@ class KeyboardTest {
 
         verify(exactly = 1) { mockIME.handleDelete(false) }
         verify(exactly = 1) { mockInputConnection.deleteSurroundingText(1, 0) }
+    }
+
+    @Test
+    fun processSuggestions() {
+        every { mockIME.findGenderForLastWord(any(), "in") } returns listOf("Neuter")
+        every { mockIME.findWhetherWordIsPlural(any(), "in") } returns false
+        every { mockIME.getCaseAnnotationForPreposition(any(), "in") } returns null
+
+        every { mockIME.updateAutoSuggestText(any(), any(), any(), any()) } answers {
+            conjugateBtn.text = "der"
+            pluralBtn.text = "den"
+            translateBtn.text = "die"
+        }
+
+        suggestionHandler.processLinguisticSuggestions("in")
+
+        verify { conjugateBtn.text = match { it.isNotEmpty() } }
+        verify { pluralBtn.text = match { it.isNotEmpty() } }
+        verify { translateBtn.text = match { it.isNotEmpty() } }
     }
 }
