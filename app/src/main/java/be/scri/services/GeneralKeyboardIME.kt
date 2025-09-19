@@ -1735,6 +1735,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Disables all auto-suggestions and resets the suggestion buttons to their default, inactive state.
      */
+
     fun disableAutoSuggest() {
         binding.translateBtnRight.visibility = View.INVISIBLE
         binding.translateBtnLeft.visibility = View.INVISIBLE
@@ -1742,13 +1743,27 @@ abstract class GeneralKeyboardIME(
 
         // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
         if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
-            binding.translateBtn.text = HintUtils.getBaseAutoSuggestions(language)[0]
-            binding.conjugateBtn.text = HintUtils.getBaseAutoSuggestions(language)[1]
-            binding.pluralBtn.text = HintUtils.getBaseAutoSuggestions(language)[2]
+            // A helper function to create the click listener
+            val createSuggestionClickListener = { suggestion: String ->
+                View.OnClickListener {
+                    currentInputConnection?.commitText("$suggestion ", 1)
+                }
+            }
+
+            val suggestions = HintUtils.getBaseAutoSuggestions(language)
+
+            val suggestion1 = suggestions.getOrNull(0) ?: ""
+            binding.translateBtn.text = suggestion1
             binding.translateBtn.background = null
-            binding.translateBtn.setOnClickListener(null)
-            binding.conjugateBtn.setOnClickListener(null)
-            binding.pluralBtn.setOnClickListener(null)
+            binding.translateBtn.setOnClickListener(createSuggestionClickListener(suggestion1))
+
+            val suggestion2 = suggestions.getOrNull(1) ?: ""
+            binding.conjugateBtn.text = suggestion2
+            binding.conjugateBtn.setOnClickListener(createSuggestionClickListener(suggestion2))
+
+            val suggestion3 = suggestions.getOrNull(2) ?: ""
+            binding.pluralBtn.text = suggestion3
+            binding.pluralBtn.setOnClickListener(createSuggestionClickListener(suggestion3))
         }
 
         handleTextSizeForSuggestion(binding.translateBtn)
