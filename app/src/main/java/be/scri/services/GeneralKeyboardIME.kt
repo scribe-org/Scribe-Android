@@ -81,7 +81,7 @@ abstract class GeneralKeyboardIME(
     abstract var switchToLetters: Boolean
     abstract var hasTextBeforeCursor: Boolean
 
-    // Track if the delete key is currently being repeated (long press)
+    // Track if the delete key is currently being repeated (long press).
     private var isDeleteRepeating: Boolean = false
 
     internal lateinit var binding: InputMethodViewBinding
@@ -398,7 +398,7 @@ abstract class GeneralKeyboardIME(
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
 
-        // Set up the currency symbol if we're using the symbols keyboard layout
+        // Set up the currency symbol if we're using the symbols keyboard layout.
         if (keyboardXml == R.xml.keys_symbols) {
             setupCurrencySymbol()
         }
@@ -554,7 +554,7 @@ abstract class GeneralKeyboardIME(
             ScribeState.INVALID -> setupInvalidView()
             ScribeState.TRANSLATE -> {
                 setupToolbarView()
-                // Add specific handling here to maintain translate button
+                // Add specific handling here to maintain translate button.
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
                 binding.translateBtn.visibility = View.VISIBLE
             }
@@ -829,7 +829,7 @@ abstract class GeneralKeyboardIME(
         keyboardView?.setKeyboard(keyboard!!)
         keyboardView?.requestLayout()
 
-        // Set up the currency symbol if we're on the symbols keyboard
+        // Set up the currency symbol if we're on the symbols keyboard.
         if (keyboardMode == keyboardSymbols) {
             setupCurrencySymbol()
         }
@@ -1740,15 +1740,29 @@ abstract class GeneralKeyboardIME(
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtn.visibility = View.VISIBLE
 
-        // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state
+        // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state.
         if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
-            binding.translateBtn.text = HintUtils.getBaseAutoSuggestions(language)[0]
-            binding.conjugateBtn.text = HintUtils.getBaseAutoSuggestions(language)[1]
-            binding.pluralBtn.text = HintUtils.getBaseAutoSuggestions(language)[2]
+            // A helper function to create the click listener.
+            val createSuggestionClickListener = { suggestion: String ->
+                View.OnClickListener {
+                    currentInputConnection?.commitText("$suggestion ", 1)
+                }
+            }
+
+            val suggestions = HintUtils.getBaseAutoSuggestions(language)
+
+            val suggestion1 = suggestions.getOrNull(0) ?: ""
+            binding.translateBtn.text = suggestion1
             binding.translateBtn.background = null
-            binding.translateBtn.setOnClickListener(null)
-            binding.conjugateBtn.setOnClickListener(null)
-            binding.pluralBtn.setOnClickListener(null)
+            binding.translateBtn.setOnClickListener(createSuggestionClickListener(suggestion1))
+
+            val suggestion2 = suggestions.getOrNull(1) ?: ""
+            binding.conjugateBtn.text = suggestion2
+            binding.conjugateBtn.setOnClickListener(createSuggestionClickListener(suggestion2))
+
+            val suggestion3 = suggestions.getOrNull(2) ?: ""
+            binding.pluralBtn.text = suggestion3
+            binding.pluralBtn.setOnClickListener(createSuggestionClickListener(suggestion3))
         }
 
         handleTextSizeForSuggestion(binding.translateBtn)
@@ -1775,13 +1789,13 @@ abstract class GeneralKeyboardIME(
         val langAlias = getLanguageAlias(language)
         val lowercaseWord = word.lowercase()
 
-        // Check if the word is already plural FIRST
+        // Check if the word is already plural.
         val isAlreadyPlural = pluralWords?.contains(lowercaseWord) == true
         if (isAlreadyPlural) {
             return ALREADY_PLURAL_MSG
         }
 
-        // If not plural, try to find the plural form in singular column
+        // If not plural, try to find the plural form in singular column.
         val pluralMap = dbManagers.pluralManager.getPluralRepresentation(langAlias, dataContract, word)
         val pluralResult = pluralMap.values.firstOrNull()
         return pluralResult
@@ -1829,13 +1843,13 @@ abstract class GeneralKeyboardIME(
     fun handleKeycodeEnter() {
         val inputConnection = currentInputConnection ?: return
 
-        // Handle states that should return to idle instead of performing Enter action
+        // Handle states that should return to idle instead of performing Enter action.
         if (currentState == ScribeState.INVALID || currentState == ScribeState.ALREADY_PLURAL) {
             moveToIdleState()
             return
         }
 
-        // Handle states that should perform normal Enter action
+        // Handle states that should perform normal Enter action.
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
             handleDefaultEnter(inputConnection)
             return
@@ -1986,7 +2000,7 @@ abstract class GeneralKeyboardIME(
         keyboardView?.setKeyboard(keyboard!!)
         keyboardView?.requestLayout()
 
-        // Set up the currency symbol if we're using the symbols keyboard layout
+        // Set up the currency symbol if we're using the symbols keyboard layout.
         if (keyboardXml == R.xml.keys_symbols) {
             setupCurrencySymbol()
         }
@@ -2033,7 +2047,7 @@ abstract class GeneralKeyboardIME(
             keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
             keyboardView!!.setKeyboard(keyboard!!)
 
-            // Set up the currency symbol if we're using the symbols keyboard layout
+            // Set up the currency symbol if we're using the symbols keyboard layout.
             if (keyboardXml == R.xml.keys_symbols) {
                 setupCurrencySymbol()
             }
@@ -2095,7 +2109,7 @@ abstract class GeneralKeyboardIME(
             val inputConnection = currentInputConnection ?: return
             if (TextUtils.isEmpty(inputConnection.getSelectedText(0))) {
                 val isWordByWordEnabled = PreferencesHelper.getIsWordByWordDeletionEnabled(applicationContext, language)
-                // Only use word-by-word deletion on long press when the feature is enabled
+                // Only use word-by-word deletion on long press when the feature is enabled.
                 if (isWordByWordEnabled && isLongPress) {
                     deleteWordByWord(inputConnection)
                 } else {
@@ -2132,13 +2146,13 @@ abstract class GeneralKeyboardIME(
         var deletionLength = 0
         var index = textBeforeCursor.length - 1
 
-        // Skip any  whitespace
+        // Skip any whitespace.
         while (index >= 0 && textBeforeCursor[index].isWhitespace()) {
             deletionLength++
             index--
         }
 
-        // If we only had whitespace, delete it
+        // If we only had whitespace, delete it.
         if (index < 0) {
             if (deletionLength > 0) {
                 inputConnection.deleteSurroundingText(deletionLength, 0)
@@ -2146,16 +2160,16 @@ abstract class GeneralKeyboardIME(
             return
         }
 
-        // Now delete the word characters
+        // Now delete the word characters.
         if (isWordCharacter(textBeforeCursor[index])) {
-            // Delete regular word characters (letters, numbers, some punctuation)
+            // Delete regular word characters (letters, numbers, some punctuation).
             while (index >= 0 && isWordCharacter(textBeforeCursor[index])) {
                 deletionLength++
                 index--
             }
         } else {
             // If the character at cursor is not a word character (e.g., special punctuation),
-            // delete just that single character instead of trying to delete a whole word
+            // delete just that single character instead of trying to delete a whole word.
             deletionLength++
         }
 
@@ -2168,17 +2182,16 @@ abstract class GeneralKeyboardIME(
      * Determines if a character is considered part of a word for deletion purposes.
      */
     private fun isWordCharacter(char: Char): Boolean {
-        // Letters and digits are always word characters
+        // Letters and digits are always word characters.
         if (char.isLetterOrDigit()) {
             return true
         }
 
-        // check if special characters are considered word
+        // Check if special characters are considered word.
         return when (Character.getType(char).toByte()) {
-            // Connector punctuation
+            // Connector punctuation.
             Character.CONNECTOR_PUNCTUATION -> true
             Character.DASH_PUNCTUATION -> true
-            // for other characters
             Character.OTHER_PUNCTUATION -> {
                 char in "'\".,@#$%&*+=~`|\\/:;?!^"
             }
