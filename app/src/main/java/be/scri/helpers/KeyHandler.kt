@@ -4,6 +4,7 @@ package be.scri.helpers
 
 import android.content.Context
 import android.util.Log
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
@@ -235,7 +236,28 @@ class KeyHandler(
      * editor action) to the main IME class.
      */
     private fun handleEnterKey() {
-        ime.handleKeycodeEnter()
+        val inputConnection = ime.currentInputConnection
+        val editorInfo = ime.currentInputEditorInfo
+
+        if (inputConnection != null && editorInfo != null) {
+            val imeAction = editorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
+
+            when (imeAction) {
+                EditorInfo.IME_ACTION_GO,
+                EditorInfo.IME_ACTION_SEARCH,
+                EditorInfo.IME_ACTION_SEND,
+                EditorInfo.IME_ACTION_NEXT,
+                EditorInfo.IME_ACTION_DONE,
+                    -> {
+                    // performs the editor action
+                    inputConnection.performEditorAction(imeAction)
+                }
+                else -> {
+                    // default behaviour for inserting a new line
+                    inputConnection.commitText("\n", 1)
+                }
+            }
+        }
     }
 
     /**
