@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers
 
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.Button
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -73,9 +74,48 @@ class KeyboardTest {
     }
 
     @Test
-    fun testEnterKeyBehavior() {
-        every { mockIME.currentState } returns ScribeState.IDLE
+    fun testEnterKeyInsertsNewLineForNormalInput() {
+        every { mockIME.currentInputEditorInfo } returns EditorInfo().apply { imeOptions = EditorInfo.IME_ACTION_NONE }
+        every { mockInputConnection.commitText(any(), any()) } returns true
+
         keyHandler.handleKey(KeyboardBase.KEYCODE_ENTER, "en")
+
+        verify(exactly = 1) { mockInputConnection.commitText("\n", 1) }
+        verify(exactly = 0) { mockInputConnection.sendKeyEvent(any()) }
+    }
+
+    @Test
+    fun testEnterKeySendsActionForSearch() {
+        every { mockIME.currentInputEditorInfo } returns EditorInfo().apply { imeOptions = EditorInfo.IME_ACTION_SEARCH }
+        every { mockInputConnection.performEditorAction(EditorInfo.IME_ACTION_SEARCH) } returns true
+
+        keyHandler.handleKey(KeyboardBase.KEYCODE_ENTER, "en")
+
+        verify(exactly = 1) { mockInputConnection.performEditorAction(EditorInfo.IME_ACTION_SEARCH) }
+        verify(exactly = 0) { mockInputConnection.commitText(any(), any()) }
+        verify(exactly = 0) { mockInputConnection.sendKeyEvent(any()) }
+    }
+
+    @Test
+    fun testEnterKeySendsActionForSend() {
+        every { mockIME.currentInputEditorInfo } returns EditorInfo().apply { imeOptions = EditorInfo.IME_ACTION_SEND }
+        every { mockInputConnection.performEditorAction(EditorInfo.IME_ACTION_SEND) } returns true
+
+        keyHandler.handleKey(KeyboardBase.KEYCODE_ENTER, "en")
+
+        verify(exactly = 1) { mockInputConnection.performEditorAction(EditorInfo.IME_ACTION_SEND) }
+        verify(exactly = 0) { mockInputConnection.commitText(any(), any()) }
+        verify(exactly = 0) { mockInputConnection.sendKeyEvent(any()) }
+    }
+
+    @Test
+    fun testEnterKeySendsActionForDone() {
+        every { mockIME.currentInputEditorInfo } returns EditorInfo().apply { imeOptions = EditorInfo.IME_ACTION_DONE }
+        every { mockInputConnection.performEditorAction(EditorInfo.IME_ACTION_DONE) } returns true
+
+        keyHandler.handleKey(KeyboardBase.KEYCODE_ENTER, "en")
+
+        verify(exactly = 1) { mockInputConnection.performEditorAction(EditorInfo.IME_ACTION_DONE) }
         verify(exactly = 0) { mockInputConnection.commitText(any(), any()) }
         verify(exactly = 0) { mockInputConnection.sendKeyEvent(any()) }
     }
