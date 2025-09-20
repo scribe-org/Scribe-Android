@@ -248,7 +248,7 @@ class KeyHandler(
                 EditorInfo.IME_ACTION_SEND,
                 EditorInfo.IME_ACTION_NEXT,
                 EditorInfo.IME_ACTION_DONE,
-                    -> {
+                -> {
                     // performs the editor action
                     inputConnection.performEditorAction(imeAction)
                 }
