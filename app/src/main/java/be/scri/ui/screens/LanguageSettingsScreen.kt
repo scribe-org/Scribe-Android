@@ -40,6 +40,8 @@ private data class FunctionalitySettings(
     val onToggleSoundOnKeyPress: (Boolean) -> Unit,
     val wordByWordDeletionState: Boolean,
     val onToggleWordByWordDeletion: (Boolean) -> Unit,
+    val holdForAltKeysState: Boolean,
+    val onToggleHoldForAltKeys: (Boolean) -> Unit,
 )
 
 /**
@@ -111,6 +113,13 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 PreferencesHelper.getIsWordByWordDeletionEnabled(context, language),
+            )
+        }
+
+    val holdForAltKeysState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getHoldKeyStyle(context, language),
             )
         }
 
@@ -206,6 +215,15 @@ fun LanguageSettingsScreen(
                     isEnabled,
                 )
             },
+            holdForAltKeysState = holdForAltKeysState.value,
+            onToggleHoldForAltKeys = { holdForAltKeys ->
+                holdForAltKeysState.value = holdForAltKeys
+                PreferencesHelper.setHoldKeyStyle(
+                    context,
+                    language,
+                    holdForAltKeys,
+                )
+            },
         )
 
     val functionalityList =
@@ -299,6 +317,12 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
                 desc = R.string.app_settings_keyboard_functionality_delete_word_by_word_description,
                 state = settings.wordByWordDeletionState,
                 onToggle = settings.onToggleWordByWordDeletion,
+            ),
+            ScribeItem.SwitchItem(
+                title = R.string.app_settings_keyboard_functionality_hold_for_alt_chars,
+                desc = R.string.app_settings_keyboard_functionality_hold_for_alt_chars_description,
+                state = settings.holdForAltKeysState,
+                onToggle = settings.onToggleHoldForAltKeys,
             ),
         )
     return list
