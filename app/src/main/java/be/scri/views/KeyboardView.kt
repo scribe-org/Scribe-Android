@@ -1511,7 +1511,6 @@ class KeyboardView
 
                 mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
                 mMiniKeyboard!!.invalidateAllKeys()
-
                 val miniShiftStatus = if (isShifted()) SHIFT_ON_PERMANENT else SHIFT_OFF
                 mMiniKeyboard!!.setShifted(miniShiftStatus)
                 mPopupKeyboard.contentView = mMiniKeyboardContainer
@@ -1560,30 +1559,47 @@ class KeyboardView
                             selectedKeyIndex = selectedKeyIndex.coerceIn(0, keysCnt - 1)
 
                             if (selectedKeyIndex != mMiniKeyboardSelectedKeyIndex) {
+                                // Update focus highlight
                                 for (i in 0 until keysCnt) {
                                     miniKeyboard.mKeys[i].focused = i == selectedKeyIndex
                                 }
                                 miniKeyboard.invalidateAllKeys()
 
+                                // Cancel pending hover if switching keys
+                                hoverRunnable?.let {
+                                    hoverHandler?.removeCallbacks(it)
+                                    hoverRunnable = null
+                                }
+
+                                mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
+
                                 if (setHoldForAltCharacters) {
-                                    mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
-                                    if (hoverRunnable != null) hoverHandler?.removeCallbacks(hoverRunnable!!)
-                                    if (hoverRunnable == null) {
-                                        hoverRunnable =
-                                            Runnable {
-                                                val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
-                                                mOnKeyboardActionListener?.onKey(key.code)
-                                                mMiniKeyboardSelectedKeyIndex = -1
-                                                dismissPopupKeyboard()
-                                            }
-                                    }
+                                    // HOLD mode → use long delay
+                                    hoverRunnable =
+                                        Runnable {
+                                            val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
+                                            key.focused = false
+                                            miniKeyboard.invalidateAllKeys()
+
+                                            mOnKeyboardActionListener?.onKey(key.code)
+                                            mMiniKeyboardSelectedKeyIndex = -1
+                                            hoverRunnable = null
+                                            dismissPopupKeyboard()
+                                        }
                                     hoverHandler?.postDelayed(hoverRunnable!!, hoverDelay)
                                 } else {
-                                    val key = miniKeyboard.mKeys[selectedKeyIndex]
-                                    mOnKeyboardActionListener?.onKey(key.code)
+                                    hoverRunnable =
+                                        Runnable {
+                                            val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
+                                            key.focused = false
+                                            miniKeyboard.invalidateAllKeys()
 
-                                    mMiniKeyboardSelectedKeyIndex = -1
-                                    dismissPopupKeyboard()
+                                            mOnKeyboardActionListener?.onKey(key.code)
+                                            mMiniKeyboardSelectedKeyIndex = -1
+                                            hoverRunnable = null
+                                            dismissPopupKeyboard()
+                                        }
+                                    hoverHandler?.postDelayed(hoverRunnable!!, 220L)
                                 }
                             }
                         }
@@ -1601,6 +1617,7 @@ class KeyboardView
                             if (mMiniKeyboardSelectedKeyIndex >= 0) {
                                 val key = mMiniKeyboard!!.mKeys[mMiniKeyboardSelectedKeyIndex]
                                 mOnKeyboardActionListener?.onKey(key.code)
+                                mMiniKeyboardSelectedKeyIndex = -1
                             }
                             mMiniKeyboardSelectedKeyIndex = -1
                             dismissPopupKeyboard()
