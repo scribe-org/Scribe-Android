@@ -3,6 +3,7 @@
 package be.scri.services
 
 import DataContract
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
@@ -512,8 +513,14 @@ abstract class GeneralKeyboardIME(
         val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
         val promptTextView = binding.promptText
         promptTextView.text = promptText
+
+        // Initialize command bar with custom cursor
+        initializeCommandBarWithCursor()
+
+        // The hint won't be visible because we have the cursor character, but set it anyway
         commandBarEditText.hint = hintMessage
         commandBarEditText.requestFocus()
+
         if (resolvedIsDarkMode) {
             commandBarEditText.setHintTextColor(getColor(R.color.hint_white))
             commandBarEditText.setTextColor(getColor(white))
@@ -524,14 +531,12 @@ abstract class GeneralKeyboardIME(
                 )
             promptTextView.setTextColor(getColor(white))
             promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
-            binding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
         } else {
             commandBarEditText.setHintTextColor(getColor(R.color.hint_black))
             commandBarEditText.setTextColor(Color.BLACK)
             binding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, white)
             promptTextView.setTextColor(Color.BLACK)
             promptTextView.setBackgroundColor(getColor(white))
-            binding.promptTextBorder.setBackgroundColor(getColor(white))
         }
     }
 
@@ -723,13 +728,14 @@ abstract class GeneralKeyboardIME(
     /**
      * Configures the UI for the `INVALID` state, which is shown when a command (e.g., translation) fails.
      */
+    @SuppressLint("SetTextI18n")
     private fun setupInvalidView() {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
         binding.toolbarBar.setBackgroundColor(if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt())
         binding.ivInfo.visibility = View.VISIBLE
-        binding.promptText.text = HintUtils.getInvalidHint(language = language)
+        binding.promptText.text = HintUtils.getInvalidHint(language = language) + ": "
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
@@ -739,6 +745,7 @@ abstract class GeneralKeyboardIME(
      * Configures the UI for the `ALREADY_PLURAL` state, which is shown when the user
      * attempts to pluralize a word that is already plural.
      */
+    @SuppressLint("SetTextI18n")
     private fun setupAlreadyPluralView() {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
@@ -747,7 +754,7 @@ abstract class GeneralKeyboardIME(
             if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
         )
         binding.ivInfo.visibility = View.VISIBLE
-        binding.promptText.text = ALREADY_PLURAL_MSG
+        binding.promptText.text = "$ALREADY_PLURAL_MSG: "
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground =
             AppCompatResources.getDrawable(
@@ -1855,11 +1862,7 @@ abstract class GeneralKeyboardIME(
             return
         }
 
-        val rawInput =
-            binding.commandBar.text
-                ?.toString()
-                ?.trim()
-                ?.takeIf { it.isNotEmpty() }
+        val rawInput = getCommandBarTextWithoutCursor().trim().takeIf { it.isNotEmpty() }
 
         if (rawInput == null) {
             moveToIdleState()
@@ -2058,17 +2061,14 @@ abstract class GeneralKeyboardIME(
      * Handles the delete key press specifically for the command bar text field.
      */
     private fun handleCommandBarDelete() {
-        val commandBar = binding.commandBar
-        val start = commandBar.selectionStart
-        if (start > 0) {
-            commandBar.text.delete(start - 1, start)
+        val currentTextWithoutCursor = getCommandBarTextWithoutCursor()
+        if (currentTextWithoutCursor.isNotEmpty()) {
+            val newText = currentTextWithoutCursor.dropLast(1)
+            setCommandBarTextWithCursor(newText)
         }
 
-        if (
-            commandBar.text.isEmpty() &&
-            language == "German" &&
-            this.currentState == ScribeState.PLURAL
-        ) {
+        // Handle German plural mode shift state
+        if (getCommandBarTextWithoutCursor().isEmpty() && language == "German" && currentState == ScribeState.PLURAL) {
             keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         }
     }
@@ -2214,15 +2214,25 @@ abstract class GeneralKeyboardIME(
         keyboardMode: Int,
         commandBarState: Boolean = false,
     ) {
-        val inputConnection = currentInputConnection ?: return
-        var codeChar = code.toChar()
-        if (Character.isLetter(codeChar) && keyboard!!.mShiftState > SHIFT_OFF) {
-            codeChar = Character.toUpperCase(codeChar)
-        }
         if (commandBarState) {
-            val commandBar = binding.commandBar
-            commandBar.text.insert(commandBar.selectionStart, codeChar.toString())
+            // Add character before the cursor in command bar
+            val codeChar =
+                if (Character.isLetter(code.toChar()) && keyboard!!.mShiftState > SHIFT_OFF) {
+                    Character.toUpperCase(code.toChar())
+                } else {
+                    code.toChar()
+                }
+            val currentTextWithoutCursor = getCommandBarTextWithoutCursor()
+            val newText = currentTextWithoutCursor + codeChar
+            setCommandBarTextWithCursor(newText)
         } else {
+            // Handle regular input to main text field (unchanged)
+            val inputConnection = currentInputConnection ?: return
+            var codeChar = code.toChar()
+            if (Character.isLetter(codeChar) && keyboard!!.mShiftState > SHIFT_OFF) {
+                codeChar = Character.toUpperCase(codeChar)
+            }
+
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                 inputConnection.commitText(codeChar.toString(), 1)
@@ -2232,10 +2242,42 @@ abstract class GeneralKeyboardIME(
                 inputConnection.commitText(codeChar.toString(), 1)
             }
         }
+
         if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
             keyboard!!.mShiftState = SHIFT_OFF
             keyboardView!!.invalidateAllKeys()
         }
+    }
+
+    /**
+     * Gets the current text in the command bar without the cursor.
+     * @return The text content without the trailing cursor character.
+     */
+    private fun getCommandBarTextWithoutCursor(): String {
+        val currentText = binding.commandBar.text.toString()
+        return if (currentText.endsWith(CUSTOM_CURSOR)) {
+            currentText.dropLast(1)
+        } else {
+            currentText
+        }
+    }
+
+    /**
+     * Sets the command bar text and ensures it ends with the custom cursor.
+     * @param text The text to set (without cursor).
+     */
+    private fun setCommandBarTextWithCursor(text: String) {
+        val textWithCursor = text + CUSTOM_CURSOR
+        binding.commandBar.setText(textWithCursor)
+        // Move cursor to the end (after the custom cursor character)
+        binding.commandBar.setSelection(textWithCursor.length)
+    }
+
+    /**
+     * Initializes the command bar with the cursor.
+     */
+    private fun initializeCommandBarWithCursor() {
+        setCommandBarTextWithCursor("")
     }
 
     internal companion object {
@@ -2249,5 +2291,6 @@ abstract class GeneralKeyboardIME(
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         private const val COMMAND_BUTTON_SPACING_DP = 4
         private const val SEPARATOR_WIDTH = 0.5f
+        private const val CUSTOM_CURSOR = "│" // Special tall cursor character
     }
 }
