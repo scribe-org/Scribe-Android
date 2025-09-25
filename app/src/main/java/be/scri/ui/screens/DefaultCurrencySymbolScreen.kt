@@ -56,7 +56,7 @@ fun DefaultCurrencySymbolScreen(
             "Yen" to "¥",
         )
 
-    // Show ALL currencies, don't filter any out
+    // Show ALL currencies, don't filter any out.
     val options = symbolMap.keys.toList()
 
     ScribeBaseScreen(

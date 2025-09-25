@@ -62,7 +62,7 @@ class SpaceKeyProcessor(
         val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
         val ic = ime.currentInputConnection ?: return
         val wordBeforeSpace = ime.getLastWordBeforeCursor()
-        // Get char before space
+        // Get char before space.
         val twoCharsBeforeCursor = ic.getTextBeforeCursor(2, 0)?.toString()
         val charBeforeSpace = if (twoCharsBeforeCursor?.length == 2) twoCharsBeforeCursor[0] else null
         val isPunctuationBeforeSpace = charBeforeSpace == '.' || charBeforeSpace == '?' || charBeforeSpace == '!'

@@ -1559,13 +1559,13 @@ class KeyboardView
                             selectedKeyIndex = selectedKeyIndex.coerceIn(0, keysCnt - 1)
 
                             if (selectedKeyIndex != mMiniKeyboardSelectedKeyIndex) {
-                                // Update focus highlight
+                                // Update focus highlight.
                                 for (i in 0 until keysCnt) {
                                     miniKeyboard.mKeys[i].focused = i == selectedKeyIndex
                                 }
                                 miniKeyboard.invalidateAllKeys()
 
-                                // Cancel pending hover if switching keys
+                                // Cancel pending hover if switching keys.
                                 hoverRunnable?.let {
                                     hoverHandler?.removeCallbacks(it)
                                     hoverRunnable = null
@@ -1574,7 +1574,7 @@ class KeyboardView
                                 mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
 
                                 if (setHoldForAltCharacters) {
-                                    // HOLD mode → use long delay
+                                    // Hold mode, so use long delay.
                                     hoverRunnable =
                                         Runnable {
                                             val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
@@ -1705,14 +1705,14 @@ class KeyboardView
                             if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
                                 mLastSpaceMoveX = -1
                             } else {
-                                // For delete key, send the initial key press but don't set repeating flag yet
-                                // The repeating flag will be set when the actual repeat starts
+                                // For delete key, send the initial key press but don't set repeating flag yet.
+                                // The repeating flag will be set when the actual repeat starts.
                                 detectAndSendKey(mCurrentKey, mKeys[mCurrentKey].x, mKeys[mCurrentKey].y, eventTime)
                             }
 
                             // Delivering the key could have caused an abort.
                             if (mAbortKey) {
-                                // Reset delete repeating flag when key is aborted
+                                // Reset delete repeating flag when key is aborted.
                                 if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
                                     (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
                                 }
@@ -1825,7 +1825,7 @@ class KeyboardView
                         }
 
                         invalidateKey(keyIndex)
-                        // Reset delete repeating flag when any key is released
+                        // Reset delete repeating flag when any key is released.
                         if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
                             (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
                         }
@@ -1836,7 +1836,7 @@ class KeyboardView
                     MotionEvent.ACTION_CANCEL -> {
                         mIsLongPressingSpace = false
                         mLastSpaceMoveX = 0
-                        // Reset delete repeating flag when action is cancelled
+                        // Reset delete repeating flag when action is cancelled.
                         if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
                             (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
                         }
@@ -1864,7 +1864,7 @@ class KeyboardView
 
                 mIsLongPressingSpace = true
             } else {
-                // Set delete repeating flag when repeat actually starts (not on initial press)
+                // Set delete repeating flag when repeat actually starts (not on initial press).
                 if (!initialCall && key.code == KEYCODE_DELETE) {
                     (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(true)
                 }

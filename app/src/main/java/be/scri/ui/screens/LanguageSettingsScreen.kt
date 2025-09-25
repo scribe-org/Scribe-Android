@@ -158,7 +158,7 @@ fun LanguageSettingsScreen(
                 ),
         )
 
-    // Create functionality settings object
+    // Create functionality settings object.
     val functionalitySettings =
         FunctionalitySettings(
             periodOnDoubleTapState = periodOnDoubleTapState.value,

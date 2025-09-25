@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
 import be.scri.interfaces.RecyclerScrollCallback
 
-// drag selection is based on https://github.com/afollestad/drag-select-recyclerview
+// Drag selection is based on https://github.com/afollestad/drag-select-recyclerview.
 open class MyRecyclerView : RecyclerView {
     private val autoScrollDelay = 25L
     private var isZoomEnabled = false
@@ -45,15 +45,15 @@ open class MyRecyclerView : RecyclerView {
     private var currScaleFactor = 1.0f
     private var lastUp = 0L // allow only pinch zoom, not double tap
 
-    // things related to parallax scrolling (for now only in the music player)
-    // cut from https://github.com/ksoichiro/Android-ObservableScrollView
+    // Things related to parallax scrolling (for now only in the music player).
+    // Gotten from https://github.com/ksoichiro/Android-ObservableScrollView.
     var recyclerScrollCallback: RecyclerScrollCallback? = null
     private var mPrevFirstVisiblePosition = 0
     private var mPrevScrolledChildrenHeight = 0
     private var mPrevFirstVisibleChildHeight = -1
     private var mScrollY = 0
 
-    // variables used for fetching additional items at scrolling to the bottom/top
+    // Variables used for fetching additional items at scrolling to the bottom/top.
     var endlessScrollListener: EndlessScrollListener? = null
     private var totalItemCount = 0
     private var lastMaxItemIndex = 0

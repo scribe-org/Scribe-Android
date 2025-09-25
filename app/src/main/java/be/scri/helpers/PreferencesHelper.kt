@@ -511,7 +511,7 @@ object PreferencesHelper {
                 "Dollar",
             ) ?: "Dollar"
 
-        // Map currency names to symbols
+        // Map currency names to symbols.
         return when (currencyName) {
             "Dollar" -> "$"
             "Euro" -> "€"

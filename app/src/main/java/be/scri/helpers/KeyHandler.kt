@@ -215,7 +215,7 @@ class KeyHandler(
         val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(ime.applicationContext, language)
         ime.currentInputConnection?.commitText(currencySymbol, 1)
 
-        // Process emoji suggestions if in idle state
+        // Process emoji suggestions if in idle state.
         if (ime.currentState == ScribeState.IDLE) {
             suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
         }
