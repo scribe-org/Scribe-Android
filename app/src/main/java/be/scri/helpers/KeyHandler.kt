@@ -236,6 +236,14 @@ class KeyHandler(
      * editor action) to the main IME class.
      */
     private fun handleEnterKey() {
+        // step 1: checks if the keyboard is in a command state (not IDLE).
+        if (ime.currentState != ScribeState.IDLE) {
+            // reintorducing the call to the state-aware logic for command execution.
+            ime.handleKeycodeEnter()
+            return
+        }
+
+        // step 2: if in IDLE state, proceed with standard IME action/newline logic.
         val inputConnection = ime.currentInputConnection
         val editorInfo = ime.currentInputEditorInfo
 
