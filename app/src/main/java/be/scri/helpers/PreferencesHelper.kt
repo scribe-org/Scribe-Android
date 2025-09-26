@@ -19,7 +19,6 @@ object PreferencesHelper {
     const val SCRIBE_PREFS = "app_preferences"
     private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
     private const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
-
     private const val SOUND_ON_KEYPRESS = "sound_on_keypress"
     private const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
     private const val PERIOD_AND_COMMA = "period_and_comma"
@@ -28,6 +27,7 @@ object PreferencesHelper {
     private const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"
     private const val WORD_BY_WORD_DELETION = "word_by_word_deletion"
     private const val DEFAULT_CURRENCY = "default_currency"
+    private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
 
     /**
      * Sets the translation source language for a given language.
@@ -511,7 +511,7 @@ object PreferencesHelper {
                 "Dollar",
             ) ?: "Dollar"
 
-        // Map currency names to symbols
+        // Map currency names to symbols.
         return when (currencyName) {
             "Dollar" -> "$"
             "Euro" -> "€"
@@ -537,5 +537,45 @@ object PreferencesHelper {
     ): String {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getString(getLanguageSpecificPreferenceKey(DEFAULT_CURRENCY, language), "Dollar") ?: "Dollar"
+    }
+
+    /**
+     * Sets the state of hold key style for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the currency preference.
+     * @param holdForAltKeys Whether to disable swipe selection on hold key.
+     */
+    fun setHoldKeyStyle(
+        context: Context,
+        language: String,
+        holdForAltKeys: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), holdForAltKeys)
+        }
+        Toast
+            .makeText(
+                context,
+                "$language hold for alternate characters " +
+                    if (holdForAltKeys) "enabled" else "disabled",
+                Toast.LENGTH_SHORT,
+            ).show()
+    }
+
+    /**
+     * Retrieves the state of hold key style for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the currency preference.
+     * @return The state of hold key style.
+     */
+    fun getHoldKeyStyle(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), true)
     }
 }

@@ -18,6 +18,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.util.AttributeSet
 import android.util.Log
@@ -172,6 +173,10 @@ class KeyboardView
         private var mLastX = 0
         private var mLastY = 0
 
+        private var hoverHandler: Handler? = Handler(Looper.getMainLooper())
+        private var hoverRunnable: Runnable? = null
+        private val hoverDelay = 400L
+
         private val mPaint: Paint
         private var mDownTime = 0L
         private var mLastMoveTime = 0L
@@ -195,6 +200,7 @@ class KeyboardView
         private var mTopSmallNumberMarginHeight = 0f
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
+
         var mKeyLabel: String = "He"
 
         var mKeyLabelFPS: String = "FPS"
@@ -331,6 +337,7 @@ class KeyboardView
         var setVibrate: Boolean = true
 
         var setSound: Boolean = false
+        var setHoldForAltCharacters: Boolean = false
 
         /**
          * Sets the color of the Enter key based on a specific color or theme mode.
@@ -1492,7 +1499,7 @@ class KeyboardView
                     }
 
                 val keysCnt = mMiniKeyboard!!.mKeys.size
-                var selectedKeyIndex = Math.floor((me.x - miniKeyboardX) / popupKey.width.toDouble()).toInt()
+                var selectedKeyIndex = Math.floor((me.rawX - miniKeyboardX) / popupKey.width.toDouble()).toInt()
                 if (keysCnt > MAX_KEYS_PER_MINI_ROW) {
                     selectedKeyIndex += MAX_KEYS_PER_MINI_ROW
                 }
@@ -1504,7 +1511,6 @@ class KeyboardView
 
                 mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
                 mMiniKeyboard!!.invalidateAllKeys()
-
                 val miniShiftStatus = if (isShifted()) SHIFT_ON_PERMANENT else SHIFT_OFF
                 mMiniKeyboard!!.setShifted(miniShiftStatus)
                 mPopupKeyboard.contentView = mMiniKeyboardContainer
@@ -1538,61 +1544,94 @@ class KeyboardView
                 return true
             }
 
-            // Handle moving between alternative popup characters by swiping.
             if (mPopupKeyboard.isShowing) {
                 when (action) {
                     MotionEvent.ACTION_MOVE -> {
-                        if (mMiniKeyboard != null) {
-                            val coords = intArrayOf(0, 0)
-                            mMiniKeyboard!!.getLocationOnScreen(coords)
-                            val keysCnt = mMiniKeyboard!!.mKeys.size
-                            val lastRowKeyCount =
-                                if (keysCnt > MAX_KEYS_PER_MINI_ROW) {
-                                    Math.max(keysCnt % MAX_KEYS_PER_MINI_ROW, 1)
-                                } else {
-                                    keysCnt
-                                }
+                        val miniKeyboard = mMiniKeyboard
+                        val keysCnt = miniKeyboard?.mKeys?.size ?: 0
 
-                            val widthPerKey =
-                                if (keysCnt > MAX_KEYS_PER_MINI_ROW) {
-                                    mMiniKeyboard!!.width / MAX_KEYS_PER_MINI_ROW
-                                } else {
-                                    mMiniKeyboard!!.width / lastRowKeyCount
-                                }
+                        if (miniKeyboard != null && keysCnt > 0) {
+                            val popupRect = Rect()
+                            miniKeyboard.getGlobalVisibleRect(popupRect)
+                            val widthPerKey = miniKeyboard.width / keysCnt.toFloat()
 
-                            var selectedKeyIndex = Math.floor((me.x - coords[0]) / widthPerKey.toDouble()).toInt()
-                            if (keysCnt > MAX_KEYS_PER_MINI_ROW) {
-                                selectedKeyIndex = Math.max(0, selectedKeyIndex)
-                                selectedKeyIndex += MAX_KEYS_PER_MINI_ROW
-                            }
+                            var selectedKeyIndex = ((me.x - popupRect.left) / widthPerKey).toInt()
+                            selectedKeyIndex = selectedKeyIndex.coerceIn(0, keysCnt - 1)
 
-                            selectedKeyIndex = Math.max(0, Math.min(selectedKeyIndex, keysCnt - 1))
                             if (selectedKeyIndex != mMiniKeyboardSelectedKeyIndex) {
+                                // Update focus highlight.
                                 for (i in 0 until keysCnt) {
-                                    mMiniKeyboard!!.mKeys[i].focused = i == selectedKeyIndex
+                                    miniKeyboard.mKeys[i].focused = i == selectedKeyIndex
                                 }
-                                mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
-                                mMiniKeyboard!!.invalidateAllKeys()
-                            }
+                                miniKeyboard.invalidateAllKeys()
 
-                            if (coords[0] > 0 || coords[1] > 0) {
-                                if (coords[0] - me.x > mPopupMaxMoveDistance ||
-                                    // left
-                                    me.x - (coords[0] + mMiniKeyboard!!.measuredWidth) > mPopupMaxMoveDistance // right
-                                ) {
-                                    dismissPopupKeyboard()
+                                // Cancel pending hover if switching keys.
+                                hoverRunnable?.let {
+                                    hoverHandler?.removeCallbacks(it)
+                                    hoverRunnable = null
+                                }
+
+                                mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
+
+                                if (setHoldForAltCharacters) {
+                                    // Hold mode, so use long delay.
+                                    hoverRunnable =
+                                        Runnable {
+                                            val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
+                                            key.focused = false
+                                            miniKeyboard.invalidateAllKeys()
+
+                                            mOnKeyboardActionListener?.onKey(key.code)
+                                            mMiniKeyboardSelectedKeyIndex = -1
+                                            hoverRunnable = null
+                                            dismissPopupKeyboard()
+                                        }
+                                    hoverHandler?.postDelayed(hoverRunnable!!, hoverDelay)
+                                } else {
+                                    hoverRunnable =
+                                        Runnable {
+                                            val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
+                                            key.focused = false
+                                            miniKeyboard.invalidateAllKeys()
+
+                                            mOnKeyboardActionListener?.onKey(key.code)
+                                            mMiniKeyboardSelectedKeyIndex = -1
+                                            hoverRunnable = null
+                                            dismissPopupKeyboard()
+                                        }
+                                    hoverHandler?.postDelayed(hoverRunnable!!, 220L)
                                 }
                             }
                         }
                     }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        mMiniKeyboard?.mKeys?.firstOrNull { it.focused }?.apply {
-                            mOnKeyboardActionListener!!.onKey(code)
+
+                    MotionEvent.ACTION_DOWN -> {
+                        val popupRect = Rect()
+                        mMiniKeyboard?.getGlobalVisibleRect(popupRect)
+                        if (!popupRect.contains(me.rawX.toInt(), me.rawY.toInt())) {
+                            dismissPopupKeyboard()
+                            return onModifiedTouchEvent(me)
                         }
+
+                        if (setHoldForAltCharacters) {
+                            if (mMiniKeyboardSelectedKeyIndex >= 0) {
+                                val key = mMiniKeyboard!!.mKeys[mMiniKeyboardSelectedKeyIndex]
+                                mOnKeyboardActionListener?.onKey(key.code)
+                                mMiniKeyboardSelectedKeyIndex = -1
+                            }
+                            mMiniKeyboardSelectedKeyIndex = -1
+                            dismissPopupKeyboard()
+                            return true
+                        }
+                    }
+
+                    MotionEvent.ACTION_CANCEL -> {
                         mMiniKeyboardSelectedKeyIndex = -1
                         dismissPopupKeyboard()
+                        return true
                     }
                 }
+                return true
             }
 
             return onModifiedTouchEvent(me)
@@ -1666,14 +1705,14 @@ class KeyboardView
                             if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
                                 mLastSpaceMoveX = -1
                             } else {
-                                // For delete key, send the initial key press but don't set repeating flag yet
-                                // The repeating flag will be set when the actual repeat starts
+                                // For delete key, send the initial key press but don't set repeating flag yet.
+                                // The repeating flag will be set when the actual repeat starts.
                                 detectAndSendKey(mCurrentKey, mKeys[mCurrentKey].x, mKeys[mCurrentKey].y, eventTime)
                             }
 
                             // Delivering the key could have caused an abort.
                             if (mAbortKey) {
-                                // Reset delete repeating flag when key is aborted
+                                // Reset delete repeating flag when key is aborted.
                                 if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
                                     (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
                                 }
@@ -1786,7 +1825,7 @@ class KeyboardView
                         }
 
                         invalidateKey(keyIndex)
-                        // Reset delete repeating flag when any key is released
+                        // Reset delete repeating flag when any key is released.
                         if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
                             (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
                         }
@@ -1797,7 +1836,7 @@ class KeyboardView
                     MotionEvent.ACTION_CANCEL -> {
                         mIsLongPressingSpace = false
                         mLastSpaceMoveX = 0
-                        // Reset delete repeating flag when action is cancelled
+                        // Reset delete repeating flag when action is cancelled.
                         if (mRepeatKeyIndex != NOT_A_KEY && mKeys[mRepeatKeyIndex].code == KEYCODE_DELETE) {
                             (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(false)
                         }
@@ -1825,7 +1864,7 @@ class KeyboardView
 
                 mIsLongPressingSpace = true
             } else {
-                // Set delete repeating flag when repeat actually starts (not on initial press)
+                // Set delete repeating flag when repeat actually starts (not on initial press).
                 if (!initialCall && key.code == KEYCODE_DELETE) {
                     (mOnKeyboardActionListener as? GeneralKeyboardIME)?.setDeleteRepeating(true)
                 }

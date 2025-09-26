@@ -57,12 +57,12 @@ fun SettingsScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    // Observe lifecycle events
+    // Observe lifecycle events.
     DisposableEffect(lifecycleOwner) {
         val observer =
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
-                    // Refresh settings when coming back to the app
+                    // Refresh settings when coming back to the app.
                     viewModel.refreshSettings(context)
                 }
             }

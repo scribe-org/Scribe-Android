@@ -45,6 +45,7 @@ import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.LanguageMappingConstants.pluralPlaceholder
 import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
+import be.scri.helpers.PreferencesHelper.getHoldKeyStyle
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
 import be.scri.helpers.PreferencesHelper.getIsSoundEnabled
@@ -199,6 +200,7 @@ abstract class GeneralKeyboardIME(
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
+        keyboardView?.setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
         keyboardView!!.setKeyboard(keyboard!!)
         keyboardView!!.mOnKeyboardActionListener = this
         initializeUiElements()
@@ -214,6 +216,7 @@ abstract class GeneralKeyboardIME(
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
+        keyboardView?.setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
     }
 
     /**
