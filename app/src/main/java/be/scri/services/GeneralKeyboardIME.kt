@@ -3,6 +3,7 @@
 package be.scri.services
 
 import DataContract
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
@@ -15,7 +16,10 @@ import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -26,6 +30,7 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -127,6 +132,10 @@ abstract class GeneralKeyboardIME(
 
     internal var currentState: ScribeState = ScribeState.IDLE
     private var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
+
+    private var currentCommandBarHint: String = ""
+    private var commandBarHintColor: Int = Color.GRAY
+    private var commandBarTextColor: Int = Color.BLACK
 
     /**
      * This function is updated to reliably detect search bars in various apps,
@@ -511,31 +520,26 @@ abstract class GeneralKeyboardIME(
     ) {
         val resolvedIsDarkMode = isUserDarkMode ?: getIsDarkModeOrNot(applicationContext)
         val commandBarEditText = binding.commandBar
-        val hintMessage = HintUtils.getCommandBarHint(currentState, language, word)
-        val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
         val promptTextView = binding.promptText
+
+        // 1. Get the hint message and prompt text
+        currentCommandBarHint = HintUtils.getCommandBarHint(currentState, language, word)
+        val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
         promptTextView.text = promptText
-        commandBarEditText.hint = hintMessage
+
+        // 2. Set the appropriate colors based on the theme
+        commandBarHintColor = if (resolvedIsDarkMode) getColor(R.color.hint_white) else getColor(R.color.hint_black)
+        commandBarTextColor = if (resolvedIsDarkMode) getColor(white) else Color.BLACK
+
+        val backgroundColor = if (resolvedIsDarkMode) R.color.command_bar_color_dark else white
+        binding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, backgroundColor)
+        promptTextView.setTextColor(if (resolvedIsDarkMode) getColor(white) else Color.BLACK)
+        promptTextView.setBackgroundColor(getColor(backgroundColor))
+
+        // 3. Set the initial state of the command bar to show the hint
+        commandBarEditText.setTextColor(commandBarHintColor)
+        setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
         commandBarEditText.requestFocus()
-        if (resolvedIsDarkMode) {
-            commandBarEditText.setHintTextColor(getColor(R.color.hint_white))
-            commandBarEditText.setTextColor(getColor(white))
-            binding.commandBarLayout.backgroundTintList =
-                ContextCompat.getColorStateList(
-                    this,
-                    R.color.command_bar_color_dark,
-                )
-            promptTextView.setTextColor(getColor(white))
-            promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
-            binding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
-        } else {
-            commandBarEditText.setHintTextColor(getColor(R.color.hint_black))
-            commandBarEditText.setTextColor(Color.BLACK)
-            binding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, white)
-            promptTextView.setTextColor(Color.BLACK)
-            promptTextView.setBackgroundColor(getColor(white))
-            binding.promptTextBorder.setBackgroundColor(getColor(white))
-        }
     }
 
     /**
@@ -726,13 +730,14 @@ abstract class GeneralKeyboardIME(
     /**
      * Configures the UI for the `INVALID` state, which is shown when a command (e.g., translation) fails.
      */
+    @SuppressLint("SetTextI18n")
     private fun setupInvalidView() {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
         binding.toolbarBar.setBackgroundColor(if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt())
         binding.ivInfo.visibility = View.VISIBLE
-        binding.promptText.text = HintUtils.getInvalidHint(language = language)
+        binding.promptText.text = HintUtils.getInvalidHint(language = language) + ": "
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
@@ -742,6 +747,7 @@ abstract class GeneralKeyboardIME(
      * Configures the UI for the `ALREADY_PLURAL` state, which is shown when the user
      * attempts to pluralize a word that is already plural.
      */
+    @SuppressLint("SetTextI18n")
     private fun setupAlreadyPluralView() {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
@@ -750,7 +756,7 @@ abstract class GeneralKeyboardIME(
             if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
         )
         binding.ivInfo.visibility = View.VISIBLE
-        binding.promptText.text = ALREADY_PLURAL_MSG
+        binding.promptText.text = "$ALREADY_PLURAL_MSG: "
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground =
             AppCompatResources.getDrawable(
@@ -1858,11 +1864,7 @@ abstract class GeneralKeyboardIME(
             return
         }
 
-        val rawInput =
-            binding.commandBar.text
-                ?.toString()
-                ?.trim()
-                ?.takeIf { it.isNotEmpty() }
+        val rawInput = getCommandBarTextWithoutCursor().trim().takeIf { it.isNotEmpty() }
 
         if (rawInput == null) {
             moveToIdleState()
@@ -2061,17 +2063,31 @@ abstract class GeneralKeyboardIME(
      * Handles the delete key press specifically for the command bar text field.
      */
     private fun handleCommandBarDelete() {
-        val commandBar = binding.commandBar
-        val start = commandBar.selectionStart
-        if (start > 0) {
-            commandBar.text.delete(start - 1, start)
+        val currentTextWithoutCursor = getCommandBarTextWithoutCursor()
+        // If we're already showing the hint, do nothing on delete.
+        if (currentTextWithoutCursor == currentCommandBarHint) {
+            return
         }
 
-        if (
-            commandBar.text.isEmpty() &&
-            language == "German" &&
-            this.currentState == ScribeState.PLURAL
-        ) {
+        if (currentTextWithoutCursor.isNotEmpty()) {
+            val newText = currentTextWithoutCursor.dropLast(1)
+            if (newText.isEmpty()) {
+                // All real text has been deleted, so restore the hint.
+                setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
+                binding.commandBar.setTextColor(commandBarHintColor)
+            } else {
+                // There's still text left, so just update it.
+                setCommandBarTextWithCursor(newText)
+            }
+        }
+
+        // Handle German plural mode shift state
+        val finalCommandBarText = getCommandBarTextWithoutCursor()
+        val isEmptyOrAHint = finalCommandBarText.isEmpty() || finalCommandBarText == currentCommandBarHint
+        val isGerman = language == "German"
+        val isPluralState = currentState == ScribeState.PLURAL
+
+        if (isEmptyOrAHint && isGerman && isPluralState) {
             keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         }
     }
@@ -2089,8 +2105,10 @@ abstract class GeneralKeyboardIME(
     ): String? {
         val keyLabel = keyboardView?.getKeyLabel(code)
         if (!isSubsequentRequired) {
-            currentInputConnection?.commitText(keyLabel, 1)
-            suggestionHandler.processLinguisticSuggestions(keyLabel)
+            if (!keyLabel.isNullOrEmpty()) {
+                currentInputConnection?.commitText("$keyLabel ", 1)
+                suggestionHandler.processLinguisticSuggestions(keyLabel)
+            }
         }
         return keyLabel
     }
@@ -2217,15 +2235,34 @@ abstract class GeneralKeyboardIME(
         keyboardMode: Int,
         commandBarState: Boolean = false,
     ) {
-        val inputConnection = currentInputConnection ?: return
-        var codeChar = code.toChar()
-        if (Character.isLetter(codeChar) && keyboard!!.mShiftState > SHIFT_OFF) {
-            codeChar = Character.toUpperCase(codeChar)
-        }
         if (commandBarState) {
-            val commandBar = binding.commandBar
-            commandBar.text.insert(commandBar.selectionStart, codeChar.toString())
+            // Add character before the cursor in command bar
+            val codeChar =
+                if (Character.isLetter(code.toChar()) && keyboard!!.mShiftState > SHIFT_OFF) {
+                    Character.toUpperCase(code.toChar())
+                } else {
+                    code.toChar()
+                }
+            val currentTextWithoutCursor = getCommandBarTextWithoutCursor()
+
+            // Check if the command bar is showing the hint
+            if (currentTextWithoutCursor == currentCommandBarHint) {
+                // This is the first character typed. Overwrite the hint.
+                binding.commandBar.setTextColor(commandBarTextColor)
+                setCommandBarTextWithCursor(codeChar.toString())
+            } else {
+                // User is already typing, so just append the new character.
+                val newText = currentTextWithoutCursor + codeChar
+                setCommandBarTextWithCursor(newText)
+            }
         } else {
+            // Handle regular input to main text field (unchanged)
+            val inputConnection = currentInputConnection ?: return
+            var codeChar = code.toChar()
+            if (Character.isLetter(codeChar) && keyboard!!.mShiftState > SHIFT_OFF) {
+                codeChar = Character.toUpperCase(codeChar)
+            }
+
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                 inputConnection.commitText(codeChar.toString(), 1)
@@ -2235,10 +2272,58 @@ abstract class GeneralKeyboardIME(
                 inputConnection.commitText(codeChar.toString(), 1)
             }
         }
+
         if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
             keyboard!!.mShiftState = SHIFT_OFF
             keyboardView!!.invalidateAllKeys()
         }
+    }
+
+    /**
+     * Gets the current text in the command bar without the cursor.
+     * @return The text content without the trailing cursor character.
+     */
+    private fun getCommandBarTextWithoutCursor(): String {
+        val currentText = binding.commandBar.text.toString()
+        return when {
+            currentText.startsWith(CUSTOM_CURSOR) -> currentText.drop(1)
+            currentText.endsWith(CUSTOM_CURSOR) -> currentText.dropLast(1)
+            else -> currentText
+        }
+    }
+
+    /**
+     * Sets the command bar text and ensures it ends with the custom cursor.
+     * @param text The text to set (without cursor).
+     * @param cursorAtStart The flag to check if the text in the EditText is empty to determine the position of the cursor
+     */
+    private fun setCommandBarTextWithCursor(
+        text: String,
+        cursorAtStart: Boolean = false,
+    ) {
+        if (cursorAtStart) {
+            // HINT STATE: Use a Spannable to color the cursor differently.
+            val hintWithCursor = CUSTOM_CURSOR + text
+            val spannable = SpannableString(hintWithCursor)
+
+            // Apply the normal text color (black/white) to the cursor, which is the first character.
+            spannable.setSpan(
+                ForegroundColorSpan(commandBarTextColor),
+                0, // Start index of cursor
+                1, // End index of cursor
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+
+            // Set the styled text in the EditText.
+            binding.commandBar.setText(spannable, TextView.BufferType.SPANNABLE)
+        } else {
+            // TYPING STATE
+            val textWithCursor = text + CUSTOM_CURSOR
+            binding.commandBar.setText(textWithCursor)
+        }
+
+        // Always move the EditText's real selection to the end to allow typing.
+        binding.commandBar.setSelection(binding.commandBar.text.length)
     }
 
     internal companion object {
@@ -2252,5 +2337,6 @@ abstract class GeneralKeyboardIME(
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         private const val COMMAND_BUTTON_SPACING_DP = 4
         private const val SEPARATOR_WIDTH = 0.5f
+        private const val CUSTOM_CURSOR = "│" // Special tall cursor character
     }
 }
