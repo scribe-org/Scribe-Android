@@ -16,7 +16,10 @@ import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -27,6 +30,7 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -2289,19 +2293,35 @@ abstract class GeneralKeyboardIME(
     /**
      * Sets the command bar text and ensures it ends with the custom cursor.
      * @param text The text to set (without cursor).
+     * @param cursorAtStart The flag to check if the text in the EditText is empty to determine the position of the cursor
      */
     private fun setCommandBarTextWithCursor(
         text: String,
         cursorAtStart: Boolean = false,
     ) {
-        val textWithCursor =
-            if (cursorAtStart) {
-                CUSTOM_CURSOR + text
-            } else {
-                text + CUSTOM_CURSOR
-            }
-        binding.commandBar.setText(textWithCursor)
-        binding.commandBar.setSelection(textWithCursor.length)
+        if (cursorAtStart) {
+            // HINT STATE: Use a Spannable to color the cursor differently.
+            val hintWithCursor = CUSTOM_CURSOR + text
+            val spannable = SpannableString(hintWithCursor)
+
+            // Apply the normal text color (black/white) to the cursor, which is the first character.
+            spannable.setSpan(
+                ForegroundColorSpan(commandBarTextColor),
+                0, // Start index of cursor
+                1, // End index of cursor
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+
+            // Set the styled text in the EditText.
+            binding.commandBar.setText(spannable, TextView.BufferType.SPANNABLE)
+        } else {
+            // TYPING STATE
+            val textWithCursor = text + CUSTOM_CURSOR
+            binding.commandBar.setText(textWithCursor)
+        }
+
+        // Always move the EditText's real selection to the end to allow typing.
+        binding.commandBar.setSelection(binding.commandBar.text.length)
     }
 
     internal companion object {
