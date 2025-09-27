@@ -2105,8 +2105,10 @@ abstract class GeneralKeyboardIME(
     ): String? {
         val keyLabel = keyboardView?.getKeyLabel(code)
         if (!isSubsequentRequired) {
-            currentInputConnection?.commitText(keyLabel, 1)
-            suggestionHandler.processLinguisticSuggestions(keyLabel)
+            if (!keyLabel.isNullOrEmpty()) {
+                currentInputConnection?.commitText("$keyLabel ", 1)
+                suggestionHandler.processLinguisticSuggestions(keyLabel)
+            }
         }
         return keyLabel
     }
