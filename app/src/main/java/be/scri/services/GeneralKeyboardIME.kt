@@ -753,7 +753,10 @@ abstract class GeneralKeyboardIME(
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
         binding.ivInfo.setOnClickListener { showInvalidInfo() }
-        binding.scribeKeyClose.setOnClickListener { hideInvalidInfo() }
+        binding.scribeKeyClose.setOnClickListener {
+            hideInvalidInfo()
+            moveToIdleState()
+        }
     }
 
     /**
