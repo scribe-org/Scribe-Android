@@ -115,7 +115,7 @@ abstract class GeneralKeyboardIME(
     private lateinit var suggestionHandler: SuggestionHandler
     private var dataContract: DataContract? = null
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
-    private lateinit var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>
+    private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
     private lateinit var conjugateLabels: Set<String>
     private var emojiMaxKeywordLength: Int = 0
     internal lateinit var nounKeywords: HashMap<String, List<String>>
@@ -414,7 +414,8 @@ abstract class GeneralKeyboardIME(
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
-        conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "coacha")
+        val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
+        conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
@@ -558,7 +559,7 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() {
         if (!this::binding.isInitialized) return
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-
+        Log.i("INVALID STATE PR", "The state of the keyboard is $currentState")
         when (currentState) {
             ScribeState.IDLE -> {
                 setupIdleView()
@@ -728,8 +729,9 @@ abstract class GeneralKeyboardIME(
             initializeKeyboard(keyboardXmlId)
 
             val conjugateIndex = getValidatedConjugateIndex()
+
             setupConjugateKeysByLanguage(conjugateIndex)
-            promptText = conjugateOutput.keys.elementAtOrNull(conjugateIndex)
+            promptText = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex) ?: "___"
             hintWord = conjugateLabels.lastOrNull()
         }
 
@@ -937,7 +939,7 @@ abstract class GeneralKeyboardIME(
     private fun getValidatedConjugateIndex(): Int {
         val prefs = getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
         var index = prefs.getInt("conjugate_index", 0)
-        val maxIndex = if (this::conjugateOutput.isInitialized) conjugateOutput.keys.count() - 1 else -1
+        val maxIndex = conjugateOutput?.keys?.count()?.minus(1) ?: -1
         index = if (maxIndex >= 0) index.coerceIn(0, maxIndex) else 0
         prefs.edit { putInt("conjugate_index", index) }
         return index
@@ -967,18 +969,17 @@ abstract class GeneralKeyboardIME(
         startIndex: Int,
         isSubsequentArea: Boolean,
     ) {
-        if (!this::conjugateOutput.isInitialized || !this::conjugateLabels.isInitialized) {
+        if (conjugateOutput == null || !this::conjugateLabels.isInitialized) {
             return
         }
 
-        val title = conjugateOutput.keys.elementAtOrNull(startIndex)
-        val languageOutput = title?.let { conjugateOutput[it] }
+        val title = conjugateOutput?.keys?.elementAtOrNull(startIndex)
+        val languageOutput = title?.let { conjugateOutput!![it] }
 
         if (conjugateLabels.isEmpty() || title == null || languageOutput == null) {
             return
         }
 
-        Log.i("HELLO", "The output from the languageOutput is $languageOutput")
         if (language != "English") {
             setUpNonEnglishConjugateKeys(languageOutput, conjugateLabels.toList(), title)
         } else {
@@ -1996,24 +1997,28 @@ abstract class GeneralKeyboardIME(
     private fun handleConjugateState(rawInput: String) {
         val languageAlias = getLanguageAlias(language)
 
-        conjugateOutput =
+        val tempOutput =
             dbManagers.conjugateDataManager.getTheConjugateLabels(
                 languageAlias,
                 dataContract,
-                rawInput.lowercase(),
+                rawInput,
             )
+
+        conjugateOutput =
+            if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
+                null
+            } else {
+                tempOutput
+            }
 
         conjugateLabels =
             dbManagers.conjugateDataManager.extractConjugateHeadings(
                 dataContract,
-                rawInput.lowercase(),
+                rawInput,
             )
 
         currentState =
-            if (
-                conjugateOutput.isEmpty() ||
-                conjugateOutput.values.all { it.isEmpty() }
-            ) {
+            if (conjugateOutput == null) {
                 ScribeState.INVALID
             } else {
                 saveConjugateModeType(language)
