@@ -41,11 +41,11 @@
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:gravity="center"
-            android:minWidth="48dp"
+            android:minWidth="46dp"
             android:maxWidth="120dp"
             android:paddingStart="8dp"
+            android:paddingEnd="0dp"
             android:paddingTop="4dp"
-            android:paddingEnd="8dp"
             android:paddingBottom="4dp"
             android:singleLine="true"
             android:ellipsize="end"
@@ -53,20 +53,6 @@
             app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
             app:layout_constraintStart_toEndOf="@+id/scribe_key"
             app:layout_constraintTop_toTopOf="@+id/command_field" />
-
-        <TextView
-            android:id="@+id/prompt_text_border"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:background="@drawable/cmd_bar_prompt_background"
-            android:text="│"
-            android:textFontWeight="500"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/prompt_text"
-            app:layout_constraintBottom_toBottomOf="@+id/prompt_text"
-            app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
-            app:layout_constraintStart_toEndOf="@+id/prompt_text"
-            app:layout_constraintTop_toTopOf="@+id/prompt_text" />
 
 
         <LinearLayout
@@ -90,8 +76,8 @@
                 android:contentDescription="@string/command_bar"
                 android:cursorVisible="true"
                 android:inputType="text"
-                android:paddingStart="8dp"
                 android:paddingTop="4dp"
+                android:paddingStart="0dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp"
                 android:textAlignment="textStart"

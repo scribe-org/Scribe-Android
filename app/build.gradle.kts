@@ -43,7 +43,6 @@ android {
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     packaging {
@@ -52,10 +51,8 @@ android {
             pickFirsts.add("META-INF/ASL2.0")
             pickFirsts.add("META-INF/NOTICE*")
             pickFirsts.add("META-INF/LGPL2.1")
-
         }
     }
-
 
     kover {
         verify {
@@ -132,7 +129,6 @@ android {
         abortOnError = false
         checkReleaseBuilds = false
         disable.add("NullSafeMutableLiveData")
-
     }
 
     detekt {
@@ -141,7 +137,6 @@ android {
         allRules = false
         config.setFrom(rootProject.files("detekt.yml"))
     }
-
 
     kotlinter {
         failBuildWhenCannotAutoFormat = false
@@ -192,8 +187,6 @@ android {
         }
     }
 }
-
-
 
 dependencies {
     detektPlugins("io.nlopez.compose.rules:detekt:0.4.17")
@@ -270,11 +263,10 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.13")
     testImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.20")
-    testImplementation ("org.mockito:mockito-core:5.12.0")
-    testImplementation ("org.mockito:mockito-inline:5.2.0")
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     testImplementation("com.google.truth:truth:1.4.4")
-
 
     // ==========================
     // UI Tests
@@ -349,7 +341,6 @@ tasks.withType(Test::class) {
         excludes = listOf("jdk.internal.*")
     }
 }
-
 
 tasks.register<JacocoReport>("jacocoTestReport") {
     group = "Reporting"

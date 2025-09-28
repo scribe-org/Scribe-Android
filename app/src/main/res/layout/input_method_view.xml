@@ -446,10 +446,10 @@
             android:background="@drawable/cmd_bar_prompt_background"
             android:ellipsize="end"
             android:gravity="center"
-            android:minWidth="48dp"
+            android:minWidth="46dp"
             android:paddingStart="8dp"
+            android:paddingEnd="0dp"
             android:paddingTop="4dp"
-            android:paddingEnd="8dp"
             android:paddingBottom="4dp"
             android:singleLine="true"
             android:textColor="@android:color/black"
@@ -459,20 +459,6 @@
             app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
             app:layout_constraintStart_toEndOf="@+id/scribe_key_toolbar"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/prompt_text_border"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:background="@drawable/cmd_bar_prompt_background"
-            android:text="│"
-            android:textFontWeight="500"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/prompt_text"
-            app:layout_constraintBottom_toBottomOf="@id/prompt_text"
-            app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
-            app:layout_constraintStart_toEndOf="@id/prompt_text"
-            app:layout_constraintTop_toTopOf="@id/prompt_text" />
 
         <LinearLayout
             android:id="@+id/command_bar_layout"
@@ -492,14 +478,13 @@
                 android:background="@android:color/transparent"
                 android:backgroundTint="@null"
                 android:contentDescription="@string/command_bar"
-                android:cursorVisible="true"
+                android:cursorVisible="false"
                 android:inputType="text"
-                android:paddingStart="8dp"
                 android:paddingTop="4dp"
                 android:paddingEnd="8dp"
+                android:paddingStart="0dp"
                 android:paddingBottom="4dp"
                 android:textAlignment="textStart"
-                android:textCursorDrawable="@drawable/ic_custom_cursor"
                 android:textFontWeight="500"
                 android:textSize="16sp" />
         </LinearLayout>

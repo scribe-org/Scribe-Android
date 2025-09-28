@@ -60,35 +60,53 @@ class SpaceKeyProcessor(
      */
     private fun handleSpaceOutsideCommandBar(wasLastKeySpace: Boolean) {
         val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
-
         val ic = ime.currentInputConnection ?: return
-
         val wordBeforeSpace = ime.getLastWordBeforeCursor()
+        // Get char before space.
+        val twoCharsBeforeCursor = ic.getTextBeforeCursor(2, 0)?.toString()
+        val charBeforeSpace = if (twoCharsBeforeCursor?.length == 2) twoCharsBeforeCursor[0] else null
+        val isPunctuationBeforeSpace = charBeforeSpace == '.' || charBeforeSpace == '?' || charBeforeSpace == '!'
 
-        // Clear emoji suggestions since the word is now complete.
-        // suggestionHandler.processEmojiSuggestions(null)
+        var shouldEnableAutoCapitalization = false
 
         if (periodOnDoubleTapEnabled && wasLastKeySpace && ime.hasTextBeforeCursor()) {
             val textBeforeTwoChars = ic.getTextBeforeCursor(2, 0)?.toString()
 
             if (meetsTwoCharDoubleSpacePeriodCondition(textBeforeTwoChars)) {
                 val oneCharBefore = ic.getTextBeforeCursor(1, 0)?.toString()
-                if (oneCharBefore == " ") {
+                if (oneCharBefore == " " && !isPunctuationBeforeSpace) {
                     ime.commitPeriodAfterSpace()
+                    shouldEnableAutoCapitalization = true
                 } else {
                     insertSpace()
                 }
             } else {
                 val textBeforeOneChar = ic.getTextBeforeCursor(1, 0)?.toString()
-                if (textBeforeOneChar != null && textBeforeOneChar.length == 1 && textBeforeOneChar == " ") {
+                if (textBeforeOneChar == " " && !isPunctuationBeforeSpace) {
                     ime.commitPeriodAfterSpace()
+                    shouldEnableAutoCapitalization = true
                 } else {
                     insertSpace()
                 }
             }
         } else {
             insertSpace()
+
+            val textAfterSpace = ic.getTextBeforeCursor(2, 0)?.toString()
+            if (textAfterSpace?.length == 2) {
+                val punctuationChar = textAfterSpace[0]
+                val spaceChar = textAfterSpace[1]
+                if (spaceChar == ' ' && punctuationChar in listOf('.', '?', '!')) {
+                    shouldEnableAutoCapitalization = true
+                }
+            }
         }
+
+        if (shouldEnableAutoCapitalization) {
+            ime.keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
+            ime.keyboardView?.invalidateAllKeys()
+        }
+
         suggestionHandler.processLinguisticSuggestions(wordBeforeSpace)
         suggestionHandler.processWordSuggestions(wordBeforeSpace)
     }
