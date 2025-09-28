@@ -36,7 +36,7 @@ class ConjugateDataManager(
             tenseGroup.conjugationTypes.values.forEach { conjugationCategory ->
                 val forms =
                     conjugationCategory.conjugationForms.values.map { form ->
-                        getTheValueForTheConjugateWord(word, form, language)
+                        getTheValueForTheConjugateWord(word.lowercase(), form, language)
                     }
                 conjugateForms[conjugationCategory.title] = forms
             }
