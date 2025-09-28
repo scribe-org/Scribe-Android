@@ -30,6 +30,7 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -114,7 +115,7 @@ abstract class GeneralKeyboardIME(
     private lateinit var suggestionHandler: SuggestionHandler
     private var dataContract: DataContract? = null
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
-    private lateinit var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>
+    private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
     private lateinit var conjugateLabels: Set<String>
     private var emojiMaxKeywordLength: Int = 0
     internal lateinit var nounKeywords: HashMap<String, List<String>>
@@ -133,6 +134,14 @@ abstract class GeneralKeyboardIME(
     internal var currentState: ScribeState = ScribeState.IDLE
     private var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
 
+    private var currentPage = 0
+    private val totalPages = 3
+    private val explanationStrings =
+        arrayOf(
+            R.string.keyboard_not_in_wikidata_explanation_1,
+            R.string.keyboard_not_in_wikidata_explanation_2,
+            R.string.keyboard_not_in_wikidata_explanation_3,
+        )
     private var currentCommandBarHint: String = ""
     private var commandBarHintColor: Int = Color.GRAY
     private var commandBarTextColor: Int = Color.BLACK
@@ -405,7 +414,8 @@ abstract class GeneralKeyboardIME(
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
-        conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "coacha")
+        val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
+        conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
@@ -549,7 +559,7 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() {
         if (!this::binding.isInitialized) return
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-
+        Log.i("INVALID STATE PR", "The state of the keyboard is $currentState")
         when (currentState) {
             ScribeState.IDLE -> {
                 setupIdleView()
@@ -719,8 +729,9 @@ abstract class GeneralKeyboardIME(
             initializeKeyboard(keyboardXmlId)
 
             val conjugateIndex = getValidatedConjugateIndex()
+
             setupConjugateKeysByLanguage(conjugateIndex)
-            promptText = conjugateOutput.keys.elementAtOrNull(conjugateIndex)
+            promptText = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex) ?: "___"
             hintWord = conjugateLabels.lastOrNull()
         }
 
@@ -741,6 +752,77 @@ abstract class GeneralKeyboardIME(
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
+        binding.ivInfo.setOnClickListener { showInvalidInfo() }
+        binding.scribeKeyClose.setOnClickListener {
+            hideInvalidInfo()
+            moveToIdleState()
+        }
+    }
+
+    /**
+     * Hide information about Wikidata and/or invalid state field.
+     */
+    private fun hideInvalidInfo() {
+        binding.ivInfo.isClickable = true
+        binding.ivInfo.isFocusable = true
+        keyboardView?.findViewById<View>(R.id.keyboard_view)?.visibility = View.VISIBLE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.invalidText.text = HintUtils.getInvalidHint(language = language)
+    }
+
+    /**
+     * Show information about Wikidata when the user clicks the information icon.
+     */
+    private fun showInvalidInfo() {
+        binding.ivInfo.isClickable = true
+        binding.ivInfo.isFocusable = true
+        keyboardView?.findViewById<View>(R.id.keyboard_view)?.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.VISIBLE
+        binding.invalidText.text = HintUtils.getInvalidHint(language = language)
+        setupWikidataButtons()
+        updateWikidataPage()
+    }
+
+    /**
+     * Set navigation functionality with the left and right arrow button.
+     */
+    private fun setupWikidataButtons() {
+        binding.invalidInfoBar.findViewById<Button>(R.id.button_left).setOnClickListener {
+            if (currentPage > 0) {
+                currentPage--
+                updateWikidataPage()
+            }
+        }
+
+        binding.invalidInfoBar.findViewById<Button>(R.id.button_right).setOnClickListener {
+            if (currentPage < totalPages - 1) {
+                currentPage++
+                updateWikidataPage()
+            }
+        }
+    }
+
+    /**
+     * Update Wikidata information based on current navigation state.
+     */
+    private fun updateWikidataPage() {
+        binding.invalidInfoBar.findViewById<TextView>(R.id.middle_textview).setText(explanationStrings[currentPage])
+        updateDotIndicators()
+    }
+
+    /**
+     * Update page indicators to show which Wikidata explanation the user is currently viewing.
+     */
+    private fun updateDotIndicators() {
+        val pageIndicators = binding.invalidInfoBar.findViewById<LinearLayout>(R.id.page_indicators)
+        for (i in 0 until pageIndicators.childCount) {
+            val dot = pageIndicators.getChildAt(i)
+            dot.background =
+                ContextCompat.getDrawable(
+                    this,
+                    if (i == currentPage) R.drawable.dot_active else R.drawable.dot_inactive,
+                )
+        }
     }
 
     /**
@@ -860,7 +942,7 @@ abstract class GeneralKeyboardIME(
     private fun getValidatedConjugateIndex(): Int {
         val prefs = getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
         var index = prefs.getInt("conjugate_index", 0)
-        val maxIndex = if (this::conjugateOutput.isInitialized) conjugateOutput.keys.count() - 1 else -1
+        val maxIndex = conjugateOutput?.keys?.count()?.minus(1) ?: -1
         index = if (maxIndex >= 0) index.coerceIn(0, maxIndex) else 0
         prefs.edit { putInt("conjugate_index", index) }
         return index
@@ -890,18 +972,17 @@ abstract class GeneralKeyboardIME(
         startIndex: Int,
         isSubsequentArea: Boolean,
     ) {
-        if (!this::conjugateOutput.isInitialized || !this::conjugateLabels.isInitialized) {
+        if (conjugateOutput == null || !this::conjugateLabels.isInitialized) {
             return
         }
 
-        val title = conjugateOutput.keys.elementAtOrNull(startIndex)
-        val languageOutput = title?.let { conjugateOutput[it] }
+        val title = conjugateOutput?.keys?.elementAtOrNull(startIndex)
+        val languageOutput = title?.let { conjugateOutput!![it] }
 
         if (conjugateLabels.isEmpty() || title == null || languageOutput == null) {
             return
         }
 
-        Log.i("HELLO", "The output from the languageOutput is $languageOutput")
         if (language != "English") {
             setUpNonEnglishConjugateKeys(languageOutput, conjugateLabels.toList(), title)
         } else {
@@ -1919,24 +2000,28 @@ abstract class GeneralKeyboardIME(
     private fun handleConjugateState(rawInput: String) {
         val languageAlias = getLanguageAlias(language)
 
-        conjugateOutput =
+        val tempOutput =
             dbManagers.conjugateDataManager.getTheConjugateLabels(
                 languageAlias,
                 dataContract,
-                rawInput.lowercase(),
+                rawInput,
             )
+
+        conjugateOutput =
+            if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
+                null
+            } else {
+                tempOutput
+            }
 
         conjugateLabels =
             dbManagers.conjugateDataManager.extractConjugateHeadings(
                 dataContract,
-                rawInput.lowercase(),
+                rawInput,
             )
 
         currentState =
-            if (
-                conjugateOutput.isEmpty() ||
-                conjugateOutput.values.all { it.isEmpty() }
-            ) {
+            if (conjugateOutput == null) {
                 ScribeState.INVALID
             } else {
                 saveConjugateModeType(language)
