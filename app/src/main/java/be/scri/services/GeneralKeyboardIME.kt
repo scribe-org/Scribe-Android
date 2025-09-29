@@ -146,6 +146,8 @@ abstract class GeneralKeyboardIME(
     private var commandBarHintColor: Int = Color.GRAY
     private var commandBarTextColor: Int = Color.BLACK
 
+    private var currentVerbForConjugation: String? = null
+
     /**
      * This function is updated to reliably detect search bars in various apps,
      * including browsers like Chrome and Firefox, not just fields with IME_ACTION_SEARCH.
@@ -523,6 +525,7 @@ abstract class GeneralKeyboardIME(
      * @param text A specific text to be displayed in the prompt, often used for conjugation titles.
      * @param word A word to be included in the hint text.
      */
+    @SuppressLint("SetTextI18n")
     private fun updateCommandBarHintAndPrompt(
         isUserDarkMode: Boolean? = null,
         text: String? = null,
@@ -532,24 +535,40 @@ abstract class GeneralKeyboardIME(
         val commandBarEditText = binding.commandBar
         val promptTextView = binding.promptText
 
-        // 1. Get the hint message and prompt text.
-        currentCommandBarHint = HintUtils.getCommandBarHint(currentState, language, word)
-        val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
-        promptTextView.text = promptText
-
-        // 2. Set the appropriate colors based on the theme.
+        // Set up colors and background.
         commandBarHintColor = if (resolvedIsDarkMode) getColor(R.color.hint_white) else getColor(R.color.hint_black)
         commandBarTextColor = if (resolvedIsDarkMode) getColor(white) else Color.BLACK
-
         val backgroundColor = if (resolvedIsDarkMode) R.color.command_bar_color_dark else white
         binding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, backgroundColor)
-        promptTextView.setTextColor(if (resolvedIsDarkMode) getColor(white) else Color.BLACK)
+
+        // Set prompt text.
+        val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
+        promptTextView.text = promptText
+        promptTextView.setTextColor(commandBarTextColor)
         promptTextView.setBackgroundColor(getColor(backgroundColor))
 
-        // 3. Set the initial state of the command bar to show the hint.
-        commandBarEditText.setTextColor(commandBarHintColor)
-        setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
-        commandBarEditText.requestFocus()
+        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
+            // Set to the verb that the user can select options for.
+            val verbInfinitive = currentVerbForConjugation ?: ""
+
+            commandBarEditText.setText(": $verbInfinitive")
+            commandBarEditText.setTextColor(commandBarTextColor)
+
+            commandBarEditText.isFocusable = false
+            commandBarEditText.isFocusableInTouchMode = false
+        } else {
+            // Default for Plural, Translate, etc. where user needs to type.
+            currentCommandBarHint = HintUtils.getCommandBarHint(currentState, language, word)
+
+            // Make sure the command bar is editable again.
+            commandBarEditText.isFocusable = true
+            commandBarEditText.isFocusableInTouchMode = true
+
+            // Set the fake hint with the custom cursor.
+            commandBarEditText.setTextColor(commandBarHintColor)
+            setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
+            commandBarEditText.requestFocus()
+        }
     }
 
     /**
@@ -865,6 +884,7 @@ abstract class GeneralKeyboardIME(
         clearSuggestionData()
         currentState = ScribeState.SELECT_COMMAND
         saveConjugateModeType("none")
+        currentVerbForConjugation = null
         updateUI()
     }
 
@@ -875,6 +895,7 @@ abstract class GeneralKeyboardIME(
         clearSuggestionData()
         currentState = ScribeState.IDLE
         saveConjugateModeType("none")
+        currentVerbForConjugation = null
         if (this::binding.isInitialized) updateUI()
     }
 
@@ -1998,6 +2019,7 @@ abstract class GeneralKeyboardIME(
      * @param rawInput The verb entered in the command bar.
      */
     private fun handleConjugateState(rawInput: String) {
+        currentVerbForConjugation = rawInput
         val languageAlias = getLanguageAlias(language)
 
         val tempOutput =
