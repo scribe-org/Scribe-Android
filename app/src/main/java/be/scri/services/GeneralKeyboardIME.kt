@@ -525,20 +525,20 @@ abstract class GeneralKeyboardIME(
         val commandBarEditText = binding.commandBar
         val promptTextView = binding.promptText
 
-        // Set up colors and background
+        // Set up colors and background.
         commandBarHintColor = if (resolvedIsDarkMode) getColor(R.color.hint_white) else getColor(R.color.hint_black)
         commandBarTextColor = if (resolvedIsDarkMode) getColor(white) else Color.BLACK
         val backgroundColor = if (resolvedIsDarkMode) R.color.command_bar_color_dark else white
         binding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, backgroundColor)
 
-        // Set prompt text
+        // Set prompt text.
         val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
         promptTextView.text = promptText
         promptTextView.setTextColor(commandBarTextColor)
         promptTextView.setBackgroundColor(getColor(backgroundColor))
 
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
-            // SPECIAL CASE for conjugation view
+            // Set to the verb that the user can select options for.
             val verbInfinitive = currentVerbForConjugation ?: ""
 
             commandBarEditText.setText(": $verbInfinitive")
@@ -547,14 +547,14 @@ abstract class GeneralKeyboardIME(
             commandBarEditText.isFocusable = false
             commandBarEditText.isFocusableInTouchMode = false
         } else {
-            // DEFAULT CASE for Plural, Translate, etc. where user needs to type
+            // Default for Plural, Translate, etc. where user needs to type.
             currentCommandBarHint = HintUtils.getCommandBarHint(currentState, language, word)
 
-            // Make sure the command bar is editable again
+            // Make sure the command bar is editable again.
             commandBarEditText.isFocusable = true
             commandBarEditText.isFocusableInTouchMode = true
 
-            // Set the fake hint with the custom cursor
+            // Set the fake hint with the custom cursor.
             commandBarEditText.setTextColor(commandBarHintColor)
             setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
             commandBarEditText.requestFocus()
