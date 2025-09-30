@@ -4,6 +4,7 @@ package be.scri.helpers
 import DataContract
 import android.content.Context
 import be.scri.helpers.data.AutoSuggestionDataManager
+import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.data.ConjugateDataManager
 import be.scri.helpers.data.ContractDataLoader
 import be.scri.helpers.data.EmojiDataManager
@@ -33,6 +34,7 @@ class DatabaseManagers(
     val translationDataManager = TranslationDataManager(context, fileManager)
     val conjugateDataManager = ConjugateDataManager(fileManager)
     val suggestionManager = AutoSuggestionDataManager(fileManager)
+    val autocompletionManager = AutocompletionDataManager(fileManager)
 
     /**
      * A facade method to load the data contract for a given language.

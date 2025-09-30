@@ -42,6 +42,7 @@ import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
+import be.scri.helpers.AutocompletionHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
@@ -60,6 +61,7 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
+import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
@@ -113,6 +115,8 @@ abstract class GeneralKeyboardIME(
 
     private lateinit var dbManagers: DatabaseManagers
     private lateinit var suggestionHandler: SuggestionHandler
+    private lateinit var autocompletionHandler: AutocompletionHandler
+    private lateinit var autocompletionManager: AutocompletionDataManager
     private var dataContract: DataContract? = null
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
     private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
@@ -145,6 +149,20 @@ abstract class GeneralKeyboardIME(
     private var currentCommandBarHint: String = ""
     private var commandBarHintColor: Int = Color.GRAY
     private var commandBarTextColor: Int = Color.BLACK
+
+    fun getAutocompletions(
+        prefix: String,
+        limit: Int = 5,
+    ): List<String> =
+        try {
+            dbManagers.autocompletionManager.getAutocompletions(prefix, limit)
+        } catch (e: SQLiteException) {
+            Log.e("GeneralKeyboardIME", "Database error in autocompletion", e)
+            emptyList()
+        } catch (e: IllegalStateException) {
+            Log.e("GeneralKeyboardIME", "Illegal state in autocompletion", e)
+            emptyList()
+        }
 
     /**
      * This function is updated to reliably detect search bars in various apps,
@@ -200,6 +218,8 @@ abstract class GeneralKeyboardIME(
         super.onCreate()
         dbManagers = DatabaseManagers(this)
         suggestionHandler = SuggestionHandler(this)
+        autocompletionManager = dbManagers.autocompletionManager
+        autocompletionHandler = AutocompletionHandler(this)
     }
 
     /**
@@ -413,6 +433,7 @@ abstract class GeneralKeyboardIME(
                 ?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
+        autocompletionManager.loadWords(languageAlias)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
         val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
         conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
@@ -1453,6 +1474,38 @@ abstract class GeneralKeyboardIME(
         )
     }
 
+    fun updateAutocompleteSuggestions(completions: List<String>?) {
+        if (currentState != ScribeState.IDLE) {
+            clearAutocomplete()
+            return
+        }
+        renderAutocompleteRow(completions)
+    }
+
+    private fun renderAutocompleteRow(completions: List<String>?) {
+        if (currentState != ScribeState.IDLE) {
+            clearAutocomplete()
+            return
+        }
+
+        if (completions.isNullOrEmpty()) {
+            disableAutocompleteRow()
+            return
+        }
+
+        handleWordAutocompletion(completions = completions)
+    }
+
+    fun clearAutocomplete() {
+        disableAutocompleteRow()
+    }
+
+    private fun disableAutocompleteRow() {
+        // Clear only the autocomplete UI row
+        // If you’re reusing the same suggestion bar, you can just clear it:
+        handleWordAutocompletion(completions = null)
+    }
+
     /**
      * A helper function to specifically trigger the plural suggestion UI if needed.
      * @param isPlural `true` if the word is plural.
@@ -1617,6 +1670,25 @@ abstract class GeneralKeyboardIME(
                 setSuggestionButton(binding.pluralBtn, suggestion3)
             }
         }
+        return true
+    }
+
+    private fun handleWordAutocompletion(completions: List<String>?): Boolean {
+        if (completions.isNullOrEmpty()) return false
+
+        val suggestion1 = completions.getOrNull(0) ?: ""
+        val suggestion2 = completions.getOrNull(1) ?: ""
+        val suggestion3 = completions.getOrNull(2) ?: ""
+
+        // Set 3 buttons for autocompletion (all in same "row")
+        setSuggestionButton(binding.conjugateBtn, suggestion1)
+        setSuggestionButton(binding.translateBtn, suggestion2)
+        setSuggestionButton(binding.pluralBtn, suggestion3)
+
+        // Force show separators between all 3
+        binding.separator1.visibility = View.VISIBLE
+        binding.separator2.visibility = View.VISIBLE
+
         return true
     }
 
