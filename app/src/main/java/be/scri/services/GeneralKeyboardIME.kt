@@ -6,6 +6,7 @@ import DataContract
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
+import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -1638,6 +1639,30 @@ abstract class GeneralKeyboardIME(
         }
     }
 
+    private fun setAutocompleteButton(
+        button: Button,
+        text: String,
+    ) {
+        setSuggestionButton(button, text)
+
+        button.setOnClickListener {
+            val ic = currentInputConnection ?: return@setOnClickListener
+
+            val beforeText = ic.getTextBeforeCursor(50, 0) ?: ""
+
+            val wordStartIndex =
+                beforeText.lastIndexOfAny(
+                    charArrayOf(' ', '\n', '\t', '.', ',', '?', '!'),
+                ) + 1
+            val currentWord = beforeText.substring(wordStartIndex)
+
+            ic.deleteSurroundingText(currentWord.length, 0)
+            ic.commitText(text, 1)
+
+            moveToIdleState()
+        }
+    }
+
     private fun handleWordSuggestions(
         hasLinguisticSuggestions: Boolean,
         wordSuggestions: List<String>? = null,
@@ -1681,9 +1706,9 @@ abstract class GeneralKeyboardIME(
         val suggestion3 = completions.getOrNull(2) ?: ""
 
         // Set 3 buttons for autocompletion (all in same "row")
-        setSuggestionButton(binding.conjugateBtn, suggestion1)
-        setSuggestionButton(binding.translateBtn, suggestion2)
-        setSuggestionButton(binding.pluralBtn, suggestion3)
+        setAutocompleteButton(binding.conjugateBtn, suggestion1)
+        setAutocompleteButton(binding.translateBtn, suggestion2)
+        setAutocompleteButton(binding.pluralBtn, suggestion3)
 
         // Force show separators between all 3
         binding.separator1.visibility = View.VISIBLE

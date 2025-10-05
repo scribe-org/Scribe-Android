@@ -34,7 +34,7 @@ class DatabaseManagers(
     val translationDataManager = TranslationDataManager(context, fileManager)
     val conjugateDataManager = ConjugateDataManager(fileManager)
     val suggestionManager = AutoSuggestionDataManager(fileManager)
-    val autocompletionManager = AutocompletionDataManager(fileManager)
+    val autocompletionManager = AutocompletionDataManager()
 
     /**
      * A facade method to load the data contract for a given language.
