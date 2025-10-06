@@ -22,6 +22,15 @@ class AutocompletionHandler(
         private const val AUTOCOMPLETE_DELAY_MS = 50L
     }
 
+    /**
+     * Processes the current word for autocompletion.
+     *
+     * This function is called whenever the user types.
+     * It cancels any pending autocomplete request and schedules a new one
+     * after a short delay to prevent excessive lookups.
+     *
+     * @param currentWord The word currently being typed by the user.
+     */
     fun processAutocomplete(currentWord: String?) {
         autocompleteRunnable?.let { handler.removeCallbacks(it) }
 
@@ -32,7 +41,7 @@ class AutocompletionHandler(
                     return@Runnable
                 }
 
-                if (currentWord.isNullOrEmpty() || currentWord.length < 2) {
+                if (currentWord.isNullOrEmpty()) {
                     ime.clearAutocomplete()
                     return@Runnable
                 }
@@ -49,6 +58,10 @@ class AutocompletionHandler(
         handler.postDelayed(autocompleteRunnable!!, AUTOCOMPLETE_DELAY_MS)
     }
 
+    /**
+     * Immediately cancels any scheduled autocomplete task
+     * and clears autocomplete suggestions from the keyboard.
+     */
     fun clearAutocomplete() {
         autocompleteRunnable?.let { handler.removeCallbacks(it) }
         ime.clearAutocomplete()

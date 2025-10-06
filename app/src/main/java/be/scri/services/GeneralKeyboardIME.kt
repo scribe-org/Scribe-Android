@@ -153,9 +153,13 @@ abstract class GeneralKeyboardIME(
 
     private var currentVerbForConjugation: String? = null
 
+    /**
+     * Safely fetches autocomplete suggestions for the given prefix.
+     * Returns an empty list if a database or state error occurs.
+     */
     fun getAutocompletions(
         prefix: String,
-        limit: Int = 5,
+        limit: Int = 3,
     ): List<String> =
         try {
             dbManagers.autocompletionManager.getAutocompletions(prefix, limit)
@@ -1496,6 +1500,10 @@ abstract class GeneralKeyboardIME(
         )
     }
 
+    /**
+     * Updates autocomplete UI with a new list of suggestions.
+     * Clears it if not idle or no completions.
+     */
     fun updateAutocompleteSuggestions(completions: List<String>?) {
         if (currentState != ScribeState.IDLE) {
             clearAutocomplete()
@@ -1504,6 +1512,10 @@ abstract class GeneralKeyboardIME(
         renderAutocompleteRow(completions)
     }
 
+    /**
+     * Renders the autocomplete row if there are valid completions.
+     * Disables it when empty or inactive.
+     */
     private fun renderAutocompleteRow(completions: List<String>?) {
         if (currentState != ScribeState.IDLE) {
             clearAutocomplete()
@@ -1515,17 +1527,17 @@ abstract class GeneralKeyboardIME(
             return
         }
 
-        handleWordAutocompletion(completions = completions)
+        handleWordAutocompletion(completions)
     }
 
+    /** Clears autocomplete suggestions. */
     fun clearAutocomplete() {
         disableAutocompleteRow()
     }
 
+    /** Hides the autocomplete row in the UI. */
     private fun disableAutocompleteRow() {
-        // Clear only the autocomplete UI row
-        // If you’re reusing the same suggestion bar, you can just clear it:
-        handleWordAutocompletion(completions = null)
+        handleWordAutocompletion(null)
     }
 
     /**
@@ -1660,6 +1672,10 @@ abstract class GeneralKeyboardIME(
         }
     }
 
+    /**
+     * Sets up an autocomplete button with the given suggestion text.
+     * When clicked, it replaces the current word with the suggestion.
+     */
     private fun setAutocompleteButton(
         button: Button,
         text: String,
@@ -1719,6 +1735,10 @@ abstract class GeneralKeyboardIME(
         return true
     }
 
+    /**
+     * Displays up to three autocomplete suggestions in the UI.
+     * Returns false if no completions are available.
+     */
     private fun handleWordAutocompletion(completions: List<String>?): Boolean {
         if (completions.isNullOrEmpty()) return false
 
@@ -1726,12 +1746,12 @@ abstract class GeneralKeyboardIME(
         val suggestion2 = completions.getOrNull(1) ?: ""
         val suggestion3 = completions.getOrNull(2) ?: ""
 
-        // Set 3 buttons for autocompletion (all in same "row")
+        // Assign suggestions to the 3 autocomplete buttons.
         setAutocompleteButton(binding.conjugateBtn, suggestion1)
         setAutocompleteButton(binding.translateBtn, suggestion2)
         setAutocompleteButton(binding.pluralBtn, suggestion3)
 
-        // Force show separators between all 3
+        // Ensure the separators between buttons are visible.
         binding.separator1.visibility = View.VISIBLE
         binding.separator2.visibility = View.VISIBLE
 
