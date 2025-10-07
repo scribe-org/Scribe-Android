@@ -22,6 +22,7 @@ class KeyHandler(
 ) {
     private val suggestionHandler = SuggestionHandler(ime)
     private val spaceKeyProcessor = SpaceKeyProcessor(ime, suggestionHandler)
+    private val autocompletionHandler = AutocompletionHandler(ime)
 
     /** Tracks if the last key pressed was a space, used for "period on double space" logic. */
     private var wasLastKeySpace: Boolean = false
@@ -204,7 +205,9 @@ class KeyHandler(
         ime.handleDelete(isCommandBarActive, ime.isDeleteRepeating()) // Pass the actual repeating status
 
         if (ime.currentState == ScribeState.IDLE) {
-            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+            val currentWord = ime.getLastWordBeforeCursor()
+            autocompletionHandler.processAutocomplete(currentWord)
+            suggestionHandler.processEmojiSuggestions(currentWord)
         }
     }
 
@@ -354,9 +357,12 @@ class KeyHandler(
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
         if (ime.currentState == ScribeState.IDLE) {
-            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+            val currentWord = ime.getLastWordBeforeCursor()
+            autocompletionHandler.processAutocomplete(currentWord)
+            suggestionHandler.processEmojiSuggestions(currentWord)
         } else if (isCommandBarActive) {
             suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+            autocompletionHandler.clearAutocomplete()
         }
     }
 }
