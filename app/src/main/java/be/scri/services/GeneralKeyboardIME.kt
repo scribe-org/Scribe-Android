@@ -6,6 +6,7 @@ import DataContract
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
+import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -42,6 +43,7 @@ import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
+import be.scri.helpers.AutocompletionHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
@@ -60,6 +62,7 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
+import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.HintUtils
 import be.scri.views.KeyboardView
@@ -113,6 +116,8 @@ abstract class GeneralKeyboardIME(
 
     private lateinit var dbManagers: DatabaseManagers
     private lateinit var suggestionHandler: SuggestionHandler
+    private lateinit var autocompletionHandler: AutocompletionHandler
+    private lateinit var autocompletionManager: AutocompletionDataManager
     private var dataContract: DataContract? = null
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
     private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
@@ -147,6 +152,24 @@ abstract class GeneralKeyboardIME(
     private var commandBarTextColor: Int = Color.BLACK
 
     private var currentVerbForConjugation: String? = null
+
+    /**
+     * Safely fetches autocomplete suggestions for the given prefix.
+     * Returns an empty list if a database or state error occurs.
+     */
+    fun getAutocompletions(
+        prefix: String,
+        limit: Int = 3,
+    ): List<String> =
+        try {
+            dbManagers.autocompletionManager.getAutocompletions(prefix, limit)
+        } catch (e: SQLiteException) {
+            Log.e("GeneralKeyboardIME", "Database error in autocompletion", e)
+            emptyList()
+        } catch (e: IllegalStateException) {
+            Log.e("GeneralKeyboardIME", "Illegal state in autocompletion", e)
+            emptyList()
+        }
 
     /**
      * This function is updated to reliably detect search bars in various apps,
@@ -202,6 +225,8 @@ abstract class GeneralKeyboardIME(
         super.onCreate()
         dbManagers = DatabaseManagers(this)
         suggestionHandler = SuggestionHandler(this)
+        autocompletionManager = dbManagers.autocompletionManager
+        autocompletionHandler = AutocompletionHandler(this)
     }
 
     /**
@@ -415,6 +440,7 @@ abstract class GeneralKeyboardIME(
                 ?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
+        autocompletionManager.loadWords(languageAlias)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
         val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
         conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
@@ -1475,6 +1501,47 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
+     * Updates autocomplete UI with a new list of suggestions.
+     * Clears it if not idle or no completions.
+     */
+    fun updateAutocompleteSuggestions(completions: List<String>?) {
+        if (currentState != ScribeState.IDLE) {
+            clearAutocomplete()
+            return
+        }
+        renderAutocompleteRow(completions)
+    }
+
+    /**
+     * Renders the autocomplete row if there are valid completions.
+     * Disables it when empty or inactive.
+     */
+    private fun renderAutocompleteRow(completions: List<String>?) {
+        if (currentState != ScribeState.IDLE) {
+            clearAutocomplete()
+            return
+        }
+
+        if (completions.isNullOrEmpty()) {
+            disableAutocompleteRow()
+            return
+        }
+
+        handleWordAutocompletion(completions)
+    }
+
+    /** Clears autocomplete suggestions. */
+    fun clearAutocomplete() {
+        disableAutocompleteRow()
+    }
+
+    /** Hides the autocomplete row in the UI. */
+    private fun disableAutocompleteRow() {
+        val completions = listOf("", "", "")
+        handleWordAutocompletion(completions)
+    }
+
+    /**
      * A helper function to specifically trigger the plural suggestion UI if needed.
      * @param isPlural `true` if the word is plural.
      * @return `true` if the plural suggestion was handled, `false` otherwise.
@@ -1606,6 +1673,39 @@ abstract class GeneralKeyboardIME(
         }
     }
 
+    /**
+     * Sets up an autocomplete button with the given suggestion text.
+     * When clicked, it replaces the current word with the suggestion.
+     */
+    private fun setAutocompleteButton(
+        button: Button,
+        text: String,
+    ) {
+        setSuggestionButton(button, text)
+
+        if (text.isBlank()) {
+            button.setOnClickListener(null)
+            return
+        }
+
+        button.setOnClickListener {
+            val ic = currentInputConnection ?: return@setOnClickListener
+
+            val beforeText = ic.getTextBeforeCursor(50, 0) ?: ""
+
+            val wordStartIndex =
+                beforeText.lastIndexOfAny(
+                    charArrayOf(' ', '\n', '\t', '.', ',', '?', '!'),
+                ) + 1
+            val currentWord = beforeText.substring(wordStartIndex)
+
+            ic.deleteSurroundingText(currentWord.length, 0)
+            ic.commitText(text, 1)
+
+            moveToIdleState()
+        }
+    }
+
     private fun handleWordSuggestions(
         hasLinguisticSuggestions: Boolean,
         wordSuggestions: List<String>? = null,
@@ -1638,6 +1738,29 @@ abstract class GeneralKeyboardIME(
                 setSuggestionButton(binding.pluralBtn, suggestion3)
             }
         }
+        return true
+    }
+
+    /**
+     * Displays up to three autocomplete suggestions in the UI.
+     * Returns false if no completions are available.
+     */
+    private fun handleWordAutocompletion(completions: List<String>?): Boolean {
+        if (completions.isNullOrEmpty()) return false
+
+        val completion1 = completions.getOrNull(0) ?: ""
+        val completion2 = completions.getOrNull(1) ?: ""
+        val completion3 = completions.getOrNull(2) ?: ""
+
+        // Assign suggestions to the 3 autocomplete buttons.
+        setAutocompleteButton(binding.conjugateBtn, completion1)
+        setAutocompleteButton(binding.translateBtn, completion2)
+        setAutocompleteButton(binding.pluralBtn, completion3)
+
+        // Ensure the separators between buttons are visible.
+        binding.separator1.visibility = View.VISIBLE
+        binding.separator2.visibility = View.VISIBLE
+
         return true
     }
 
@@ -1853,27 +1976,33 @@ abstract class GeneralKeyboardIME(
 
         // Don't change button text if we're in TRANSLATE or SELECT_COMMAND state.
         if (currentState != ScribeState.TRANSLATE && currentState != ScribeState.SELECT_COMMAND) {
-            // A helper function to create the click listener.
-            val createSuggestionClickListener = { suggestion: String ->
-                View.OnClickListener {
-                    currentInputConnection?.commitText("$suggestion ", 1)
+            // Check if user is currently typing (no space or text still active)
+            val beforeCursor = currentInputConnection?.getTextBeforeCursor(1, 0)
+            val isTyping = beforeCursor != null && beforeCursor.isNotEmpty() && beforeCursor != " "
+
+            // Only update if user is not typing
+            if (!isTyping) {
+                val createSuggestionClickListener = { suggestion: String ->
+                    View.OnClickListener {
+                        currentInputConnection?.commitText("$suggestion ", 1)
+                    }
                 }
+
+                val suggestions = HintUtils.getBaseAutoSuggestions(language)
+
+                val suggestion1 = suggestions.getOrNull(0) ?: ""
+                binding.translateBtn.text = suggestion1
+                binding.translateBtn.background = null
+                binding.translateBtn.setOnClickListener(createSuggestionClickListener(suggestion1))
+
+                val suggestion2 = suggestions.getOrNull(1) ?: ""
+                binding.conjugateBtn.text = suggestion2
+                binding.conjugateBtn.setOnClickListener(createSuggestionClickListener(suggestion2))
+
+                val suggestion3 = suggestions.getOrNull(2) ?: ""
+                binding.pluralBtn.text = suggestion3
+                binding.pluralBtn.setOnClickListener(createSuggestionClickListener(suggestion3))
             }
-
-            val suggestions = HintUtils.getBaseAutoSuggestions(language)
-
-            val suggestion1 = suggestions.getOrNull(0) ?: ""
-            binding.translateBtn.text = suggestion1
-            binding.translateBtn.background = null
-            binding.translateBtn.setOnClickListener(createSuggestionClickListener(suggestion1))
-
-            val suggestion2 = suggestions.getOrNull(1) ?: ""
-            binding.conjugateBtn.text = suggestion2
-            binding.conjugateBtn.setOnClickListener(createSuggestionClickListener(suggestion2))
-
-            val suggestion3 = suggestions.getOrNull(2) ?: ""
-            binding.pluralBtn.text = suggestion3
-            binding.pluralBtn.setOnClickListener(createSuggestionClickListener(suggestion3))
         }
 
         handleTextSizeForSuggestion(binding.translateBtn)
