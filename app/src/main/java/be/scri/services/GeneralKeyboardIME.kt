@@ -1537,7 +1537,8 @@ abstract class GeneralKeyboardIME(
 
     /** Hides the autocomplete row in the UI. */
     private fun disableAutocompleteRow() {
-        handleWordAutocompletion(null)
+        val completions = listOf("", "", "")
+        handleWordAutocompletion(completions)
     }
 
     /**
@@ -1742,14 +1743,14 @@ abstract class GeneralKeyboardIME(
     private fun handleWordAutocompletion(completions: List<String>?): Boolean {
         if (completions.isNullOrEmpty()) return false
 
-        val suggestion1 = completions.getOrNull(0) ?: ""
-        val suggestion2 = completions.getOrNull(1) ?: ""
-        val suggestion3 = completions.getOrNull(2) ?: ""
+        val completion1 = completions.getOrNull(0) ?: ""
+        val completion2 = completions.getOrNull(1) ?: ""
+        val completion3 = completions.getOrNull(2) ?: ""
 
         // Assign suggestions to the 3 autocomplete buttons.
-        setAutocompleteButton(binding.conjugateBtn, suggestion1)
-        setAutocompleteButton(binding.translateBtn, suggestion2)
-        setAutocompleteButton(binding.pluralBtn, suggestion3)
+        setAutocompleteButton(binding.conjugateBtn, completion1)
+        setAutocompleteButton(binding.translateBtn, completion2)
+        setAutocompleteButton(binding.pluralBtn, completion3)
 
         // Ensure the separators between buttons are visible.
         binding.separator1.visibility = View.VISIBLE
