@@ -1683,6 +1683,11 @@ abstract class GeneralKeyboardIME(
     ) {
         setSuggestionButton(button, text)
 
+        if (text.isBlank()) {
+            button.setOnClickListener(null)
+            return
+        }
+
         button.setOnClickListener {
             val ic = currentInputConnection ?: return@setOnClickListener
 
