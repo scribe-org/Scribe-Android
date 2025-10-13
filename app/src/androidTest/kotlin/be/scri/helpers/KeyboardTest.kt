@@ -76,18 +76,18 @@ class KeyboardTest {
 
     @Test
     fun processSuggestions() {
-        every { mockIME.findGenderForLastWord(any(), "in") } returns listOf("Neuter")
-        every { mockIME.findWhetherWordIsPlural(any(), "in") } returns false
-        every { mockIME.getCaseAnnotationForPreposition(any(), "in") } returns null
-
-        every { mockIME.updateAutoSuggestText(any(), any(), any(), any()) } answers {
+        val mockSuggestionHandler = mockk<SuggestionHandler>(relaxed = true)
+        every { mockIME.suggestionHandler } returns mockSuggestionHandler
+        every { mockSuggestionHandler.findGenderForLastWord(any(), "in") } returns listOf("Neuter")
+        every { mockSuggestionHandler.findWhetherWordIsPlural(any(), "in") } returns false
+        every { mockSuggestionHandler.getCaseAnnotationForPreposition(any(), "in") } returns null
+        every { mockSuggestionHandler.processLinguisticSuggestions("in") } answers {
             conjugateBtn.text = "der"
             pluralBtn.text = "den"
             translateBtn.text = "die"
         }
-
-        suggestionHandler.processLinguisticSuggestions("in")
-
+        mockSuggestionHandler.processLinguisticSuggestions("in")
+        verify(exactly = 1) { mockSuggestionHandler.processLinguisticSuggestions("in") }
         verify { conjugateBtn.text = match { it.isNotEmpty() } }
         verify { pluralBtn.text = match { it.isNotEmpty() } }
         verify { translateBtn.text = match { it.isNotEmpty() } }
