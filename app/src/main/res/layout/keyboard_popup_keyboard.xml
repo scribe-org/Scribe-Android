@@ -3,4 +3,4 @@
     style="@style/KeyboardViewPopup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/you_keyboard_background_color" />
+    android:background="@drawable/minikeyboard_background" />

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="you_keyboard_background_color">#3F3F46</color>
+    <color name="you_keyboard_background_color">#191C1E</color>
     <color name="you_keyboard_toolbar_color">@color/you_background_color</color>
     <color name="app_text_color">@color/dark_text_color</color>
     <color name="nav_bar_color">#000</color>
