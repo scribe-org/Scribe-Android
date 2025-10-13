@@ -3,6 +3,7 @@
 package be.scri.services
 
 import DataContract
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
@@ -15,7 +16,10 @@ import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -26,6 +30,8 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -111,7 +117,7 @@ abstract class GeneralKeyboardIME(
     internal lateinit var conjugateHandler: ConjugateHandler
     internal var dataContract: DataContract? = null
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
-    private lateinit var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>
+    private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
     private lateinit var conjugateLabels: Set<String>
     private var emojiMaxKeywordLength: Int = 0
     internal lateinit var nounKeywords: HashMap<String, List<String>>
@@ -129,6 +135,20 @@ abstract class GeneralKeyboardIME(
 
     internal var currentState: ScribeState = ScribeState.IDLE
     private var earlierValue: Int? = keyboardView?.setEnterKeyIcon(ScribeState.IDLE)
+
+    private var currentPage = 0
+    private val totalPages = 3
+    private val explanationStrings =
+        arrayOf(
+            R.string.keyboard_not_in_wikidata_explanation_1,
+            R.string.keyboard_not_in_wikidata_explanation_2,
+            R.string.keyboard_not_in_wikidata_explanation_3,
+        )
+    private var currentCommandBarHint: String = ""
+    private var commandBarHintColor: Int = Color.GRAY
+    private var commandBarTextColor: Int = Color.BLACK
+
+    private var currentVerbForConjugation: String? = null
 
     /**
      * This function is updated to reliably detect search bars in various apps,
@@ -391,7 +411,8 @@ abstract class GeneralKeyboardIME(
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
-        conjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "coacha")
+        val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
+        conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
@@ -486,6 +507,7 @@ abstract class GeneralKeyboardIME(
      * @param text A specific text to be displayed in the prompt, often used for conjugation titles.
      * @param word A word to be included in the hint text.
      */
+    @SuppressLint("SetTextI18n")
     private fun updateCommandBarHintAndPrompt(
         isUserDarkMode: Boolean? = null,
         text: String? = null,
@@ -493,30 +515,41 @@ abstract class GeneralKeyboardIME(
     ) {
         val resolvedIsDarkMode = isUserDarkMode ?: getIsDarkModeOrNot(applicationContext)
         val commandBarEditText = binding.commandBar
-        val hintMessage = HintUtils.getCommandBarHint(currentState, language, word)
-        val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
         val promptTextView = binding.promptText
+
+        // Set up colors and background.
+        commandBarHintColor = if (resolvedIsDarkMode) getColor(R.color.hint_white) else getColor(R.color.hint_black)
+        commandBarTextColor = if (resolvedIsDarkMode) getColor(white) else Color.BLACK
+        val backgroundColor = if (resolvedIsDarkMode) R.color.command_bar_color_dark else white
+        binding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, backgroundColor)
+
+        // Set prompt text.
+        val promptText = HintUtils.getPromptText(currentState, language, context = this, text)
         promptTextView.text = promptText
-        commandBarEditText.hint = hintMessage
-        commandBarEditText.requestFocus()
-        if (resolvedIsDarkMode) {
-            commandBarEditText.setHintTextColor(getColor(R.color.hint_white))
-            commandBarEditText.setTextColor(getColor(white))
-            binding.commandBarLayout.backgroundTintList =
-                ContextCompat.getColorStateList(
-                    this,
-                    R.color.command_bar_color_dark,
-                )
-            promptTextView.setTextColor(getColor(white))
-            promptTextView.setBackgroundColor(getColor(R.color.command_bar_color_dark))
-            binding.promptTextBorder.setBackgroundColor(getColor(R.color.command_bar_color_dark))
+        promptTextView.setTextColor(commandBarTextColor)
+        promptTextView.setBackgroundColor(getColor(backgroundColor))
+
+        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
+            // Set to the verb that the user can select options for.
+            val verbInfinitive = currentVerbForConjugation ?: ""
+
+            commandBarEditText.setText(": $verbInfinitive")
+            commandBarEditText.setTextColor(commandBarTextColor)
+
+            commandBarEditText.isFocusable = false
+            commandBarEditText.isFocusableInTouchMode = false
         } else {
-            commandBarEditText.setHintTextColor(getColor(R.color.hint_black))
-            commandBarEditText.setTextColor(Color.BLACK)
-            binding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(this, white)
-            promptTextView.setTextColor(Color.BLACK)
-            promptTextView.setBackgroundColor(getColor(white))
-            binding.promptTextBorder.setBackgroundColor(getColor(white))
+            // Default for Plural, Translate, etc. where user needs to type.
+            currentCommandBarHint = HintUtils.getCommandBarHint(currentState, language, word)
+
+            // Make sure the command bar is editable again.
+            commandBarEditText.isFocusable = true
+            commandBarEditText.isFocusableInTouchMode = true
+
+            // Set the fake hint with the custom cursor.
+            commandBarEditText.setTextColor(commandBarHintColor)
+            setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
+            commandBarEditText.requestFocus()
         }
     }
 
@@ -527,7 +560,7 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() {
         if (!this::binding.isInitialized) return
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-
+        Log.i("INVALID STATE PR", "The state of the keyboard is $currentState")
         when (currentState) {
             ScribeState.IDLE -> {
                 setupIdleView()
@@ -698,7 +731,7 @@ abstract class GeneralKeyboardIME(
 
             val conjugateIndex = getValidatedConjugateIndex()
             conjugateHandler.setupConjugateKeysByLanguage(conjugateIndex)
-            promptText = conjugateOutput.keys.elementAtOrNull(conjugateIndex)
+            promptText = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex) ?: "___"
             hintWord = conjugateLabels.lastOrNull()
         }
 
@@ -708,22 +741,95 @@ abstract class GeneralKeyboardIME(
     /**
      * Configures the UI for the `INVALID` state, which is shown when a command (e.g., translation) fails.
      */
+    @SuppressLint("SetTextI18n")
     private fun setupInvalidView() {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
         binding.toolbarBar.setBackgroundColor(if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt())
         binding.ivInfo.visibility = View.VISIBLE
-        binding.promptText.text = HintUtils.getInvalidHint(language = language)
+        binding.promptText.text = HintUtils.getInvalidHint(language = language) + ": "
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         binding.scribeKeyToolbar.setOnClickListener { moveToSelectCommandState() }
+        binding.ivInfo.setOnClickListener { showInvalidInfo() }
+        binding.scribeKeyClose.setOnClickListener {
+            hideInvalidInfo()
+            moveToIdleState()
+        }
+    }
+
+    /**
+     * Hide information about Wikidata and/or invalid state field.
+     */
+    private fun hideInvalidInfo() {
+        binding.ivInfo.isClickable = true
+        binding.ivInfo.isFocusable = true
+        keyboardView?.findViewById<View>(R.id.keyboard_view)?.visibility = View.VISIBLE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.invalidText.text = HintUtils.getInvalidHint(language = language)
+    }
+
+    /**
+     * Show information about Wikidata when the user clicks the information icon.
+     */
+    private fun showInvalidInfo() {
+        binding.ivInfo.isClickable = true
+        binding.ivInfo.isFocusable = true
+        keyboardView?.findViewById<View>(R.id.keyboard_view)?.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.VISIBLE
+        binding.invalidText.text = HintUtils.getInvalidHint(language = language)
+        setupWikidataButtons()
+        updateWikidataPage()
+    }
+
+    /**
+     * Set navigation functionality with the left and right arrow button.
+     */
+    private fun setupWikidataButtons() {
+        binding.invalidInfoBar.findViewById<Button>(R.id.button_left).setOnClickListener {
+            if (currentPage > 0) {
+                currentPage--
+                updateWikidataPage()
+            }
+        }
+
+        binding.invalidInfoBar.findViewById<Button>(R.id.button_right).setOnClickListener {
+            if (currentPage < totalPages - 1) {
+                currentPage++
+                updateWikidataPage()
+            }
+        }
+    }
+
+    /**
+     * Update Wikidata information based on current navigation state.
+     */
+    private fun updateWikidataPage() {
+        binding.invalidInfoBar.findViewById<TextView>(R.id.middle_textview).setText(explanationStrings[currentPage])
+        updateDotIndicators()
+    }
+
+    /**
+     * Update page indicators to show which Wikidata explanation the user is currently viewing.
+     */
+    private fun updateDotIndicators() {
+        val pageIndicators = binding.invalidInfoBar.findViewById<LinearLayout>(R.id.page_indicators)
+        for (i in 0 until pageIndicators.childCount) {
+            val dot = pageIndicators.getChildAt(i)
+            dot.background =
+                ContextCompat.getDrawable(
+                    this,
+                    if (i == currentPage) R.drawable.dot_active else R.drawable.dot_inactive,
+                )
+        }
     }
 
     /**
      * Configures the UI for the `ALREADY_PLURAL` state, which is shown when the user
      * attempts to pluralize a word that is already plural.
      */
+    @SuppressLint("SetTextI18n")
     private fun setupAlreadyPluralView() {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
@@ -732,7 +838,7 @@ abstract class GeneralKeyboardIME(
             if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
         )
         binding.ivInfo.visibility = View.VISIBLE
-        binding.promptText.text = ALREADY_PLURAL_MSG
+        binding.promptText.text = "$ALREADY_PLURAL_MSG: "
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground =
             AppCompatResources.getDrawable(
@@ -759,6 +865,7 @@ abstract class GeneralKeyboardIME(
         clearSuggestionData()
         currentState = ScribeState.SELECT_COMMAND
         conjugateHandler.saveConjugateModeType("none")
+        currentVerbForConjugation = null
         updateUI()
     }
 
@@ -769,6 +876,7 @@ abstract class GeneralKeyboardIME(
         clearSuggestionData()
         currentState = ScribeState.IDLE
         conjugateHandler.saveConjugateModeType("none")
+        currentVerbForConjugation = null
         if (this::binding.isInitialized) updateUI()
     }
 
@@ -836,10 +944,197 @@ abstract class GeneralKeyboardIME(
     private fun getValidatedConjugateIndex(): Int {
         val prefs = getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
         var index = prefs.getInt("conjugate_index", 0)
-        val maxIndex = if (this::conjugateOutput.isInitialized) conjugateOutput.keys.count() - 1 else -1
+        val maxIndex = conjugateOutput?.keys?.count()?.minus(1) ?: -1
         index = if (maxIndex >= 0) index.coerceIn(0, maxIndex) else 0
         prefs.edit { putInt("conjugate_index", index) }
         return index
+    }
+
+    /**
+     * A wrapper to set up the conjugation key labels for the current language and index.
+     * @param conjugateIndex The index of the conjugation tense/mood to display.
+     * @param isSubsequentArea `true` if setting up a secondary view.
+     */
+    internal fun setupConjugateKeysByLanguage(
+        conjugateIndex: Int,
+        isSubsequentArea: Boolean = false,
+    ) {
+        setUpConjugateKeys(
+            startIndex = conjugateIndex,
+            isSubsequentArea = isSubsequentArea,
+        )
+    }
+
+    /**
+     * Sets the labels for the special conjugation keys based on the selected tense/mood.
+     * @param startIndex The index of the conjugation tense/mood from the loaded data.
+     * @param isSubsequentArea `true` if this is for a secondary conjugation view.
+     */
+    private fun setUpConjugateKeys(
+        startIndex: Int,
+        isSubsequentArea: Boolean,
+    ) {
+        if (conjugateOutput == null || !this::conjugateLabels.isInitialized) {
+            return
+        }
+
+        val title = conjugateOutput?.keys?.elementAtOrNull(startIndex)
+        val languageOutput = title?.let { conjugateOutput!![it] }
+
+        if (conjugateLabels.isEmpty() || title == null || languageOutput == null) {
+            return
+        }
+
+        if (language != "English") {
+            setUpNonEnglishConjugateKeys(languageOutput, conjugateLabels.toList(), title)
+        } else {
+            setUpEnglishConjugateKeys(languageOutput, isSubsequentArea)
+        }
+
+        if (isSubsequentArea) {
+            keyboardView?.setKeyLabel("HI", "HI", KeyboardBase.CODE_FPS)
+        }
+    }
+
+    /**
+     * Sets up conjugation key labels for non-English languages, which typically follow a 3x2 grid layout.
+     * @param languageOutput The map of conjugation forms for the selected tense.
+     * @param conjugateLabel The list of labels for each person/number (e.g., "1ps", "2ps").
+     * @param title The title of the current tense/mood.
+     */
+    private fun setUpNonEnglishConjugateKeys(
+        languageOutput: Map<String, Collection<String>>,
+        conjugateLabel: List<String>,
+        title: String,
+    ) {
+        val keyCodes =
+            when (language) {
+                "Swedish" -> {
+                    listOf(
+                        KeyboardBase.CODE_TR,
+                        KeyboardBase.CODE_TL,
+                        KeyboardBase.CODE_BR,
+                        KeyboardBase.CODE_BL,
+                    )
+                }
+
+                else -> {
+                    listOf(
+                        KeyboardBase.CODE_FPS,
+                        KeyboardBase.CODE_FPP,
+                        KeyboardBase.CODE_SPS,
+                        KeyboardBase.CODE_SPP,
+                        KeyboardBase.CODE_TPS,
+                        KeyboardBase.CODE_TPP,
+                    )
+                }
+            }
+
+        keyCodes.forEachIndexed { index, code ->
+            val value = languageOutput[title]?.elementAtOrNull(index) ?: ""
+            keyboardView?.setKeyLabel(value, conjugateLabel.getOrNull(index) ?: "", code)
+        }
+    }
+
+    /**
+     * Sets up conjugation key labels for English, which has a more complex structure,
+     * potentially requiring a subsequent selection view.
+     * @param languageOutput The map of conjugation forms for the selected tense.
+     * @param isSubsequentArea `true` if this is for a secondary view.
+     */
+    private fun setUpEnglishConjugateKeys(
+        languageOutput: Map<String, Collection<String>>,
+        isSubsequentArea: Boolean,
+    ) {
+        val keys = languageOutput.keys.toList()
+        val sharedPreferences = this.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
+
+        val keyMapping =
+            listOf(
+                Triple(0, KeyboardBase.CODE_TL, "CODE_TL"),
+                Triple(1, KeyboardBase.CODE_TR, "CODE_TR"),
+                Triple(DATA_SIZE_2, KeyboardBase.CODE_BL, "CODE_BL"),
+                Triple(DATA_CONSTANT_3, KeyboardBase.CODE_BR, "CODE_BR"),
+            )
+
+        if (!isSubsequentArea) {
+            keyMapping.forEach { (_, code, _) -> keyboardView?.setKeyLabel("HI", "HI", code) }
+        }
+
+        subsequentAreaRequired = false
+        keyMapping.forEach { (index, code, prefKey) ->
+            val outputKey = keys.getOrNull(index)
+            val output = outputKey?.let { languageOutput[it] }
+
+            if (output != null) {
+                if (output.size > 1) {
+                    subsequentAreaRequired = true
+                    subsequentData.add(output.toList())
+                    sharedPreferences.edit { putString("1", prefKey) }
+                } else {
+                    sharedPreferences.edit { putString("0", prefKey) }
+                }
+                keyboardView?.setKeyLabel(output.firstOrNull().toString(), "HI", code)
+            }
+        }
+    }
+
+    /**
+     * Sets up a secondary "sub-view" for conjugation when a single key has multiple options.
+     * @param data The full dataset of subsequent options.
+     * @param word The specific word selected from the primary view, used to filter the data.
+     */
+    internal fun setupConjugateSubView(
+        data: List<List<String>>,
+        word: String?,
+    ) {
+        val uniqueData = data.distinct()
+        val filteredData = uniqueData.filter { sublist -> sublist.contains(word) }
+        val flattenList = filteredData.flatten()
+        saveConjugateModeType(language = language, true)
+        val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
+        prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
+        val keyboardXmlId = getKeyboardLayoutForState(currentState, true, flattenList.size)
+        initializeKeyboard(keyboardXmlId)
+        prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
+        when (flattenList.size) {
+            DATA_SIZE_2 -> {
+                keyboardView?.setKeyLabel(flattenList[0], "HI", KeyboardBase.CODE_2X1_TOP)
+                keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_2X1_BOTTOM)
+                subsequentAreaRequired = false
+            }
+            DATA_CONSTANT_3 -> {
+                keyboardView?.setKeyLabel(flattenList[0], "HI", KeyboardBase.CODE_1X3_RIGHT)
+                keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_1X3_CENTER)
+                keyboardView?.setKeyLabel(flattenList[DATA_SIZE_2], "HI", KeyboardBase.CODE_1X3_RIGHT)
+                subsequentAreaRequired = false
+            }
+        }
+        prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
+        binding.ivInfo.visibility = View.GONE
+    }
+
+    /**
+     * Saves the type of conjugation layout being used (e.g., "2x2", "3x2") to shared preferences.
+     * @param language The current keyboard language.
+     * @param isSubsequentArea `true` if this is for a secondary view.
+     */
+    internal fun saveConjugateModeType(
+        language: String,
+        isSubsequentArea: Boolean = false,
+    ) {
+        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
+        val mode =
+            if (!isSubsequentArea) {
+                when (language) {
+                    "English", "Russian", "Swedish" -> "2x2"
+                    "German", "French", "Italian", "Portuguese", "Spanish" -> "3x2"
+                    else -> "none"
+                }
+            } else {
+                "none"
+            }
+        sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
 
     /**
@@ -1375,11 +1670,7 @@ abstract class GeneralKeyboardIME(
             return
         }
 
-        val rawInput =
-            binding.commandBar.text
-                ?.toString()
-                ?.trim()
-                ?.takeIf { it.isNotEmpty() }
+        val rawInput = getCommandBarTextWithoutCursor().trim().takeIf { it.isNotEmpty() }
 
         if (rawInput == null) {
             moveToIdleState()
@@ -1424,6 +1715,46 @@ abstract class GeneralKeyboardIME(
         } else {
             applyCommandOutput(commandModeOutput, inputConnection)
         }
+    }
+
+    /**
+     * Handles the Enter key press when in the `CONJUGATE` state. It fetches the
+     * conjugation data for the entered verb and transitions to the selection view.
+     * @param rawInput The verb entered in the command bar.
+     */
+    private fun handleConjugateState(rawInput: String) {
+        currentVerbForConjugation = rawInput
+        val languageAlias = getLanguageAlias(language)
+
+        val tempOutput =
+            dbManagers.conjugateDataManager.getTheConjugateLabels(
+                languageAlias,
+                dataContract,
+                rawInput,
+            )
+
+        conjugateOutput =
+            if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
+                null
+            } else {
+                tempOutput
+            }
+
+        conjugateLabels =
+            dbManagers.conjugateDataManager.extractConjugateHeadings(
+                dataContract,
+                rawInput,
+            )
+
+        currentState =
+            if (conjugateOutput == null) {
+                ScribeState.INVALID
+            } else {
+                saveConjugateModeType(language)
+                ScribeState.SELECT_VERB_CONJUNCTION
+            }
+
+        updateUI()
     }
 
     /**
@@ -1543,19 +1874,54 @@ abstract class GeneralKeyboardIME(
      * Handles the delete key press specifically for the command bar text field.
      */
     private fun handleCommandBarDelete() {
-        val commandBar = binding.commandBar
-        val start = commandBar.selectionStart
-        if (start > 0) {
-            commandBar.text.delete(start - 1, start)
+        val currentTextWithoutCursor = getCommandBarTextWithoutCursor()
+        // If we're already showing the hint, do nothing on delete.
+        if (currentTextWithoutCursor == currentCommandBarHint) {
+            return
         }
 
-        if (
-            commandBar.text.isEmpty() &&
-            language == "German" &&
-            this.currentState == ScribeState.PLURAL
-        ) {
+        if (currentTextWithoutCursor.isNotEmpty()) {
+            val newText = currentTextWithoutCursor.dropLast(1)
+            if (newText.isEmpty()) {
+                // All real text has been deleted, so restore the hint.
+                setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
+                binding.commandBar.setTextColor(commandBarHintColor)
+            } else {
+                // There's still text left, so just update it.
+                setCommandBarTextWithCursor(newText)
+            }
+        }
+
+        // Handle German plural mode shift state.
+        val finalCommandBarText = getCommandBarTextWithoutCursor()
+        val isEmptyOrAHint = finalCommandBarText.isEmpty() || finalCommandBarText == currentCommandBarHint
+        val isGerman = language == "German"
+        val isPluralState = currentState == ScribeState.PLURAL
+
+        if (isEmptyOrAHint && isGerman && isPluralState) {
             keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         }
+    }
+
+    /**
+     * Handles a key press on one of the special conjugation keys.
+     * It either commits the text directly or prepares for a subsequent selection view.
+     * @param code The key code of the pressed key.
+     * @param isSubsequentRequired `true` if a sub-view is needed for more options.
+     * @return The label of the key that was pressed.
+     */
+    fun handleConjugateKeys(
+        code: Int,
+        isSubsequentRequired: Boolean,
+    ): String? {
+        val keyLabel = keyboardView?.getKeyLabel(code)
+        if (!isSubsequentRequired) {
+            if (!keyLabel.isNullOrEmpty()) {
+                currentInputConnection?.commitText("$keyLabel ", 1)
+                suggestionHandler.processLinguisticSuggestions(keyLabel)
+            }
+        }
+        return keyLabel
     }
 
     /**
@@ -1680,15 +2046,34 @@ abstract class GeneralKeyboardIME(
         keyboardMode: Int,
         commandBarState: Boolean = false,
     ) {
-        val inputConnection = currentInputConnection ?: return
-        var codeChar = code.toChar()
-        if (Character.isLetter(codeChar) && keyboard!!.mShiftState > SHIFT_OFF) {
-            codeChar = Character.toUpperCase(codeChar)
-        }
         if (commandBarState) {
-            val commandBar = binding.commandBar
-            commandBar.text.insert(commandBar.selectionStart, codeChar.toString())
+            // Add character before the cursor in command bar.
+            val codeChar =
+                if (Character.isLetter(code.toChar()) && keyboard!!.mShiftState > SHIFT_OFF) {
+                    Character.toUpperCase(code.toChar())
+                } else {
+                    code.toChar()
+                }
+            val currentTextWithoutCursor = getCommandBarTextWithoutCursor()
+
+            // Check if the command bar is showing the hint.
+            if (currentTextWithoutCursor == currentCommandBarHint) {
+                // This is the first character typed. Overwrite the hint.
+                binding.commandBar.setTextColor(commandBarTextColor)
+                setCommandBarTextWithCursor(codeChar.toString())
+            } else {
+                // User is already typing, so just append the new character.
+                val newText = currentTextWithoutCursor + codeChar
+                setCommandBarTextWithCursor(newText)
+            }
         } else {
+            // Handle regular input to main text field (unchanged).
+            val inputConnection = currentInputConnection ?: return
+            var codeChar = code.toChar()
+            if (Character.isLetter(codeChar) && keyboard!!.mShiftState > SHIFT_OFF) {
+                codeChar = Character.toUpperCase(codeChar)
+            }
+
             if (keyboardMode != keyboardLetters && code == KeyboardBase.KEYCODE_SPACE) {
                 val originalText = inputConnection.getExtractedText(ExtractedTextRequest(), 0).text
                 inputConnection.commitText(codeChar.toString(), 1)
@@ -1698,10 +2083,58 @@ abstract class GeneralKeyboardIME(
                 inputConnection.commitText(codeChar.toString(), 1)
             }
         }
+
         if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
             keyboard!!.mShiftState = SHIFT_OFF
             keyboardView!!.invalidateAllKeys()
         }
+    }
+
+    /**
+     * Gets the current text in the command bar without the cursor.
+     * @return The text content without the trailing cursor character.
+     */
+    private fun getCommandBarTextWithoutCursor(): String {
+        val currentText = binding.commandBar.text.toString()
+        return when {
+            currentText.startsWith(CUSTOM_CURSOR) -> currentText.drop(1)
+            currentText.endsWith(CUSTOM_CURSOR) -> currentText.dropLast(1)
+            else -> currentText
+        }
+    }
+
+    /**
+     * Sets the command bar text and ensures it ends with the custom cursor.
+     * @param text The text to set (without cursor).
+     * @param cursorAtStart The flag to check if the text in the EditText is empty to determine the position of the cursor
+     */
+    private fun setCommandBarTextWithCursor(
+        text: String,
+        cursorAtStart: Boolean = false,
+    ) {
+        if (cursorAtStart) {
+            // HINT STATE: Use a Spannable to color the cursor differently.
+            val hintWithCursor = CUSTOM_CURSOR + text
+            val spannable = SpannableString(hintWithCursor)
+
+            // Apply the normal text color (black/white) to the cursor, which is the first character.
+            spannable.setSpan(
+                ForegroundColorSpan(commandBarTextColor),
+                0, // etart index of cursor
+                1, // end index of cursor
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+
+            // Set the styled text in the EditText.
+            binding.commandBar.setText(spannable, TextView.BufferType.SPANNABLE)
+        } else {
+            // TYPING STATE
+            val textWithCursor = text + CUSTOM_CURSOR
+            binding.commandBar.setText(textWithCursor)
+        }
+
+        // Always move the EditText's real selection to the end to allow typing.
+        binding.commandBar.setSelection(binding.commandBar.text.length)
     }
 
     internal companion object {
@@ -1715,5 +2148,6 @@ abstract class GeneralKeyboardIME(
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         private const val COMMAND_BUTTON_SPACING_DP = 4
         private const val SEPARATOR_WIDTH = 0.5f
+        private const val CUSTOM_CURSOR = "│" // special tall cursor character
     }
 }

@@ -446,10 +446,10 @@
             android:background="@drawable/cmd_bar_prompt_background"
             android:ellipsize="end"
             android:gravity="center"
-            android:minWidth="48dp"
+            android:minWidth="46dp"
             android:paddingStart="8dp"
+            android:paddingEnd="0dp"
             android:paddingTop="4dp"
-            android:paddingEnd="6dp"
             android:paddingBottom="4dp"
             android:singleLine="true"
             android:textColor="@android:color/black"
@@ -459,20 +459,6 @@
             app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
             app:layout_constraintStart_toEndOf="@+id/scribe_key_toolbar"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/prompt_text_border"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:background="@drawable/cmd_bar_prompt_background"
-            android:text="┃"
-            android:textFontWeight="500"
-            android:textSize="16sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/prompt_text"
-            app:layout_constraintBottom_toBottomOf="@id/prompt_text"
-            app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
-            app:layout_constraintStart_toEndOf="@id/prompt_text"
-            app:layout_constraintTop_toTopOf="@id/prompt_text" />
 
         <LinearLayout
             android:id="@+id/command_bar_layout"
@@ -494,9 +480,9 @@
                 android:contentDescription="@string/command_bar"
                 android:cursorVisible="false"
                 android:inputType="text"
-                android:paddingStart="8dp"
                 android:paddingTop="4dp"
                 android:paddingEnd="8dp"
+                android:paddingStart="0dp"
                 android:paddingBottom="4dp"
                 android:textAlignment="textStart"
                 android:textFontWeight="500"
@@ -513,6 +499,149 @@
             app:layout_constraintBottom_toBottomOf="@+id/command_bar_layout"
             app:layout_constraintEnd_toEndOf="@+id/command_bar_layout"
             app:layout_constraintTop_toTopOf="@+id/command_bar_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ================================================================================= -->
+    <!--  Container for the "INVALID" state -->
+    <!-- ================================================================================= -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/invalid_info_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/toolbar_background_color"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Scribe Key (Close) -->
+        <Button
+            android:id="@+id/scribe_key_close"
+            android:layout_width="@dimen/command_state_scribe_key_width"
+            android:layout_height="36dp"
+            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/scribe_key_background_left_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:contentDescription="@string/scribe_key"
+            android:foreground="@drawable/close"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/light_key_text_color"
+            android:paddingEnd="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Full width TextView -->
+        <TextView
+            android:id="@+id/invalid_text"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:paddingStart="8dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/cmd_bar_background_right_rounded"
+            android:ellipsize="end"
+            android:gravity="center_vertical|start"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textFontWeight="500"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/scribe_key_close"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/info_wiki"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="240dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/tiny_margin"
+            android:background="@color/toolbar_background_color"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@+id/invalid_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Left Button -->
+            <Button
+                android:id="@+id/button_left"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/button_click_effect"
+                android:foreground="@drawable/ic_left_arrow"
+                android:foregroundGravity="center" />
+
+            <!-- Middle TextView -->
+            <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:orientation="vertical"
+            android:backgroundTint="@color/button_color"
+            android:background="@drawable/rounded_all_corners">
+            
+            <TextView
+                android:id="@+id/middle_textview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:gravity="center"
+                android:textColor="@color/key_text_color"
+                android:textSize="16sp" />
+            
+            <LinearLayout
+                android:id="@+id/page_indicators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/dot_active" />
+                    
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/dot_inactive" />
+                    
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/dot_inactive" />
+                    
+            </LinearLayout>
+        </LinearLayout>
+
+            <!-- Right Button -->
+            <Button
+                android:id="@+id/button_right"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/button_click_effect"
+                android:foreground="@drawable/ic_right_arrow"
+                android:foregroundGravity="center" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

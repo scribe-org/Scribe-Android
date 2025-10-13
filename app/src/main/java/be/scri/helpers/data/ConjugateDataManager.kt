@@ -29,20 +29,24 @@ class ConjugateDataManager(
         language: String,
         jsonData: DataContract?,
         word: String,
-    ): MutableMap<String, MutableMap<String, Collection<String>>> {
+    ): MutableMap<String, MutableMap<String, Collection<String>>>? {
         val finalOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
         jsonData?.conjugations?.values?.forEach { tenseGroup ->
             val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
             tenseGroup.conjugationTypes.values.forEach { conjugationCategory ->
                 val forms =
                     conjugationCategory.conjugationForms.values.map { form ->
-                        getTheValueForTheConjugateWord(word, form, language)
+                        getTheValueForTheConjugateWord(word.lowercase(), form, language)
                     }
                 conjugateForms[conjugationCategory.title] = forms
             }
             finalOutput[tenseGroup.title] = conjugateForms
         }
-        return finalOutput
+        return if (finalOutput.isEmpty() || finalOutput.values.all { it.isEmpty() || it.values.all { forms -> forms.all { it.isEmpty() } } }) {
+            null
+        } else {
+            finalOutput
+        }
     }
 
     /**
