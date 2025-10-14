@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/button_background_shape">
         <shape android:shape="rectangle">
-            <solid android:color="@color/theme_dark_background_color" />
+            <solid android:color="#3F3F46" />
             <corners android:radius="@dimen/small_margin" />
         </shape>
     </item>
@@ -12,7 +12,7 @@
             <stroke
                 android:width="1dp"
                 android:color="@color/divider_grey" />
-            <solid android:color="@android:color/transparent" />
+            <solid android:color="#3F3F46" />
             <corners android:radius="@dimen/small_margin" />
         </shape>
     </item>
