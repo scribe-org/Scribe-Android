@@ -417,7 +417,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintBottom_toTopOf="@+id/conjugate_grid_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -457,8 +457,41 @@
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
-            app:layout_constraintStart_toEndOf="@+id/scribe_key_toolbar"
+            app:layout_constraintStart_toEndOf="@+id/conjugate_prev"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Conjugation switching controls: visible only in SELECT_VERB_CONJUNCTION state -->
+        <ImageButton
+            android:id="@+id/conjugate_prev"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/button_click_effect"
+            android:contentDescription="@string/previous"
+            android:scaleType="center"
+            android:src="@drawable/ic_left_arrow"
+            android:tint="@color/you_primary_color"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/prompt_text"
+            app:layout_constraintEnd_toStartOf="@+id/prompt_text"
+            app:layout_constraintStart_toEndOf="@+id/scribe_key_toolbar"
+            app:layout_constraintTop_toTopOf="@+id/prompt_text" />
+
+        <ImageButton
+            android:id="@+id/conjugate_next"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/button_click_effect"
+            android:contentDescription="@string/next"
+            android:scaleType="center"
+            android:src="@drawable/ic_right_arrow"
+            android:tint="@color/you_primary_color"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/prompt_text"
+            app:layout_constraintEnd_toStartOf="@+id/command_bar_layout"
+            app:layout_constraintStart_toEndOf="@+id/prompt_text"
+            app:layout_constraintTop_toTopOf="@+id/prompt_text" />
 
         <LinearLayout
             android:id="@+id/command_bar_layout"
@@ -645,9 +678,25 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- ================================================================================= -->
-    <!--  The Shared KeyboardView                                                          -->
-    <!-- ================================================================================= -->
+
+    <!-- Conjugate grid container: filled with 250dp fixed height, between toolbar and keyboard -->
+    <FrameLayout
+        android:id="@+id/conjugate_grid_container"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_bar">
+        <LinearLayout
+            android:id="@+id/conjugate_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="0dp" />
+    </FrameLayout>
+
     <be.scri.views.KeyboardView
         android:id="@+id/keyboard_view"
         style="@style/KeyboardView"

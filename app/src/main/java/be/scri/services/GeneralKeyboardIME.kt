@@ -620,8 +620,10 @@ abstract class GeneralKeyboardIME(
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
                 binding.translateBtn.visibility = View.VISIBLE
             }
+            ScribeState.CONJUGATE -> setupToolbarView()
+            ScribeState.SELECT_VERB_CONJUNCTION -> setupToolbarView()
+            ScribeState.PLURAL -> setupToolbarView()
             ScribeState.ALREADY_PLURAL -> setupAlreadyPluralView()
-            else -> setupToolbarView()
         }
 
         updateEnterKeyColor(isUserDarkMode)
@@ -769,15 +771,86 @@ abstract class GeneralKeyboardIME(
         var hintWord: String? = null
         var promptText: String? = null
 
+        // Default: hide conjugation switching controls
+        binding.conjugatePrev.visibility = View.GONE
+        binding.conjugateNext.visibility = View.GONE
+
+        // Show/hide conjugate grid based on state
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
-            val keyboardXmlId = getKeyboardLayoutForState(currentState)
-            initializeKeyboard(keyboardXmlId)
+            // Show conjugate_grid_container (1/3 screen size) between toolbar and keyboard
+            binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.VISIBLE
+            binding.keyboardView.visibility = View.GONE
+
+            // Populate the grid with appropriate layout based on language
+            val grid = binding.root.findViewById<LinearLayout>(R.id.conjugate_grid)
+            grid.removeAllViews()
 
             val conjugateIndex = getValidatedConjugateIndex()
+            val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
+            val languageOutput = title?.let { conjugateOutput!![it] }
+            val forms = languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
 
-            setupConjugateKeysByLanguage(conjugateIndex)
-            promptText = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex) ?: "___"
+            // Choose layout based on language and number of forms
+            val layoutResId = when {
+                language == "English" && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                language in listOf("Russian", "Swedish") && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                forms.size > 4 -> R.layout.conjugate_grid_3x2
+                else -> R.layout.conjugate_grid_2x2
+            }
+
+            val gridContent = layoutInflater.inflate(layoutResId, grid, false) as LinearLayout
+            grid.addView(gridContent)
+
+            // Bind conjugate forms to grid buttons
+            val buttonIds = listOf(
+                R.id.conjugate_btn_1,
+                R.id.conjugate_btn_2,
+                R.id.conjugate_btn_3,
+                R.id.conjugate_btn_4,
+                R.id.conjugate_btn_5,
+                R.id.conjugate_btn_6
+            )
+
+            buttonIds.forEachIndexed { i, btnId ->
+                val btn = gridContent.findViewById<Button?>(btnId)
+                if (btn != null) {
+                    btn.text = forms.getOrNull(i) ?: ""
+                    btn.setOnClickListener {
+                        val label = btn.text.toString()
+                        if (label.isNotEmpty()) {
+                            currentInputConnection?.commitText("$label ", 1)
+                            suggestionHandler.processLinguisticSuggestions(label)
+                        }
+                        // Close the conjugate view immediately after clicking
+                        moveToIdleState()
+                    }
+                }
+            }
+
+            promptText = title ?: "___"
             hintWord = conjugateLabels.lastOrNull()
+
+            // Show and wire up switching controls above the keyboard
+            binding.conjugatePrev.visibility = View.VISIBLE
+            binding.conjugateNext.visibility = View.VISIBLE
+
+            val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
+            binding.conjugatePrev.setOnClickListener {
+                val current = prefs.getInt("conjugate_index", 0)
+                prefs.edit { putInt("conjugate_index", current + 1) }
+                updateUI()
+            }
+            binding.conjugateNext.setOnClickListener {
+                val current = prefs.getInt("conjugate_index", 0)
+                prefs.edit { putInt("conjugate_index", current - 1) }
+                updateUI()
+            }
+        } else {
+            // Hide conjugate_grid_container and show keyboardView for other states
+            binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.GONE
+            binding.keyboardView.visibility = View.VISIBLE
+            binding.conjugatePrev.visibility = View.GONE
+            binding.conjugateNext.visibility = View.GONE
         }
 
         updateCommandBarHintAndPrompt(text = promptText, isUserDarkMode = isDarkMode, word = hintWord)
