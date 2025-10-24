@@ -403,6 +403,7 @@ fun getLanguageStringFromi18n(language: String): Int {
             "German" to R.string.app__global_german,
             "French" to R.string.app__global_french,
             "Spanish" to R.string.app__global_spanish,
+            "Indonesian" to R.string.app__global_indonesian,
             "Italian" to R.string.app__global_italian,
             "Russian" to R.string.app__global_russian,
             "Portuguese" to R.string.app__global_portuguese,

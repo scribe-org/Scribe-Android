@@ -135,6 +135,19 @@
                 android:name="android.view.im"
                 android:resource="@xml/method_italian" />
         </service>
+        <service
+            android:name=".services.IndonesianKeyboardIME"
+            android:exported="true"
+            android:label="Scribe"
+            android:permission="android.permission.BIND_INPUT_METHOD" >
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method_indonesian" />
+        </service>
     </application>
 
 </manifest>

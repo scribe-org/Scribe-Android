@@ -118,6 +118,7 @@ private fun getDisplayLanguageName(language: String): String =
         "English" -> stringResource(R.string.app__global_english)
         "French" -> stringResource(R.string.app__global_french)
         "German" -> stringResource(R.string.app__global_german)
+        "Indonesian" -> stringResource(R.string.app__global_indonesian)
         "Italian" -> stringResource(R.string.app__global_italian)
         "Portuguese" -> stringResource(R.string.app__global_portuguese)
         "Russian" -> stringResource(R.string.app__global_russian)

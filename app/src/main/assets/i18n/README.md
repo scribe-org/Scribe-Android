@@ -87,7 +87,7 @@ The [issue tracker for Scribe-i18n](https://github.com/scribe-org/Scribe-i18n/is
      git subtree pull --prefix <subtree-directory> git@github.com:scribe-org/Scribe-i18n.git main --squash
      ```
 
-   - From the above command, two commits are then auto-generated. Finally, create the PR to the given project to bring in the Scribe-i18n updates.
+   - From the above command, two commits are then auto-generated. Any merge conflicts should be resolved by taking the file as is on Scribe-i18n. Finally, commit the changes to the given project to bring in the Scribe-i18n updates.
 
 8. If the Git subtree does need to be recreated, the subtree can be removed in projects via the following command:
 

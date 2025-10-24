@@ -4,6 +4,7 @@ package be.scri.helpers
 import be.scri.helpers.english.ENInterfaceVariables
 import be.scri.helpers.french.FRInterfaceVariables
 import be.scri.helpers.german.DEInterfaceVariables
+import be.scri.helpers.indonesian.IDInterfaceVariables
 import be.scri.helpers.italian.ITInterfaceVariables
 import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
@@ -45,6 +46,7 @@ object LanguageMappingConstants {
             "PT" to PTInterfaceVariables.TRANSLATE_KEY_LBL,
             "RU" to RUInterfaceVariables.TRANSLATE_KEY_LBL,
             "SV" to SVInterfaceVariables.TRANSLATE_KEY_LBL,
+            "ID" to IDInterfaceVariables.TRANSLATE_KEY_LBL,
         )
 
     val conjugatePlaceholder =
@@ -81,6 +83,7 @@ object LanguageMappingConstants {
             "English" -> "EN"
             "French" -> "FR"
             "German" -> "DE"
+            "Indonesian" -> "ID"
             "Italian" -> "IT"
             "Portuguese" -> "PT"
             "Russian" -> "RU"

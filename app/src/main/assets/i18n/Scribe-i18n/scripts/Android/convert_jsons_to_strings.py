@@ -19,7 +19,6 @@ def replace_special_characters(string):
     string = string.replace("<", "&lt;")
     string = string.replace(">", "&gt;")
     string = string.replace("\n", "\\n")
-
     return string
 
 
@@ -59,6 +58,9 @@ for lang, translations in lang_data.items():
 
         # Write the string for each key in the language file.
         for key, value in translations.items():
+            if not key.startswith("i18n.app"):
+                continue
+
             sanitized_value = replace_special_characters(value)
             xml_file.write(f'    <string name="{key}">{sanitized_value}</string>\n')
 
