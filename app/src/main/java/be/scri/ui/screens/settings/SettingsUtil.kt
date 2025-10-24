@@ -96,6 +96,7 @@ object SettingsUtil {
                 "be.scri.services.EnglishKeyboardIME" -> "English"
                 "be.scri.services.FrenchKeyboardIME" -> "French"
                 "be.scri.services.GermanKeyboardIME" -> "German"
+                "be.scri.services.IndonesianKeyboardIME" -> "Indonesian"
                 "be.scri.services.ItalianKeyboardIME" -> "Italian"
                 "be.scri.services.PortugueseKeyboardIME" -> "Portuguese"
                 "be.scri.services.RussianKeyboardIME" -> "Russian"
@@ -117,6 +118,7 @@ object SettingsUtil {
             "English" -> R.string.app__global_english
             "French" -> R.string.app__global_french
             "German" -> R.string.app__global_german
+            "Indonesian" -> R.string.app__global_indonesian
             "Italian" -> R.string.app__global_italian
             "Portuguese" -> R.string.app__global_portuguese
             "Russian" -> R.string.app__global_russian

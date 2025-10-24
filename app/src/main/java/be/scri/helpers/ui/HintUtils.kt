@@ -7,6 +7,7 @@ import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.english.ENInterfaceVariables
 import be.scri.helpers.french.FRInterfaceVariables
 import be.scri.helpers.german.DEInterfaceVariables
+import be.scri.helpers.indonesian.IDInterfaceVariables
 import be.scri.helpers.italian.ITInterfaceVariables
 import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
@@ -79,6 +80,7 @@ object HintUtils {
             "English" to ENInterfaceVariables.TRANSLATE_PLACEHOLDER,
             "French" to FRInterfaceVariables.TRANSLATE_PLACEHOLDER,
             "German" to DEInterfaceVariables.TRANSLATE_PLACEHOLDER,
+            "Indonesian" to IDInterfaceVariables.TRANSLATE_PLACEHOLDER,
             "Italian" to ITInterfaceVariables.TRANSLATE_PLACEHOLDER,
             "Portuguese" to PTInterfaceVariables.TRANSLATE_PLACEHOLDER,
             "Russian" to RUInterfaceVariables.TRANSLATE_PLACEHOLDER,
@@ -133,6 +135,7 @@ object HintUtils {
             "English" -> ENInterfaceVariables.INVALID_COMMAND_MSG
             "French" -> FRInterfaceVariables.INVALID_COMMAND_MSG
             "German" -> DEInterfaceVariables.INVALID_COMMAND_MSG
+            "Indonesian" -> IDInterfaceVariables.INVALID_COMMAND_MSG
             "Italian" -> ITInterfaceVariables.INVALID_COMMAND_MSG
             "Portuguese" -> PTInterfaceVariables.INVALID_COMMAND_MSG
             "Russian" -> RUInterfaceVariables.INVALID_COMMAND_MSG
@@ -146,6 +149,7 @@ object HintUtils {
             "English" -> ENInterfaceVariables.BASE_AUTOSUGGESTIONS
             "French" -> FRInterfaceVariables.BASE_AUTOSUGGESTIONS
             "German" -> DEInterfaceVariables.BASE_AUTOSUGGESTIONS
+            "Indonesian" -> IDInterfaceVariables.BASE_AUTOSUGGESTIONS
             "Italian" -> ITInterfaceVariables.BASE_AUTOSUGGESTIONS
             "Portuguese" -> PTInterfaceVariables.BASE_AUTOSUGGESTIONS
             "Russian" -> RUInterfaceVariables.BASE_AUTOSUGGESTIONS
@@ -191,6 +195,7 @@ object HintUtils {
                 "English" to "en",
                 "French" to "fr",
                 "German" to "de",
+                "Indonesian" to "id",
                 "Italian" to "it",
                 "Portuguese" to "pt",
                 "Russian" to "ru",

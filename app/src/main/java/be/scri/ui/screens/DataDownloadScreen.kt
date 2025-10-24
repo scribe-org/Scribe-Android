@@ -114,6 +114,7 @@ fun DownloadDataScreen(
                                 Triple("english", stringResource(R.string.app__global_english), false),
                                 Triple("french", stringResource(R.string.app__global_french), false),
                                 Triple("german", stringResource(R.string.app__global_german), false),
+                                Triple("indonesian", stringResource(R.string.app__global_indonesian), false),
                                 Triple("italian", stringResource(R.string.app__global_italian), false),
                                 Triple("portuguese", stringResource(R.string.app__global_portuguese), false),
                                 Triple("russian", stringResource(R.string.app__global_russian), false),
