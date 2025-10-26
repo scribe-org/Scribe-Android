@@ -152,15 +152,15 @@ class AboutUtilInstrumentedTest {
                 // Test specific items.
                 val githubItem = communityList.items[0] as ScribeItem.ExternalLinkItem
                 assertThat(githubItem.leadingIcon).isEqualTo(R.drawable.github_logo)
-                assertThat(githubItem.title).isEqualTo(R.string.app_about_community_github)
+                assertThat(githubItem.title).isEqualTo(R.string.i18n_app_about_community_github)
 
                 val shareItem = communityList.items[1] as ScribeItem.ExternalLinkItem
                 assertThat(shareItem.leadingIcon).isEqualTo(R.drawable.share_icon)
-                assertThat(shareItem.title).isEqualTo(R.string.app_about_community_share_scribe)
+                assertThat(shareItem.title).isEqualTo(R.string.i18n_app_about_community_share_scribe)
 
                 val wikimediaItem = communityList.items[2] as ScribeItem.ExternalLinkItem
                 assertThat(wikimediaItem.leadingIcon).isEqualTo(R.drawable.wikimedia_logo_black)
-                assertThat(wikimediaItem.title).isEqualTo(R.string.app_about_community_wikimedia)
+                assertThat(wikimediaItem.title).isEqualTo(R.string.i18n_app_about_community_wikimedia)
 
                 // Test onClick callbacks.
                 shareItem.onClick()
@@ -216,15 +216,15 @@ class AboutUtilInstrumentedTest {
                 // Test specific items.
                 val rateItem = feedbackList.items[0] as ScribeItem.ExternalLinkItem
                 assertThat(rateItem.leadingIcon).isEqualTo(R.drawable.star)
-                assertThat(rateItem.title).isEqualTo(R.string.app_about_feedback_rate_scribe)
+                assertThat(rateItem.title).isEqualTo(R.string.i18n_app_about_feedback_rate_scribe)
 
                 val mailItem = feedbackList.items[2] as ScribeItem.ExternalLinkItem
                 assertThat(mailItem.leadingIcon).isEqualTo(R.drawable.mail_icon)
-                assertThat(mailItem.title).isEqualTo(R.string.app_about_feedback_email)
+                assertThat(mailItem.title).isEqualTo(R.string.i18n_app_about_feedback_email)
 
                 val hintsItem = feedbackList.items[4] as ScribeItem.ExternalLinkItem
                 assertThat(hintsItem.leadingIcon).isEqualTo(R.drawable.light_bulb_icon)
-                assertThat(hintsItem.title).isEqualTo(R.string.app_about_feedback_app_hints)
+                assertThat(hintsItem.title).isEqualTo(R.string.i18n_app_about_feedback_app_hints)
 
                 // Test onClick callbacks.
                 rateItem.onClick()
@@ -279,12 +279,12 @@ class AboutUtilInstrumentedTest {
                 // Test specific items.
                 val privacyItem = legalList.items[0] as ScribeItem.ExternalLinkItem
                 assertThat(privacyItem.leadingIcon).isEqualTo(R.drawable.shield_lock)
-                assertThat(privacyItem.title).isEqualTo(R.string.app_about_legal_privacy_policy)
+                assertThat(privacyItem.title).isEqualTo(R.string.i18n_app_about_legal_privacy_policy)
                 assertThat(privacyItem.trailingIcon).isEqualTo(R.drawable.right_arrow)
 
                 val licenseItem = legalList.items[1] as ScribeItem.ExternalLinkItem
                 assertThat(licenseItem.leadingIcon).isEqualTo(R.drawable.license_icon)
-                assertThat(licenseItem.title).isEqualTo(R.string.app_about_legal_third_party)
+                assertThat(licenseItem.title).isEqualTo(R.string.i18n_app_about_legal_third_party)
                 assertThat(licenseItem.trailingIcon).isEqualTo(R.drawable.right_arrow)
 
                 // Test onClick callbacks.
