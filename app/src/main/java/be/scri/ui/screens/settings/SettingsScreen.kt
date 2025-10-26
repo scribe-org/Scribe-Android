@@ -77,15 +77,15 @@ fun SettingsScreen(
             items =
                 listOf(
                     ScribeItem.ClickableItem(
-                        title = R.string.app_settings_menu_app_language,
-                        desc = R.string.app_settings_menu_app_language_description,
+                        title = R.string.i18n_app_settings_menu_app_language,
+                        desc = R.string.i18n_app_settings_menu_app_language_description,
                         action = {
                             SettingsUtil.selectLanguage(context)
                         },
                     ),
                     ScribeItem.SwitchItem(
-                        title = R.string.app_settings_menu_app_color_mode,
-                        desc = R.string.app_settings_menu_app_color_mode_description,
+                        title = R.string.i18n_app_settings_menu_app_color_mode,
+                        desc = R.string.i18n_app_settings_menu_app_color_mode_description,
                         state = isUserDarkMode,
                         onToggle = { newDarkMode ->
                             viewModel.setLightDarkMode(newDarkMode)
@@ -105,14 +105,14 @@ fun SettingsScreen(
         }
 
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.app_settings_title),
+        pageTitle = stringResource(R.string.i18n_app_settings_title),
         onBackNavigation = {},
         modifier = modifier,
     ) {
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             item {
                 ItemCardContainerWithTitle(
-                    title = stringResource(R.string.app_settings_menu_title),
+                    title = stringResource(R.string.i18n_app_settings_menu_title),
                     cardItemsList = appSettingsItemList,
                 )
             }
@@ -120,7 +120,7 @@ fun SettingsScreen(
             item {
                 if (isKeyboardInstalled) {
                     ItemCardContainerWithTitle(
-                        title = stringResource(R.string.app_settings_keyboard_title),
+                        title = stringResource(R.string.i18n_app_settings_keyboard_title),
                         cardItemsList = ScribeItemList(installedKeyboardList),
                         isDivider = true,
                         modifier = Modifier.padding(top = 8.dp),
@@ -155,7 +155,7 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
             ),
     ) {
         Text(
-            text = stringResource(R.string.app_settings_button_install_keyboards),
+            text = stringResource(R.string.i18n_app_settings_button_install_keyboards),
             fontSize = Dimensions.TextSizeExtraLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onPrimary,

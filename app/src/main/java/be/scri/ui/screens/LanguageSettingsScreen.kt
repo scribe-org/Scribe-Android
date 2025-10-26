@@ -233,7 +233,7 @@ fun LanguageSettingsScreen(
 
     ScribeBaseScreen(
         pageTitle = stringResource(getLanguageStringFromi18n(language)),
-        lastPage = stringResource(R.string.app_settings_title),
+        lastPage = stringResource(R.string.i18n_app_settings_title),
         onBackNavigation = onBackNavigation,
         modifier = modifier,
     ) {
@@ -243,16 +243,16 @@ fun LanguageSettingsScreen(
                     .verticalScroll(scrollState),
         ) {
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_settings_keyboard_translation_title),
+                title = stringResource(R.string.i18n_app_settings_keyboard_translation_title),
                 cardItemsList = translationSourceLanguageList,
             )
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_settings_keyboard_layout_title),
+                title = stringResource(R.string.i18n_app_settings_keyboard_layout_title),
                 cardItemsList = layoutList,
             )
 
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_settings_keyboard_functionality_title),
+                title = stringResource(R.string.i18n_app_settings_keyboard_functionality_title),
                 cardItemsList = functionalityList,
                 modifier =
                     Modifier
@@ -283,44 +283,44 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
     val list =
         listOf(
             ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_functionality_double_space_period,
-                desc = R.string.app_settings_keyboard_functionality_double_space_period_description,
+                title = R.string.i18n_app_settings_keyboard_functionality_double_space_period,
+                desc = R.string.i18n_app_settings_keyboard_functionality_double_space_period_description,
                 state = settings.periodOnDoubleTapState,
                 onToggle = settings.onTogglePeriodOnDoubleTap,
             ),
             ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_functionality_auto_suggest_emoji,
-                desc = R.string.app_settings_keyboard_functionality_auto_suggest_emoji_description,
+                title = R.string.i18n_app_settings_keyboard_functionality_auto_suggest_emoji,
+                desc = R.string.i18n_app_settings_keyboard_functionality_auto_suggest_emoji_description,
                 state = settings.emojiSuggestionsState,
                 onToggle = settings.onToggleEmojiSuggestions,
             ),
             ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_keypress_vibration,
-                desc = R.string.app_settings_keyboard_keypress_vibration_description,
+                title = R.string.i18n_app_settings_keyboard_keypress_vibration,
+                desc = R.string.i18n_app_settings_keyboard_keypress_vibration_description,
                 state = settings.toggleVibrateOnKeyPress,
                 onToggle = settings.onToggleVibrateOnKeyPress,
             ),
             ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_keypress_sound,
-                desc = R.string.app_settings_keyboard_keypress_sound_description,
+                title = R.string.i18n_app_settings_keyboard_keypress_sound,
+                desc = R.string.i18n_app_settings_keyboard_keypress_sound_description,
                 state = settings.toggleSoundOnKeyPress,
                 onToggle = settings.onToggleSoundOnKeyPress,
             ),
             ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_functionality_popup_on_keypress,
-                desc = R.string.app_settings_keyboard_functionality_popup_on_keypress_description,
+                title = R.string.i18n_app_settings_keyboard_functionality_popup_on_keypress,
+                desc = R.string.i18n_app_settings_keyboard_functionality_popup_on_keypress_description,
                 state = settings.togglePopUpOnKeyPress,
                 onToggle = settings.onTogglePopUpOnKeyPress,
             ),
             ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_functionality_delete_word_by_word,
-                desc = R.string.app_settings_keyboard_functionality_delete_word_by_word_description,
+                title = R.string.i18n_app_settings_keyboard_functionality_delete_word_by_word,
+                desc = R.string.i18n_app_settings_keyboard_functionality_delete_word_by_word_description,
                 state = settings.wordByWordDeletionState,
                 onToggle = settings.onToggleWordByWordDeletion,
             ),
             ScribeItem.SwitchItem(
-                title = R.string.app_settings_keyboard_functionality_hold_for_alt_chars,
-                desc = R.string.app_settings_keyboard_functionality_hold_for_alt_chars_description,
+                title = R.string.i18n_app_settings_keyboard_functionality_hold_for_alt_chars,
+                desc = R.string.i18n_app_settings_keyboard_functionality_hold_for_alt_chars_description,
                 state = settings.holdForAltKeysState,
                 onToggle = settings.onToggleHoldForAltKeys,
             ),
@@ -358,8 +358,8 @@ private fun getLayoutListData(
         "German", "Swedish", "Spanish" -> {
             list.add(
                 ScribeItem.SwitchItem(
-                    title = R.string.app_settings_keyboard_layout_disable_accent_characters,
-                    desc = R.string.app_settings_keyboard_layout_disable_accent_characters_description,
+                    title = R.string.i18n_app_settings_keyboard_layout_disable_accent_characters,
+                    desc = R.string.i18n_app_settings_keyboard_layout_disable_accent_characters_description,
                     state = toggleDisableAccentCharacter,
                     onToggle = onToggleDisableAccentCharacter,
                 ),
@@ -369,16 +369,16 @@ private fun getLayoutListData(
 
     list.add(
         ScribeItem.SwitchItem(
-            title = R.string.app_settings_keyboard_layout_period_and_comma,
-            desc = R.string.app_settings_keyboard_layout_period_and_comma_description,
+            title = R.string.i18n_app_settings_keyboard_layout_period_and_comma,
+            desc = R.string.i18n_app_settings_keyboard_layout_period_and_comma_description,
             state = togglePeriodAndCommaState,
             onToggle = onTogglePeriodAndComma,
         ),
     )
     list.add(
         ScribeItem.ClickableItem(
-            title = R.string.app_settings_keyboard_layout_default_currency,
-            desc = R.string.app_settings_keyboard_layout_default_currency_description,
+            title = R.string.i18n_app_settings_keyboard_layout_default_currency,
+            desc = R.string.i18n_app_settings_keyboard_layout_default_currency_description,
             action = {
                 Log.d("Navigation", "onCurrencySelect clicked")
                 onCurrencySelect()
@@ -400,16 +400,16 @@ private fun getLayoutListData(
 fun getLanguageStringFromi18n(language: String): Int {
     val languageMap =
         mapOf(
-            "German" to R.string.app__global_german,
-            "French" to R.string.app__global_french,
-            "Spanish" to R.string.app__global_spanish,
-            "Indonesian" to R.string.app__global_indonesian,
-            "Italian" to R.string.app__global_italian,
-            "Russian" to R.string.app__global_russian,
-            "Portuguese" to R.string.app__global_portuguese,
-            "Swedish" to R.string.app__global_swedish,
+            "German" to R.string.i18n_app__global_german,
+            "French" to R.string.i18n_app__global_french,
+            "Spanish" to R.string.i18n_app__global_spanish,
+            "Indonesian" to R.string.i18n_app__global_indonesian,
+            "Italian" to R.string.i18n_app__global_italian,
+            "Russian" to R.string.i18n_app__global_russian,
+            "Portuguese" to R.string.i18n_app__global_portuguese,
+            "Swedish" to R.string.i18n_app__global_swedish,
         )
-    return languageMap[language] ?: R.string.app__global_english
+    return languageMap[language] ?: R.string.i18n_app__global_english
 }
 
 /**
@@ -426,8 +426,8 @@ private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: ()
     val list: MutableList<ScribeItem> = mutableListOf()
     list.add(
         ScribeItem.ClickableItem(
-            title = R.string.app_settings_keyboard_translation_select_source,
-            desc = R.string.app_settings_keyboard_translation_select_source_description,
+            title = R.string.i18n_app_settings_keyboard_translation_select_source,
+            desc = R.string.i18n_app_settings_keyboard_translation_select_source_description,
             action = {
                 Log.d("Navigation", "onTranslationLanguageSelect clicked")
                 onTranslationLanguageSelect()

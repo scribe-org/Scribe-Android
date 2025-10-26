@@ -41,7 +41,7 @@ fun WikimediaScreen(
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.wikimedia_and_scribe),
         onBackNavigation = { onBackNavigation() },
-        lastPage = stringResource(R.string.app_about_title),
+        lastPage = stringResource(R.string.i18n_app_about_title),
         modifier = modifier,
     ) {
         WikimediaScreenContent(

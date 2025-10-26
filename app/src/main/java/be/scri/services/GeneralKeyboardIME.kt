@@ -143,9 +143,9 @@ abstract class GeneralKeyboardIME(
     private val totalPages = 3
     private val explanationStrings =
         arrayOf(
-            R.string.keyboard_not_in_wikidata_explanation_1,
-            R.string.keyboard_not_in_wikidata_explanation_2,
-            R.string.keyboard_not_in_wikidata_explanation_3,
+            R.string.i18n_app_keyboard_not_in_wikidata_explanation_1,
+            R.string.i18n_app_keyboard_not_in_wikidata_explanation_2,
+            R.string.i18n_app_keyboard_not_in_wikidata_explanation_3,
         )
     private var currentCommandBarHint: String = ""
     private var commandBarHintColor: Int = Color.GRAY
@@ -683,7 +683,7 @@ abstract class GeneralKeyboardIME(
             separator.visibility = View.VISIBLE
         }
 
-        binding.separator1.visibility = View.GONE
+        binding.separator1.visibility = View.VISIBLE
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         initializeKeyboard(getKeyboardLayoutXML())
@@ -739,7 +739,7 @@ abstract class GeneralKeyboardIME(
             binding.separator2.visibility = View.VISIBLE
             binding.separator3.visibility = View.VISIBLE
         } else {
-            // Hide conjugate and pliral in SELECT_COMMAND state
+            // Hide conjugate and plural in SELECT_COMMAND state
             // Hide conjugate button
             binding.conjugateBtn.visibility = View.GONE
             binding.separator2.visibility = View.GONE

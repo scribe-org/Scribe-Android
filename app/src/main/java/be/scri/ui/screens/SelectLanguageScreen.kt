@@ -52,7 +52,7 @@ fun SelectTranslationSourceLanguageScreen(
         listOf("English", "French", "German", "Italian", "Portuguese", "Russian", "Spanish", "Swedish")
             .filterNot { it == getDisplayLanguageName(currentLanguage) }
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.app_settings_keyboard_translation_select_source_title),
+        pageTitle = stringResource(R.string.i18n_app_settings_keyboard_translation_select_source_title),
         lastPage = stringResource(id = getLanguageStringFromi18n(currentLanguage)),
         onBackNavigation = onBackNavigation,
         modifier = modifier,
@@ -65,7 +65,7 @@ fun SelectTranslationSourceLanguageScreen(
                     .background(MaterialTheme.colorScheme.background),
         ) {
             Text(
-                text = stringResource(R.string.app_settings_keyboard_translation_select_source_caption),
+                text = stringResource(R.string.i18n_app_settings_keyboard_translation_select_source_caption),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 12.dp),
             )
@@ -115,14 +115,14 @@ fun SelectTranslationSourceLanguageScreen(
 @Composable
 private fun getDisplayLanguageName(language: String): String =
     when (language) {
-        "English" -> stringResource(R.string.app__global_english)
-        "French" -> stringResource(R.string.app__global_french)
-        "German" -> stringResource(R.string.app__global_german)
-        "Indonesian" -> stringResource(R.string.app__global_indonesian)
-        "Italian" -> stringResource(R.string.app__global_italian)
-        "Portuguese" -> stringResource(R.string.app__global_portuguese)
-        "Russian" -> stringResource(R.string.app__global_russian)
-        "Spanish" -> stringResource(R.string.app__global_spanish)
-        "Swedish" -> stringResource(R.string.app__global_swedish)
+        "English" -> stringResource(R.string.i18n_app__global_english)
+        "French" -> stringResource(R.string.i18n_app__global_french)
+        "German" -> stringResource(R.string.i18n_app__global_german)
+        "Indonesian" -> stringResource(R.string.i18n_app__global_indonesian)
+        "Italian" -> stringResource(R.string.i18n_app__global_italian)
+        "Portuguese" -> stringResource(R.string.i18n_app__global_portuguese)
+        "Russian" -> stringResource(R.string.i18n_app__global_russian)
+        "Spanish" -> stringResource(R.string.i18n_app__global_spanish)
+        "Swedish" -> stringResource(R.string.i18n_app__global_swedish)
         else -> language
     }

@@ -34,18 +34,18 @@ fun PrivacyPolicyScreen(
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.privacy_policy),
         onBackNavigation = { onBackNavigation() },
-        lastPage = stringResource(R.string.app_about_title),
+        lastPage = stringResource(R.string.i18n_app_about_title),
         modifier = modifier,
     ) {
         PrivacyPolicyScreenContent(
-            title = stringResource(R.string.app_about_legal_privacy_policy_caption),
+            title = stringResource(R.string.i18n_app_about_legal_privacy_policy_caption),
             modifier =
                 Modifier.padding(
                     horizontal = 16.dp,
                 ),
         ) {
             Text(
-                text = stringResource(id = R.string.app_about_legal_privacy_policy_text),
+                text = stringResource(id = R.string.i18n_app_about_legal_privacy_policy_text),
                 fontSize = ScribeTypography.bodyMedium.fontSize,
                 style =
                     TextStyle.Default.copy(

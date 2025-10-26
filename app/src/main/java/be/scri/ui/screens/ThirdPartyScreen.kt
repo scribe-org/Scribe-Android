@@ -34,13 +34,13 @@ fun ThirdPartyScreen(
     modifier: Modifier = Modifier,
 ) {
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.app_about_legal_third_party),
+        pageTitle = stringResource(R.string.i18n_app_about_legal_third_party),
         onBackNavigation = { onBackNavigation() },
-        lastPage = stringResource(R.string.app_about_title),
+        lastPage = stringResource(R.string.i18n_app_about_title),
         modifier = modifier,
     ) {
         ThirdPartyScreenContent(
-            title = stringResource(R.string.app_about_legal_third_party_caption),
+            title = stringResource(R.string.i18n_app_about_legal_third_party_caption),
             modifier =
                 Modifier.padding(
                     horizontal = 16.dp,
@@ -48,7 +48,7 @@ fun ThirdPartyScreen(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = stringResource(id = R.string.app_about_legal_third_party_text),
+                    text = stringResource(id = R.string.i18n_app_about_legal_third_party_text),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
                         TextStyle.Default.copy(
@@ -56,7 +56,7 @@ fun ThirdPartyScreen(
                         ),
                 )
                 Text(
-                    text = stringResource(id = R.string.app_about_legal_third_party_entry_simple_keyboard),
+                    text = stringResource(id = R.string.i18n_app_about_legal_third_party_entry_simple_keyboard),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
                         TextStyle.Default.copy(
