@@ -60,7 +60,7 @@ fun DefaultCurrencySymbolScreen(
     val options = symbolMap.keys.toList()
 
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.app_settings_keyboard_layout_default_currency),
+        pageTitle = stringResource(R.string.i18n_app_settings_keyboard_layout_default_currency),
         lastPage = stringResource(id = getLanguageStringFromi18n(currentLanguage)),
         onBackNavigation = onBackNavigation,
         modifier = modifier,
@@ -73,7 +73,7 @@ fun DefaultCurrencySymbolScreen(
                     .background(MaterialTheme.colorScheme.background),
         ) {
             Text(
-                text = stringResource(R.string.app_settings_keyboard_layout_default_currency_caption),
+                text = stringResource(R.string.i18n_app_settings_keyboard_layout_default_currency_caption),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 12.dp),
             )

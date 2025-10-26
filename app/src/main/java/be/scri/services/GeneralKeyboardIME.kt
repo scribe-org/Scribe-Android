@@ -143,9 +143,9 @@ abstract class GeneralKeyboardIME(
     private val totalPages = 3
     private val explanationStrings =
         arrayOf(
-            R.string.keyboard_not_in_wikidata_explanation_1,
-            R.string.keyboard_not_in_wikidata_explanation_2,
-            R.string.keyboard_not_in_wikidata_explanation_3,
+            R.string.i18n_app_keyboard_not_in_wikidata_explanation_1,
+            R.string.i18n_app_keyboard_not_in_wikidata_explanation_2,
+            R.string.i18n_app_keyboard_not_in_wikidata_explanation_3,
         )
     private var currentCommandBarHint: String = ""
     private var commandBarHintColor: Int = Color.GRAY
@@ -199,6 +199,20 @@ abstract class GeneralKeyboardIME(
 
         return isActionSearch || isUriType || hasSearchHint
     }
+
+    /**
+     * Checks if conjugation and plural is supported for the given language.
+     * @param language The current keyboard language.
+     * @return `true` if conjugation and plural is supported, `false` otherwise.
+     */
+    private fun isConjugationAndPluralSupported(language: String): Boolean =
+        when (language) {
+            "English", "French", "German", "Italian",
+            "Portuguese", "Russian", "Spanish", "Swedish",
+            -> true
+            "Indonesian" -> false
+            else -> false
+        }
 
     protected fun isPeriodAndCommaEnabled(): Boolean {
         val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
@@ -669,7 +683,7 @@ abstract class GeneralKeyboardIME(
             separator.visibility = View.VISIBLE
         }
 
-        binding.separator1.visibility = View.GONE
+        binding.separator1.visibility = View.VISIBLE
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         initializeKeyboard(getKeyboardLayoutXML())
@@ -701,27 +715,47 @@ abstract class GeneralKeyboardIME(
         )
 
         val langAlias = getLanguageAlias(language)
+        val hasConjugationAndPlural = isConjugationAndPluralSupported(language)
 
         updateButtonVisibility(isAutoSuggestEnabled = false)
         setCommandButtonListeners()
 
         val buttonTextColor = if (isUserDarkMode) Color.WHITE else Color.BLACK
 
-        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
-            button.visibility = View.VISIBLE
-            button.background = ContextCompat.getDrawable(this, R.drawable.button_background_rounded)
-            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.theme_scribe_blue)
-            button.setTextColor(buttonTextColor)
-            button.textSize = SUGGESTION_SIZE
+        if (hasConjugationAndPlural) {
+            // Show all 3 command buttons
+            listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
+                button.visibility = View.VISIBLE
+                button.background = ContextCompat.getDrawable(this, R.drawable.button_background_rounded)
+                button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.theme_scribe_blue)
+                button.setTextColor(buttonTextColor)
+                button.textSize = SUGGESTION_SIZE
+            }
+
+            binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
+            binding.conjugateBtn.text = conjugatePlaceholder[langAlias] ?: "Conjugate"
+            binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
+
+            binding.separator2.visibility = View.VISIBLE
+            binding.separator3.visibility = View.VISIBLE
+        } else {
+            // Hide conjugate and plural in SELECT_COMMAND state
+            // Hide conjugate button
+            binding.conjugateBtn.visibility = View.GONE
+            binding.separator2.visibility = View.GONE
+            // Hide plural button
+            binding.pluralBtn.visibility = View.GONE
+            binding.separator3.visibility = View.GONE
+
+            binding.translateBtn.apply {
+                visibility = View.VISIBLE
+                background = ContextCompat.getDrawable(this@GeneralKeyboardIME, R.drawable.button_background_rounded)
+                backgroundTintList = ContextCompat.getColorStateList(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
+                setTextColor(buttonTextColor)
+                textSize = SUGGESTION_SIZE
+                text = translatePlaceholder[langAlias] ?: "Translate"
+            }
         }
-
-        binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
-        binding.conjugateBtn.text = conjugatePlaceholder[langAlias] ?: "Conjugate"
-        binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
-
-        val separatorColor = (if (isUserDarkMode) DARK_THEME else LIGHT_THEME).toColorInt()
-        binding.separator2.setBackgroundColor(separatorColor)
-        binding.separator3.setBackgroundColor(separatorColor)
 
         val spaceInDp = COMMAND_BUTTON_SPACING_DP
         val spaceInPx = (spaceInDp * resources.displayMetrics.density).toInt()
@@ -733,8 +767,6 @@ abstract class GeneralKeyboardIME(
         }
 
         binding.separator1.visibility = View.GONE
-        binding.separator2.visibility = View.VISIBLE
-        binding.separator3.visibility = View.VISIBLE
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE

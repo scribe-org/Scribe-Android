@@ -7,4 +7,5 @@
     <subtype android:label="English" android:imeSubtypeLocale="en" android:imeSubtypeMode="keyboard"/>
     <subtype android:label="Svenska" android:imeSubtypeLocale="sv" android:imeSubtypeMode="keyboard"/>
     <subtype android:label="Português" android:imeSubtypeLocale="pt" android:imeSubtypeMode="keyboard"/>
+    <subtype android:label="Bahasa Indonesia" android:imeSubtypeLocale="id" android:imeSubtypeMode="keyboard"/>
 </input-method>

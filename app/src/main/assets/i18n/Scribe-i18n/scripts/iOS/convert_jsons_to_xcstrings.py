@@ -45,6 +45,9 @@ for lang in languages:
         lang_data[lang] = json.load(lang_file)
 
 for key in base_language_data:
+    if not key.startswith("i18n.app"):
+        continue
+
     language = {}
     for lang, lang_json in lang_data.items():  # use already loaded language data
         translation = lang_json.get(key, "")

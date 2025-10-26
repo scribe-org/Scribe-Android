@@ -1,4 +1,9 @@
+# MARK: OS Files
+
 **/.DS_Store
+
+# MARK: Python Files
 
 venv
 .venv
+__pycache__

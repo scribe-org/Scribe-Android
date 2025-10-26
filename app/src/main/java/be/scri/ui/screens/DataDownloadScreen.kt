@@ -41,8 +41,8 @@ fun DownloadDataScreen(
     val regularlyUpdateData = remember { mutableStateOf(true) }
 
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.app_download_menu_ui_title),
-        lastPage = stringResource(R.string.app_installation_title),
+        pageTitle = stringResource(R.string.i18n_app_download_menu_ui_title),
+        lastPage = stringResource(R.string.i18n_app_installation_title),
         onBackNavigation = onBackNavigation,
         modifier = modifier,
     ) {
@@ -55,7 +55,7 @@ fun DownloadDataScreen(
         ) {
             Column {
                 Text(
-                    text = stringResource(R.string.app_download_menu_ui_update_data_title),
+                    text = stringResource(R.string.i18n_app_download_menu_ui_update_data_title),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
@@ -71,7 +71,7 @@ fun DownloadDataScreen(
                 ) {
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
                         CircleClickableItemComp(
-                            title = stringResource(R.string.app_download_menu_ui_update_data_check_new),
+                            title = stringResource(R.string.i18n_app_download_menu_ui_update_data_check_new),
                             onClick = { checkForNewData.value = !checkForNewData.value },
                             isSelected = checkForNewData.value,
                         )
@@ -83,7 +83,7 @@ fun DownloadDataScreen(
                         )
 
                         SwitchableItemComp(
-                            title = stringResource(R.string.app_download_menu_ui_update_data_regular_update),
+                            title = stringResource(R.string.i18n_app_download_menu_ui_update_data_regular_update),
                             isChecked = regularlyUpdateData.value,
                             onCheckedChange = { regularlyUpdateData.value = it },
                         )
@@ -92,7 +92,7 @@ fun DownloadDataScreen(
             }
             Column {
                 Text(
-                    text = stringResource(R.string.app_download_menu_ui_select_title),
+                    text = stringResource(R.string.i18n_app_download_menu_ui_select_title),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
@@ -110,15 +110,16 @@ fun DownloadDataScreen(
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
                         val languages =
                             listOf(
-                                Triple("all", stringResource(R.string.app_download_menu_ui_select_all_languages), false),
-                                Triple("english", stringResource(R.string.app__global_english), false),
-                                Triple("french", stringResource(R.string.app__global_french), false),
-                                Triple("german", stringResource(R.string.app__global_german), false),
-                                Triple("italian", stringResource(R.string.app__global_italian), false),
-                                Triple("portuguese", stringResource(R.string.app__global_portuguese), false),
-                                Triple("russian", stringResource(R.string.app__global_russian), false),
-                                Triple("spanish", stringResource(R.string.app__global_spanish), false),
-                                Triple("swedish", stringResource(R.string.app__global_swedish), false),
+                                Triple("all", stringResource(R.string.i18n_app_download_menu_ui_select_all_languages), false),
+                                Triple("english", stringResource(R.string.i18n_app__global_english), false),
+                                Triple("french", stringResource(R.string.i18n_app__global_french), false),
+                                Triple("german", stringResource(R.string.i18n_app__global_german), false),
+                                Triple("indonesian", stringResource(R.string.i18n_app__global_indonesian), false),
+                                Triple("italian", stringResource(R.string.i18n_app__global_italian), false),
+                                Triple("portuguese", stringResource(R.string.i18n_app__global_portuguese), false),
+                                Triple("russian", stringResource(R.string.i18n_app__global_russian), false),
+                                Triple("spanish", stringResource(R.string.i18n_app__global_spanish), false),
+                                Triple("swedish", stringResource(R.string.i18n_app__global_swedish), false),
                             )
 
                         languages.forEachIndexed { index, (key, title, isDark) ->

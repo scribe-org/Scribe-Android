@@ -100,6 +100,7 @@ class TranslationDataManager(
             "portuguese" -> "pt"
             "russian" -> "ru"
             "swedish" -> "sv"
+            "indonesian" -> "id"
             else -> "en"
         }
 
@@ -119,6 +120,7 @@ class TranslationDataManager(
             "pt" -> "portuguese"
             "ru" -> "russian"
             "sv" -> "swedish"
+            "id" -> "indonesian"
             else -> "english"
         }
 }
