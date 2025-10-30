@@ -38,6 +38,7 @@ Check out Scribe's [architecture diagrams](https://github.com/scribe-org/Organiz
 -   [Contributing](#contributing)
 -   [Environment Setup](#environment-setup)
 -   [App Setup](#app-setup)
+-   [Supported Languages](#supported-languages)
 -   [Keyboard Features](#keyboard-features)
 -   [Featured By](#featured-by)
 
@@ -81,7 +82,7 @@ After your first few pull requests organization members would be happy to discus
 -   [Localization](https://github.com/scribe-org/Scribe-i18n) for the app and app stores via our [Weblate project](https://hosted.weblate.org/projects/scribe/scribe-i18n) 🌐
 -   [Documentation](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Adocumentation) for onboarding and project cohesion 📝
 -   Adding language data to [Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) via [Wikidata](https://www.wikidata.org/)! 🗃️
--   [Sharing Scribe-Android](https://github.com/scribe-org/Scribe-iOS/issues/62) with others! 🚀
+-   [Sharing Scribe-Android](https://github.com/scribe-org/Scribe-Android/issues/62) with others! 🚀
 
 <details><summary><strong>View Scribe-i18n localization progress</strong></summary>
   <a href="https://hosted.weblate.org/projects/scribe/scribe-i18n">
@@ -114,7 +115,7 @@ The [designs for Scribe](https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scrib
 > [!NOTE]\
 > Please see the [Wikidata and Scribe Guide](https://github.com/scribe-org/Organization/blob/main/WIKIDATAGUIDE.md) for an overview of [Wikidata](https://www.wikidata.org/) and how Scribe uses it.
 
-Scribe does not accept direct edits to the grammar files as they are sourced from [Wikidata](https://www.wikidata.org/). Edits can be discussed and the [Scribe-Data](https://github.com/scribe-org/Scribe-Data) queries will be changed. If there is a problem with one of the files, then the fix should be made on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us know that edits have been made by [opening a data issue](https://github.com/scribe-org/Conjugate-iOS/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
+Scribe does not accept direct edits to the grammar files as they are sourced from [Wikidata](https://www.wikidata.org/). Edits can be discussed and the [Scribe-Data](https://github.com/scribe-org/Scribe-Data) queries will be changed. If there is a problem with one of the files, then the fix should be made on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us know that edits have been made by [opening a data issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
 
 <a id="environment-setup"></a>
 
@@ -196,23 +197,84 @@ Users access Scribe language keyboards through the following:
 -   Choose from the available Scribe language keyboards
 -   When typing press 🌐 or the keyboard button to select keyboards
 
+<a id="supported-languages"></a>
+
+# Supported Languages [`⇧`](#contents)
+
+Scribe's goal is functional, feature-rich keyboards for all languages. You can check the currently available languages and data for Scribe applications on our website at [scri.be/docs/server/available-data](https://scri.be/docs/server/available-data).
+
+See [scribe_data/wikidata/language_data_extraction](https://github.com/scribe-org/Scribe-Data/tree/main/src/scribe_data/wikidata/language_data_extraction) for queries in the [Scribe-Data](https://github.com/scribe-org/Scribe-Data) project for currently supported languages and those that have substantial data on [Wikidata](https://www.wikidata.org/). Also see the [`new keyboard`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3A%22new+keyboard%22) label in the [Issues](https://github.com/scribe-org/Scribe-Android/issues) for keyboards that are currently in progress or being discussed, and [suggest a new keyboard](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=new+keyboard&template=new_keyboard.yml&title=Add+%3Clanguage%3E+keyboard) if you don't see it being worked on already!
+
 <a id="keyboard-features"></a>
 
 # Keyboard Features [`⇧`](#contents)
 
-Scribe-Android is currently a work in progress and only has base keyboard functionality. The goal is to slowly add Scribe features before an initial release, and then iterate to match the functionality of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS).
+Keyboard features are accessed via the `Scribe key` at the top left of any Scribe keyboard. Pressing this key gives the user three new selectable options: `Translate`, `Conjugate` and `Plural` in the keyboard's language. These keys allow for words to be queried and inserted into the text field followed by a space.
 
 **Current features include:**
 
-### • Base Functionality [`⇧`](#contents)
+### Translation [`⇧`](#contents)
 
-The goal is for Scribe to have all the functionality of system keyboards. Currently the keyboards include:
+The **`beta`** `Translate` feature can translate single words or phrases from English into the language of the current keyboard when the `return` key is pressed. The goal is that `Translate` will eventually provide options for entered words where a user can use grammatical categories and synonyms to select the best option. Then the feature will expand to allow translations from system and chosen languages. More advanced methods will be planned once this feature is out of **`beta`**.
 
+As of now translations are not widely available on [Wikidata](https://www.wikidata.org/). The current functionality is thus based on [🤗 Transformers](https://github.com/huggingface/transformers) machine translations of words queried from [Wikidata](https://www.wikidata.org/). The ultimate goal is for the translations be directly queried.
+
+### Verb Conjugation [`⇧`](#contents)
+
+With the `Conjugate` feature, a user is presented with the grammar charts for an entered verb instead of the keyboard. Pressing an example in the charts inserts the chosen conjugation into the text field.
+
+### Noun Plurals [`⇧`](#contents)
+
+The `Plural` feature allows a user to enter a noun and then insert its plural into the text field when the `return` key is pressed.
+
+### Word Annotation [`⇧`](#contents)
+
+Scribe further annotates words in the command bar to help users understand the context of what they're typing. Annotations are displayed once a user has typed a given word and pressed space, after commands, by pressing the `Scribe key` while it is selected as well as under autocompletions and autosuggestions. The hope is that annotation will help a user remember grammar rules even when not using Scribe.
+
+#### Nouns
+
+Scribe annotates nouns in the command bar according to the following conventions:
+
+-   Feminine: colored red 🟥 and marked with (F)
+-   Masculine: colored blue 🟦 and marked with (M)
+-   Common: colored purple 🟪 and marked with (C)
+-   Neutral: colored green 🟩 and marked with (N)
+-   Plural: colored orange 🟧 and marked with (PL)
+-   More than one: marked with all their forms
+
+The above form abbreviations are translated into their equivalents in the keyboard's language.
+
+#### Prepositions
+
+Scribe also annotates the grammatical cases (accusative, dative, etc) of prepositions in the command bar if there is a relation in the given language.
+
+### Pronoun Selection [`⇧`](#contents)
+
+Annotations for preposition cases can also be pressed to provide a conjugation display where the user can select the proper pronoun for the given case. The conjugation view will also provide appropriate interfaces to subset the available pronouns based on the desired subject and object combinations to help the user make the correct choice.
+
+### Base Functionality [`⇧`](#contents)
+
+The goal is for Scribe to have all the functionality of system keyboards. See the [issues](https://github.com/scribe-org/Scribe-Android/issues/) if interested in helping.
+
+<details><summary><strong>Current base features include:</strong></summary>
+<p>
+
+-   Phone and tablet support
 -   Dynamic layouts for cross-device performance
+-   Portrait and landscape modes
+-   Dark mode compatibility
+-   Autocompletion based on [Wikidata](https://www.wikidata.org/) sourced words
+-   Autosuggestion based on [Wikipedia](https://www.wikipedia.org/) derived relationships
+-   Emoji autocompletions and autosuggestions based on [Unicode CLDR](https://github.com/unicode-org/cldr) sourced emojis
+-   Autocorrect (WIP)
 -   Auto-capitalization following `.`, `?` and `!`
+-   The double space period shortcut
 -   Typing symbols and numbers followed by a space returns keyboard to letters
 -   Hold-to-select characters for letters and symbols
 -   Key pop up views for letters and symbols
+
+</p>
+</details>
 
 <a id="featured-by"></a>
 
