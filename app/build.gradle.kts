@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 import java.io.FileInputStream
 import java.util.Locale
 import java.util.Properties
