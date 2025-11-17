@@ -1,19 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 1x3 Grid for subsequent conjugations (e.g., English: am/is/are with 3 options) -->
+<!-- 1x3 Grid with arrow keys on sides -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="8dp">
 
-    <Button
-        android:id="@+id/conjugate_btn_1"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_margin="4dp"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:spacing="4dp">
+        <Button
+            android:id="@+id/conjugate_arrow_left"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:text="◄"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/conjugate_btn_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/conjugate_arrow_right"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:text="►"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/conjugate_btn_2"

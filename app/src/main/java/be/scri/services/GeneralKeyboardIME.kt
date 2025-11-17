@@ -771,9 +771,6 @@ abstract class GeneralKeyboardIME(
         var hintWord: String? = null
         var promptText: String? = null
 
-        // Default: hide conjugation switching controls
-        binding.conjugatePrev.visibility = View.GONE
-        binding.conjugateNext.visibility = View.GONE
 
         // Show/hide conjugate grid based on state
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
@@ -827,30 +824,38 @@ abstract class GeneralKeyboardIME(
                 }
             }
 
+            // Handle arrow buttons (left/right navigation)
+            val arrowButtonIds = listOf(
+                "conjugate_arrow_left_1", "conjugate_arrow_right_1",
+                "conjugate_arrow_left_2", "conjugate_arrow_right_2",
+                "conjugate_arrow_left_3", "conjugate_arrow_right_3",
+                "conjugate_arrow_left", "conjugate_arrow_right"
+            )
+            
+            arrowButtonIds.forEach { arrowBtnName ->
+                val arrowBtnId = resources.getIdentifier(arrowBtnName, "id", packageName)
+                if (arrowBtnId != 0) {
+                    val arrowBtn = gridContent.findViewById<Button?>(arrowBtnId)
+                    if (arrowBtn != null) {
+                        arrowBtn.setOnClickListener {
+                            val isLeft = arrowBtnName.contains("left")
+                            val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
+                            val current = prefs.getInt("conjugate_index", 0)
+                            if (isLeft) {
+                                prefs.edit { putInt("conjugate_index", current + 1) }
+                            } else {
+                                prefs.edit { putInt("conjugate_index", current - 1) }
+                            }
+                            updateUI()
+                        }
+                    }
+                }
+            }
+
             promptText = title ?: "___"
             hintWord = conjugateLabels.lastOrNull()
 
-            // Show and wire up switching controls above the keyboard
-            binding.conjugatePrev.visibility = View.VISIBLE
-            binding.conjugateNext.visibility = View.VISIBLE
-
             val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-            binding.conjugatePrev.setOnClickListener {
-                val current = prefs.getInt("conjugate_index", 0)
-                prefs.edit { putInt("conjugate_index", current + 1) }
-                updateUI()
-            }
-            binding.conjugateNext.setOnClickListener {
-                val current = prefs.getInt("conjugate_index", 0)
-                prefs.edit { putInt("conjugate_index", current - 1) }
-                updateUI()
-            }
-        } else {
-            // Hide conjugate_grid_container and show keyboardView for other states
-            binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.GONE
-            binding.keyboardView.visibility = View.VISIBLE
-            binding.conjugatePrev.visibility = View.GONE
-            binding.conjugateNext.visibility = View.GONE
         }
 
         updateCommandBarHintAndPrompt(text = promptText, isUserDarkMode = isDarkMode, word = hintWord)
