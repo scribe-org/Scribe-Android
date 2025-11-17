@@ -1505,11 +1505,18 @@ class KeyboardView
                 }
                 selectedKeyIndex = Math.max(0, Math.min(selectedKeyIndex, keysCnt - 1))
 
-                for (i in 0 until keysCnt) {
-                    mMiniKeyboard!!.mKeys[i].focused = i == selectedKeyIndex
+                if (setHoldForAltCharacters) {
+                    for (i in 0 until keysCnt) {
+                        mMiniKeyboard!!.mKeys[i].focused = i == selectedKeyIndex
+                    }
+                    mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
+                } else {
+                    for (i in 0 until keysCnt) {
+                        mMiniKeyboard!!.mKeys[i].focused = false
+                    }
+                    mMiniKeyboardSelectedKeyIndex = -1
                 }
 
-                mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
                 mMiniKeyboard!!.invalidateAllKeys()
                 val miniShiftStatus = if (isShifted()) SHIFT_ON_PERMANENT else SHIFT_OFF
                 mMiniKeyboard!!.setShifted(miniShiftStatus)
@@ -1559,9 +1566,14 @@ class KeyboardView
                             selectedKeyIndex = selectedKeyIndex.coerceIn(0, keysCnt - 1)
 
                             if (selectedKeyIndex != mMiniKeyboardSelectedKeyIndex) {
-                                // Update focus highlight.
-                                for (i in 0 until keysCnt) {
-                                    miniKeyboard.mKeys[i].focused = i == selectedKeyIndex
+                                if (setHoldForAltCharacters) {
+                                    for (i in 0 until keysCnt) {
+                                        miniKeyboard.mKeys[i].focused = i == selectedKeyIndex
+                                    }
+                                } else {
+                                    for (i in 0 until keysCnt) {
+                                        miniKeyboard.mKeys[i].focused = false
+                                    }
                                 }
                                 miniKeyboard.invalidateAllKeys()
 
