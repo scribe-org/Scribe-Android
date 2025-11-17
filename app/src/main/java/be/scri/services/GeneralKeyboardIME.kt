@@ -670,6 +670,7 @@ abstract class GeneralKeyboardIME(
         }
 
         binding.separator1.visibility = View.GONE
+        binding.ivInfo.visibility = View.GONE
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         initializeKeyboard(getKeyboardLayoutXML())
@@ -738,6 +739,7 @@ abstract class GeneralKeyboardIME(
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
+        binding.ivInfo.visibility = View.GONE
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
     }
@@ -759,6 +761,7 @@ abstract class GeneralKeyboardIME(
                 },
             ),
         )
+        binding.ivInfo.visibility = View.GONE
 
         binding.scribeKeyToolbar.foreground =
             AppCompatResources.getDrawable(

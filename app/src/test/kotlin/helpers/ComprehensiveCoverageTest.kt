@@ -1,7 +1,4 @@
-/*
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
+// SPDX-License-Identifier: GPL-3.0-or-later
 package helpers
 import android.provider.SyncStateContract.Constants
 import androidx.test.ext.junit.runners.AndroidJUnit4
