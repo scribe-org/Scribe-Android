@@ -12,6 +12,8 @@ import be.scri.helpers.data.GenderDataManager
 import be.scri.helpers.data.PluralFormsManager
 import be.scri.helpers.data.PrepositionDataManager
 import be.scri.helpers.data.TranslationDataManager
+import be.scri.helpers.data.ClipboardDataManager
+
 
 /**
  * The primary entry point for all data-related operations.
@@ -28,6 +30,7 @@ class DatabaseManagers(
 
     // Specialized data managers, ready for use.
     val emojiManager = EmojiDataManager(fileManager)
+    val clipboardManager = ClipboardDataManager(fileManager, context)
     val genderManager = GenderDataManager(fileManager)
     val pluralManager = PluralFormsManager(fileManager)
     val prepositionManager = PrepositionDataManager(fileManager)
