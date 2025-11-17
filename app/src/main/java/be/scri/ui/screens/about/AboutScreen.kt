@@ -77,7 +77,7 @@ fun AboutScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.community_title),
+                title = stringResource(R.string.app_about_community_title),
                 cardItemsList = communityList,
                 isDivider = true,
             )
