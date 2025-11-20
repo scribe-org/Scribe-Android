@@ -443,6 +443,14 @@
             android:id="@+id/prompt_text"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
+            
+            app:layout_constraintStart_toEndOf="@+id/scribe_key_toolbar" 
+
+            app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
+            
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            
             android:background="@drawable/cmd_bar_prompt_background"
             android:ellipsize="end"
             android:gravity="center"
@@ -454,10 +462,7 @@
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textFontWeight="500"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="16sp" />
 
         <LinearLayout
             android:id="@+id/command_bar_layout"
