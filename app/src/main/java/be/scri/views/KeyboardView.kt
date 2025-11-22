@@ -38,7 +38,6 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.toColorInt
 import androidx.core.graphics.withSave
 import be.scri.R
-import be.scri.databinding.KeyboardPopupKeyboardBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.extensions.adjustAlpha
 import be.scri.extensions.applyColorFilter
@@ -323,15 +322,6 @@ class KeyboardView
             private var leftShiftForLabel = 0
             private const val LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT = 340
         }
-
-        private var popupBindingInternal: KeyboardPopupKeyboardBinding? = null
-        private val popupBinding: KeyboardPopupKeyboardBinding
-            get() {
-                if (popupBindingInternal == null) {
-                    popupBindingInternal = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
-                }
-                return popupBindingInternal!!
-            }
 
         var setPreview: Boolean = true
         var setVibrate: Boolean = true
