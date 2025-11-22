@@ -14,7 +14,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ClipboardDataManagerTest {
-
     private lateinit var clipboardManager: ClipboardDataManager
     private lateinit var mockFileManager: DatabaseFileManager
     private lateinit var context: Context
