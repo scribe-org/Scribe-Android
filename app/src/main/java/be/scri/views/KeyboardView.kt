@@ -51,7 +51,6 @@ import be.scri.extensions.getProperKeyColor
 import be.scri.extensions.getProperPrimaryColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
-import be.scri.extensions.isUsingSystemDarkTheme
 import be.scri.extensions.performHapticFeedback
 import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
@@ -599,7 +598,7 @@ class KeyboardView
 
                 val miniKeyboardBackgroundColor =
                     if (context.config.isUsingSystemTheme) {
-                resources.getColor(R.color.default_key_color, context.theme)
+                        resources.getColor(R.color.default_key_color, context.theme)
                     } else {
                         resources.getColor(R.color.default_key_color, context.theme)
                     }
