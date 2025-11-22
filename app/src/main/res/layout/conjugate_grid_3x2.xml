@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -8,10 +9,10 @@
 
     <Button
         android:id="@+id/conjugate_arrow_left"
-        android:layout_width="60dp"
+        android:layout_width="40dp"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
-        android:text="◄"
+        android:text="&lt;"
         android:textSize="28sp"
         android:textStyle="bold" />
 
@@ -34,7 +35,13 @@
                 android:layout_weight="1"
                 android:layout_margin="4dp"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeStepGranularity="1sp"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
             <Button
                 android:id="@+id/conjugate_btn_2"
@@ -43,7 +50,13 @@
                 android:layout_weight="1"
                 android:layout_margin="4dp"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeStepGranularity="1sp"
+                android:maxLines="2"
+                android:ellipsize="end" />
         </LinearLayout>
 
         <LinearLayout
@@ -59,7 +72,13 @@
                 android:layout_weight="1"
                 android:layout_margin="4dp"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeStepGranularity="1sp"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
             <Button
                 android:id="@+id/conjugate_btn_4"
@@ -68,7 +87,13 @@
                 android:layout_weight="1"
                 android:layout_margin="4dp"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeStepGranularity="1sp"
+                android:maxLines="2"
+                android:ellipsize="end" />
         </LinearLayout>
 
         <LinearLayout
@@ -84,7 +109,13 @@
                 android:layout_weight="1"
                 android:layout_margin="4dp"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeStepGranularity="1sp"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
             <Button
                 android:id="@+id/conjugate_btn_6"
@@ -93,17 +124,23 @@
                 android:layout_weight="1"
                 android:layout_margin="4dp"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeStepGranularity="1sp"
+                android:maxLines="2"
+                android:ellipsize="end" />
         </LinearLayout>
 
     </LinearLayout>
 
     <Button
         android:id="@+id/conjugate_arrow_right"
-        android:layout_width="60dp"
+        android:layout_width="40dp"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
-        android:text="►"
+        android:text="&gt;"
         android:textSize="28sp"
         android:textStyle="bold" />
 

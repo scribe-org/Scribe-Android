@@ -797,9 +797,10 @@ abstract class GeneralKeyboardIME(
             val forms = if (isSubSelection) {
                 languageOutput?.get(selectedConjugationSubCategory)?.toList() ?: listOf("", "", "", "")
             } else if (showCategories) {
-                // Hybrid approach: If a category has 1 item, show the item. If > 1, show the category title.
-                languageOutput?.map { (key, values) ->
-                    if (values.size == 1) values.first() else key
+                // Hybrid approach: If a category has 1 item, show the item.
+                // If > 1, show the combination of values (e.g. "walk / walks") instead of the title.
+                languageOutput?.map { (_, values) ->
+                    if (values.size == 1) values.first() else values.joinToString(" / ")
                 } ?: listOf("", "", "", "")
             } else {
                 languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
@@ -834,15 +835,30 @@ abstract class GeneralKeyboardIME(
                     btn.setOnClickListener {
                         val label = btn.text.toString()
                         if (label.isNotEmpty()) {
-                            // Check if this label is a category key that has multiple values
-                            // We must be in 'showCategories' mode, AND the label must be a key in the map,
-                            // AND that key must point to a list with > 1 item.
-                            // (The last check is implicit because if it had 1 item, we would have displayed the item string, not the key)
-                            if (showCategories && languageOutput?.containsKey(label) == true) {
-                                // It is a category title -> Enter sub-category
-                                selectedConjugationSubCategory = label
-                                updateUI()
-                            } else {
+                            var handledAsCategory = false
+                            if (showCategories) {
+                                // Find which category this label corresponds to
+                                val matchingEntry = languageOutput?.entries?.find { (_, values) ->
+                                    if (values.size == 1) {
+                                        values.first() == label
+                                    } else {
+                                        values.joinToString(" / ") == label
+                                    }
+                                }
+
+                                if (matchingEntry != null) {
+                                    val (key, values) = matchingEntry
+                                    if (values.size > 1) {
+                                        // It corresponds to a multi-value category -> Enter sub-category
+                                        selectedConjugationSubCategory = key
+                                        updateUI()
+                                        handledAsCategory = true
+                                    }
+                                    // If values.size == 1, we fall through to the commit logic below
+                                }
+                            }
+
+                            if (!handledAsCategory) {
                                 // It is a form (either single from top level, or from sub-menu) -> Commit
                                 currentInputConnection?.commitText("$label ", 1)
                                 suggestionHandler.processLinguisticSuggestions(label)
