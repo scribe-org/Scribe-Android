@@ -769,7 +769,6 @@ abstract class GeneralKeyboardIME(
         var hintWord: String? = null
         var promptText: String? = null
 
-
         // Show/hide conjugate grid based on state
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
             // Show conjugate_grid_container (1/3 screen size) between toolbar and keyboard
@@ -786,7 +785,7 @@ abstract class GeneralKeyboardIME(
 
             // Determine if we are in sub-category selection mode
             val isSubSelection = selectedConjugationSubCategory != null
-            
+
             // Determine what to show: Categories (keys) or Forms (values)
             // If we have a sub-category selected, show its forms.
             // If not, check if the language has a direct mapping (key == title).
@@ -794,39 +793,41 @@ abstract class GeneralKeyboardIME(
             // If not (like English), show the list of categories OR single forms.
             val showCategories = !isSubSelection && (languageOutput?.containsKey(title) != true)
 
-            val forms = if (isSubSelection) {
-                languageOutput?.get(selectedConjugationSubCategory)?.toList() ?: listOf("", "", "", "")
-            } else if (showCategories) {
-                // Hybrid approach: If a category has 1 item, show the item.
-                // If > 1, show the combination of values (e.g. "walk / walks") instead of the title.
-                languageOutput?.map { (_, values) ->
-                    if (values.size == 1) values.first() else values.joinToString(" / ")
-                } ?: listOf("", "", "", "")
-            } else {
-                languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
-            }
+            val forms =
+                if (isSubSelection) {
+                    languageOutput?.get(selectedConjugationSubCategory)?.toList() ?: listOf("", "", "", "")
+                } else if (showCategories) {
+                    // Hybrid approach: If a category has 1 item, show the item.
+                    // If > 1, show the combination of values (e.g. "walk / walks") instead of the title.
+                    languageOutput?.map { (_, values) ->
+                        if (values.size == 1) values.first() else values.joinToString(" / ")
+                    } ?: listOf("", "", "", "")
+                } else {
+                    languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
+                }
 
             // Choose layout based on language and number of forms
-            val layoutResId = when {
-                isSubSelection -> R.layout.conjugate_grid_2x1
-                language == "English" && forms.size <= 4 -> R.layout.conjugate_grid_2x2
-                language in listOf("Russian", "Swedish") && forms.size <= 4 -> R.layout.conjugate_grid_2x2
-                forms.size > 4 -> R.layout.conjugate_grid_3x2
-                else -> R.layout.conjugate_grid_2x2
-            }
+            val layoutResId =
+                when {
+                    isSubSelection -> R.layout.conjugate_grid_2x1
+                    language == "English" && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                    language in listOf("Russian", "Swedish") && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                    forms.size > 4 -> R.layout.conjugate_grid_3x2
+                    else -> R.layout.conjugate_grid_2x2
+                }
 
             val gridContent = layoutInflater.inflate(layoutResId, grid, false) as LinearLayout
             grid.addView(gridContent)
 
-
-            val buttonIds = listOf(
-                R.id.conjugate_btn_1,
-                R.id.conjugate_btn_2,
-                R.id.conjugate_btn_3,
-                R.id.conjugate_btn_4,
-                R.id.conjugate_btn_5,
-                R.id.conjugate_btn_6
-            )
+            val buttonIds =
+                listOf(
+                    R.id.conjugate_btn_1,
+                    R.id.conjugate_btn_2,
+                    R.id.conjugate_btn_3,
+                    R.id.conjugate_btn_4,
+                    R.id.conjugate_btn_5,
+                    R.id.conjugate_btn_6,
+                )
 
             buttonIds.forEachIndexed { i, btnId ->
                 val btn = gridContent.findViewById<Button?>(btnId)
@@ -838,13 +839,14 @@ abstract class GeneralKeyboardIME(
                             var handledAsCategory = false
                             if (showCategories) {
                                 // Find which category this label corresponds to
-                                val matchingEntry = languageOutput?.entries?.find { (_, values) ->
-                                    if (values.size == 1) {
-                                        values.first() == label
-                                    } else {
-                                        values.joinToString(" / ") == label
+                                val matchingEntry =
+                                    languageOutput?.entries?.find { (_, values) ->
+                                        if (values.size == 1) {
+                                            values.first() == label
+                                        } else {
+                                            values.joinToString(" / ") == label
+                                        }
                                     }
-                                }
 
                                 if (matchingEntry != null) {
                                     val (key, values) = matchingEntry
@@ -873,13 +875,18 @@ abstract class GeneralKeyboardIME(
                 }
             }
 
-            val arrowButtonIds = listOf(
-                "conjugate_arrow_left_1", "conjugate_arrow_right_1",
-                "conjugate_arrow_left_2", "conjugate_arrow_right_2",
-                "conjugate_arrow_left_3", "conjugate_arrow_right_3",
-                "conjugate_arrow_left", "conjugate_arrow_right"
-            )
-            
+            val arrowButtonIds =
+                listOf(
+                    "conjugate_arrow_left_1",
+                    "conjugate_arrow_right_1",
+                    "conjugate_arrow_left_2",
+                    "conjugate_arrow_right_2",
+                    "conjugate_arrow_left_3",
+                    "conjugate_arrow_right_3",
+                    "conjugate_arrow_left",
+                    "conjugate_arrow_right",
+                )
+
             arrowButtonIds.forEach { arrowBtnName ->
                 val arrowBtnId = resources.getIdentifier(arrowBtnName, "id", packageName)
                 if (arrowBtnId != 0) {
@@ -888,7 +895,7 @@ abstract class GeneralKeyboardIME(
                         arrowBtn.setOnClickListener {
                             // Reset sub-category when changing pages
                             selectedConjugationSubCategory = null
-                            
+
                             val isLeft = arrowBtnName.contains("left")
                             val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
                             val current = prefs.getInt("conjugate_index", 0)

@@ -47,7 +47,6 @@ class ConjugateDataManager(
         } else {
             finalOutput
         }
-
     }
 
     /**
@@ -139,74 +138,77 @@ class ConjugateDataManager(
 
         return try {
             val verbPart = cursor.getString(cursor.getColumnIndexOrThrow(dbColumnName))
-            
+
             // Try to handle it as a dynamic lookup (German style: [form auxiliary_column])
             try {
                 val words = auxiliaryWords.split(Regex("\\s+"))
                 // If it's a single word and not a column, this might throw, which is fine (English case)
                 // If it's multiple words, the last one is the auxiliary verb column (e.g. "auxiliaryVerb")
                 val auxColumn = words.last()
-                
+
                 // Check if this column exists and get the auxiliary verb (e.g. "haben")
                 val auxVerbIndex = cursor.getColumnIndex(auxColumn)
-                if (auxVerbIndex == -1) {
-                    // Column doesn't exist, treat as static text (English case)
-                    throw IllegalArgumentException("Column $auxColumn not found")
-                }
+                require(auxVerbIndex != -1) { "Column $auxColumn not found" }
                 val verbType = cursor.getString(auxVerbIndex)
-                
+
                 // If we got here, it's a dynamic lookup.
                 // The first word is the form we want of that auxiliary verb (e.g. "indicativePresent...")
                 val targetForm = words.first()
-                
+
                 val db = fileManager.getLanguageDatabase(language = language)
                 var auxResult = ""
-                
+
                 // Look up the auxiliary verb in the database to get its conjugated form
                 // We assume the auxiliary verb's 'wdLexemeId' or similar identifier matches 'verbType'
                 // OR we search by infinitive if 'verbType' is the infinitive.
                 // The original code used 'wdLexemeId'. Let's check if we can query by infinitive or id.
                 // For safety, let's assume 'verbType' is the ID if it's an ID column, or infinitive if not.
                 // But usually auxiliaryVerb column stores the ID or the infinitive.
-                
+
                 // Re-implementing the logic from the original code:
                 // "SELECT $targetForm FROM verbs WHERE wdLexemeId = ?" with verbType
-                // But wait, does 'auxiliaryVerb' store an ID? 
+                // But wait, does 'auxiliaryVerb' store an ID?
                 // If the previous code worked, it likely stored an ID.
-                
-                val auxCursor = db?.rawQuery(
+
+                val auxCursor =
+                    db?.rawQuery(
                         "SELECT $targetForm FROM verbs WHERE wdLexemeId = ?",
                         arrayOf(verbType),
                     )
-                
+
                 if (auxCursor?.moveToFirst() == true) {
                     auxResult = auxCursor.getString(0)
                 } else {
-                     // Fallback: maybe it stores the infinitive?
-                     auxCursor?.close()
-                     val auxCursor2 = db?.rawQuery(
-                        "SELECT $targetForm FROM verbs WHERE infinitive = ?",
-                        arrayOf(verbType),
-                     )
-                     if (auxCursor2?.moveToFirst() == true) {
-                         auxResult = auxCursor2.getString(0)
-                     }
-                     auxCursor2?.close()
+                    // Fallback: maybe it stores the infinitive?
+                    auxCursor?.close()
+                    val auxCursor2 =
+                        db?.rawQuery(
+                            "SELECT $targetForm FROM verbs WHERE infinitive = ?",
+                            arrayOf(verbType),
+                        )
+                    if (auxCursor2?.moveToFirst() == true) {
+                        auxResult = auxCursor2.getString(0)
+                    }
+                    auxCursor2?.close()
                 }
                 auxCursor?.close()
-                
+
                 if (auxResult.isNotEmpty()) {
                     "$auxResult $verbPart".trim()
                 } else {
                     // If lookup failed but column existed, maybe it's just static text?
-                    // But for German it shouldn't fail. 
+                    // But for German it shouldn't fail.
                     // Let's fallback to static just in case to avoid empty output.
                     "$auxiliaryWords $verbPart".trim()
                 }
-
-            } catch (e: Exception) {
-                // If any step of the dynamic lookup fails (e.g. column not found), 
-                // treat the bracket content as a static string (English case: [have])
+            } catch (e: IllegalArgumentException) {
+                Log.w("ConjugateDataManager", "Dynamic lookup failed: ${e.message}")
+                "$auxiliaryWords $verbPart".trim()
+            } catch (e: NoSuchElementException) {
+                Log.w("ConjugateDataManager", "Dynamic lookup failed: ${e.message}")
+                "$auxiliaryWords $verbPart".trim()
+            } catch (e: SQLiteException) {
+                Log.e("ConjugateDataManager", "Database error in dynamic lookup", e)
                 "$auxiliaryWords $verbPart".trim()
             }
         } catch (e: IllegalArgumentException) {
