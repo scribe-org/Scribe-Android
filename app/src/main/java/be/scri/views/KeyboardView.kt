@@ -51,6 +51,7 @@ import be.scri.extensions.getProperKeyColor
 import be.scri.extensions.getProperPrimaryColor
 import be.scri.extensions.getProperTextColor
 import be.scri.extensions.getStrokeColor
+import be.scri.extensions.isUsingSystemDarkTheme
 import be.scri.extensions.performHapticFeedback
 import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
@@ -578,7 +579,7 @@ class KeyboardView
 
             if (visibility == VISIBLE) {
                 mTextColor = context.getProperTextColor()
-                mBackgroundColor = context.getProperBackgroundColor()
+                mBackgroundColor = context.resources.getColor(R.color.annotateBlue)
                 mPrimaryColor = context.getProperPrimaryColor()
                 val strokeColor = context.getStrokeColor()
 
@@ -598,12 +599,12 @@ class KeyboardView
 
                 val miniKeyboardBackgroundColor =
                     if (context.config.isUsingSystemTheme) {
-                        resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
+                resources.getColor(R.color.default_key_color, context.theme)
                     } else {
-                        mBackgroundColor
+                        resources.getColor(R.color.default_key_color, context.theme)
                     }
 
-                if (changedView == popupBinding.miniKeyboardView) {
+                if (changedView.id == R.id.mini_keyboard_view) {
                     val previewBackground = background as LayerDrawable
 
                     previewBackground
@@ -612,7 +613,7 @@ class KeyboardView
 
                     previewBackground
                         .findDrawableByLayerId(R.id.button_background_stroke)
-                        .applyColorFilter(strokeColor)
+                        .applyColorFilter(context.getColor(R.color.default_key_color))
 
                     background = previewBackground
                 } else {
@@ -875,7 +876,9 @@ class KeyboardView
                         "#d2d4da".toColorInt()
                     }
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-                canvas.drawColor(mKeyboardBackgroundColor)
+                if (id != R.id.mini_keyboard_view) {
+                    canvas.drawColor(mKeyboardBackgroundColor)
+                }
 
                 val keyCount = keys.size
                 for (i in 0 until keyCount) {

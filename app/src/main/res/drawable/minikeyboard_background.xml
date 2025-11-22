@@ -3,7 +3,7 @@
     <item android:id="@+id/button_background_shape">
         <shape android:shape="rectangle">
             <solid android:color="@color/mini_keyboard_color" />
-            <corners android:radius="@dimen/small_margin" />
+            <corners android:radius="12dp" />
         </shape>
     </item>
 
@@ -12,8 +12,8 @@
             <stroke
                 android:width="1dp"
                 android:color="@color/divider_grey" />
-            <solid android:color="@color/mini_keyboard_color" />
-            <corners android:radius="@dimen/small_margin" />
+            <solid android:color="@color/special_key_dark" />
+            <corners android:radius="12dp" />
         </shape>
     </item>
 </layer-list>
