@@ -670,6 +670,9 @@ abstract class GeneralKeyboardIME(
         }
 
         binding.separator1.visibility = View.GONE
+        binding.ivInfo.visibility = View.GONE
+        binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.GONE
+        binding.keyboardView.visibility = View.VISIBLE
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         initializeKeyboard(getKeyboardLayoutXML())
@@ -737,6 +740,8 @@ abstract class GeneralKeyboardIME(
         binding.separator3.visibility = View.VISIBLE
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
+        binding.separator6.visibility = View.GONE
+        binding.ivInfo.visibility = View.GONE
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
     }
 
@@ -759,6 +764,7 @@ abstract class GeneralKeyboardIME(
                 },
             ),
         )
+        binding.ivInfo.visibility = View.GONE
 
         binding.scribeKeyToolbar.foreground =
             AppCompatResources.getDrawable(
@@ -785,20 +791,12 @@ abstract class GeneralKeyboardIME(
 
             // Determine if we are in sub-category selection mode
             val isSubSelection = selectedConjugationSubCategory != null
-
-            // Determine what to show: Categories (keys) or Forms (values)
-            // If we have a sub-category selected, show its forms.
-            // If not, check if the language has a direct mapping (key == title).
-            // If direct mapping exists, show forms directly.
-            // If not (like English), show the list of categories OR single forms.
             val showCategories = !isSubSelection && (languageOutput?.containsKey(title) != true)
 
             val forms =
                 if (isSubSelection) {
                     languageOutput?.get(selectedConjugationSubCategory)?.toList() ?: listOf("", "", "", "")
                 } else if (showCategories) {
-                    // Hybrid approach: If a category has 1 item, show the item.
-                    // If > 1, show the combination of values (e.g. "walk / walks") instead of the title.
                     languageOutput?.map { (_, values) ->
                         if (values.size == 1) values.first() else values.joinToString(" / ")
                     } ?: listOf("", "", "", "")
@@ -806,7 +804,6 @@ abstract class GeneralKeyboardIME(
                     languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
                 }
 
-            // Choose layout based on language and number of forms
             val layoutResId =
                 when {
                     isSubSelection -> R.layout.conjugate_grid_2x1
@@ -861,13 +858,12 @@ abstract class GeneralKeyboardIME(
                             }
 
                             if (!handledAsCategory) {
-                                // It is a form (either single from top level, or from sub-menu) -> Commit
                                 currentInputConnection?.commitText("$label ", 1)
                                 suggestionHandler.processLinguisticSuggestions(label)
                                 currentState = ScribeState.IDLE
                                 binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.GONE
                                 binding.keyboardView.visibility = View.VISIBLE
-                                selectedConjugationSubCategory = null // Reset for next time
+                                selectedConjugationSubCategory = null
                                 moveToIdleState()
                             }
                         }
@@ -893,7 +889,6 @@ abstract class GeneralKeyboardIME(
                     val arrowBtn = gridContent.findViewById<Button?>(arrowBtnId)
                     if (arrowBtn != null) {
                         arrowBtn.setOnClickListener {
-                            // Reset sub-category when changing pages
                             selectedConjugationSubCategory = null
 
                             val isLeft = arrowBtnName.contains("left")
@@ -914,6 +909,18 @@ abstract class GeneralKeyboardIME(
             hintWord = conjugateLabels.lastOrNull()
 
             val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
+        } else {
+            binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.GONE
+            binding.keyboardView.visibility = View.VISIBLE
+        }
+
+        binding.scribeKeyToolbar.setOnClickListener {
+            if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
+                currentState = ScribeState.CONJUGATE
+                updateUI()
+            } else {
+                moveToIdleState()
+            }
         }
 
         updateCommandBarHintAndPrompt(text = promptText, isUserDarkMode = isDarkMode, word = hintWord)

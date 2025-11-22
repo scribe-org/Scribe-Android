@@ -38,7 +38,6 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.toColorInt
 import androidx.core.graphics.withSave
 import be.scri.R
-import be.scri.databinding.KeyboardPopupKeyboardBinding
 import be.scri.databinding.KeyboardViewKeyboardBinding
 import be.scri.extensions.adjustAlpha
 import be.scri.extensions.applyColorFilter
@@ -324,15 +323,6 @@ class KeyboardView
             private const val LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT = 340
         }
 
-        private var popupBindingInternal: KeyboardPopupKeyboardBinding? = null
-        private val popupBinding: KeyboardPopupKeyboardBinding
-            get() {
-                if (popupBindingInternal == null) {
-                    popupBindingInternal = KeyboardPopupKeyboardBinding.inflate(LayoutInflater.from(context))
-                }
-                return popupBindingInternal!!
-            }
-
         var setPreview: Boolean = true
         var setVibrate: Boolean = true
 
@@ -578,7 +568,7 @@ class KeyboardView
 
             if (visibility == VISIBLE) {
                 mTextColor = context.getProperTextColor()
-                mBackgroundColor = context.getProperBackgroundColor()
+                mBackgroundColor = context.resources.getColor(R.color.annotateBlue)
                 mPrimaryColor = context.getProperPrimaryColor()
                 val strokeColor = context.getStrokeColor()
 
@@ -598,12 +588,12 @@ class KeyboardView
 
                 val miniKeyboardBackgroundColor =
                     if (context.config.isUsingSystemTheme) {
-                        resources.getColor(R.color.you_keyboard_toolbar_color, context.theme)
+                        resources.getColor(R.color.default_key_color, context.theme)
                     } else {
-                        mBackgroundColor
+                        resources.getColor(R.color.default_key_color, context.theme)
                     }
 
-                if (changedView == popupBinding.miniKeyboardView) {
+                if (changedView.id == R.id.mini_keyboard_view) {
                     val previewBackground = background as LayerDrawable
 
                     previewBackground
@@ -612,7 +602,7 @@ class KeyboardView
 
                     previewBackground
                         .findDrawableByLayerId(R.id.button_background_stroke)
-                        .applyColorFilter(strokeColor)
+                        .applyColorFilter(context.getColor(R.color.default_key_color))
 
                     background = previewBackground
                 } else {
@@ -875,7 +865,9 @@ class KeyboardView
                         "#d2d4da".toColorInt()
                     }
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-                canvas.drawColor(mKeyboardBackgroundColor)
+                if (id != R.id.mini_keyboard_view) {
+                    canvas.drawColor(mKeyboardBackgroundColor)
+                }
 
                 val keyCount = keys.size
                 for (i in 0 until keyCount) {

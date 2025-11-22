@@ -4,6 +4,7 @@ header:
   paths:
     - '**/*.java'
     - '**/*.kt'
+    - '**/*.kts'
   paths-ignore:
     - '**/*.md'
     - '**/.git/**'

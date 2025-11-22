@@ -4,6 +4,7 @@ package be.scri.helpers.data
 import DataContract
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import be.scri.helpers.DatabaseFileManager
 
@@ -151,24 +152,10 @@ class ConjugateDataManager(
                 require(auxVerbIndex != -1) { "Column $auxColumn not found" }
                 val verbType = cursor.getString(auxVerbIndex)
 
-                // If we got here, it's a dynamic lookup.
-                // The first word is the form we want of that auxiliary verb (e.g. "indicativePresent...")
                 val targetForm = words.first()
 
                 val db = fileManager.getLanguageDatabase(language = language)
                 var auxResult = ""
-
-                // Look up the auxiliary verb in the database to get its conjugated form
-                // We assume the auxiliary verb's 'wdLexemeId' or similar identifier matches 'verbType'
-                // OR we search by infinitive if 'verbType' is the infinitive.
-                // The original code used 'wdLexemeId'. Let's check if we can query by infinitive or id.
-                // For safety, let's assume 'verbType' is the ID if it's an ID column, or infinitive if not.
-                // But usually auxiliaryVerb column stores the ID or the infinitive.
-
-                // Re-implementing the logic from the original code:
-                // "SELECT $targetForm FROM verbs WHERE wdLexemeId = ?" with verbType
-                // But wait, does 'auxiliaryVerb' store an ID?
-                // If the previous code worked, it likely stored an ID.
 
                 val auxCursor =
                     db?.rawQuery(
@@ -196,9 +183,6 @@ class ConjugateDataManager(
                 if (auxResult.isNotEmpty()) {
                     "$auxResult $verbPart".trim()
                 } else {
-                    // If lookup failed but column existed, maybe it's just static text?
-                    // But for German it shouldn't fail.
-                    // Let's fallback to static just in case to avoid empty output.
                     "$auxiliaryWords $verbPart".trim()
                 }
             } catch (e: IllegalArgumentException) {

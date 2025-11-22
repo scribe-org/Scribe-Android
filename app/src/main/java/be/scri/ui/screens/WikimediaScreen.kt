@@ -39,13 +39,13 @@ fun WikimediaScreen(
     modifier: Modifier = Modifier,
 ) {
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.wikimedia_and_scribe),
+        pageTitle = stringResource(R.string.app_about_community_wikimedia),
         onBackNavigation = { onBackNavigation() },
         lastPage = stringResource(R.string.app_about_title),
         modifier = modifier,
     ) {
         WikimediaScreenContent(
-            title = stringResource(R.string.wikimedia_and_scribe_title),
+            title = stringResource(R.string.app_about_community_wikimedia_caption),
             modifier =
                 Modifier.padding(
                     horizontal = 16.dp,
@@ -53,7 +53,7 @@ fun WikimediaScreen(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = stringResource(id = R.string.scribe_wikimedia),
+                    text = stringResource(id = R.string.scribe_key),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
                         TextStyle.Default.copy(
@@ -72,7 +72,7 @@ fun WikimediaScreen(
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 )
                 Text(
-                    text = stringResource(id = R.string.wikidata_and_scribe),
+                    text = stringResource(id = R.string.app_about_community_wikimedia_text_2),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
                         TextStyle.Default.copy(
@@ -91,7 +91,7 @@ fun WikimediaScreen(
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 )
                 Text(
-                    text = stringResource(id = R.string.wikipedia_and_scribe),
+                    text = stringResource(id = R.string.app_about_community_wikimedia_text_3),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
                         TextStyle.Default.copy(
