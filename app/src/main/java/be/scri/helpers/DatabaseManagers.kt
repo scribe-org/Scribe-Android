@@ -5,6 +5,7 @@ import DataContract
 import android.content.Context
 import be.scri.helpers.data.AutoSuggestionDataManager
 import be.scri.helpers.data.AutocompletionDataManager
+import be.scri.helpers.data.ClipboardDataManager
 import be.scri.helpers.data.ConjugateDataManager
 import be.scri.helpers.data.ContractDataLoader
 import be.scri.helpers.data.EmojiDataManager
@@ -12,8 +13,6 @@ import be.scri.helpers.data.GenderDataManager
 import be.scri.helpers.data.PluralFormsManager
 import be.scri.helpers.data.PrepositionDataManager
 import be.scri.helpers.data.TranslationDataManager
-import be.scri.helpers.data.ClipboardDataManager
-
 
 /**
  * The primary entry point for all data-related operations.

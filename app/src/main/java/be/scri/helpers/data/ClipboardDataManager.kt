@@ -1,8 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 package be.scri.helpers.data
 
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import be.scri.helpers.DatabaseFileManager
 
@@ -13,13 +14,14 @@ data class ClipboardItem(
     val id: Long,
     val text: String,
     val timestampMs: Long,
-    val isPinned: Boolean
+    val isPinned: Boolean,
 )
 
+@Suppress("TooManyFunctions")
 class ClipboardDataManager(
     @Suppress("UnusedPrivateProperty")
     private val fileManager: DatabaseFileManager,
-    private val context: Context
+    private val context: Context,
 ) {
     companion object {
         private const val DB_FILENAME = "clipboard_history.db"
@@ -50,7 +52,7 @@ class ClipboardDataManager(
                 $COL_TIMESTAMP INTEGER NOT NULL,
                 $COL_PINNED INTEGER NOT NULL DEFAULT 0
             );
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 
@@ -59,10 +61,11 @@ class ClipboardDataManager(
         val db = openDb()
         try {
             ensureTableExists(db)
-            val cursor = db.rawQuery(
-                "SELECT $COL_TEXT FROM $TABLE ORDER BY $COL_TIMESTAMP DESC LIMIT 1",
-                null
-            )
+            val cursor =
+                db.rawQuery(
+                    "SELECT $COL_TEXT FROM $TABLE ORDER BY $COL_TIMESTAMP DESC LIMIT 1",
+                    null,
+                )
             return cursor.use { if (it.moveToFirst()) it.getString(0) else null }
         } finally {
             db.close()
@@ -70,7 +73,10 @@ class ClipboardDataManager(
     }
 
     /** Insert new clipboard item and also skip the duplicates. */
-    fun insertClip(rawText: String, pinned: Boolean = false): Long {
+    fun insertClip(
+        rawText: String,
+        pinned: Boolean = false,
+    ): Long {
         val text = rawText.take(MAX_CLIP_LENGTH)
 
         // prevent consecutive duplicates
@@ -79,11 +85,12 @@ class ClipboardDataManager(
         val db = openDb()
         try {
             ensureTableExists(db)
-            val cv = ContentValues().apply {
-                put(COL_TEXT, text)
-                put(COL_TIMESTAMP, System.currentTimeMillis())
-                put(COL_PINNED, if (pinned) 1 else 0)
-            }
+            val cv =
+                ContentValues().apply {
+                    put(COL_TEXT, text)
+                    put(COL_TIMESTAMP, System.currentTimeMillis())
+                    put(COL_PINNED, if (pinned) 1 else 0)
+                }
             return db.insert(TABLE, null, cv)
         } finally {
             db.close()
@@ -95,11 +102,12 @@ class ClipboardDataManager(
         val db = openDb()
         try {
             ensureTableExists(db)
-            val cursor = db.rawQuery(
-                "SELECT $COL_ID, $COL_TEXT, $COL_TIMESTAMP, $COL_PINNED FROM $TABLE " +
-                    "ORDER BY $COL_TIMESTAMP DESC LIMIT ?",
-                arrayOf(limit.toString())
-            )
+            val cursor =
+                db.rawQuery(
+                    "SELECT $COL_ID, $COL_TEXT, $COL_TIMESTAMP, $COL_PINNED FROM $TABLE " +
+                        "ORDER BY $COL_TIMESTAMP DESC LIMIT ?",
+                    arrayOf(limit.toString()),
+                )
             return cursor.use {
                 val items = mutableListOf<ClipboardItem>()
                 while (it.moveToNext()) {
@@ -108,8 +116,8 @@ class ClipboardDataManager(
                             id = it.getLong(0),
                             text = it.getString(1),
                             timestampMs = it.getLong(2),
-                            isPinned = it.getInt(3) == 1
-                        )
+                            isPinned = it.getInt(3) == 1,
+                        ),
                     )
                 }
                 items
@@ -124,11 +132,12 @@ class ClipboardDataManager(
         val db = openDb()
         try {
             ensureTableExists(db)
-            val cursor = db.rawQuery(
-                "SELECT $COL_ID, $COL_TEXT, $COL_TIMESTAMP, $COL_PINNED FROM $TABLE " +
-                    "WHERE $COL_PINNED = 1 ORDER BY $COL_TIMESTAMP DESC",
-                null
-            )
+            val cursor =
+                db.rawQuery(
+                    "SELECT $COL_ID, $COL_TEXT, $COL_TIMESTAMP, $COL_PINNED FROM $TABLE " +
+                        "WHERE $COL_PINNED = 1 ORDER BY $COL_TIMESTAMP DESC",
+                    null,
+                )
             return cursor.use {
                 val out = mutableListOf<ClipboardItem>()
                 while (it.moveToNext()) {
@@ -137,8 +146,8 @@ class ClipboardDataManager(
                             id = it.getLong(0),
                             text = it.getString(1),
                             timestampMs = it.getLong(2),
-                            isPinned = it.getInt(3) == 1
-                        )
+                            isPinned = it.getInt(3) == 1,
+                        ),
                     )
                 }
                 out
@@ -149,7 +158,10 @@ class ClipboardDataManager(
     }
 
     /** Toggle pin state to pin or unpin */
-    fun pinToggle(id: Long, pinned: Boolean) {
+    fun pinToggle(
+        id: Long,
+        pinned: Boolean,
+    ) {
         val db = openDb()
         try {
             ensureTableExists(db)
@@ -196,7 +208,7 @@ class ClipboardDataManager(
                     ORDER BY $COL_TIMESTAMP DESC
                     LIMIT -1 OFFSET $keep
                 );
-                """.trimIndent()
+                """.trimIndent(),
             )
         } finally {
             db.close()
@@ -211,7 +223,7 @@ class ClipboardDataManager(
             db.delete(
                 TABLE,
                 "$COL_PINNED = 0 AND $COL_TIMESTAMP < ?",
-                arrayOf(cutoffMillis.toString())
+                arrayOf(cutoffMillis.toString()),
             )
         } finally {
             db.close()
