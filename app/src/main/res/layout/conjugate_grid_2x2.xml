@@ -1,88 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 2x2 Grid for English conjugations with arrow keys -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="12dp"
+    android:gravity="center">
 
+    <!-- Row 1 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:spacing="4dp">
+        android:gravity="center_vertical">
+
         <Button
             android:id="@+id/conjugate_arrow_left_1"
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
+            android:layout_marginEnd="8dp"
             android:text="◄"
             android:textSize="24sp"
             android:textStyle="bold" />
+
         <Button
             android:id="@+id/conjugate_btn_1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="4dp"
-            android:textSize="18sp"
+            android:layout_marginEnd="8dp"
+            android:textSize="20sp"
             android:textStyle="bold" />
+
         <Button
             android:id="@+id/conjugate_btn_2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="4dp"
-            android:textSize="18sp"
+            android:layout_marginEnd="8dp"
+            android:textSize="20sp"
             android:textStyle="bold" />
+
         <Button
             android:id="@+id/conjugate_arrow_right_1"
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
             android:text="►"
             android:textSize="24sp"
             android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Row 2 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:spacing="4dp">
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp">
+
         <Button
             android:id="@+id/conjugate_arrow_left_2"
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
+            android:layout_marginEnd="8dp"
             android:text="◄"
             android:textSize="24sp"
             android:textStyle="bold" />
+
         <Button
             android:id="@+id/conjugate_btn_3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="4dp"
-            android:textSize="18sp"
+            android:layout_marginEnd="8dp"
+            android:textSize="20sp"
             android:textStyle="bold" />
+
         <Button
             android:id="@+id/conjugate_btn_4"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_margin="4dp"
-            android:textSize="18sp"
+            android:layout_marginEnd="8dp"
+            android:textSize="20sp"
             android:textStyle="bold" />
+
         <Button
             android:id="@+id/conjugate_arrow_right_2"
             android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
             android:text="►"
             android:textSize="24sp"
             android:textStyle="bold" />
     </LinearLayout>
+
 </LinearLayout>

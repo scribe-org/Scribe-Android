@@ -654,12 +654,12 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- Conjugate grid container: filled with 250dp fixed height, between toolbar and keyboard -->
     <FrameLayout
         android:id="@+id/conjugate_grid_container"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:visibility="gone"
+        android:background="@color/dark_key_color"
         app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

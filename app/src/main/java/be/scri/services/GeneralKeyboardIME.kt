@@ -604,7 +604,6 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() {
         if (!this::binding.isInitialized) return
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-        Log.i("INVALID STATE PR", "The state of the keyboard is $currentState")
         when (currentState) {
             ScribeState.IDLE -> {
                 setupIdleView()
@@ -616,7 +615,6 @@ abstract class GeneralKeyboardIME(
             ScribeState.INVALID -> setupInvalidView()
             ScribeState.TRANSLATE -> {
                 setupToolbarView()
-                // Add specific handling here to maintain translate button.
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
                 binding.translateBtn.visibility = View.VISIBLE
             }
@@ -798,7 +796,7 @@ abstract class GeneralKeyboardIME(
             val gridContent = layoutInflater.inflate(layoutResId, grid, false) as LinearLayout
             grid.addView(gridContent)
 
-            // Bind conjugate forms to grid buttons
+
             val buttonIds = listOf(
                 R.id.conjugate_btn_1,
                 R.id.conjugate_btn_2,
@@ -818,13 +816,15 @@ abstract class GeneralKeyboardIME(
                             currentInputConnection?.commitText("$label ", 1)
                             suggestionHandler.processLinguisticSuggestions(label)
                         }
-                        // Close the conjugate view immediately after clicking
+                        currentState = ScribeState.IDLE
+                        binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.GONE
+                        binding.keyboardView.visibility = View.VISIBLE
                         moveToIdleState()
+
                     }
                 }
             }
 
-            // Handle arrow buttons (left/right navigation)
             val arrowButtonIds = listOf(
                 "conjugate_arrow_left_1", "conjugate_arrow_right_1",
                 "conjugate_arrow_left_2", "conjugate_arrow_right_2",
