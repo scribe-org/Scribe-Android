@@ -139,27 +139,7 @@ class ConjugateDataManager(
 
         return try {
             val verbPart = cursor.getString(cursor.getColumnIndexOrThrow(dbColumnName))
-            val words = auxiliaryWords.split(Regex("\\s+"))
-            val verbType = cursor.getString(cursor.getColumnIndexOrThrow(words.last()))
-            val db = fileManager.getLanguageDatabase(language = language)
-
-            val wordPart1 = words.firstOrNull()
-            var auxResult = ""
-            wordPart1?.let {
-                val auxCursor =
-                    db?.rawQuery(
-                        "SELECT $wordPart1 FROM verbs WHERE wdLexemeId = ?",
-                        arrayOf(verbType),
-                    )
-                if (auxCursor?.moveToFirst() == true) {
-                    auxResult = auxCursor.getString(0)
-                }
-                auxCursor?.close()
-            }
-
-            val result = "$auxResult $verbPart".trim()
-            Log.d("DEBUG", "Returning: $result")
-            result
+            "$auxiliaryWords $verbPart".trim()
         } catch (e: IllegalArgumentException) {
             Log.e("ConjugateDataManager", "Column '$dbColumnName' not found", e)
             ""
