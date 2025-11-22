@@ -893,9 +893,9 @@ abstract class GeneralKeyboardIME(
                             val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
                             val current = prefs.getInt("conjugate_index", 0)
                             if (isLeft) {
-                                prefs.edit { putInt("conjugate_index", current + 1) }
-                            } else {
                                 prefs.edit { putInt("conjugate_index", current - 1) }
+                            } else {
+                                prefs.edit { putInt("conjugate_index", current + 1) }
                             }
                             updateUI()
                         }
