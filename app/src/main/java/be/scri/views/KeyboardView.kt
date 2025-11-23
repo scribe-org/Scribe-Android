@@ -925,7 +925,7 @@ class KeyboardView
                             (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
                             (key.y + key.height - vKeyMargin + shadowOffset - padding).toFloat(),
                         )
-                    if (code != EXTRA_PADDING) {
+                    if (code != EXTRA_PADDING && (mPopupParent.id != R.id.mini_keyboard_view)) {
                         canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
                     }
 
