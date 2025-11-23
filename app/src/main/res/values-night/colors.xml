@@ -25,6 +25,7 @@
     <color name="theme_scribe_blue">@color/dark_scribe_blue</color>
     <color name="navigation_bar_color">@color/dark_keyboard_bg_color</color>
     <color name="default_key_color">@color/dark_key_color</color>
+    <color name ="conjugate_keyboard_color">@color/dark_keyboard_bg_color</color>
 
     <!-- Commons colors -->
     <color name="you_status_bar_color">#20333D</color>

@@ -916,8 +916,8 @@ abstract class GeneralKeyboardIME(
 
         binding.scribeKeyToolbar.setOnClickListener {
             if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
-                currentState = ScribeState.CONJUGATE
-                updateUI()
+                currentState = ScribeState.IDLE
+                moveToIdleState()
             } else {
                 moveToIdleState()
             }
