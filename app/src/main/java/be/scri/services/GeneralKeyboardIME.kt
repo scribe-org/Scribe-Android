@@ -775,13 +775,13 @@ abstract class GeneralKeyboardIME(
         var hintWord: String? = null
         var promptText: String? = null
 
-        // Show/hide conjugate grid based on state
+        // Show/hide conjugate grid based on state.
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
-            // Show conjugate_grid_container (1/3 screen size) between toolbar and keyboard
+            // Show conjugate_grid_container (1/3 screen size) between toolbar and keyboard.
             binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.VISIBLE
             binding.keyboardView.visibility = View.GONE
 
-            // Populate the grid with appropriate layout based on language
+            // Populate the grid with appropriate layout based on language.
             val grid = binding.root.findViewById<LinearLayout>(R.id.conjugate_grid)
             grid.removeAllViews()
 
@@ -789,7 +789,7 @@ abstract class GeneralKeyboardIME(
             val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
             val languageOutput = title?.let { conjugateOutput!![it] }
 
-            // Determine if we are in sub-category selection mode
+            // Determine if we are in sub-category selection mode.
             val isSubSelection = selectedConjugationSubCategory != null
             val showCategories = !isSubSelection && (languageOutput?.containsKey(title) != true)
 
@@ -835,7 +835,7 @@ abstract class GeneralKeyboardIME(
                         if (label.isNotEmpty()) {
                             var handledAsCategory = false
                             if (showCategories) {
-                                // Find which category this label corresponds to
+                                // Find which category this label corresponds to.
                                 val matchingEntry =
                                     languageOutput?.entries?.find { (_, values) ->
                                         if (values.size == 1) {
@@ -848,12 +848,12 @@ abstract class GeneralKeyboardIME(
                                 if (matchingEntry != null) {
                                     val (key, values) = matchingEntry
                                     if (values.size > 1) {
-                                        // It corresponds to a multi-value category -> Enter sub-category
+                                        // It corresponds to a multi-value category -> Enter sub-category.
                                         selectedConjugationSubCategory = key
                                         updateUI()
                                         handledAsCategory = true
                                     }
-                                    // If values.size == 1, we fall through to the commit logic below
+                                    // If values.size == 1, we fall through to the commit logic below.
                                 }
                             }
 

@@ -140,14 +140,14 @@ class ConjugateDataManager(
         return try {
             val verbPart = cursor.getString(cursor.getColumnIndexOrThrow(dbColumnName))
 
-            // Try to handle it as a dynamic lookup (German style: [form auxiliary_column])
+            // Try to handle it as a dynamic lookup (German style: [form auxiliary_column]).
             try {
                 val words = auxiliaryWords.split(Regex("\\s+"))
-                // If it's a single word and not a column, this might throw, which is fine (English case)
-                // If it's multiple words, the last one is the auxiliary verb column (e.g. "auxiliaryVerb")
+                // If it's a single word and not a column, this might throw, which is fine (English case).
+                // If it's multiple words, the last one is the auxiliary verb column (e.g. "auxiliaryVerb").
                 val auxColumn = words.last()
 
-                // Check if this column exists and get the auxiliary verb (e.g. "haben")
+                // Check if this column exists and get the auxiliary verb (e.g. "haben").
                 val auxVerbIndex = cursor.getColumnIndex(auxColumn)
                 require(auxVerbIndex != -1) { "Column $auxColumn not found" }
                 val verbType = cursor.getString(auxVerbIndex)
@@ -166,7 +166,7 @@ class ConjugateDataManager(
                 if (auxCursor?.moveToFirst() == true) {
                     auxResult = auxCursor.getString(0)
                 } else {
-                    // Fallback: maybe it stores the infinitive?
+                    // Fallback case: Maybe it stores the infinitive.
                     auxCursor?.close()
                     val auxCursor2 =
                         db?.rawQuery(
