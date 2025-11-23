@@ -4,15 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@color/you_keyboard_background_color"
+    android:background="@color/conjugate_keyboard_color"
     android:padding="8dp">
 
     <Button
         android:id="@+id/conjugate_arrow_left"
-        android:layout_width="40dp"
+        android:layout_width="30dp"
         android:layout_height="match_parent"
+        android:background="@drawable/rounded_all_corners"
         android:layout_margin="4dp"
-        android:text="&lt;"
+        android:drawableStart="@drawable/ic_left_arrow"
         android:textSize="28sp"
         android:textStyle="bold" />
 
@@ -27,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@drawable/rounded_all_corners"
             android:layout_margin="4dp"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -40,6 +42,7 @@
         <Button
             android:id="@+id/conjugate_btn_2"
             android:layout_width="match_parent"
+            android:background="@drawable/rounded_all_corners"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_margin="4dp"
@@ -56,10 +59,11 @@
 
     <Button
         android:id="@+id/conjugate_arrow_right"
-        android:layout_width="40dp"
+        android:layout_width="30dp"
         android:layout_height="match_parent"
+        android:background="@drawable/rounded_all_corners"
         android:layout_margin="4dp"
-        android:text="&gt;"
+        android:drawableEnd="@drawable/ic_right_arrow"
         android:textSize="28sp"
         android:textStyle="bold" />
 

@@ -27,6 +27,7 @@
     <color name="default_key_color">@color/dark_key_color</color>
     <color name ="conjugate_keyboard_color">@color/dark_keyboard_bg_color</color>
 
+
     <!-- Commons colors -->
     <color name="you_status_bar_color">#20333D</color>
     <color name="you_contextual_status_bar_color">#004C69</color>
