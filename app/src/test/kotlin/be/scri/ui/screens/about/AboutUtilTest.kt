@@ -115,8 +115,6 @@ class AboutUtilTest {
 
         // Act
         AboutUtil.onShareScribeClick(context)
-
-        // Assert
         verify { mockHelper.shareScribe(context) }
     }
 

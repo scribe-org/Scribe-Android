@@ -1,5 +1,7 @@
 {
-  "numbers": { "singular": "plural" },
+  "numbers": {
+    "singular": "plural"
+  },
   "genders": {
     "canonical": [],
     "feminines": [],

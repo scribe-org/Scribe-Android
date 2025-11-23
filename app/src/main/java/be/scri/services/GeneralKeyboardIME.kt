@@ -604,7 +604,6 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() {
         if (!this::binding.isInitialized) return
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-        Log.i("INVALID STATE PR", "The state of the keyboard is $currentState")
         when (currentState) {
             ScribeState.IDLE -> {
                 setupIdleView()
@@ -616,12 +615,13 @@ abstract class GeneralKeyboardIME(
             ScribeState.INVALID -> setupInvalidView()
             ScribeState.TRANSLATE -> {
                 setupToolbarView()
-                // Add specific handling here to maintain translate button.
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
                 binding.translateBtn.visibility = View.VISIBLE
             }
+            ScribeState.CONJUGATE -> setupToolbarView()
+            ScribeState.SELECT_VERB_CONJUNCTION -> setupToolbarView()
+            ScribeState.PLURAL -> setupToolbarView()
             ScribeState.ALREADY_PLURAL -> setupAlreadyPluralView()
-            else -> setupToolbarView()
         }
 
         updateEnterKeyColor(isUserDarkMode)
@@ -671,6 +671,8 @@ abstract class GeneralKeyboardIME(
 
         binding.separator1.visibility = View.GONE
         binding.ivInfo.visibility = View.GONE
+        binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.GONE
+        binding.keyboardView.visibility = View.VISIBLE
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.ic_scribe_icon_vector)
         initializeKeyboard(getKeyboardLayoutXML())
@@ -740,9 +742,10 @@ abstract class GeneralKeyboardIME(
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
         binding.ivInfo.visibility = View.GONE
-
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(this, R.drawable.close)
     }
+
+    private var selectedConjugationSubCategory: String? = null
 
     /**
      * Configures the UI for command modes (`TRANSLATE`, `CONJUGATE`, etc.), showing the command bar and toolbar.
@@ -772,15 +775,152 @@ abstract class GeneralKeyboardIME(
         var hintWord: String? = null
         var promptText: String? = null
 
+        // Show/hide conjugate grid based on state.
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
-            val keyboardXmlId = getKeyboardLayoutForState(currentState)
-            initializeKeyboard(keyboardXmlId)
+            // Show conjugate_grid_container (1/3 screen size) between toolbar and keyboard.
+            binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.VISIBLE
+            binding.keyboardView.visibility = View.GONE
+
+            // Populate the grid with appropriate layout based on language.
+            val grid = binding.root.findViewById<LinearLayout>(R.id.conjugate_grid)
+            grid.removeAllViews()
 
             val conjugateIndex = getValidatedConjugateIndex()
+            val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
+            val languageOutput = title?.let { conjugateOutput!![it] }
 
-            setupConjugateKeysByLanguage(conjugateIndex)
-            promptText = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex) ?: "___"
+            // Determine if we are in sub-category selection mode.
+            val isSubSelection = selectedConjugationSubCategory != null
+            val showCategories = !isSubSelection && (languageOutput?.containsKey(title) != true)
+
+            val forms =
+                if (isSubSelection) {
+                    languageOutput?.get(selectedConjugationSubCategory)?.toList() ?: listOf("", "", "", "")
+                } else if (showCategories) {
+                    languageOutput?.map { (_, values) ->
+                        if (values.size == 1) values.first() else values.joinToString(" / ")
+                    } ?: listOf("", "", "", "")
+                } else {
+                    languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
+                }
+
+            val layoutResId =
+                when {
+                    isSubSelection -> R.layout.conjugate_grid_2x1
+                    language == "English" && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                    language in listOf("Russian", "Swedish") && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                    forms.size > 4 -> R.layout.conjugate_grid_3x2
+                    else -> R.layout.conjugate_grid_2x2
+                }
+
+            val gridContent = layoutInflater.inflate(layoutResId, grid, false) as LinearLayout
+            grid.addView(gridContent)
+
+            val buttonIds =
+                listOf(
+                    R.id.conjugate_btn_1,
+                    R.id.conjugate_btn_2,
+                    R.id.conjugate_btn_3,
+                    R.id.conjugate_btn_4,
+                    R.id.conjugate_btn_5,
+                    R.id.conjugate_btn_6,
+                )
+
+            buttonIds.forEachIndexed { i, btnId ->
+                val btn = gridContent.findViewById<Button?>(btnId)
+                if (btn != null) {
+                    btn.text = forms.getOrNull(i) ?: ""
+                    btn.setOnClickListener {
+                        val label = btn.text.toString()
+                        if (label.isNotEmpty()) {
+                            var handledAsCategory = false
+                            if (showCategories) {
+                                // Find which category this label corresponds to.
+                                val matchingEntry =
+                                    languageOutput?.entries?.find { (_, values) ->
+                                        if (values.size == 1) {
+                                            values.first() == label
+                                        } else {
+                                            values.joinToString(" / ") == label
+                                        }
+                                    }
+
+                                if (matchingEntry != null) {
+                                    val (key, values) = matchingEntry
+                                    if (values.size > 1) {
+                                        // It corresponds to a multi-value category -> Enter sub-category.
+                                        selectedConjugationSubCategory = key
+                                        updateUI()
+                                        handledAsCategory = true
+                                    }
+                                    // If values.size == 1, we fall through to the commit logic below.
+                                }
+                            }
+
+                            if (!handledAsCategory) {
+                                currentInputConnection?.commitText("$label ", 1)
+                                suggestionHandler.processLinguisticSuggestions(label)
+                                currentState = ScribeState.IDLE
+                                binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.GONE
+                                binding.keyboardView.visibility = View.VISIBLE
+                                selectedConjugationSubCategory = null
+                                moveToIdleState()
+                            }
+                        }
+                    }
+                }
+            }
+
+            val arrowButtonIds =
+                listOf(
+                    "conjugate_arrow_left_1",
+                    "conjugate_arrow_right_1",
+                    "conjugate_arrow_left_2",
+                    "conjugate_arrow_right_2",
+                    "conjugate_arrow_left_3",
+                    "conjugate_arrow_right_3",
+                    "conjugate_arrow_left",
+                    "conjugate_arrow_right",
+                )
+
+            arrowButtonIds.forEach { arrowBtnName ->
+                val arrowBtnId = resources.getIdentifier(arrowBtnName, "id", packageName)
+                if (arrowBtnId != 0) {
+                    val arrowBtn = gridContent.findViewById<Button?>(arrowBtnId)
+                    if (arrowBtn != null) {
+                        arrowBtn.setOnClickListener {
+                            selectedConjugationSubCategory = null
+
+                            val isLeft = arrowBtnName.contains("left")
+                            val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
+                            val current = prefs.getInt("conjugate_index", 0)
+                            if (isLeft) {
+                                prefs.edit { putInt("conjugate_index", current - 1) }
+                            } else {
+                                prefs.edit { putInt("conjugate_index", current + 1) }
+                            }
+                            updateUI()
+                        }
+                    }
+                }
+            }
+
+            promptText = if (isSubSelection) selectedConjugationSubCategory else (title ?: "___")
             hintWord = conjugateLabels.lastOrNull()
+
+            val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
+        } else {
+            binding.root.findViewById<View>(R.id.conjugate_grid_container).visibility = View.GONE
+            binding.keyboardView.visibility = View.VISIBLE
+        }
+
+        binding.scribeKeyToolbar.setOnClickListener {
+            if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
+                currentState = ScribeState.IDLE
+                moveToIdleState()
+            } else {
+                moveToIdleState()
+            }
         }
 
         updateCommandBarHintAndPrompt(text = promptText, isUserDarkMode = isDarkMode, word = hintWord)

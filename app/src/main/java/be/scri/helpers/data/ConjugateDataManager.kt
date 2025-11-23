@@ -4,6 +4,7 @@ package be.scri.helpers.data
 import DataContract
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import be.scri.helpers.DatabaseFileManager
 
@@ -138,27 +139,62 @@ class ConjugateDataManager(
 
         return try {
             val verbPart = cursor.getString(cursor.getColumnIndexOrThrow(dbColumnName))
-            val words = auxiliaryWords.split(Regex("\\s+"))
-            val verbType = cursor.getString(cursor.getColumnIndexOrThrow(words.last()))
-            val db = fileManager.getLanguageDatabase(language = language)
 
-            val wordPart1 = words.firstOrNull()
-            var auxResult = ""
-            wordPart1?.let {
+            // Try to handle it as a dynamic lookup (German style: [form auxiliary_column]).
+            try {
+                val words = auxiliaryWords.split(Regex("\\s+"))
+                // If it's a single word and not a column, this might throw, which is fine (English case).
+                // If it's multiple words, the last one is the auxiliary verb column (e.g. "auxiliaryVerb").
+                val auxColumn = words.last()
+
+                // Check if this column exists and get the auxiliary verb (e.g. "haben").
+                val auxVerbIndex = cursor.getColumnIndex(auxColumn)
+                require(auxVerbIndex != -1) { "Column $auxColumn not found" }
+                val verbType = cursor.getString(auxVerbIndex)
+
+                val targetForm = words.first()
+
+                val db = fileManager.getLanguageDatabase(language = language)
+                var auxResult = ""
+
                 val auxCursor =
                     db?.rawQuery(
-                        "SELECT $wordPart1 FROM verbs WHERE wdLexemeId = ?",
+                        "SELECT $targetForm FROM verbs WHERE wdLexemeId = ?",
                         arrayOf(verbType),
                     )
+
                 if (auxCursor?.moveToFirst() == true) {
                     auxResult = auxCursor.getString(0)
+                } else {
+                    // Fallback case: Maybe it stores the infinitive.
+                    auxCursor?.close()
+                    val auxCursor2 =
+                        db?.rawQuery(
+                            "SELECT $targetForm FROM verbs WHERE infinitive = ?",
+                            arrayOf(verbType),
+                        )
+                    if (auxCursor2?.moveToFirst() == true) {
+                        auxResult = auxCursor2.getString(0)
+                    }
+                    auxCursor2?.close()
                 }
                 auxCursor?.close()
-            }
 
-            val result = "$auxResult $verbPart".trim()
-            Log.d("DEBUG", "Returning: $result")
-            result
+                if (auxResult.isNotEmpty()) {
+                    "$auxResult $verbPart".trim()
+                } else {
+                    "$auxiliaryWords $verbPart".trim()
+                }
+            } catch (e: IllegalArgumentException) {
+                Log.w("ConjugateDataManager", "Dynamic lookup failed: ${e.message}")
+                "$auxiliaryWords $verbPart".trim()
+            } catch (e: NoSuchElementException) {
+                Log.w("ConjugateDataManager", "Dynamic lookup failed: ${e.message}")
+                "$auxiliaryWords $verbPart".trim()
+            } catch (e: SQLiteException) {
+                Log.e("ConjugateDataManager", "Database error in dynamic lookup", e)
+                "$auxiliaryWords $verbPart".trim()
+            }
         } catch (e: IllegalArgumentException) {
             Log.e("ConjugateDataManager", "Column '$dbColumnName' not found", e)
             ""

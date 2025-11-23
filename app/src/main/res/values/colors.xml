@@ -20,6 +20,8 @@
     <color name="special_key_dark">#202020</color>
     <color name="command_bar_color_dark">#2E2E2E</color>
     <color name="mini_keyboard_color">#3F3F46</color>
+    <color name ="conjugate_keyboard_color">@color/light_keyboard_bg_color</color>
+
 
     <color name="nav_bar_selected_color_light">@color/dark_scribe_color</color>
     <color name="nav_bar_selected_color_dark">@color/light_scribe_color</color>
