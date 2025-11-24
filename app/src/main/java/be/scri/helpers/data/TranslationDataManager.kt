@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import be.scri.helpers.DatabaseFileManager
 import be.scri.helpers.PreferencesHelper
+import be.scri.helpers.StringUtils.isWordCapitalized
 
 /**
  * Manages translations from a local SQLite database.
@@ -47,6 +48,18 @@ class TranslationDataManager(
 
         val sourceTable = generateLanguageNameForISOCode(sourceCode)
 
+        if (isWordCapitalized(word)) {
+            val lowerCaseWord = word.lowercase()
+            val translatedLowerCaseWord =
+                fileManager.getTranslationDatabase()?.use { db ->
+                    queryForTranslation(db, sourceTable, destCode, lowerCaseWord)
+                } ?: ""
+            return if (translatedLowerCaseWord.isNotEmpty()) {
+                translatedLowerCaseWord.replaceFirstChar { it.uppercase() }
+            } else {
+                ""
+            }
+        }
         return fileManager.getTranslationDatabase()?.use { db ->
             queryForTranslation(db, sourceTable, destCode, word)
         } ?: ""
