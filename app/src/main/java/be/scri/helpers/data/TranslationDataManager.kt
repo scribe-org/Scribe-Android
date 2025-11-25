@@ -72,21 +72,26 @@ class TranslationDataManager(
             }
         }
 
+        val exact =
+            fileManager.getTranslationDatabase()?.use { db ->
+                queryForTranslation(db, sourceTable, destCode, word)
+            } ?: ""
+
+        if (exact.isNotEmpty()) return exact
+
         if (isWordCapitalized(word)) {
             val lowerCaseWord = word.lowercase()
             val translatedLowerCaseWord =
                 fileManager.getTranslationDatabase()?.use { db ->
                     queryForTranslation(db, sourceTable, destCode, lowerCaseWord)
                 } ?: ""
-            return if (translatedLowerCaseWord.isNotEmpty()) {
-                translatedLowerCaseWord.replaceFirstChar { it.uppercase() }
-            } else {
-                ""
+
+            if (translatedLowerCaseWord.isNotEmpty()) {
+                return translatedLowerCaseWord.replaceFirstChar { it.uppercase() }
             }
         }
-        return fileManager.getTranslationDatabase()?.use { db ->
-            queryForTranslation(db, sourceTable, destCode, word)
-        } ?: ""
+
+        return ""
     }
 
     /**
