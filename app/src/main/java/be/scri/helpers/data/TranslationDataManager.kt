@@ -48,6 +48,30 @@ class TranslationDataManager(
 
         val sourceTable = generateLanguageNameForISOCode(sourceCode)
 
+        val isGerman = sourceCode == "de"
+
+        // Special German logic
+        if (isGerman) {
+            val db = fileManager.getTranslationDatabase() ?: return ""
+
+            return db.use { database ->
+                // Try exact match first ("Buch", "buch", "BUCH")
+                val direct = queryForTranslation(database, sourceTable, destCode, word)
+                if (direct.isNotEmpty()) return@use direct
+
+                // Try lowercase (this catches verbs/adjectives)
+                val lower = queryForTranslation(database, sourceTable, destCode, word.lowercase())
+                if (lower.isNotEmpty()) return@use lower
+
+                // Try canonical noun capitalization ("buch" → "Buch")
+                val canonical = word.lowercase().replaceFirstChar { it.uppercase() }
+                val nounMatch = queryForTranslation(database, sourceTable, destCode, canonical)
+                if (nounMatch.isNotEmpty()) return@use nounMatch
+
+                ""
+            }
+        }
+
         if (isWordCapitalized(word)) {
             val lowerCaseWord = word.lowercase()
             val translatedLowerCaseWord =
