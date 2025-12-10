@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
+import java.time.LocalDate
 
 /**
  * A button component that reflects the state of a data download.
@@ -55,7 +56,13 @@ fun DownloadDataOptionComp(
                 when (downloadState) {
                     DownloadState.Ready -> DownloadState.Downloading
                     DownloadState.Downloading -> DownloadState.Completed
-                    DownloadState.Completed -> DownloadState.Ready
+                    DownloadState.Completed ->
+                        if (isUpdateAvailable(PLACEBO_LOCAL_UPDATED_AT, PLACEBO_SERVER_UPDATED_AT)) {
+                            DownloadState.Update
+                        } else {
+                            DownloadState.Completed
+                        }
+                    DownloadState.Update -> DownloadState.Downloading
                 }
         },
         enabled = true,
@@ -93,6 +100,7 @@ private fun DownloadButtonContent(
                     DownloadState.Ready -> "Download"
                     DownloadState.Downloading -> "Downloading"
                     DownloadState.Completed -> "Up to Date"
+                    DownloadState.Update -> "Update"
                 },
             fontSize = 13.sp,
             fontWeight = FontWeight.Medium,
@@ -110,7 +118,7 @@ private fun getBackgroundColor(
     colorScheme: androidx.compose.material3.ColorScheme,
 ): Color =
     when (downloadState) {
-        DownloadState.Ready, DownloadState.Downloading ->
+        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update ->
             if (isDarkTheme) colorScheme.tertiary else colorScheme.primary
 
         DownloadState.Completed ->
@@ -123,7 +131,7 @@ private fun getTextColor(
     colorScheme: androidx.compose.material3.ColorScheme,
 ): Color =
     when (downloadState) {
-        DownloadState.Ready, DownloadState.Downloading ->
+        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update ->
             if (isDarkTheme) colorScheme.primary else Color.Black
 
         DownloadState.Completed ->
@@ -172,7 +180,32 @@ private fun DownloadStateIcon(
                 tint = iconColor,
             )
         }
+
+        DownloadState.Update -> {
+            Icon(
+                painter = painterResource(id = R.drawable.clouddownload),
+                contentDescription = "Update",
+                modifier = Modifier.size(24.dp),
+                tint = iconColor,
+            )
+        }
     }
+}
+
+/**
+ * @return true if server data is newer than local data
+ */
+private const val PLACEBO_SERVER_UPDATED_AT = "2025-01-10"
+private const val PLACEBO_LOCAL_UPDATED_AT = "2025-01-01"
+
+private fun isUpdateAvailable(
+    localUpdatedAt: String,
+    serverUpdatedAt: String,
+): Boolean {
+    val localDate = LocalDate.parse(localUpdatedAt)
+    val serverDate = LocalDate.parse(serverUpdatedAt)
+
+    return serverDate.isAfter(localDate)
 }
 
 /**
@@ -182,4 +215,5 @@ enum class DownloadState {
     Ready,
     Downloading,
     Completed,
+    Update,
 }
