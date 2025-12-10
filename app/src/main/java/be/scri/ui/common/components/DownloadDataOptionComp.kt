@@ -193,7 +193,6 @@ private fun DownloadStateIcon(
 }
 
 /**
- *
  * @return true if server data is newer than local data
  */
 private const val PLACEBO_SERVER_UPDATED_AT = "2025-01-10"
