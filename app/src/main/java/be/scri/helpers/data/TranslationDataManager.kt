@@ -50,44 +50,38 @@ class TranslationDataManager(
 
         val isGerman = sourceCode == "de"
 
-        // Special German logic
-        if (isGerman) {
-            val db = fileManager.getTranslationDatabase() ?: return ""
+        val db = fileManager.getTranslationDatabase() ?: return ""
 
-            return db.use { database ->
-                // Try exact match first ("Buch", "buch", "BUCH")
-                val direct = queryForTranslation(database, sourceTable, destCode, word)
-                if (direct.isNotEmpty()) return@use direct
+        val variants = mutableListOf<String>()
 
-                // Try lowercase (this catches verbs/adjectives)
-                val lower = queryForTranslation(database, sourceTable, destCode, word.lowercase())
-                if (lower.isNotEmpty()) return@use lower
+        // Try exact match
+        variants.add(word)
 
-                // Try canonical noun capitalization ("buch" → "Buch")
-                val canonical = word.lowercase().replaceFirstChar { it.uppercase() }
-                val nounMatch = queryForTranslation(database, sourceTable, destCode, canonical)
-                if (nounMatch.isNotEmpty()) return@use nounMatch
-
-                ""
-            }
+        // Lowercase variant:
+        if (isGerman || isWordCapitalized(word)) {
+            variants.add(word.lowercase())
         }
 
-        val exact =
-            fileManager.getTranslationDatabase()?.use { db ->
-                queryForTranslation(db, sourceTable, destCode, word)
-            } ?: ""
+        // German-only: canonical noun capitalization ("buch" → "Buch")
+        if (isGerman) {
+            val canonical = word.lowercase().replaceFirstChar { it.uppercase() }
+            variants.add(canonical)
+        }
 
-        if (exact.isNotEmpty()) return exact
+        db.use { database ->
+            for (variant in variants) {
+                val result = queryForTranslation(database, sourceTable, destCode, variant)
 
-        if (isWordCapitalized(word)) {
-            val lowerCaseWord = word.lowercase()
-            val translatedLowerCaseWord =
-                fileManager.getTranslationDatabase()?.use { db ->
-                    queryForTranslation(db, sourceTable, destCode, lowerCaseWord)
-                } ?: ""
+                if (result.isNotEmpty()) {
+                    // Non-German rule:
+                    // If the user typed a capitalized word, but the match happened using the lowercase version,
+                    // then re-capitalize the translated result.
+                    if (!isGerman && isWordCapitalized(word) && variant == word.lowercase()) {
+                        return result.replaceFirstChar { it.uppercase() }
+                    }
 
-            if (translatedLowerCaseWord.isNotEmpty()) {
-                return translatedLowerCaseWord.replaceFirstChar { it.uppercase() }
+                    return result
+                }
             }
         }
 
