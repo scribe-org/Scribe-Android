@@ -30,7 +30,6 @@ import be.scri.navigation.Screen
 import be.scri.ui.common.appcomponents.HintDialog
 import be.scri.ui.common.bottombar.ScribeBottomBar
 import be.scri.ui.screens.DefaultCurrencySymbolScreen
-import be.scri.ui.screens.DownloadDataScreen
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
 import be.scri.ui.screens.PrivacyPolicyScreen
@@ -38,6 +37,7 @@ import be.scri.ui.screens.SelectTranslationSourceLanguageScreen
 import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
+import be.scri.ui.screens.download.DownloadDataScreen
 import be.scri.ui.screens.settings.SettingsScreen
 import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope

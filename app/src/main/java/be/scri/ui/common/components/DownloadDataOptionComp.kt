@@ -17,8 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
-import java.time.LocalDate
+import be.scri.ui.screens.download.DownloadState
 
 /**
  * A button component that reflects the state of a data download.
@@ -40,10 +38,11 @@ import java.time.LocalDate
  */
 @Composable
 fun DownloadDataOptionComp(
+    onClick: () -> Unit,
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
+    downloadState: DownloadState = DownloadState.Ready,
 ) {
-    var downloadState by remember { mutableStateOf(DownloadState.Ready) }
     val colorScheme = MaterialTheme.colorScheme
 
     val backgroundColor = getBackgroundColor(downloadState, isDarkTheme, colorScheme)
@@ -51,20 +50,7 @@ fun DownloadDataOptionComp(
     val iconColor = getIconColor(isDarkTheme, textColor)
 
     Button(
-        onClick = {
-            downloadState =
-                when (downloadState) {
-                    DownloadState.Ready -> DownloadState.Downloading
-                    DownloadState.Downloading -> DownloadState.Completed
-                    DownloadState.Completed ->
-                        if (isUpdateAvailable(PLACEBO_LOCAL_UPDATED_AT, PLACEBO_SERVER_UPDATED_AT)) {
-                            DownloadState.Update
-                        } else {
-                            DownloadState.Completed
-                        }
-                    DownloadState.Update -> DownloadState.Downloading
-                }
-        },
+        onClick = onClick,
         enabled = true,
         colors =
             ButtonDefaults.buttonColors(
@@ -190,30 +176,4 @@ private fun DownloadStateIcon(
             )
         }
     }
-}
-
-/**
- * @return true if server data is newer than local data
- */
-private const val PLACEBO_SERVER_UPDATED_AT = "2025-01-10"
-private const val PLACEBO_LOCAL_UPDATED_AT = "2025-01-01"
-
-private fun isUpdateAvailable(
-    localUpdatedAt: String,
-    serverUpdatedAt: String,
-): Boolean {
-    val localDate = LocalDate.parse(localUpdatedAt)
-    val serverDate = LocalDate.parse(serverUpdatedAt)
-
-    return serverDate.isAfter(localDate)
-}
-
-/**
- * Represents the state of the download button.
- */
-enum class DownloadState {
-    Ready,
-    Downloading,
-    Completed,
-    Update,
 }

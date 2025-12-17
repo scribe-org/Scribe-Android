@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-package be.scri.ui.screens
+package be.scri.ui.screens.download
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.appcomponents.ConfirmationDialog
@@ -32,19 +33,23 @@ import be.scri.ui.common.components.CircleClickableItemComp
 import be.scri.ui.common.components.LanguageItemComp
 import be.scri.ui.common.components.SwitchableItemComp
 
+/**
+ * Screen for downloading and managing language data.
+ *
+ * @param onBackNavigation Callback for back navigation action.
+ * @param modifier Modifier for layout and styling.
+ * @param viewModel ViewModel managing the download states and actions.
+ */
 @Composable
 fun DownloadDataScreen(
     onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: DataDownloadViewModel = viewModel(),
 ) {
     val scrollState = rememberScrollState()
     val checkForNewData = remember { mutableStateOf(false) }
     val regularlyUpdateData = remember { mutableStateOf(true) }
-    val showConfirmTranslation = remember { mutableStateOf(false) }
-
-    fun handleClick() {
-        showConfirmTranslation.value = true
-    }
+    val selectedLanguage = remember { mutableStateOf<Triple<String, String, Boolean>?>(null) }
 
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_download_menu_ui_title),
@@ -127,11 +132,22 @@ fun DownloadDataScreen(
                                 Triple("swedish", stringResource(R.string.app__global_swedish), false),
                             )
 
-                        languages.forEachIndexed { index, (key, title, isDark) ->
+                        languages.forEachIndexed { index, lang ->
+                            val (key, title, isDark) = lang
+                            val currentStatus = viewModel.downloadStates[key] ?: DownloadState.Ready
+
                             LanguageItemComp(
                                 title = title,
-                                onClick = { handleClick() },
+                                onClick = { },
+                                onButtonClick = {
+                                    if (currentStatus == DownloadState.Ready) {
+                                        selectedLanguage.value = lang
+                                    } else {
+                                        viewModel.handleDownloadAction(key)
+                                    }
+                                },
                                 isDarkTheme = isDark,
+                                buttonState = currentStatus,
                             )
                             if (index < languages.lastIndex) {
                                 HorizontalDivider(
@@ -147,16 +163,19 @@ fun DownloadDataScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            if (showConfirmTranslation.value) {
+            selectedLanguage.value?.let { lang ->
+                val (key, title, _) = lang
                 ConfirmationDialog(
                     text =
-                        "The data you will download will allow you to translate from  English to German." +
-                            "Do you want to change the language you'll translate  from?",
+                        "The data you will download will allow you to translate from  English to $title." +
+                            " Do you want to change the language you'll translate  from?",
                     textConfirm = "Use English",
                     textChange = "Change language",
-                    onConfirm = {},
-                    onChange = {},
-                    onDismiss = { showConfirmTranslation.value = false },
+                    onConfirm = {
+                        viewModel.handleDownloadAction(key)
+                        selectedLanguage.value = null
+                    },
+                    onDismiss = { selectedLanguage.value = null },
                 )
             }
         }

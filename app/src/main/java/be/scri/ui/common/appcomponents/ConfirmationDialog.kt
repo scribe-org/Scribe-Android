@@ -40,6 +40,17 @@ import androidx.compose.ui.window.DialogProperties
 import be.scri.R
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 
+/**
+ * A confirmation dialog with customizable text and actions.
+ *
+ * @param text The main text to display in the dialog.
+ * @param textChange The text for the change button.
+ * @param textConfirm The text for the confirm button.
+ * @param modifier Modifier for layout and styling.
+ * @param onConfirm Callback triggered when the confirm button is clicked.
+ * @param onChange Callback triggered when the change button is clicked.
+ * @param onDismiss Callback triggered when the dialog is dismissed.
+ */
 @Composable
 fun ConfirmationDialog(
     text: String,
@@ -65,6 +76,18 @@ fun ConfirmationDialog(
     )
 }
 
+/**
+ * The content of the confirmation dialog.
+ *
+ * @param text The main text to display in the dialog.
+ * @param textConfirm The text for the confirm button.
+ * @param textChange The text for the change button.
+ * @param isUserDarkMode Whether the dark mode is enabled.
+ * @param modifier Modifier for layout and styling.
+ * @param onConfirm Callback triggered when the confirm button is clicked.
+ * @param onChange Callback triggered when the change button is clicked.
+ * @param onDismiss Callback triggered when the dialog is dismissed.
+ */
 @Composable
 fun ConfirmationDialogContent(
     text: String,
@@ -104,17 +127,20 @@ fun ConfirmationDialogContent(
     ) {
         Box(
             modifier =
-                modifier.padding(horizontal = 4.dp).background(
-                    brush =
-                        Brush.verticalGradient(
-                            colors =
-                                listOf(
-                                    Color.Transparent,
-                                    shadowColor,
-                                ),
-                        ),
-                    shape = RoundedCornerShape(10.dp),
-                ),
+                modifier
+                    .fillMaxWidth(0.95f)
+                    .padding(horizontal = 4.dp)
+                    .background(
+                        brush =
+                            Brush.verticalGradient(
+                                colors =
+                                    listOf(
+                                        Color.Transparent,
+                                        shadowColor,
+                                    ),
+                            ),
+                        shape = RoundedCornerShape(10.dp),
+                    ),
         ) {
             Surface(
                 shape = RoundedCornerShape(10.dp),
