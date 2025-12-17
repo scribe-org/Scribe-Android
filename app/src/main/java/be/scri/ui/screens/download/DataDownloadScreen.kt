@@ -43,6 +43,7 @@ import be.scri.ui.common.components.SwitchableItemComp
 @Composable
 fun DownloadDataScreen(
     onBackNavigation: () -> Unit,
+    onNavigateToTranslation: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DataDownloadViewModel = viewModel(),
 ) {
@@ -165,6 +166,7 @@ fun DownloadDataScreen(
 
             selectedLanguage.value?.let { lang ->
                 val (key, title, _) = lang
+                val languageRoute = key.replaceFirstChar { it.uppercase() }
                 ConfirmationDialog(
                     text =
                         "The data you will download will allow you to translate from  English to $title." +
@@ -175,6 +177,7 @@ fun DownloadDataScreen(
                         viewModel.handleDownloadAction(key)
                         selectedLanguage.value = null
                     },
+                    onChange = { onNavigateToTranslation(languageRoute) },
                     onDismiss = { selectedLanguage.value = null },
                 )
             }

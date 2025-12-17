@@ -199,6 +199,11 @@ fun ScribeApp(
                         onBackNavigation = {
                             navController.popBackStack()
                         },
+                        onNavigateToTranslation = { language ->
+                            navController.navigate(
+                                "translation_language_detail/$language",
+                            )
+                        },
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
