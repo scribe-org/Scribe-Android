@@ -2,6 +2,7 @@
 
 package be.scri.ui.screens.download
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,8 @@ fun DownloadDataScreen(
     val checkForNewData = remember { mutableStateOf(false) }
     val regularlyUpdateData = remember { mutableStateOf(true) }
     val selectedLanguage = remember { mutableStateOf<Triple<String, String, Boolean>?>(null) }
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
 
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_download_menu_ui_title),
@@ -166,18 +170,19 @@ fun DownloadDataScreen(
 
             selectedLanguage.value?.let { lang ->
                 val (key, title, _) = lang
-                val languageRoute = key.replaceFirstChar { it.uppercase() }
+                val languageId = key.replaceFirstChar { it.uppercase() }
+                val sourceLang = sharedPref.getString("translation_source_$languageId", "English") ?: "English"
                 ConfirmationDialog(
                     text =
-                        "The data you will download will allow you to translate from  English to $title." +
+                        "The data you will download will allow you to translate from  $sourceLang to $title." +
                             " Do you want to change the language you'll translate  from?",
-                    textConfirm = "Use English",
+                    textConfirm = "Use $sourceLang",
                     textChange = "Change language",
                     onConfirm = {
                         viewModel.handleDownloadAction(key)
                         selectedLanguage.value = null
                     },
-                    onChange = { onNavigateToTranslation(languageRoute) },
+                    onChange = { onNavigateToTranslation(languageId) },
                     onDismiss = { selectedLanguage.value = null },
                 )
             }
