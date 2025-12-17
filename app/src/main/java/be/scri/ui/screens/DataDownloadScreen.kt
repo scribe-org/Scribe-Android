@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
+import be.scri.ui.common.appcomponents.ConfirmationDialog
 import be.scri.ui.common.components.CircleClickableItemComp
 import be.scri.ui.common.components.LanguageItemComp
 import be.scri.ui.common.components.SwitchableItemComp
@@ -39,6 +40,11 @@ fun DownloadDataScreen(
     val scrollState = rememberScrollState()
     val checkForNewData = remember { mutableStateOf(false) }
     val regularlyUpdateData = remember { mutableStateOf(true) }
+    val showConfirmTranslation = remember { mutableStateOf(false) }
+
+    fun handleClick() {
+        showConfirmTranslation.value = true
+    }
 
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_download_menu_ui_title),
@@ -124,8 +130,7 @@ fun DownloadDataScreen(
                         languages.forEachIndexed { index, (key, title, isDark) ->
                             LanguageItemComp(
                                 title = title,
-                                onClick = {
-                                },
+                                onClick = { handleClick() },
                                 isDarkTheme = isDark,
                             )
                             if (index < languages.lastIndex) {
@@ -141,6 +146,19 @@ fun DownloadDataScreen(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
+
+            if (showConfirmTranslation.value) {
+                ConfirmationDialog(
+                    text =
+                        "The data you will download will allow you to translate from  English to German." +
+                            "Do you want to change the language you'll translate  from?",
+                    textConfirm = "Use English",
+                    textChange = "Change language",
+                    onConfirm = {},
+                    onChange = {},
+                    onDismiss = { showConfirmTranslation.value = false },
+                )
+            }
         }
     }
 }
