@@ -11,8 +11,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import be.scri.R
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
@@ -27,7 +29,7 @@ fun ItemsCardContainer(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
         color = MaterialTheme.colorScheme.surface,
     ) {
         Column(
