@@ -28,8 +28,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
+import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
+import be.scri.ui.common.appcomponents.ConfirmationDialog
+import be.scri.ui.screens.download.DataDownloadViewModel
 
 /**
  * The Select Languages subpage is for selecting the translation source language.
@@ -38,14 +41,18 @@ import be.scri.ui.common.ScribeBaseScreen
 fun SelectTranslationSourceLanguageScreen(
     currentLanguage: String,
     onBackNavigation: () -> Unit,
+    onNavigateToDownloadData: () -> Unit,
     modifier: Modifier = Modifier,
+    downloadViewModel: DataDownloadViewModel = viewModel(),
 ) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-    var selectedLanguage =
+    var savedLanguage =
         remember {
             mutableStateOf(sharedPref.getString("translation_source_$currentLanguage", "English") ?: "English")
         }
+    var selectedLanguage = remember { mutableStateOf(savedLanguage.value) }
+    var showDialog = remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
     val options =
@@ -85,7 +92,7 @@ fun SelectTranslationSourceLanguageScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         selectedLanguage.value = option
-                                        sharedPref.edit { putString("translation_source_$currentLanguage", option) }
+                                        showDialog.value = true
                                     }.padding(vertical = 5.dp, horizontal = 8.dp),
                         ) {
                             Text(
@@ -97,9 +104,37 @@ fun SelectTranslationSourceLanguageScreen(
                                 selected = (option == selectedLanguage.value),
                                 onClick = {
                                     selectedLanguage.value = option
-                                    sharedPref.edit { putString("translation_source_$currentLanguage", option) }
+                                    showDialog.value = true
                                 },
                             )
+                            if (showDialog.value) {
+                                ConfirmationDialog(
+                                    text =
+                                        "You’ve changed your source translation language. " +
+                                            "Would you like to download new data so that you can translate " +
+                                            "from ${selectedLanguage.value}?",
+                                    textConfirm = "Download data",
+                                    textChange = "Keep ${savedLanguage.value}",
+                                    onConfirm = {
+                                        // User confirmed - save the new selection permanently
+                                        savedLanguage.value = selectedLanguage.value
+                                        sharedPref.edit { putString("translation_source_$currentLanguage", selectedLanguage.value) }
+                                        showDialog.value = false
+                                        downloadViewModel.handleDownloadAction(savedLanguage.value)
+                                        onNavigateToDownloadData()
+                                    },
+                                    onChange = {
+                                        // User cancelled - revert back to old selection
+                                        selectedLanguage.value = savedLanguage.value
+                                        showDialog.value = false
+                                    },
+                                    onDismiss = {
+                                        // Dialog dismissed - revert back to old selection
+                                        selectedLanguage.value = savedLanguage.value
+                                        showDialog.value = false
+                                    },
+                                )
+                            }
                         }
 
                         if (index < options.lastIndex) {

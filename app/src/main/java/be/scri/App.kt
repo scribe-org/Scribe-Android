@@ -234,6 +234,9 @@ fun ScribeApp(
                         onBackNavigation = {
                             navController.popBackStack()
                         },
+                        onNavigateToDownloadData = {
+                            navController.navigate("download_data")
+                        },
                         modifier = Modifier.padding(innerPadding),
                         currentLanguage = language,
                     )
