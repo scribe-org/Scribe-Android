@@ -20,6 +20,7 @@ object SettingsUtil {
      * Checks whether the custom keyboard is already installed and enabled.
      *
      * @param context The context to access system services.
+     *
      * @return True if the keyboard is installed, false otherwise.
      */
     fun checkKeyboardInstallation(context: Context): Boolean {
@@ -87,6 +88,7 @@ object SettingsUtil {
      * Retrieves the list of available keyboard languages based on enabled input methods.
      *
      * @param context The context to access input methods.
+     *
      * @return A list of language names.
      */
     fun getKeyboardLanguages(context: Context): List<String> {
@@ -110,6 +112,7 @@ object SettingsUtil {
      * Maps a language name to its corresponding localized string resource ID.
      *
      * @param language The name of the language.
+     *
      * @return The string resource ID for the localized name.
      */
     fun getLocalizedLanguageName(language: String): Int {

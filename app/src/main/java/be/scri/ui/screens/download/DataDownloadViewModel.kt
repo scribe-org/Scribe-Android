@@ -14,7 +14,7 @@ class DataDownloadViewModel : ViewModel() {
     val downloadStates = mutableStateMapOf<String, DownloadState>()
 
     /**
-     * @return true if server data is newer than local data
+     * @return true if server data is newer than local data.
      */
     private fun isUpdateAvailable(
         localUpdatedAt: String,

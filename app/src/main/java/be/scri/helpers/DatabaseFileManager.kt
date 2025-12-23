@@ -31,6 +31,7 @@ class DatabaseFileManager(
      * It handles copying the database from assets if it doesn't exist locally.
      *
      * @param language The language code (e.g., "DE", "FR") used to determine the database filename.
+     *
      * @return An open, read-only [SQLiteDatabase] instance, or `null` on failure.
      */
     fun getLanguageDatabase(language: String): SQLiteDatabase? {
@@ -56,6 +57,7 @@ class DatabaseFileManager(
      * @param dbName The filename of the database (e.g., "ENLanguageData.sqlite").
      * @param assetPath The path to the database file within the app's assets folder
      * (e.g., "data/ENLanguageData.sqlite").
+     *
      * @return An open, read-only [SQLiteDatabase], or `null` if copying or opening fails.
      */
     private fun getDatabase(
@@ -85,7 +87,8 @@ class DatabaseFileManager(
      *
      * @param dbFile The destination [File] in the app's database directory.
      * @param assetPath The path to the source file within the assets folder.
-     * @return `true` if the copy was successful, `false` otherwise.
+     *
+     * @return true if the copy was successful, false otherwise.
      */
     private fun copyDatabaseFromAssets(
         dbFile: File,

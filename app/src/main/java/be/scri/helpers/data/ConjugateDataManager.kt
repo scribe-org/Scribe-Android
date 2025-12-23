@@ -22,6 +22,7 @@ class ConjugateDataManager(
      * @param language The language code (e.g., "EN", "SV") to determine the correct database.
      * @param jsonData The data contract for the language, which defines the structure of conjugations.
      * @param word The specific verb to look up conjugations for.
+     *
      * @return A nested map where the outer key is the tense group title
      * (e.g., "Indicative"), the inner key is the
      * conjugation category title (e.g., "Present"), and the value is a collection of the conjugated forms.
@@ -56,6 +57,7 @@ class ConjugateDataManager(
      *
      * @param jsonData The data contract containing the conjugation structure.
      * @param word The base word, which is also added to the set.
+     *
      * @return A `Set` of unique strings representing all possible conjugation form identifiers.
      */
     fun extractConjugateHeadings(
@@ -78,6 +80,7 @@ class ConjugateDataManager(
      * @param word The base word (verb) to look up.
      * @param form The specific conjugation form identifier (e.g., "1ps", "past_participle").
      * @param language The language code to select the correct database.
+     *
      * @return The conjugated word as a [String], or an empty string if not found.
      */
     private fun getTheValueForTheConjugateWord(
@@ -99,6 +102,7 @@ class ConjugateDataManager(
      *
      * @param cursor The database cursor positioned at the correct row for the verb.
      * @param form The form identifier, which can be a simple column name or a complex string.
+     *
      * @return The conjugated value, or an empty string on failure.
      */
     private fun getConjugatedValueFromCursor(
@@ -124,6 +128,7 @@ class ConjugateDataManager(
      *
      * @param cursor The database cursor positioned at the correct row.
      * @param form The complex form string to parse.
+     *
      * @return The combined string (e.g., "have walked"), or an empty string on failure.
      */
     private fun parseComplexForm(
@@ -208,6 +213,7 @@ class ConjugateDataManager(
      * @param db The SQLite database instance to query.
      * @param word The verb to search for.
      * @param language The language code, used for special query conditions.
+     *
      * @return A [Cursor] positioned at the verb's row, or null if the verb is not found.
      * The caller is responsible for closing the cursor.
      */

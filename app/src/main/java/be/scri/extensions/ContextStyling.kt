@@ -13,8 +13,8 @@ import be.scri.helpers.DARK_GREY
 /**
  * Retrieves the appropriate text color based on the user's theme settings.
  *
- * @receiver Context used to access resources and configuration
- * @return Int representing the text color
+ * @receiver Context used to access resources and configuration.
+ * @return Int representing the text color.
  */
 fun Context.getProperTextColor() =
     if (baseConfig.isUsingSystemTheme) {
@@ -26,8 +26,8 @@ fun Context.getProperTextColor() =
 /**
  * Retrieves the appropriate key color based on the user's theme settings.
  *
- * @receiver Context used to access resources and configuration
- * @return Int representing the key color
+ * @receiver Context used to access resources and configuration.
+ * @return Int representing the key color.
  */
 
 fun Context.getProperKeyColor() =
@@ -40,8 +40,8 @@ fun Context.getProperKeyColor() =
 /**
  * Retrieves the appropriate background color based on the user's theme settings.
  *
- * @receiver Context used to access resources and configuration
- * @return Int representing the background color
+ * @receiver Context used to access resources and configuration.
+ * @return Int representing the background color.
  */
 fun Context.getProperBackgroundColor() =
     if (baseConfig.isUsingSystemTheme) {
@@ -53,8 +53,8 @@ fun Context.getProperBackgroundColor() =
 /**
  * Retrieves the appropriate primary color based on the user's theme settings.
  *
- * @receiver Context used to access resources and configuration
- * @return Int representing the primary color
+ * @receiver Context used to access resources and configuration.
+ * @return Int representing the primary color.
  */
 fun Context.getProperPrimaryColor() =
     when {
@@ -66,8 +66,8 @@ fun Context.getProperPrimaryColor() =
 /**
  * Determines if the current theme is black and white.
  *
- * @receiver Context used to access configuration
- * @return Boolean indicating if the theme is black and white
+ * @receiver Context used to access configuration.
+ * @return Boolean indicating if the theme is black and white.
  */
 fun Context.isBlackAndWhiteTheme() =
     baseConfig.textColor == Color.WHITE &&
@@ -77,8 +77,8 @@ fun Context.isBlackAndWhiteTheme() =
 /**
  * Determines if the current theme is white.
  *
- * @receiver Context used to access configuration
- * @return Boolean indicating if the theme is white
+ * @receiver Context used to access configuration.
+ * @return Boolean indicating if the theme is white.
  */
 
 fun Context.isWhiteTheme() =
@@ -89,7 +89,7 @@ fun Context.isWhiteTheme() =
 /**
  * Determines if the system is using a dark theme.
  *
- * @receiver Context used to access configuration
- * @return Boolean indicating if the system is using a dark theme
+ * @receiver Context used to access configuration.
+ * @return Boolean indicating if the system is using a dark theme.
  */
 fun Context.isUsingSystemDarkTheme() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES != 0

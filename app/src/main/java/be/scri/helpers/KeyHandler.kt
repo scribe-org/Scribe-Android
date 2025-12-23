@@ -69,6 +69,7 @@ class KeyHandler(
      * @param language The current keyboard language.
      * @param inputConnection The current input connection.
      * @param previousWasLastKeySpace The previous state of wasLastKeySpace.
+     *
      * @return True to reset wasLastKeySpace, false to preserve it.
      */
     private fun processKeyCode(
@@ -122,6 +123,7 @@ class KeyHandler(
      * Handles the shift key press and returns whether to reset wasLastKeySpace at the end.
      *
      * @param previousWasLastKeySpace The previous state of wasLastKeySpace.
+     *
      * @return False to preserve wasLastKeySpace state, true to reset it.
      */
     private fun handleShiftKeyPress(previousWasLastKeySpace: Boolean): Boolean {
@@ -134,6 +136,7 @@ class KeyHandler(
      * Handles the space key press and returns whether to reset wasLastKeySpace at the end.
      *
      * @param previousWasLastKeySpace The previous state of wasLastKeySpace.
+     *
      * @return False to preserve wasLastKeySpace state, true to reset it.
      */
     private fun handleSpaceKeyPress(previousWasLastKeySpace: Boolean): Boolean {
@@ -146,7 +149,8 @@ class KeyHandler(
      * A valid state requires a non-null keyboard instance and an active input connection.
      *
      * @param inputConnection The current input connection.
-     * @return `true` if the state is valid, `false` otherwise.
+     *
+     * @return true if the state is valid, false otherwise.
      */
     private fun isValidState(inputConnection: InputConnection?): Boolean =
         ime.keyboard != null &&
@@ -252,6 +256,7 @@ class KeyHandler(
 
     /**
      * Handles navigation keys (left/right arrows).
+     *
      * @param code The key code, used to determine direction.
      */
     private fun handleNavigationKey(code: Int) {
@@ -272,6 +277,7 @@ class KeyHandler(
 
     /**
      * Handles all special keys related to the Scribe command views (conjugation, etc.).
+     *
      * @param code The key code of the pressed key.
      * @param language The current keyboard language.
      */

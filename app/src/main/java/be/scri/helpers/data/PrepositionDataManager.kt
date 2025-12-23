@@ -17,6 +17,7 @@ class PrepositionDataManager(
      * This functionality is currently only supported for German ("DE") and Russian ("RU").
      *
      * @param language The language code.
+     *
      * @return A [HashMap] where keys are prepositions and values are a list of required cases
      * (e.g., "accusative case").
      * Returns an empty map for unsupported languages or on failure.
@@ -36,6 +37,7 @@ class PrepositionDataManager(
      * Iterates through a database cursor from the `prepositions` table and populates a map with the results.
      *
      * @param cursor The cursor containing the preposition and grammatical case data.
+     *
      * @return A [HashMap] mapping prepositions to a list of their cases.
      */
     private fun processCursor(cursor: Cursor): HashMap<String, MutableList<String>> {

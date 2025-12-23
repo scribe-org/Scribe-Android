@@ -134,11 +134,11 @@ class KeyboardBase {
         /**
          * Retrieves the dimension or fraction value from the attributes, adjusting the base value if necessary.
          *
-         * @param a the TypedArray containing the attributes
-         * @param index the index of the desired attribute
-         * @param base the base value for the fraction calculation
-         * @param defValue the default value to return if no valid dimension is found
-         * @return the calculated dimension or fraction value
+         * @param a The TypedArray containing the attributes.
+         * @param index The index of the desired attribute.
+         * @param base The base value for the fraction calculation.
+         * @param defValue The default value to return if no valid dimension is found.
+         * @return The calculated dimension or fraction value.
          */
         fun getDimensionOrFraction(
             a: TypedArray,
@@ -364,8 +364,8 @@ class KeyboardBase {
 
         /**
          * Detects if a point falls inside this key.
-         * @param x the x-coordinate of the point
-         * @param y the y-coordinate of the point
+         * @param x The x-coordinate of the point
+         * @param y The y-coordinate of the point
          * @return whether or not the point falls inside the key.
          * If the key is attached to an edge, it will assume that all points between the key and
          * the edge are considered to be inside the key.
@@ -387,7 +387,8 @@ class KeyboardBase {
 
     /**
      * Creates a keyboard from the given xml key layout file.
-     * Weeds out rows that have a keyboard mode defined but don't match the specified mode.
+     * Removes rows that have a keyboard mode defined but don't match the specified mode.
+     *
      * @param context the application or service context
      * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
      * @param enterKeyType determines what icon should we show on Enter key
@@ -412,10 +413,11 @@ class KeyboardBase {
      * populates it with the specified characters in left-to-right, top-to-bottom fashion,
      * using the specified number of columns. If the specified number of columns is -1,
      * then the keyboard will fit as many keys as possible in each row.
-     * @param context the application or service context
-     * @param layoutTemplateResId the layout template file, containing no keys.
-     * @param characters the list of characters to display on the keyboard. One key will be created for each character.
-     * @param keyWidth the width of the popup key, make sure it is the same as the key itself
+     *
+     * @param context The application or service context.
+     * @param layoutTemplateResId The layout template file, containing no keys.
+     * @param characters The list of characters to display on the keyboard. One key will be created for each character.
+     * @param keyWidth The width of the popup key, make sure it is the same as the key itself.
      */
     constructor(context: Context, layoutTemplateResId: Int, characters: CharSequence, keyWidth: Int) :
         this(context, layoutTemplateResId, 0) {
@@ -458,8 +460,9 @@ class KeyboardBase {
     /**
      * Sets the keyboard shift state.
      *
-     * @param shiftState the new shift state to apply
-     * @return true if the shift state was changed; false otherwise
+     * @param shiftState The new shift state to apply.
+     *
+     * @return true if the shift state was changed, false otherwise.
      */
     fun setShifted(shiftState: Int): Boolean {
         if (mShiftState != shiftState) {
@@ -476,9 +479,10 @@ class KeyboardBase {
     /**
      * Creates a Row object from the XML resource parser.
      *
-     * @param res the resources associated with the context
-     * @param parser the XML resource parser
-     * @return the created Row object
+     * @param res The resources associated with the context.
+     * @param parser The XML resource parser.
+     *
+     * @return the created Row object.
      */
     private fun createRowFromXml(
         res: Resources,
@@ -489,12 +493,13 @@ class KeyboardBase {
     /**
      * Creates a Key object from the XML resource parser and the specified coordinates.
      *
-     * @param res the resources associated with the context
-     * @param parent the parent Row that this key belongs to
-     * @param x the x-coordinate of the key
-     * @param y the y-coordinate of the key
-     * @param parser the XML resource parser
-     * @return the created Key object
+     * @param res The resources associated with the context.
+     * @param parent The parent Row that this key belongs to.
+     * @param x The x-coordinate of the key.
+     * @param y The y-coordinate of the key.
+     * @param parser the XML resource parser.
+     *
+     * @return the created Key object.
      */
     private fun createKeyFromXml(
         res: Resources,

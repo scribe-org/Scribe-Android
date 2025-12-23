@@ -16,6 +16,7 @@ class AlphanumericComparator {
      *
      * @param string1 The first string to compare.
      * @param string2 The second string to compare.
+     *
      * @return A negative integer if `string1` comes before `string2`,
      *         a positive integer if `string1` comes after `string2`,
      *         and zero if they are equal.
@@ -67,6 +68,7 @@ class AlphanumericComparator {
      * @param string The input string.
      * @param length The total length of the string.
      * @param marker The current position in the string from where extraction starts.
+     *
      * @return A substring representing a numeric or alphabetic chunk.
      */
     private fun getChunk(
@@ -105,7 +107,8 @@ class AlphanumericComparator {
      * Checks if the given character is a numeric digit.
      *
      * @param ch The character to check.
-     * @return `true` if the character is a digit (0-9), `false` otherwise.
+     *
+     * @return true if the character is a digit (0-9), false otherwise.
      */
     private fun isDigit(ch: Char) = ch in '0'..'9'
 }

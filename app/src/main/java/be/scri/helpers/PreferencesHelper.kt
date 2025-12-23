@@ -50,6 +50,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to get the translation source.
+     *
      * @return The translation source language.
      */
     fun getTranslationSourceLanguage(
@@ -68,6 +69,7 @@ object PreferencesHelper {
      *
      * @param key The base key.
      * @param language The language for which to generate the preference key.
+     *
      * @return The generated language-specific preference key.
      */
     fun getLanguageSpecificPreferenceKey(
@@ -297,6 +299,7 @@ object PreferencesHelper {
      * Retrieves the user's dark mode preference.
      *
      * @param context The application context.
+     *
      * @return The dark mode setting as an integer value (AppCompatDelegate.MODE_NIGHT_YES or MODE_NIGHT_NO).
      */
     fun getUserDarkModePreference(context: Context): Int {
@@ -319,6 +322,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to check the preference.
+     *
      * @return True if accent characters are disabled, false otherwise.
      */
     fun getIsAccentCharacterDisabled(
@@ -336,6 +340,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to check the preference.
+     *
      * @return True if the preview feature is enabled, false otherwise.
      */
     fun isShowPopupOnKeypressEnabled(
@@ -349,11 +354,12 @@ object PreferencesHelper {
     }
 
     /**
-     * Retrieves whether vibration on keypress is enabled for a given language.
+     * Retrieves whether vibration on key press is enabled for a given language.
      *
      * @param context The application context.
      * @param language The language for which to check the preference.
-     * @return True if vibration on keypress is enabled, false otherwise.
+     *
+     * @return True if vibration on key press is enabled, false otherwise.
      */
     fun getIsVibrateEnabled(
         context: Context,
@@ -380,6 +386,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to check the preference.
+     *
      * @return True if period and comma are enabled, false otherwise.
      */
     fun getEnablePeriodAndCommaABC(
@@ -397,6 +404,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to check the preference.
+     *
      * @return True if double tap on space enabled for a given language, false otherwise.
      */
     fun getEnablePeriodOnSpaceBarDoubleTap(
@@ -411,6 +419,7 @@ object PreferencesHelper {
      * Retrieves whether dark mode is enabled based on user preferences or system settings.
      *
      * @param context The application context.
+     *
      * @return True if dark mode is enabled, false otherwise.
      */
     fun getIsDarkModeOrNot(context: Context): Boolean {
@@ -426,6 +435,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to check the preference.
+     *
      * @return True if emoji suggestions are enabled, false otherwise.
      */
     fun getIsEmojiSuggestionsEnabled(
@@ -442,6 +452,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to check the preference.
+     *
      * @return True if word-by-word deletion is enabled, false otherwise.
      */
     fun getIsWordByWordDeletionEnabled(
@@ -495,6 +506,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to get the currency preference.
+     *
      * @return The currency symbol (e.g., "$", "€").
      */
     fun getDefaultCurrencySymbol(
@@ -529,6 +541,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to get the currency preference.
+     *
      * @return The currency name (e.g., "Dollar", "Euro").
      */
     fun getDefaultCurrencyName(
@@ -569,6 +582,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      * @param language The language for which to get the currency preference.
+     *
      * @return The state of hold key style.
      */
     fun getHoldKeyStyle(

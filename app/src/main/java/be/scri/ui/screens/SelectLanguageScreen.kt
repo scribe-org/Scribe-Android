@@ -116,7 +116,7 @@ fun SelectTranslationSourceLanguageScreen(
                                     textConfirm = "Download data",
                                     textChange = "Keep ${savedLanguage.value}",
                                     onConfirm = {
-                                        // User confirmed - save the new selection permanently
+                                        // User confirmed - save the new selection permanently.
                                         savedLanguage.value = selectedLanguage.value
                                         sharedPref.edit { putString("translation_source_$currentLanguage", selectedLanguage.value) }
                                         showDialog.value = false
@@ -124,12 +124,12 @@ fun SelectTranslationSourceLanguageScreen(
                                         onNavigateToDownloadData()
                                     },
                                     onChange = {
-                                        // User cancelled - revert back to old selection
+                                        // User cancelled - revert back to old selection.
                                         selectedLanguage.value = savedLanguage.value
                                         showDialog.value = false
                                     },
                                     onDismiss = {
-                                        // Dialog dismissed - revert back to old selection
+                                        // Dialog dismissed - revert back to old selection.
                                         selectedLanguage.value = savedLanguage.value
                                         showDialog.value = false
                                     },

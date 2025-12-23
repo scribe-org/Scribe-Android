@@ -44,6 +44,7 @@ class Trie {
      *
      * @param prefix The prefix to search for.
      * @param limit The maximum number of results to return (default = 10).
+     *
      * @return A list of words that begin with the prefix, up to [limit].
      *
      * Example:
