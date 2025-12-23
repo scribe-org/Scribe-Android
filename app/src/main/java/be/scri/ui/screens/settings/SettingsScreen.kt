@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -147,8 +148,8 @@ private fun InstallKeyboardButton(onClick: () -> Unit) {
             Modifier
                 .fillMaxWidth()
                 .padding(Dimensions.PaddingSmallXL)
-                .shadow(Dimensions.ElevationSmall, RoundedCornerShape(Dimensions.PaddingLarge)),
-        shape = RoundedCornerShape(Dimensions.PaddingLarge),
+                .shadow(Dimensions.ElevationSmall, RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard))),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
         colors =
             ButtonDefaults.outlinedButtonColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,

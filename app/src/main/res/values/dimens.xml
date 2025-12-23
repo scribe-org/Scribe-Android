@@ -53,6 +53,7 @@
     <dimen name="top_shadow_height">100dp</dimen>
     <dimen name="rounded_corner_radius_small">4dp</dimen>
     <dimen name="rounded_corner_radius_big">10dp</dimen>
+    <dimen name="rounded_corner_radius_standard">14dp</dimen>
     <dimen name="bottom_sheet_corner_radius">24dp</dimen>
     <dimen name="breadcrumbs_layout_height">48dp</dimen>
 
