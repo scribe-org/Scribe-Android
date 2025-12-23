@@ -43,7 +43,7 @@ class TranslationDataManagerTest {
     fun `finds translation using lowercase variant when exact capitalized match fails`() {
         every { fileManager.getTranslationDatabase() } returns db
 
-        // First query (exact "Book") fails, second query (lowercase "book") succeeds
+        // First query (exact "Book") fails, second query (lowercase "book") succeeds.
         every { db.rawQuery(any(), any()) } returnsMany
             listOf(
                 createEmptyCursor(),
@@ -52,7 +52,7 @@ class TranslationDataManagerTest {
 
         val result = manager.getTranslationDataForAWord("en" to "fr", "Book")
 
-        // Should recapitalize the result since input was capitalized
+        // Should recapitalize the result since input was capitalized.
         assertEquals("Livre", result)
     }
 
@@ -60,12 +60,12 @@ class TranslationDataManagerTest {
     fun `does not recapitalize when input is lowercase`() {
         every { fileManager.getTranslationDatabase() } returns db
 
-        // Exact match succeeds immediately
+        // Exact match succeeds immediately.
         every { db.rawQuery(any(), any()) } returns createCursorWithResult("livre")
 
         val result = manager.getTranslationDataForAWord("en" to "fr", "book")
 
-        // Input was lowercase, so output stays lowercase
+        // Input was lowercase, so output stays lowercase.
         assertEquals("livre", result)
     }
 
@@ -73,7 +73,7 @@ class TranslationDataManagerTest {
     fun `returns empty string when no variant matches`() {
         every { fileManager.getTranslationDatabase() } returns db
 
-        // All queries fail
+        // All queries fail.
         every { db.rawQuery(any(), any()) } returns createEmptyCursor()
 
         val result = manager.getTranslationDataForAWord("en" to "fr", "nonexistent")
@@ -85,7 +85,7 @@ class TranslationDataManagerTest {
     fun `German capitalized input matches exact`() {
         every { fileManager.getTranslationDatabase() } returns db
 
-        // User types "Buch", database has "Buch" - direct match
+        // User types "Buch", database has "Buch" - direct match.
         every { db.rawQuery(any(), any()) } returns createCursorWithResult("book")
 
         val result = manager.getTranslationDataForAWord("de" to "en", "Buch")
@@ -97,7 +97,7 @@ class TranslationDataManagerTest {
     fun `German source tries canonical capitalization as fallback`() {
         every { fileManager.getTranslationDatabase() } returns db
 
-        // Simulate: exact "buch" fails, lowercase "buch" fails, canonical "Buch" succeeds
+        // Simulate: exact "buch" fails, lowercase "buch" fails, canonical "Buch" succeeds.
         every { db.rawQuery(any(), any()) } returnsMany
             listOf(
                 createEmptyCursor(),
@@ -114,7 +114,7 @@ class TranslationDataManagerTest {
     fun `German capitalized verb finds translation via lowercase fallback`() {
         every { fileManager.getTranslationDatabase() } returns db
 
-        // User types "Laufen" (capitalized verb), but database has "laufen" (lowercase)
+        // User types "Laufen" (capitalized verb), but database has "laufen" (lowercase).
         every { db.rawQuery(any(), any()) } returnsMany
             listOf(
                 createEmptyCursor(),
@@ -123,13 +123,13 @@ class TranslationDataManagerTest {
 
         val result = manager.getTranslationDataForAWord("de" to "en", "Laufen")
 
-        // German doesn't recapitalize, returns result as-is
+        // German doesn't recapitalize, returns result as-is.
         assertEquals("run", result)
     }
 
     @Test
     fun `returns original word when source and destination are the same`() {
-        // No database call should happen
+        // No database call should happen.
         val result = manager.getTranslationDataForAWord("en" to "en", "Book")
 
         assertEquals("Book", result)

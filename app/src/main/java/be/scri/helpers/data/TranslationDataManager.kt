@@ -54,15 +54,15 @@ class TranslationDataManager(
 
         val variants = mutableListOf<String>()
 
-        // Try exact match
+        // Try exact match of input.
         variants.add(word)
 
-        // Lowercase variant:
+        // Add lowercase variants.
         if (isGerman || isWordCapitalized(word)) {
             variants.add(word.lowercase())
         }
 
-        // German-only: canonical noun capitalization ("buch" → "Buch")
+        // Note: In German canonical noun is capitalization ("buch" → "Buch").
         if (isGerman) {
             val canonical = word.lowercase().replaceFirstChar { it.uppercase() }
             variants.add(canonical)
