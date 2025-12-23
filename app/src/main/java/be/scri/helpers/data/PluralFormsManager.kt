@@ -4,6 +4,7 @@ package be.scri.helpers.data
 import DataContract
 import android.database.sqlite.SQLiteDatabase
 import be.scri.helpers.DatabaseFileManager
+import be.scri.helpers.StringUtils.isWordCapitalized
 
 /**
  * Manages and queries plural forms of words from the database.
@@ -49,9 +50,23 @@ class PluralFormsManager(
             val pluralCol = numbers.values.firstOrNull()
 
             if (singularCol != null && pluralCol != null) {
-                fileManager.getLanguageDatabase(language)?.use { db ->
-                    querySpecificPlural(db, singularCol, pluralCol, noun)
-                }
+                val wasCapitalized = isWordCapitalized(noun)
+                val lowerNoun = noun.lowercase()
+
+                val result =
+                    fileManager.getLanguageDatabase(language)?.use { db ->
+                        querySpecificPlural(db, singularCol, pluralCol, lowerNoun)
+                    } ?: emptyMap()
+
+                if (result.isEmpty()) return emptyMap()
+
+                val (singular, plural) = result.entries.first()
+
+                val singularOut = if (wasCapitalized) singular.replaceFirstChar { it.uppercase() } else singular
+
+                val pluralOut = if (wasCapitalized) plural?.replaceFirstChar { it.uppercase() } else plural
+
+                return mapOf(singularOut to pluralOut)
             } else {
                 null
             }
