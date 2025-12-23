@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -120,7 +121,7 @@ fun InstallationScreen(
                             val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
                             context.startActivity(intent)
                         }.testTag("keyboardSettingsCard"),
-                shape = RoundedCornerShape(Dimensions.PaddingLarge),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
                 colors =
                     CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface,
@@ -248,7 +249,7 @@ fun InstallationScreen(
                         .clickable {
                             onNavigateToDownloadData()
                         },
-                shape = RoundedCornerShape(Dimensions.PaddingLarge),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
                 colors =
                     CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface,
@@ -295,8 +296,8 @@ fun InstallationScreen(
                     Modifier
                         .fillMaxWidth()
                         .padding(vertical = Dimensions.PaddingLarge)
-                        .shadow(Dimensions.ElevationSmall, RoundedCornerShape(Dimensions.PaddingLarge)),
-                shape = RoundedCornerShape(Dimensions.PaddingLarge),
+                        .shadow(Dimensions.ElevationSmall, RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard))),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
                 colors =
                     ButtonDefaults.outlinedButtonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
