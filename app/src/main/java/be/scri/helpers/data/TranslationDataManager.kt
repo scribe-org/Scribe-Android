@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import be.scri.helpers.DatabaseFileManager
 import be.scri.helpers.PreferencesHelper
+import be.scri.helpers.StringUtils.isWordCapitalized
 
 /**
  * Manages translations from a local SQLite database.
@@ -47,9 +48,44 @@ class TranslationDataManager(
 
         val sourceTable = generateLanguageNameForISOCode(sourceCode)
 
-        return fileManager.getTranslationDatabase()?.use { db ->
-            queryForTranslation(db, sourceTable, destCode, word)
-        } ?: ""
+        val isGerman = sourceCode == "de"
+
+        val db = fileManager.getTranslationDatabase() ?: return ""
+
+        val variants = mutableListOf<String>()
+
+        // Try exact match of input.
+        variants.add(word)
+
+        // Add lowercase variants.
+        if (isGerman || isWordCapitalized(word)) {
+            variants.add(word.lowercase())
+        }
+
+        // Note: In German canonical noun is capitalization ("buch" → "Buch").
+        if (isGerman) {
+            val canonical = word.lowercase().replaceFirstChar { it.uppercase() }
+            variants.add(canonical)
+        }
+
+        db.use { database ->
+            for (variant in variants) {
+                val result = queryForTranslation(database, sourceTable, destCode, variant)
+
+                if (result.isNotEmpty()) {
+                    // Non-German rule:
+                    // If the user typed a capitalized word, but the match happened using the lowercase version,
+                    // then re-capitalize the translated result.
+                    if (!isGerman && isWordCapitalized(word) && variant == word.lowercase()) {
+                        return result.replaceFirstChar { it.uppercase() }
+                    }
+
+                    return result
+                }
+            }
+        }
+
+        return ""
     }
 
     /**

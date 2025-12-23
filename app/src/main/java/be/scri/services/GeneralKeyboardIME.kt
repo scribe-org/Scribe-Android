@@ -2291,6 +2291,7 @@ abstract class GeneralKeyboardIME(
      * @param rawInput The verb entered in the command bar.
      */
     private fun handleConjugateState(rawInput: String) {
+        val searchInput = rawInput.lowercase()
         currentVerbForConjugation = rawInput
         val languageAlias = getLanguageAlias(language)
 
@@ -2298,7 +2299,7 @@ abstract class GeneralKeyboardIME(
             dbManagers.conjugateDataManager.getTheConjugateLabels(
                 languageAlias,
                 dataContract,
-                rawInput,
+                searchInput,
             )
 
         conjugateOutput =
@@ -2311,7 +2312,7 @@ abstract class GeneralKeyboardIME(
         conjugateLabels =
             dbManagers.conjugateDataManager.extractConjugateHeadings(
                 dataContract,
-                rawInput,
+                searchInput,
             )
 
         currentState =
