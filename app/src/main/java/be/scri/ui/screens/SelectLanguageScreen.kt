@@ -28,14 +28,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
-import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.appcomponents.ConfirmationDialog
-import be.scri.ui.screens.download.DataDownloadViewModel
 
 /**
  * The Select Languages subpage is for selecting the translation source language.
+ * @param currentLanguage The current main/destination language.
+ * @param onBackNavigation Callback for back navigation action.
+ * @param onNavigateToDownloadData Callback for navigating to the data download screen.
+ * @param modifier Modifier for layout and styling.
+ * @param onDownloadAction Callback for download action when a new source language is selected and confirmed.
  */
 @Composable
 fun SelectTranslationSourceLanguageScreen(
@@ -43,7 +46,7 @@ fun SelectTranslationSourceLanguageScreen(
     onBackNavigation: () -> Unit,
     onNavigateToDownloadData: () -> Unit,
     modifier: Modifier = Modifier,
-    downloadViewModel: DataDownloadViewModel = viewModel(),
+    onDownloadAction: (String) -> Unit = {},
 ) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -58,6 +61,7 @@ fun SelectTranslationSourceLanguageScreen(
     val options =
         listOf("English", "French", "German", "Italian", "Portuguese", "Russian", "Spanish", "Swedish")
             .filterNot { it == getDisplayLanguageName(currentLanguage) }
+
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_settings_keyboard_translation_select_source_title),
         lastPage = stringResource(id = getLanguageStringFromi18n(currentLanguage)),
@@ -91,8 +95,11 @@ fun SelectTranslationSourceLanguageScreen(
                                 Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        selectedLanguage.value = option
-                                        showDialog.value = true
+                                        // Only show dialog if the selection is different
+                                        if (option != savedLanguage.value) {
+                                            selectedLanguage.value = option
+                                            showDialog.value = true
+                                        }
                                     }.padding(vertical = 5.dp, horizontal = 8.dp),
                         ) {
                             Text(
@@ -103,38 +110,13 @@ fun SelectTranslationSourceLanguageScreen(
                             RadioButton(
                                 selected = (option == selectedLanguage.value),
                                 onClick = {
-                                    selectedLanguage.value = option
-                                    showDialog.value = true
+                                    // Only show dialog if the selection is different
+                                    if (option != savedLanguage.value) {
+                                        selectedLanguage.value = option
+                                        showDialog.value = true
+                                    }
                                 },
                             )
-                            if (showDialog.value) {
-                                ConfirmationDialog(
-                                    text =
-                                        "You’ve changed your source translation language. " +
-                                            "Would you like to download new data so that you can translate " +
-                                            "from ${selectedLanguage.value}?",
-                                    textConfirm = "Download data",
-                                    textChange = "Keep ${savedLanguage.value}",
-                                    onConfirm = {
-                                        // User confirmed - save the new selection permanently.
-                                        savedLanguage.value = selectedLanguage.value
-                                        sharedPref.edit { putString("translation_source_$currentLanguage", selectedLanguage.value) }
-                                        showDialog.value = false
-                                        downloadViewModel.handleDownloadAction(savedLanguage.value)
-                                        onNavigateToDownloadData()
-                                    },
-                                    onChange = {
-                                        // User cancelled - revert back to old selection.
-                                        selectedLanguage.value = savedLanguage.value
-                                        showDialog.value = false
-                                    },
-                                    onDismiss = {
-                                        // Dialog dismissed - revert back to old selection.
-                                        selectedLanguage.value = savedLanguage.value
-                                        showDialog.value = false
-                                    },
-                                )
-                            }
                         }
 
                         if (index < options.lastIndex) {
@@ -144,6 +126,39 @@ fun SelectTranslationSourceLanguageScreen(
                 }
             }
         }
+    }
+
+    if (showDialog.value) {
+        ConfirmationDialog(
+            text =
+                "You've changed your source translation language. " +
+                    "Would you like to download new data so that you can translate " +
+                    "from ${selectedLanguage.value}?",
+            textConfirm = "Download data",
+            textChange = "Keep ${savedLanguage.value}",
+            onConfirm = {
+                // User confirmed - save the new selection permanently.
+                savedLanguage.value = selectedLanguage.value
+                sharedPref.edit { putString("translation_source_$currentLanguage", selectedLanguage.value) }
+
+                val downloadKey = currentLanguage.lowercase()
+                // trigger the download action in the ViewModel.
+                onDownloadAction(downloadKey)
+                showDialog.value = false
+                // Navigate to the download data screen.
+                onNavigateToDownloadData()
+            },
+            onChange = {
+                // User cancelled - revert back to old selection.
+                selectedLanguage.value = savedLanguage.value
+                showDialog.value = false
+            },
+            onDismiss = {
+                // Dialog dismissed - revert back to old selection.
+                selectedLanguage.value = savedLanguage.value
+                showDialog.value = false
+            },
+        )
     }
 }
 

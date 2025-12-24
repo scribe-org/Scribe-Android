@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,6 +38,7 @@ import be.scri.ui.screens.SelectTranslationSourceLanguageScreen
 import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
+import be.scri.ui.screens.download.DataDownloadViewModel
 import be.scri.ui.screens.download.DownloadDataScreen
 import be.scri.ui.screens.settings.SettingsScreen
 import be.scri.ui.theme.ScribeTheme
@@ -60,7 +62,8 @@ import kotlinx.coroutines.launch
  * @param isDarkTheme Flag to indicate if dark theme is enabled.
  * @param modifier Optional layout modifier for UI customization.
  */
-@SuppressLint("ComposeModifierMissing")
+@Suppress("LongParameterList")
+@SuppressLint("ComposeModifierMissing", "LongParameterList")
 @Composable
 fun ScribeApp(
     pagerState: PagerState,
@@ -72,9 +75,12 @@ fun ScribeApp(
     context: Context,
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
+    downloadViewModel: DataDownloadViewModel = viewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val downloadStates = downloadViewModel.downloadStates
+    val onDownloadAction = downloadViewModel::handleDownloadAction
 
     ScribeTheme(
         useDarkTheme = isDarkTheme,
@@ -204,6 +210,8 @@ fun ScribeApp(
                                 "translation_language_detail/$language",
                             )
                         },
+                        downloadStates = downloadStates,
+                        onDownloadAction = onDownloadAction,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
@@ -237,6 +245,7 @@ fun ScribeApp(
                         onNavigateToDownloadData = {
                             navController.navigate("download_data")
                         },
+                        onDownloadAction = onDownloadAction,
                         modifier = Modifier.padding(innerPadding),
                         currentLanguage = language,
                     )

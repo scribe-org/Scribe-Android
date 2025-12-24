@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.appcomponents.ConfirmationDialog
@@ -39,15 +38,18 @@ import be.scri.ui.common.components.SwitchableItemComp
  * Screen for downloading and managing language data.
  *
  * @param onBackNavigation Callback for back navigation action.
+ * @param onNavigateToTranslation Callback for navigating to translation language selection.
  * @param modifier Modifier for layout and styling.
- * @param viewModel ViewModel managing the download states and actions.
+ * @param downloadStates Map of language keys to their download states.
+ * @param onDownloadAction Callback for download action when a language is selected and confirmed.
  */
 @Composable
 fun DownloadDataScreen(
     onBackNavigation: () -> Unit,
     onNavigateToTranslation: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DataDownloadViewModel = viewModel(),
+    downloadStates: Map<String, DownloadState> = emptyMap(),
+    onDownloadAction: (String) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     val checkForNewData = remember { mutableStateOf(false) }
@@ -139,7 +141,7 @@ fun DownloadDataScreen(
 
                         languages.forEachIndexed { index, lang ->
                             val (key, title, isDark) = lang
-                            val currentStatus = viewModel.downloadStates[key] ?: DownloadState.Ready
+                            val currentStatus = downloadStates[key] ?: DownloadState.Ready
 
                             LanguageItemComp(
                                 title = title,
@@ -148,7 +150,7 @@ fun DownloadDataScreen(
                                     if (currentStatus == DownloadState.Ready) {
                                         selectedLanguage.value = lang
                                     } else {
-                                        viewModel.handleDownloadAction(key)
+                                        onDownloadAction(key)
                                     }
                                 },
                                 isDarkTheme = isDark,
@@ -179,7 +181,7 @@ fun DownloadDataScreen(
                     textConfirm = "Use $sourceLang",
                     textChange = "Change language",
                     onConfirm = {
-                        viewModel.handleDownloadAction(key)
+                        onDownloadAction(key)
                         selectedLanguage.value = null
                     },
                     onChange = { onNavigateToTranslation(languageId) },
