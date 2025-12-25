@@ -60,7 +60,8 @@ fun SwitchableItemComp(
                 modifier =
                     Modifier
                         .width(51.dp)
-                        .height(17.dp),
+                        .height(17.dp)
+                        .padding(bottom = 8.dp),
                 thumbContent = {
                     Box(
                         modifier =
