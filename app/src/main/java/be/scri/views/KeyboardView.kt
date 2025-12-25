@@ -123,7 +123,7 @@ class KeyboardView
             /**
              * Sends a sequence of characters to the listener.
              *
-             * @param text the string to be displayed.
+             * @param text The string to be displayed.
              */
             fun onText(text: String)
 
@@ -365,6 +365,7 @@ class KeyboardView
          *
          * @param state The current keyboard state.
          * @param earlierValue Previously assigned Enter key value (optional).
+         *
          * @return The updated Enter key value.
          */
         fun setEnterKeyIcon(
@@ -461,6 +462,7 @@ class KeyboardView
          * Returns the label for a key with the given code.
          *
          * @param code The code of the key.
+         *
          * @return The label for the key, or null if the key code is not recognized.
          */
         fun getKeyLabel(code: Int): String? =
@@ -682,7 +684,8 @@ class KeyboardView
         /**
          * Sets the state of the shift key of the keyboard, if any.
          *
-         * @param shifted whether or not to enable the state of the shift key
+         * @param shifted Whether or not to enable the state of the shift key
+         *
          * @return true if the shift key state changed, false if there was no change.
          */
         private fun setShifted(shiftState: Int) {
@@ -1358,7 +1361,7 @@ class KeyboardView
          * Use this method if only one key is changing it's content. Any changes that
          * affect the position or size of the key may not be honored.
          *
-         * @param keyIndex the index of the key in the attached [KeyboardBase].
+         * @param keyIndex The index of the key in the attached [KeyboardBase].
          */
         private fun invalidateKey(keyIndex: Int) {
             if (keyIndex < 0 || keyIndex >= mKeys.size) {
@@ -1402,6 +1405,7 @@ class KeyboardView
          * popupLayout and popupCharacters.
          *
          * @param popupKey The key that was long pressed.
+         *
          * @return true if the long press is handled, false otherwise.
          * Subclasses should call the method on the base class if the subclass doesn't wish to
          * handle the call.

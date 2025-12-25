@@ -52,7 +52,7 @@ class SettingsViewModel(
     /**
      * Updates the UI theme mode based on the user's preference.
      *
-     * @param value True to enable dark mode, false for light mode.
+     * @param value true to enable dark mode, false for light mode.
      */
     fun setLightDarkMode(value: Boolean) {
         _isUserDarkMode.value = value

@@ -21,7 +21,7 @@ object SettingsUtil {
      *
      * @param context The context to access system services.
      *
-     * @return True if the keyboard is installed, false otherwise.
+     * @return true if the keyboard is installed, false otherwise.
      */
     fun checkKeyboardInstallation(context: Context): Boolean {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -32,7 +32,7 @@ object SettingsUtil {
     /**
      * Sets the app theme to light or dark mode and saves the user's preference.
      *
-     * @param isDarkMode True to enable dark mode, false for light mode.
+     * @param isDarkMode true to enable dark mode, false for light mode.
      * @param context The context used to save preferences.
      */
     fun setLightDarkMode(

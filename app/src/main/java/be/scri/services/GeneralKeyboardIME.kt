@@ -320,7 +320,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Called when the input view is finished. Resets the keyboard state to idle.
      *
-     * @param finishingInput `true` if we are finishing for good,
+     * @param finishingInput true if we are finishing for good,
      * `false` if just switching to another app.
      */
     override fun onFinishInputView(finishingInput: Boolean) {
@@ -413,7 +413,7 @@ abstract class GeneralKeyboardIME(
      * It initializes the keyboard based on the input type and loads all language-specific data.
      *
      * @param attribute The editor information for the new input field.
-     * @param restarting `true` if we are restarting the input with the same editor.
+     * @param restarting true if we are restarting the input with the same editor.
      */
     override fun onStartInput(
         attribute: EditorInfo?,
@@ -465,7 +465,7 @@ abstract class GeneralKeyboardIME(
      * and initial keyboard state.
      *
      * @param editorInfo The editor information for the input field.
-     * @param restarting `true` if we are restarting the input with the same editor.
+     * @param restarting true if we are restarting the input with the same editor.
      */
     override fun onStartInputView(
         editorInfo: EditorInfo?,
@@ -1081,7 +1081,7 @@ abstract class GeneralKeyboardIME(
      * Determines which keyboard layout XML to use based on the current [ScribeState].
      *
      * @param state The current state of the Scribe keyboard.
-     * @param isSubsequentArea `true` if this is for a secondary conjugation view.
+     * @param isSubsequentArea true if this is for a secondary conjugation view.
      * @param dataSize The number of items to display, used to select an appropriate layout.
      *
      * @return The resource ID of the keyboard layout XML.
@@ -1155,7 +1155,7 @@ abstract class GeneralKeyboardIME(
      * A wrapper to set up the conjugation key labels for the current language and index.
      *
      * @param conjugateIndex The index of the conjugation tense/mood to display.
-     * @param isSubsequentArea `true` if setting up a secondary view.
+     * @param isSubsequentArea true if setting up a secondary view.
      */
     internal fun setupConjugateKeysByLanguage(
         conjugateIndex: Int,
@@ -1171,7 +1171,7 @@ abstract class GeneralKeyboardIME(
      * Sets the labels for the special conjugation keys based on the selected tense/mood.
      *
      * @param startIndex The index of the conjugation tense/mood from the loaded data.
-     * @param isSubsequentArea `true` if this is for a secondary conjugation view.
+     * @param isSubsequentArea true if this is for a secondary conjugation view.
      */
     private fun setUpConjugateKeys(
         startIndex: Int,
@@ -1245,7 +1245,7 @@ abstract class GeneralKeyboardIME(
      * potentially requiring a subsequent selection view.
      *
      * @param languageOutput The map of conjugation forms for the selected tense.
-     * @param isSubsequentArea `true` if this is for a secondary view.
+     * @param isSubsequentArea true if this is for a secondary view.
      */
     private fun setUpEnglishConjugateKeys(
         languageOutput: Map<String, Collection<String>>,
@@ -1324,7 +1324,7 @@ abstract class GeneralKeyboardIME(
      * Saves the type of conjugation layout being used (e.g., "2x2", "3x2") to shared preferences.
      *
      * @param language The current keyboard language.
-     * @param isSubsequentArea `true` if this is for a secondary view.
+     * @param isSubsequentArea true if this is for a secondary view.
      */
     internal fun saveConjugateModeType(
         language: String,
@@ -1348,7 +1348,7 @@ abstract class GeneralKeyboardIME(
      * Updates the visibility of the suggestion buttons based on device type (phone/tablet)
      * and whether auto-suggestions are currently active.
      *
-     * @param isAutoSuggestEnabled `true` if emoji or linguistic suggestions are available.
+     * @param isAutoSuggestEnabled true if emoji or linguistic suggestions are available.
      */
     internal fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
         if (currentState != ScribeState.IDLE) {
@@ -1583,7 +1583,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Updates the text of the suggestion buttons, primarily for displaying emoji suggestions.
      *
-     * @param isAutoSuggestEnabled `true` if suggestions are active.
+     * @param isAutoSuggestEnabled true if suggestions are active.
      * @param autoSuggestEmojis The list of emojis to display.
      */
     fun updateEmojiSuggestion(
@@ -1637,7 +1637,7 @@ abstract class GeneralKeyboardIME(
      * The main dispatcher for displaying linguistic auto-suggestions (gender, case, plurality).
      *
      * @param nounTypeSuggestion The detected gender(s) of the last word.
-     * @param isPlural `true` if the last word is plural.
+     * @param isPlural true if the last word is plural.
      * @param caseAnnotationSuggestion The detected case(s) required by the last word.
      */
     fun updateAutoSuggestText(
@@ -1723,7 +1723,7 @@ abstract class GeneralKeyboardIME(
     /**
      * A helper function to specifically trigger the plural suggestion UI if needed.
      *
-     * @param isPlural `true` if the word is plural.
+     * @param isPlural true if the word is plural.
      *
      * @return true if the plural suggestion was handled, false otherwise.
      */
@@ -2392,6 +2392,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Handles the default behavior of the Enter key when not in a special Scribe command mode.
+     *
      * It performs the editor action or sends a standard Enter key event.
      *
      * @param inputConnection The current input connection.
@@ -2545,7 +2546,7 @@ abstract class GeneralKeyboardIME(
      * It either commits the text directly or prepares for a subsequent selection view.
      *
      * @param code The key code of the pressed key.
-     * @param isSubsequentRequired `true` if a sub-view is needed for more options.
+     * @param isSubsequentRequired true if a sub-view is needed for more options.
      *
      * @return The label of the key that was pressed.
      */
@@ -2681,7 +2682,7 @@ abstract class GeneralKeyboardIME(
      *
      * @param code The character code of the key.
      * @param keyboardMode The current keyboard mode.
-     * @param commandBarState `true` if input should go to the command bar.
+     * @param commandBarState true if input should go to the command bar.
      */
     fun handleElseCondition(
         code: Int,

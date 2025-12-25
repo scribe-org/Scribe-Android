@@ -323,7 +323,7 @@ object PreferencesHelper {
      * @param context The application context.
      * @param language The language for which to check the preference.
      *
-     * @return True if accent characters are disabled, false otherwise.
+     * @return true if accent characters are disabled, false otherwise.
      */
     fun getIsAccentCharacterDisabled(
         context: Context,
@@ -341,7 +341,7 @@ object PreferencesHelper {
      * @param context The application context.
      * @param language The language for which to check the preference.
      *
-     * @return True if the preview feature is enabled, false otherwise.
+     * @return true if the preview feature is enabled, false otherwise.
      */
     fun isShowPopupOnKeypressEnabled(
         context: Context,
@@ -359,7 +359,7 @@ object PreferencesHelper {
      * @param context The application context.
      * @param language The language for which to check the preference.
      *
-     * @return True if vibration on key press is enabled, false otherwise.
+     * @return true if vibration on key press is enabled, false otherwise.
      */
     fun getIsVibrateEnabled(
         context: Context,
@@ -387,7 +387,7 @@ object PreferencesHelper {
      * @param context The application context.
      * @param language The language for which to check the preference.
      *
-     * @return True if period and comma are enabled, false otherwise.
+     * @return true if period and comma are enabled, false otherwise.
      */
     fun getEnablePeriodAndCommaABC(
         context: Context,
@@ -405,7 +405,7 @@ object PreferencesHelper {
      * @param context The application context.
      * @param language The language for which to check the preference.
      *
-     * @return True if double tap on space enabled for a given language, false otherwise.
+     * @return true if double tap on space enabled for a given language, false otherwise.
      */
     fun getEnablePeriodOnSpaceBarDoubleTap(
         context: Context,
@@ -420,7 +420,7 @@ object PreferencesHelper {
      *
      * @param context The application context.
      *
-     * @return True if dark mode is enabled, false otherwise.
+     * @return true if dark mode is enabled, false otherwise.
      */
     fun getIsDarkModeOrNot(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
@@ -436,7 +436,7 @@ object PreferencesHelper {
      * @param context The application context.
      * @param language The language for which to check the preference.
      *
-     * @return True if emoji suggestions are enabled, false otherwise.
+     * @return true if emoji suggestions are enabled, false otherwise.
      */
     fun getIsEmojiSuggestionsEnabled(
         context: Context,
@@ -453,7 +453,7 @@ object PreferencesHelper {
      * @param context The application context.
      * @param language The language for which to check the preference.
      *
-     * @return True if word-by-word deletion is enabled, false otherwise.
+     * @return true if word-by-word deletion is enabled, false otherwise.
      */
     fun getIsWordByWordDeletionEnabled(
         context: Context,

@@ -12,6 +12,7 @@ import java.io.IOException
 /**
  * Manages access to all SQLite database files.
  * Ensures DB files are copied from assets and provides read-only connections.
+ *
  * @param context The application context.
  */
 class DatabaseFileManager(

@@ -138,6 +138,7 @@ class KeyboardBase {
          * @param index The index of the desired attribute.
          * @param base The base value for the fraction calculation.
          * @param defValue The default value to return if no valid dimension is found.
+         *
          * @return The calculated dimension or fraction value.
          */
         fun getDimensionOrFraction(
@@ -301,11 +302,11 @@ class KeyboardBase {
         var repeatable = false
 
         /** Create a key with the given top-left coordinate and extract its attributes from the XML parser.
-         * @param res resources associated with the caller's context
-         * @param parent the row that this key belongs to. The row must already be attached to a [KeyboardBase].
-         * @param x the x coordinate of the top-left
-         * @param y the y coordinate of the top-left
-         * @param parser the XML parser containing the attributes for this key
+         * @param res Resources associated with the caller's context.
+         * @param parent The row that this key belongs to. The row must already be attached to a [KeyboardBase].
+         * @param x The x coordinate of the top-left.
+         * @param y The y coordinate of the top-left.
+         * @param parser The XML parser containing the attributes for this key.
          */
         constructor(res: Resources, parent: Row, x: Int, y: Int, parser: XmlResourceParser?) : this(parent) {
             this.x = x
@@ -364,8 +365,9 @@ class KeyboardBase {
 
         /**
          * Detects if a point falls inside this key.
-         * @param x The x-coordinate of the point
-         * @param y The y-coordinate of the point
+         * @param x The x-coordinate of the point.
+         * @param y The y-coordinate of the point.
+         *
          * @return whether or not the point falls inside the key.
          * If the key is attached to an edge, it will assume that all points between the key and
          * the edge are considered to be inside the key.
@@ -389,9 +391,9 @@ class KeyboardBase {
      * Creates a keyboard from the given xml key layout file.
      * Removes rows that have a keyboard mode defined but don't match the specified mode.
      *
-     * @param context the application or service context
-     * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
-     * @param enterKeyType determines what icon should we show on Enter key
+     * @param context The application or service context.
+     * @param xmlLayoutResId The resource file that contains the keyboard layout and keys.
+     * @param enterKeyType Determines what icon should we show on Enter key.
      */
     @JvmOverloads
     constructor(
@@ -513,8 +515,8 @@ class KeyboardBase {
      * Loads the keyboard configuration from the provided XML parser, populating the rows and keys.
      * This method also handles edge cases like custom icons for the Enter key based on its type.
      *
-     * @param context the application context
-     * @param parser the XML resource parser
+     * @param context The application context.
+     * @param parser The XML resource parser.
      */
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun loadKeyboard(
@@ -651,8 +653,8 @@ class KeyboardBase {
     /**
      * Parses the keyboard attributes such as key width, height, and horizontal gap from the XML resource.
      *
-     * @param res the resources associated with the context
-     * @param parser the XML resource parser
+     * @param res The resources associated with the context.
+     * @param parser The XML resource parser.
      */
     private fun parseKeyboardAttributes(
         res: Resources,

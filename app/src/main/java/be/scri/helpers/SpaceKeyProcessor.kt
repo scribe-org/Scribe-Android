@@ -58,7 +58,7 @@ class SpaceKeyProcessor(
      * This includes the "period on double tap" logic if enabled and applicable,
      * otherwise commits a normal space. Updates word suggestions.
      *
-     * @param wasLastKeySpace True if the previous key pressed was a space.
+     * @param wasLastKeySpace true if the previous key pressed was a space.
      */
     private fun handleSpaceOutsideCommandBar(wasLastKeySpace: Boolean) {
         val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
@@ -134,7 +134,7 @@ class SpaceKeyProcessor(
      *
      * @param textBefore The two characters of text immediately before the cursor.
      *
-     * @return True if the conditions are met, false otherwise.
+     * @return true if the conditions are met, false otherwise.
      */
     private fun meetsTwoCharDoubleSpacePeriodCondition(textBefore: String?): Boolean =
         textBefore != null &&

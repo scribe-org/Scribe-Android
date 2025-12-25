@@ -70,7 +70,7 @@ class KeyHandler(
      * @param inputConnection The current input connection.
      * @param previousWasLastKeySpace The previous state of wasLastKeySpace.
      *
-     * @return True to reset wasLastKeySpace, false to preserve it.
+     * @return true to reset wasLastKeySpace, false to preserve it.
      */
     private fun processKeyCode(
         code: Int,

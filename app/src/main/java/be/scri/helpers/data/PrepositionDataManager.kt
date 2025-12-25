@@ -7,6 +7,7 @@ import be.scri.helpers.DatabaseFileManager
 
 /**
  * Manages preposition data and case annotations from the database.
+ *
  * @param fileManager The central manager for database file access.
  */
 class PrepositionDataManager(

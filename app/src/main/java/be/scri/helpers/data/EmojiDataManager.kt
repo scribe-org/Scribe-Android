@@ -6,6 +6,7 @@ import be.scri.helpers.DatabaseFileManager
 
 /**
  * Manages emoji keywords by querying an SQLite database.
+ *
  * @param fileManager The central manager for database file access.
  */
 class EmojiDataManager(

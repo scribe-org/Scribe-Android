@@ -9,6 +9,7 @@ import be.scri.helpers.StringUtils.isWordCapitalized
 
 /**
  * Manages translations from a local SQLite database.
+ *
  * @param context The application context.
  * @param fileManager The central manager for database file access.
  */
