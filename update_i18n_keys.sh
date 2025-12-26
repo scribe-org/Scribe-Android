@@ -4,7 +4,4 @@
 # Windows: Run the command below.
 cd app/src/main/assets/i18n
 git pull origin main
-cd ../../..
-
-git add app/src/main/assets/i18n
-git commit -m "Update Scribe-i18n submodule"
+cd ../../../../..

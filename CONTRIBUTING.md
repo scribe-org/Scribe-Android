@@ -90,12 +90,15 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 >
 > To run git commands with SSH, remember then to substitute the HTTPS URL, `https://github.com/...`, with the SSH one, `git@github.com:...`.
 >
-> -   e.g. Cloning now becomes `git clone --recurse-submodules git@github.com:<your-username>/Scribe-Android.git`
+> -   e.g. Cloning (with submodules) now becomes `git clone --recurse-submodules git@github.com:<your-username>/Scribe-Android.git`
 >
 > GitHub also has their documentation on how to [Generate a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) 🔑
 >
 > </p>
 > </details>
+
+> [!NOTE]
+> Cloning this repository with `--recurse-submodules` also clones a copy of [Scribe-i18n](https://github.com/scribe-org/Scribe-i18n) where the texts for Scribe projects are localized. When pulling changes from `main`, you should also run the following command: `git submodule update --init --recursive`.
 
 ```bash
 # Clone your fork of the repo into the current directory (including submodules).
@@ -337,15 +340,7 @@ Scribe does not accept direct edits to the grammar files as they are sourced fro
 
 Being an app that focusses on language learning, localization plays a big part in what Scribe will eventually be. Those interested are more than welcome to join the team at [scribe-org/Scribe-i18n](https://github.com/scribe-org/Scribe-i18n) where we work on localizing all Scribe applications via [Weblate](https://weblate.org/).
 
-`Scribe-i18n` is now included in this repository as a git submodule.
-
-**Existing contributors:** after pulling these changes from `main`, you must run the following command once to initialize the i18n submodule:
-
-```bash
-git submodule update --init --recursive
-```
-
-Please run the [update_i18n_keys.sh](https://github.com/scribe-org/Scribe-Android/blob/main/update_i18n_keys.sh) script to load in the most recent version of the [Scribe-i18n](https://github.com/scribe-org/Scribe-i18n) app texts into Scribe-Android.
+Please run the [update_i18n_keys.sh](./update_i18n_keys.sh) script to load in the most recent version of the [Scribe-i18n](https://github.com/scribe-org/Scribe-i18n) app texts into Scribe-Android.
 
 ### Progress
 
