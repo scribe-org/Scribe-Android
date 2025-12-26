@@ -90,7 +90,7 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 >
 > To run git commands with SSH, remember then to substitute the HTTPS URL, `https://github.com/...`, with the SSH one, `git@github.com:...`.
 >
-> -   e.g. Cloning now becomes `git clone git@github.com:<your-username>/Scribe-Android.git`
+> -   e.g. Cloning now becomes `git clone --recurse-submodules git@github.com:<your-username>/Scribe-Android.git`
 >
 > GitHub also has their documentation on how to [Generate a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) 🔑
 >
