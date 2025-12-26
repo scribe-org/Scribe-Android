@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.CircleClickableItemComp
 import be.scri.ui.common.components.LanguageItemComp
 import be.scri.ui.common.components.SwitchableItemComp
+import be.scri.ui.screens.settings.SettingsUtil
 
 @Composable
 fun DownloadDataScreen(
@@ -39,6 +41,36 @@ fun DownloadDataScreen(
     val scrollState = rememberScrollState()
     val checkForNewData = remember { mutableStateOf(false) }
     val regularlyUpdateData = remember { mutableStateOf(true) }
+    val context = LocalContext.current
+    val installedKeyboardLanguages =
+        remember {
+            SettingsUtil.getKeyboardLanguages(context)
+        }
+
+    val languages =
+        remember(installedKeyboardLanguages) {
+            buildList {
+                add(Triple("all", context.getString(R.string.app_download_menu_ui_select_all_languages), false))
+
+                installedKeyboardLanguages.forEach { languageCode ->
+                    val displayName =
+                        when (languageCode.lowercase()) {
+                            "english" -> context.getString(R.string.app__global_english)
+                            "french" -> context.getString(R.string.app__global_french)
+                            "german" -> context.getString(R.string.app__global_german)
+                            "italian" -> context.getString(R.string.app__global_italian)
+                            "portuguese" -> context.getString(R.string.app__global_portuguese)
+                            "russian" -> context.getString(R.string.app__global_russian)
+                            "spanish" -> context.getString(R.string.app__global_spanish)
+                            "swedish" -> context.getString(R.string.app__global_swedish)
+                            else -> languageCode.replaceFirstChar { it.uppercase() }
+                        }
+
+                    val key = languageCode.lowercase()
+                    add(Triple(key, displayName, false))
+                }
+            }
+        }
 
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_download_menu_ui_title),
@@ -108,19 +140,6 @@ fun DownloadDataScreen(
                     color = MaterialTheme.colorScheme.surface,
                 ) {
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
-                        val languages =
-                            listOf(
-                                Triple("all", stringResource(R.string.app_download_menu_ui_select_all_languages), false),
-                                Triple("english", stringResource(R.string.app__global_english), false),
-                                Triple("french", stringResource(R.string.app__global_french), false),
-                                Triple("german", stringResource(R.string.app__global_german), false),
-                                Triple("italian", stringResource(R.string.app__global_italian), false),
-                                Triple("portuguese", stringResource(R.string.app__global_portuguese), false),
-                                Triple("russian", stringResource(R.string.app__global_russian), false),
-                                Triple("spanish", stringResource(R.string.app__global_spanish), false),
-                                Triple("swedish", stringResource(R.string.app__global_swedish), false),
-                            )
-
                         languages.forEachIndexed { index, (key, title, isDark) ->
                             LanguageItemComp(
                                 title = title,
