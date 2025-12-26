@@ -34,6 +34,7 @@ fun Int.getContrastColor(): Int {
  *
  * @receiver Int The color to adjust.
  * @param factor Float The factor to multiply the alpha by (0f = fully transparent, 1f = original alpha).
+ *
  * @return Int The color with modified alpha.
  */
 fun Int.adjustAlpha(factor: Float): Int {
@@ -62,6 +63,7 @@ private const val FACTOR_DIVIDER = 100
  *
  * @receiver Int The original color.
  * @param factor Int The factor to darken the color by (default is 8).
+ *
  * @return Int The darkened color.
  */
 
@@ -87,6 +89,7 @@ fun Int.darkenColor(factor: Int = DEFAULT_DARKEN_FACTOR): Int {
  *
  * @receiver Int The original color.
  * @param factor Int The factor to lighten the color by (default is 8).
+ *
  * @return Int The lightened color.
  */
 
@@ -113,6 +116,7 @@ private const val LIGHTNESS_THRESHOLD = 0.5f
  * Converts a color from HSL to HSV.
  *
  * @param hsl FloatArray The color in HSL format.
+ *
  * @return FloatArray The converted color in HSV format.
  */
 private fun hsl2hsv(hsl: FloatArray): FloatArray {
@@ -127,6 +131,7 @@ private fun hsl2hsv(hsl: FloatArray): FloatArray {
  * Converts a color from HSV to HSL.
  *
  * @param hsv FloatArray The color in HSV format.
+ *
  * @return FloatArray The converted color in HSL format.
  */
 

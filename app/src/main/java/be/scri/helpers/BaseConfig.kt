@@ -8,10 +8,8 @@ import be.scri.extensions.getSharedPrefs
 
 /**
  * A configuration helper class for managing app settings.
- * <p>
  * This class provides access to various UI-related preferences such as colors, language settings,
  * and theme preferences. Preferences are stored using `SharedPreferences`.
- * </p>
  *
  * @param context The application context used to retrieve resources and shared preferences.
  */
@@ -28,6 +26,7 @@ open class BaseConfig(
          * Creates a new instance of `BaseConfig`.
          *
          * @param context The application context.
+         *
          * @return A new instance of `BaseConfig`.
          */
         fun newInstance(context: Context) = BaseConfig(context)

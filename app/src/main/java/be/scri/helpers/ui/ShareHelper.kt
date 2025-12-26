@@ -11,6 +11,7 @@ import android.util.Log
 interface ShareHelperInterface {
     /**
      * Shares scribe.
+     *
      * @param context The Android context used to perform the share action.
      */
     fun shareScribe(context: Context)

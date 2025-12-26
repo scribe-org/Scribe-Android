@@ -23,6 +23,7 @@ class SpaceKeyProcessor(
      * If in command bar mode, it treats space as a regular character input.
      *
      * @param currentWasLastKeySpace The state of whether the previous key was a space.
+     *
      * @return The new state for `wasLastKeySpace` after processing the space key.
      */
     fun processKeycodeSpace(currentWasLastKeySpace: Boolean): Boolean {
@@ -56,7 +57,8 @@ class SpaceKeyProcessor(
      * Handles space key press when not in command bar mode.
      * This includes the "period on double tap" logic if enabled and applicable,
      * otherwise commits a normal space. Updates word suggestions.
-     * @param wasLastKeySpace True if the previous key pressed was a space.
+     *
+     * @param wasLastKeySpace true if the previous key pressed was a space.
      */
     private fun handleSpaceOutsideCommandBar(wasLastKeySpace: Boolean) {
         val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
@@ -129,8 +131,10 @@ class SpaceKeyProcessor(
      * on a double space when the text before is two characters long.
      * Criteria: not null, length is 2, starts with a space, and does not end with " .".
      * This typically matches patterns like " X" (where X is not '.') or "  ".
+     *
      * @param textBefore The two characters of text immediately before the cursor.
-     * @return True if the conditions are met, false otherwise.
+     *
+     * @return true if the conditions are met, false otherwise.
      */
     private fun meetsTwoCharDoubleSpacePeriodCondition(textBefore: String?): Boolean =
         textBefore != null &&

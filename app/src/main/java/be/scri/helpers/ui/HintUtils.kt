@@ -43,6 +43,7 @@ object HintUtils {
      *
      * @param currentState The current state of the keyboard.
      * @param language The language code (e.g., "English", "French").
+     *
      * @return The appropriate hint message for the given state and language.
      */
     fun getCommandBarHint(
@@ -59,6 +60,7 @@ object HintUtils {
      * Maps the current state of the keyboard to its corresponding hints.
      *
      * @param currentState The current state of the keyboard.
+     *
      * @return A map of language codes to hint strings for the current state.
      */
     private fun getHintForState(currentState: GeneralKeyboardIME.ScribeState): Map<String, String> =
@@ -160,6 +162,7 @@ object HintUtils {
      *
      * @param currentState The current state of the keyboard.
      * @param language The language code (e.g., "English", "French").
+     *
      * @return The appropriate prompt text for the given state and language.
      */
     fun getPromptText(
@@ -180,6 +183,7 @@ object HintUtils {
      * Retrieves the translation prompt text for the given language.
      *
      * @param language The language code (e.g., "English", "French").
+     *
      * @return The translation prompt text for the given language.
      */
     private fun getTranslationPrompt(
@@ -211,6 +215,7 @@ object HintUtils {
      * Retrieves the conjugation prompt text for the given language.
      *
      * @param language The language code (e.g., "English", "French").
+     *
      * @return The conjugation prompt text for the given language.
      */
     private fun getConjugationPrompt(language: String): String =
@@ -230,6 +235,7 @@ object HintUtils {
      * Retrieves the plural prompt text for the given language.
      *
      * @param language The language code (e.g., "English", "French").
+     *
      * @return The plural prompt text for the given language.
      */
     private fun getPluralPrompt(language: String): String =

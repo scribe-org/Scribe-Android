@@ -13,8 +13,10 @@ object EmojiUtils {
     /**
      * Checks if the end of a string is likely an emoji.
      * This is a heuristic check based on common emoji Unicode ranges.
+     *
      * @param word The string to check.
-     * @return `true` if the end of the string contains an emoji character, `false` otherwise.
+     *
+     * @return true if the end of the string contains an emoji character, false otherwise.
      */
     fun isEmoji(word: String?): Boolean {
         if (word.isNullOrEmpty() || word.length < DATA_SIZE_2) {
@@ -38,6 +40,7 @@ object EmojiUtils {
 
     /**
      * Inserts an emoji into the text field, replacing the keyword that triggered it if found.
+     *
      * @param emoji The emoji character to insert.
      */
     fun insertEmoji(

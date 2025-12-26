@@ -41,6 +41,7 @@ class DatabaseManagers(
      * It delegates the loading and parsing logic to the [ContractDataLoader].
      *
      * @param language The language code (e.g., "DE", "FR") for which to load the contract.
+     *
      * @return A [DataContract] object containing the language's structural metadata, or `null`
      * if not found or on error.
      */

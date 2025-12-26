@@ -92,14 +92,16 @@ class KeyboardView
             /**
              * Called when the user presses a key. This is sent before the [.onKey] is called.
              * For keys that repeat, this is only called once.
-             * @param primaryCode the unicode of the key being pressed.
+             *
+             * @param primaryCode The unicode of the key being pressed.
              * If the touch is not on a valid key, the value will be zero.
              */
             fun onPress(primaryCode: Int)
 
             /**
              * Send a key press to the listener.
-             * @param code this is the key that was pressed
+             *
+             * @param code The key that was pressed
              */
             fun onKey(code: Int)
 
@@ -120,12 +122,14 @@ class KeyboardView
 
             /**
              * Sends a sequence of characters to the listener.
-             * @param text the string to be displayed.
+             *
+             * @param text The string to be displayed.
              */
             fun onText(text: String)
 
             /**
              * Checks if there is text before the current cursor position.
+             *
              * @return true if there is text before the cursor and false otherwise.
              */
             fun hasTextBeforeCursor(): Boolean
@@ -331,6 +335,7 @@ class KeyboardView
 
         /**
          * Sets the color of the Enter key based on a specific color or theme mode.
+         *
          * @param color The optional color to apply.
          * @param isDarkMode Whether the dark mode is enabled (optional).
          */
@@ -357,8 +362,10 @@ class KeyboardView
 
         /**
          * Sets the icon of the Enter key based on current state.
+         *
          * @param state The current keyboard state.
          * @param earlierValue Previously assigned Enter key value (optional).
+         *
          * @return The updated Enter key value.
          */
         fun setEnterKeyIcon(
@@ -455,6 +462,7 @@ class KeyboardView
          * Returns the label for a key with the given code.
          *
          * @param code The code of the key.
+         *
          * @return The label for the key, or null if the key code is not recognized.
          */
         fun getKeyLabel(code: Int): String? =
@@ -624,6 +632,7 @@ class KeyboardView
         /**
          * Attaches a keyboard to this view.
          * The keyboard can be switched at any time and the view will re-layout itself to accommodate the keyboard.
+         *
          * @param keyboard the keyboard to display in this view
          */
         fun setKeyboard(keyboard: KeyboardBase) {
@@ -674,8 +683,10 @@ class KeyboardView
 
         /**
          * Sets the state of the shift key of the keyboard, if any.
-         * @param shifted whether or not to enable the state of the shift key
-         * @return true if the shift key state changed, false if there was no change
+         *
+         * @param shifted Whether or not to enable the state of the shift key
+         *
+         * @return true if the shift key state changed, false if there was no change.
          */
         private fun setShifted(shiftState: Int) {
             if (mKeyboard?.setShifted(shiftState) == true) {
@@ -685,7 +696,7 @@ class KeyboardView
 
         /**
          * Returns the state of the shift key of the keyboard, if any.
-         * @return true if the shift is in a pressed state, false otherwise
+         * @return true if the shift is in a pressed state, false otherwise.
          */
         private fun isShifted(): Boolean = mKeyboard?.mShiftState ?: SHIFT_OFF > SHIFT_OFF
 
@@ -738,7 +749,8 @@ class KeyboardView
          * Compute the average distance between adjacent keys (horizontally and vertically)
          * and square it to get the proximity threshold.
          * We use a square here and in computing the touch distance from a key's center to avoid taking a square root.
-         * @param keyboard
+         *
+         * @param keyboard The base class for the keyboard UI.
          */
         private fun computeProximityThreshold(keyboard: KeyboardBase?) {
             if (keyboard == null) {
@@ -1348,7 +1360,8 @@ class KeyboardView
          * Invalidates a key so that it will be redrawn on the next repaint.
          * Use this method if only one key is changing it's content. Any changes that
          * affect the position or size of the key may not be honored.
-         * @param keyIndex the index of the key in the attached [KeyboardBase].
+         *
+         * @param keyIndex The index of the key in the attached [KeyboardBase].
          */
         private fun invalidateKey(keyIndex: Int) {
             if (keyIndex < 0 || keyIndex >= mKeys.size) {
@@ -1390,7 +1403,9 @@ class KeyboardView
          * Called when a key is long pressed.
          * By default this will open any popup keyboard associated with this key through the attributes
          * popupLayout and popupCharacters.
-         * @param popupKey the key that was long pressed
+         *
+         * @param popupKey The key that was long pressed.
+         *
          * @return true if the long press is handled, false otherwise.
          * Subclasses should call the method on the base class if the subclass doesn't wish to
          * handle the call.

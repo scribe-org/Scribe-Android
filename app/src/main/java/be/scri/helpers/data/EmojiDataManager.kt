@@ -6,6 +6,7 @@ import be.scri.helpers.DatabaseFileManager
 
 /**
  * Manages emoji keywords by querying an SQLite database.
+ *
  * @param fileManager The central manager for database file access.
  */
 class EmojiDataManager(
@@ -20,6 +21,7 @@ class EmojiDataManager(
      * As a side effect, it also calculates and stores the maximum length of any keyword found.
      *
      * @param language The language code (e.g., "DE", "FR") to select the correct database.
+     *
      * @return A [HashMap] where keys are lowercase words and values are a list of associated emoji strings.
      */
     fun getEmojiKeywords(language: String): HashMap<String, MutableList<String>> {

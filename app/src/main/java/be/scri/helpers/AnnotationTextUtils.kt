@@ -17,7 +17,9 @@ import be.scri.helpers.LanguageMappingConstants.prepAnnotationConversionDict
 object AnnotationTextUtils {
     /**
      * Maps a case annotation string (e.g., "genitive case") to a displayable text and color.
+     *
      * @param nounType The case annotation string.
+     *
      * @return A pair containing the color resource ID and the display text.
      */
     fun handleTextForCaseAnnotation(
@@ -40,7 +42,9 @@ object AnnotationTextUtils {
 
     /**
      * Maps a noun type string (e.g., "masculine") to a displayable text and color.
+     *
      * @param nounType The noun type or gender string.
+     *
      * @return A pair containing the color resource ID and the display text.
      */
     fun handleColorAndTextForNounType(
@@ -62,8 +66,10 @@ object AnnotationTextUtils {
 
     /**
      * Processes a noun gender abbreviation for display, converting it based on language-specific conventions.
+     *
      * @param language The current keyboard language.
      * @param text The gender abbreviation (e.g., "M", "F", "N").
+     *
      * @return The language-specific display text (e.g., "М" for Russian masculine).
      */
     fun processValueForNouns(
@@ -73,8 +79,10 @@ object AnnotationTextUtils {
 
     /**
      * Processes a preposition case abbreviation for display, converting it based on language-specific conventions.
+     *
      * @param language The current keyboard language.
      * @param text The case abbreviation (e.g., "Acc", "Dat").
+     *
      * @return The language-specific display text (e.g., "Akk" for German accusative).
      */
     fun processValuesForPreposition(

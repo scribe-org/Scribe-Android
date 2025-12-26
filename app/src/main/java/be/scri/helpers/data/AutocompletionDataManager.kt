@@ -36,6 +36,7 @@ class AutocompletionDataManager(
      *
      * @param prefix The starting text to search for (e.g. "ap").
      * @param limit  The maximum number of suggestions to return (default: 3).
+     *
      * @return A list of matching words that begin with the prefix.
      */
     fun getAutocompletions(

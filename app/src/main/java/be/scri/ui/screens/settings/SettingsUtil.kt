@@ -20,7 +20,8 @@ object SettingsUtil {
      * Checks whether the custom keyboard is already installed and enabled.
      *
      * @param context The context to access system services.
-     * @return True if the keyboard is installed, false otherwise.
+     *
+     * @return true if the keyboard is installed, false otherwise.
      */
     fun checkKeyboardInstallation(context: Context): Boolean {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -31,7 +32,7 @@ object SettingsUtil {
     /**
      * Sets the app theme to light or dark mode and saves the user's preference.
      *
-     * @param isDarkMode True to enable dark mode, false for light mode.
+     * @param isDarkMode true to enable dark mode, false for light mode.
      * @param context The context used to save preferences.
      */
     fun setLightDarkMode(
@@ -87,6 +88,7 @@ object SettingsUtil {
      * Retrieves the list of available keyboard languages based on enabled input methods.
      *
      * @param context The context to access input methods.
+     *
      * @return A list of language names.
      */
     fun getKeyboardLanguages(context: Context): List<String> {
@@ -110,6 +112,7 @@ object SettingsUtil {
      * Maps a language name to its corresponding localized string resource ID.
      *
      * @param language The name of the language.
+     *
      * @return The string resource ID for the localized name.
      */
     fun getLocalizedLanguageName(language: String): Int {

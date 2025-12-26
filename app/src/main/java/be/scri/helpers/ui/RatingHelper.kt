@@ -23,10 +23,10 @@ object RatingHelper {
 
     /**
      * Gets the package name of the app that installed this app.
-     *
      * For example, "com.android.vending" for Google Play Store.
      *
      * @param context App context.
+     *
      * @return Installer package name, or null if unknown or on error. Logs errors.
      */
     private fun getInstallSource(context: Context): String? =

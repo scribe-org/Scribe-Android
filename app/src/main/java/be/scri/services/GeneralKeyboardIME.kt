@@ -180,7 +180,7 @@ abstract class GeneralKeyboardIME(
      * 2. The input type variation for URIs (common in address bars).
      * 3. The hint text for keywords like "search" or "address".
      *
-     * @return `true` if the current input field is likely a search or address bar, `false` otherwise.
+     * @return true if the current input field is likely a search or address bar, false otherwise.
      */
     fun isSearchBar(): Boolean {
         val editorInfo = currentInputEditorInfo
@@ -212,7 +212,8 @@ abstract class GeneralKeyboardIME(
     /**
      * Returns whether the current conjugation state requires a subsequent selection view.
      * This is used, for example, when a conjugation form has multiple options (e.g., "am/is/are" in English).
-     * @return `true` if a subsequent selection screen is needed, `false` otherwise.
+     *
+     * @return true if a subsequent selection screen is needed, false otherwise.
      */
     internal fun returnIsSubsequentRequired(): Boolean = subsequentAreaRequired
 
@@ -231,6 +232,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Creates the main view for the input method, inflating it from XML and setting up the keyboard.
+     *
      * @return The root View of the input method.
      */
     override fun onCreateInputView(): View {
@@ -316,8 +318,9 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Called when the input view is finished. Resets the keyboard state to IDLE.
-     * @param finishingInput `true` if we are finishing for good,
+     * Called when the input view is finished. Resets the keyboard state to idle.
+     *
+     * @param finishingInput true if we are finishing for good,
      * `false` if just switching to another app.
      */
     override fun onFinishInputView(finishingInput: Boolean) {
@@ -338,7 +341,8 @@ abstract class GeneralKeyboardIME(
     /**
      * Overrides the default implementation to check if there is any
      * non-whitespace text before the cursor.
-     * @return `true` if there is meaningful text before the cursor, `false` otherwise.
+     *
+     * @return true if there is meaningful text before the cursor, false otherwise.
      */
     override fun hasTextBeforeCursor(): Boolean {
         val ic = currentInputConnection ?: return false
@@ -348,6 +352,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Called when a key is pressed down. Triggers haptic feedback if enabled.
+     *
      * @param primaryCode The integer code of the key that was pressed.
      */
     override fun onPress(primaryCode: Int) {
@@ -406,8 +411,9 @@ abstract class GeneralKeyboardIME(
     /**
      * Called when the IME is starting to interact with a new input field.
      * It initializes the keyboard based on the input type and loads all language-specific data.
+     *
      * @param attribute The editor information for the new input field.
-     * @param restarting `true` if we are restarting the input with the same editor.
+     * @param restarting true if we are restarting the input with the same editor.
      */
     override fun onStartInput(
         attribute: EditorInfo?,
@@ -457,8 +463,9 @@ abstract class GeneralKeyboardIME(
     /**
      * Called when the input view is starting. It sets up the UI theme, emoji settings,
      * and initial keyboard state.
+     *
      * @param editorInfo The editor information for the input field.
-     * @param restarting `true` if we are restarting the input with the same editor.
+     * @param restarting true if we are restarting the input with the same editor.
      */
     override fun onStartInputView(
         editorInfo: EditorInfo?,
@@ -526,6 +533,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Updates the color of the Enter key based on the current Scribe state and theme (dark/light mode).
+     *
      * @param isDarkMode The current dark mode status. If null, it will be determined from context.
      */
     private fun updateEnterKeyColor(isDarkMode: Boolean?) {
@@ -547,6 +555,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Updates the hint and prompt text displayed in the command bar area based on the current state.
+     *
      * @param isUserDarkMode The current dark mode status. If null, it will be determined from context.
      * @param text A specific text to be displayed in the prompt, often used for conjugation titles.
      * @param word A word to be included in the hint text.
@@ -1070,9 +1079,11 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Determines which keyboard layout XML to use based on the current [ScribeState].
+     *
      * @param state The current state of the Scribe keyboard.
-     * @param isSubsequentArea `true` if this is for a secondary conjugation view.
+     * @param isSubsequentArea true if this is for a secondary conjugation view.
      * @param dataSize The number of items to display, used to select an appropriate layout.
+     *
      * @return The resource ID of the keyboard layout XML.
      */
     private fun getKeyboardLayoutForState(
@@ -1103,6 +1114,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Initializes or re-initializes the keyboard with a new layout.
+     *
      * @param xmlId The resource ID of the keyboard layout XML.
      */
     private fun initializeKeyboard(xmlId: Int) {
@@ -1127,6 +1139,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Retrieves and validates the stored index for the current conjugation view.
      * Ensures the index is within the bounds of available conjugation types.
+     *
      * @return A valid, zero-based index for the conjugation type.
      */
     private fun getValidatedConjugateIndex(): Int {
@@ -1140,8 +1153,9 @@ abstract class GeneralKeyboardIME(
 
     /**
      * A wrapper to set up the conjugation key labels for the current language and index.
+     *
      * @param conjugateIndex The index of the conjugation tense/mood to display.
-     * @param isSubsequentArea `true` if setting up a secondary view.
+     * @param isSubsequentArea true if setting up a secondary view.
      */
     internal fun setupConjugateKeysByLanguage(
         conjugateIndex: Int,
@@ -1155,8 +1169,9 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Sets the labels for the special conjugation keys based on the selected tense/mood.
+     *
      * @param startIndex The index of the conjugation tense/mood from the loaded data.
-     * @param isSubsequentArea `true` if this is for a secondary conjugation view.
+     * @param isSubsequentArea true if this is for a secondary conjugation view.
      */
     private fun setUpConjugateKeys(
         startIndex: Int,
@@ -1186,6 +1201,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Sets up conjugation key labels for non-English languages, which typically follow a 3x2 grid layout.
+     *
      * @param languageOutput The map of conjugation forms for the selected tense.
      * @param conjugateLabel The list of labels for each person/number (e.g., "1ps", "2ps").
      * @param title The title of the current tense/mood.
@@ -1227,8 +1243,9 @@ abstract class GeneralKeyboardIME(
     /**
      * Sets up conjugation key labels for English, which has a more complex structure,
      * potentially requiring a subsequent selection view.
+     *
      * @param languageOutput The map of conjugation forms for the selected tense.
-     * @param isSubsequentArea `true` if this is for a secondary view.
+     * @param isSubsequentArea true if this is for a secondary view.
      */
     private fun setUpEnglishConjugateKeys(
         languageOutput: Map<String, Collection<String>>,
@@ -1269,6 +1286,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Sets up a secondary "sub-view" for conjugation when a single key has multiple options.
+     *
      * @param data The full dataset of subsequent options.
      * @param word The specific word selected from the primary view, used to filter the data.
      */
@@ -1304,8 +1322,9 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Saves the type of conjugation layout being used (e.g., "2x2", "3x2") to shared preferences.
+     *
      * @param language The current keyboard language.
-     * @param isSubsequentArea `true` if this is for a secondary view.
+     * @param isSubsequentArea true if this is for a secondary view.
      */
     internal fun saveConjugateModeType(
         language: String,
@@ -1328,7 +1347,8 @@ abstract class GeneralKeyboardIME(
     /**
      * Updates the visibility of the suggestion buttons based on device type (phone/tablet)
      * and whether auto-suggestions are currently active.
-     * @param isAutoSuggestEnabled `true` if emoji or linguistic suggestions are available.
+     *
+     * @param isAutoSuggestEnabled true if emoji or linguistic suggestions are available.
      */
     internal fun updateButtonVisibility(isAutoSuggestEnabled: Boolean) {
         if (currentState != ScribeState.IDLE) {
@@ -1367,6 +1387,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Handles the logic for showing/hiding suggestion buttons specifically on tablet layouts.
+     *
      * @param emojiCount The number of available emoji suggestions.
      */
     private fun updateTabletButtonVisibility(emojiCount: Int) {
@@ -1417,6 +1438,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Handles the logic for showing/hiding suggestion buttons specifically on phone layouts.
+     *
      * @param emojiCount The number of available emoji suggestions.
      */
     private fun updatePhoneButtonVisibility(emojiCount: Int) {
@@ -1458,20 +1480,24 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Retrieves the text immediately preceding the cursor.
+     *
      * @return The text before the cursor, up to a defined maximum length.
      */
     fun getText(): String? = currentInputConnection?.getTextBeforeCursor(TEXT_LENGTH, 0)?.toString()
 
     /**
      * Extracts the last word from the text immediately preceding the cursor.
+     *
      * @return The last word as a [String], or null if no word is found.
      */
     fun getLastWordBeforeCursor(): String? = getText()?.trim()?.split("\\s+".toRegex())?.lastOrNull()
 
     /**
      * Finds associated emojis for the last typed word.
+     *
      * @param emojiKeywords The map of keywords to emojis.
      * @param lastWord The word to look up.
+     *
      * @return A mutable list of emoji suggestions, or null if none are found.
      */
     fun findEmojisForLastWord(
@@ -1484,8 +1510,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Finds the grammatical gender(s) for the last typed word.
+     *
      * @param nounKeywords The map of nouns to their genders.
      * @param lastWord The word to look up.
+     *
      * @return A list of gender strings (e.g., "masculine", "neuter"), or null if not a known noun.
      */
     fun findGenderForLastWord(
@@ -1504,8 +1532,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Finds the next suggestions for the last typed word.
+     *
      * @param wordSuggestions The map of words to their suggestions.
      * @param lastWord The word to look up.
+     *
      * @return A list of gender strings (e.g., "masculine", "neuter"), or null if not a known noun.
      */
     fun getNextWordSuggestions(
@@ -1523,9 +1553,11 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Checks if the last word is a known plural form.
+     *
      * @param pluralWords The set of all known plural words.
      * @param lastWord The word to check.
-     * @return `true` if the word is in the plural set, `false` otherwise.
+     *
+     * @return true if the word is in the plural set, false otherwise.
      */
     fun findWhetherWordIsPlural(
         pluralWords: Set<String>?,
@@ -1534,8 +1566,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Finds the required grammatical case(s) for a preposition.
+     *
      * @param caseAnnotation The map of prepositions to their required cases.
      * @param lastWord The word to look up (which should be a preposition).
+     *
      * @return A mutable list of case suggestions (e.g., "accusative case"), or null if not found.
      */
     fun getCaseAnnotationForPreposition(
@@ -1548,7 +1582,8 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Updates the text of the suggestion buttons, primarily for displaying emoji suggestions.
-     * @param isAutoSuggestEnabled `true` if suggestions are active.
+     *
+     * @param isAutoSuggestEnabled true if suggestions are active.
      * @param autoSuggestEmojis The list of emojis to display.
      */
     fun updateEmojiSuggestion(
@@ -1600,8 +1635,9 @@ abstract class GeneralKeyboardIME(
 
     /**
      * The main dispatcher for displaying linguistic auto-suggestions (gender, case, plurality).
+     *
      * @param nounTypeSuggestion The detected gender(s) of the last word.
-     * @param isPlural `true` if the last word is plural.
+     * @param isPlural true if the last word is plural.
      * @param caseAnnotationSuggestion The detected case(s) required by the last word.
      */
     fun updateAutoSuggestText(
@@ -1686,8 +1722,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * A helper function to specifically trigger the plural suggestion UI if needed.
-     * @param isPlural `true` if the word is plural.
-     * @return `true` if the plural suggestion was handled, `false` otherwise.
+     *
+     * @param isPlural true if the word is plural.
+     *
+     * @return true if the plural suggestion was handled, false otherwise.
      */
     private fun handlePluralIfNeeded(isPlural: Boolean): Boolean {
         if (isPlural) {
@@ -1702,8 +1740,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * A helper function to handle displaying a single noun gender suggestion.
+     *
      * @param nounTypeSuggestion A list containing a single gender string.
-     * @return `true` if a suggestion was displayed, `false` otherwise.
+     *
+     * @return true if a suggestion was displayed, false otherwise.
      */
     private fun handleSingleNounSuggestion(nounTypeSuggestion: List<String>?): Boolean {
         if (nounTypeSuggestion?.size == 1 && !isSingularAndPlural) {
@@ -1718,8 +1758,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * A helper function to handle displaying a single preposition case suggestion.
+     *
      * @param caseAnnotationSuggestion A list containing a single case annotation string.
-     * @return `true` if a suggestion was displayed, `false` otherwise.
+     *
+     * @return true if a suggestion was displayed, false otherwise.
      */
     private fun handleSingleCaseSuggestion(caseAnnotationSuggestion: List<String>?): Boolean {
         if (caseAnnotationSuggestion?.size == 1) {
@@ -1739,8 +1781,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * A helper function to handle displaying multiple preposition case suggestions.
+     *
      * @param caseAnnotationSuggestion A list containing multiple case annotation strings.
-     * @return `true` if suggestions were displayed, `false` otherwise.
+     *
+     * @return true if suggestions were displayed, false otherwise.
      */
     private fun handleMultipleCases(caseAnnotationSuggestion: List<String>?): Boolean {
         if ((caseAnnotationSuggestion?.size ?: 0) > 1) {
@@ -1753,9 +1797,11 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles fallback logic when multiple suggestions are available but only one can be shown,
      * or when the primary suggestion type isn't displayable.
+     *
      * @param nounTypeSuggestion The list of noun suggestions.
      * @param caseAnnotationSuggestion The list of case suggestions.
-     * @return `true` if a fallback suggestion was applied, `false` otherwise.
+     *
+     * @return true if a fallback suggestion was applied, false otherwise.
      */
     private fun handleFallbackSuggestions(
         nounTypeSuggestion: List<String>?,
@@ -1909,6 +1955,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Configures a single suggestion button with the appropriate text and color based on the suggestion type.
+     *
      * @param singleTypeSuggestion The list containing the single suggestion to display.
      * @param type The type of suggestion, either "noun" or "preposition".
      */
@@ -1950,8 +1997,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Determines the left and right suggestion types to display for dual suggestions.
+     *
      * @param type The suggestion type ("noun" or "preposition").
      * @param suggestions The list of suggestion strings.
+     *
      * @return A pair of strings representing the left and right suggestion.
      */
     private fun getSuggestionTypes(
@@ -1966,8 +2015,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Creates pairs of (color, text) for dual suggestion buttons.
+     *
      * @param type The suggestion type ("noun" or "preposition").
      * @param suggestions The list of suggestion strings.
+     *
      * @return A pair of pairs, each containing a color resource ID and a text string, or null on failure.
      */
     private fun getSuggestionPairs(
@@ -1988,6 +2039,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Applies a specific style to a suggestion button, including text, color, and a custom background.
+     *
      * @param button The Button to style.
      * @param colorRes The color resource ID for the background.
      * @param text The text to display on the button.
@@ -2028,6 +2080,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Sets up the UI for two side-by-side suggestion buttons.
+     *
      * @param leftSuggestion A pair containing the color and text for the left button.
      * @param rightSuggestion A pair containing the color and text for the right button.
      */
@@ -2059,6 +2112,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the logic when a word has multiple possible genders or
      * cases but only one suggestion slot is available.
+     *
      * It picks the first valid suggestion to display.
      * @param multipleTypeSuggestion The list of noun suggestions.
      */
@@ -2092,6 +2146,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the UI logic for displaying multiple suggestions simultaneously,
      * typically for words with multiple genders.
+     *
      * @param multipleTypeSuggestion The list of suggestions to display.
      * @param type The type of suggestion, either "noun" or "preposition".
      */
@@ -2153,6 +2208,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Sets the text size and color for a default, non-active suggestion button.
+     *
      * @param button The button to style.
      */
 
@@ -2164,7 +2220,9 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Retrieves the plural form of a word from the database.
+     *
      * @param word The singular word to find the plural for.
+     *
      * @return The plural form as a string, or null if not found.
      */
     private fun getPluralRepresentation(word: String?): String? {
@@ -2186,7 +2244,8 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Moves the cursor in the input field.
-     * @param moveRight `true` to move right, `false` to move left.
+     *
+     * @param moveRight true to move right, false to move left.
      */
     private fun moveCursor(moveRight: Boolean) {
         val extractedText = currentInputConnection?.getExtractedText(ExtractedTextRequest(), 0) ?: return
@@ -2196,8 +2255,10 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Retrieves the translation for a given word.
+     *
      * @param language The current keyboard language (destination language).
      * @param commandBarInput The word to be translated (source word).
+     *
      * @return The translated word as a string.
      */
     private fun getTranslation(
@@ -2210,6 +2271,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Gets the IME action ID (e.g., Go, Search, Done) from the current editor info.
+     *
      * @return The IME action ID, or `IME_ACTION_NONE`.
      */
     private fun getImeOptionsActionId(): Int =
@@ -2252,7 +2314,8 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Handles the Enter key press when in the `PLURAL` or `TRANSLATE` state.
+     * Handles the Enter key press when in the plural or translate state.
+     *
      * @param rawInput The text from the command bar.
      * @param inputConnection The current input connection.
      */
@@ -2288,6 +2351,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the Enter key press when in the `CONJUGATE` state. It fetches the
      * conjugation data for the entered verb and transitions to the selection view.
+     *
      * @param rawInput The verb entered in the command bar.
      */
     private fun handleConjugateState(rawInput: String) {
@@ -2328,7 +2392,9 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Handles the default behavior of the Enter key when not in a special Scribe command mode.
+     *
      * It performs the editor action or sends a standard Enter key event.
+     *
      * @param inputConnection The current input connection.
      */
     private fun handleDefaultEnter(inputConnection: InputConnection) {
@@ -2346,6 +2412,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Commits the output of a Scribe command (like translation or pluralization) to the input field.
+     *
      * @param commandModeOutput The string result of the command.
      * @param inputConnection The current input connection.
      */
@@ -2364,6 +2431,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Handles switching between the letter and symbol keyboards.
+     *
      * @param keyboardMode The current keyboard mode (letters or symbols).
      * @param keyboardView The instance of the keyboard view.
      * @param context The application context.
@@ -2394,6 +2462,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the logic for the Shift key. It cycles through shift states (off, on-for-one-char, caps lock)
      * on the letter keyboard, and toggles between symbol pages on the symbol keyboard.
+     *
      * @param keyboardMode The current keyboard mode.
      * @param keyboardView The instance of the keyboard view.
      */
@@ -2475,8 +2544,10 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles a key press on one of the special conjugation keys.
      * It either commits the text directly or prepares for a subsequent selection view.
+     *
      * @param code The key code of the pressed key.
-     * @param isSubsequentRequired `true` if a sub-view is needed for more options.
+     * @param isSubsequentRequired true if a sub-view is needed for more options.
+     *
      * @return The label of the key that was pressed.
      */
     fun handleConjugateKeys(
@@ -2496,8 +2567,9 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the logic for the Delete/Backspace key. It deletes characters from either
      * the main input field or the command bar, depending on the context.
-     * @param isCommandBar `true` if the deletion should happen in the command bar.
-     * @param isLongPress `true` if this is a long press/repeat action, `false` for single tap.
+     *
+     * @param isCommandBar true` if the deletion should happen in the command bar.
+     * @param isLongPress true` if this is a long press/repeat action, false for single tap.
      */
     fun handleDelete(
         isCommandBar: Boolean = false,
@@ -2535,6 +2607,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Deletes an entire word, including any trailing whitespace.
+     *
      * @param inputConnection The current input connection.
      */
     private fun deleteWordByWord(inputConnection: InputConnection) {
@@ -2606,9 +2679,10 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the input of any non-special character key (e.g., letters, numbers, punctuation).
      * It commits the character to the main input field or the command bar.
+     *
      * @param code The character code of the key.
      * @param keyboardMode The current keyboard mode.
-     * @param commandBarState `true` if input should go to the command bar.
+     * @param commandBarState true if input should go to the command bar.
      */
     fun handleElseCondition(
         code: Int,
@@ -2661,6 +2735,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Gets the current text in the command bar without the cursor.
+     *
      * @return The text content without the trailing cursor character.
      */
     private fun getCommandBarTextWithoutCursor(): String {
@@ -2674,6 +2749,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Sets the command bar text and ensures it ends with the custom cursor.
+     *
      * @param text The text to set (without cursor).
      * @param cursorAtStart The flag to check if the text in the EditText is empty to determine the position of the cursor
      */
