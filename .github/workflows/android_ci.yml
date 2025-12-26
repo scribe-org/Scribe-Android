@@ -16,6 +16,8 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
+              with:
+                  submodules: true
 
             - name: Prepare App
               uses: ./.github/composite/prepareApp
@@ -32,6 +34,8 @@ jobs:
         steps:
             - name: Checkout Repository
               uses: actions/checkout@v4
+              with:
+                  submodules: true
 
             - name: Prepare App
               uses: ./.github/composite/prepareApp
@@ -44,6 +48,8 @@ jobs:
         steps:
             - name: Checkout Repository
               uses: actions/checkout@v4
+              with:
+                  submodules: true
 
             - name: Set up JDK
               uses: actions/setup-java@v1
@@ -65,6 +71,8 @@ jobs:
         steps:
             - name: Checkout Repository
               uses: actions/checkout@v4
+              with:
+                  submodules: true
 
             - name: Prepare App
               uses: ./.github/composite/prepareApp
@@ -86,6 +94,8 @@ jobs:
         steps:
             - name: Checkout Repository
               uses: actions/checkout@v4
+              with:
+                  submodules: true
 
             - name: Prepare App
               uses: ./.github/composite/prepareApp
