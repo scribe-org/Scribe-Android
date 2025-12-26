@@ -337,6 +337,14 @@ Scribe does not accept direct edits to the grammar files as they are sourced fro
 
 Being an app that focusses on language learning, localization plays a big part in what Scribe will eventually be. Those interested are more than welcome to join the team at [scribe-org/Scribe-i18n](https://github.com/scribe-org/Scribe-i18n) where we work on localizing all Scribe applications via [Weblate](https://weblate.org/).
 
+`Scribe-i18n` is now included in this repository as a git submodule.
+
+**Existing contributors:** after pulling these changes from `main`, you must run the following command once to initialize the i18n submodule:
+
+```bash
+git submodule update --init --recursive
+```
+
 Please run the [update_i18n_keys.sh](https://github.com/scribe-org/Scribe-Android/blob/main/update_i18n_keys.sh) script to load in the most recent version of the [Scribe-i18n](https://github.com/scribe-org/Scribe-i18n) app texts into Scribe-Android.
 
 ### Progress
