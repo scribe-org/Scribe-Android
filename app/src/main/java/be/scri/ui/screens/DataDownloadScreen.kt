@@ -33,6 +33,7 @@ import be.scri.ui.common.appcomponents.ConfirmationDialog
 import be.scri.ui.common.components.CircleClickableItemComp
 import be.scri.ui.common.components.LanguageItemComp
 import be.scri.ui.common.components.SwitchableItemComp
+import be.scri.ui.screens.settings.SettingsUtil
 
 /**
  * Screen for downloading and managing language data.
@@ -57,6 +58,35 @@ fun DownloadDataScreen(
     val selectedLanguage = remember { mutableStateOf<Triple<String, String, Boolean>?>(null) }
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    val installedKeyboardLanguages =
+        remember {
+            SettingsUtil.getKeyboardLanguages(context)
+        }
+
+    val languages =
+        remember(installedKeyboardLanguages) {
+            buildList {
+                add(Triple("all", context.getString(R.string.app_download_menu_ui_select_all_languages), false))
+
+                installedKeyboardLanguages.forEach { languageCode ->
+                    val displayName =
+                        when (languageCode.lowercase()) {
+                            "english" -> context.getString(R.string.app__global_english)
+                            "french" -> context.getString(R.string.app__global_french)
+                            "german" -> context.getString(R.string.app__global_german)
+                            "italian" -> context.getString(R.string.app__global_italian)
+                            "portuguese" -> context.getString(R.string.app__global_portuguese)
+                            "russian" -> context.getString(R.string.app__global_russian)
+                            "spanish" -> context.getString(R.string.app__global_spanish)
+                            "swedish" -> context.getString(R.string.app__global_swedish)
+                            else -> languageCode.replaceFirstChar { it.uppercase() }
+                        }
+
+                    val key = languageCode.lowercase()
+                    add(Triple(key, displayName, false))
+                }
+            }
+        }
 
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.app_download_menu_ui_title),
