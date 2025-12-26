@@ -2,4 +2,9 @@
 # macOS: sh update_i18n_keys.sh
 # Linux: bash update_i18n_keys.sh
 # Windows: Run the command below.
-git subtree pull --prefix app/src/main/assets/i18n git@github.com:scribe-org/Scribe-i18n.git main --squash
+cd app/src/main/assets/i18n
+git pull origin main
+cd ../../..
+
+git add app/src/main/assets/i18n
+git commit -m "Update Scribe-i18n submodule"
