@@ -98,8 +98,8 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 > </details>
 
 ```bash
-# Clone your fork of the repo into the current directory.
-git clone https://github.com/<your-username>/Scribe-Android.git
+# Clone your fork of the repo into the current directory (including submodules).
+git clone --recurse-submodules https://github.com/<your-username>/Scribe-Android.git
 # Navigate to the newly cloned directory.
 cd Scribe-Android
 # Assign the original repo to a remote called "upstream".
