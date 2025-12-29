@@ -65,7 +65,7 @@ fun AboutScreen(
         )
 
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.app_about_title),
+        pageTitle = stringResource(R.string.i18n_app_about_title),
         onBackNavigation = {},
         modifier = modifier,
     ) {
@@ -77,19 +77,19 @@ fun AboutScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_about_community_title),
+                title = stringResource(R.string.i18n_app_about_community_title),
                 cardItemsList = communityList,
                 isDivider = true,
             )
 
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_about_feedback_title),
+                title = stringResource(R.string.i18n_app_about_feedback_title),
                 cardItemsList = feedbackAndSupportList,
                 isDivider = true,
             )
 
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.app_about_legal_title),
+                title = stringResource(R.string.i18n_app_about_legal_title),
                 cardItemsList = legalItemsList,
                 isDivider = true,
             )

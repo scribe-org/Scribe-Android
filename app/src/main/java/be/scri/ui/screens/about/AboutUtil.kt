@@ -41,7 +41,7 @@ fun buildCommunityList(
     listOf(
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.github_logo,
-            title = R.string.app_about_community_github,
+            title = R.string.i18n_app_about_community_github,
             trailingIcon = R.drawable.external_link,
             url = ExternalLinks.GITHUB_SCRIBE,
             onClick = {
@@ -51,14 +51,14 @@ fun buildCommunityList(
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.share_icon,
-            title = R.string.app_about_community_share_scribe,
+            title = R.string.i18n_app_about_community_share_scribe,
             trailingIcon = R.drawable.external_link,
             url = null,
             onClick = { onShareScribeClick() },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.wikimedia_logo_black,
-            title = R.string.app_about_community_wikimedia,
+            title = R.string.i18n_app_about_community_wikimedia,
             trailingIcon = R.drawable.right_arrow,
             url = null,
             onClick = { onWikimediaAndScribeClick() },
@@ -74,12 +74,12 @@ fun getLegalItemSpecs(): List<LegalItemSpec> =
     listOf(
         LegalItemSpec(
             icon = R.drawable.shield_lock,
-            title = R.string.app_about_legal_privacy_policy,
+            title = R.string.i18n_app_about_legal_privacy_policy,
             destination = Destination.PrivacyPolicy,
         ),
         LegalItemSpec(
             icon = R.drawable.license_icon,
-            title = R.string.app_about_legal_third_party,
+            title = R.string.i18n_app_about_legal_third_party,
             destination = Destination.ThirdPartyLicenses,
         ),
     )
@@ -102,14 +102,14 @@ fun feedbackAndSupportList(
     listOf(
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.star,
-            title = R.string.app_about_feedback_rate_scribe,
+            title = R.string.i18n_app_about_feedback_rate_scribe,
             trailingIcon = R.drawable.external_link,
             url = null,
             onClick = { onRateScribeClick() },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.bug_report_icon,
-            title = R.string.app_about_feedback_bug_report,
+            title = R.string.i18n_app_about_feedback_bug_report,
             trailingIcon = R.drawable.external_link,
             url = ExternalLinks.GITHUB_ISSUES,
             onClick = {
@@ -119,14 +119,14 @@ fun feedbackAndSupportList(
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.mail_icon,
-            title = R.string.app_about_feedback_email,
+            title = R.string.i18n_app_about_feedback_send_email,
             trailingIcon = R.drawable.external_link,
             url = null,
             onClick = { onMailClick() },
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.bookmark_icon,
-            title = R.string.app_about_feedback_version,
+            title = R.string.i18n_app_about_feedback_version,
             trailingIcon = R.drawable.external_link,
             url = ExternalLinks.GITHUB_RELEASES,
             onClick = {
@@ -136,7 +136,7 @@ fun feedbackAndSupportList(
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.light_bulb_icon,
-            title = R.string.app_about_feedback_app_hints,
+            title = R.string.i18n_app_about_feedback_reset_app_hints,
             trailingIcon = R.drawable.counter_clockwise_icon,
             url = null,
             onClick = { onResetHintsClick() },

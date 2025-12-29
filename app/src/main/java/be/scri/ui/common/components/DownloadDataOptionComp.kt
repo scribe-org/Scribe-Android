@@ -97,10 +97,10 @@ private fun DownloadButtonContent(
         Text(
             text =
                 when (downloadState) {
-                    DownloadState.Ready -> "Download"
-                    DownloadState.Downloading -> "Downloading"
-                    DownloadState.Completed -> "Up to Date"
-                    DownloadState.Update -> "Update"
+                    DownloadState.Ready -> R.string.i18n_app__global_download_data
+                    DownloadState.Downloading -> R.string.i18n_app_download_menu_ui_download_data_downloading
+                    DownloadState.Completed -> R.string.i18n_app_download_menu_ui_download_data_up_to_date
+                    DownloadState.Update -> R.string.i18n_app_download_menu_ui_download_data_update
                 },
             fontSize = 13.sp,
             fontWeight = FontWeight.Medium,

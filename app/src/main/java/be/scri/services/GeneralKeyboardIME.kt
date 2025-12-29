@@ -143,9 +143,9 @@ abstract class GeneralKeyboardIME(
     private val totalPages = 3
     private val explanationStrings =
         arrayOf(
-            R.string.keyboard_not_in_wikidata_explanation_1,
-            R.string.keyboard_not_in_wikidata_explanation_2,
-            R.string.keyboard_not_in_wikidata_explanation_3,
+            R.string.i18n_app_keyboard_not_in_wikidata_explanation_1,
+            R.string.i18n_app_keyboard_not_in_wikidata_explanation_2,
+            R.string.i18n_app_keyboard_not_in_wikidata_explanation_3,
         )
     private var currentCommandBarHint: String = ""
     private var commandBarHintColor: Int = Color.GRAY
