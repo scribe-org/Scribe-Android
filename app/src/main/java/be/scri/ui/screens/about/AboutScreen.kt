@@ -89,7 +89,7 @@ fun AboutScreen(
             )
 
             ItemCardContainerWithTitle(
-                title = stringResource(R.string.i18n_global_about_legal_title),
+                title = stringResource(R.string.i18n__global_legal),
                 cardItemsList = legalItemsList,
                 isDivider = true,
             )
