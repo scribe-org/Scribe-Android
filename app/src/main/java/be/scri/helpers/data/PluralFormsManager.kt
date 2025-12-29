@@ -18,6 +18,7 @@ class PluralFormsManager(
      *
      * @param language The language code (e.g., "EN", "DE") to select the correct database.
      * @param jsonData The data contract, which specifies the names of the columns containing plural forms.
+     *
      * @return A [List] of all plural word forms, or `null`
      * if the operation fails or no plural columns are defined.
      */
@@ -37,6 +38,7 @@ class PluralFormsManager(
      * @param language The language code to select the correct database.
      * @param jsonData The data contract, which specifies the singular and plural column names.
      * @param noun The singular noun to find the plural for.
+     *
      * @return A [Map] containing the singular noun as the key and
      * its plural form as the value, or an empty map if not found.
      */
@@ -79,6 +81,7 @@ class PluralFormsManager(
      * @param singularCol The name of the column containing singular nouns.
      * @param pluralCol The name of the column containing the corresponding plural nouns.
      * @param noun The specific singular noun to search for.
+     *
      * @return A map of the singular noun to its plural, or an empty map if not found.
      */
     private fun querySpecificPlural(
@@ -109,6 +112,7 @@ class PluralFormsManager(
      *
      * @param db The SQLite database to query.
      * @param pluralColumns A list of column names that contain plural forms.
+     *
      * @return A [List] of all plural words found in the specified columns.
      */
     private fun queryAllPluralForms(

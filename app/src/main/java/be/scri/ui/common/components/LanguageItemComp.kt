@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import be.scri.ui.screens.download.DownloadState
 
 /**
  * Simple language item with a title on the left and a download button on the right.
@@ -27,10 +28,12 @@ import androidx.compose.ui.unit.sp
 fun LanguageItemComp(
     title: String,
     onClick: () -> Unit,
+    onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     titleFontWeight: FontWeight = FontWeight.Normal,
     titleFontSize: androidx.compose.ui.unit.TextUnit = 16.sp,
     isDarkTheme: Boolean = false,
+    buttonState: DownloadState? = null,
 ) {
     Row(
         modifier =
@@ -52,7 +55,9 @@ fun LanguageItemComp(
         )
         Spacer(modifier = Modifier.width(100.dp))
         DownloadDataOptionComp(
+            onClick = onButtonClick,
             isDarkTheme = isDarkTheme,
+            downloadState = buttonState ?: DownloadState.Ready,
             modifier = Modifier.widthIn(min = 50.dp),
         )
     }

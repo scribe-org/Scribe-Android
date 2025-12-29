@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-package be.scri.ui.screens
+package be.scri.ui.screens.download
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,20 +29,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
+import be.scri.ui.common.appcomponents.ConfirmationDialog
 import be.scri.ui.common.components.CircleClickableItemComp
 import be.scri.ui.common.components.LanguageItemComp
 import be.scri.ui.common.components.SwitchableItemComp
 import be.scri.ui.screens.settings.SettingsUtil
 
+/**
+ * Screen for downloading and managing language data.
+ *
+ * @param onBackNavigation Callback for back navigation action.
+ * @param onNavigateToTranslation Callback for navigating to translation language selection.
+ * @param modifier Modifier for layout and styling.
+ * @param downloadStates Map of language keys to their download states.
+ * @param onDownloadAction Callback for download action when a language is selected and confirmed.
+ */
 @Composable
 fun DownloadDataScreen(
     onBackNavigation: () -> Unit,
+    onNavigateToTranslation: (String) -> Unit,
     modifier: Modifier = Modifier,
+    downloadStates: Map<String, DownloadState> = emptyMap(),
+    onDownloadAction: (String) -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     val checkForNewData = remember { mutableStateOf(false) }
     val regularlyUpdateData = remember { mutableStateOf(true) }
+    val selectedLanguage = remember { mutableStateOf<Triple<String, String, Boolean>?>(null) }
     val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     val installedKeyboardLanguages =
         remember {
             SettingsUtil.getKeyboardLanguages(context)
@@ -140,12 +156,22 @@ fun DownloadDataScreen(
                     color = MaterialTheme.colorScheme.surface,
                 ) {
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
-                        languages.forEachIndexed { index, (key, title, isDark) ->
+                        languages.forEachIndexed { index, lang ->
+                            val (key, title, isDark) = lang
+                            val currentStatus = downloadStates[key] ?: DownloadState.Ready
+
                             LanguageItemComp(
                                 title = title,
-                                onClick = {
+                                onClick = { },
+                                onButtonClick = {
+                                    if (currentStatus == DownloadState.Ready) {
+                                        selectedLanguage.value = lang
+                                    } else {
+                                        onDownloadAction(key)
+                                    }
                                 },
                                 isDarkTheme = isDark,
+                                buttonState = currentStatus,
                             )
                             if (index < languages.lastIndex) {
                                 HorizontalDivider(
@@ -160,6 +186,25 @@ fun DownloadDataScreen(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
+
+            selectedLanguage.value?.let { lang ->
+                val (key, title, _) = lang
+                val languageId = key.replaceFirstChar { it.uppercase() }
+                val sourceLang = sharedPref.getString("translation_source_$languageId", "English") ?: "English"
+                ConfirmationDialog(
+                    text =
+                        "The data you will download will allow you to translate from  $sourceLang to $title." +
+                            " Do you want to change the language you'll translate  from?",
+                    textConfirm = "Use $sourceLang",
+                    textChange = "Change language",
+                    onConfirm = {
+                        onDownloadAction(key)
+                        selectedLanguage.value = null
+                    },
+                    onChange = { onNavigateToTranslation(languageId) },
+                    onDismiss = { selectedLanguage.value = null },
+                )
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ class ContractDataLoader(
      * It gracefully handles file-not-found and JSON parsing errors by returning null.
      *
      * @param language The language code (e.g., "DE", "EN") used to determine the filename (e.g., "de.json").
+     *
      * @return The decoded [DataContract] object if successful, or `null`
      * if the file does not exist or cannot be parsed.
      */

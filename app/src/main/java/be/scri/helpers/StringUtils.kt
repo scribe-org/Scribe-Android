@@ -7,8 +7,10 @@ package be.scri.helpers
 object StringUtils {
     /**
      * Checks if a word is capitalized (i.e., starts with an uppercase letter).
+     *
      * @param word The word to check.
-     * @return `true` if the word is capitalized, `false` otherwise.
+     *
+     * @return true if the word is capitalized, false otherwise.
      */
     fun isWordCapitalized(word: String): Boolean {
         if (word.isEmpty()) return false

@@ -73,7 +73,9 @@ object LanguageMappingConstants {
 
     /**
      * Converts a full language name (e.g., "English") to its two-letter ISO alias (e.g., "EN").
+     *
      * @param language The full name of the language.
+     *
      * @return The two-letter alias.
      */
     fun getLanguageAlias(language: String): String =

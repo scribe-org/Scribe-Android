@@ -19,6 +19,7 @@ class GenderDataManager(
      *
      * @param language The language code (e.g., "DE", "FR") to select the correct database.
      * @param contract The data contract for the language, which defines the gender-related database columns.
+     *
      * @return A [HashMap] where keys are lowercase nouns and values are a list of their gender(s) (e.g., "masculine").
      */
     fun findGenderOfWord(
@@ -37,6 +38,7 @@ class GenderDataManager(
      *
      * @param db The SQLite database instance.
      * @param contract The data contract defining how gender is stored for this language.
+     *
      * @return A [HashMap] of nouns to their genders.
      */
     private fun processGenderData(
@@ -74,8 +76,10 @@ class GenderDataManager(
 
     /**
      * Checks if the data contract defines a single, canonical gender column.
+     *
      * @param contract The data contract to check.
-     * @return `true` if a canonical gender column is specified, `false` otherwise.
+     *
+     * @return true if a canonical gender column is specified, false otherwise.
      */
     private fun hasCanonicalGender(contract: DataContract): Boolean =
         contract.genders.canonical
@@ -84,8 +88,10 @@ class GenderDataManager(
 
     /**
      * Checks if the data contract defines separate columns for masculine and feminine genders.
+     *
      * @param contract The data contract to check.
-     * @return `true` if both masculine and feminine columns are specified, `false` otherwise.
+     *
+     * @return true if both masculine and feminine columns are specified, false otherwise.
      */
     private fun hasMasculineFeminine(contract: DataContract): Boolean {
         val masculineList = contract.genders.masculines

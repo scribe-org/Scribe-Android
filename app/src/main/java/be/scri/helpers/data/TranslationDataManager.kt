@@ -9,6 +9,7 @@ import be.scri.helpers.StringUtils.isWordCapitalized
 
 /**
  * Manages translations from a local SQLite database.
+ *
  * @param context The application context.
  * @param fileManager The central manager for database file access.
  */
@@ -21,6 +22,7 @@ class TranslationDataManager(
      * The source is derived from user preferences, and the destination is the current keyboard language.
      *
      * @param language The current keyboard language name (e.g., "English").
+     *
      * @return A [Pair] containing the source and destination ISO codes (e.g., "en" to "fr").
      */
     fun getSourceAndDestinationLanguage(language: String): Pair<String?, String?> {
@@ -34,6 +36,7 @@ class TranslationDataManager(
      *
      * @param sourceAndDestination A [Pair] of source and destination ISO language codes.
      * @param word The word to be translated.
+     *
      * @return The translated word as a [String], or an empty string if no translation is found.
      */
     fun getTranslationDataForAWord(
@@ -96,6 +99,7 @@ class TranslationDataManager(
      * @param destColumn The name of the column containing the translation
      * (derived from the destination language ISO code, e.g., "fr").
      * @param word The word to search for in the 'word' column of the source table.
+     *
      * @return The translated word, or an empty string if not found.
      */
     private fun queryForTranslation(
@@ -124,6 +128,7 @@ class TranslationDataManager(
      * Converts a full language name (e.g., "english") to its corresponding two-letter ISO 639-1 code.
      *
      * @param languageName The full name of the language.
+     *
      * @return The two-letter ISO code as a [String]. Defaults to "en".
      */
     private fun generateISOCodeForLanguage(languageName: String): String =
@@ -143,6 +148,7 @@ class TranslationDataManager(
      * Converts a two-letter ISO 639-1 code to its corresponding full language name used for table lookups.
      *
      * @param isoCode The two-letter ISO code.
+     *
      * @return The full language name as a [String]. Defaults to "english".
      */
     private fun generateLanguageNameForISOCode(isoCode: String): String =

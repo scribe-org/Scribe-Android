@@ -207,6 +207,7 @@ object AboutUtil {
      * @param onWikimediaAndScribeClick Callback invoked when Wikimedia link is clicked.
      * @param onShareScribeClick Callback invoked when Share Scribe link is clicked.
      * @param context Android context to open URLs.
+     *
      * @return A [ScribeItemList] wrapping community external links.
      */
     @Composable
@@ -228,6 +229,7 @@ object AboutUtil {
      * @param onMailClick Callback to open email intent.
      * @param onResetHintsClick Callback to reset onboarding hints.
      * @param context Android context used to launch external intents.
+     *
      * @return A [ScribeItemList] wrapping feedback and support options.
      */
     @Composable
@@ -254,6 +256,7 @@ object AboutUtil {
      *
      * @param onPrivacyPolicyClick Callback invoked when Privacy Policy is selected.
      * @param onThirdPartyLicensesClick Callback invoked when Third-Party Licenses is selected.
+     *
      * @return A [ScribeItemList] wrapping legal information items.
      */
     @Composable

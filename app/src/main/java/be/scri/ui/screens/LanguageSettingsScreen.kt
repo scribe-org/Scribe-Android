@@ -395,6 +395,7 @@ private fun getLayoutListData(
  * If the specified language is not recognized, defaults to the English string resource.
  *
  * @param language The name of the language (e.g., "German", "French").
+ *
  * @return The string resource ID corresponding to the localized name.
  */
 fun getLanguageStringFromi18n(language: String): Int {
@@ -418,6 +419,7 @@ fun getLanguageStringFromi18n(language: String): Int {
  * When the user selects the source language item, the provided [onTranslationLanguageSelect] callback is triggered.
  *
  * @param onTranslationLanguageSelect A lambda function invoked when the user clicks the "Select Source Language" item.
+ *
  * @return A list of [ScribeItem]s to be displayed in the UI.
  */
 @Composable
