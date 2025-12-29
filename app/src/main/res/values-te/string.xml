@@ -1,3 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="i18n._global.about_scribe">గురించి</string>
+    <string name="i18n._global.data_extraction">అవస్థాపన</string>
+    <string name="i18n._global.imprint">ముద్రణ</string>
+    <string name="i18n._global.learn_more">మరింత తెలుసుకోండి</string>
+    <string name="i18n._global.privacy_policy">గోప్యతా విధానం</string>
+    <string name="i18n._global.supporters">మద్దతుదారులు</string>
+    <string name="i18n._global.trademark_policy">ట్రేడ్‌మార్క్ విధానం</string>
 </resources>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="i18n._global.legal">Legal</string>
+    <string name="i18n._global.privacy_policy">Kebijakan privasi</string>
     <string name="i18n.app._global.download_data">Unduh data</string>
     <string name="i18n.app._global.english">Bahasa Inggris</string>
     <string name="i18n.app._global.french">Bahasa Prancis</string>

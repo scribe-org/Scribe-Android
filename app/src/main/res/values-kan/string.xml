@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="i18n._global.legal">ಕಾನೂನು</string>
+    <string name="i18n._global.privacy_policy">ಗೌಪ್ಯತಾ ನೀತಿ</string>
     <string name="i18n.app._global.download_data">ದತ್ತಾಂಶವನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ</string>
     <string name="i18n.app._global.english">ಇಂಗ್ಲಿಷ್</string>
     <string name="i18n.app._global.french">ಫ್ರೆಂಚ್</string>

@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="i18n._global.about_scribe">সম্পর্কে</string>
+    <string name="i18n._global.imprint">ইমপ্রিন্ট</string>
+    <string name="i18n._global.learn_more">আরও জানুন</string>
+    <string name="i18n._global.legal">আইনি</string>
+    <string name="i18n._global.privacy_policy">গোপনীয়তা নীতি</string>
+    <string name="i18n._global.supporters">সমর্থক</string>
+    <string name="i18n._global.trademark_policy">ট্রেডমার্ক নীতি</string>
     <string name="i18n.app._global.download_data">ডেটা ডাউনলোড করুন</string>
     <string name="i18n.app._global.english">ইংরেজি</string>
     <string name="i18n.app._global.french">ফরাসি</string>

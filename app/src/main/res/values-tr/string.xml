@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="i18n._global.legal">Yasal</string>
+    <string name="i18n._global.privacy_policy">Gizlilik politikası</string>
     <string name="i18n.app._global.download_data">Veri indir</string>
     <string name="i18n.app._global.english">İngilizce</string>
     <string name="i18n.app._global.french">Fransızca</string>

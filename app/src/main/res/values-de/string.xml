@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="i18n._global.about_scribe">Über Scribe</string>
+    <string name="i18n._global.android_changelog">Android-Änderungsprotokoll</string>
+    <string name="i18n._global.available_data">Verfügbare Daten</string>
+    <string name="i18n._global.changelog">Änderungsprotokoll</string>
+    <string name="i18n._global.data_server">Datenserver</string>
+    <string name="i18n._global.ios_changelog">iOS-Änderungsprotokoll</string>
+    <string name="i18n._global.learn_more">Mehr erfahren</string>
+    <string name="i18n._global.legal">Rechtliches</string>
+    <string name="i18n._global.privacy_policy">Datenschutzrichtlinie</string>
+    <string name="i18n._global.support_scribe">Scribe unterstützen</string>
+    <string name="i18n._global.supporters">Unterstützer</string>
     <string name="i18n.app._global.download_data">Daten herunterladen</string>
     <string name="i18n.app._global.english">Englisch</string>
     <string name="i18n.app._global.french">Französisch</string>
