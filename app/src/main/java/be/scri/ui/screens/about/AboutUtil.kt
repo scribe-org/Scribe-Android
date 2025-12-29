@@ -74,7 +74,7 @@ fun getLegalItemSpecs(): List<LegalItemSpec> =
     listOf(
         LegalItemSpec(
             icon = R.drawable.shield_lock,
-            title = R.string.i18n_app_about_legal_privacy_policy,
+            title = R.string.i18n_global_about_legal_privacy_policy,
             destination = Destination.PrivacyPolicy,
         ),
         LegalItemSpec(

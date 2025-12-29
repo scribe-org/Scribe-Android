@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
+import be.scri.helpers.StringUtils
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.appcomponents.ConfirmationDialog
 import be.scri.ui.common.components.CircleClickableItemComp
@@ -193,10 +194,17 @@ fun DownloadDataScreen(
                 val sourceLang = sharedPref.getString("translation_source_$languageId", "English") ?: "English"
                 ConfirmationDialog(
                     text =
-                        "The data you will download will allow you to translate from  $sourceLang to $title." +
-                            " Do you want to change the language you'll translate  from?",
-                    textConfirm = "Use $sourceLang",
-                    textChange = "Change language",
+                        StringUtils.stringResourceWithParams(
+                            R.string.i18n_app_download_menu_ui_translation_source_tooltip_download_warning,
+                            sourceLang,
+                            title,
+                        ),
+                    textConfirm =
+                        StringUtils.stringResourceWithParams(
+                            R.string.i18n_app_download_menu_ui_translation_source_tooltip_use_source_language,
+                            sourceLang,
+                        ),
+                    textChange = stringResource(R.string.i18n_app_download_menu_ui_translation_source_tooltip_change_language),
                     onConfirm = {
                         onDownloadAction(key)
                         selectedLanguage.value = null

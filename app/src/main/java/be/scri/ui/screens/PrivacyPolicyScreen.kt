@@ -34,7 +34,7 @@ fun PrivacyPolicyScreen(
     modifier: Modifier = Modifier,
 ) {
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.i18n_app_about_legal_privacy_policy),
+        pageTitle = stringResource(R.string.i18n_global_about_legal_privacy_policy),
         onBackNavigation = { onBackNavigation() },
         lastPage = stringResource(R.string.i18n_app_about_title),
         modifier = modifier,
