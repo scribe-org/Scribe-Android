@@ -137,7 +137,7 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 >
 > To run git commands with SSH, remember then to substitute the HTTPS URL, `https://github.com/...`, with the SSH one, `git@github.com:...`.
 >
-> -   e.g. Cloning (with submodules) now becomes `git clone git@github.com:<your-username>/Scribe-Android.git`
+> -   e.g. Cloning (with submodules) now becomes `git clone --recurse-submodules git@github.com:<your-username>/Scribe-Android.git`
 >
 > GitHub also has their documentation on how to [Generate a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) 🔑
 >
@@ -149,7 +149,7 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 
 ```bash
 # Clone your fork of the repo into the current directory (including submodules).
-git clone https://github.com/<your-username>/Scribe-Android.git
+git clone --recurse-submodules https://github.com/<your-username>/Scribe-Android.git
 # Navigate to the newly cloned directory.
 cd Scribe-Android
 # Assign the original repo to a remote called "upstream".
