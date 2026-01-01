@@ -72,11 +72,11 @@ class AboutUtilTest {
         assertEquals(5, list.size)
 
         // Checking the resource IDs are preserved, not string values.
-        assertEquals(R.string.app_about_feedback_rate_scribe, list[0].title)
-        assertEquals(R.string.app_about_feedback_bug_report, list[1].title)
-        assertEquals(R.string.app_about_feedback_email, list[2].title)
-        assertEquals(R.string.app_about_feedback_version, list[3].title)
-        assertEquals(R.string.app_about_feedback_app_hints, list[4].title)
+        assertEquals(R.string.i18n_app_about_feedback_rate_scribe, list[0].title)
+        assertEquals(R.string.i18n_app_about_feedback_bug_report, list[1].title)
+        assertEquals(R.string.i18n_app_about_feedback_send_email, list[2].title)
+        assertEquals(R.string.i18n_app_about_feedback_version, list[3].title)
+        assertEquals(R.string.i18n_app_about_feedback_reset_app_hints, list[4].title)
 
         list[0].onClick()
         assertTrue(rateClicked)
@@ -99,11 +99,11 @@ class AboutUtilTest {
 
         assertEquals(2, specs.size)
         assertEquals(R.drawable.shield_lock, specs[0].icon)
-        assertEquals(R.string.app_about_legal_privacy_policy, specs[0].title)
+        assertEquals(R.string.i18n__global_privacy_policy, specs[0].title)
         assertEquals(Destination.PrivacyPolicy, specs[0].destination)
 
         assertEquals(R.drawable.license_icon, specs[1].icon)
-        assertEquals(R.string.app_about_legal_third_party, specs[1].title)
+        assertEquals(R.string.i18n_app_about_legal_third_party, specs[1].title)
         assertEquals(Destination.ThirdPartyLicenses, specs[1].destination)
     }
 

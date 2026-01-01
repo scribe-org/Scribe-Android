@@ -41,13 +41,13 @@ fun WikimediaScreen(
     modifier: Modifier = Modifier,
 ) {
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.app_about_community_wikimedia),
+        pageTitle = stringResource(R.string.i18n_app_about_community_wikimedia),
         onBackNavigation = { onBackNavigation() },
-        lastPage = stringResource(R.string.app_about_title),
+        lastPage = stringResource(R.string.i18n_app_about_title),
         modifier = modifier,
     ) {
         WikimediaScreenContent(
-            title = stringResource(R.string.app_about_community_wikimedia_caption),
+            title = stringResource(R.string.i18n_app_about_community_wikimedia_caption),
             modifier =
                 Modifier.padding(
                     horizontal = 16.dp,
@@ -74,7 +74,7 @@ fun WikimediaScreen(
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 )
                 Text(
-                    text = stringResource(id = R.string.app_about_community_wikimedia_text_2),
+                    text = stringResource(id = R.string.i18n_app_about_community_wikimedia_text_2),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
                         TextStyle.Default.copy(
@@ -93,7 +93,7 @@ fun WikimediaScreen(
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 )
                 Text(
-                    text = stringResource(id = R.string.app_about_community_wikimedia_text_3),
+                    text = stringResource(id = R.string.i18n_app_about_community_wikimedia_text_3),
                     fontSize = ScribeTypography.bodyMedium.fontSize,
                     style =
                         TextStyle.Default.copy(

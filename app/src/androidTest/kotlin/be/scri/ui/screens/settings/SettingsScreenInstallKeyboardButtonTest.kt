@@ -35,7 +35,7 @@ class SettingsScreenInstallKeyboardButtonTest {
     @Test
     fun installKeyboardButton_isDisplayed_whenKeyboardNotInstalled() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val expectedText = context.getString(R.string.app_settings_button_install_keyboards)
+        val expectedText = context.getString(R.string.i18n_app_settings_button_install_keyboards)
         val mockViewModel = createMockViewModel(isKeyboardInstalled = false)
 
         composeTestRule.setContent {
@@ -58,7 +58,7 @@ class SettingsScreenInstallKeyboardButtonTest {
     @Test
     fun installKeyboardButton_isNotDisplayed_whenKeyboardInstalled() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val expectedText = context.getString(R.string.app_settings_button_install_keyboards)
+        val expectedText = context.getString(R.string.i18n_app_settings_button_install_keyboards)
         val mockViewModel = createMockViewModel(isKeyboardInstalled = true)
 
         every { mockViewModel.languages } returns MutableStateFlow(listOf("English", "German"))
@@ -82,7 +82,7 @@ class SettingsScreenInstallKeyboardButtonTest {
     @Test
     fun installKeyboardButton_hasClickAction_whenDisplayed() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val expectedText = context.getString(R.string.app_settings_button_install_keyboards)
+        val expectedText = context.getString(R.string.i18n_app_settings_button_install_keyboards)
         val mockViewModel = createMockViewModel(isKeyboardInstalled = false)
 
         composeTestRule.setContent {
@@ -105,7 +105,7 @@ class SettingsScreenInstallKeyboardButtonTest {
     @Test
     fun installKeyboardButton_performClick_buttonStillExists() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val expectedText = context.getString(R.string.app_settings_button_install_keyboards)
+        val expectedText = context.getString(R.string.i18n_app_settings_button_install_keyboards)
         val mockViewModel = createMockViewModel(isKeyboardInstalled = false)
 
         composeTestRule.setContent {
@@ -129,7 +129,7 @@ class SettingsScreenInstallKeyboardButtonTest {
     @Test
     fun installKeyboardButton_displaysCorrectText() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val expectedText = context.getString(R.string.app_settings_button_install_keyboards)
+        val expectedText = context.getString(R.string.i18n_app_settings_button_install_keyboards)
         val mockViewModel = createMockViewModel(isKeyboardInstalled = false)
 
         composeTestRule.setContent {
@@ -152,7 +152,7 @@ class SettingsScreenInstallKeyboardButtonTest {
     @Test
     fun installKeyboardButton_rendersCorrectly_inLightTheme() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val expectedText = context.getString(R.string.app_settings_button_install_keyboards)
+        val expectedText = context.getString(R.string.i18n_app_settings_button_install_keyboards)
         val mockViewModel = createMockViewModel(isKeyboardInstalled = false)
 
         composeTestRule.setContent {
@@ -176,7 +176,7 @@ class SettingsScreenInstallKeyboardButtonTest {
     @Test
     fun installKeyboardButton_rendersCorrectly_inDarkTheme() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val expectedText = context.getString(R.string.app_settings_button_install_keyboards)
+        val expectedText = context.getString(R.string.i18n_app_settings_button_install_keyboards)
         val mockViewModel = createMockViewModel(isKeyboardInstalled = false)
 
         every { mockViewModel.isUserDarkMode } returns MutableStateFlow(true)
@@ -202,7 +202,7 @@ class SettingsScreenInstallKeyboardButtonTest {
     @Test
     fun installKeyboardButton_hasProperStyling() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val expectedText = context.getString(R.string.app_settings_button_install_keyboards)
+        val expectedText = context.getString(R.string.i18n_app_settings_button_install_keyboards)
         val mockViewModel = createMockViewModel(isKeyboardInstalled = false)
 
         composeTestRule.setContent {

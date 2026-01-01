@@ -79,7 +79,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_title))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_title))
             .assertIsDisplayed()
     }
 
@@ -94,7 +94,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_menu_app_language))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_menu_app_language))
             .assertIsDisplayed()
     }
 
@@ -109,7 +109,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_menu_app_color_mode))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_menu_app_color_mode))
             .assertIsDisplayed()
     }
 
@@ -124,7 +124,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_menu_app_color_mode_description))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_menu_app_color_mode_description))
             .assertIsDisplayed()
     }
 
@@ -142,7 +142,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_button_install_keyboards))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_button_install_keyboards))
             .assertIsDisplayed()
             .assertHasClickAction()
     }
@@ -163,7 +163,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_keyboard_title))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_keyboard_title))
             .assertIsDisplayed()
 
         testLanguages.forEach { language ->
@@ -271,7 +271,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_menu_title))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_menu_title))
             .assertIsDisplayed()
     }
 
@@ -287,7 +287,7 @@ class SettingsScreenInstrumentedTest {
 
         val installButton =
             composeTestRule
-                .onNodeWithText(context.getString(R.string.app_settings_button_install_keyboards))
+                .onNodeWithText(context.getString(R.string.i18n_app_settings_button_install_keyboards))
 
         installButton.assertIsDisplayed()
         installButton.assertHasClickAction()
@@ -304,7 +304,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_menu_app_language_description))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_menu_app_language_description))
             .assertIsDisplayed()
     }
 
@@ -345,7 +345,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_keyboard_title))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_keyboard_title))
             .assertIsDisplayed()
     }
 
@@ -360,11 +360,11 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_menu_app_color_mode))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_menu_app_color_mode))
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.app_settings_menu_app_color_mode_description))
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_menu_app_color_mode_description))
             .assertIsDisplayed()
     }
 }

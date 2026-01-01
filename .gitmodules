@@ -1,0 +1,3 @@
+[submodule "app/src/main/assets/i18n"]
+	path = app/src/main/assets/i18n
+	url = https://github.com/scribe-org/Scribe-i18n.git

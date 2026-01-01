@@ -99,7 +99,7 @@ fun InstallationScreen(
             )
 
             Text(
-                text = stringResource(R.string.app_installation_keyboard_title),
+                text = stringResource(R.string.i18n_app_installation_keyboard_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 fontSize = Dimensions.TextSizeLarge_I,
@@ -141,7 +141,7 @@ fun InstallationScreen(
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = stringResource(R.string.app_installation_keyboard_keyboard_settings),
+                                text = stringResource(R.string.i18n_app_installation_keyboard_keyboard_settings),
                                 color = colorResource(R.color.dark_scribe_blue),
                                 fontSize = Dimensions.TextSizeMedium,
                                 fontWeight = FontWeight.Bold,
@@ -155,7 +155,7 @@ fun InstallationScreen(
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = stringResource(R.string.app_installation_keyboard_text_2),
+                                text = stringResource(R.string.i18n_app_installation_keyboard_text_2),
                                 fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
@@ -170,7 +170,7 @@ fun InstallationScreen(
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
                             Text(
-                                text = stringResource(R.string.app_installation_keyboard_text_3),
+                                text = stringResource(R.string.i18n_app_installation_keyboard_text_3),
                                 fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
@@ -185,7 +185,7 @@ fun InstallationScreen(
                                 contentScale = ContentScale.Fit,
                             )
                             Text(
-                                text = stringResource(R.string.app_installation_keyboard_text_4),
+                                text = stringResource(R.string.i18n_app_installation_keyboard_text_4),
                                 fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
@@ -229,7 +229,7 @@ fun InstallationScreen(
             }
 
             Text(
-                text = stringResource(R.string.app_download_menu_option_scribe_title),
+                text = stringResource(R.string.i18n_app_download_menu_option_scribe_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 fontSize = Dimensions.TextSizeLarge_I,
@@ -267,7 +267,7 @@ fun InstallationScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = stringResource(R.string.app_download_menu_option_scribe_download_data),
+                            text = stringResource(R.string.i18n_app_download_menu_option_scribe_download_data),
                             fontSize = Dimensions.TextSizeMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -282,7 +282,7 @@ fun InstallationScreen(
                         )
                     }
                     Text(
-                        text = stringResource(R.string.app_download_menu_option_scribe_description),
+                        text = stringResource(R.string.i18n_app_download_menu_option_scribe_description),
                         fontSize = Dimensions.TextSizeSmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = Alpha.MEDIUM),
                     )
@@ -304,7 +304,7 @@ fun InstallationScreen(
                     ),
             ) {
                 Text(
-                    text = stringResource(R.string.app_installation_button_quick_tutorial),
+                    text = stringResource(R.string.i18n_app_installation_button_quick_tutorial),
                     fontSize = Dimensions.TextSizeExtraLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary,

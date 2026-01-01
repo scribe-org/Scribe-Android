@@ -52,12 +52,12 @@ class ScribeItemListTest {
         val items =
             listOf(
                 ScribeItem.ClickableItem(
-                    title = R.string.app_settings_menu_app_language,
-                    desc = R.string.app_settings_menu_app_language_description,
+                    title = R.string.i18n_app_settings_menu_app_language,
+                    desc = R.string.i18n_app_settings_menu_app_language_description,
                     action = { },
                 ),
                 ScribeItem.ClickableItem(
-                    title = R.string.app_settings_keyboard_title,
+                    title = R.string.i18n_app_settings_keyboard_title,
                     desc = null,
                     action = { },
                 ),
@@ -76,13 +76,13 @@ class ScribeItemListTest {
         val items =
             listOf(
                 ScribeItem.SwitchItem(
-                    title = R.string.app_settings_menu_app_color_mode,
-                    desc = R.string.app_settings_menu_app_color_mode_description,
+                    title = R.string.i18n_app_settings_menu_app_color_mode,
+                    desc = R.string.i18n_app_settings_menu_app_color_mode_description,
                     state = false,
                     onToggle = { },
                 ),
                 ScribeItem.SwitchItem(
-                    title = R.string.app_settings_keyboard_title,
+                    title = R.string.i18n_app_settings_keyboard_title,
                     desc = 0,
                     state = true,
                     onToggle = { },
@@ -114,8 +114,8 @@ class ScribeItemListTest {
         val items =
             listOf(
                 ScribeItem.ClickableItem(
-                    title = R.string.app_settings_menu_app_language,
-                    desc = R.string.app_settings_menu_app_language_description,
+                    title = R.string.i18n_app_settings_menu_app_language,
+                    desc = R.string.i18n_app_settings_menu_app_language_description,
                     action = { clicked = true },
                 ),
             )
@@ -134,8 +134,8 @@ class ScribeItemListTest {
         val items =
             listOf(
                 ScribeItem.SwitchItem(
-                    title = R.string.app_settings_menu_app_color_mode,
-                    desc = R.string.app_settings_menu_app_color_mode_description,
+                    title = R.string.i18n_app_settings_menu_app_color_mode,
+                    desc = R.string.i18n_app_settings_menu_app_color_mode_description,
                     state = state,
                     onToggle = { state = it },
                 ),
@@ -154,8 +154,8 @@ class ScribeItemListTest {
         val items =
             (0..49).map { index ->
                 ScribeItem.ClickableItem(
-                    title = R.string.app_settings_menu_app_language,
-                    desc = R.string.app_settings_menu_app_language_description,
+                    title = R.string.i18n_app_settings_menu_app_language,
+                    desc = R.string.i18n_app_settings_menu_app_language_description,
                     action = { },
                 )
             }
@@ -190,8 +190,8 @@ class ScribeItemListTest {
         val items =
             listOf(
                 ScribeItem.ClickableItem(
-                    title = R.string.app_settings_menu_app_language,
-                    desc = R.string.app_settings_menu_app_language_description,
+                    title = R.string.i18n_app_settings_menu_app_language,
+                    desc = R.string.i18n_app_settings_menu_app_language_description,
                     action = { },
                 ),
             )

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
+import be.scri.helpers.StringUtils
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.appcomponents.ConfirmationDialog
 import be.scri.ui.common.components.CircleClickableItemComp
@@ -66,19 +67,19 @@ fun DownloadDataScreen(
     val languages =
         remember(installedKeyboardLanguages) {
             buildList {
-                add(Triple("all", context.getString(R.string.app_download_menu_ui_select_all_languages), false))
+                add(Triple("all", context.getString(R.string.i18n_app_download_menu_ui_download_data_all_languages), false))
 
                 installedKeyboardLanguages.forEach { languageCode ->
                     val displayName =
                         when (languageCode.lowercase()) {
-                            "english" -> context.getString(R.string.app__global_english)
-                            "french" -> context.getString(R.string.app__global_french)
-                            "german" -> context.getString(R.string.app__global_german)
-                            "italian" -> context.getString(R.string.app__global_italian)
-                            "portuguese" -> context.getString(R.string.app__global_portuguese)
-                            "russian" -> context.getString(R.string.app__global_russian)
-                            "spanish" -> context.getString(R.string.app__global_spanish)
-                            "swedish" -> context.getString(R.string.app__global_swedish)
+                            "english" -> context.getString(R.string.i18n_app__global_english)
+                            "french" -> context.getString(R.string.i18n_app__global_french)
+                            "german" -> context.getString(R.string.i18n_app__global_german)
+                            "italian" -> context.getString(R.string.i18n_app__global_italian)
+                            "portuguese" -> context.getString(R.string.i18n_app__global_portuguese)
+                            "russian" -> context.getString(R.string.i18n_app__global_russian)
+                            "spanish" -> context.getString(R.string.i18n_app__global_spanish)
+                            "swedish" -> context.getString(R.string.i18n_app__global_swedish)
                             else -> languageCode.replaceFirstChar { it.uppercase() }
                         }
 
@@ -89,8 +90,8 @@ fun DownloadDataScreen(
         }
 
     ScribeBaseScreen(
-        pageTitle = stringResource(R.string.app_download_menu_ui_title),
-        lastPage = stringResource(R.string.app_installation_title),
+        pageTitle = stringResource(R.string.i18n_app__global_download_data),
+        lastPage = stringResource(R.string.i18n_app_installation_title),
         onBackNavigation = onBackNavigation,
         modifier = modifier,
     ) {
@@ -103,7 +104,7 @@ fun DownloadDataScreen(
         ) {
             Column {
                 Text(
-                    text = stringResource(R.string.app_download_menu_ui_update_data_title),
+                    text = stringResource(R.string.i18n_app_download_menu_ui_update_data),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
@@ -119,7 +120,7 @@ fun DownloadDataScreen(
                 ) {
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
                         CircleClickableItemComp(
-                            title = stringResource(R.string.app_download_menu_ui_update_data_check_new),
+                            title = stringResource(R.string.i18n_app_download_menu_ui_update_data_check_new),
                             onClick = { checkForNewData.value = !checkForNewData.value },
                             isSelected = checkForNewData.value,
                         )
@@ -131,7 +132,7 @@ fun DownloadDataScreen(
                         )
 
                         SwitchableItemComp(
-                            title = stringResource(R.string.app_download_menu_ui_update_data_regular_update),
+                            title = stringResource(R.string.i18n_app_download_menu_ui_update_data_regular_update),
                             isChecked = regularlyUpdateData.value,
                             onCheckedChange = { regularlyUpdateData.value = it },
                         )
@@ -140,7 +141,7 @@ fun DownloadDataScreen(
             }
             Column {
                 Text(
-                    text = stringResource(R.string.app_download_menu_ui_select_title),
+                    text = stringResource(R.string.i18n_app_download_menu_ui_download_data_title),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp,
@@ -193,10 +194,17 @@ fun DownloadDataScreen(
                 val sourceLang = sharedPref.getString("translation_source_$languageId", "English") ?: "English"
                 ConfirmationDialog(
                     text =
-                        "The data you will download will allow you to translate from  $sourceLang to $title." +
-                            " Do you want to change the language you'll translate  from?",
-                    textConfirm = "Use $sourceLang",
-                    textChange = "Change language",
+                        StringUtils.stringResourceWithParams(
+                            R.string.i18n_app_download_menu_ui_translation_source_tooltip_download_warning,
+                            sourceLang,
+                            title,
+                        ),
+                    textConfirm =
+                        StringUtils.stringResourceWithParams(
+                            R.string.i18n_app_download_menu_ui_translation_source_tooltip_use_source_language,
+                            sourceLang,
+                        ),
+                    textChange = stringResource(R.string.i18n_app_download_menu_ui_translation_source_tooltip_change_language),
                     onConfirm = {
                         onDownloadAction(key)
                         selectedLanguage.value = null

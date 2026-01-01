@@ -117,14 +117,14 @@ object SettingsUtil {
      */
     fun getLocalizedLanguageName(language: String): Int {
         return when (language) {
-            "English" -> R.string.app__global_english
-            "French" -> R.string.app__global_french
-            "German" -> R.string.app__global_german
-            "Italian" -> R.string.app__global_italian
-            "Portuguese" -> R.string.app__global_portuguese
-            "Russian" -> R.string.app__global_russian
-            "Spanish" -> R.string.app__global_spanish
-            "Swedish" -> R.string.app__global_swedish
+            "English" -> R.string.i18n_app__global_english
+            "French" -> R.string.i18n_app__global_french
+            "German" -> R.string.i18n_app__global_german
+            "Italian" -> R.string.i18n_app__global_italian
+            "Portuguese" -> R.string.i18n_app__global_portuguese
+            "Russian" -> R.string.i18n_app__global_russian
+            "Spanish" -> R.string.i18n_app__global_spanish
+            "Swedish" -> R.string.i18n_app__global_swedish
             else -> return R.string.language
         }
     }
