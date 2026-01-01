@@ -104,7 +104,7 @@
     <string name="i18n.app.settings.keyboard.functionality.default_emoji_tone">Default emoji skin tone</string>
     <string name="i18n.app.settings.keyboard.functionality.default_emoji_tone.caption">Skin tone to be used</string>
     <string name="i18n.app.settings.keyboard.functionality.default_emoji_tone_description">Set a default skin tone for emoji autosuggestions and completions.</string>
-    <string name="i18n.app.settings.keyboard.functionality.delete_word_by_word">Hold delete is word by word</string>
+    <string name="i18n.app.settings.keyboard.functionality.delete_word_by_word">Word for word deletion on long press</string>
     <string name="i18n.app.settings.keyboard.functionality.delete_word_by_word_description">Delete text word by word when the delete key is pressed and held.</string>
     <string name="i18n.app.settings.keyboard.functionality.double_space_period">Double space periods</string>
     <string name="i18n.app.settings.keyboard.functionality.double_space_period_description">Automatically insert a period when the space key is pressed twice.</string>
