@@ -24,7 +24,6 @@ object ExternalLinks {
     const val GITHUB_RELEASES = "$GITHUB_SCRIBE/releases/"
     const val MATRIX = "https://matrix.to/%23/%23scribe_community:matrix.org"
     const val MASTODON = "https://wikis.world/@scribe"
-
     const val SCRIBE_WEBSITE = "https://scri.be"
 }
 
