@@ -15,6 +15,7 @@ import be.scri.helpers.ui.ShareHelperImpl
 import be.scri.helpers.ui.ShareHelperInterface
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
+import androidx.core.net.toUri
 
 /** A centralized object that stores all external URLs used in the About screen. */
 object ExternalLinks {
@@ -23,6 +24,8 @@ object ExternalLinks {
     const val GITHUB_RELEASES = "$GITHUB_SCRIBE/releases/"
     const val MATRIX = "https://matrix.to/%23/%23scribe_community:matrix.org"
     const val MASTODON = "https://wikis.world/@scribe"
+
+    const val SCRIBE_WEBSITE = "https://scri.be"
 }
 
 /**
@@ -45,7 +48,17 @@ fun buildCommunityList(
             trailingIcon = R.drawable.external_link,
             url = ExternalLinks.GITHUB_SCRIBE,
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(ExternalLinks.GITHUB_SCRIBE))
+                val intent = Intent(Intent.ACTION_VIEW, ExternalLinks.GITHUB_SCRIBE.toUri())
+                context.startActivity(intent)
+            },
+        ),
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.globe,
+            title = R.string.i18n_app_about_community_visit_website,
+            trailingIcon = R.drawable.external_link,
+            url = ExternalLinks.SCRIBE_WEBSITE,
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, ExternalLinks.SCRIBE_WEBSITE.toUri())
                 context.startActivity(intent)
             },
         ),
