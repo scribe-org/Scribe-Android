@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.core.net.toUri
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.helpers.ui.RatingHelper
@@ -15,7 +16,6 @@ import be.scri.helpers.ui.ShareHelperImpl
 import be.scri.helpers.ui.ShareHelperInterface
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
-import androidx.core.net.toUri
 
 /** A centralized object that stores all external URLs used in the About screen. */
 object ExternalLinks {
