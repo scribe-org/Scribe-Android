@@ -24,6 +24,7 @@
     <string name="i18n.app._global.german">German</string>
     <string name="i18n.app._global.indonesian">Indonesian</string>
     <string name="i18n.app._global.italian">Italian</string>
+    <string name="i18n.app._global.norwegian">Norwegian</string>
     <string name="i18n.app._global.portuguese">Portuguese</string>
     <string name="i18n.app._global.russian">Russian</string>
     <string name="i18n.app._global.spanish">Spanish</string>
@@ -35,7 +36,7 @@
     <string name="i18n.app.about.community.share_conjugate">Share Scribe Conjugate</string>
     <string name="i18n.app.about.community.share_scribe">Share Scribe</string>
     <string name="i18n.app.about.community.title">Community</string>
-    <string name="i18n.app.about.community.view_apps">View all Scribe apps</string>
+    <string name="i18n.app.about.community.visit_website">Visit the Scribe website</string>
     <string name="i18n.app.about.community.wikimedia">Wikimedia and Scribe</string>
     <string name="i18n.app.about.community.wikimedia.caption">How we work together</string>
     <string name="i18n.app.about.community.wikimedia.text_1">Scribe would not be possible without countless contributions by Wikimedia contributors to the many projects that they support. Scribe makes use of data from the Wikidata Lexicographical data community, as well as data from Wikipedia for each language that Scribe supports.</string>

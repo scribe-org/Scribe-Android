@@ -18,7 +18,7 @@
     <string name="i18n.app.about.community.share_conjugate">Dela Scribe</string>
     <string name="i18n.app.about.community.share_scribe">Dela Scribe</string>
     <string name="i18n.app.about.community.title">Community</string>
-    <string name="i18n.app.about.community.view_apps">Visa all Scribe-applikationer</string>
+    <string name="i18n.app.about.community.visit_website">Besök Scribes webbplats</string>
     <string name="i18n.app.about.community.wikimedia">Wikimedia och Scribe</string>
     <string name="i18n.app.about.community.wikimedia.caption">Om vårt samarbete</string>
     <string name="i18n.app.about.community.wikimedia.text_1">Scribe skulle inte vara möjligt utan de otaliga bidrag som görs till de olika Wikimedia-projekten. Scribe använder sig av data från Wikidata Lexicographical data gemenskapen, och data från Wikipedia för de olika språk som Scribe stöder.</string>
