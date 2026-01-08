@@ -126,11 +126,12 @@ class AboutUtilInstrumentedTest {
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalContext provides context) {
-                val communityList = AboutUtil.getCommunityList(
-                    onWikimediaAndScribeClick = { wikimediaClicked = true },
-                    onShareScribeClick = { shareClicked = true },
-                    context = context,
-                )
+                val communityList =
+                    AboutUtil.getCommunityList(
+                        onWikimediaAndScribeClick = { wikimediaClicked = true },
+                        onShareScribeClick = { shareClicked = true },
+                        context = context,
+                    )
                 extractedItems = communityList.items
             }
         }
