@@ -33,12 +33,12 @@ val junit5Version by extra("5.11.2")
 val mockkVersion by extra("1.13.13")
 
 android {
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "be.scri"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 7
         versionName = "1.0.0"
         multiDexEnabled = true
