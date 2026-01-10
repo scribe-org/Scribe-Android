@@ -6,6 +6,7 @@ import DataContract
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -23,6 +24,7 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.InflateException
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -237,35 +239,42 @@ abstract class GeneralKeyboardIME(
      *
      * @return The root View of the input method.
      */
-    override fun onCreateInputView(): View {
-        return try {
+    override fun onCreateInputView(): View =
+        try {
             val inputView = binding.root
             keyboardView = binding.keyboardView
             keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+
             keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
             keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
             keyboardView?.setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
+
             keyboardView!!.setKeyboard(keyboard!!)
             keyboardView!!.mOnKeyboardActionListener = this
+
             initializeUiElements()
             setupClickListeners()
             currentState = ScribeState.IDLE
             saveConjugateModeType("none")
             updateUI()
+
             inputView
-        } catch (e: Exception) {
-            Log.e("GeneralKeyboardIME", "Failed to inflate input view", e)
+        } catch (e: Resources.NotFoundException) {
+            Log.e("GeneralKeyboardIME", "Keyboard layout resource not found", e)
+            View(this)
+        } catch (e: InflateException) {
+            Log.e("GeneralKeyboardIME", "Failed to inflate keyboard view", e)
+            View(this)
+        } catch (e: IllegalStateException) {
+            Log.e("GeneralKeyboardIME", "Illegal state while creating input view", e)
             View(this)
         }
-    }
 
     /**
      * Always show the input view. Required for API 36 onwards as edge-to-edge
      * enforcement can cause the keyboard to not display if this returns false.
      */
-    override fun onEvaluateInputViewShown(): Boolean {
-        return super.onEvaluateInputViewShown()
-    }
+    override fun onEvaluateInputViewShown(): Boolean = super.onEvaluateInputViewShown()
 
     /**
      * Disable fullscreen mode to ensure the keyboard displays correctly on API 36 onwards.
