@@ -274,7 +274,10 @@ abstract class GeneralKeyboardIME(
      * Always show the input view. Required for API 36 onwards as edge-to-edge
      * enforcement can cause the keyboard to not display if this returns false.
      */
-    override fun onEvaluateInputViewShown(): Boolean = super.onEvaluateInputViewShown()
+    override fun onEvaluateInputViewShown(): Boolean {
+        super.onEvaluateInputViewShown()
+        return true
+    }
 
     /**
      * Disable fullscreen mode to ensure the keyboard displays correctly on API 36 onwards.
