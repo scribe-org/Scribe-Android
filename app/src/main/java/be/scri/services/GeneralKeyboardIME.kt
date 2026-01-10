@@ -12,6 +12,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
+import android.inputmethodservice.InputMethodService.Insets
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
@@ -228,6 +229,7 @@ abstract class GeneralKeyboardIME(
         suggestionHandler = SuggestionHandler(this)
         autocompletionManager = dbManagers.autocompletionManager
         autocompletionHandler = AutocompletionHandler(this)
+        binding = InputMethodViewBinding.inflate(layoutInflater)
     }
 
     /**
@@ -236,21 +238,56 @@ abstract class GeneralKeyboardIME(
      * @return The root View of the input method.
      */
     override fun onCreateInputView(): View {
-        binding = InputMethodViewBinding.inflate(layoutInflater)
+        return try {
+            val inputView = binding.root
+            keyboardView = binding.keyboardView
+            keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+            keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
+            keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
+            keyboardView?.setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
+            keyboardView!!.setKeyboard(keyboard!!)
+            keyboardView!!.mOnKeyboardActionListener = this
+            initializeUiElements()
+            setupClickListeners()
+            currentState = ScribeState.IDLE
+            saveConjugateModeType("none")
+            updateUI()
+            inputView
+        } catch (e: Exception) {
+            Log.e("GeneralKeyboardIME", "Failed to inflate input view", e)
+            View(this)
+        }
+    }
+
+    /**
+     * Always show the input view. Required for API 36 onwards as edge-to-edge
+     * enforcement can cause the keyboard to not display if this returns false.
+     */
+    override fun onEvaluateInputViewShown(): Boolean {
+        return super.onEvaluateInputViewShown()
+    }
+
+    /**
+     * Disable fullscreen mode to ensure the keyboard displays correctly on API 36 onwards.
+     * Fullscreen mode can interfere with edge-to-edge layouts.
+     */
+    override fun onEvaluateFullscreenMode(): Boolean = false
+
+    /**
+     * Compute the insets for the keyboard view. This is essential for API 36+
+     * where the system needs to know the exact size of the keyboard to properly
+     * handle edge-to-edge display and window insets.
+     */
+    override fun onComputeInsets(outInsets: Insets) {
+        super.onComputeInsets(outInsets)
         val inputView = binding.root
-        keyboardView = binding.keyboardView
-        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
-        keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
-        keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
-        keyboardView?.setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
-        keyboardView!!.setKeyboard(keyboard!!)
-        keyboardView!!.mOnKeyboardActionListener = this
-        initializeUiElements()
-        setupClickListeners()
-        currentState = ScribeState.IDLE
-        saveConjugateModeType("none")
-        updateUI()
-        return inputView
+        if (inputView.visibility == View.VISIBLE && inputView.height > 0) {
+            val location = IntArray(2)
+            inputView.getLocationInWindow(location)
+            outInsets.visibleTopInsets = location[1]
+            outInsets.contentTopInsets = location[1]
+            outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_VISIBLE
+        }
     }
 
     override fun onWindowShown() {
