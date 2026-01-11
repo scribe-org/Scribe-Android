@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.core.net.toUri
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.helpers.ui.RatingHelper
@@ -23,6 +24,7 @@ object ExternalLinks {
     const val GITHUB_RELEASES = "$GITHUB_SCRIBE/releases/"
     const val MATRIX = "https://matrix.to/%23/%23scribe_community:matrix.org"
     const val MASTODON = "https://wikis.world/@scribe"
+    const val SCRIBE_WEBSITE = "https://scri.be"
 }
 
 /**
@@ -45,7 +47,17 @@ fun buildCommunityList(
             trailingIcon = R.drawable.external_link,
             url = ExternalLinks.GITHUB_SCRIBE,
             onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(ExternalLinks.GITHUB_SCRIBE))
+                val intent = Intent(Intent.ACTION_VIEW, ExternalLinks.GITHUB_SCRIBE.toUri())
+                context.startActivity(intent)
+            },
+        ),
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.globe,
+            title = R.string.i18n_app_about_community_visit_website,
+            trailingIcon = R.drawable.external_link,
+            url = ExternalLinks.SCRIBE_WEBSITE,
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, ExternalLinks.SCRIBE_WEBSITE.toUri())
                 context.startActivity(intent)
             },
         ),

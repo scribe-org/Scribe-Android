@@ -18,7 +18,7 @@
     <string name="i18n.app.about.community.share_conjugate">Partager Scribe Conjugaison</string>
     <string name="i18n.app.about.community.share_scribe">Partager Scribe</string>
     <string name="i18n.app.about.community.title">Communauté</string>
-    <string name="i18n.app.about.community.view_apps">Voir toutes les applications Scribe</string>
+    <string name="i18n.app.about.community.visit_website">Visitez le site web de Scribe</string>
     <string name="i18n.app.about.community.wikimedia">Wikimedia et Scribe</string>
     <string name="i18n.app.about.community.wikimedia.caption">Comment nous travaillons ensemble</string>
     <string name="i18n.app.about.community.wikimedia.text_1">Scribe ne pourrait pas exister sans les nombreuses contributions des contributeurs de Wikimedia aux nombreux projets qu\'ils soutiennent. Scribe utilise les données de la communauté de données lexicographiques Wikidata, ainsi que les données de Wikipédia pour chaque langue prise en charge par Scribe.</string>

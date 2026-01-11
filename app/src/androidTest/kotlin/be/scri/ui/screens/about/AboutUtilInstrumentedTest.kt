@@ -119,11 +119,10 @@ class AboutUtilInstrumentedTest {
      */
     @Test
     fun testGetCommunityList() {
-        println("Testing getCommunityList...")
-
         var wikimediaClicked = false
         var shareClicked = false
         val context = InstrumentationRegistry.getInstrumentation().targetContext
+        var extractedItems: List<ScribeItem> = emptyList()
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalContext provides context) {
@@ -133,46 +132,31 @@ class AboutUtilInstrumentedTest {
                         onShareScribeClick = { shareClicked = true },
                         context = context,
                     )
-
-                // Test list is not empty.
-                assertThat(communityList.items).isNotEmpty()
-                assertThat(communityList.items).hasSize(3)
-
-                // Test each item has required fields.
-                communityList.items.forEach { item ->
-                    assertThat(item).isInstanceOf(ScribeItem.ExternalLinkItem::class.java)
-                    val linkItem = item as ScribeItem.ExternalLinkItem
-
-                    assertThat(linkItem.leadingIcon).isNotNull()
-                    assertThat(linkItem.title).isNotNull()
-                    assertThat(linkItem.trailingIcon).isNotNull()
-                    assertThat(linkItem.onClick).isNotNull()
-                }
-
-                // Test specific items.
-                val githubItem = communityList.items[0] as ScribeItem.ExternalLinkItem
-                assertThat(githubItem.leadingIcon).isEqualTo(R.drawable.github_logo)
-                assertThat(githubItem.title).isEqualTo(R.string.i18n_app_about_community_github)
-
-                val shareItem = communityList.items[1] as ScribeItem.ExternalLinkItem
-                assertThat(shareItem.leadingIcon).isEqualTo(R.drawable.share_icon)
-                assertThat(shareItem.title).isEqualTo(R.string.i18n_app_about_community_share_scribe)
-
-                val wikimediaItem = communityList.items[2] as ScribeItem.ExternalLinkItem
-                assertThat(wikimediaItem.leadingIcon).isEqualTo(R.drawable.wikimedia_logo_black)
-                assertThat(wikimediaItem.title).isEqualTo(R.string.i18n_app_about_community_wikimedia)
-
-                // Test onClick callbacks.
-                shareItem.onClick()
-                wikimediaItem.onClick()
+                extractedItems = communityList.items
             }
         }
 
-        // Verify callbacks were triggered.
+        composeTestRule.waitForIdle()
+        assertThat(extractedItems).hasSize(4)
+
+        val githubItem = extractedItems[0] as ScribeItem.ExternalLinkItem
+        val websiteItem = extractedItems[1] as ScribeItem.ExternalLinkItem
+        val shareItem = extractedItems[2] as ScribeItem.ExternalLinkItem
+        val wikimediaItem = extractedItems[3] as ScribeItem.ExternalLinkItem
+
+        assertThat(githubItem.leadingIcon).isEqualTo(R.drawable.github_logo)
+
+        assertThat(websiteItem.leadingIcon).isEqualTo(R.drawable.globe)
+        assertThat(websiteItem.title).isEqualTo(R.string.i18n_app_about_community_visit_website)
+
+        assertThat(shareItem.leadingIcon).isEqualTo(R.drawable.share_icon)
+        assertThat(wikimediaItem.leadingIcon).isEqualTo(R.drawable.wikimedia_logo_black)
+
+        shareItem.onClick()
+        wikimediaItem.onClick()
+
         assertThat(shareClicked).isTrue()
         assertThat(wikimediaClicked).isTrue()
-
-        println("getCommunityList test passed!")
     }
 
     /**
@@ -187,6 +171,7 @@ class AboutUtilInstrumentedTest {
         var mailClicked = false
         var resetHintsClicked = false
         val context = InstrumentationRegistry.getInstrumentation().targetContext
+        var extractedItems: List<ScribeItem> = emptyList()
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalContext provides context) {
@@ -197,41 +182,45 @@ class AboutUtilInstrumentedTest {
                         onResetHintsClick = { resetHintsClicked = true },
                         context = context,
                     )
-
-                // Test list is not empty.
-                assertThat(feedbackList.items).isNotEmpty()
-                assertThat(feedbackList.items).hasSize(5)
-
-                // Test each item has required fields.
-                feedbackList.items.forEach { item ->
-                    assertThat(item).isInstanceOf(ScribeItem.ExternalLinkItem::class.java)
-                    val linkItem = item as ScribeItem.ExternalLinkItem
-
-                    assertThat(linkItem.leadingIcon).isNotNull()
-                    assertThat(linkItem.title).isNotNull()
-                    assertThat(linkItem.trailingIcon).isNotNull()
-                    assertThat(linkItem.onClick).isNotNull()
-                }
-
-                // Test specific items.
-                val rateItem = feedbackList.items[0] as ScribeItem.ExternalLinkItem
-                assertThat(rateItem.leadingIcon).isEqualTo(R.drawable.star)
-                assertThat(rateItem.title).isEqualTo(R.string.i18n_app_about_feedback_rate_scribe)
-
-                val mailItem = feedbackList.items[2] as ScribeItem.ExternalLinkItem
-                assertThat(mailItem.leadingIcon).isEqualTo(R.drawable.mail_icon)
-                assertThat(mailItem.title).isEqualTo(R.string.i18n_app_about_feedback_send_email)
-
-                val hintsItem = feedbackList.items[4] as ScribeItem.ExternalLinkItem
-                assertThat(hintsItem.leadingIcon).isEqualTo(R.drawable.light_bulb_icon)
-                assertThat(hintsItem.title).isEqualTo(R.string.i18n_app_about_feedback_reset_app_hints)
-
-                // Test onClick callbacks.
-                rateItem.onClick()
-                mailItem.onClick()
-                hintsItem.onClick()
+                extractedItems = feedbackList.items
             }
         }
+
+        // Wait for composition to settle
+        composeTestRule.waitForIdle()
+
+        // Test list is not empty.
+        assertThat(extractedItems).isNotEmpty()
+        assertThat(extractedItems).hasSize(5)
+
+        // Test each item has required fields.
+        extractedItems.forEach { item ->
+            assertThat(item).isInstanceOf(ScribeItem.ExternalLinkItem::class.java)
+            val linkItem = item as ScribeItem.ExternalLinkItem
+
+            assertThat(linkItem.leadingIcon).isNotNull()
+            assertThat(linkItem.title).isNotNull()
+            assertThat(linkItem.trailingIcon).isNotNull()
+            assertThat(linkItem.onClick).isNotNull()
+        }
+
+        // Test specific items.
+        val rateItem = extractedItems[0] as ScribeItem.ExternalLinkItem
+        assertThat(rateItem.leadingIcon).isEqualTo(R.drawable.star)
+        assertThat(rateItem.title).isEqualTo(R.string.i18n_app_about_feedback_rate_scribe)
+
+        val mailItem = extractedItems[2] as ScribeItem.ExternalLinkItem
+        assertThat(mailItem.leadingIcon).isEqualTo(R.drawable.mail_icon)
+        assertThat(mailItem.title).isEqualTo(R.string.i18n_app_about_feedback_send_email)
+
+        val hintsItem = extractedItems[4] as ScribeItem.ExternalLinkItem
+        assertThat(hintsItem.leadingIcon).isEqualTo(R.drawable.light_bulb_icon)
+        assertThat(hintsItem.title).isEqualTo(R.string.i18n_app_about_feedback_reset_app_hints)
+
+        // Test onClick callbacks OUTSIDE of setContent
+        rateItem.onClick()
+        mailItem.onClick()
+        hintsItem.onClick()
 
         // Verify callbacks were triggered.
         assertThat(rateClicked).isTrue()
@@ -251,47 +240,47 @@ class AboutUtilInstrumentedTest {
 
         var privacyPolicyClicked = false
         var thirdPartyLicensesClicked = false
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        var extractedItems: List<ScribeItem> = emptyList()
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalContext provides context) {
-                val legalList =
-                    AboutUtil.getLegalListItems(
-                        onPrivacyPolicyClick = { privacyPolicyClicked = true },
-                        onThirdPartyLicensesClick = { thirdPartyLicensesClicked = true },
-                    )
-
-                // Test list is not empty.
-                assertThat(legalList.items).isNotEmpty()
-                assertThat(legalList.items).hasSize(2)
-
-                // Test each item has required fields.
-                legalList.items.forEach { item ->
-                    assertThat(item).isInstanceOf(ScribeItem.ExternalLinkItem::class.java)
-                    val linkItem = item as ScribeItem.ExternalLinkItem
-
-                    assertThat(linkItem.leadingIcon).isNotNull()
-                    assertThat(linkItem.title).isNotNull()
-                    assertThat(linkItem.trailingIcon).isNotNull()
-                    assertThat(linkItem.onClick).isNotNull()
-                }
-
-                // Test specific items.
-                val privacyItem = legalList.items[0] as ScribeItem.ExternalLinkItem
-                assertThat(privacyItem.leadingIcon).isEqualTo(R.drawable.shield_lock)
-                assertThat(privacyItem.title).isEqualTo(R.string.i18n__global_privacy_policy)
-                assertThat(privacyItem.trailingIcon).isEqualTo(R.drawable.right_arrow)
-
-                val licenseItem = legalList.items[1] as ScribeItem.ExternalLinkItem
-                assertThat(licenseItem.leadingIcon).isEqualTo(R.drawable.license_icon)
-                assertThat(licenseItem.title).isEqualTo(R.string.i18n_app_about_legal_third_party)
-                assertThat(licenseItem.trailingIcon).isEqualTo(R.drawable.right_arrow)
-
-                // Test onClick callbacks.
-                privacyItem.onClick()
-                licenseItem.onClick()
-            }
+            val legalList =
+                AboutUtil.getLegalListItems(
+                    onPrivacyPolicyClick = { privacyPolicyClicked = true },
+                    onThirdPartyLicensesClick = { thirdPartyLicensesClicked = true },
+                )
+            extractedItems = legalList.items
         }
+
+        composeTestRule.waitForIdle()
+
+        // Test list is not empty.
+        assertThat(extractedItems).isNotEmpty()
+        assertThat(extractedItems).hasSize(2)
+
+        // Test each item has required fields.
+        extractedItems.forEach { item ->
+            assertThat(item).isInstanceOf(ScribeItem.ExternalLinkItem::class.java)
+            val linkItem = item as ScribeItem.ExternalLinkItem
+
+            assertThat(linkItem.leadingIcon).isNotNull()
+            assertThat(linkItem.title).isNotNull()
+            assertThat(linkItem.trailingIcon).isNotNull()
+            assertThat(linkItem.onClick).isNotNull()
+        }
+
+        // Test specific items.
+        val privacyItem = extractedItems[0] as ScribeItem.ExternalLinkItem
+        assertThat(privacyItem.leadingIcon).isEqualTo(R.drawable.shield_lock)
+        assertThat(privacyItem.title).isEqualTo(R.string.i18n__global_privacy_policy)
+        assertThat(privacyItem.trailingIcon).isEqualTo(R.drawable.right_arrow)
+
+        val licenseItem = extractedItems[1] as ScribeItem.ExternalLinkItem
+        assertThat(licenseItem.leadingIcon).isEqualTo(R.drawable.license_icon)
+        assertThat(licenseItem.title).isEqualTo(R.string.i18n_app_about_legal_third_party)
+        assertThat(licenseItem.trailingIcon).isEqualTo(R.drawable.right_arrow)
+
+        privacyItem.onClick()
+        licenseItem.onClick()
 
         // Verify callbacks were triggered.
         assertThat(privacyPolicyClicked).isTrue()

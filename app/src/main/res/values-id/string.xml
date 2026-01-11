@@ -18,7 +18,7 @@
     <string name="i18n.app.about.community.share_conjugate">Bagikan Konjugasi Scribe</string>
     <string name="i18n.app.about.community.share_scribe">Bagikan Scribe</string>
     <string name="i18n.app.about.community.title">Komunitas</string>
-    <string name="i18n.app.about.community.view_apps">Tampilkan semua aplikasi Scribe</string>
+    <string name="i18n.app.about.community.visit_website">Kunjungi situs web Scribe</string>
     <string name="i18n.app.about.community.wikimedia">Wikimedia dan Scribe</string>
     <string name="i18n.app.about.community.wikimedia.caption">Bagaimana kami bekerjasama</string>
     <string name="i18n.app.about.community.wikimedia.text_1">Scribe tidak akan mungkin ada tanpa kontribusi yang tak terhitung jumlahnya oleh kontributor Wikimedia dan proyek-proyek yang didukungnya. Secara khusus, Scribe memanfaatkan data dari komunitas data Lexicographical Wikidata, serta data dari Wikipedia untuk setiap bahasa yang didukung oleh Scribe.</string>
