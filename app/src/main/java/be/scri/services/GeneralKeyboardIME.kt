@@ -2405,7 +2405,10 @@ abstract class GeneralKeyboardIME(
      */
     private fun handleConjugateState(rawInput: String) {
         val searchInput = rawInput.lowercase()
+
+        // Store the original input to check capitalization
         currentVerbForConjugation = rawInput
+
         val languageAlias = getLanguageAlias(language)
 
         val tempOutput =
@@ -2415,9 +2418,14 @@ abstract class GeneralKeyboardIME(
                 searchInput,
             )
 
+        // Apply capitalization if the original input was capitalized
+        val isCapitalized = rawInput.firstOrNull()?.isUpperCase() == true
         conjugateOutput =
             if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
                 null
+            } else if (isCapitalized && tempOutput != null) {
+                // Apply capitalization to all conjugated forms
+                applyCapitalizationToConjugations(tempOutput)
             } else {
                 tempOutput
             }
@@ -2437,6 +2445,41 @@ abstract class GeneralKeyboardIME(
             }
 
         updateUI()
+    }
+
+    /**
+     * Applies proper capitalization to all conjugated forms in the output map.
+     * Only capitalizes the first letter of the first word in each conjugation.
+     *
+     * @param conjugations The original map of conjugations from the database
+     * @return A new map with properly capitalized conjugations
+     */
+    private fun applyCapitalizationToConjugations(
+        conjugations: MutableMap<String, MutableMap<String, Collection<String>>>,
+    ): MutableMap<String, MutableMap<String, Collection<String>>> {
+        val capitalizedOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
+
+        conjugations.forEach { (tenseKey, conjugationMap) ->
+            val capitalizedConjugations: MutableMap<String, Collection<String>> = mutableMapOf()
+
+            conjugationMap.forEach { (categoryKey, forms) ->
+                val capitalizedForms =
+                    forms.map { form ->
+                        if (form.isNotEmpty()) {
+                            // Only capitalize the first character of the entire string
+                            // This handles both simple forms ("bin") and complex forms ("have walked")
+                            form.replaceFirstChar { it.uppercase() }
+                        } else {
+                            form
+                        }
+                    }
+                capitalizedConjugations[categoryKey] = capitalizedForms
+            }
+
+            capitalizedOutput[tenseKey] = capitalizedConjugations
+        }
+
+        return capitalizedOutput
     }
 
     /**
