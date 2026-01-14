@@ -2364,6 +2364,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Handles the Enter key press when in the plural or translate state.
+     * Now supports ALL CAPS input formatting.
      *
      * @param rawInput The text from the command bar.
      * @param inputConnection The current input connection.
@@ -2372,6 +2373,9 @@ abstract class GeneralKeyboardIME(
         rawInput: String,
         inputConnection: InputConnection,
     ) {
+        // Detect if input is ALL CAPS
+        val isAllCaps = rawInput.isNotEmpty() && rawInput.all { !it.isLetter() || it.isUpperCase() }
+
         val commandModeOutput =
             when (currentState) {
                 ScribeState.PLURAL -> {
@@ -2382,10 +2386,25 @@ abstract class GeneralKeyboardIME(
                             return
                         }
                         null -> ""
-                        else -> pluralResult
+                        else -> {
+                            // Apply ALL CAPS formatting if input was ALL CAPS
+                            if (isAllCaps) {
+                                pluralResult.uppercase()
+                            } else {
+                                pluralResult
+                            }
+                        }
                     }
                 }
-                ScribeState.TRANSLATE -> getTranslation(language, rawInput)
+                ScribeState.TRANSLATE -> {
+                    val translation = getTranslation(language, rawInput)
+                    // Apply ALL CAPS formatting if input was ALL CAPS
+                    if (isAllCaps) {
+                        translation.uppercase()
+                    } else {
+                        translation
+                    }
+                }
                 else -> ""
             }
 
@@ -2400,6 +2419,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the Enter key press when in the `CONJUGATE` state. It fetches the
      * conjugation data for the entered verb and transitions to the selection view.
+     * Now supports ALL CAPS input formatting.
      *
      * @param rawInput The verb entered in the command bar.
      */
@@ -2418,14 +2438,16 @@ abstract class GeneralKeyboardIME(
                 searchInput,
             )
 
-        // Apply capitalization if the original input was capitalized
-        val isCapitalized = rawInput.firstOrNull()?.isUpperCase() == true
+        // Detect capitalization style
+        val isAllCaps = rawInput.isNotEmpty() && rawInput.all { !it.isLetter() || it.isUpperCase() }
+        val isCapitalized = !isAllCaps && rawInput.firstOrNull()?.isUpperCase() == true
+
         conjugateOutput =
             if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
                 null
-            } else if (isCapitalized && tempOutput != null) {
-                // Apply capitalization to all conjugated forms
-                applyCapitalizationToConjugations(tempOutput)
+            } else if ((isAllCaps || isCapitalized) && tempOutput != null) {
+                // Apply appropriate capitalization to all conjugated forms
+                applyCapitalizationToConjugations(tempOutput, isAllCaps)
             } else {
                 tempOutput
             }
@@ -2448,38 +2470,38 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Applies proper capitalization to all conjugated forms in the output map.
-     * Only capitalizes the first letter of the first word in each conjugation.
+     * Applies capitalization to all conjugated forms in the output map.
+     * Supports both standard capitalization (first letter) and ALL CAPS formatting.
      *
      * @param conjugations The original map of conjugations from the database
-     * @return A new map with properly capitalized conjugations
+     * @param isAllCaps If true, applies ALL CAPS; if false, capitalizes only the first letter
+     * @return A new map with properly formatted conjugations
      */
     private fun applyCapitalizationToConjugations(
         conjugations: MutableMap<String, MutableMap<String, Collection<String>>>,
+        isAllCaps: Boolean = false,
     ): MutableMap<String, MutableMap<String, Collection<String>>> {
-        val capitalizedOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
+        val formattedOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
 
         conjugations.forEach { (tenseKey, conjugationMap) ->
-            val capitalizedConjugations: MutableMap<String, Collection<String>> = mutableMapOf()
+            val formattedConjugations: MutableMap<String, Collection<String>> = mutableMapOf()
 
             conjugationMap.forEach { (categoryKey, forms) ->
-                val capitalizedForms =
+                val formattedForms =
                     forms.map { form ->
-                        if (form.isNotEmpty()) {
-                            // Only capitalize the first character of the entire string
-                            // This handles both simple forms ("bin") and complex forms ("have walked")
-                            form.replaceFirstChar { it.uppercase() }
-                        } else {
-                            form
+                        when {
+                            form.isEmpty() -> form
+                            isAllCaps -> form.uppercase()
+                            else -> form.replaceFirstChar { it.uppercase() }
                         }
                     }
-                capitalizedConjugations[categoryKey] = capitalizedForms
+                formattedConjugations[categoryKey] = formattedForms
             }
 
-            capitalizedOutput[tenseKey] = capitalizedConjugations
+            formattedOutput[tenseKey] = formattedConjugations
         }
 
-        return capitalizedOutput
+        return formattedOutput
     }
 
     /**
