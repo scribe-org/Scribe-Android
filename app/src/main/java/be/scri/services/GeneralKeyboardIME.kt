@@ -2364,7 +2364,6 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Handles the Enter key press when in the plural or translate state.
-     * Now supports ALL CAPS input formatting.
      *
      * @param rawInput The text from the command bar.
      * @param inputConnection The current input connection.
@@ -2373,7 +2372,7 @@ abstract class GeneralKeyboardIME(
         rawInput: String,
         inputConnection: InputConnection,
     ) {
-        // Detect if input is ALL CAPS
+        // Detect if input is all capital letters.
         val isAllCaps = rawInput.isNotEmpty() && rawInput.all { !it.isLetter() || it.isUpperCase() }
 
         val commandModeOutput =
@@ -2387,7 +2386,7 @@ abstract class GeneralKeyboardIME(
                         }
                         null -> ""
                         else -> {
-                            // Apply ALL CAPS formatting if input was ALL CAPS
+                            // Apply all capital letters formatting if input was this format.
                             if (isAllCaps) {
                                 pluralResult.uppercase()
                             } else {
@@ -2398,7 +2397,7 @@ abstract class GeneralKeyboardIME(
                 }
                 ScribeState.TRANSLATE -> {
                     val translation = getTranslation(language, rawInput)
-                    // Apply ALL CAPS formatting if input was ALL CAPS
+                    // Apply all capital letters formatting if input was this format.
                     if (isAllCaps) {
                         translation.uppercase()
                     } else {
@@ -2419,14 +2418,13 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the Enter key press when in the `CONJUGATE` state. It fetches the
      * conjugation data for the entered verb and transitions to the selection view.
-     * Now supports ALL CAPS input formatting.
      *
      * @param rawInput The verb entered in the command bar.
      */
     private fun handleConjugateState(rawInput: String) {
         val searchInput = rawInput.lowercase()
 
-        // Store the original input to check capitalization
+        // Store the original input to check capitalization.
         currentVerbForConjugation = rawInput
 
         val languageAlias = getLanguageAlias(language)
@@ -2438,7 +2436,7 @@ abstract class GeneralKeyboardIME(
                 searchInput,
             )
 
-        // Detect capitalization style
+        // Detect capitalization style.
         val isAllCaps = rawInput.isNotEmpty() && rawInput.all { !it.isLetter() || it.isUpperCase() }
         val isCapitalized = !isAllCaps && rawInput.firstOrNull()?.isUpperCase() == true
 
@@ -2446,7 +2444,7 @@ abstract class GeneralKeyboardIME(
             if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
                 null
             } else if ((isAllCaps || isCapitalized) && tempOutput != null) {
-                // Apply appropriate capitalization to all conjugated forms
+                // Apply appropriate capitalization to all conjugated forms.
                 applyCapitalizationToConjugations(tempOutput, isAllCaps)
             } else {
                 tempOutput
@@ -2471,11 +2469,12 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Applies capitalization to all conjugated forms in the output map.
-     * Supports both standard capitalization (first letter) and ALL CAPS formatting.
+     * Supports both standard capitalization (first letter) and all capital letters formatting.
      *
-     * @param conjugations The original map of conjugations from the database
-     * @param isAllCaps If true, applies ALL CAPS; if false, capitalizes only the first letter
-     * @return A new map with properly formatted conjugations
+     * @param conjugations The original map of conjugations from the database.
+     * @param isAllCaps If true, applies all capital letters; if false, capitalizes only first letter.
+
+     * @return A new map with properly formatted conjugations.
      */
     private fun applyCapitalizationToConjugations(
         conjugations: MutableMap<String, MutableMap<String, Collection<String>>>,
