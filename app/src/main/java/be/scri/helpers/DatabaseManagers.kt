@@ -5,6 +5,7 @@ import DataContract
 import android.content.Context
 import be.scri.helpers.data.AutoSuggestionDataManager
 import be.scri.helpers.data.AutocompletionDataManager
+import be.scri.helpers.data.ClipboardDataManager
 import be.scri.helpers.data.ConjugateDataManager
 import be.scri.helpers.data.ContractDataLoader
 import be.scri.helpers.data.EmojiDataManager
@@ -28,6 +29,7 @@ class DatabaseManagers(
 
     // Specialized data managers, ready for use.
     val emojiManager = EmojiDataManager(fileManager)
+    val clipboardManager = ClipboardDataManager(fileManager, context)
     val genderManager = GenderDataManager(fileManager)
     val pluralManager = PluralFormsManager(fileManager)
     val prepositionManager = PrepositionDataManager(fileManager)
