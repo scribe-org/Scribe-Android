@@ -129,4 +129,5 @@ jobs:
                       adb shell pm list packages >/dev/null
                       sleep 10
                       adb shell getprop sys.boot_completed
-                      ./gradlew connectedCoreDebugAndroidTest --stacktrace
+                      ./gradlew connectedConjugateDebugAndroidTest --stacktrace
+                      ./gradlew connectedKeyboardsDebugAndroidTest --stacktrace
