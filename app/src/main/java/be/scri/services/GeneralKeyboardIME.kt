@@ -2372,6 +2372,9 @@ abstract class GeneralKeyboardIME(
         rawInput: String,
         inputConnection: InputConnection,
     ) {
+        // Detect if input is all capital letters.
+        val isAllCaps = rawInput.isNotEmpty() && rawInput.all { !it.isLetter() || it.isUpperCase() }
+
         val commandModeOutput =
             when (currentState) {
                 ScribeState.PLURAL -> {
@@ -2382,10 +2385,25 @@ abstract class GeneralKeyboardIME(
                             return
                         }
                         null -> ""
-                        else -> pluralResult
+                        else -> {
+                            // Apply all capital letters formatting if input was this format.
+                            if (isAllCaps) {
+                                pluralResult.uppercase()
+                            } else {
+                                pluralResult
+                            }
+                        }
                     }
                 }
-                ScribeState.TRANSLATE -> getTranslation(language, rawInput)
+                ScribeState.TRANSLATE -> {
+                    val translation = getTranslation(language, rawInput)
+                    // Apply all capital letters formatting if input was this format.
+                    if (isAllCaps) {
+                        translation.uppercase()
+                    } else {
+                        translation
+                    }
+                }
                 else -> ""
             }
 
@@ -2405,7 +2423,10 @@ abstract class GeneralKeyboardIME(
      */
     private fun handleConjugateState(rawInput: String) {
         val searchInput = rawInput.lowercase()
+
+        // Store the original input to check capitalization.
         currentVerbForConjugation = rawInput
+
         val languageAlias = getLanguageAlias(language)
 
         val tempOutput =
@@ -2415,9 +2436,16 @@ abstract class GeneralKeyboardIME(
                 searchInput,
             )
 
+        // Detect capitalization style.
+        val isAllCaps = rawInput.isNotEmpty() && rawInput.all { !it.isLetter() || it.isUpperCase() }
+        val isCapitalized = !isAllCaps && rawInput.firstOrNull()?.isUpperCase() == true
+
         conjugateOutput =
             if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
                 null
+            } else if ((isAllCaps || isCapitalized) && tempOutput != null) {
+                // Apply appropriate capitalization to all conjugated forms.
+                applyCapitalizationToConjugations(tempOutput, isAllCaps)
             } else {
                 tempOutput
             }
@@ -2437,6 +2465,42 @@ abstract class GeneralKeyboardIME(
             }
 
         updateUI()
+    }
+
+    /**
+     * Applies capitalization to all conjugated forms in the output map.
+     * Supports both standard capitalization (first letter) and all capital letters formatting.
+     *
+     * @param conjugations The original map of conjugations from the database.
+     * @param isAllCaps If true, applies all capital letters; if false, capitalizes only first letter.
+
+     * @return A new map with properly formatted conjugations.
+     */
+    private fun applyCapitalizationToConjugations(
+        conjugations: MutableMap<String, MutableMap<String, Collection<String>>>,
+        isAllCaps: Boolean = false,
+    ): MutableMap<String, MutableMap<String, Collection<String>>> {
+        val formattedOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
+
+        conjugations.forEach { (tenseKey, conjugationMap) ->
+            val formattedConjugations: MutableMap<String, Collection<String>> = mutableMapOf()
+
+            conjugationMap.forEach { (categoryKey, forms) ->
+                val formattedForms =
+                    forms.map { form ->
+                        when {
+                            form.isEmpty() -> form
+                            isAllCaps -> form.uppercase()
+                            else -> form.replaceFirstChar { it.uppercase() }
+                        }
+                    }
+                formattedConjugations[categoryKey] = formattedForms
+            }
+
+            formattedOutput[tenseKey] = formattedConjugations
+        }
+
+        return formattedOutput
     }
 
     /**
