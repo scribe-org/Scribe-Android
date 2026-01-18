@@ -50,6 +50,7 @@ android {
     productFlavors {
         create("keyboards") {
             applicationIdSuffix = ".keyboards"
+            isDefault = true
         }
         create("conjugate") {
             applicationIdSuffix = ".conjugate"
