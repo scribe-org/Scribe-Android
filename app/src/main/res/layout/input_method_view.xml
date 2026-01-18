@@ -143,7 +143,7 @@
         <Button
             android:id="@+id/scribe_key_options"
             android:layout_width="@dimen/select_command_scribe_key_width"
-            android:layout_height="37dp"
+            android:layout_height="@dimen/command_button_height"
             android:layout_marginStart="@dimen/small_margin"
             android:background="@drawable/cmd_key_background_rounded"
             android:backgroundTint="@color/theme_scribe_blue"
@@ -174,7 +174,7 @@
         <Button
             android:id="@+id/translate_btn"
             android:layout_width="0dp"
-            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_height="@dimen/command_button_height"
             android:layout_marginStart="4dp"
             android:background="@drawable/cmd_key_background_rounded"
             android:contentDescription="@string/command_bar"
@@ -201,7 +201,7 @@
         <Button
             android:id="@+id/conjugate_btn"
             android:layout_width="0dp"
-            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_height="@dimen/command_button_height"
             android:background="@drawable/cmd_key_background_rounded"
             android:contentDescription="@string/command_bar"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -226,7 +226,7 @@
         <Button
             android:id="@+id/plural_btn"
             android:layout_width="0dp"
-            android:layout_height="@dimen/toolbar_icon_height"
+            android:layout_height="@dimen/command_button_height"
             android:layout_marginEnd="@dimen/tiny_margin"
             android:background="@drawable/cmd_key_background_rounded"
             android:contentDescription="@string/command_bar"
