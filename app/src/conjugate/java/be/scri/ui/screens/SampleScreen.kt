@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.ui.screens
 
 import androidx.compose.foundation.layout.Box
