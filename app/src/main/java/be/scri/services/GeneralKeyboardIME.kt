@@ -13,7 +13,6 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
-import android.inputmethodservice.InputMethodService.Insets
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
@@ -21,7 +20,6 @@ import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.InflateException
@@ -47,6 +45,7 @@ import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
 import be.scri.helpers.AutocompletionHandler
+import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
@@ -94,8 +93,8 @@ abstract class GeneralKeyboardIME(
     abstract var switchToLetters: Boolean
     abstract var hasTextBeforeCursor: Boolean
 
-    // Track if the delete key is currently being repeated (long press).
-    private var isDeleteRepeating: Boolean = false
+    // Delegate backspace handling to a separate class
+    private val backspaceHandler = BackspaceHandler(this)
 
     internal lateinit var binding: InputMethodViewBinding
 
@@ -150,8 +149,8 @@ abstract class GeneralKeyboardIME(
             R.string.i18n_app_keyboard_not_in_wikidata_explanation_2,
             R.string.i18n_app_keyboard_not_in_wikidata_explanation_3,
         )
-    private var currentCommandBarHint: String = ""
-    private var commandBarHintColor: Int = Color.GRAY
+    internal var currentCommandBarHint: String = ""
+    internal var commandBarHintColor: Int = Color.GRAY
     private var commandBarTextColor: Int = Color.BLACK
 
     private var currentVerbForConjugation: String? = null
@@ -435,15 +434,17 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Sets the flag to indicate that the delete key is currently repeating (long press).
+     * Delegated to BackspaceHandler.
      */
     fun setDeleteRepeating(isRepeating: Boolean) {
-        isDeleteRepeating = isRepeating
+        backspaceHandler.isDeleteRepeating = isRepeating
     }
 
     /**
      * Returns whether the delete key is currently repeating (long press).
+     * Delegated to BackspaceHandler.
      */
-    fun isDeleteRepeating(): Boolean = isDeleteRepeating
+    fun isDeleteRepeating(): Boolean = backspaceHandler.isDeleteRepeating
 
     override fun moveCursorLeft() {
         moveCursor(false)
@@ -2622,39 +2623,6 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Handles the delete key press specifically for the command bar text field.
-     */
-    private fun handleCommandBarDelete() {
-        val currentTextWithoutCursor = getCommandBarTextWithoutCursor()
-        // If we're already showing the hint, do nothing on delete.
-        if (currentTextWithoutCursor == currentCommandBarHint) {
-            return
-        }
-
-        if (currentTextWithoutCursor.isNotEmpty()) {
-            val newText = currentTextWithoutCursor.dropLast(1)
-            if (newText.isEmpty()) {
-                // All real text has been deleted, so restore the hint.
-                setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
-                binding.commandBar.setTextColor(commandBarHintColor)
-            } else {
-                // There's still text left, so just update it.
-                setCommandBarTextWithCursor(newText)
-            }
-        }
-
-        // Handle German plural mode shift state.
-        val finalCommandBarText = getCommandBarTextWithoutCursor()
-        val isEmptyOrAHint = finalCommandBarText.isEmpty() || finalCommandBarText == currentCommandBarHint
-        val isGerman = language == "German"
-        val isPluralState = currentState == ScribeState.PLURAL
-
-        if (isEmptyOrAHint && isGerman && isPluralState) {
-            keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
-        }
-    }
-
-    /**
      * Handles a key press on one of the special conjugation keys.
      * It either commits the text directly or prepares for a subsequent selection view.
      *
@@ -2680,6 +2648,7 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the logic for the Delete/Backspace key. It deletes characters from either
      * the main input field or the command bar, depending on the context.
+     * Delegated to BackspaceHandler.
      *
      * @param isCommandBar true` if the deletion should happen in the command bar.
      * @param isLongPress true` if this is a long press/repeat action, false for single tap.
@@ -2688,105 +2657,7 @@ abstract class GeneralKeyboardIME(
         isCommandBar: Boolean = false,
         isLongPress: Boolean = false,
     ) {
-        if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR) keyboard!!.mShiftState = SHIFT_OFF
-        if (isCommandBar) {
-            handleCommandBarDelete()
-        } else {
-            val inputConnection = currentInputConnection ?: return
-            if (TextUtils.isEmpty(inputConnection.getSelectedText(0))) {
-                val isWordByWordEnabled = PreferencesHelper.getIsWordByWordDeletionEnabled(applicationContext, language)
-                // Only use word-by-word deletion on long press when the feature is enabled.
-                if (isWordByWordEnabled && isLongPress) {
-                    deleteWordByWord(inputConnection)
-                } else {
-                    deleteSingleCharacter(inputConnection)
-                }
-            } else {
-                inputConnection.commitText("", 1)
-            }
-            if (inputConnection.getTextBeforeCursor(1, 0)?.isEmpty() != false) {
-                keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
-                keyboardView!!.invalidateAllKeys()
-            }
-        }
-    }
-
-    /**
-     * Deletes a single character.
-     */
-    private fun deleteSingleCharacter(inputConnection: InputConnection) {
-        inputConnection.deleteSurroundingText(1, 0)
-    }
-
-    /**
-     * Deletes an entire word, including any trailing whitespace.
-     *
-     * @param inputConnection The current input connection.
-     */
-    private fun deleteWordByWord(inputConnection: InputConnection) {
-        val textBeforeCursor = inputConnection.getTextBeforeCursor(MAX_TEXT_LENGTH, 0)?.toString() ?: ""
-
-        if (textBeforeCursor.isEmpty()) {
-            return
-        }
-
-        var deletionLength = 0
-        var index = textBeforeCursor.length - 1
-
-        // Skip any whitespace.
-        while (index >= 0 && textBeforeCursor[index].isWhitespace()) {
-            deletionLength++
-            index--
-        }
-
-        // If we only had whitespace, delete it.
-        if (index < 0) {
-            if (deletionLength > 0) {
-                inputConnection.deleteSurroundingText(deletionLength, 0)
-            }
-            return
-        }
-
-        // Now delete the word characters.
-        if (isWordCharacter(textBeforeCursor[index])) {
-            // Delete regular word characters (letters, numbers, some punctuation).
-            while (index >= 0 && isWordCharacter(textBeforeCursor[index])) {
-                deletionLength++
-                index--
-            }
-        } else {
-            // If the character at cursor is not a word character (e.g., special punctuation),
-            // delete just that single character instead of trying to delete a whole word.
-            deletionLength++
-        }
-
-        if (deletionLength > 0) {
-            inputConnection.deleteSurroundingText(deletionLength, 0)
-        }
-    }
-
-    /**
-     * Determines if a character is considered part of a word for deletion purposes.
-     */
-    private fun isWordCharacter(char: Char): Boolean {
-        // Letters and digits are always word characters.
-        if (char.isLetterOrDigit()) {
-            return true
-        }
-
-        // Check if special characters are considered word.
-        return when (Character.getType(char).toByte()) {
-            // Connector punctuation.
-            Character.CONNECTOR_PUNCTUATION -> true
-            Character.DASH_PUNCTUATION -> true
-            Character.OTHER_PUNCTUATION -> {
-                char in "'\".,@#$%&*+=~`|\\/:;?!^"
-            }
-            Character.CURRENCY_SYMBOL -> true
-            Character.MATH_SYMBOL -> char in "+=<>~^"
-            Character.OTHER_SYMBOL -> char in "@#$%&*+=~`|\\/:;?!^"
-            else -> false
-        }
+        backspaceHandler.handleBackspace(isCommandBar, isLongPress)
     }
 
     /**
@@ -2851,7 +2722,7 @@ abstract class GeneralKeyboardIME(
      *
      * @return The text content without the trailing cursor character.
      */
-    private fun getCommandBarTextWithoutCursor(): String {
+    internal fun getCommandBarTextWithoutCursor(): String {
         val currentText = binding.commandBar.text.toString()
         return when {
             currentText.startsWith(CUSTOM_CURSOR) -> currentText.drop(1)
@@ -2866,7 +2737,7 @@ abstract class GeneralKeyboardIME(
      * @param text The text to set (without cursor).
      * @param cursorAtStart The flag to check if the text in the EditText is empty to determine the position of the cursor
      */
-    private fun setCommandBarTextWithCursor(
+    internal fun setCommandBarTextWithCursor(
         text: String,
         cursorAtStart: Boolean = false,
     ) {
@@ -2902,7 +2773,7 @@ abstract class GeneralKeyboardIME(
         const val SUGGESTION_SIZE = 15f
         const val DARK_THEME = "#aeb3be"
         const val LIGHT_THEME = "#4b4b4b"
-        const val MAX_TEXT_LENGTH = 1000
+        internal const val MAX_TEXT_LENGTH = 1000
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         private const val COMMAND_BUTTON_SPACING_DP = 4
         private const val SEPARATOR_WIDTH = 0.5f
