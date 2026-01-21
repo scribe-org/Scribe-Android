@@ -51,9 +51,19 @@ android {
         create("keyboards") {
             applicationIdSuffix = ".keyboards"
             isDefault = true
+            resValue(
+                "string",
+                "app_launcher_name",
+                "Scribe"
+            )
         }
         create("conjugate") {
             applicationIdSuffix = ".conjugate"
+            resValue(
+                "string",
+                "app_launcher_name",
+                "Conjugate"
+            )
         }
     }
 
