@@ -1,39 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-package be.scri.helpers
+package be.scri.helpers.data
 
 import DataContract
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.view.inputmethod.InputConnection
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import be.scri.helpers.data.PluralFormsManager
-import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
+import be.scri.helpers.DatabaseFileManager
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class DatabaseTest {
-    private lateinit var mockIME: GeneralKeyboardIME
-    private lateinit var mockInputConnection: InputConnection
-    private lateinit var keyHandler: KeyHandler
-
-    @Before
-    fun setUp() {
-        mockIME = mockk(relaxed = true)
-        mockInputConnection = mockk(relaxed = true)
-
-        every { mockIME.currentInputConnection } returns mockInputConnection
-        every { mockIME.keyboard } returns mockk(relaxed = true)
-        every { mockIME.currentState } returns ScribeState.IDLE
-
-        keyHandler = KeyHandler(mockIME)
-    }
-
+class PluralFormsManagerTest {
     @Test
     fun testPluralCommandGeneratesCorrectOutput() {
         // Arrange

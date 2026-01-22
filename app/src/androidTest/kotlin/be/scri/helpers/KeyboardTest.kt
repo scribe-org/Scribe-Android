@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-package be.scri.ui
+package be.scri.helpers
 
 import android.view.inputmethod.InputConnection
 import android.widget.Button
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import be.scri.helpers.KeyHandler
-import be.scri.helpers.KeyboardBase
-import be.scri.helpers.SuggestionHandler
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 import io.mockk.every
