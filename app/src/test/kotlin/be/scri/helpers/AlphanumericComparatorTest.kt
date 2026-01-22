@@ -4,9 +4,8 @@
  * Testing for AlphanumericComparator.
  */
 
-package helpers
+package be.scri.helpers
 
-import be.scri.helpers.AlphanumericComparator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
