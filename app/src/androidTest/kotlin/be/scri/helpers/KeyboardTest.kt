@@ -74,18 +74,15 @@ class KeyboardTest {
 
     @Test
     fun testEnterKeyInsertsNewLine() {
-        // Arrange
         every { mockIME.currentState } returns ScribeState.IDLE
-        // Simulate the IME behavior for Enter key: sending ACTION_DOWN and ACTION_UP events
+        // Simulate the IME behavior for Enter key: sending ACTION_DOWN and ACTION_UP events.
         every { mockIME.handleKeycodeEnter() } answers {
             mockInputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
             mockInputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
         }
 
-        // Act
         keyHandler.handleKey(KeyboardBase.KEYCODE_ENTER, "en")
 
-        // Assert
         verify(exactly = 1) { mockIME.handleKeycodeEnter() }
         verify(exactly = 1) {
             mockInputConnection.sendKeyEvent(match { it.action == KeyEvent.ACTION_DOWN && it.keyCode == KeyEvent.KEYCODE_ENTER })
