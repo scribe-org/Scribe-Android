@@ -190,8 +190,27 @@ pre-commit install  # install pre-commit hooks
 
 # App Setup [`⇧`](#contents)
 
+### Codebase Overview 
+The Scribe-Android codebase consists of two separate applications
+
+- Keyboard Application — the actual Scribe language keyboard (IME)
+
+- Conjugate Application — a application for verb conjugations. 
+
+Each application is built and run independently using Android Studio build variants.
+
+To select a built variant 
+
+1. Open the project in Android Studio 
+2. Navigate to Build → Select Build Variant 
+3. Choose the required variant:
+  * **KeyboardDebug** — Scribe keyboard application (IME)
+  * **ConjugateDebug** — Scribe Conjugate application
+
 > [!NOTE]
 > Currently Scribe-Android does not work as a floating keyboard.
+
+The Default variant would be `keyboardDebug`
 
 Users access Scribe language keyboards through the following:
 
@@ -199,6 +218,7 @@ Users access Scribe language keyboards through the following:
     -   Or: Settings -> System -> Languages & input -> On-screen keyboard -> Manage on-screen keyboards
 -   Choose from the available Scribe language keyboards
 -   When typing press 🌐 or the keyboard button to select keyboards
+
 
 <a id="supported-languages"></a>
 
