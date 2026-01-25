@@ -115,7 +115,9 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
 
 3. Open the Scribe-Android directory in Android Studio
 
-4. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
+4. The application has 2 build variants more of which could be read at [here](#build-variants)
+
+5. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
 
     - In the top bar find and select the "Device Manager" option
     - [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
@@ -132,6 +134,17 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
 
 > [!NOTE]
 > Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
+
+<a id="build-variants"></a>
+## Build Variant Selection [`⇧`](#contents)
+
+The project includes **two build variants**, each corresponding to a different application.
+
+Build variants can be selected from **Build → Select Build Variant** in Android Studio:
+
+- **`conjugateDebug`** → Conjugate app
+- **`keyboardDebug`** → Keyboard app
+
 
 ## Pre-commit Hooks [`⇧`](#contents)
 
