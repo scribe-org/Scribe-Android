@@ -34,13 +34,13 @@ Check out Scribe's [architecture diagrams](https://github.com/scribe-org/Organiz
 
 # **Contents**
 
--   [Preview Images](#preview-images)
--   [Contributing](#contributing)
--   [Environment Setup](#environment-setup)
--   [App Setup](#app-setup)
--   [Supported Languages](#supported-languages)
--   [Keyboard Features](#keyboard-features)
--   [Featured By](#featured-by)
+- [Preview Images](#preview-images)
+- [Contributing](#contributing)
+- [Environment Setup](#environment-setup)
+- [App Setup](#app-setup)
+- [Supported Languages](#supported-languages)
+- [Keyboard Features](#keyboard-features)
+- [Featured By](#featured-by)
 
 <a id="preview-images"></a>
 
@@ -77,12 +77,12 @@ After your first few pull requests organization members would be happy to discus
 
 ### Ways to Help [`⇧`](#contents)
 
--   [Reporting bugs](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=bug&template=bug_report.yml) as they're found 🐞
--   Working on [new features](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Afeature) ✨
--   [Localization](https://github.com/scribe-org/Scribe-i18n) for the app and app stores via our [Weblate project](https://hosted.weblate.org/projects/scribe/scribe-i18n) 🌐
--   [Documentation](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Adocumentation) for onboarding and project cohesion 📝
--   Adding language data to [Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) via [Wikidata](https://www.wikidata.org/)! 🗃️
--   [Sharing Scribe-Android](https://github.com/scribe-org/Scribe-Android/issues/62) with others! 🚀
+- [Reporting bugs](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=bug&template=bug_report.yml) as they're found 🐞
+- Working on [new features](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Afeature) ✨
+- [Localization](https://github.com/scribe-org/Scribe-i18n) for the app and app stores via our [Weblate project](https://hosted.weblate.org/projects/scribe/scribe-i18n) 🌐
+- [Documentation](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue+is%3Aopen+label%3Adocumentation) for onboarding and project cohesion 📝
+- Adding language data to [Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) via [Wikidata](https://www.wikidata.org/)! 🗃️
+- [Sharing Scribe-Android](https://github.com/scribe-org/Scribe-Android/issues/62) with others! 🚀
 
 <details><summary><strong>View Scribe-i18n localization progress</strong></summary>
   <a href="https://hosted.weblate.org/projects/scribe/scribe-i18n">
@@ -137,7 +137,7 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 >
 > To run git commands with SSH, remember then to substitute the HTTPS URL, `https://github.com/...`, with the SSH one, `git@github.com:...`.
 >
-> -   e.g. Cloning (with submodules) now becomes `git clone --recurse-submodules git@github.com:<your-username>/Scribe-Android.git`
+> - e.g. Cloning (with submodules) now becomes `git clone --recurse-submodules git@github.com:<your-username>/Scribe-Android.git`
 >
 > GitHub also has their documentation on how to [Generate a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) 🔑
 >
@@ -156,14 +156,13 @@ cd Scribe-Android
 git remote add upstream https://github.com/scribe-org/Scribe-Android.git
 ```
 
--   Now, if you run `git remote -v` you should see two remote repositories named:
-    -   `origin` (forked repository)
-    -   `upstream` (Scribe-Android repository)
+- Now, if you run `git remote -v` you should see two remote repositories named:
+    - `origin` (forked repository)
+    - `upstream` (Scribe-Android repository)
 
 3. Open the Scribe-Android directory in Android Studio
 
 4. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
-
     - In the top bar find and select the "Device Manager" option
     - [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
     - Press the play button marked "Run App"
@@ -190,35 +189,34 @@ pre-commit install  # install pre-commit hooks
 
 # App Setup [`⇧`](#contents)
 
-### Codebase Overview 
+### Codebase Overview
+
 The Scribe-Android codebase consists of two separate applications
 
-- Keyboard Application — the actual Scribe language keyboard (IME)
+- Keyboard Application — the Scribe Language Keyboards application (IME)
 
-- Conjugate Application — a application for verb conjugations. 
+- Conjugate Application — the Scribe verb conjugations application
 
 Each application is built and run independently using Android Studio build variants.
 
-To select a built variant 
+To select a built variant:
 
-1. Open the project in Android Studio 
-2. Navigate to Build → Select Build Variant 
+1. Open the project in Android Studio
+2. Navigate to `Build` → `Select Build Variant...`
 3. Choose the required variant:
-  * **KeyboardDebug** — Scribe keyboard application (IME)
-  * **ConjugateDebug** — Scribe Conjugate application
+
+- **`keyboardDebug`** → Scribe Language Keyboards app (IME)
+- **`conjugateDebug`** → Scribe Conjugate verb conjugation app
 
 > [!NOTE]
 > Currently Scribe-Android does not work as a floating keyboard.
 
-The Default variant would be `keyboardDebug`
+The default variant build variant is `keyboardDebug`. When running this variant, users access Scribe language keyboards through the following:
 
-Users access Scribe language keyboards through the following:
-
--   Open the app and press **`Enable Keyboard`**
-    -   Or: Settings -> System -> Languages & input -> On-screen keyboard -> Manage on-screen keyboards
--   Choose from the available Scribe language keyboards
--   When typing press 🌐 or the keyboard button to select keyboards
-
+- Open the app and press **`Enable Keyboard`**
+    - Or: Settings -> System -> Languages & input -> On-screen keyboard -> Manage on-screen keyboards
+- Choose from the available Scribe language keyboards
+- When typing press 🌐 or the keyboard button to select keyboards
 
 <a id="supported-languages"></a>
 
@@ -258,12 +256,12 @@ Scribe further annotates words in the command bar to help users understand the c
 
 Scribe annotates nouns in the command bar according to the following conventions:
 
--   Feminine: colored red 🟥 and marked with (F)
--   Masculine: colored blue 🟦 and marked with (M)
--   Common: colored purple 🟪 and marked with (C)
--   Neutral: colored green 🟩 and marked with (N)
--   Plural: colored orange 🟧 and marked with (PL)
--   More than one: marked with all their forms
+- Feminine: colored red 🟥 and marked with (F)
+- Masculine: colored blue 🟦 and marked with (M)
+- Common: colored purple 🟪 and marked with (C)
+- Neutral: colored green 🟩 and marked with (N)
+- Plural: colored orange 🟧 and marked with (PL)
+- More than one: marked with all their forms
 
 The above form abbreviations are translated into their equivalents in the keyboard's language.
 
@@ -282,19 +280,19 @@ The goal is for Scribe to have all the functionality of system keyboards. See th
 <details><summary><strong>Current base features include:</strong></summary>
 <p>
 
--   Phone and tablet support
--   Dynamic layouts for cross-device performance
--   Portrait and landscape modes
--   Dark mode compatibility
--   Autocompletion based on [Wikidata](https://www.wikidata.org/) sourced words
--   Autosuggestion based on [Wikipedia](https://www.wikipedia.org/) derived relationships
--   Emoji autocompletions and autosuggestions based on [Unicode CLDR](https://github.com/unicode-org/cldr) sourced emojis
--   Autocorrect (WIP)
--   Auto-capitalization following `.`, `?` and `!`
--   The double space period shortcut
--   Typing symbols and numbers followed by a space returns keyboard to letters
--   Hold-to-select characters for letters and symbols
--   Key pop up views for letters and symbols
+- Phone and tablet support
+- Dynamic layouts for cross-device performance
+- Portrait and landscape modes
+- Dark mode compatibility
+- Autocompletion based on [Wikidata](https://www.wikidata.org/) sourced words
+- Autosuggestion based on [Wikipedia](https://www.wikipedia.org/) derived relationships
+- Emoji autocompletions and autosuggestions based on [Unicode CLDR](https://github.com/unicode-org/cldr) sourced emojis
+- Autocorrect (WIP)
+- Auto-capitalization following `.`, `?` and `!`
+- The double space period shortcut
+- Typing symbols and numbers followed by a space returns keyboard to letters
+- Hold-to-select characters for letters and symbols
+- Key pop up views for letters and symbols
 
 </p>
 </details>
@@ -344,8 +342,8 @@ The Scribe community would like to thank all the great software that made Scribe
 <details><summary><strong>List of referenced code</strong></summary>
 <p>
 
--   [Simple-Keyboard](https://github.com/SimpleMobileTools/Simple-Keyboard) by [SimpleMobileTools](https://github.com/SimpleMobileTools) ([License](https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE))
--   [Simple-Commons](https://github.com/SimpleMobileTools/Simple-Commons) by [SimpleMobileTools](https://github.com/SimpleMobileTools) ([License](https://github.com/SimpleMobileTools/Simple-Commons/blob/master/LICENSE))
+- [Simple-Keyboard](https://github.com/SimpleMobileTools/Simple-Keyboard) by [SimpleMobileTools](https://github.com/SimpleMobileTools) ([License](https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE))
+- [Simple-Commons](https://github.com/SimpleMobileTools/Simple-Commons) by [SimpleMobileTools](https://github.com/SimpleMobileTools) ([License](https://github.com/SimpleMobileTools/Simple-Commons/blob/master/LICENSE))
 
 </p>
 </details>
