@@ -15,6 +15,8 @@ If you have questions or would like to communicate with the team, please [join u
 - [First steps as a contributor](#first-steps)
 - [Learning the tech stack](#learning-the-tech)
 - [Development environment](#dev-env)
+- [Build Variant Selection](#build-variants)
+- [Pre-commit Hooks](#pre-commit)
 - [Testing](#testing)
 - [Issues and projects](#issues-projects)
 - [Bug reports](#bug-reports)
@@ -72,7 +74,7 @@ Scribe is very open to contributions from people in the early stages of their co
 
 <a id="dev-env"></a>
 
-# Development environment [`⇧`](#contents)
+## Development environment [`⇧`](#contents)
 
 Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding language. Those new to Kotlin or wanting to develop their skills are more than welcome to contribute! The first step on your Kotlin journey would be to read through the [Kotlin documentation](https://kotlinlang.org/docs/getting-started.html). The general steps to setting up a development environment are:
 
@@ -145,6 +147,8 @@ Build variants can be selected from **Build → Select Build Variant** in Androi
 - **`keyboardDebug`** → Scribe Language Keyboards app (IME)
 - **`conjugateDebug`** → Scribe Conjugate verb conjugation app
 
+<a id="pre-commit"></a>
+
 ## Pre-commit Hooks [`⇧`](#contents)
 
 Scribe-Android uses pre-commit hooks to maintain a clean and consistent codebase. These hooks help automatically check for issues such as formatting, trailing whitespace, and linting errors. Here's how to set up pre-commit for Scribe-Android:
@@ -166,7 +170,7 @@ Scribe-Android uses pre-commit hooks to maintain a clean and consistent codebase
 
 <a id="testing"></a>
 
-## Testing [`⇧`](#contents)
+### Testing [`⇧`](#contents)
 
 Writing unit tests is essential to guarantee the dependability and sustainability of the Scribe-Android codebase. Unit tests confirm that individual components of the application work as intended by detecting errors at an early stage, thus making the debugging process easier and boosting assurance for upcoming modifications. An unchanging testing method helps new team members grasp project norms and anticipated actions.
 
