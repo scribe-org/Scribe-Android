@@ -201,12 +201,7 @@ class KeyHandler(
      */
 
     private fun handleDeleteKey() {
-        val isCommandBarActive =
-            ime.currentState == ScribeState.TRANSLATE ||
-                ime.currentState == ScribeState.CONJUGATE ||
-                ime.currentState == ScribeState.PLURAL
-
-        ime.handleDelete(isCommandBarActive, ime.isDeleteRepeating()) // Pass the actual repeating status
+        ime.handleDelete(ime.isDeleteRepeating()) // Pass the actual repeating status
 
         if (ime.currentState == ScribeState.IDLE) {
             val currentWord = ime.getLastWordBeforeCursor()

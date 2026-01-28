@@ -297,11 +297,11 @@ class AboutUtilInstrumentedTest {
         println("Testing ExternalLinks constants...")
 
         // Test that external links are properly defined.
-        assertThat(be.scri.ui.screens.about.ExternalLinks.GITHUB_SCRIBE).isNotEmpty()
-        assertThat(be.scri.ui.screens.about.ExternalLinks.GITHUB_ISSUES).isNotEmpty()
-        assertThat(be.scri.ui.screens.about.ExternalLinks.GITHUB_RELEASES).isNotEmpty()
-        assertThat(be.scri.ui.screens.about.ExternalLinks.MATRIX).isNotEmpty()
-        assertThat(be.scri.ui.screens.about.ExternalLinks.MASTODON).isNotEmpty()
+        assertThat(ExternalLinks.GITHUB_SCRIBE).isNotEmpty()
+        assertThat(ExternalLinks.GITHUB_ISSUES).isNotEmpty()
+        assertThat(ExternalLinks.GITHUB_RELEASES).isNotEmpty()
+        assertThat(ExternalLinks.MATRIX).isNotEmpty()
+        assertThat(ExternalLinks.MASTODON).isNotEmpty()
 
         println("ExternalLinks constants test passed!")
     }
