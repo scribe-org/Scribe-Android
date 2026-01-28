@@ -12,18 +12,20 @@ If you have questions or would like to communicate with the team, please [join u
 
 # **Contents**
 
--   [First steps as a contributor](#first-steps)
--   [Learning the tech stack](#learning-the-tech)
--   [Development environment](#dev-env)
--   [Testing](#testing)
--   [Issues and projects](#issues-projects)
--   [Bug reports](#bug-reports)
--   [Feature requests](#feature-requests)
--   [Pull requests](#pull-requests)
--   [Data edits](#data-edits)
--   [Localization](#localization)
--   [Documentation](#documentation)
--   [Design](#design)
+- [First steps as a contributor](#first-steps)
+- [Learning the tech stack](#learning-the-tech)
+- [Development environment](#dev-env)
+- [Build Variant Selection](#build-variants)
+- [Pre-commit Hooks](#pre-commit)
+- [Testing](#testing)
+- [Issues and projects](#issues-projects)
+- [Bug reports](#bug-reports)
+- [Feature requests](#feature-requests)
+- [Pull requests](#pull-requests)
+- [Data edits](#data-edits)
+- [Localization](#localization)
+- [Documentation](#documentation)
+- [Design](#design)
 
 <a id="first-steps"></a>
 
@@ -31,15 +33,15 @@ If you have questions or would like to communicate with the team, please [join u
 
 Thank you for your interest in contributing to Scribe-Android! We look forward to welcoming you to the community and working with you to build an tools for language learners to communicate effectively :) The following are some suggested steps for people interested in joining our community:
 
--   Please join the [public Matrix chat](https://matrix.to/#/#scribe_community:matrix.org) to connect with the community
-    -   [Matrix](https://matrix.org/) is a network for secure, decentralized communication
-    -   We'd suggest that you use the [Element](https://element.io/) client and [Element X](https://element.io/app) for a mobile app
-    -   The [General](https://matrix.to/#/!yQJjLmluvlkWttNhKo:matrix.org?via=matrix.org) and [Android](https://matrix.to/#/#ScribeAndroid:matrix.org) channels would be great places to start!
-    -   Feel free to introduce yourself and tell us what your interests are if you're comfortable :)
--   Read through this contributing guide for all the information you need to contribute
--   Look into issues marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) and the [Projects board](https://github.com/orgs/scribe-org/projects/1) to get a better understanding of what you can work on
--   Check out our [public designs on Figma](https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?type=design&node-id=405-464&mode=design&t=E3ccS9Z8MDVSizQ4-0) to understand Scribes's goals and direction
--   Consider joining our [bi-weekly developer sync](https://etherpad.wikimedia.org/p/scribe-dev-sync)!
+- Please join the [public Matrix chat](https://matrix.to/#/#scribe_community:matrix.org) to connect with the community
+    - [Matrix](https://matrix.org/) is a network for secure, decentralized communication
+    - We'd suggest that you use the [Element](https://element.io/) client and [Element X](https://element.io/app) for a mobile app
+    - The [General](https://matrix.to/#/!yQJjLmluvlkWttNhKo:matrix.org?via=matrix.org) and [Android](https://matrix.to/#/#ScribeAndroid:matrix.org) channels would be great places to start!
+    - Feel free to introduce yourself and tell us what your interests are if you're comfortable :)
+- Read through this contributing guide for all the information you need to contribute
+- Look into issues marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) and the [Projects board](https://github.com/orgs/scribe-org/projects/1) to get a better understanding of what you can work on
+- Check out our [public designs on Figma](https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?type=design&node-id=405-464&mode=design&t=E3ccS9Z8MDVSizQ4-0) to understand Scribes's goals and direction
+- Consider joining our [bi-weekly developer sync](https://etherpad.wikimedia.org/p/scribe-dev-sync)!
 
 > [!NOTE]
 > Those new to Kotlin or wanting to work on their Kotlin skills are more than welcome to contribute! The team would be happy to help you on your development journey :)
@@ -53,10 +55,10 @@ Scribe is very open to contributions from people in the early stages of their co
 <details><summary>Docs for those new to programming</summary>
 <p>
 
--   [Mozilla Developer Network Learning Area](https://developer.mozilla.org/en-US/docs/Learn)
-    -   Doing MDN sections for HTML, CSS and JavaScript is the best ways to get into web development!
--   [Open Source Guides](https://opensource.guide/)
-    -   Guides from GitHub about open-source software including how to start and much more!
+- [Mozilla Developer Network Learning Area](https://developer.mozilla.org/en-US/docs/Learn)
+    - Doing MDN sections for HTML, CSS and JavaScript is the best ways to get into web development!
+- [Open Source Guides](https://opensource.guide/)
+    - Guides from GitHub about open-source software including how to start and much more!
 
 </p>
 </details>
@@ -64,15 +66,15 @@ Scribe is very open to contributions from people in the early stages of their co
 <details><summary>Kotlin learning docs</summary>
 <p>
 
--   [Kotlin getting started guide](https://kotlinlang.org/docs/getting-started.html)
--   [Kotlin documentation](https://kotlinlang.org/docs/home.html)
+- [Kotlin getting started guide](https://kotlinlang.org/docs/getting-started.html)
+- [Kotlin documentation](https://kotlinlang.org/docs/home.html)
 
 </p>
 </details>
 
 <a id="dev-env"></a>
 
-# Development environment [`⇧`](#contents)
+## Development environment [`⇧`](#contents)
 
 Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding language. Those new to Kotlin or wanting to develop their skills are more than welcome to contribute! The first step on your Kotlin journey would be to read through the [Kotlin documentation](https://kotlinlang.org/docs/getting-started.html). The general steps to setting up a development environment are:
 
@@ -90,7 +92,7 @@ Scribe-Android is developed using the [Kotlin](https://kotlinlang.org/) coding l
 >
 > To run git commands with SSH, remember then to substitute the HTTPS URL, `https://github.com/...`, with the SSH one, `git@github.com:...`.
 >
-> -   e.g. Cloning (with submodules) now becomes `git clone --recurse-submodules git@github.com:<your-username>/Scribe-Android.git`
+> - e.g. Cloning (with submodules) now becomes `git clone --recurse-submodules git@github.com:<your-username>/Scribe-Android.git`
 >
 > GitHub also has their documentation on how to [Generate a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) 🔑
 >
@@ -109,14 +111,15 @@ cd Scribe-Android
 git remote add upstream https://github.com/scribe-org/Scribe-Android.git
 ```
 
--   Now, if you run `git remote -v` you should see two remote repositories named:
-    -   `origin` (forked repository)
-    -   `upstream` (Scribe-Android repository)
+- Now, if you run `git remote -v` you should see two remote repositories named:
+    - `origin` (forked repository)
+    - `upstream` (Scribe-Android repository)
 
 3. Open the Scribe-Android directory in Android Studio
 
-4. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
+4. The application has 2 build variants, with more information about them being found in the [Build Variant Selection](#build-variants) section
 
+5. In order to [run Scribe on an emulator](https://developer.android.com/studio/run/emulator):
     - In the top bar find and select the "Device Manager" option
     - [Create a device](https://developer.android.com/studio/run/managing-avds) and select it once it's been made
     - Press the play button marked "Run App"
@@ -132,6 +135,19 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
 
 > [!NOTE]
 > Feel free to contact the team in the [Android room on Matrix](https://matrix.to/#/#ScribeAndroid:matrix.org) if you're having problems getting your environment setup!
+
+<a id="build-variants"></a>
+
+## Build Variant Selection [`⇧`](#contents)
+
+The project includes **two build variants**, each corresponding to a different application.
+
+Build variants can be selected from **Build → Select Build Variant** in Android Studio:
+
+- **`keyboardDebug`** → Scribe Language Keyboards app (IME)
+- **`conjugateDebug`** → Scribe Conjugate verb conjugation app
+
+<a id="pre-commit"></a>
 
 ## Pre-commit Hooks [`⇧`](#contents)
 
@@ -154,7 +170,7 @@ Scribe-Android uses pre-commit hooks to maintain a clean and consistent codebase
 
 <a id="testing"></a>
 
-## Testing [`⇧`](#contents)
+### Testing [`⇧`](#contents)
 
 Writing unit tests is essential to guarantee the dependability and sustainability of the Scribe-Android codebase. Unit tests confirm that individual components of the application work as intended by detecting errors at an early stage, thus making the debugging process easier and boosting assurance for upcoming modifications. An unchanging testing method helps new team members grasp project norms and anticipated actions.
 
@@ -182,13 +198,13 @@ To maintain consistency and clarity in the Scribe-Android codebase, we recommend
 
 #### 1. Project Structure for Unit Tests
 
--   **Location**: Place all unit tests in the `src/test/java` directory to mirror the structure of the `src/main/java` directory. For new classes or features, ensure their corresponding test classes follow the same package structure.
--   **Class Files**: Each class in `src/main/java` should have a dedicated test file in `src/test/java`, named by appending `Test` to the class name (e.g., `UserManager` → `UserManagerTest`).
--   **New Classes for Testing**: When a new utility or helper class is needed specifically for testing, place it under `src/test/java/utils` or `src/test/java/helpers`.
+- **Location**: Place all unit tests in the `src/test/java` directory to mirror the structure of the `src/main/java` directory. For new classes or features, ensure their corresponding test classes follow the same package structure.
+- **Class Files**: Each class in `src/main/java` should have a dedicated test file in `src/test/java`, named by appending `Test` to the class name (e.g., `UserManager` → `UserManagerTest`).
+- **New Classes for Testing**: When a new utility or helper class is needed specifically for testing, place it under `src/test/java/utils` or `src/test/java/helpers`.
 
 #### 2. Naming Conventions for Tests
 
--   **Test Methods**: Use descriptive names indicating expected behavior. Follow the format:
+- **Test Methods**: Use descriptive names indicating expected behavior. Follow the format:
 
     ```kotlin
     @Test
@@ -201,8 +217,8 @@ To maintain consistency and clarity in the Scribe-Android codebase, we recommend
 
 #### 3. Scope and Focus of Tests
 
--   **Single Responsibility**: Each test should cover only one behavior or scenario. For multiple behaviors, split them into separate test methods.
--   **Setup and Teardown**: Use `@Before` for initializing objects and `@After` for cleanup, ensuring tests run in isolation.
+- **Single Responsibility**: Each test should cover only one behavior or scenario. For multiple behaviors, split them into separate test methods.
+- **Setup and Teardown**: Use `@Before` for initializing objects and `@After` for cleanup, ensuring tests run in isolation.
 
     ```kotlin
     @Before
@@ -216,22 +232,21 @@ To maintain consistency and clarity in the Scribe-Android codebase, we recommend
     }
     ```
 
--   **Mocking**: Use mocks (e.g., MockK) to isolate the unit test, especially with dependencies like databases, network requests or services.
+- **Mocking**: Use mocks (e.g., MockK) to isolate the unit test, especially with dependencies like databases, network requests or services.
 
 #### 4. Writing Effective Tests
 
--   **AAA Pattern (Arrange, Act, Assert)**: Structure each test with three distinct parts:
+- **AAA Pattern (Arrange, Act, Assert)**: Structure each test with three distinct parts:
+    - **Arrange**: Set up the conditions.
+    - **Act**: Execute the method under test.
+    - **Assert**: Verify the result.
 
-    -   **Arrange**: Set up the conditions.
-    -   **Act**: Execute the method under test.
-    -   **Assert**: Verify the result.
-
--   **Coverage of Edge Cases**: Write tests for both typical cases and edge cases, like `null` values or invalid data.
+- **Coverage of Edge Cases**: Write tests for both typical cases and edge cases, like `null` values or invalid data.
 
 #### 5. Test Documentation
 
--   **Comments**: Add comments when test logic is complex or non-intuitive.
--   **Assertions**: Use descriptive assertion methods (`assertTrue`, `assertEquals`, etc.) for clarity and include failure messages for custom assertions if necessary.
+- **Comments**: Add comments when test logic is complex or non-intuitive.
+- **Assertions**: Use descriptive assertion methods (`assertTrue`, `assertEquals`, etc.) for clarity and include failure messages for custom assertions if necessary.
 
 # Issues and projects [`⇧`](#contents)
 
@@ -258,11 +273,11 @@ Guidelines for bug reports:
 
 **Great Bug Reports** tend to have:
 
--   A quick summary
--   Steps to reproduce
--   What you expected would happen
--   What actually happens
--   Notes (why this might be happening, things tried that didn't work, etc)
+- A quick summary
+- Steps to reproduce
+- What you expected would happen
+- What actually happens
+- Notes (why this might be happening, things tried that didn't work, etc)
 
 To make the above steps easier, the Scribe team asks that contributors report bugs using the [bug report](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=feature&template=bug_report.yml) template, with these issues further being marked with the [`Bug`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aissue%20state%3Aopen%20type%3ABug) type.
 
@@ -302,8 +317,8 @@ When making a contribution, adhering to the [GitHub flow](https://guides.github.
 > [!NOTE]
 > The following are tools and methods to help you write good commit messages ✨
 >
-> -   [commitlint](https://commitlint.io/) helps write [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-> -   Git's [interactive rebase](https://docs.github.com/en/github/getting-started-with-github/about-git-rebase) cleans up commits
+> - [commitlint](https://commitlint.io/) helps write [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+> - Git's [interactive rebase](https://docs.github.com/en/github/getting-started-with-github/about-git-rebase) cleans up commits
 
 4. Locally merge (or rebase) the upstream development branch into your topic branch:
 

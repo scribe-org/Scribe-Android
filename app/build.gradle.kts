@@ -46,6 +46,27 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
+    productFlavors {
+        create("keyboards") {
+            applicationIdSuffix = ".keyboards"
+            isDefault = true
+            resValue(
+                "string",
+                "app_launcher_name",
+                "Scribe"
+            )
+        }
+        create("conjugate") {
+            applicationIdSuffix = ".conjugate"
+            resValue(
+                "string",
+                "app_launcher_name",
+                "Conjugate"
+            )
+        }
+    }
+
     packaging {
         resources {
             pickFirsts.add("META-INF/LICENSE*")
@@ -114,10 +135,7 @@ android {
     }
 
     flavorDimensions.add("variants")
-    productFlavors {
-        create("core")
-        create("fdroid")
-    }
+
 
     sourceSets {
         getByName("main").java.srcDirs("src/main/kotlin")
