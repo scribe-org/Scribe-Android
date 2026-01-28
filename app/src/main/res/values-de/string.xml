@@ -3,7 +3,6 @@
     <string name="i18n._global.about_scribe">Über Scribe</string>
     <string name="i18n._global.android_changelog">Android-Änderungsprotokoll</string>
     <string name="i18n._global.available_data">Verfügbare Daten</string>
-    <string name="i18n._global.blog_posts">Blog-Beiträge</string>
     <string name="i18n._global.changelog">Änderungsprotokoll</string>
     <string name="i18n._global.data_server">Datenserver</string>
     <string name="i18n._global.ios_changelog">iOS-Änderungsprotokoll</string>
@@ -18,7 +17,6 @@
     <string name="i18n.app._global.german">Deutsch</string>
     <string name="i18n.app._global.indonesian">Indonesisch</string>
     <string name="i18n.app._global.italian">Italienisch</string>
-    <string name="i18n.app._global.norwegian">Norwegisch</string>
     <string name="i18n.app._global.portuguese">Portugiesisch</string>
     <string name="i18n.app._global.russian">Russisch</string>
     <string name="i18n.app._global.spanish">Spanisch</string>
