@@ -87,7 +87,7 @@ class KeyboardUIManager(
     var genderSuggestionLeft: Button? = binding.translateBtnLeft
     var genderSuggestionRight: Button? = binding.translateBtnRight
 
-    // State Variables specific to UI rendering
+    // State variables specific to UI rendering.
     var currentCommandBarHint: String = ""
     var commandBarHintColor: Int = Color.GRAY
     var commandBarTextColor: Int = Color.BLACK
@@ -116,7 +116,7 @@ class KeyboardUIManager(
 
         binding.scribeKeyClose.setOnClickListener { listener.onCloseClicked() }
 
-        // Info button listener for INVALID state
+        // Info button listener for INVALID state.
         binding.ivInfo.setOnClickListener { showInvalidInfo() }
     }
 
@@ -390,7 +390,7 @@ class KeyboardUIManager(
                                 if (matchingEntry != null) {
                                     val (key, values) = matchingEntry
                                     if (values.size > 1) {
-                                        // Category logic is handled in IME's commitText
+                                        // Category logic is handled in IME's commitText.
                                     }
                                 }
                             }
@@ -459,12 +459,12 @@ class KeyboardUIManager(
     private fun setupInvalidView(language: String) {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
-        // Original logic: Invalid state actually uses the toolbarBar layout initially
+        // Original logic: Invalid state actually uses the toolbarBar layout initially.
         binding.invalidInfoBar.visibility = View.GONE
 
         val isDarkMode = getIsDarkModeOrNot(context)
 
-        // Restore original logic: Set background on toolbarBar, not invalidInfoBar
+        // Restore original logic: Set background on toolbarBar, not invalidInfoBar.
         binding.toolbarBar.setBackgroundColor(
             if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
         )
@@ -575,7 +575,7 @@ class KeyboardUIManager(
         return index
     }
 
-    // --- Helpers for suggestions and visibility ---
+    // MARK: Suggestion and Visibility
 
     /**
      * Updates the visibility of the suggestion buttons based on device type (phone/tablet)

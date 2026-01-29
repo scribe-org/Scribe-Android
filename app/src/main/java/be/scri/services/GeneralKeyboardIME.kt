@@ -75,7 +75,7 @@ abstract class GeneralKeyboardIME(
     open var keyboard: KeyboardBase? = null
     var keyboardView: KeyboardView? = null
 
-    // UI Manager instance
+    // UI Manager instance.
     lateinit var uiManager: KeyboardUIManager
 
     abstract var lastShiftPressTS: Long
@@ -98,14 +98,15 @@ abstract class GeneralKeyboardIME(
             field = value
         }
 
-    // Delegate backspace handling to a separate class
+    // Delegate backspace handling to a separate class.
     private val backspaceHandler = BackspaceHandler(this)
 
-    // Bridge for BackspaceHandler to access binding through UI Manager
+    // Bridge for BackspaceHandler to access binding through UI Manager.
     internal val binding: InputMethodViewBinding
         get() = uiManager.binding
 
-    // State Variables
+    // MARK: State Variables
+
     internal var isSingularAndPlural: Boolean = false
     private var subsequentAreaRequired: Boolean = false
     private var subsequentData: MutableList<List<String>> = mutableListOf()
@@ -139,7 +140,7 @@ abstract class GeneralKeyboardIME(
 
     internal var currentState: ScribeState = ScribeState.IDLE
 
-    // Properties used by BackspaceHandler, delegated to UI Manager
+    // Properties used by BackspaceHandler, delegated to UI Manager.
     internal var currentCommandBarHint: String
         get() = uiManager.currentCommandBarHint
         set(value) {
@@ -152,7 +153,8 @@ abstract class GeneralKeyboardIME(
             uiManager.commandBarHintColor = value
         }
 
-    // Conjugation State
+    // MARK: Conjugation State
+
     private var currentVerbForConjugation: String? = null
     private var selectedConjugationSubCategory: String? = null
 
@@ -170,7 +172,7 @@ abstract class GeneralKeyboardIME(
 
     enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID, ALREADY_PLURAL }
 
-    // --- Lifecycle Methods ---
+    // MARK: Lifecycle Methods
 
     /**
      * Called when the service is first created. Initializes database and suggestion handlers.
@@ -189,12 +191,12 @@ abstract class GeneralKeyboardIME(
      * @return The root View of the input method.
      */
     override fun onCreateInputView(): View {
-        // Initialize UI Manager
+        // Initialize UI manager.
         val viewBinding = InputMethodViewBinding.inflate(layoutInflater)
         uiManager = KeyboardUIManager(viewBinding, this, this)
         keyboardView = uiManager.keyboardView
 
-        // Initial Keyboard Setup
+        // Initial keyboard setup.
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
 
         keyboardView?.apply {
@@ -235,7 +237,7 @@ abstract class GeneralKeyboardIME(
      */
     override fun onComputeInsets(outInsets: Insets) {
         super.onComputeInsets(outInsets)
-        // Access root view via UI manager if initialized
+        // Access root view via UI manager if initialized.
         if (this::uiManager.isInitialized) {
             val inputView = uiManager.binding.root
             if (inputView.visibility == View.VISIBLE && inputView.height > 0) {
@@ -272,7 +274,7 @@ abstract class GeneralKeyboardIME(
         enterKeyType = attribute.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         currentEnterKeyType = enterKeyType
 
-        // This setter triggers the logic in the property override if not shadowed
+        // This setter triggers the logic in the property override if not shadowed.
         hasTextBeforeCursor = currentInputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
 
         val keyboardXml =
@@ -321,7 +323,7 @@ abstract class GeneralKeyboardIME(
 
         window.navigationBarColor = ContextCompat.getColor(this, color)
 
-        // Handle Edge-to-Edge Navigation Bar icons color
+        // Handle Edge-to-Edge Navigation Bar icons color.
         val decorView = window.decorView
         var flags = decorView.systemUiVisibility
         flags =
@@ -347,7 +349,7 @@ abstract class GeneralKeyboardIME(
         moveToIdleState()
     }
 
-    // --- OnKeyboardActionListener Interface Implementation ---
+    // MARK: OnKeyboardActionListener
 
     /**
      * Interface method called by KeyboardView.
@@ -454,7 +456,7 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    // --- Helper Methods ---
+    // MARK: Helper Methods
 
     protected fun isPeriodAndCommaEnabled(): Boolean {
         val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
@@ -533,7 +535,7 @@ abstract class GeneralKeyboardIME(
         sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
 
-    // --- UI Update Delegation ---
+    // MARK: UI Update Delegation
 
     /**
      * The main dispatcher for updating the entire keyboard UI. It calls the appropriate setup function
@@ -578,7 +580,7 @@ abstract class GeneralKeyboardIME(
         isSingularAndPlural = false
     }
 
-    // --- KeyboardUIListener Implementation ---
+    // MARK: KeyboardUIListener
 
     override fun onScribeKeyOptionsClicked() {
         if (currentState == ScribeState.IDLE) {
@@ -668,7 +670,7 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    // --- Input Logic ---
+    // MARK: Input Logic
 
     /**
      * Handles the logic for the Enter key press. This can either perform an editor action,
@@ -867,7 +869,7 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    // --- Deletion Logic ---
+    // MARK: Deletion Logic
 
     /**
      * Handles the logic for the Delete/Backspace key. It deletes characters from either
@@ -896,7 +898,7 @@ abstract class GeneralKeyboardIME(
         backspaceHandler.isDeleteRepeating = repeating
     }
 
-    // --- State & Logic Helpers ---
+    // MARK: State & Logic Helpers
 
     /**
      * Safely fetches autocomplete suggestions for the given prefix.
@@ -948,7 +950,7 @@ abstract class GeneralKeyboardIME(
      */
     fun getText(): String? = currentInputConnection?.getTextBeforeCursor(TEXT_LENGTH, 0)?.toString()
 
-    // --- Misc Private Helpers ---
+    // MARK: Misc Private Helpers
 
     /**
      * Gets the IME action ID (e.g., Go, Search, Done) from the current editor info.
@@ -1228,7 +1230,7 @@ abstract class GeneralKeyboardIME(
         handleWordSuggestions(wordSuggestions, hasLinguisticSuggestions)
     }
 
-    // --- Linguistic Logic here to manipulate exposed views ---
+    // MARK: Linguistic Logic
 
     /**
      * A helper function to specifically trigger the plural suggestion UI if needed.
@@ -1563,7 +1565,7 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    // --- Autocomplete ---
+    // MARK: Autocomplete
 
     /**
      * Updates autocomplete UI with a new list of suggestions.
@@ -1675,7 +1677,7 @@ abstract class GeneralKeyboardIME(
         val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
         prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
         val keyboardXmlId = getKeyboardLayoutForState(currentState, true, flattenList.size)
-        // Re-initialize keyboard via UI manager helper which calls 'initializeKeyboard(xml)'
+        // Re-initialize keyboard via UI manager helper which calls 'initializeKeyboard(xml)'.
         uiManager.initializeKeyboard(keyboardXmlId)
         prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
         when (flattenList.size) {
@@ -1692,7 +1694,7 @@ abstract class GeneralKeyboardIME(
             }
         }
         prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
-        // binding access via uiManager
+        // Binding access via uiManager.
         uiManager.binding.ivInfo.visibility = View.GONE
     }
 

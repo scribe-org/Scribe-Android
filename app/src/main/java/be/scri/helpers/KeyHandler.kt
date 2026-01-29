@@ -201,7 +201,7 @@ class KeyHandler(
      */
 
     private fun handleDeleteKey() {
-        ime.handleDelete(ime.isDeleteRepeating()) // Pass the actual repeating status
+        ime.handleDelete(ime.isDeleteRepeating()) // pass the actual repeating status
 
         if (ime.currentState == ScribeState.IDLE) {
             val currentWord = ime.getLastWordBeforeCursor()
@@ -351,8 +351,8 @@ class KeyHandler(
                 ScribeState.TRANSLATE,
                 ScribeState.CONJUGATE,
                 ScribeState.PLURAL,
-                -> true // Use command bar for actual commands
-                else -> false // Use main input field for IDLE and SELECT_COMMAND
+                -> true // use command bar for actual commands
+                else -> false // use main input field for IDLE and SELECT_COMMAND
             }
 
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)

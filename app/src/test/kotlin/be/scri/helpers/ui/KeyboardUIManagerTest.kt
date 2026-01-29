@@ -266,7 +266,7 @@ class KeyboardUIManagerTest {
     }
 
     @Test
-    @Config(qualifiers = "large") // Force Tablet layout
+    @Config(qualifiers = "large") // force tablet layout
     fun `updateEmojiSuggestion updates tablet layout buttons correctly`() {
         val emojis = mutableListOf("😀", "😂", "🚀")
 
