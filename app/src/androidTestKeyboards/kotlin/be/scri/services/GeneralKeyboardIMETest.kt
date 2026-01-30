@@ -19,41 +19,47 @@ class GeneralKeyboardIMETest {
 
     @Before
     fun setUp() {
-        inputConnection =
-            mockk {
-                every { getTextBeforeCursor(any(), any()) } returns ""
-            }
+        inputConnection = mockk(relaxed = true)
 
-        ime =
-            mockk(relaxed = true) {
-                every { getCurrentInputConnection() } returns inputConnection
+        ime = mockk(relaxed = true)
 
-                every { hasTextBeforeCursor } answers {
-                    val text = inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0)?.toString() ?: ""
-                    text.isNotEmpty() && text.trim() != "." && text.trim() != ""
-                }
+        every { ime.currentInputConnection } returns inputConnection
+
+        every { ime.hasTextBeforeCursor } answers {
+            val ic = ime.currentInputConnection
+            if (ic == null) {
+                false
+            } else {
+                val text = ic.getTextBeforeCursor(Int.MAX_VALUE, 0)?.toString() ?: ""
+                text.isNotEmpty() && text.trim() != "." && text.trim() != ""
             }
+        }
     }
 
     @Test
     fun hasTextBeforeCursor_returnsTrue_whenTextExists() {
-        every { inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0) } returns "hello"
+        every { inputConnection.getTextBeforeCursor(any(), any()) } returns "hello"
 
-        println("Result: ${ime.hasTextBeforeCursor}")
         assertTrue(ime.hasTextBeforeCursor)
     }
 
     @Test
     fun hasTextBeforeCursor_returnsFalse_whenTextIsEmpty() {
-        every { inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0) } returns ""
+        every { inputConnection.getTextBeforeCursor(any(), any()) } returns ""
 
         assertFalse(ime.hasTextBeforeCursor)
     }
 
     @Test
     fun hasTextBeforeCursor_returnsFalse_whenTextIsPeriod() {
-        every { inputConnection.getTextBeforeCursor(Int.MAX_VALUE, 0) } returns ". "
+        every { inputConnection.getTextBeforeCursor(any(), any()) } returns ". "
 
+        assertFalse(ime.hasTextBeforeCursor)
+    }
+
+    @Test
+    fun hasTextBeforeCursor_returnsFalse_whenInputConnectionIsNull() {
+        every { ime.currentInputConnection } returns null
         assertFalse(ime.hasTextBeforeCursor)
     }
 }

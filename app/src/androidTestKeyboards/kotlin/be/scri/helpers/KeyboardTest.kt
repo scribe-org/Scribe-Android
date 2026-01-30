@@ -59,7 +59,7 @@ class KeyboardTest {
         }
         every { mockInputConnection.deleteSurroundingText(1, 0) } returns true
 
-        keyHandler.handleKey(KeyboardBase.KEYCODE_DELETE, "en")
+        keyHandler.handleKey(KeyboardBase.Companion.KEYCODE_DELETE, "en")
 
         assert(currentText.length == initialText.length - 1) {
             "Expected length ${initialText.length - 1}, but got ${currentText.length}"
@@ -81,7 +81,7 @@ class KeyboardTest {
             mockInputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
         }
 
-        keyHandler.handleKey(KeyboardBase.KEYCODE_ENTER, "en")
+        keyHandler.handleKey(KeyboardBase.Companion.KEYCODE_ENTER, "en")
 
         verify(exactly = 1) { mockIME.handleKeycodeEnter() }
         verify(exactly = 1) {
