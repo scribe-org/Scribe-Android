@@ -1053,15 +1053,6 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles the logic for the Shift key. It cycles through shift states (off, on-for-one-char, caps lock)
      * on the letter keyboard, and toggles between symbol pages on the symbol keyboard.
-     *
-     * @param keyboardMode The current keyboard mode.
-     * @param keyboardView The instance of the keyboard view.
-     */
-
-    /**
-     * Handles the logic for the Shift key. It cycles through shift states (off, on-for-one-char, caps lock)
-     * on the letter keyboard, and toggles between symbol pages on the symbol keyboard.
-     *
      * @param keyboardMode The current keyboard mode.
      * @param keyboardView The instance of the keyboard view.
      */
