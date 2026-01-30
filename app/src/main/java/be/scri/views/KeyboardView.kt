@@ -140,7 +140,7 @@ class KeyboardView
             fun commitPeriodAfterSpace()
         }
 
-        private var mKeyboard: KeyboardBase? = null
+        var mKeyboard: KeyboardBase? = null
         private var mCurrentKeyIndex: Int = NOT_A_KEY
 
         private var mLabelTextSize = 0
@@ -688,7 +688,7 @@ class KeyboardView
          *
          * @return true if the shift key state changed, false if there was no change.
          */
-        private fun setShifted(shiftState: Int) {
+        fun setShifted(shiftState: Int) {
             if (mKeyboard?.setShifted(shiftState) == true) {
                 invalidateAllKeys()
             }
@@ -716,11 +716,8 @@ class KeyboardView
             return when {
                 label.toString() in listOf("tab", "caps lock") -> label
 
-                mKeyboard?.mShiftState in
-                    setOf(
-                        KeyboardBase.SHIFT_LOCKED,
-                        KeyboardBase.SHIFT_ON,
-                    )
+                mKeyboard?.mShiftState == SHIFT_ON_ONE_CHAR ||
+                    mKeyboard?.mShiftState == SHIFT_ON_PERMANENT
                 -> label.toString().uppercase(Locale.getDefault())
 
                 else -> label

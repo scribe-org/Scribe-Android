@@ -334,8 +334,14 @@ abstract class GeneralKeyboardIME(
             }
         decorView.systemUiVisibility = flags
 
-        val textBefore = currentInputConnection?.getTextBeforeCursor(1, 0)?.toString().orEmpty()
-        if (textBefore.isEmpty()) keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
+        // Set initial shift state for empty text fields
+        if (keyboardMode == keyboardLetters) {
+            val textBefore = currentInputConnection?.getTextBeforeCursor(1, 0)?.toString().orEmpty()
+            if (textBefore.isEmpty()) {
+                keyboardView?.mKeyboard?.mShiftState = SHIFT_ON_ONE_CHAR
+            }
+            keyboardView?.invalidateAllKeys()
+        }
     }
 
     /**
@@ -424,20 +430,18 @@ abstract class GeneralKeyboardIME(
             when (code) {
                 KeyboardBase.KEYCODE_DELETE -> handleDelete()
                 KeyboardBase.KEYCODE_SHIFT -> {
-                    keyboard?.let {
-                        if (keyboardMode == keyboardLetters) {
-                            when {
-                                it.mShiftState == SHIFT_ON_PERMANENT -> it.mShiftState = SHIFT_OFF
-                                System.currentTimeMillis() - lastShiftPressTS < shiftPermToggleSpeed -> it.mShiftState = SHIFT_ON_PERMANENT
-                                it.mShiftState == SHIFT_ON_ONE_CHAR -> it.mShiftState = SHIFT_OFF
-                                it.mShiftState == SHIFT_OFF -> it.mShiftState = SHIFT_ON_ONE_CHAR
-                            }
-                            lastShiftPressTS = System.currentTimeMillis()
-                        } else {
-                            handleModeChange(keyboardMode, keyboardView, this)
+                    if (keyboardMode == keyboardLetters) {
+                        val shiftState = keyboardView?.mKeyboard?.mShiftState ?: SHIFT_OFF
+                        when {
+                            shiftState == SHIFT_ON_PERMANENT -> keyboardView?.setShifted(SHIFT_OFF)
+                            System.currentTimeMillis() - lastShiftPressTS < shiftPermToggleSpeed -> keyboardView?.setShifted(SHIFT_ON_PERMANENT)
+                            shiftState == SHIFT_ON_ONE_CHAR -> keyboardView?.setShifted(SHIFT_OFF)
+                            shiftState == SHIFT_OFF -> keyboardView?.setShifted(SHIFT_ON_ONE_CHAR)
                         }
+                        lastShiftPressTS = System.currentTimeMillis()
+                    } else {
+                        handleModeChange(keyboardMode, keyboardView, this)
                     }
-                    keyboardView?.invalidateAllKeys()
                 }
                 KeyboardBase.KEYCODE_ENTER -> handleKeycodeEnter()
                 KeyboardBase.KEYCODE_MODE_CHANGE -> handleModeChange(keyboardMode, keyboardView, this)
@@ -830,9 +834,10 @@ abstract class GeneralKeyboardIME(
         keyboardMode: Int,
         commandBarState: Boolean = false,
     ) {
+        val currentShiftState = keyboardView?.mKeyboard?.mShiftState ?: SHIFT_OFF
         if (commandBarState) {
             val codeChar =
-                if (Character.isLetter(code.toChar()) && keyboard!!.mShiftState > SHIFT_OFF) {
+                if (Character.isLetter(code.toChar()) && currentShiftState > SHIFT_OFF) {
                     Character.toUpperCase(code.toChar())
                 } else {
                     code.toChar()
@@ -849,7 +854,7 @@ abstract class GeneralKeyboardIME(
         } else {
             val inputConnection = currentInputConnection ?: return
             var codeChar = code.toChar()
-            if (Character.isLetter(codeChar) && keyboard!!.mShiftState > SHIFT_OFF) {
+            if (Character.isLetter(codeChar) && currentShiftState > SHIFT_OFF) {
                 codeChar = Character.toUpperCase(codeChar)
             }
 
@@ -863,9 +868,9 @@ abstract class GeneralKeyboardIME(
             }
         }
 
-        if (keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
-            keyboard!!.mShiftState = SHIFT_OFF
-            keyboardView!!.invalidateAllKeys()
+        if (currentShiftState == SHIFT_ON_ONE_CHAR && keyboardMode == keyboardLetters) {
+            keyboardView?.mKeyboard?.mShiftState = SHIFT_OFF
+            keyboardView?.invalidateAllKeys()
         }
     }
 
@@ -1052,20 +1057,41 @@ abstract class GeneralKeyboardIME(
      * @param keyboardMode The current keyboard mode.
      * @param keyboardView The instance of the keyboard view.
      */
+
+    /**
+     * Handles the logic for the Shift key. It cycles through shift states (off, on-for-one-char, caps lock)
+     * on the letter keyboard, and toggles between symbol pages on the symbol keyboard.
+     *
+     * @param keyboardMode The current keyboard mode.
+     * @param keyboardView The instance of the keyboard view.
+     */
     fun handleKeyboardLetters(
         keyboardMode: Int,
         keyboardView: KeyboardView?,
     ) {
         if (keyboardMode == keyboardLetters) {
+            val shiftState = keyboardView?.mKeyboard?.mShiftState ?: SHIFT_OFF
             when {
-                keyboard!!.mShiftState == SHIFT_ON_PERMANENT -> keyboard!!.mShiftState = SHIFT_OFF
-                System.currentTimeMillis() - lastShiftPressTS < shiftPermToggleSpeed -> keyboard!!.mShiftState = SHIFT_ON_PERMANENT
-                keyboard!!.mShiftState == SHIFT_ON_ONE_CHAR -> keyboard!!.mShiftState = SHIFT_OFF
-                keyboard!!.mShiftState == SHIFT_OFF -> keyboard!!.mShiftState = SHIFT_ON_ONE_CHAR
+                shiftState == SHIFT_ON_PERMANENT -> keyboardView?.setShifted(SHIFT_OFF)
+                System.currentTimeMillis() - lastShiftPressTS < shiftPermToggleSpeed -> keyboardView?.setShifted(SHIFT_ON_PERMANENT)
+                shiftState == SHIFT_ON_ONE_CHAR -> keyboardView?.setShifted(SHIFT_OFF)
+                shiftState == SHIFT_OFF -> keyboardView?.setShifted(SHIFT_ON_ONE_CHAR)
             }
             lastShiftPressTS = System.currentTimeMillis()
         } else {
-            handleModeChange(keyboardMode, keyboardView, this)
+            val keyboardXml =
+                if (keyboardMode == keyboardSymbols) {
+                    this.keyboardMode = keyboardSymbolShift
+                    R.xml.keys_symbols_shift
+                } else {
+                    this.keyboardMode = keyboardSymbols
+                    R.xml.keys_symbols
+                }
+            keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
+            keyboardView!!.setKeyboard(keyboard!!)
+            if (keyboardXml == R.xml.keys_symbols) {
+                handleModeChange(keyboardMode, keyboardView, this)
+            }
         }
     }
 
@@ -1090,7 +1116,14 @@ abstract class GeneralKeyboardIME(
                 getKeyboardLayoutXML()
             }
         keyboard = KeyboardBase(context, keyboardXml, enterKeyType)
+        if (this.keyboardMode == keyboardLetters) {
+            val wasShifted = keyboard?.mShiftState == SHIFT_ON_ONE_CHAR || keyboard?.mShiftState == SHIFT_ON_PERMANENT
+            if (wasShifted) {
+                keyboard?.setShifted(keyboard?.mShiftState ?: SHIFT_OFF)
+            }
+        }
         keyboardView?.setKeyboard(keyboard!!)
+        keyboardView?.invalidateAllKeys()
         if (keyboardXml == R.xml.keys_symbols) {
             uiManager.setupCurrencySymbol(language)
         }
