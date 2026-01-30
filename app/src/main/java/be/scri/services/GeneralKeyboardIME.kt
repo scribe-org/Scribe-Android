@@ -334,7 +334,7 @@ abstract class GeneralKeyboardIME(
             }
         decorView.systemUiVisibility = flags
 
-        // Set initial shift state for empty text fields
+        // Set initial shift state for empty text fields.
         if (keyboardMode == keyboardLetters) {
             val textBefore = currentInputConnection?.getTextBeforeCursor(1, 0)?.toString().orEmpty()
             if (textBefore.isEmpty()) {
