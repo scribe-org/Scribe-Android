@@ -81,6 +81,7 @@ fun ScribeApp(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val downloadStates = downloadViewModel.downloadStates
     val onDownloadAction = downloadViewModel::handleDownloadAction
+    val inititalizeStates = downloadViewModel::initializeStates
 
     ScribeTheme(
         useDarkTheme = isDarkTheme,
@@ -212,6 +213,7 @@ fun ScribeApp(
                         },
                         downloadStates = downloadStates,
                         onDownloadAction = onDownloadAction,
+                        initializeStates = inititalizeStates,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }

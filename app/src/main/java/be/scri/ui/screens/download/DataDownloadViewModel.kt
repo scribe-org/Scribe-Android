@@ -27,6 +27,32 @@ class DataDownloadViewModel(
     private val prefs = getApplication<Application>().getSharedPreferences("scribe_prefs", Context.MODE_PRIVATE)
 
     /**
+     * Initializes the download states for the provided languages.
+     *
+     * @param languages A list of language keys to initialize states for.
+     */
+    fun initializeStates(languages: List<String>) {
+        languages.forEach { key ->
+            if (key == "all") return@forEach
+
+            val langCode =
+                LanguageMappingConstants
+                    .getLanguageAlias(
+                        key.replaceFirstChar { it.uppercase() },
+                    ).lowercase()
+
+            // Check if a timestamp exists in SharedPreferences.
+            val savedTimestamp = prefs.getString("last_update_$langCode", null)
+
+            if (savedTimestamp != null) {
+                downloadStates[key] = DownloadState.Completed
+            } else {
+                downloadStates[key] = DownloadState.Ready
+            }
+        }
+    }
+
+    /**
      * Checks if an update is available by comparing local and server update timestamps.
      *
      * @param localUpdatedAt The last update timestamp stored locally.
