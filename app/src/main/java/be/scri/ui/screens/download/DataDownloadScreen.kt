@@ -54,7 +54,7 @@ fun DownloadDataScreen(
     onNavigateToTranslation: (String) -> Unit,
     modifier: Modifier = Modifier,
     downloadStates: Map<String, DownloadState> = emptyMap(),
-    onDownloadAction: (String) -> Unit = {},
+    onDownloadAction: (String, Boolean) -> Unit = { _, _ -> },
     initializeStates: (List<String>) -> Unit = {},
 ) {
     val currentInitializeStates by rememberUpdatedState(initializeStates)
@@ -178,7 +178,7 @@ fun DownloadDataScreen(
                                     if (currentStatus == DownloadState.Ready) {
                                         selectedLanguage.value = lang
                                     } else {
-                                        onDownloadAction(key)
+                                        onDownloadAction(key, false)
                                     }
                                 },
                                 isDarkTheme = isDark,
@@ -216,7 +216,7 @@ fun DownloadDataScreen(
                         ),
                     textChange = stringResource(R.string.i18n_app_download_menu_ui_translation_source_tooltip_change_language),
                     onConfirm = {
-                        onDownloadAction(key)
+                        onDownloadAction(key, false)
                         selectedLanguage.value = null
                     },
                     onChange = { onNavigateToTranslation(languageId) },

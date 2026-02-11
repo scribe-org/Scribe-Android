@@ -13,6 +13,7 @@ import be.scri.data.remote.DynamicDbHelper
 import be.scri.data.remote.RetrofitClient
 import be.scri.helpers.LanguageMappingConstants
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -24,6 +25,7 @@ class DataDownloadViewModel(
     application: Application,
 ) : AndroidViewModel(application) {
     val downloadStates = mutableStateMapOf<String, DownloadState>()
+    private val downloadJobs = mutableMapOf<String, Job>()
     private val prefs = getApplication<Application>().getSharedPreferences("scribe_prefs", Context.MODE_PRIVATE)
 
     /**
@@ -34,6 +36,7 @@ class DataDownloadViewModel(
     fun initializeStates(languages: List<String>) {
         languages.forEach { key ->
             if (key == "all") return@forEach
+            if (downloadStates.containsKey(key)) return@forEach
 
             val langCode =
                 LanguageMappingConstants
@@ -73,16 +76,24 @@ class DataDownloadViewModel(
      * Handles the download action based on the current state.
      *
      * @param key The key identifying the download item.
+     * @param forceDownload If true, cancels any existing download and forces a new one.
      */
-    fun handleDownloadAction(key: String) {
-        // Prevent double clicks.
+    fun handleDownloadAction(
+        key: String,
+        forceDownload: Boolean = false,
+    ) {
         val currentState = downloadStates[key] ?: DownloadState.Ready
-        if (currentState == DownloadState.Downloading || currentState == DownloadState.Completed) {
-            // If already up to date, tell the user and stop.
+        if (forceDownload) {
+            downloadJobs[key]?.cancel()
+        } else {
+            if (currentState == DownloadState.Downloading) {
+                return
+            }
+
             if (currentState == DownloadState.Completed) {
                 Toast.makeText(getApplication(), "$key data is already up to date", Toast.LENGTH_SHORT).show()
+                return
             }
-            return
         }
 
         // Set to downloading before hitting the network.
@@ -96,39 +107,44 @@ class DataDownloadViewModel(
 
         val localLastUpdate = prefs.getString("last_update_$langCode", "1970-01-01") ?: "1970-01-01"
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                // Fetch API.
-                val response = RetrofitClient.apiService.getData(langCode)
-                val serverLastUpdate = response.contract.updatedAt
+        // Store the job so we can cancel it later if needed.
+        downloadJobs[key] =
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    // Fetch API.
+                    val response = RetrofitClient.apiService.getData(langCode)
+                    val serverLastUpdate = response.contract.updatedAt
 
-                if (isUpdateAvailable(localLastUpdate, serverLastUpdate)) {
-                    // Sync to SQLite.
-                    val dbHelper = DynamicDbHelper(getApplication(), langCode)
-                    dbHelper.syncDatabase(response)
+                    // Always download when forcing, or when update is available.
+                    if (forceDownload || isUpdateAvailable(localLastUpdate, serverLastUpdate)) {
+                        val dbHelper = DynamicDbHelper(getApplication(), langCode)
+                        dbHelper.syncDatabase(response)
 
-                    // Save timestamp.
-                    prefs.edit().putString("last_update_$langCode", serverLastUpdate).apply()
+                        // Save timestamp.
+                        prefs.edit().putString("last_update_$langCode", serverLastUpdate).apply()
 
-                    withContext(Dispatchers.Main) {
-                        downloadStates[key] = DownloadState.Completed
-                        Toast.makeText(getApplication(), "Download finished!", Toast.LENGTH_SHORT).show()
+                        withContext(Dispatchers.Main) {
+                            downloadStates[key] = DownloadState.Completed
+                            Toast.makeText(getApplication(), "Download finished!", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        // Already up to date: Skip the DB work.
+                        withContext(Dispatchers.Main) {
+                            downloadStates[key] = DownloadState.Completed
+                            Toast.makeText(getApplication(), "Already up to date!", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                } else {
-                    // Already up to date: Skip the DB work.
-                    withContext(Dispatchers.Main) {
-                        downloadStates[key] = DownloadState.Completed
-                        Toast.makeText(getApplication(), "Already up to date!", Toast.LENGTH_SHORT).show()
-                    }
+                } catch (e: IOException) {
+                    updateErrorState(key, "Network Error: ${e.message}")
+                } catch (e: SQLiteException) {
+                    updateErrorState(key, "Database Error: ${e.message}")
+                } catch (e: HttpException) {
+                    updateErrorState(key, "Server Error: ${e.code()}")
+                } finally {
+                    // Clean up the job reference when done.
+                    downloadJobs.remove(key)
                 }
-            } catch (e: IOException) {
-                updateErrorState(key, "Network Error: ${e.message}")
-            } catch (e: SQLiteException) {
-                updateErrorState(key, "Database Error: ${e.message}")
-            } catch (e: HttpException) {
-                updateErrorState(key, "Server Error: ${e.code()}")
             }
-        }
     }
 
     private suspend fun updateErrorState(
@@ -140,6 +156,15 @@ class DataDownloadViewModel(
             downloadStates[key] = DownloadState.Ready
             Toast.makeText(getApplication(), message, Toast.LENGTH_LONG).show()
         }
+    }
+
+    /**
+     * Cancels all ongoing downloads. Useful for cleanup.
+     */
+    override fun onCleared() {
+        super.onCleared()
+        downloadJobs.values.forEach { it.cancel() }
+        downloadJobs.clear()
     }
 }
 

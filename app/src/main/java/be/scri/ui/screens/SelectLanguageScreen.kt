@@ -46,7 +46,7 @@ fun SelectTranslationSourceLanguageScreen(
     onBackNavigation: () -> Unit,
     onNavigateToDownloadData: () -> Unit,
     modifier: Modifier = Modifier,
-    onDownloadAction: (String) -> Unit = {},
+    onDownloadAction: (String, Boolean) -> Unit = { _, _ -> },
 ) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -143,7 +143,7 @@ fun SelectTranslationSourceLanguageScreen(
 
                 val downloadKey = currentLanguage.lowercase()
                 // trigger the download action in the ViewModel.
-                onDownloadAction(downloadKey)
+                onDownloadAction(downloadKey, true)
                 showDialog.value = false
                 // Navigate to the download data screen.
                 onNavigateToDownloadData()
