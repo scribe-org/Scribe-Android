@@ -245,7 +245,7 @@ fun ScribeApp(
                             navController.popBackStack()
                         },
                         onNavigateToDownloadData = {
-                            navController.popBackStack()
+                            navController.navigate("download_data")
                         },
                         onDownloadAction = onDownloadAction,
                         modifier = Modifier.padding(innerPadding),
