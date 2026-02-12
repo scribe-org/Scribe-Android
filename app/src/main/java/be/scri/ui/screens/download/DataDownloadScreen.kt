@@ -47,6 +47,8 @@ import be.scri.ui.screens.settings.SettingsUtil
  * @param modifier Modifier for layout and styling.
  * @param downloadStates Map of language keys to their download states.
  * @param onDownloadAction Callback for download action when a language is selected and confirmed.
+ * @param initializeStates Callback to initialize download states for given languages.
+ * @param checkAllForUpdates Callback to check all languages for available updates.
  */
 @Composable
 fun DownloadDataScreen(
@@ -56,6 +58,7 @@ fun DownloadDataScreen(
     downloadStates: Map<String, DownloadState> = emptyMap(),
     onDownloadAction: (String, Boolean) -> Unit = { _, _ -> },
     initializeStates: (List<String>) -> Unit = {},
+    checkAllForUpdates: () -> Unit,
 ) {
     val currentInitializeStates by rememberUpdatedState(initializeStates)
     val scrollState = rememberScrollState()
@@ -131,7 +134,12 @@ fun DownloadDataScreen(
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
                         CircleClickableItemComp(
                             title = stringResource(R.string.i18n_app_download_menu_ui_update_data_check_new),
-                            onClick = { checkForNewData.value = !checkForNewData.value },
+                            onClick = {
+                                checkForNewData.value = !checkForNewData.value
+                                if (checkForNewData.value) {
+                                    checkAllForUpdates()
+                                }
+                            },
                             isSelected = checkForNewData.value,
                         )
 

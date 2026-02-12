@@ -82,6 +82,7 @@ fun ScribeApp(
     val downloadStates = downloadViewModel.downloadStates
     val onDownloadAction = downloadViewModel::handleDownloadAction
     val inititalizeStates = downloadViewModel::initializeStates
+    val checkAllForUpdates = downloadViewModel::checkAllForUpdates
 
     ScribeTheme(
         useDarkTheme = isDarkTheme,
@@ -214,6 +215,7 @@ fun ScribeApp(
                         downloadStates = downloadStates,
                         onDownloadAction = onDownloadAction,
                         initializeStates = inititalizeStates,
+                        checkAllForUpdates = checkAllForUpdates,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
