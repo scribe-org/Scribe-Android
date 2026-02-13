@@ -87,6 +87,7 @@ class DataDownloadViewModel(
         forceDownload: Boolean = false,
     ) {
         val currentState = downloadStates[key] ?: DownloadState.Ready
+        val displayLang = key.replaceFirstChar { it.uppercase() }
         if (forceDownload) {
             downloadJobs[key]?.cancel()
         } else {
@@ -95,7 +96,7 @@ class DataDownloadViewModel(
             }
 
             if (currentState == DownloadState.Completed) {
-                Toast.makeText(getApplication(), "$key data is already up to date", Toast.LENGTH_SHORT).show()
+                Toast.makeText(getApplication(), "$displayLang data is already up to date", Toast.LENGTH_SHORT).show()
                 return
             }
         }
@@ -129,7 +130,7 @@ class DataDownloadViewModel(
 
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed
-                            Toast.makeText(getApplication(), "Download finished!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(getApplication(), "Download $displayLang data finished!", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         // Already up to date: Skip the DB work.
