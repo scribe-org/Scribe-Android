@@ -1,66 +1,46 @@
-{
-    "numbers": {
-      "feminineSingular": "femininePlural",
-      "masculineSingular": "masculinePlural"
-    },
-    "genders": {
-      "canonical": [],
-      "feminines": ["feminineSingular"],
-      "masculines": ["masculineSingular"],
-      "commons": [],
-      "neuters": []
-    },
-    "conjugations": {
-      "1": {
-        "title": "Presente",
-        "conjugationTypes": {
-          "1": {
-          "title": "Presente",
-          "conjugationForms": {
-            "yo": "indicativePresentFirstPersonSingular",
-            "tú": "indicativePresentFirstPersonPlural",
-            "él/ella/Ud.": "indicativePresentSecondPersonSingular",
-            "nosotros": "indicativePresentSecondPersonPlural",
-            "vosotros": "indicativePresentThirdPersonSingular",
-            "ellos/ellas/Uds.": "indicativePresentThirdPersonPlural"
-            }
-          }
-        }
-      },
-      "2": {
-        "title": "Pretérito",
-        "conjugationTypes": {
-            "1": {
-          "title": "Pretérito",
-          "conjugationForms": {
-            "yo": "preteriteFirstPersonSingular",
-            "tú": "preteriteFirstPersonPlural",
-            "él/ella/Ud.": "preteriteSecondPersonSingular",
-            "nosotros": "preteriteSecondPersonPlural",
-            "vosotros": "preteriteThirdPersonSingular",
-            "ellos/ellas/Uds.": "preteriteThirdPersonPlural"
-          }
-        }
-        }
-        
-      },
-      "3": {
-        "title": "Imperfecto",
-        "conjugationTypes" : {
-          "1": {
-          "title": "Imperfecto",
-          "conjugationForms": {
-            "yo": "pastImperfectFirstPersonSingular",
-            "tú": "pastImperfectFirstPersonPlural",
-            "él/ella/Ud.": "pastImperfectSecondPersonSingular",
-            "nosotros": "pastImperfectSecondPersonPlural",
-            "vosotros": "pastImperfectThirdPersonSingular",
-            "ellos/ellas/Uds.": "pastImperfectThirdPersonPlural"
-          }
-        }
-        }
-        
-      }
-    }
-  }
-  
+numbers:
+  feminineSingular: femininePlural
+  masculineSingular: masculinePlural
+genders:
+  canonical: []
+  feminines: [feminineSingular]
+  masculines: [masculineSingular]
+  commons: []
+  neuters: []
+conjugations:
+  1:
+    sectionTitle: Presente
+    tenses:
+      1:
+        tenseTitle: Presente
+        tenseForms:
+          yo: indicativePresentFirstPersonSingular
+          tú: indicativePresentFirstPersonPlural
+          él/ella/Ud.: indicativePresentSecondPersonSingular
+          nosotros: indicativePresentSecondPersonPlural
+          vosotros: indicativePresentThirdPersonSingular
+          ellos/ellas/Uds.: indicativePresentThirdPersonPlural
+  2:
+    sectionTitle: Pretérito
+    tenses:
+      1:
+        tenseTitle: Pretérito
+        tenseForms:
+          yo: preteriteFirstPersonSingular
+          tú: preteriteFirstPersonPlural
+          él/ella/Ud.: preteriteSecondPersonSingular
+          nosotros: preteriteSecondPersonPlural
+          vosotros: preteriteThirdPersonSingular
+          ellos/ellas/Uds.: preteriteThirdPersonPlural
+  3:
+    sectionTitle: Imperfecto
+    tenses:
+      1:
+        tenseTitle: Imperfecto
+        tenseForms:
+          yo: pastImperfectFirstPersonSingular
+          tú: pastImperfectFirstPersonPlural
+          él/ella/Ud.: pastImperfectSecondPersonSingular
+          nosotros: pastImperfectSecondPersonPlural
+          vosotros: pastImperfectThirdPersonSingular
+          ellos/ellas/Uds.: pastImperfectThirdPersonPlural

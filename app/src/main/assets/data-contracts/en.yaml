@@ -1,136 +1,91 @@
-{
-  "numbers": {
-    "singular": "plural"
-  },
-  "genders": {
-    "canonical": [],
-    "feminines": [],
-    "masculines": [],
-    "commons": [],
-    "neuters": []
-  },
-  "conjugations": {
-    "1": {
-      "title": "Present",
-      "conjugationTypes": {
-        "1": {
-          "title": "Pr. Simple",
-          "conjugationForms": {
-            "I/you/plural": "simplePresent",
-            "he/she/it": "simplePresentThirdPersonSingular"
-          }
-        },
-        "2": {
-          "title": "Pr. Perfect",
-          "conjugationForms": {
-            "I/you/plural": "[have] pastParticiple",
-            "he/she/it": "[has] pastParticiple"
-          }
-        },
-        "3": {
-          "title": "Pr. Continuous",
-          "conjugationForms": {
-            "I": "[am] presentParticiple",
-            "you/plural": "[are] presentParticiple",
-            "he/she/it": "[is] presentParticiple"
-          }
-        },
-        "4": {
-          "title": "Pr. Perf. Continuous",
-          "conjugationForms": {
-            "I/you/plural": "[have been] presentParticiple",
-            "he/she/it": "[has been] presentParticiple"
-          }
-        }
-      }
-    },
-    "2": {
-      "title": "Past",
-      "conjugationTypes": {
-        "1": {
-          "title": "Past Simple",
-          "conjugationForms": {
-            "all": "simplePast"
-          }
-        },
-        "2": {
-          "title": "Past Perfect",
-          "conjugationForms": {
-            "all": "[had] pastParticiple"
-          }
-        },
-        "3": {
-          "title": "Past Continuous",
-          "conjugationForms": {
-            "I/he/she/it": "[was] presentParticiple",
-            "you/plural": "[were] presentParticiple"
-          }
-        },
-        "4": {
-          "title": "Past Perf. Continuous",
-          "conjugationForms": {
-            "all": "[had been] presentParticiple"
-          }
-        }
-      }
-    },
-    "3": {
-      "title": "Future",
-      "conjugationTypes": {
-        "1": {
-          "title": "Fut. Simple",
-          "conjugationForms": {
-            "all": "[will] infinitive"
-          }
-        },
-        "2": {
-          "title": "Fut. Perfect",
-          "conjugationForms": {
-            "all": "[will have] pastParticiple"
-          }
-        },
-        "3": {
-          "title": "Fut. Continuous",
-          "conjugationForms": {
-            "all": "[will be] presentParticiple"
-          }
-        },
-        "4": {
-          "title": "Fut. Perf. Continuous",
-          "conjugationForms": {
-            "all": "[will have been] presentParticiple"
-          }
-        }
-      }
-    },
-    "4": {
-      "title": "Conditional",
-      "conjugationTypes": {
-        "1": {
-          "title": "Cond. Simple",
-          "conjugationForms": {
-            "all": "[would] infinitive"
-          }
-        },
-        "2": {
-          "title": "Cond. Perfect",
-          "conjugationForms": {
-            "all": "[would have] pastParticiple"
-          }
-        },
-        "3": {
-          "title": "Cond. Continuous",
-          "conjugationForms": {
-            "all": "[would be] presentParticiple"
-          }
-        },
-        "4": {
-          "title": "Cond. Perf. Continuous",
-          "conjugationForms": {
-            "all": "[would have been] presentParticiple"
-          }
-        }
-      }
-    }
-  }
-}
+numbers:
+  singular: plural
+genders:
+  canonical: []
+  feminines: []
+  masculines: []
+  commons: []
+  neuters: []
+conjugations:
+  1:
+    sectionTitle: Present
+    tenses:
+      1:
+        tenseTitle: Pr. Simple
+        tenseForms:
+          I/you/plural: simplePresent
+          he/she/it: simplePresentThirdPersonSingular
+      2:
+        tenseTitle: Pr. Perfect
+        tenseForms:
+          I/you/plural: "[have] pastParticiple"
+          he/she/it: "[has] pastParticiple"
+      3:
+        tenseTitle: Pr. Continuous
+        tenseForms:
+          I: "[am] presentParticiple"
+          you/plural: "[are] presentParticiple"
+          he/she/it: "[is] presentParticiple"
+      4:
+        tenseTitle: Pr. Perf. Continuous
+        tenseForms:
+          I/you/plural: "[have been] presentParticiple"
+          he/she/it: "[has been] presentParticiple"
+  2:
+    sectionTitle: Past
+    tenses:
+      1:
+        tenseTitle: Past Simple
+        tenseForms:
+          all: simplePast
+      2:
+        tenseTitle: Past Perfect
+        tenseForms:
+          all: "[had] pastParticiple"
+      3:
+        tenseTitle: Past Continuous
+        tenseForms:
+          I/he/she/it: "[was] presentParticiple"
+          you/plural: "[were] presentParticiple"
+      4:
+        tenseTitle: Past Perf. Continuous
+        tenseForms:
+          all: "[had been] presentParticiple"
+  3:
+    sectionTitle: Future
+    tenses:
+      1:
+        tenseTitle": Fut. Simple
+        tenseForms:
+          all: "[will] infinitive"
+      2:
+        tenseTitle: Fut. Perfect
+        tenseForms:
+          all: "[will have] pastParticiple"
+      3:
+        tenseTitle: Fut. Continuous
+        tenseForms:
+          all: "[will be] presentParticiple"
+      4:
+        tenseTitle: Fut. Perf. Continuous
+        tenseForms:
+          all: "[will have been] presentParticiple"
+  4:
+    sectionTitle: Conditional
+    tenses:
+      1:
+        tenseTitle: Cond. Simple
+        tenseForms:
+          all: "[would] infinitive"
+      2:
+        tenseTitle: Cond. Perfect
+        tenseForms:
+          all: "[would have] pastParticiple"
+      3:
+        tenseTitle: Cond. Continuous
+        tenseForms:
+          all: "[would be] presentParticiple"
+      4:
+        tenseTitle: Cond. Perf. Continuous
+        tenseForms:
+          all: "[would have been] presentParticiple"

@@ -1,43 +1,30 @@
-{
-    "numbers": {
-        "nominativeIndefiniteSingular": "nominativeIndefinitePlural",
-        "nominativeDefiniteSingular": "nominativeDefinitePlural"
-    },
-    "genders": {
-        "canonical": ["gender"],
-        "feminines": [],
-        "masculines": [],
-        "commons": [],
-        "neuters": []
-    },
-    "conjugations": {
-        "1": {
-            "title": "Aktiv",
-            "conjugationTypes": {
-                "1": {
-                    "title": "Aktiv",
-                    "conjugationForms": {
-                        "infinitiv": "activeInfinitive",
-                        "presens": "activePresent",
-                        "preteritum": "activePreterite",
-                        "supinum": "activeSupine"
-                    }
-                }
-            }
-        },
-        "2": {
-            "title": "Passiv",
-            "conjugationTypes": {
-                "1": {
-                    "title": "Passiv",
-                    "conjugationForms": {
-                        "infinitiv": "passiveInfinitive",
-                        "presens": "passivePresent",
-                        "preteritum": "passivePreterite",
-                        "supinum": "passiveSupine"
-                    }
-                }
-            }
-        }
-    }
-}
+numbers:
+  nominativeIndefiniteSingular: nominativeIndefinitePlural
+  nominativeDefiniteSingular: nominativeDefinitePlural
+genders:
+  canonical: [gender]
+  feminines: []
+  masculines: []
+  commons: []
+  neuters: []
+conjugations:
+  1:
+    sectionTitle: Aktiv
+    tenses:
+      1:
+        tenseTitle: Aktiv
+        tenseForms:
+          infinitiv: activeInfinitive
+          presens: activePresent
+          preteritum: activePreterite
+          supinum: activeSupine
+  2:
+    sectionTitle: Passiv
+    tenses:
+      1:
+        tenseTitle: Passiv
+        tenseForms:
+          infinitiv: passiveInfinitive
+          presens: passivePresent
+          preteritum: passivePreterite
+          supinum: passiveSupine
