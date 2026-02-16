@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 @file:Suppress("ktlint:standard:kdoc")
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,7 +14,8 @@ import kotlinx.serialization.Serializable
 data class DataContract(
     val numbers: Map<String, String>,
     val genders: Genders,
-    val conjugations: Map<String, TenseGroup>,
+    val conjugations: Map<Int, TenseGroup>,
+    val translations: Translations,
 )
 
 /**
@@ -33,8 +35,8 @@ data class Genders(
  */
 @Serializable
 data class TenseGroup(
-    val title: String = "",
-    val conjugationTypes: Map<String, ConjugationCategory>,
+    val sectionTitle: String = "",
+    val tenses: Map<Int, ConjugationCategory>,
 )
 
 /**
@@ -42,6 +44,41 @@ data class TenseGroup(
  */
 @Serializable
 data class ConjugationCategory(
-    val title: String = "",
-    val conjugationForms: Map<String, String> = emptyMap(),
+    val tenseTitle: String = "",
+    val tenseForms: Map<String, String> = emptyMap(),
+)
+
+/**
+ * Represents the structure of translations for different word types.
+ */
+@Serializable
+data class Translations(
+    val wordType: WordType,
+)
+
+/**
+ * Represents the various parts of speech and their associated display values and section titles.
+ */
+@Serializable
+data class WordType(
+    val sectionTitle: String,
+    val adjective: WordTypeEntry,
+    val adverb: WordTypeEntry,
+    val article: WordTypeEntry,
+    val conjunction: WordTypeEntry,
+    val noun: WordTypeEntry,
+    val postposition: WordTypeEntry,
+    val preposition: WordTypeEntry,
+    @SerialName("proper_noun") val properNoun: WordTypeEntry,
+    val pronoun: WordTypeEntry,
+    val verb: WordTypeEntry,
+)
+
+/**
+ * Represents the display value and section title for a specific part of speech.
+ */
+@Serializable
+data class WordTypeEntry(
+    val displayValue: String,
+    val sectionTitle: String,
 )
