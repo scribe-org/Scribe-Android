@@ -19,13 +19,18 @@ class AutocompletionDataManager(
      * @param language The language code (e.g. "en", "id") for which to load words.
      */
     fun loadWords(language: String) {
-        val db = fileManager.getLanguageDatabase(language)
-        db?.rawQuery("SELECT word FROM autocomplete_lexicon", null).use { cursor ->
-            val wordIndex = cursor!!.getColumnIndex("word")
-            while (cursor.moveToNext()) {
-                val word = cursor.getString(wordIndex)?.lowercase()?.trim()
-                if (!word.isNullOrEmpty()) {
-                    trie.insert(word)
+        val db = fileManager.getLanguageDatabase(language) ?: return
+
+        db.use { database ->
+            if (!database.tableExists("autocomplete_lexicon")) return
+
+            database.rawQuery("SELECT word FROM autocomplete_lexicon", null).use { cursor ->
+                val wordIndex = cursor.getColumnIndex("word")
+                while (cursor.moveToNext()) {
+                    val word = cursor.getString(wordIndex)?.lowercase()?.trim()
+                    if (!word.isNullOrEmpty()) {
+                        trie.insert(word)
+                    }
                 }
             }
         }

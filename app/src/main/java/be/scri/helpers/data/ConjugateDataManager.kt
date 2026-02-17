@@ -90,6 +90,15 @@ class ConjugateDataManager(
     ): String {
         if (form.isNullOrEmpty()) return ""
         return fileManager.getLanguageDatabase(language)?.use { db ->
+            if (!db.tableExists("verbs")) {
+                return ""
+            }
+
+            val columnName = if (language == "SV") "verb" else "infinitive"
+            if (!db.columnExists("verbs", columnName)) {
+                return ""
+            }
+
             getVerbCursor(db, word, language)?.use { cursor ->
                 getConjugatedValueFromCursor(cursor, form, language)
             }

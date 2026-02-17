@@ -122,7 +122,7 @@ class DataDownloadViewModel(
 
                     // Always download when forcing, or when update is available.
                     if (forceDownload || isUpdateAvailable(localLastUpdate, serverLastUpdate)) {
-                        val dbHelper = DynamicDbHelper(getApplication(), langCode)
+                        val dbHelper = DynamicDbHelper(getApplication(), langCode.uppercase())
                         dbHelper.syncDatabase(response)
 
                         // Save timestamp.

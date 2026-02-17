@@ -37,7 +37,19 @@ class DatabaseFileManager(
      */
     fun getLanguageDatabase(language: String): SQLiteDatabase? {
         val dbName = "${language}LanguageData.sqlite"
-        return getDatabase(dbName, "data/$dbName")
+        val dbFile = context.getDatabasePath(dbName)
+
+        if (!dbFile.exists()) {
+            Log.w(TAG, "Database $dbName not found. User needs to download data first")
+            return null
+        }
+
+        return try {
+            SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY)
+        } catch (e: SQLiteException) {
+            Log.e(TAG, "Failed to open database $dbName", e)
+            null
+        }
     }
 
     /**
