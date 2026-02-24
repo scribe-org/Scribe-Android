@@ -38,7 +38,7 @@ class ConjugateDataManager(
             tenseGroup.tenses.values.forEach { conjugationCategory ->
                 val forms =
                     conjugationCategory.tenseForms.values.map { form ->
-                        getTheValueForTheConjugateWord(word.lowercase(), form, language)
+                        getTheValueForTheConjugateWord(word.lowercase(), form.value, language)
                     }
                 conjugateForms[conjugationCategory.tenseTitle] = forms
             }
@@ -67,7 +67,9 @@ class ConjugateDataManager(
         val allFormKeys = mutableSetOf<String>()
         yamlData?.conjugations?.values?.forEach { tenseGroup ->
             tenseGroup.tenses.values.forEach { conjugationCategory ->
-                allFormKeys.addAll(conjugationCategory.tenseForms.keys)
+                conjugationCategory.tenseForms.values.forEach { form ->
+                    allFormKeys.add(form.label)
+                }
             }
         }
         allFormKeys.add(word)

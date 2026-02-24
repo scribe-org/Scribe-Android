@@ -45,7 +45,13 @@ data class TenseGroup(
 @Serializable
 data class ConjugationCategory(
     val tenseTitle: String = "",
-    val tenseForms: Map<String, String> = emptyMap(),
+    val tenseForms: Map<Int, TenseForm>,
+)
+
+@Serializable
+data class TenseForm(
+    val label: String,
+    val value: String,
 )
 
 /**
