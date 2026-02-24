@@ -57,6 +57,7 @@ fun DownloadDataScreen(
     modifier: Modifier = Modifier,
     downloadStates: Map<String, DownloadState> = emptyMap(),
     onDownloadAction: (String, Boolean) -> Unit = { _, _ -> },
+    onDownloadAll: () -> Unit = {},
     initializeStates: (List<String>) -> Unit = {},
     checkAllForUpdates: () -> Unit,
 ) {
@@ -72,6 +73,7 @@ fun DownloadDataScreen(
             SettingsUtil.getKeyboardLanguages(context)
         }
 
+    // Prepare the list of languages to display, including the "All Languages" option.
     val languages =
         remember(installedKeyboardLanguages) {
             buildList {
@@ -95,6 +97,15 @@ fun DownloadDataScreen(
                     add(Triple(key, displayName, false))
                 }
             }
+        }
+
+    // Determine the state of the "All Languages" item based on individual language states.
+    val allLanguagesState =
+        when {
+            downloadStates.filter { it.key != "all" }.values.all { it == DownloadState.Completed } -> DownloadState.Completed
+            downloadStates.filter { it.key != "all" }.values.all { it == DownloadState.Downloading } -> DownloadState.Downloading
+            downloadStates.filter { it.key != "all" }.values.all { it == DownloadState.Update } -> DownloadState.Update
+            else -> DownloadState.Ready
         }
 
     LaunchedEffect(languages) {
@@ -177,13 +188,15 @@ fun DownloadDataScreen(
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
                         languages.forEachIndexed { index, lang ->
                             val (key, title, isDark) = lang
-                            val currentStatus = downloadStates[key] ?: DownloadState.Ready
+                            val currentStatus = if (key == "all") allLanguagesState else (downloadStates[key] ?: DownloadState.Ready)
 
                             LanguageItemComp(
                                 title = title,
                                 onClick = { },
                                 onButtonClick = {
-                                    if (currentStatus == DownloadState.Ready) {
+                                    if (key == "all") {
+                                        onDownloadAll()
+                                    } else if (currentStatus == DownloadState.Ready) {
                                         selectedLanguage.value = lang
                                     } else {
                                         onDownloadAction(key, false)

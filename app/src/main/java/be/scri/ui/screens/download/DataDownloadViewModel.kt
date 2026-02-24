@@ -153,6 +153,19 @@ class DataDownloadViewModel(
     }
 
     /**
+     * Handles the "All languages" download action by initiating downloads for all languages that are not already completed or downloading.
+     */
+    fun handleDownloadAllLanguages() {
+        val toDownload =
+            downloadStates.keys.filter { key ->
+                key != "all" && downloadStates[key] != DownloadState.Completed && downloadStates[key] != DownloadState.Downloading
+            }
+        toDownload.forEach { key ->
+            handleDownloadAction(key)
+        }
+    }
+
+    /**
      * Checks for available updates using the data version API.
      * Sets state to Update if server has newer data.
      *
