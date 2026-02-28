@@ -142,7 +142,7 @@ fun SelectTranslationSourceLanguageScreen(
                 sharedPref.edit { putString("translation_source_$currentLanguage", selectedLanguage.value) }
 
                 val downloadKey = currentLanguage.lowercase()
-                // trigger the download action in the ViewModel.
+                // Trigger the download action in the ViewModel.
                 onDownloadAction(downloadKey, true)
                 showDialog.value = false
                 // Navigate to the download data screen.
