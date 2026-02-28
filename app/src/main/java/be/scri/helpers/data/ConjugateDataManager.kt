@@ -20,7 +20,7 @@ class ConjugateDataManager(
      * The returned map is structured by tense/mood, then by conjugation type (e.g., "Indicative Present").
      *
      * @param language The language code (e.g., "EN", "SV") to determine the correct database.
-     * @param jsonData The data contract for the language, which defines the structure of conjugations.
+     * @param yamlData The data contract for the language, which defines the structure of conjugations.
      * @param word The specific verb to look up conjugations for.
      *
      * @return A nested map where the outer key is the tense group title
@@ -29,20 +29,20 @@ class ConjugateDataManager(
      */
     fun getTheConjugateLabels(
         language: String,
-        jsonData: DataContract?,
+        yamlData: DataContract?,
         word: String,
     ): MutableMap<String, MutableMap<String, Collection<String>>>? {
         val finalOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
-        jsonData?.conjugations?.values?.forEach { tenseGroup ->
+        yamlData?.conjugations?.values?.forEach { tenseGroup ->
             val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
-            tenseGroup.conjugationTypes.values.forEach { conjugationCategory ->
+            tenseGroup.tenses.values.forEach { conjugationCategory ->
                 val forms =
-                    conjugationCategory.conjugationForms.values.map { form ->
-                        getTheValueForTheConjugateWord(word.lowercase(), form, language)
+                    conjugationCategory.tenseForms.values.map { form ->
+                        getTheValueForTheConjugateWord(word.lowercase(), form.value, language)
                     }
-                conjugateForms[conjugationCategory.title] = forms
+                conjugateForms[conjugationCategory.tenseTitle] = forms
             }
-            finalOutput[tenseGroup.title] = conjugateForms
+            finalOutput[tenseGroup.sectionTitle] = conjugateForms
         }
         return if (finalOutput.isEmpty() || finalOutput.values.all { it.isEmpty() || it.values.all { forms -> forms.all { it.isEmpty() } } }) {
             null
@@ -55,19 +55,21 @@ class ConjugateDataManager(
      * Extracts a unique set of all conjugation form keys (e.g., "1ps", "2ps", "participle")
      * from the data contract.
      *
-     * @param jsonData The data contract containing the conjugation structure.
+     * @param yamlData The data contract containing the conjugation structure.
      * @param word The base word, which is also added to the set.
      *
      * @return A `Set` of unique strings representing all possible conjugation form identifiers.
      */
     fun extractConjugateHeadings(
-        jsonData: DataContract?,
+        yamlData: DataContract?,
         word: String,
     ): Set<String> {
         val allFormKeys = mutableSetOf<String>()
-        jsonData?.conjugations?.values?.forEach { tenseGroup ->
-            tenseGroup.conjugationTypes.values.forEach { conjugationCategory ->
-                allFormKeys.addAll(conjugationCategory.conjugationForms.keys)
+        yamlData?.conjugations?.values?.forEach { tenseGroup ->
+            tenseGroup.tenses.values.forEach { conjugationCategory ->
+                conjugationCategory.tenseForms.values.forEach { form ->
+                    allFormKeys.add(form.label)
+                }
             }
         }
         allFormKeys.add(word)

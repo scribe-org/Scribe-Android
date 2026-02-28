@@ -81,6 +81,9 @@ fun ScribeApp(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val downloadStates = downloadViewModel.downloadStates
     val onDownloadAction = downloadViewModel::handleDownloadAction
+    val onDownloadAll = downloadViewModel::handleDownloadAllLanguages
+    val inititalizeStates = downloadViewModel::initializeStates
+    val checkAllForUpdates = downloadViewModel::checkAllForUpdates
 
     ScribeTheme(
         useDarkTheme = isDarkTheme,
@@ -212,6 +215,9 @@ fun ScribeApp(
                         },
                         downloadStates = downloadStates,
                         onDownloadAction = onDownloadAction,
+                        onDownloadAll = onDownloadAll,
+                        initializeStates = inititalizeStates,
+                        checkAllForUpdates = checkAllForUpdates,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
@@ -243,7 +249,7 @@ fun ScribeApp(
                             navController.popBackStack()
                         },
                         onNavigateToDownloadData = {
-                            navController.popBackStack()
+                            navController.navigate("download_data")
                         },
                         onDownloadAction = onDownloadAction,
                         modifier = Modifier.padding(innerPadding),

@@ -26,7 +26,7 @@ object SettingsUtil {
     fun checkKeyboardInstallation(context: Context): Boolean {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        return imm.enabledInputMethodList.any { it.packageName == "be.scri.debug" }
+        return imm.enabledInputMethodList.any { it.packageName == context.packageName }
     }
 
     /**

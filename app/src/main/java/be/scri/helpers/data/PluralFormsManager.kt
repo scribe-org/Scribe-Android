@@ -17,16 +17,16 @@ class PluralFormsManager(
      * Retrieves a list of all known plural forms for a given language from the database.
      *
      * @param language The language code (e.g., "EN", "DE") to select the correct database.
-     * @param jsonData The data contract, which specifies the names of the columns containing plural forms.
+     * @param yamlData The data contract, which specifies the names of the columns containing plural forms.
      *
      * @return A [List] of all plural word forms, or `null`
      * if the operation fails or no plural columns are defined.
      */
     fun getAllPluralForms(
         language: String,
-        jsonData: DataContract?,
+        yamlData: DataContract?,
     ): List<String>? =
-        jsonData?.numbers?.values?.toList()?.takeIf { it.isNotEmpty() }?.let { pluralForms ->
+        yamlData?.numbers?.values?.toList()?.takeIf { it.isNotEmpty() }?.let { pluralForms ->
             fileManager.getLanguageDatabase(language)?.use { db ->
                 queryAllPluralForms(db, pluralForms)
             }
@@ -36,7 +36,7 @@ class PluralFormsManager(
      * Retrieves the specific plural representation for a single noun.
      *
      * @param language The language code to select the correct database.
-     * @param jsonData The data contract, which specifies the singular and plural column names.
+     * @param yamlData The data contract, which specifies the singular and plural column names.
      * @param noun The singular noun to find the plural for.
      *
      * @return A [Map] containing the singular noun as the key and
@@ -44,10 +44,10 @@ class PluralFormsManager(
      */
     fun getPluralRepresentation(
         language: String,
-        jsonData: DataContract?,
+        yamlData: DataContract?,
         noun: String,
     ): Map<String, String?> =
-        jsonData?.numbers?.let { numbers ->
+        yamlData?.numbers?.let { numbers ->
             val singularCol = numbers.keys.firstOrNull()
             val pluralCol = numbers.values.firstOrNull()
 
