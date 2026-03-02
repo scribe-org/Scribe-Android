@@ -81,6 +81,7 @@ fun ScribeApp(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val downloadStates = downloadViewModel.downloadStates
     val onDownloadAction = downloadViewModel::handleDownloadAction
+    val onDownloadAll = downloadViewModel::handleDownloadAllLanguages
     val inititalizeStates = downloadViewModel::initializeStates
     val checkAllForUpdates = downloadViewModel::checkAllForUpdates
 
@@ -214,6 +215,7 @@ fun ScribeApp(
                         },
                         downloadStates = downloadStates,
                         onDownloadAction = onDownloadAction,
+                        onDownloadAll = onDownloadAll,
                         initializeStates = inititalizeStates,
                         checkAllForUpdates = checkAllForUpdates,
                         modifier = Modifier.padding(innerPadding),

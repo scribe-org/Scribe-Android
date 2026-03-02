@@ -122,7 +122,7 @@ class DataDownloadViewModel(
 
                     // Always download when forcing, or when update is available.
                     if (forceDownload || isUpdateAvailable(localLastUpdate, serverLastUpdate)) {
-                        val dbHelper = DynamicDbHelper(getApplication(), langCode.uppercase())
+                        val dbHelper = DynamicDbHelper(getApplication(), langCode)
                         dbHelper.syncDatabase(response)
 
                         // Save timestamp.
@@ -150,6 +150,96 @@ class DataDownloadViewModel(
                     downloadJobs.remove(key)
                 }
             }
+    }
+
+    /**
+     * Handles the "All languages" download action by initiating downloads for all languages that are not already completed or downloading.
+     */
+    fun handleDownloadAllLanguages() {
+        val toDownload =
+            downloadStates.keys.filter { key ->
+                key != "all" && downloadStates[key] != DownloadState.Completed && downloadStates[key] != DownloadState.Downloading
+            }
+        toDownload.forEach { key ->
+            handleDownloadAction(key)
+        }
+    }
+
+    /**
+     * Checks for available updates using the data version API.
+     * Sets state to Update if server has newer data.
+     *
+     * @param key The key identifying the download item.
+     */
+    fun checkForUpdates(key: String) {
+        val currentState = downloadStates[key] ?: DownloadState.Ready
+        if (currentState == DownloadState.Downloading) return
+
+        val langCode =
+            LanguageMappingConstants
+                .getLanguageAlias(key.replaceFirstChar { it.uppercase() })
+                .lowercase()
+
+        val localLastUpdate = prefs.getString("last_update_$langCode", "1970-01-01") ?: "1970-01-01"
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = RetrofitClient.apiService.getDataVersion(langCode)
+
+                val hasUpdate =
+                    response.versions.values.any { serverDate ->
+                        isUpdateAvailable(localLastUpdate, serverDate)
+                    }
+
+                withContext(Dispatchers.Main) {
+                    downloadStates[key] =
+                        if (hasUpdate) {
+                            DownloadState.Update
+                        } else {
+                            DownloadState.Completed
+                        }
+                }
+            } catch (e: IOException) {
+                Log.w("DownloadVM", "Network error while checking updates for $key: ${e.message}")
+            } catch (e: HttpException) {
+                Log.w("DownloadVM", "Server error while checking updates for $key: ${e.code()}")
+            } catch (e: SQLiteException) {
+                Log.w("DownloadVM", "Database error while checking updates for $key: ${e.message}")
+            }
+        }
+    }
+
+    /**
+     * Checks all languages for updates.
+     */
+    fun checkAllForUpdates() {
+        downloadStates.keys.forEach { key ->
+            if (key == "all") return@forEach
+            // Only check languages that have been downloaded before.
+            if (downloadStates[key] == DownloadState.Completed) {
+                checkForUpdates(key)
+            }
+        }
+    }
+
+    private suspend fun updateErrorState(
+        key: String,
+        message: String,
+    ) {
+        withContext(Dispatchers.Main) {
+            // Reset status so user can retry.
+            downloadStates[key] = DownloadState.Ready
+            Toast.makeText(getApplication(), message, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    /**
+     * Cancels all ongoing downloads.
+     */
+    override fun onCleared() {
+        super.onCleared()
+        downloadJobs.values.forEach { it.cancel() }
+        downloadJobs.clear()
     }
 
     /**
