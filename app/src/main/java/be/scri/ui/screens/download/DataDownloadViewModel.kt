@@ -15,8 +15,10 @@ import be.scri.data.remote.RetrofitClient
 import be.scri.helpers.LanguageMappingConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import retrofit2.HttpException
 import java.io.IOException
 import java.time.LocalDate
@@ -26,6 +28,7 @@ class DataDownloadViewModel(
     application: Application,
 ) : AndroidViewModel(application) {
     val downloadStates = mutableStateMapOf<String, DownloadState>()
+    private val downloadSemaphore = kotlinx.coroutines.sync.Semaphore(2)
     private val downloadJobs = mutableMapOf<String, Job>()
     private val prefs = getApplication<Application>().getSharedPreferences("scribe_prefs", Context.MODE_PRIVATE)
 
@@ -115,9 +118,13 @@ class DataDownloadViewModel(
         // Store the job so we can cancel it later if needed.
         downloadJobs[key] =
             viewModelScope.launch(Dispatchers.IO) {
+                downloadSemaphore.acquire()
                 try {
                     // Fetch API.
-                    val response = RetrofitClient.apiService.getData(langCode)
+                    val response =
+                        withTimeout(30_000) {
+                            RetrofitClient.apiService.getData(langCode)
+                        }
                     val serverLastUpdate = response.contract.updatedAt
 
                     // Always download when forcing, or when update is available.
@@ -145,8 +152,12 @@ class DataDownloadViewModel(
                     updateErrorState(key, "Database Error: ${e.message}")
                 } catch (e: HttpException) {
                     updateErrorState(key, "Server Error: ${e.code()}")
+                } catch (e: TimeoutCancellationException) {
+                    updateErrorState(key, "Download timed out")
+                    throw e
                 } finally {
                     // Clean up the job reference when done.
+                    downloadSemaphore.release()
                     downloadJobs.remove(key)
                 }
             }
@@ -158,7 +169,7 @@ class DataDownloadViewModel(
     fun handleDownloadAllLanguages() {
         val toDownload =
             downloadStates.keys.filter { key ->
-                key != "all" && downloadStates[key] != DownloadState.Completed && downloadStates[key] != DownloadState.Downloading
+                downloadStates[key] != DownloadState.Completed && downloadStates[key] != DownloadState.Downloading
             }
         toDownload.forEach { key ->
             handleDownloadAction(key)
@@ -214,7 +225,6 @@ class DataDownloadViewModel(
      */
     fun checkAllForUpdates() {
         downloadStates.keys.forEach { key ->
-            if (key == "all") return@forEach
             // Only check languages that have been downloaded before.
             if (downloadStates[key] == DownloadState.Completed) {
                 checkForUpdates(key)

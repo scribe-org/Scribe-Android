@@ -3,6 +3,7 @@
 package be.scri.ui.screens.download
 
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -99,11 +101,10 @@ fun DownloadDataScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    // Prepare the list of languages to display, including the "All Languages" option.
+    // Prepare the list of languages to display.
     val languages: ImmutableList<LanguageItem> =
         remember(installedKeyboardLanguages) {
             buildList {
-                add(LanguageItem("all", context.getString(R.string.i18n_app_download_menu_ui_download_data_all_languages), false))
                 installedKeyboardLanguages.forEach { languageCode ->
                     val displayName =
                         when (languageCode.lowercase()) {
@@ -122,16 +123,7 @@ fun DownloadDataScreen(
             }.toImmutableList()
         }
 
-    // Determine the state of the "All Languages" item based on individual language states.
-    val allLanguagesState =
-        when {
-            downloadStates.filter { it.key != "all" }.values.all { it == DownloadState.Completed } -> DownloadState.Completed
-            downloadStates.filter { it.key != "all" }.values.all { it == DownloadState.Downloading } -> DownloadState.Downloading
-            downloadStates.filter { it.key != "all" }.values.all { it == DownloadState.Update } -> DownloadState.Update
-            else -> DownloadState.Ready
-        }
-
-    LaunchedEffect(languages) {
+    LaunchedEffect(Unit) {
         val keys = languages.map { it.key }
         currentInitializeStates(keys)
     }
@@ -206,7 +198,6 @@ fun DownloadDataScreen(
                 } else {
                     LanguagesListSection(
                         languages = languages,
-                        allLanguagesState = allLanguagesState,
                         downloadStates = downloadStates,
                         onLanguageSelect = { selectedLanguage.value = it },
                         onDownloadAll = onDownloadAll,
@@ -286,16 +277,14 @@ private fun EmptyStateSection(context: Context) {
  * Composable function to display the list of languages available for download, along with their respective download states and actions.
  *
  * @param languages List of [LanguageItem] representing the available languages.
- * @param allLanguagesState The overall download state for all languages.
  * @param downloadStates Map of individual language keys to their respective [DownloadState].
  * @param onLanguageSelect Callback invoked when a specific language is selected for download.
- * @param onDownloadAll Callback invoked when the "All Languages" option is selected for download.
+ * @param onDownloadAll Callback invoked when the "Update all" is clicked for download.
  * @param onDownloadAction Callback invoked when a specific language's download action is triggered, with parameters for language key and whether it's an "all" action.
  */
 @Composable
 private fun LanguagesListSection(
     languages: ImmutableList<LanguageItem>,
-    allLanguagesState: DownloadState,
     downloadStates: Map<String, DownloadState>,
     onLanguageSelect: (LanguageItem) -> Unit,
     onDownloadAll: () -> Unit,
@@ -310,16 +299,27 @@ private fun LanguagesListSection(
         color = MaterialTheme.colorScheme.surface,
     ) {
         Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
+            Text(
+                text = "Update all",
+                color = colorResource(R.color.dark_scribe_blue),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                modifier =
+                    Modifier
+                        .padding(horizontal = 12.dp, vertical = 10.dp)
+                        .align(Alignment.End)
+                        .clickable {
+                            onDownloadAll()
+                        },
+            )
             languages.forEachIndexed { index, lang ->
-                val currentStatus = if (lang.key == "all") allLanguagesState else (downloadStates[lang.key] ?: DownloadState.Ready)
+                val currentStatus = downloadStates[lang.key] ?: DownloadState.Ready
 
                 LanguageItemComp(
                     title = lang.displayName,
                     onClick = { },
                     onButtonClick = {
-                        if (lang.key == "all") {
-                            onDownloadAll()
-                        } else if (currentStatus == DownloadState.Ready) {
+                        if (currentStatus == DownloadState.Ready) {
                             onLanguageSelect(lang)
                         } else {
                             onDownloadAction(lang.key, false)
