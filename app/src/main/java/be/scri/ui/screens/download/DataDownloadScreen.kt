@@ -59,30 +59,26 @@ import kotlinx.collections.immutable.toImmutableList
  *
  * @param onBackNavigation Callback for back navigation action.
  * @param onNavigateToTranslation Callback for navigating to translation language selection.
+ * @param isDarkTheme Boolean indicating if the dark theme is enabled.
+ * @param checkUpdateActions Actions related to checking for data updates.
+ * @param downloadActions Actions related to downloading language data.
  * @param modifier Modifier for layout and styling.
- * @param downloadStates Map of language keys to their download states.
- * @param onDownloadAction Callback for download action when a language is selected and confirmed.
- * @param initializeStates Callback to initialize download states for given languages.
- * @param checkAllForUpdates Callback to check all languages for available updates.
  */
 @Composable
 fun DownloadDataScreen(
     onBackNavigation: () -> Unit,
     onNavigateToTranslation: (String) -> Unit,
-    checkAllForUpdates: () -> Unit,
+    isDarkTheme: Boolean,
+    checkUpdateActions: CheckUpdateActions,
+    downloadActions: DownloadActions,
     modifier: Modifier = Modifier,
-    downloadStates: Map<String, DownloadState> = emptyMap(),
-    onDownloadAction: (String, Boolean) -> Unit = { _, _ -> },
-    onDownloadAll: () -> Unit = {},
-    initializeStates: (List<String>) -> Unit = {},
     viewModel: SettingsViewModel =
         viewModel(
             factory = SettingsViewModelFactory(LocalContext.current),
         ),
 ) {
-    val currentInitializeStates by rememberUpdatedState(initializeStates)
+    val currentInitializeStates by rememberUpdatedState(downloadActions.initializeStates)
     val scrollState = rememberScrollState()
-    val checkForNewData = remember { mutableStateOf(false) }
     val regularlyUpdateData = remember { mutableStateOf(true) }
     val selectedLanguage = remember { mutableStateOf<LanguageItem?>(null) }
     val context = LocalContext.current
@@ -161,12 +157,11 @@ fun DownloadDataScreen(
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
                         if (installedKeyboardLanguages.isNotEmpty()) {
                             CircleClickableItemComp(
+                                checkState = checkUpdateActions.checkUpdateState,
+                                onStartCheck = checkUpdateActions.checkForNewData,
+                                onCancel = checkUpdateActions.cancelCheckForNewData,
                                 title = stringResource(R.string.i18n_app_download_menu_ui_update_data_check_new),
-                                onClick = {
-                                    checkForNewData.value = !checkForNewData.value
-                                    if (checkForNewData.value) checkAllForUpdates()
-                                },
-                                isSelected = checkForNewData.value,
+                                isDarkTheme = isDarkTheme,
                             )
                             HorizontalDivider(
                                 color = Color.Gray.copy(alpha = 0.3f),
@@ -198,10 +193,10 @@ fun DownloadDataScreen(
                 } else {
                     LanguagesListSection(
                         languages = languages,
-                        downloadStates = downloadStates,
+                        downloadStates = downloadActions.downloadStates,
                         onLanguageSelect = { selectedLanguage.value = it },
-                        onDownloadAll = onDownloadAll,
-                        onDownloadAction = onDownloadAction,
+                        onDownloadAll = downloadActions.onDownloadAll,
+                        onDownloadAction = downloadActions.onDownloadAction,
                     )
                 }
 
@@ -225,7 +220,7 @@ fun DownloadDataScreen(
                             ),
                         textChange = stringResource(R.string.i18n_app_download_menu_ui_translation_source_tooltip_change_language),
                         onConfirm = {
-                            onDownloadAction(key, false)
+                            downloadActions.onDownloadAction(key, false)
                             selectedLanguage.value = null
                         },
                         onChange = { onNavigateToTranslation(languageId) },
