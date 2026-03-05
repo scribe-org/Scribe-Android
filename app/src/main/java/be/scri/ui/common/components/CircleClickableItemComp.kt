@@ -49,8 +49,9 @@ fun CircleClickableItemComp(
         modifier =
             modifier.clickable {
                 when (checkState) {
-                    CheckUpdateState.Idle, CheckUpdateState.Done -> onStartCheck()
+                    CheckUpdateState.Idle -> onStartCheck()
                     CheckUpdateState.Checking -> onCancel()
+                    CheckUpdateState.Done -> { }
                 }
             },
     ) {
