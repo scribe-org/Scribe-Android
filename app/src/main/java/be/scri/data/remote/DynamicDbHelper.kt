@@ -17,7 +17,7 @@ import be.scri.data.model.DataResponse
 class DynamicDbHelper(
     context: Context,
     language: String,
-) : SQLiteOpenHelper(context, "${language}LanguageData.sqlite", null, 1) {
+) : SQLiteOpenHelper(context, "${language.uppercase()}LanguageData.sqlite", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
         // Tables are created dynamically via syncDatabase from API contract.
     }
