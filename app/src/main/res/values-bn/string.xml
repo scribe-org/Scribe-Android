@@ -73,9 +73,9 @@
     <string name="i18n.app.installation.keyboard.text_4">কীবোর্ড নির্বাচন করতে</string>
     <string name="i18n.app.installation.keyboard.title">কীবোর্ড ইনস্টলেশন</string>
     <string name="i18n.app.installation.title">ইনস্টলেশন</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">উইকিডাটা হল একটি সহযোগিতামূলকভাবে সম্পাদিত জ্ঞান গ্রাফ যা উইকিমিডিয়া ফাউন্ডেশন দ্বারা রক্ষণাবেক্ষণ করা হয়। এটি উইকিপিডিয়ার মতো প্রকল্প এবং আরও অনেক প্রকল্পের জন্য একটি উন্মুক্ত ডেটা উৎস হিসাবে কাজ করে।</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">Scribe তার অনেক মূল বৈশিষ্ট্যের জন্য উইকিডাটার ভাষার ডেটা ব্যবহার করে। আমরা যেমন তথ্য পাই: বিশেষ্য লিঙ্গ, ক্রিয়াপদ সংযোজন এবং আরও অনেক কিছু!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">আপনি wikidata.org-এ একটি অ্যাকাউন্ট তৈরি করতে পারেন এবং Scribe এবং অন্যান্য অনেক প্রকল্পকে সমর্থনকারী কমিউনিটিতে যোগ দিতে পারেন। আমাদের সাহায্য করুন বিনামূল্যে তথ্য বিশ্বে পৌঁছে দিতে!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">উইকিডাটা হল একটি সহযোগিতামূলকভাবে সম্পাদিত জ্ঞান গ্রাফ যা উইকিমিডিয়া ফাউন্ডেশন দ্বারা রক্ষণাবেক্ষণ করা হয়। এটি উইকিপিডিয়ার মতো প্রকল্প এবং আরও অনেক প্রকল্পের জন্য একটি উন্মুক্ত ডেটা উৎস হিসাবে কাজ করে।</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">Scribe তার অনেক মূল বৈশিষ্ট্যের জন্য উইকিডাটার ভাষার ডেটা ব্যবহার করে। আমরা যেমন তথ্য পাই: বিশেষ্য লিঙ্গ, ক্রিয়াপদ সংযোজন এবং আরও অনেক কিছু!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">আপনি wikidata.org-এ একটি অ্যাকাউন্ট তৈরি করতে পারেন এবং Scribe এবং অন্যান্য অনেক প্রকল্পকে সমর্থনকারী কমিউনিটিতে যোগ দিতে পারেন। আমাদের সাহায্য করুন বিনামূল্যে তথ্য বিশ্বে পৌঁছে দিতে!</string>
     <string name="i18n.app.settings.app_hint_tooltip">অ্যাপ এবং ইনস্টল করা ভাষার কীবোর্ডের সেটিংস এখানে পাওয়া যাবে।</string>
     <string name="i18n.app.settings.button_install_keyboards">কীবোর্ড ইনস্টল করুন</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">প্রস্তাবনা/সম্পূর্ণ করতে টীকা দিন</string>

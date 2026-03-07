@@ -68,9 +68,9 @@
     <string name="i18n.app.installation.keyboard.text_4">para selecionar teclados</string>
     <string name="i18n.app.installation.keyboard.title">Como instalar um teclado</string>
     <string name="i18n.app.installation.title">Instalação</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">A Wikidata é um grafo de conhecimento editado colaborativamente e mantivo pela Fundação Wikimedia. A Wikidata é uma fonte de dados públicos para projetos como a Wikipédia e muitos outros.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">O Scribe usa dados linguísticos da Wikidata para muitas de suas funcionalidades. Temos informações sobre gêneros de substantivos, conjugações de verbos, e muito mais!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">Você pode criar uma conta em wikidata.org e se juntar à comunidade que apoia o Scribe e muitos outros projetos. Ajude-nos a fornecer dados gratuitos para o mundo!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">A Wikidata é um grafo de conhecimento editado colaborativamente e mantivo pela Fundação Wikimedia. A Wikidata é uma fonte de dados públicos para projetos como a Wikipédia e muitos outros.</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">O Scribe usa dados linguísticos da Wikidata para muitas de suas funcionalidades. Temos informações sobre gêneros de substantivos, conjugações de verbos, e muito mais!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">Você pode criar uma conta em wikidata.org e se juntar à comunidade que apoia o Scribe e muitos outros projetos. Ajude-nos a fornecer dados gratuitos para o mundo!</string>
     <string name="i18n.app.settings.app_hint_tooltip">Aqui você encontra as configurações do aplicativo e teclados de idioma instalados.</string>
     <string name="i18n.app.settings.button_install_keyboards">Instalar teclados</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Sugestões e autocompletar</string>

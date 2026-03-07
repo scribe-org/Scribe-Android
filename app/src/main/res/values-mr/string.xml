@@ -68,9 +68,9 @@
     <string name="i18n.app.installation.keyboard.text_4">कीबोर्ड निवडण्यासाठी</string>
     <string name="i18n.app.installation.keyboard.title">कीबोर्ड इंस्टॉलेशन</string>
     <string name="i18n.app.installation.title">इंस्टॉलेशन</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">विकिडाटा हे सहयोगाने संपादित ज्ञान ग्राफ आहे, जे विकिमीडिया फाउंडेशनद्वारे देखभाल केले जाते. हे विकिपीडिया आणि इतर अनेक प्रकल्पांसाठी खुला डेटा स्रोत आहे.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">स्क्राइब विकिडाटाच्या भाषा डेटाचा वापर त्याच्या अनेक मुख्य वैशिष्ट्यांसाठी करतो. आम्हाला या डेटामधून संज्ञा लिंग, क्रियापद रूपांतरण आणि इतर माहिती मिळते!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">तुम्ही wikidata.org वर खाती बनवून त्या समुदायात सामील होऊ शकता, जो स्क्राइब आणि इतर अनेक प्रकल्पांना समर्थन देत आहे. आमच्यासोबत मोफत माहिती जगभर पोहचविण्यात मदत करा!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">विकिडाटा हे सहयोगाने संपादित ज्ञान ग्राफ आहे, जे विकिमीडिया फाउंडेशनद्वारे देखभाल केले जाते. हे विकिपीडिया आणि इतर अनेक प्रकल्पांसाठी खुला डेटा स्रोत आहे.</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">स्क्राइब विकिडाटाच्या भाषा डेटाचा वापर त्याच्या अनेक मुख्य वैशिष्ट्यांसाठी करतो. आम्हाला या डेटामधून संज्ञा लिंग, क्रियापद रूपांतरण आणि इतर माहिती मिळते!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">तुम्ही wikidata.org वर खाती बनवून त्या समुदायात सामील होऊ शकता, जो स्क्राइब आणि इतर अनेक प्रकल्पांना समर्थन देत आहे. आमच्यासोबत मोफत माहिती जगभर पोहचविण्यात मदत करा!</string>
     <string name="i18n.app.settings.app_hint_tooltip">अ‍ॅप आणि इंस्टॉल केलेल्या भाषा कीबोर्डची सेटिंग्ज इथे मिळतील.</string>
     <string name="i18n.app.settings.button_install_keyboards">कीबोर्ड इंस्टॉल करा</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">सुचवण्या/समाप्ति वर्णन करा</string>

@@ -68,9 +68,9 @@
     <string name="i18n.app.installation.keyboard.text_4">pour sélectionner le clavier</string>
     <string name="i18n.app.installation.keyboard.title">Installation du clavier</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">Wikidata est un réseau de connaissances collaboratif géré par la fondation Wikimedia. Il sert de source de données ouvertes pour des projets tels que Wikipédia et bien d\'autres.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">Scribe utilise les données linguistiques de Wikidata pour un grand nombre de ses fonctionnalités de base. Nous obtenons des informations telles que le genre des noms, la conjugaison des verbes et bien plus encore !</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">Vous pouvez créer un compte sur wikidata.org pour rejoindre la communauté qui soutient Scribe et bien d\'autres projets. Contribuez à la diffusion d\'informations gratuites dans le monde entier !</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">Wikidata est un réseau de connaissances collaboratif géré par la fondation Wikimedia. Il sert de source de données ouvertes pour des projets tels que Wikipédia et bien d\'autres.</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">Scribe utilise les données linguistiques de Wikidata pour un grand nombre de ses fonctionnalités de base. Nous obtenons des informations telles que le genre des noms, la conjugaison des verbes et bien plus encore !</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">Vous pouvez créer un compte sur wikidata.org pour rejoindre la communauté qui soutient Scribe et bien d\'autres projets. Contribuez à la diffusion d\'informations gratuites dans le monde entier !</string>
     <string name="i18n.app.settings.app_hint_tooltip">Les paramètres de l\'application et des claviers linguistiques installés se trouvent ici.</string>
     <string name="i18n.app.settings.button_install_keyboards">Installer les claviers</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Annoter, suggérer/compléter</string>
