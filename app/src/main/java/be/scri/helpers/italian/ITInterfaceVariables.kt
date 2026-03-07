@@ -15,7 +15,7 @@ object ITInterfaceVariables {
 
     const val SPACE_BAR = "spazio"
     const val LANGUAGE = "Italiano"
-    const val INVALID_COMMAND_MSG = "Non in Wikidata"
+    const val INVALID_COMMAND_MSG = "Non in Wiktionary"
     val BASE_AUTOSUGGESTIONS = listOf("ho", "non", "ma")
     val NUMERIC_AUTOSUGGESTIONS = listOf("utenti", "anni", "e")
 

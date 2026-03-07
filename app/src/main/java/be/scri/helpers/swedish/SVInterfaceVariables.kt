@@ -15,7 +15,7 @@ object SVInterfaceVariables {
 
     const val SPACE_BAR = "mellanslag"
     const val LANGUAGE = "Svenska"
-    const val INVALID_COMMAND_MSG = "Inte i Wikidata"
+    const val INVALID_COMMAND_MSG = "Inte i Wiktionary"
     val BASE_AUTOSUGGESTIONS = listOf("jag", "det", "men")
     val NUMERIC_AUTOSUGGESTIONS = listOf("jag", "det", "och")
 

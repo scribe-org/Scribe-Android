@@ -15,7 +15,7 @@ object RUInterfaceVariables {
 
     const val SPACE_BAR = "Пробел"
     const val LANGUAGE = "Pусский"
-    const val INVALID_COMMAND_MSG = "Нет в Викиданных"
+    const val INVALID_COMMAND_MSG = "Нет в Викисловарь"
     val BASE_AUTOSUGGESTIONS = listOf("я", "а", "в")
     val NUMERIC_AUTOSUGGESTIONS = listOf("в", "и", "я")
 

@@ -15,7 +15,7 @@ object ESInterfaceVariables {
 
     const val SPACE_BAR = "espacio"
     const val LANGUAGE = "Español"
-    const val INVALID_COMMAND_MSG = "No en Wikidata"
+    const val INVALID_COMMAND_MSG = "No en Wiktionary"
     val BASE_AUTOSUGGESTIONS = listOf("el", "la", "no")
     val NUMERIC_AUTOSUGGESTIONS = listOf("que", "de", "en")
 

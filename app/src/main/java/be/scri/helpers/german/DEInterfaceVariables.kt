@@ -15,7 +15,7 @@ object DEInterfaceVariables {
 
     const val SPACE_BAR = "Leerzeichen"
     const val LANGUAGE = "Deutsch"
-    const val INVALID_COMMAND_MSG = "Nicht in Wikidata"
+    const val INVALID_COMMAND_MSG = "Nicht in Wiktionary"
     val BASE_AUTOSUGGESTIONS = listOf("ich", "die", "das")
     val NUMERIC_AUTOSUGGESTIONS = listOf("Prozent", "Milionen", "Meter")
 

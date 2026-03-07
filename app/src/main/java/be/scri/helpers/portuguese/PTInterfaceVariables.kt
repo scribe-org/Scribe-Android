@@ -15,7 +15,7 @@ object PTInterfaceVariables {
 
     const val SPACE_BAR = "espaço"
     const val LANGUAGE = "Português"
-    const val INVALID_COMMAND_MSG = "Não está no Wikidata"
+    const val INVALID_COMMAND_MSG = "Não está no Wiktionary"
     val BASE_AUTOSUGGESTIONS = listOf("o", "a", "eu")
     val NUMERIC_AUTOSUGGESTIONS = listOf("de", "que", "a")
 

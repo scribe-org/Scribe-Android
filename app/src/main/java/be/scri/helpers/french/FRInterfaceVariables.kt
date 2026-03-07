@@ -15,7 +15,7 @@ object FRInterfaceVariables {
 
     const val SPACE_BAR = "espace"
     const val LANGUAGE = "Français"
-    const val INVALID_COMMAND_MSG = "Pas dans Wikidata"
+    const val INVALID_COMMAND_MSG = "Pas dans Wiktionary"
     val BASE_AUTOSUGGESTIONS = listOf("je", "il", "le")
     val NUMERIC_AUTOSUGGESTIONS = listOf("je", "que", "c’est")
 
