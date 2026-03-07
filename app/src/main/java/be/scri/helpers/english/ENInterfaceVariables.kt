@@ -15,7 +15,7 @@ object ENInterfaceVariables {
 
     const val SPACE_BAR = "space"
     const val LANGUAGE = "English"
-    const val INVALID_COMMAND_MSG = "Not in Wikidata"
+    const val INVALID_COMMAND_MSG = "Not in Wiktionary"
     val BASE_AUTOSUGGESTIONS = listOf("I", "I'm", "we")
     val NUMERIC_AUTOSUGGESTIONS = listOf("is", "to", "and")
 
