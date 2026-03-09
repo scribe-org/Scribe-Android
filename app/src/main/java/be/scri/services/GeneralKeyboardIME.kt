@@ -139,6 +139,7 @@ abstract class GeneralKeyboardIME(
     private var currentEnterKeyType: Int? = null
 
     internal var currentState: ScribeState = ScribeState.IDLE
+    internal var invalidCommandSource: ScribeState = ScribeState.IDLE
 
     // Properties used by BackspaceHandler, delegated to UI Manager.
     internal var currentCommandBarHint: String
@@ -559,6 +560,7 @@ abstract class GeneralKeyboardIME(
             conjugateLabels = conjugateLabels,
             selectedConjugationSubCategory = selectedConjugationSubCategory,
             currentVerbForConjugation = currentVerbForConjugation,
+            invalidCommandSource = invalidCommandSource,
         )
     }
 
@@ -739,6 +741,7 @@ abstract class GeneralKeyboardIME(
             }
 
         if (commandModeOutput.isEmpty()) {
+            invalidCommandSource = currentState
             currentState = ScribeState.INVALID
             refreshUI()
         } else {
@@ -775,6 +778,7 @@ abstract class GeneralKeyboardIME(
 
         currentState =
             if (conjugateOutput == null) {
+                invalidCommandSource = ScribeState.CONJUGATE
                 ScribeState.INVALID
             } else {
                 saveConjugateModeType(language)

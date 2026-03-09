@@ -16,6 +16,20 @@ object SVInterfaceVariables {
     const val SPACE_BAR = "mellanslag"
     const val LANGUAGE = "Svenska"
     const val INVALID_COMMAND_MSG = "Inte i Wiktionary"
+    const val INVALID_COMMAND_MSG_WIKIDATA = "Inte i Wikidata"
+    const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
+        "Wikidata är en gemensamt redigerad kunskapsgraf som underhålls av Wikimedia Foundation. Det fungerar som en källa till öppen data för projekt som Wikipedia och flera andra."
+    const val INVALID_COMMAND_TEXT_WIKIDATA_2 =
+        "Scribe använder Wikidatas språkdata för många av sina kärnfunktioner. Vi får information som substantiv, genus, verbböjningar och mycket mer!"
+    const val INVALID_COMMAND_TEXT_WIKIDATA_3 =
+        "Du kan skapa ett konto på wikidata.org för att gå med i communityn som stöder Scribe och så många andra projekt. Hjälp oss att ge gratis information till världen!"
+    const val INVALID_COMMAND_MSG_WIKTIONARY = "Inte i Wiktionary"
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_1 =
+        "Wiktionary is a collaboratively edited dictionary that's maintained by the Wikimedia Foundation. It serves as a source of free linguistic data for projects like Wikipedia and countless others."
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_2 =
+        "Scribe uses Wiktionary's data to provide translations for its Translate command. Our data is derived from the many language pairs that Wiktionary's community has created!"
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
+        "You can make an account at wiktionary.org to join the community that's supporting Scribe and so many other projects. Help us bring free information to the world!"
     val BASE_AUTOSUGGESTIONS = listOf("jag", "det", "men")
     val NUMERIC_AUTOSUGGESTIONS = listOf("jag", "det", "och")
 

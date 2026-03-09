@@ -95,12 +95,7 @@ class KeyboardUIManager(
 
     private var currentPage = 0
     private val totalPages = 3
-    private val explanationStrings =
-        arrayOf(
-            R.string.i18n_app_keyboard_not_in_wiktionary_explanation_1,
-            R.string.i18n_app_keyboard_not_in_wiktionary_explanation_2,
-            R.string.i18n_app_keyboard_not_in_wiktionary_explanation_3,
-        )
+    private var currentInvalidTexts: Array<String> = HintUtils.getInvalidTextsWikidata("English")
 
     init {
         setupClickListeners()
@@ -159,13 +154,14 @@ class KeyboardUIManager(
         conjugateLabels: Set<String>?,
         selectedConjugationSubCategory: String?,
         currentVerbForConjugation: String?,
+        invalidCommandSource: ScribeState = ScribeState.IDLE,
     ) {
         val isUserDarkMode = getIsDarkModeOrNot(context)
 
         when (currentState) {
             ScribeState.IDLE -> setupIdleView(language, emojiAutoSuggestionEnabled, autoSuggestEmojis)
             ScribeState.SELECT_COMMAND -> setupSelectCommandView(language)
-            ScribeState.INVALID -> setupInvalidView(language)
+            ScribeState.INVALID -> setupInvalidView(language, invalidCommandSource)
             ScribeState.TRANSLATE -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
@@ -454,9 +450,13 @@ class KeyboardUIManager(
 
     /**
      * Configures the UI for the `INVALID` state, which is shown when a command (e.g., translation) fails.
+     * Shows Wikidata info for conjugate/plural commands, and Wiktionary info for the translate command.
      */
     @SuppressLint("SetTextI18n")
-    private fun setupInvalidView(language: String) {
+    private fun setupInvalidView(
+        language: String,
+        invalidCommandSource: ScribeState,
+    ) {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
         // Original logic: Invalid state actually uses the toolbarBar layout initially.
@@ -469,8 +469,22 @@ class KeyboardUIManager(
             if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
         )
 
+        val isWikidata = invalidCommandSource != ScribeState.TRANSLATE
+        val invalidMsg =
+            if (isWikidata) {
+                HintUtils.getInvalidHintWikidata(language)
+            } else {
+                HintUtils.getInvalidHintWiktionary(language)
+            }
+        currentInvalidTexts =
+            if (isWikidata) {
+                HintUtils.getInvalidTextsWikidata(language)
+            } else {
+                HintUtils.getInvalidTextsWiktionary(language)
+            }
+
         binding.ivInfo.visibility = View.VISIBLE
-        binding.promptText.text = HintUtils.getInvalidHint(language = language) + ": "
+        binding.promptText.text = "$invalidMsg: "
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(context, R.drawable.ic_scribe_icon_vector)
     }
@@ -852,10 +866,10 @@ class KeyboardUIManager(
     }
 
     /**
-     * Update Wikidata information based on current navigation state.
+     * Update invalid info text based on current navigation state.
      */
     private fun updateWikidataPage() {
-        binding.middleTextview.setText(explanationStrings[currentPage])
+        binding.middleTextview.text = currentInvalidTexts[currentPage]
         updateDotIndicators()
     }
 
