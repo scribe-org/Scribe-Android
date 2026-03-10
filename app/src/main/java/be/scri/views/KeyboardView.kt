@@ -1050,14 +1050,13 @@ class KeyboardView
                             paint.typeface = Typeface.DEFAULT
                         }
 
-                        paint.color =
-                            if (key.focused) {
-                                Color.WHITE
-                            } else if (key.focused) {
-                                mPrimaryColor.getContrastColor()
-                            } else {
-                                mTextColor
-                            }
+                        // Set key text color based on state: focused keys are white, pressed keys use a contrasting color, otherwise default text color
+                        // Using 'when' makes the logic clearer and avoids evaluating duplicate conditions
+                        paint.color = when {
+                            key.focused -> Color.WHITE
+                            key.pressed -> mPrimaryColor.getContrastColor()
+                            else -> mTextColor
+                        }
 
                         canvas.drawText(
                             label,
