@@ -173,13 +173,13 @@ git remote add upstream https://github.com/scribe-org/Scribe-Android.git
 >
 > Please note that you may also need to remake your emulator device from time to time. The team generally develops on emulators for the latest Pixel phones.
 
-After activating your emulator, consider setting up [pre-commit](https://pre-commit.com/) to fix common errors in the codebase before they're committed by running:
+After activating your emulator, consider setting up [prek](https://prek.j178.dev/) pre-commit hooks to fix common errors in the codebase before they're committed by running:
 
 ```bash
 pip install --upgrade pip  # make sure that pip is at the latest version
-pip install pre-commit
-pre-commit install  # install pre-commit hooks
-# pre-commit run --all-files  # lint and fix common problems in the codebase
+pip install prek
+prek install
+# prek --all-files
 ```
 
 > [!NOTE]

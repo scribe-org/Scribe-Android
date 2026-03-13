@@ -151,19 +151,20 @@ Build variants can be selected from **Build → Select Build Variant** in Androi
 
 ## Pre-commit Hooks [`⇧`](#contents)
 
-Scribe-Android uses pre-commit hooks to maintain a clean and consistent codebase. These hooks help automatically check for issues such as formatting, trailing whitespace, and linting errors. Here's how to set up pre-commit for Scribe-Android:
+Scribe-Android uses [prek](https://prek.j178.dev/) pre-commit hooks to maintain a clean and consistent codebase. These hooks help automatically check for issues such as formatting, trailing whitespace, and linting errors. Here's how to set up `prek` for Scribe-Android:
 
-1. Install `pre-commit` by running:
+1. Install `prek` by running:
 
     ```bash
-    pip install pre-commit
+    pip install --upgrade pip  # make sure that pip is at the latest version
+    pip install prek
     ```
 
 2. After cloning the repository, install the hooks by running the following command in the project root:
 
     ```bash
-    pre-commit install
-    pre-commit run --all-files  # to check
+    prek install
+    prek --all-files  # to check
     ```
 
 3. When you make a commit, the hooks will automatically run to check for any code quality issues. If any issues are found, they will either be fixed automatically or will need to be resolved manually.
@@ -174,7 +175,7 @@ Scribe-Android uses pre-commit hooks to maintain a clean and consistent codebase
 
 Writing unit tests is essential to guarantee the dependability and sustainability of the Scribe-Android codebase. Unit tests confirm that individual components of the application work as intended by detecting errors at an early stage, thus making the debugging process easier and boosting assurance for upcoming modifications. An unchanging testing method helps new team members grasp project norms and anticipated actions.
 
-In addition to the [pre-commit](https://pre-commit.com/) hooks that are set up during the [development environment section](#dev-env), Scribe-Android includes a testing suite that should be ran before all pull requests and subsequent commits.
+In addition to the [prek](https://prek.j178.dev/) pre-commit hooks that are set up during the [development environment section](#dev-env), Scribe-Android includes a testing suite that should be ran before all pull requests and subsequent commits.
 
 Please run the following in the project root:
 
