@@ -10,4 +10,10 @@ Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJ
 
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
+# Unreleased
+
+## Changed
+
+- ♻️ Switch translation "Not in Wikidata" to "Not in Wiktionary" to reflect migration from Wikidata to Wiktionary
+
 # Scribe-Android 1.0.0

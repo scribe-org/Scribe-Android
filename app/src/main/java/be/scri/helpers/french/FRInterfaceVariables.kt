@@ -15,7 +15,21 @@ object FRInterfaceVariables {
 
     const val SPACE_BAR = "espace"
     const val LANGUAGE = "Français"
-    const val INVALID_COMMAND_MSG = "Pas dans Wikidata"
+    const val INVALID_COMMAND_MSG = "Pas dans Wiktionary"
+    const val INVALID_COMMAND_MSG_WIKIDATA = "Pas dans Wikidata"
+    const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
+        "Wikidata is a collaboratively edited knowledge graph that's maintained by the Wikimedia Foundation. It serves as a source of open data for projects like Wikipedia and countless others."
+    const val INVALID_COMMAND_TEXT_WIKIDATA_2 =
+        "Scribe uses Wikidata's language data for many of its core features. We get information like noun genders, verb conjugations and much more!"
+    const val INVALID_COMMAND_TEXT_WIKIDATA_3 =
+        "You can make an account at wikidata.org to join the community that's supporting Scribe and so many other projects. Help us bring free information to the world!"
+    const val INVALID_COMMAND_MSG_WIKTIONARY = "Pas dans Wiktionary"
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_1 =
+        "Wiktionary est un réseau de connaissances collaboratif géré par la fondation Wikimedia. Il sert de source de données ouvertes pour des projets tels que Wikipédia et bien d'autres."
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_2 =
+        "Scribe utilise les données linguistiques de Wiktionary pour un grand nombre de ses fonctionnalités de base. Nous obtenons des informations telles que le genre des noms, la conjugaison des verbes et bien plus encore !"
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
+        "Vous pouvez créer un compte sur wiktionary.org pour rejoindre la communauté qui soutient Scribe et bien d'autres projets. Contribuez à la diffusion d'informations gratuites dans le monde entier !"
     val BASE_AUTOSUGGESTIONS = listOf("je", "il", "le")
     val NUMERIC_AUTOSUGGESTIONS = listOf("je", "que", "c’est")
 

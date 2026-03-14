@@ -15,7 +15,21 @@ object ITInterfaceVariables {
 
     const val SPACE_BAR = "spazio"
     const val LANGUAGE = "Italiano"
-    const val INVALID_COMMAND_MSG = "Non in Wikidata"
+    const val INVALID_COMMAND_MSG = "Non in Wiktionary"
+    const val INVALID_COMMAND_MSG_WIKIDATA = "Non in Wikidata"
+    const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
+        "Wikidata is a collaboratively edited knowledge graph that's maintained by the Wikimedia Foundation. It serves as a source of open data for projects like Wikipedia and countless others."
+    const val INVALID_COMMAND_TEXT_WIKIDATA_2 =
+        "Scribe uses Wikidata's language data for many of its core features. We get information like noun genders, verb conjugations and much more!"
+    const val INVALID_COMMAND_TEXT_WIKIDATA_3 =
+        "You can make an account at wikidata.org to join the community that's supporting Scribe and so many other projects. Help us bring free information to the world!"
+    const val INVALID_COMMAND_MSG_WIKTIONARY = "Non in Wiktionary"
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_1 =
+        "Wiktionary is a collaboratively edited dictionary that's maintained by the Wikimedia Foundation. It serves as a source of free linguistic data for projects like Wikipedia and countless others."
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_2 =
+        "Scribe uses Wiktionary's data to provide translations for its Translate command. Our data is derived from the many language pairs that Wiktionary's community has created!"
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
+        "You can make an account at wiktionary.org to join the community that's supporting Scribe and so many other projects. Help us bring free information to the world!"
     val BASE_AUTOSUGGESTIONS = listOf("ho", "non", "ma")
     val NUMERIC_AUTOSUGGESTIONS = listOf("utenti", "anni", "e")
 

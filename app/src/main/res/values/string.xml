@@ -93,9 +93,9 @@
     <string name="i18n.app.installation.keyboard.text_4">to select keyboards</string>
     <string name="i18n.app.installation.keyboard.title">Keyboard installation</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">Wikidata is a collaboratively edited knowledge graph that\'s maintained by the Wikimedia Foundation. It serves as a source of open data for projects like Wikipedia and countless others.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">Scribe uses Wikidata\'s language data for many of its core features. We get information like noun genders, verb conjugations and much more!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">You can make an account at wikidata.org to join the community that\'s supporting Scribe and so many other projects. Help us bring free information to the world!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">Wikidata is a collaboratively edited knowledge graph that\'s maintained by the Wikimedia Foundation. It serves as a source of open data for projects like Wikipedia and countless others.</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">Scribe uses Wikidata\'s language data for many of its core features. We get information like noun genders, verb conjugations and much more!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">You can make an account at wikidata.org to join the community that\'s supporting Scribe and so many other projects. Help us bring free information to the world!</string>
     <string name="i18n.app.settings.app_hint_tooltip">Settings for the app and installed language keyboards are found here.</string>
     <string name="i18n.app.settings.button_install_keyboards">Install keyboards</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Annotate suggest/complete</string>

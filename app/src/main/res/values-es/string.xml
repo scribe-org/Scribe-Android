@@ -68,9 +68,9 @@
     <string name="i18n.app.installation.keyboard.text_4">para seleccionar teclados</string>
     <string name="i18n.app.installation.keyboard.title">Instalación del teclado</string>
     <string name="i18n.app.installation.title">Instalación</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">Wikidata es un gráfico de conocimiento editado de forma colaborativa y mantenido por la Fundación Wikimedia. Sirve como fuente de datos abiertos para proyectos como Wikipedia y muchos otros.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">Scribe utiliza los datos lingüísticos de Wikidata para muchas de sus funciones principales. ¡Obtenemos información como géneros de sustantivos, conjugaciones de verbos y mucho más!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">Puedes crear una cuenta en wikidata.org para unirte a la comunidad que apoya a Scribe y a muchos otros proyectos. ¡Ayúdanos a llevar información gratuita al mundo!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">Wiktionary es un gráfico de conocimiento editado de forma colaborativa y mantenido por la Fundación Wikimedia. Sirve como fuente de datos abiertos para proyectos como Wikipedia y muchos otros.</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">Scribe utiliza los datos lingüísticos de Wiktionary para muchas de sus funciones principales. ¡Obtenemos información como géneros de sustantivos, conjugaciones de verbos y mucho más!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">Puedes crear una cuenta en wiktionary.org para unirte a la comunidad que apoya a Scribe y a muchos otros proyectos. ¡Ayúdanos a llevar información gratuita al mundo!</string>
     <string name="i18n.app.settings.app_hint_tooltip">La configuración de la aplicación y los teclados de idiomas instalados se encuentran aquí.</string>
     <string name="i18n.app.settings.button_install_keyboards">Instalar teclados</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Anotar, sugerir/completar</string>

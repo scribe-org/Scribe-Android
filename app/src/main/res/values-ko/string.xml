@@ -68,9 +68,9 @@
     <string name="i18n.app.installation.keyboard.text_4">키보드를 선택할 수 있습니다.</string>
     <string name="i18n.app.installation.keyboard.title">키보드 설치</string>
     <string name="i18n.app.installation.title">설치</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">위키데이터는 위키미디어 재단에 의해 유지되는 협업 편집 지식 그래프입니다. 이는 위키백과와 수많은 다른 프로젝트를 위한 개방형 데이터의 출처로 사용됩니다.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">Scribe는 많은 핵심 기능에서 위키데이터의 언어 데이터를 사용합니다. 우리는 명사의 성별, 동사의 활용 등 다양한 정보를 얻습니다!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">wikidata.org에서 계정을 만들면 Scribe와 많은 다른 프로젝트를 지원하는 커뮤니티에 참여할 수 있습니다. 함께 세상에 유용한 정보를 나누는 데 도움을 주세요!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">위키낱말사전은 위키미디어 재단에 의해 유지되는 협업 편집 지식 그래프입니다. 이는 위키백과와 수많은 다른 프로젝트를 위한 개방형 데이터의 출처로 사용됩니다.</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">Scribe는 많은 핵심 기능에서 위키낱말사전의 언어 데이터를 사용합니다. 우리는 명사의 성별, 동사의 활용 등 다양한 정보를 얻습니다!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">wiktionary.org에서 계정을 만들면 Scribe와 많은 다른 프로젝트를 지원하는 커뮤니티에 참여할 수 있습니다. 함께 세상에 유용한 정보를 나누는 데 도움을 주세요!</string>
     <string name="i18n.app.settings.app_hint_tooltip">앱 설정과 설치된 언어 키보드는 여기서 찾을 수 있습니다.</string>
     <string name="i18n.app.settings.button_install_keyboards">키보드 설치하기</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">추천 및 완성 설명</string>

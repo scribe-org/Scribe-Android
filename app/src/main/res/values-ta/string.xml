@@ -74,9 +74,9 @@
     <string name="i18n.app.installation.keyboard.text_4">விசைப்பலகைகளைத் தேர்ந்தெடுக்க</string>
     <string name="i18n.app.installation.keyboard.title">விசைப்பலகை நிறுவல்</string>
     <string name="i18n.app.installation.title">நிறுவல்</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">விக்கிடேட்டா என்பது விக்கிமீடியா அறக்கட்டளையால் பராமரிக்கப்படும் கூட்டுறவு முறையில் திருத்தப்படும் அறிவுக் கோவை ஆகும். இது விக்கிபீடியா போன்ற திட்டங்களுக்கும் எண்ணற்ற பிற திட்டங்களுக்கும் திறந்த தரவின் மூலமாக செயல்படுகிறது.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">Scribe அதன் பல முக்கிய அம்சங்களுக்காக விக்கிடேட்டாவின் மொழித் தரவுகளைப் பயன்படுத்துகிறது. பெயர்ச்சொல் பாலினங்கள், வினைச்சொல் இணைப்புகள் மற்றும் பலவற்றைப் பற்றிய தகவல்களை நாங்கள் பெறுகிறோம்!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">wikidata.org இல் கணக்கு உருவாக்கி Scribe மற்றும் பல பிற திட்டங்களை ஆதரிக்கும் சமூகத்தில் சேரலாம். உலகிற்கு இலவச தகவல்களைக் கொண்டு வர எங்களுக்கு உதவுங்கள்!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">விக்கிடேட்டா என்பது விக்கிமீடியா அறக்கட்டளையால் பராமரிக்கப்படும் கூட்டுறவு முறையில் திருத்தப்படும் அறிவுக் கோவை ஆகும். இது விக்கிபீடியா போன்ற திட்டங்களுக்கும் எண்ணற்ற பிற திட்டங்களுக்கும் திறந்த தரவின் மூலமாக செயல்படுகிறது.</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">Scribe அதன் பல முக்கிய அம்சங்களுக்காக விக்கிடேட்டாவின் மொழித் தரவுகளைப் பயன்படுத்துகிறது. பெயர்ச்சொல் பாலினங்கள், வினைச்சொல் இணைப்புகள் மற்றும் பலவற்றைப் பற்றிய தகவல்களை நாங்கள் பெறுகிறோம்!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">wikidata.org இல் கணக்கு உருவாக்கி Scribe மற்றும் பல பிற திட்டங்களை ஆதரிக்கும் சமூகத்தில் சேரலாம். உலகிற்கு இலவச தகவல்களைக் கொண்டு வர எங்களுக்கு உதவுங்கள்!</string>
     <string name="i18n.app.settings.app_hint_tooltip">பயன்பாடு மற்றும் நிறுவப்பட்ட மொழி விசைப்பலகைகளுக்கான அமைப்புகள் இங்கே காணப்படுகின்றன.</string>
     <string name="i18n.app.settings.button_install_keyboards">விசைப்பலகைகளை நிறுவுங்கள்</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">பரிந்துரை/நிறைவுகளைக் குறிப்பிடுங்கள்</string>

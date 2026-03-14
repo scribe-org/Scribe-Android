@@ -68,9 +68,9 @@
     <string name="i18n.app.installation.keyboard.text_4">لاختيار لوحات المفاتيح</string>
     <string name="i18n.app.installation.keyboard.title">تثبيت لوحة المفاتيح</string>
     <string name="i18n.app.installation.title">تثبيت</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">Wikidata هي قاعدة بيانات معرفية يتم تحريرها بشكل تعاوني ويتم إدارتها من قبل مؤسسة ويكيميديا. تعمل كمصدر للبيانات المفتوحة لمشاريع مثل ويكيبيديا والعديد من المشاريع الأخرى.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">يستخدم Scribe بيانات اللغة من Wikidata للعديد من ميزاته الأساسية. نحصل على معلومات مثل أجناس الأسماء، وتصريف الأفعال والمزيد!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">يمكنك إنشاء حساب في wikidata.org للانضمام إلى المجتمع الذي يدعم Scribe والعديد من المشاريع الأخرى. ساعدنا في تقديم المعلومات المجانية للعالم!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">ويكاموس هو قاموس تعاوني يتم تحريره بشكل جماعي ويتم إدارته من قبل مؤسسة ويكيميديا. يوفر تعريفات الكلمات ومعانيها بعدة لغات. </string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">يستخدم Scribe بيانات اللغة من Wiktionary للعديد من ميزاته الأساسية. نحصل على معلومات مثل أجناس الأسماء، وتصريف الأفعال والمزيد!</string>
+    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">يمكنك إنشاء حساب والمساهمة في ويكاموس عبر wiktionary.org</string>
     <string name="i18n.app.settings.app_hint_tooltip">توجد إعدادات التطبيق ولوحات المفاتيح اللغوية المثبتة هنا.</string>
     <string name="i18n.app.settings.button_install_keyboards">تثبيت لوحات المفاتيح</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">توضيح الاقتراحات/الاكتمال</string>
