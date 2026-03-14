@@ -17,6 +17,7 @@ class AutoSuggestionDataManager(
         val suggestionMap = HashMap<String, List<String>>()
         val columnsToSelect = listOf("word", "autosuggestion_0", "autosuggestion_1", "autosuggestion_2")
 
+        if (!db.tableExists("autosuggestions")) return suggestionMap
         db.rawQuery("SELECT * FROM autosuggestions LIMIT 1", null).use { tempCursor ->
             for (column in columnsToSelect) {
                 if (tempCursor.getColumnIndex(column) == -1) {
