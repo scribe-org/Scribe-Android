@@ -34,6 +34,7 @@ import be.scri.ui.screens.settings.SettingsUtil.getLocalizedLanguageName
 @Composable
 fun SettingsScreen(
     onDarkModeChange: (Boolean) -> Unit,
+    onIncreaseTextSizeChange: (Boolean) -> Unit,
     onLanguageSettingsClick: (String) -> Unit,
     context: Context,
     modifier: Modifier = Modifier,
@@ -47,6 +48,7 @@ fun SettingsScreen(
     val vibrateOnKeypress by viewModel.vibrateOnKeypress.collectAsState()
     val popupOnKeypress by viewModel.popupOnKeypress.collectAsState()
     val isUserDarkMode by viewModel.isUserDarkMode.collectAsState()
+    val isIncreaseTextSize by viewModel.isIncreaseTextSize.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -83,6 +85,15 @@ fun SettingsScreen(
                         onToggle = { newDarkMode ->
                             viewModel.setLightDarkMode(newDarkMode)
                             onDarkModeChange(newDarkMode)
+                        },
+                    ),
+                    ScribeItem.SwitchItem(
+                        title = R.string.app_settings_menu_increase_text_size,
+                        desc = R.string.app_settings_menu_increase_text_size_description,
+                        state = isIncreaseTextSize,
+                        onToggle = { newIncreaseTextSize ->
+                            viewModel.setIncreaseTextSize(newIncreaseTextSize)
+                            onIncreaseTextSizeChange(newIncreaseTextSize)
                         },
                     ),
                 ),

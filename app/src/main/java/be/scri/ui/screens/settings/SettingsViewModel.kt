@@ -33,6 +33,8 @@ class SettingsViewModel(
 
     private val _holdForAltKeys = MutableStateFlow(sharedPrefs.getBoolean("hold_for_alt_keys", false))
     val holdForAltKeys: StateFlow<Boolean> = _holdForAltKeys
+    private val _isIncreaseTextSize = MutableStateFlow(sharedPrefs.getBoolean("increase_text_size", false))
+    val isIncreaseTextSize: StateFlow<Boolean> = _isIncreaseTextSize
 
     init {
         viewModelScope.launch { refreshSettings(context) }
@@ -56,5 +58,11 @@ class SettingsViewModel(
      */
     fun setLightDarkMode(value: Boolean) {
         _isUserDarkMode.value = value
+        sharedPrefs.edit().putBoolean("dark_mode", value).apply()
+    }
+
+    fun setIncreaseTextSize(value: Boolean) {
+        _isIncreaseTextSize.value = value
+        sharedPrefs.edit().putBoolean("increase_text_size", value).apply()
     }
 }

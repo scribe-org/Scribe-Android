@@ -28,6 +28,7 @@ object PreferencesHelper {
     private const val WORD_BY_WORD_DELETION = "word_by_word_deletion"
     private const val DEFAULT_CURRENCY = "default_currency"
     private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
+    private const val INCREASE_TEXT_SIZE = "increase_text_size"
 
     /**
      * Sets the translation source language for a given language.
@@ -591,5 +592,18 @@ object PreferencesHelper {
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), true)
+    }
+
+    fun setIncreaseTextSizePreference(
+        context: Context,
+        increaseTextSize: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit { putBoolean(INCREASE_TEXT_SIZE, increaseTextSize) }
+    }
+
+    fun getIncreaseTextSizePreference(context: Context): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(INCREASE_TEXT_SIZE, false)
     }
 }

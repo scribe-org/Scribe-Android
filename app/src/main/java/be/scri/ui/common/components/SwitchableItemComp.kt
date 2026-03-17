@@ -49,7 +49,6 @@ fun SwitchableItemComp(
             Text(
                 text = title,
                 modifier = Modifier.weight(1f),
-                fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
