@@ -39,6 +39,7 @@ class SettingsScreenInstrumentedTest {
     private lateinit var context: Context
     private lateinit var mockViewModel: SettingsViewModel
     private lateinit var onDarkModeChangeMock: (Boolean) -> Unit
+    private lateinit var onIncreaseTextSizeChangeMock: (Boolean) -> Unit
     private lateinit var onLanguageSettingsClickMock: (String) -> Unit
 
     @Before
@@ -46,6 +47,7 @@ class SettingsScreenInstrumentedTest {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         mockViewModel = mockk(relaxed = true)
         onDarkModeChangeMock = mockk(relaxed = true)
+        onIncreaseTextSizeChangeMock = mockk(relaxed = true)
         onLanguageSettingsClickMock = mockk(relaxed = true)
 
         // Setup comprehensive mock returns for all StateFlow properties
@@ -54,9 +56,11 @@ class SettingsScreenInstrumentedTest {
         every { mockViewModel.vibrateOnKeypress } returns MutableStateFlow(false)
         every { mockViewModel.popupOnKeypress } returns MutableStateFlow(false)
         every { mockViewModel.isUserDarkMode } returns MutableStateFlow(false)
+        every { mockViewModel.isIncreaseTextSize } returns MutableStateFlow(false)
 
         every { mockViewModel.refreshSettings(any()) } returns Unit
         every { mockViewModel.setLightDarkMode(any()) } returns Unit
+        every { mockViewModel.setIncreaseTextSize(any()) } returns Unit
     }
 
     private fun setTestContent(content: @Composable () -> Unit) {
@@ -73,6 +77,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
             )
@@ -88,6 +93,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
             )
@@ -103,6 +109,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
             )
@@ -118,6 +125,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
             )
@@ -129,12 +137,33 @@ class SettingsScreenInstrumentedTest {
     }
 
     @Test
+    fun settingsScreen_displaysIncreaseTextSizeSwitch() {
+        setTestContent {
+            SettingsScreen(
+                onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
+                onLanguageSettingsClick = onLanguageSettingsClickMock,
+                context = context,
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_menu_increase_text_size))
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.i18n_app_settings_menu_increase_text_size_description))
+            .assertIsDisplayed()
+    }
+
+    @Test
     fun settingsScreen_whenKeyboardNotInstalled_showsInstallButton() {
         every { mockViewModel.isKeyboardInstalled } returns MutableStateFlow(false)
 
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
                 viewModel = mockViewModel,
@@ -156,6 +185,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
                 viewModel = mockViewModel,
@@ -183,6 +213,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
                 viewModel = mockViewModel,
@@ -206,12 +237,14 @@ class SettingsScreenInstrumentedTest {
         every { mockViewModelSpy.vibrateOnKeypress } returns MutableStateFlow(false)
         every { mockViewModelSpy.popupOnKeypress } returns MutableStateFlow(false)
         every { mockViewModelSpy.isUserDarkMode } returns MutableStateFlow(false)
+        every { mockViewModelSpy.isIncreaseTextSize } returns MutableStateFlow(false)
         every { mockViewModelSpy.refreshSettings(any()) } returns Unit
         every { mockViewModelSpy.setLightDarkMode(any()) } returns Unit
 
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
                 viewModel = mockViewModelSpy,
@@ -227,13 +260,55 @@ class SettingsScreenInstrumentedTest {
         composeTestRule
             .onAllNodes(hasClickAction() and !hasText(darkModeText))
             .filterToOne(
-                !hasText("App language") and !hasText("Install keyboards"),
+                !hasText("App language") and !hasText("Install keyboards") and !hasText("Increase app text size"),
             ).performClick()
 
         composeTestRule.waitForIdle()
 
         verify(timeout = 3000) { mockViewModelSpy.setLightDarkMode(true) }
         verify(timeout = 3000) { onDarkModeChangeMock(true) }
+    }
+
+    @Test
+    fun settingsScreen_increaseTextSizeToggle_triggersCallbacks() {
+        every { mockViewModel.isIncreaseTextSize } returns MutableStateFlow(false)
+        val mockViewModelSpy = spyk(mockViewModel)
+
+        every { mockViewModelSpy.languages } returns MutableStateFlow(emptyList())
+        every { mockViewModelSpy.isKeyboardInstalled } returns MutableStateFlow(false)
+        every { mockViewModelSpy.vibrateOnKeypress } returns MutableStateFlow(false)
+        every { mockViewModelSpy.popupOnKeypress } returns MutableStateFlow(false)
+        every { mockViewModelSpy.isUserDarkMode } returns MutableStateFlow(false)
+        every { mockViewModelSpy.isIncreaseTextSize } returns MutableStateFlow(false)
+        every { mockViewModelSpy.refreshSettings(any()) } returns Unit
+        every { mockViewModelSpy.setIncreaseTextSize(any()) } returns Unit
+
+        setTestContent {
+            SettingsScreen(
+                onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
+                onLanguageSettingsClick = onLanguageSettingsClickMock,
+                context = context,
+                viewModel = mockViewModelSpy,
+            )
+        }
+
+        val increaseTextSizeText = "Increase app text size"
+
+        composeTestRule
+            .onNodeWithText(increaseTextSizeText)
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onAllNodes(hasClickAction() and !hasText(increaseTextSizeText))
+            .filterToOne(
+                !hasText("App language") and !hasText("Install keyboards") and !hasText("Dark mode"),
+            ).performClick()
+
+        composeTestRule.waitForIdle()
+
+        verify(timeout = 3000) { mockViewModelSpy.setIncreaseTextSize(true) }
+        verify(timeout = 3000) { onIncreaseTextSizeChangeMock(true) }
     }
 
     @Test
@@ -245,12 +320,14 @@ class SettingsScreenInstrumentedTest {
         every { mockViewModelSpy.vibrateOnKeypress } returns MutableStateFlow(false)
         every { mockViewModelSpy.popupOnKeypress } returns MutableStateFlow(false)
         every { mockViewModelSpy.isUserDarkMode } returns MutableStateFlow(false)
+        every { mockViewModelSpy.isIncreaseTextSize } returns MutableStateFlow(false)
         every { mockViewModelSpy.refreshSettings(any()) } returns Unit
         every { mockViewModelSpy.setLightDarkMode(any()) } returns Unit
 
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
                 viewModel = mockViewModelSpy,
@@ -265,6 +342,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
             )
@@ -280,6 +358,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
             )
@@ -298,6 +377,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
             )
@@ -317,6 +397,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
                 viewModel = mockViewModel,
@@ -338,6 +419,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
                 viewModel = mockViewModel,
@@ -354,6 +436,7 @@ class SettingsScreenInstrumentedTest {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
+                onIncreaseTextSizeChange = onIncreaseTextSizeChangeMock,
                 onLanguageSettingsClick = onLanguageSettingsClickMock,
                 context = context,
             )

@@ -3,12 +3,12 @@
 package be.scri.ui.screens.settings
 
 import android.content.Context
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import androidx.core.content.edit
 
 /** This files handles the state and business logic for the settings screen. */
 class SettingsViewModel(

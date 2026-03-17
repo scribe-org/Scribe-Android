@@ -43,6 +43,7 @@ class SettingsScreenInstallKeyboardButtonTest {
                 SettingsScreen(
                     onDarkModeChange = {},
                     onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
                     context = context,
                     viewModel = mockViewModel,
                 )
@@ -68,6 +69,7 @@ class SettingsScreenInstallKeyboardButtonTest {
                 SettingsScreen(
                     onDarkModeChange = {},
                     onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
                     context = context,
                     viewModel = mockViewModel,
                 )
@@ -90,6 +92,7 @@ class SettingsScreenInstallKeyboardButtonTest {
                 SettingsScreen(
                     onDarkModeChange = {},
                     onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
                     context = context,
                     viewModel = mockViewModel,
                 )
@@ -113,6 +116,7 @@ class SettingsScreenInstallKeyboardButtonTest {
                 SettingsScreen(
                     onDarkModeChange = {},
                     onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
                     context = context,
                     viewModel = mockViewModel,
                 )
@@ -137,6 +141,7 @@ class SettingsScreenInstallKeyboardButtonTest {
                 SettingsScreen(
                     onDarkModeChange = {},
                     onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
                     context = context,
                     viewModel = mockViewModel,
                 )
@@ -160,6 +165,7 @@ class SettingsScreenInstallKeyboardButtonTest {
                 SettingsScreen(
                     onDarkModeChange = {},
                     onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
                     context = context,
                     viewModel = mockViewModel,
                 )
@@ -186,6 +192,7 @@ class SettingsScreenInstallKeyboardButtonTest {
                 SettingsScreen(
                     onDarkModeChange = {},
                     onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
                     context = context,
                     viewModel = mockViewModel,
                 )
@@ -210,6 +217,7 @@ class SettingsScreenInstallKeyboardButtonTest {
                 SettingsScreen(
                     onDarkModeChange = {},
                     onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
                     context = context,
                     viewModel = mockViewModel,
                 )

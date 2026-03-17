@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-
 package be.scri.ui.theme
 
 import androidx.compose.material3.Typography
@@ -10,26 +9,48 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 
-private fun TextUnit.scaled(scale: Float): TextUnit = if (isSp) (value * scale).sp else this
+/**
+ * Text styles for the application.
+ */
+private fun TextUnit.scaled(scale: Float): TextUnit =
+    if (isSp) {
+        (value * scale).sp
+    } else {
+        this
+    }
 
-fun createTypography(scale: Float): Typography {
-    return Typography(
-        bodyMedium =
-            TextStyle(
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp.scaled(scale),
-            ),
+fun createTypography(scale: Float): Typography =
+    Typography(
         headlineMedium =
             TextStyle(
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp.scaled(scale),
             ),
+        titleMedium =
+            TextStyle(
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp.scaled(scale),
+            ),
+        bodyMedium =
+            TextStyle(
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp.scaled(scale),
+            ),
+        bodySmall =
+            TextStyle(
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp.scaled(scale),
+            ),
+        labelLarge =
+            TextStyle(
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp.scaled(scale),
+            ),
     )
-}
 
-/**
- * Text styles for the application.
- */
 val ScribeTypography = createTypography(1f)
