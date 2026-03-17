@@ -1,8 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/**
- * Text styles for the application.
- */
 
 package be.scri.ui.theme
 
@@ -32,4 +29,7 @@ fun createTypography(scale: Float): Typography {
     )
 }
 
+/**
+ * Text styles for the application.
+ */
 val ScribeTypography = createTypography(1f)
