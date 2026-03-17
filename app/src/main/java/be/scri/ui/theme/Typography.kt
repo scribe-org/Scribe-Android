@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+/**
+ * Text styles for the application.
+ */
+
 package be.scri.ui.theme
 
 import androidx.compose.material3.Typography
