@@ -594,6 +594,12 @@ object PreferencesHelper {
         return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), true)
     }
 
+    /**
+     * Saves the user's "Increase Text Size" preference.
+     *
+     * @param context The application context used to access SharedPreferences.
+     * @param increaseTextSize `true` to enable larger text size, `false` to use default size.
+     */
     fun setIncreaseTextSizePreference(
         context: Context,
         increaseTextSize: Boolean,
@@ -602,6 +608,12 @@ object PreferencesHelper {
         sharedPref.edit { putBoolean(INCREASE_TEXT_SIZE, increaseTextSize) }
     }
 
+    /**
+     * Retrieves the user's "Increase Text Size" preference.
+     *
+     * @param context The application context used to access SharedPreferences.
+     * @return `true` if larger text size is enabled, `false` otherwise.
+     */
     fun getIncreaseTextSizePreference(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return sharedPref.getBoolean(INCREASE_TEXT_SIZE, false)

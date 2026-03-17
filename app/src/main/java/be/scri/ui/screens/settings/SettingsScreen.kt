@@ -88,8 +88,8 @@ fun SettingsScreen(
                         },
                     ),
                     ScribeItem.SwitchItem(
-                        title = R.string.app_settings_menu_increase_text_size,
-                        desc = R.string.app_settings_menu_increase_text_size_description,
+                        title = R.string.i18n_app_settings_menu_increase_text_size,
+                        desc = R.string.i18n_app_settings_menu_increase_text_size_description,
                         state = isIncreaseTextSize,
                         onToggle = { newIncreaseTextSize ->
                             viewModel.setIncreaseTextSize(newIncreaseTextSize)

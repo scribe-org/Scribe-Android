@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import androidx.core.content.edit
 
 /** This files handles the state and business logic for the settings screen. */
 class SettingsViewModel(
@@ -61,8 +62,13 @@ class SettingsViewModel(
         sharedPrefs.edit().putBoolean("dark_mode", value).apply()
     }
 
+    /**
+     * Updates the text size preference setting.
+     *
+     * @param value `true` if text size should be increased, `false` otherwise.
+     */
     fun setIncreaseTextSize(value: Boolean) {
         _isIncreaseTextSize.value = value
-        sharedPrefs.edit().putBoolean("increase_text_size", value).apply()
+        sharedPrefs.edit { putBoolean("increase_text_size", value) }
     }
 }
