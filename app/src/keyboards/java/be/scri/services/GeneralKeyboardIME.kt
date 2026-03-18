@@ -52,7 +52,7 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
-import be.scri.helpers.ui.KeyboardUIManager
+import be.scri.ui.KeyboardUIManager
 import be.scri.views.KeyboardView
 import java.util.Locale
 
@@ -1418,7 +1418,7 @@ abstract class GeneralKeyboardIME(
         backgroundRes: Int,
     ) {
         button.text = text
-        button.setTextColor(ContextCompat.getColor(applicationContext, be.scri.R.color.white))
+        button.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
         button.isClickable = false
         button.setOnClickListener(null)
 
@@ -1430,7 +1430,7 @@ abstract class GeneralKeyboardIME(
             if (contentDrawable is LayerDrawable) {
                 val shapeDrawable =
                     contentDrawable.findDrawableByLayerId(
-                        be.scri.R.id.button_background_shape,
+                        R.id.button_background_shape,
                     ) as? GradientDrawable
 
                 shapeDrawable?.setColor(
@@ -1472,7 +1472,7 @@ abstract class GeneralKeyboardIME(
                 it,
                 leftSuggestion.first,
                 leftSuggestion.second,
-                be.scri.R.drawable.gender_suggestion_button_left_background,
+                R.drawable.gender_suggestion_button_left_background,
             )
         }
 
@@ -1481,7 +1481,7 @@ abstract class GeneralKeyboardIME(
                 it,
                 rightSuggestion.first,
                 rightSuggestion.second,
-                be.scri.R.drawable.gender_suggestion_button_right_background,
+                R.drawable.gender_suggestion_button_right_background,
             )
         }
     }

@@ -1,19 +1,15 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 package be.scri.helpers
 
 import android.text.TextUtils
 import android.view.inputmethod.InputConnection
-import be.scri.helpers.PreferencesHelper.getIsWordByWordDeletionEnabled
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.Companion.MAX_TEXT_LENGTH
 
 /**
- * Handles backspace/delete events for the [GeneralKeyboardIME].
+ * Handles backspace/delete events for the [be.scri.services.GeneralKeyboardIME].
  * Encapsulates logic for single character deletion, word-by-word deletion,
  * command bar deletion, and repeating delete state.
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [be.scri.services.GeneralKeyboardIME] instance this handler is associated with.
  */
 class BackspaceHandler(
     private val ime: GeneralKeyboardIME,
@@ -46,7 +42,10 @@ class BackspaceHandler(
         } else {
             val inputConnection = ime.currentInputConnection ?: return
             if (TextUtils.isEmpty(inputConnection.getSelectedText(0))) {
-                val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.applicationContext, ime.language)
+                val isWordByWordEnabled = PreferencesHelper.getIsWordByWordDeletionEnabled(
+                    ime.applicationContext,
+                    ime.language
+                )
                 // Only use word-by-word deletion on long press when the feature is enabled.
                 if (isWordByWordEnabled && isLongPress) {
                     deleteWordByWord(inputConnection)
@@ -104,7 +103,7 @@ class BackspaceHandler(
      * @param inputConnection The current input connection.
      */
     private fun deleteWordByWord(inputConnection: InputConnection) {
-        val textBeforeCursor = inputConnection.getTextBeforeCursor(MAX_TEXT_LENGTH, 0)?.toString() ?: ""
+        val textBeforeCursor = inputConnection.getTextBeforeCursor(GeneralKeyboardIME.Companion.MAX_TEXT_LENGTH, 0)?.toString() ?: ""
 
         if (textBeforeCursor.isEmpty()) {
             return
