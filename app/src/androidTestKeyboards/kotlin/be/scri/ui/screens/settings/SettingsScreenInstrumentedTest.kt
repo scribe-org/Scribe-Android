@@ -7,9 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.filterToOne
-import androidx.compose.ui.test.hasClickAction
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -137,7 +134,7 @@ class SettingsScreenInstrumentedTest {
     }
 
     @Test
-    fun settingsScreen_displaysIncreaseTextSizeSwitch() {
+    fun settingsScreen_increaseTextSizeSwitch_isDisplayed() {
         setTestContent {
             SettingsScreen(
                 onDarkModeChange = onDarkModeChangeMock,
@@ -255,13 +252,7 @@ class SettingsScreenInstrumentedTest {
 
         composeTestRule
             .onNodeWithText(darkModeText)
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onAllNodes(hasClickAction() and !hasText(darkModeText))
-            .filterToOne(
-                !hasText("App language") and !hasText("Install keyboards") and !hasText("Increase app text size"),
-            ).performClick()
+            .performClick()
 
         composeTestRule.waitForIdle()
 
@@ -297,13 +288,7 @@ class SettingsScreenInstrumentedTest {
 
         composeTestRule
             .onNodeWithText(increaseTextSizeText)
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onAllNodes(hasClickAction() and !hasText(increaseTextSizeText))
-            .filterToOne(
-                !hasText("App language") and !hasText("Install keyboards") and !hasText("Dark mode"),
-            ).performClick()
+            .performClick()
 
         composeTestRule.waitForIdle()
 
