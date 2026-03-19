@@ -29,6 +29,7 @@ class SettingsScreenInstallKeyboardButtonTest {
         every { mockViewModel.vibrateOnKeypress } returns MutableStateFlow(false)
         every { mockViewModel.popupOnKeypress } returns MutableStateFlow(false)
         every { mockViewModel.isUserDarkMode } returns MutableStateFlow(false)
+        every { mockViewModel.isIncreaseTextSize } returns MutableStateFlow(false)
         return mockViewModel
     }
 
