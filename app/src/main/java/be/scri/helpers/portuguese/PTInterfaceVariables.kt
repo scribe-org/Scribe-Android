@@ -15,7 +15,7 @@ object PTInterfaceVariables {
 
     const val SPACE_BAR = "espaço"
     const val LANGUAGE = "Português"
-    const val INVALID_COMMAND_MSG = "Não está no Wiktionary"
+
     const val INVALID_COMMAND_MSG_WIKIDATA = "Não está no Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
         "A Wikidata é um grafo de conhecimento editado colaborativamente e mantivo pela Fundação Wikimedia. A Wikidata é uma fonte de dados públicos para projetos como a Wikipédia e muitos outros."
@@ -23,13 +23,15 @@ object PTInterfaceVariables {
         "O Scribe usa dados linguísticos da Wikidata para muitas de suas funcionalidades. Temos informações sobre gêneros de substantivos, conjugações de verbos, e muito mais!"
     const val INVALID_COMMAND_TEXT_WIKIDATA_3 =
         "Você pode criar uma conta em wikidata.org e se juntar à comunidade que apoia o Scribe e muitos outros projetos. Ajude-nos a fornecer dados gratuitos para o mundo!"
+
     const val INVALID_COMMAND_MSG_WIKTIONARY = "Não está no Wiktionary"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_1 =
-        "Wiktionary is a collaboratively edited dictionary that's maintained by the Wikimedia Foundation. It serves as a source of free linguistic data for projects like Wikipedia and countless others."
+        "O Wikcionário é um dicionário editado colaborativamente e mantido pela Fundação Wikimedia. Ele serve como fonte de dados linguísticos gratuitos para projetos como a Wikipédia e inúmeros outros."
     const val INVALID_COMMAND_TEXT_WIKTIONARY_2 =
-        "Scribe uses Wiktionary's data to provide translations for its Translate command. Our data is derived from the many language pairs that Wiktionary's community has created!"
+        "O Scribe utiliza os dados do Wikcionário para fornecer traduções para o seu comando Traduzir. Nossos dados são derivados dos diversos pares de idiomas criados pela comunidade do Wikcionário!"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
-        "You can make an account at wiktionary.org to join the community that's supporting Scribe and so many other projects. Help us bring free information to the world!"
+        "Você pode criar uma conta em wiktionary.org para se juntar à comunidade que apoia o Scribe e muitos outros projetos. Ajude-nos a levar informação gratuita para o mundo!"
+
     val BASE_AUTOSUGGESTIONS = listOf("o", "a", "eu")
     val NUMERIC_AUTOSUGGESTIONS = listOf("de", "que", "a")
 

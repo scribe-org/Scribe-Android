@@ -15,21 +15,23 @@ object ITInterfaceVariables {
 
     const val SPACE_BAR = "spazio"
     const val LANGUAGE = "Italiano"
-    const val INVALID_COMMAND_MSG = "Non in Wiktionary"
+
     const val INVALID_COMMAND_MSG_WIKIDATA = "Non in Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
-        "Wikidata is a collaboratively edited knowledge graph that's maintained by the Wikimedia Foundation. It serves as a source of open data for projects like Wikipedia and countless others."
+        "Wikidata è un grafo della conoscenza modificabile in modo collaborativo, gestito dalla Wikimedia Foundation. Serve come fonte di dati aperti per progetti come Wikipedia e innumerevoli altri."
     const val INVALID_COMMAND_TEXT_WIKIDATA_2 =
-        "Scribe uses Wikidata's language data for many of its core features. We get information like noun genders, verb conjugations and much more!"
+        "Scribe utilizza i dati linguistici di Wikidata per molte delle sue funzionalità principali. Otteniamo informazioni come il genere dei sostantivi, la coniugazione dei verbi e molto altro!"
     const val INVALID_COMMAND_TEXT_WIKIDATA_3 =
-        "You can make an account at wikidata.org to join the community that's supporting Scribe and so many other projects. Help us bring free information to the world!"
+        "Puoi creare un account su wikidata.org per unirti alla comunità che supporta Scribe e tanti altri progetti. Aiutaci a diffondere informazioni libere in tutto il mondo!"
+
     const val INVALID_COMMAND_MSG_WIKTIONARY = "Non in Wiktionary"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_1 =
-        "Wiktionary is a collaboratively edited dictionary that's maintained by the Wikimedia Foundation. It serves as a source of free linguistic data for projects like Wikipedia and countless others."
+        "Wiktionary è un dizionario modificato in modo collaborativo e gestito dalla Wikimedia Foundation. Serve come fonte di dati linguistici liberi per progetti come Wikipedia e innumerevoli altri."
     const val INVALID_COMMAND_TEXT_WIKTIONARY_2 =
-        "Scribe uses Wiktionary's data to provide translations for its Translate command. Our data is derived from the many language pairs that Wiktionary's community has created!"
+        "Scribe utilizza i dati di Wiktionary per fornire traduzioni per il suo comando Traduci. I nostri dati derivano dalle numerose coppie linguistiche create dalla community di Wiktionary!"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
-        "You can make an account at wiktionary.org to join the community that's supporting Scribe and so many other projects. Help us bring free information to the world!"
+        "Puoi creare un account su wiktionary.org per unirti alla community che supporta Scribe e tanti altri progetti. Aiutaci a diffondere informazioni libere in tutto il mondo!"
+
     val BASE_AUTOSUGGESTIONS = listOf("ho", "non", "ma")
     val NUMERIC_AUTOSUGGESTIONS = listOf("utenti", "anni", "e")
 
