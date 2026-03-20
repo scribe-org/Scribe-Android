@@ -123,27 +123,6 @@ object HintUtils {
         )
 
     /**
-     * Provides invalid hint for selected language.
-     *
-     * @return A hint string for invalid commands.
-     */
-    fun getInvalidHint(
-        language: String,
-        defaultHint: String = ENInterfaceVariables.INVALID_COMMAND_MSG,
-    ): String =
-        when (language) {
-            "English" -> ENInterfaceVariables.INVALID_COMMAND_MSG
-            "French" -> FRInterfaceVariables.INVALID_COMMAND_MSG
-            "German" -> DEInterfaceVariables.INVALID_COMMAND_MSG
-            "Italian" -> ITInterfaceVariables.INVALID_COMMAND_MSG
-            "Portuguese" -> PTInterfaceVariables.INVALID_COMMAND_MSG
-            "Russian" -> RUInterfaceVariables.INVALID_COMMAND_MSG
-            "Spanish" -> ESInterfaceVariables.INVALID_COMMAND_MSG
-            "Swedish" -> SVInterfaceVariables.INVALID_COMMAND_MSG
-            else -> defaultHint
-        }
-
-    /**
      * Provides the "Not in Wikidata" hint for the selected language.
      * Shown when a conjugate or plural command finds no result.
      *

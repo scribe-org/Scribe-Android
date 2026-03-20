@@ -68,9 +68,6 @@
     <string name="i18n.app.installation.keyboard.text_4">För att välja tangentbord</string>
     <string name="i18n.app.installation.keyboard.title">Tangentbords-installation</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_1">Wikidata är en gemensamt redigerad kunskapsgraf som underhålls av Wikimedia Foundation. Det fungerar som en källa till öppen data för projekt som Wikipedia och flera andra.</string>
-    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_2">Scribe använder Wikidatas språkdata för många av sina kärnfunktioner. Vi får information som substantiv, genus, verbböjningar och mycket mer!</string>
-    <string name="i18n.app.keyboard.not_in_wiktionary.explanation_3">Du kan skapa ett konto på wikidata.org för att gå med i communityn som stöder Scribe och så många andra projekt. Hjälp oss att ge gratis information till världen!</string>
     <string name="i18n.app.settings.app_hint_tooltip">Inställningar för appen och installerade tangentbord finns här.</string>
     <string name="i18n.app.settings.button_install_keyboards">Installera tangentbord</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Kommentera förslag/kompletteringar</string>
