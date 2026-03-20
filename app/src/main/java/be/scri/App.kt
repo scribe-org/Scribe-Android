@@ -100,8 +100,7 @@ fun ScribeApp(
                         }
                     },
                     pagerState = pagerState,
-                    modifier =
-                    Modifier,
+                    modifier = Modifier,
                 )
             },
             modifier = modifier.fillMaxSize(),
