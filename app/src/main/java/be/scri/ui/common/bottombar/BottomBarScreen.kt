@@ -2,6 +2,7 @@
 
 package be.scri.ui.common.bottombar
 
+import android.content.Context
 import androidx.annotation.DrawableRes
 import be.scri.R
 import be.scri.navigation.Screen
@@ -24,6 +25,15 @@ sealed class BottomBarScreen(
     )
 
     /**
+     * Represents the Conjugate screen and its associated route.
+     */
+    data object Conjugate : BottomBarScreen(
+        Screen.Conjugate.route,
+        R.drawable.material_keyboard,
+        "Conjugate",
+    )
+
+    /**
      * Represents the Settings screen and its associated route.
      */
     data object Settings : BottomBarScreen(
@@ -40,11 +50,18 @@ sealed class BottomBarScreen(
         R.drawable.material_info,
         "About",
     )
-}
 
-val bottomBarScreens =
-    listOf(
-        BottomBarScreen.Installation,
-        BottomBarScreen.Settings,
-        BottomBarScreen.About,
-    )
+    companion object {
+        /**
+         * Returns the list of screens to be displayed in the bottom bar based on the app flavor.
+         */
+        fun getScreens(isConjugate: Boolean): List<BottomBarScreen> =
+            if (isConjugate) {
+                listOf(Conjugate, Settings, About)
+            } else {
+                listOf(Installation, Settings, About)
+            }
+
+        fun getScreens(context: Context): List<BottomBarScreen> = getScreens(context.resources.getBoolean(R.bool.is_conjugate_app))
+    }
+}
