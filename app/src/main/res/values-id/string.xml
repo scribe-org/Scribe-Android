@@ -68,9 +68,6 @@
     <string name="i18n.app.installation.keyboard.text_4">untuk memilih keyboard</string>
     <string name="i18n.app.installation.keyboard.title">Instalasi Keyboard</string>
     <string name="i18n.app.installation.title">Instalasi</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">Wikidata adalah grafik pengetahuan yang disunting secara kolaboratif yang dikelola oleh Wikimedia Foundation. Ia berfungsi sebagai sumber data terbuka bagi proyek seperti Wikipedia dan berbagai proyek lainnya.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">Scribe menggunakan data bahasa milik Wikidata untuk banyak fitur utama. Kami mendapatkan informasi seperti kata benda bergender, konjugasi kata kerja, dan banyak lagi!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">Kamu bisa membuat akun di wikidata.org untuk bergabung dengan komunitas yang mendukung Scribe dan banyak proyek lainnya. Bantu kami membawakan informasi secara gratis untuk dunia!</string>
     <string name="i18n.app.settings.app_hint_tooltip">Pengaturan aplikasi dan keyboard bahasa yang terpasang bisa ditemukan di sini.</string>
     <string name="i18n.app.settings.button_install_keyboards">Pasang keyboard</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Anotasi saran/pelengkapan</string>
