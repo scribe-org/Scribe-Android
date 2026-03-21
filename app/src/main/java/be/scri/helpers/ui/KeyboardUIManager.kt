@@ -454,6 +454,8 @@ class KeyboardUIManager(
                         context,
                         if (isDarkMode) R.color.dark_key_color else R.color.light_key_color
                     )
+                    val iconTint = if (isDarkMode) R.color.white else R.color.light_key_text_color
+                    arrowBtn.compoundDrawableTintList = ContextCompat.getColorStateList(context, iconTint)
                     arrowBtn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                     arrowBtn.setOnClickListener {
                         val isLeft = arrowBtnName.contains("left")
