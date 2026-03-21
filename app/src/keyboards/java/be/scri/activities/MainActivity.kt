@@ -23,7 +23,7 @@ import be.scri.ScribeApp
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.setLightDarkModePreference
 import be.scri.services.EnglishKeyboardIME
-import be.scri.ui.common.bottombar.bottomBarScreens
+import be.scri.ui.common.bottombar.BottomBarScreen
 import be.scri.ui.theme.ScribeTheme
 
 /**
@@ -48,6 +48,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
 
+            val screens = remember(context) { BottomBarScreen.getScreens(context) }
+
             val isDarkMode =
                 remember {
                     mutableStateOf(
@@ -57,7 +59,7 @@ class MainActivity : ComponentActivity() {
                 }
             val pagerState =
                 rememberPagerState {
-                    bottomBarScreens.size
+                    screens.size
                 }
 
             val navController = rememberNavController()
