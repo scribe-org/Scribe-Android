@@ -46,7 +46,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-
     productFlavors {
         create("keyboards") {
             applicationIdSuffix = ".keyboards"
@@ -54,7 +53,7 @@ android {
             resValue(
                 "string",
                 "app_launcher_name",
-                "Scribe"
+                "Scribe",
             )
         }
         create("conjugate") {
@@ -62,7 +61,7 @@ android {
             resValue(
                 "string",
                 "app_launcher_name",
-                "Conjugate"
+                "Conjugate",
             )
         }
     }
@@ -135,7 +134,6 @@ android {
     }
 
     flavorDimensions.add("variants")
-
 
     sourceSets {
         getByName("main").java.srcDirs("src/main/kotlin")
