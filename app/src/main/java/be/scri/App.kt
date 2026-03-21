@@ -17,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -38,7 +39,9 @@ import be.scri.ui.screens.SelectTranslationSourceLanguageScreen
 import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
+import be.scri.ui.screens.download.CheckUpdateActions
 import be.scri.ui.screens.download.DataDownloadViewModel
+import be.scri.ui.screens.download.DownloadActions
 import be.scri.ui.screens.download.DownloadDataScreen
 import be.scri.ui.screens.settings.SettingsScreen
 import be.scri.ui.theme.ScribeTheme
@@ -82,8 +85,21 @@ fun ScribeApp(
     val downloadStates = downloadViewModel.downloadStates
     val onDownloadAction = downloadViewModel::handleDownloadAction
     val onDownloadAll = downloadViewModel::handleDownloadAllLanguages
-    val inititalizeStates = downloadViewModel::initializeStates
-    val checkAllForUpdates = downloadViewModel::checkAllForUpdates
+    val initializeStates = downloadViewModel::initializeStates
+    val downloadActions =
+        DownloadActions(
+            downloadStates = downloadStates,
+            onDownloadAction = onDownloadAction,
+            onDownloadAll = onDownloadAll,
+            initializeStates = initializeStates,
+        )
+    val checkUpdateState by downloadViewModel.checkUpdateState.collectAsState()
+    val checkUpdateActions =
+        CheckUpdateActions(
+            checkUpdateState = checkUpdateState,
+            checkForNewData = downloadViewModel::checkForNewData,
+            cancelCheckForNewData = downloadViewModel::cancelCheckForNewData,
+        )
 
     ScribeTheme(
         useDarkTheme = isDarkTheme,
@@ -213,11 +229,9 @@ fun ScribeApp(
                                 "translation_language_detail/$language",
                             )
                         },
-                        downloadStates = downloadStates,
-                        onDownloadAction = onDownloadAction,
-                        onDownloadAll = onDownloadAll,
-                        initializeStates = inititalizeStates,
-                        checkAllForUpdates = checkAllForUpdates,
+                        isDarkTheme = isDarkTheme,
+                        downloadActions = downloadActions,
+                        checkUpdateActions = checkUpdateActions,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
