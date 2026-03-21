@@ -3,6 +3,7 @@
     <string name="i18n._global.about_scribe">Über Scribe</string>
     <string name="i18n._global.android_changelog">Android-Änderungsprotokoll</string>
     <string name="i18n._global.available_data">Verfügbare Daten</string>
+    <string name="i18n._global.blog_posts">Blog-Beiträge</string>
     <string name="i18n._global.changelog">Änderungsprotokoll</string>
     <string name="i18n._global.data_server">Datenserver</string>
     <string name="i18n._global.ios_changelog">iOS-Änderungsprotokoll</string>
@@ -17,6 +18,7 @@
     <string name="i18n.app._global.german">Deutsch</string>
     <string name="i18n.app._global.indonesian">Indonesisch</string>
     <string name="i18n.app._global.italian">Italienisch</string>
+    <string name="i18n.app._global.norwegian">Norwegisch</string>
     <string name="i18n.app._global.portuguese">Portugiesisch</string>
     <string name="i18n.app._global.russian">Russisch</string>
     <string name="i18n.app._global.spanish">Spanisch</string>
@@ -82,9 +84,6 @@
     <string name="i18n.app.installation.keyboard.text_4">um Tastaturen auszuwählen</string>
     <string name="i18n.app.installation.keyboard.title">Tastaturinstallation</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">Wikidata ist ein kollaborativ gestalteter, mehrsprachiger Wissensgraf, der von der Wikimedia Foundation gehostet wird. Sie dient als Quelle für offene Daten für unzählige Projekte, beispielsweise Wikipedia.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">Scribe nutzt Sprachdaten von Wikidata für viele Kernfunktionen. Von dort erhalten wir Informationen wie Genera, Verbkonjugationen und viele mehr!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">Du kannst auf wikidata.org einen Account erstellen, um der Community, die Scribe und viele andere Projekte unterstützt, beizutreten. Hilf uns dabei, der Welt freie Informationen zu geben!</string>
     <string name="i18n.app.settings.app_hint_tooltip">Hier sind die Einstellungen der App und installierte Tastaturen zu finden.</string>
     <string name="i18n.app.settings.button_install_keyboards">Tastaturen installieren</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Vorschläge annotieren</string>
