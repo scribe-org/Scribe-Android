@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 package be.scri.helpers
 
 import android.annotation.SuppressLint
@@ -13,7 +11,6 @@ import android.util.Log
 import android.util.TypedValue
 import android.util.Xml
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import androidx.annotation.XmlRes
 import be.scri.R
 import be.scri.services.GeneralKeyboardIME
@@ -53,7 +50,7 @@ class KeyboardBase {
     private var mDisplayWidth = 0
 
     /** What icon should we show at Enter key  */
-    var mEnterKeyType = IME_ACTION_NONE
+    var mEnterKeyType = EditorInfo.IME_ACTION_NONE
 
     /** Keyboard rows  */
     private val mRows = ArrayList<Row?>()

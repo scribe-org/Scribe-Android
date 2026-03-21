@@ -1,16 +1,13 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 package be.scri.helpers
 
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
  * Processes key events specifically related to the space key.
  * This includes handling "period on double tap" logic, committing spaces
  * in normal input mode or command bar mode, and interacting with suggestions.
  *
- * @property ime The [GeneralKeyboardIME] instance this processor is associated with.
+ * @property ime The [be.scri.services.GeneralKeyboardIME] instance this processor is associated with.
  * @property suggestionHandler The [SuggestionHandler] to manage suggestions.
  */
 class SpaceKeyProcessor(
@@ -28,8 +25,8 @@ class SpaceKeyProcessor(
      */
     fun processKeycodeSpace(currentWasLastKeySpace: Boolean): Boolean {
         val isCommandBar =
-            ime.currentState != ScribeState.IDLE &&
-                ime.currentState != ScribeState.SELECT_COMMAND
+            ime.currentState != GeneralKeyboardIME.ScribeState.IDLE &&
+                ime.currentState != GeneralKeyboardIME.ScribeState.SELECT_COMMAND
 
         return if (isCommandBar) {
             handleSpaceInCommandBar()

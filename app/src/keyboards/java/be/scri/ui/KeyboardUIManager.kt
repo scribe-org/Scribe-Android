@@ -1,6 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-
-package be.scri.helpers.ui
+package be.scri.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -19,18 +17,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.toColorInt
 import be.scri.R
-import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.KeyboardBase
-import be.scri.helpers.LanguageMappingConstants.conjugatePlaceholder
-import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
-import be.scri.helpers.LanguageMappingConstants.pluralPlaceholder
-import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
+import be.scri.helpers.LanguageMappingConstants
 import be.scri.helpers.PreferencesHelper
-import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
-import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.helpers.english.ENInterfaceVariables
+import be.scri.helpers.ui.HintUtils
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 import be.scri.views.KeyboardView
 
 /**
@@ -91,7 +84,7 @@ class KeyboardUIManager(
     var currentCommandBarHint: String = ""
     var commandBarHintColor: Int = Color.GRAY
     var commandBarTextColor: Int = Color.BLACK
-    private var earlierValue: Int? = keyboardView.setEnterKeyIcon(ScribeState.IDLE)
+    private var earlierValue: Int? = keyboardView.setEnterKeyIcon(GeneralKeyboardIME.ScribeState.IDLE)
 
     private var currentPage = 0
     private val totalPages = 3
@@ -128,17 +121,17 @@ class KeyboardUIManager(
      */
     fun updateEnterKeyColor(
         isDarkMode: Boolean?,
-        currentState: ScribeState,
+        currentState: GeneralKeyboardIME.ScribeState,
     ) {
-        val resolvedIsDarkMode = isDarkMode ?: getIsDarkModeOrNot(context)
+        val resolvedIsDarkMode = isDarkMode ?: PreferencesHelper.getIsDarkModeOrNot(context)
         when (currentState) {
-            ScribeState.IDLE, ScribeState.SELECT_COMMAND -> {
-                keyboardView.setEnterKeyIcon(ScribeState.IDLE, earlierValue)
+            GeneralKeyboardIME.ScribeState.IDLE, GeneralKeyboardIME.ScribeState.SELECT_COMMAND -> {
+                keyboardView.setEnterKeyIcon(GeneralKeyboardIME.ScribeState.IDLE, earlierValue)
                 keyboardView.setEnterKeyColor(null, isDarkMode = resolvedIsDarkMode)
             }
             else -> {
                 keyboardView.setEnterKeyColor(context.getColor(R.color.color_primary))
-                keyboardView.setEnterKeyIcon(ScribeState.PLURAL, earlierValue)
+                keyboardView.setEnterKeyIcon(GeneralKeyboardIME.ScribeState.PLURAL, earlierValue)
             }
         }
         val scribeKeyTint = if (resolvedIsDarkMode) R.color.light_key_color else R.color.light_key_text_color
@@ -148,10 +141,10 @@ class KeyboardUIManager(
 
     /**
      * The main dispatcher for updating the entire keyboard UI. It calls the appropriate setup function
-     * based on the current [ScribeState].
+     * based on the current [GeneralKeyboardIME.ScribeState].
      */
     fun updateUI(
-        currentState: ScribeState,
+        currentState: GeneralKeyboardIME.ScribeState,
         language: String,
         emojiAutoSuggestionEnabled: Boolean,
         autoSuggestEmojis: MutableList<String>?,
@@ -160,21 +153,23 @@ class KeyboardUIManager(
         selectedConjugationSubCategory: String?,
         currentVerbForConjugation: String?,
     ) {
-        val isUserDarkMode = getIsDarkModeOrNot(context)
+        val isUserDarkMode = PreferencesHelper.getIsDarkModeOrNot(context)
 
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView(language, emojiAutoSuggestionEnabled, autoSuggestEmojis)
-            ScribeState.SELECT_COMMAND -> setupSelectCommandView(language)
-            ScribeState.INVALID -> setupInvalidView(language)
-            ScribeState.TRANSLATE -> {
+            GeneralKeyboardIME.ScribeState.IDLE -> setupIdleView(language, emojiAutoSuggestionEnabled, autoSuggestEmojis)
+            GeneralKeyboardIME.ScribeState.SELECT_COMMAND -> setupSelectCommandView(language)
+            GeneralKeyboardIME.ScribeState.INVALID -> setupInvalidView(language)
+            GeneralKeyboardIME.ScribeState.TRANSLATE -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
-                binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
+                binding.translateBtn.text = LanguageMappingConstants.translatePlaceholder[LanguageMappingConstants.getLanguageAlias(
+                    language
+                )] ?: "Translate"
                 binding.translateBtn.visibility = View.VISIBLE
             }
-            ScribeState.CONJUGATE, ScribeState.SELECT_VERB_CONJUNCTION, ScribeState.PLURAL -> {
+            GeneralKeyboardIME.ScribeState.CONJUGATE, GeneralKeyboardIME.ScribeState.SELECT_VERB_CONJUNCTION, GeneralKeyboardIME.ScribeState.PLURAL -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
             }
-            ScribeState.ALREADY_PLURAL -> setupAlreadyPluralView()
+            GeneralKeyboardIME.ScribeState.ALREADY_PLURAL -> setupAlreadyPluralView()
         }
 
         updateEnterKeyColor(isUserDarkMode, currentState)
@@ -191,7 +186,7 @@ class KeyboardUIManager(
         binding.commandOptionsBar.visibility = View.VISIBLE
         binding.toolbarBar.visibility = View.GONE
 
-        val isUserDarkMode = getIsDarkModeOrNot(context)
+        val isUserDarkMode = PreferencesHelper.getIsDarkModeOrNot(context)
 
         binding.commandOptionsBar.setBackgroundColor(
             ContextCompat.getColor(
@@ -208,7 +203,7 @@ class KeyboardUIManager(
             button.setTextColor(textColor)
             button.text = HintUtils.getBaseAutoSuggestions(language).getOrNull(index)
             button.isAllCaps = false
-            button.textSize = GeneralKeyboardIME.SUGGESTION_SIZE
+            button.textSize = GeneralKeyboardIME.Companion.SUGGESTION_SIZE
             button.setOnClickListener(null)
         }
 
@@ -230,8 +225,8 @@ class KeyboardUIManager(
 
         initializeKeyboard(listener.getKeyboardLayoutXML())
 
-        updateButtonVisibility(ScribeState.IDLE, emojiAutoSuggestionEnabled, autoSuggestEmojis)
-        updateEmojiSuggestion(ScribeState.IDLE, emojiAutoSuggestionEnabled, autoSuggestEmojis)
+        updateButtonVisibility(GeneralKeyboardIME.ScribeState.IDLE, emojiAutoSuggestionEnabled, autoSuggestEmojis)
+        updateEmojiSuggestion(GeneralKeyboardIME.ScribeState.IDLE, emojiAutoSuggestionEnabled, autoSuggestEmojis)
         binding.commandBar.setText("")
         disableAutoSuggest(language)
     }
@@ -244,7 +239,7 @@ class KeyboardUIManager(
         binding.commandOptionsBar.visibility = View.VISIBLE
         binding.toolbarBar.visibility = View.GONE
 
-        val isUserDarkMode = getIsDarkModeOrNot(context)
+        val isUserDarkMode = PreferencesHelper.getIsDarkModeOrNot(context)
         binding.commandOptionsBar.setBackgroundColor(
             ContextCompat.getColor(
                 context,
@@ -252,9 +247,9 @@ class KeyboardUIManager(
             ),
         )
 
-        val langAlias = getLanguageAlias(language)
+        val langAlias = LanguageMappingConstants.getLanguageAlias(language)
 
-        updateButtonVisibility(ScribeState.SELECT_COMMAND, false, null)
+        updateButtonVisibility(GeneralKeyboardIME.ScribeState.SELECT_COMMAND, false, null)
 
         binding.translateBtn.setOnClickListener { listener.onTranslateClicked() }
         binding.conjugateBtn.setOnClickListener { listener.onConjugateClicked() }
@@ -267,14 +262,14 @@ class KeyboardUIManager(
             button.background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
             button.backgroundTintList = ContextCompat.getColorStateList(context, R.color.theme_scribe_blue)
             button.setTextColor(buttonTextColor)
-            button.textSize = GeneralKeyboardIME.SUGGESTION_SIZE
+            button.textSize = GeneralKeyboardIME.Companion.SUGGESTION_SIZE
         }
 
-        binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
-        binding.conjugateBtn.text = conjugatePlaceholder[langAlias] ?: "Conjugate"
-        binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
+        binding.translateBtn.text = LanguageMappingConstants.translatePlaceholder[langAlias] ?: "Translate"
+        binding.conjugateBtn.text = LanguageMappingConstants.conjugatePlaceholder[langAlias] ?: "Conjugate"
+        binding.pluralBtn.text = LanguageMappingConstants.pluralPlaceholder[langAlias] ?: "Plural"
 
-        val separatorColor = (if (isUserDarkMode) GeneralKeyboardIME.DARK_THEME else GeneralKeyboardIME.LIGHT_THEME).toColorInt()
+        val separatorColor = (if (isUserDarkMode) GeneralKeyboardIME.Companion.DARK_THEME else GeneralKeyboardIME.Companion.LIGHT_THEME).toColorInt()
         binding.separator2.setBackgroundColor(separatorColor)
         binding.separator3.setBackgroundColor(separatorColor)
 
@@ -302,7 +297,7 @@ class KeyboardUIManager(
      */
     @SuppressLint("InflateParams")
     private fun setupToolbarView(
-        currentState: ScribeState,
+        currentState: GeneralKeyboardIME.ScribeState,
         language: String,
         conjugateOutput: Map<String, Map<String, Collection<String>>>?,
         conjugateLabels: Set<String>?,
@@ -311,7 +306,7 @@ class KeyboardUIManager(
     ) {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
-        val isDarkMode = getIsDarkModeOrNot(context)
+        val isDarkMode = PreferencesHelper.getIsDarkModeOrNot(context)
         binding.toolbarBar.setBackgroundColor(
             ContextCompat.getColor(
                 context,
@@ -325,7 +320,7 @@ class KeyboardUIManager(
         var hintWord: String? = null
         var promptText: String? = null
 
-        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
+        if (currentState == GeneralKeyboardIME.ScribeState.SELECT_VERB_CONJUNCTION) {
             binding.conjugateGridContainer.visibility = View.VISIBLE
             binding.keyboardView.visibility = View.GONE
 
@@ -462,7 +457,7 @@ class KeyboardUIManager(
         // Original logic: Invalid state actually uses the toolbarBar layout initially.
         binding.invalidInfoBar.visibility = View.GONE
 
-        val isDarkMode = getIsDarkModeOrNot(context)
+        val isDarkMode = PreferencesHelper.getIsDarkModeOrNot(context)
 
         // Restore original logic: Set background on toolbarBar, not invalidInfoBar.
         binding.toolbarBar.setBackgroundColor(
@@ -483,10 +478,10 @@ class KeyboardUIManager(
     private fun setupAlreadyPluralView() {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
-        val isDarkMode = getIsDarkModeOrNot(context)
+        val isDarkMode = PreferencesHelper.getIsDarkModeOrNot(context)
         binding.toolbarBar.setBackgroundColor(if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt())
         binding.ivInfo.visibility = View.VISIBLE
-        binding.promptText.text = "$ALREADY_PLURAL_MSG: "
+        binding.promptText.text = "${ENInterfaceVariables.ALREADY_PLURAL_MSG}: "
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(context, R.drawable.ic_scribe_icon_vector)
     }
@@ -502,20 +497,21 @@ class KeyboardUIManager(
      */
     @SuppressLint("SetTextI18n")
     fun updateCommandBarHintAndPrompt(
-        currentState: ScribeState,
+        currentState: GeneralKeyboardIME.ScribeState,
         language: String,
         text: String? = null,
         isUserDarkMode: Boolean? = null,
         word: String? = null,
         currentVerbForConjugation: String? = null,
     ) {
-        val resolvedIsDarkMode = isUserDarkMode ?: getIsDarkModeOrNot(context)
+        val resolvedIsDarkMode = isUserDarkMode ?: PreferencesHelper.getIsDarkModeOrNot(context)
         val commandBarEditText = binding.commandBar
         val promptTextView = binding.promptText
 
-        commandBarHintColor = if (resolvedIsDarkMode) context.getColor(R.color.hint_white) else context.getColor(R.color.hint_black)
-        commandBarTextColor = if (resolvedIsDarkMode) context.getColor(white) else Color.BLACK
-        val backgroundColor = if (resolvedIsDarkMode) R.color.command_bar_color_dark else white
+        commandBarHintColor = if (resolvedIsDarkMode) context.getColor(R.color.hint_white) else context.getColor(
+            R.color.hint_black)
+        commandBarTextColor = if (resolvedIsDarkMode) context.getColor(R.color.white) else Color.BLACK
+        val backgroundColor = if (resolvedIsDarkMode) R.color.command_bar_color_dark else R.color.white
         binding.commandBarLayout.backgroundTintList = ContextCompat.getColorStateList(context, backgroundColor)
 
         val promptTextStr = HintUtils.getPromptText(currentState, language, context, text)
@@ -523,7 +519,7 @@ class KeyboardUIManager(
         promptTextView.setTextColor(commandBarTextColor)
         promptTextView.setBackgroundColor(context.getColor(backgroundColor))
 
-        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
+        if (currentState == GeneralKeyboardIME.ScribeState.SELECT_VERB_CONJUNCTION) {
             val verbInfinitive = currentVerbForConjugation ?: ""
             commandBarEditText.setText(": $verbInfinitive")
             commandBarEditText.setTextColor(commandBarTextColor)
@@ -559,7 +555,7 @@ class KeyboardUIManager(
      */
     fun setupCurrencySymbol(language: String) {
         val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(context, language)
-        keyboardView.setKeyLabel(currencySymbol, "", KeyboardBase.CODE_CURRENCY)
+        keyboardView.setKeyLabel(currencySymbol, "", KeyboardBase.Companion.CODE_CURRENCY)
     }
 
     /**
@@ -582,11 +578,11 @@ class KeyboardUIManager(
      * and whether auto-suggestions are currently active.
      */
     fun updateButtonVisibility(
-        currentState: ScribeState,
+        currentState: GeneralKeyboardIME.ScribeState,
         isAutoSuggestEnabled: Boolean,
         autoSuggestEmojis: MutableList<String>?,
     ) {
-        if (currentState != ScribeState.IDLE) {
+        if (currentState != GeneralKeyboardIME.ScribeState.IDLE) {
             setupDefaultButtonVisibility()
             return
         }
@@ -708,11 +704,11 @@ class KeyboardUIManager(
      * @param autoSuggestEmojis The list of emojis to display.
      */
     fun updateEmojiSuggestion(
-        currentState: ScribeState,
+        currentState: GeneralKeyboardIME.ScribeState,
         isAutoSuggestEnabled: Boolean,
         autoSuggestEmojis: MutableList<String>?,
     ) {
-        if (currentState != ScribeState.IDLE) return
+        if (currentState != GeneralKeyboardIME.ScribeState.IDLE) return
 
         val tabletButtons = listOf(binding.emojiBtnTablet1, binding.emojiBtnTablet2, binding.emojiBtnTablet3)
         val phoneButtons = listOf(binding.emojiBtnPhone1, binding.emojiBtnPhone2)
@@ -777,8 +773,8 @@ class KeyboardUIManager(
      * @param button The button to style.
      */
     private fun handleTextSizeForSuggestion(button: Button) {
-        button.textSize = GeneralKeyboardIME.SUGGESTION_SIZE
-        val isUserDarkMode = getIsDarkModeOrNot(context)
+        button.textSize = GeneralKeyboardIME.Companion.SUGGESTION_SIZE
+        val isUserDarkMode = PreferencesHelper.getIsDarkModeOrNot(context)
         val colorRes = if (isUserDarkMode) R.color.white else android.R.color.black
         button.setTextColor(ContextCompat.getColor(context, colorRes))
     }
@@ -794,7 +790,7 @@ class KeyboardUIManager(
         cursorAtStart: Boolean = false,
     ) {
         if (cursorAtStart) {
-            val hintWithCursor = GeneralKeyboardIME.CUSTOM_CURSOR + text
+            val hintWithCursor = GeneralKeyboardIME.Companion.CUSTOM_CURSOR + text
             val spannable = SpannableString(hintWithCursor)
             spannable.setSpan(
                 ForegroundColorSpan(commandBarTextColor),
@@ -804,7 +800,7 @@ class KeyboardUIManager(
             )
             binding.commandBar.setText(spannable, TextView.BufferType.SPANNABLE)
         } else {
-            val textWithCursor = text + GeneralKeyboardIME.CUSTOM_CURSOR
+            val textWithCursor = text + GeneralKeyboardIME.Companion.CUSTOM_CURSOR
             binding.commandBar.setText(textWithCursor)
         }
         binding.commandBar.setSelection(binding.commandBar.text.length)
@@ -818,8 +814,8 @@ class KeyboardUIManager(
     internal fun getCommandBarTextWithoutCursor(): String {
         val currentText = binding.commandBar.text.toString()
         return when {
-            currentText.startsWith(GeneralKeyboardIME.CUSTOM_CURSOR) -> currentText.drop(1)
-            currentText.endsWith(GeneralKeyboardIME.CUSTOM_CURSOR) -> currentText.dropLast(1)
+            currentText.startsWith(GeneralKeyboardIME.Companion.CUSTOM_CURSOR) -> currentText.drop(1)
+            currentText.endsWith(GeneralKeyboardIME.Companion.CUSTOM_CURSOR) -> currentText.dropLast(1)
             else -> currentText
         }
     }

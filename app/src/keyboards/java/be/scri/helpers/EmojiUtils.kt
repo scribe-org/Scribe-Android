@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers
 
 import android.view.inputmethod.InputConnection

@@ -1,16 +1,13 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 package be.scri.helpers
 
 import android.os.Handler
 import android.os.Looper
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
  * Handles auto-suggestions such as noun gender, plurality, case, and emojis.
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [be.scri.services.GeneralKeyboardIME] instance this handler is associated with.
  */
 class SuggestionHandler(
     private val ime: GeneralKeyboardIME,
@@ -39,7 +36,7 @@ class SuggestionHandler(
 
         linguisticSuggestionRunnable =
             Runnable {
-                if (ime.currentState != ScribeState.IDLE) {
+                if (ime.currentState != GeneralKeyboardIME.ScribeState.IDLE) {
                     clearAllSuggestionsAndHideButtonUI()
                     return@Runnable
                 }
@@ -80,7 +77,7 @@ class SuggestionHandler(
 
         wordSuggestionRunnable =
             Runnable {
-                if (ime.currentState != ScribeState.IDLE) {
+                if (ime.currentState != GeneralKeyboardIME.ScribeState.IDLE) {
                     clearAllSuggestionsAndHideButtonUI()
                     return@Runnable
                 }
@@ -119,7 +116,7 @@ class SuggestionHandler(
 
         emojiSuggestionRunnable =
             Runnable {
-                if (ime.currentState != ScribeState.IDLE) {
+                if (ime.currentState != GeneralKeyboardIME.ScribeState.IDLE) {
                     clearAllSuggestionsAndHideButtonUI()
                     return@Runnable
                 }
@@ -175,7 +172,7 @@ class SuggestionHandler(
 
         ime.disableAutoSuggest()
 
-        if (ime.currentState != ScribeState.SELECT_COMMAND) {
+        if (ime.currentState != GeneralKeyboardIME.ScribeState.SELECT_COMMAND) {
             ime.updateButtonVisibility(false)
         }
 

@@ -1,20 +1,17 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 package be.scri.helpers
 
 import android.content.Context
 import android.util.Log
 import android.view.inputmethod.InputConnection
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
- * Handles key events for the [GeneralKeyboardIME].
+ * Handles key events for the [be.scri.services.GeneralKeyboardIME].
  * This class processes raw key codes, determines the appropriate action based on the
  * current keyboard state and the key pressed, and delegates to specific handlers
- * or directly interacts with the [GeneralKeyboardIME] instance.
+ * or directly interacts with the [be.scri.services.GeneralKeyboardIME] instance.
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [be.scri.services.GeneralKeyboardIME] instance this handler is associated with.
  */
 @Suppress("TooManyFunctions")
 class KeyHandler(
@@ -174,7 +171,7 @@ class KeyHandler(
      * @param inputConnection The active input connection.
      */
     private fun commitTab(inputConnection: InputConnection) {
-        inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
+        inputConnection.commitText("\t", GeneralKeyboardIME.Companion.COMMIT_TEXT_CURSOR_POSITION)
     }
 
     /**
@@ -203,7 +200,7 @@ class KeyHandler(
     private fun handleDeleteKey() {
         ime.handleDelete(ime.isDeleteRepeating()) // pass the actual repeating status
 
-        if (ime.currentState == ScribeState.IDLE) {
+        if (ime.currentState == GeneralKeyboardIME.ScribeState.IDLE) {
             val currentWord = ime.getLastWordBeforeCursor()
             autocompletionHandler.processAutocomplete(currentWord)
             suggestionHandler.processEmojiSuggestions(currentWord)
@@ -218,7 +215,7 @@ class KeyHandler(
         ime.currentInputConnection?.commitText(currencySymbol, 1)
 
         // Process emoji suggestions if in idle state.
-        if (ime.currentState == ScribeState.IDLE) {
+        if (ime.currentState == GeneralKeyboardIME.ScribeState.IDLE) {
             suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
         }
     }
@@ -257,10 +254,10 @@ class KeyHandler(
     private fun handleNavigationKey(code: Int) {
         val isRight = code == KeyboardBase.KEYCODE_RIGHT_ARROW
         ime.currentInputConnection?.let { ic ->
-            val currentPos = ic.getTextBeforeCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.length ?: 0
+            val currentPos = ic.getTextBeforeCursor(GeneralKeyboardIME.Companion.MAX_TEXT_LENGTH, 0)?.length ?: 0
             val newPos =
                 if (isRight) {
-                    val textAfter = ic.getTextAfterCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.toString() ?: ""
+                    val textAfter = ic.getTextAfterCursor(GeneralKeyboardIME.Companion.MAX_TEXT_LENGTH, 0)?.toString() ?: ""
                     (currentPos + 1).coerceAtMost(currentPos + textAfter.length)
                 } else {
                     (currentPos - 1).coerceAtLeast(0)
@@ -348,16 +345,16 @@ class KeyHandler(
     private fun handleDefaultKey(code: Int) {
         val isCommandBarActive =
             when (ime.currentState) {
-                ScribeState.TRANSLATE,
-                ScribeState.CONJUGATE,
-                ScribeState.PLURAL,
+                GeneralKeyboardIME.ScribeState.TRANSLATE,
+                GeneralKeyboardIME.ScribeState.CONJUGATE,
+                GeneralKeyboardIME.ScribeState.PLURAL,
                 -> true // use command bar for actual commands
                 else -> false // use main input field for IDLE and SELECT_COMMAND
             }
 
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
-        if (ime.currentState == ScribeState.IDLE) {
+        if (ime.currentState == GeneralKeyboardIME.ScribeState.IDLE) {
             val currentWord = ime.getLastWordBeforeCursor()
             autocompletionHandler.processAutocomplete(currentWord)
             suggestionHandler.processEmojiSuggestions(currentWord)
