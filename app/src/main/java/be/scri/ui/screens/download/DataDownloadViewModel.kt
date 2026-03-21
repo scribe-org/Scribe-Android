@@ -15,8 +15,13 @@ import be.scri.data.remote.RetrofitClient
 import be.scri.helpers.LanguageMappingConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import retrofit2.HttpException
 import java.io.IOException
 import java.time.LocalDate
@@ -26,8 +31,13 @@ class DataDownloadViewModel(
     application: Application,
 ) : AndroidViewModel(application) {
     val downloadStates = mutableStateMapOf<String, DownloadState>()
+    private val downloadSemaphore = kotlinx.coroutines.sync.Semaphore(1)
     private val downloadJobs = mutableMapOf<String, Job>()
     private val prefs = getApplication<Application>().getSharedPreferences("scribe_prefs", Context.MODE_PRIVATE)
+    private val _checkUpdateState = MutableStateFlow(CheckUpdateState.Idle)
+    val checkUpdateState = _checkUpdateState.asStateFlow()
+
+    private var checkUpdateJob: Job? = null
 
     /**
      * Initializes the download states for the provided languages.
@@ -36,7 +46,6 @@ class DataDownloadViewModel(
      */
     fun initializeStates(languages: List<String>) {
         languages.forEach { key ->
-            if (key == "all") return@forEach
             if (downloadStates.containsKey(key)) return@forEach
 
             val langCode =
@@ -57,6 +66,7 @@ class DataDownloadViewModel(
 
         // After initializing, check for updates on all Completed languages.
         checkAllForUpdates()
+        _checkUpdateState.value = CheckUpdateState.Idle
     }
 
     /**
@@ -115,9 +125,13 @@ class DataDownloadViewModel(
         // Store the job so we can cancel it later if needed.
         downloadJobs[key] =
             viewModelScope.launch(Dispatchers.IO) {
+                downloadSemaphore.acquire()
                 try {
                     // Fetch API.
-                    val response = RetrofitClient.apiService.getData(langCode)
+                    val response =
+                        withTimeout(30_000) {
+                            RetrofitClient.apiService.getData(langCode)
+                        }
                     val serverLastUpdate = response.contract.updatedAt
 
                     // Always download when forcing, or when update is available.
@@ -145,8 +159,12 @@ class DataDownloadViewModel(
                     updateErrorState(key, "Database Error: ${e.message}")
                 } catch (e: HttpException) {
                     updateErrorState(key, "Server Error: ${e.code()}")
+                } catch (e: TimeoutCancellationException) {
+                    updateErrorState(key, "Download timed out")
+                    throw e
                 } finally {
                     // Clean up the job reference when done.
+                    downloadSemaphore.release()
                     downloadJobs.remove(key)
                 }
             }
@@ -158,7 +176,7 @@ class DataDownloadViewModel(
     fun handleDownloadAllLanguages() {
         val toDownload =
             downloadStates.keys.filter { key ->
-                key != "all" && downloadStates[key] != DownloadState.Completed && downloadStates[key] != DownloadState.Downloading
+                downloadStates[key] != DownloadState.Completed && downloadStates[key] != DownloadState.Downloading
             }
         toDownload.forEach { key ->
             handleDownloadAction(key)
@@ -171,7 +189,7 @@ class DataDownloadViewModel(
      *
      * @param key The key identifying the download item.
      */
-    fun checkForUpdates(key: String) {
+    private suspend fun checkForUpdates(key: String) {
         val currentState = downloadStates[key] ?: DownloadState.Ready
         if (currentState == DownloadState.Downloading) return
 
@@ -182,46 +200,78 @@ class DataDownloadViewModel(
 
         val localLastUpdate = prefs.getString("last_update_$langCode", "1970-01-01") ?: "1970-01-01"
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response = RetrofitClient.apiService.getDataVersion(langCode)
+        try {
+            val response = RetrofitClient.apiService.getDataVersion(langCode)
 
-                val hasUpdate =
-                    response.versions.values.any { serverDate ->
-                        isUpdateAvailable(localLastUpdate, serverDate)
-                    }
-
-                withContext(Dispatchers.Main) {
-                    downloadStates[key] =
-                        if (hasUpdate) {
-                            DownloadState.Update
-                        } else {
-                            DownloadState.Completed
-                        }
+            val hasUpdate =
+                response.versions.values.any { serverDate ->
+                    isUpdateAvailable(localLastUpdate, serverDate)
                 }
-            } catch (e: IOException) {
-                Log.w("DownloadVM", "Network error while checking updates for $key: ${e.message}")
-            } catch (e: HttpException) {
-                Log.w("DownloadVM", "Server error while checking updates for $key: ${e.code()}")
-            } catch (e: SQLiteException) {
-                Log.w("DownloadVM", "Database error while checking updates for $key: ${e.message}")
+
+            withContext(Dispatchers.Main) {
+                downloadStates[key] =
+                    if (hasUpdate) DownloadState.Update else DownloadState.Completed
             }
+        } catch (e: IOException) {
+            Log.w("DownloadVM", "Network error while checking updates for $key: ${e.message}")
+        } catch (e: HttpException) {
+            Log.w("DownloadVM", "Server error while checking updates for $key: ${e.code()}")
+        } catch (e: SQLiteException) {
+            Log.w("DownloadVM", "Database error while checking updates for $key: ${e.message}")
         }
     }
 
     /**
      * Checks all languages for updates.
      */
-    fun checkAllForUpdates() {
+    private fun checkAllForUpdates() {
         downloadStates.keys.forEach { key ->
-            if (key == "all") return@forEach
             // Only check languages that have been downloaded before.
             if (downloadStates[key] == DownloadState.Completed) {
-                checkForUpdates(key)
+                viewModelScope.launch { checkForUpdates(key) }
             }
         }
     }
 
+    /**
+     * Checks for new data updates for all completed languages.
+     */
+    fun checkForNewData() {
+        checkUpdateJob?.cancel()
+
+        val keysToCheck = downloadStates.keys.filter { downloadStates[it] == DownloadState.Completed }
+
+        if (keysToCheck.isEmpty()) {
+            _checkUpdateState.value = CheckUpdateState.Idle
+            return
+        }
+
+        _checkUpdateState.value = CheckUpdateState.Checking
+
+        checkUpdateJob =
+            viewModelScope.launch {
+                coroutineScope {
+                    keysToCheck.forEach { key -> launch { checkForUpdates(key) } }
+                }
+                _checkUpdateState.value = CheckUpdateState.Done
+            }
+    }
+
+    /**
+     * Cancels the ongoing check for available updates.
+     */
+    fun cancelCheckForNewData() {
+        checkUpdateJob?.cancel()
+        checkUpdateJob = null
+        _checkUpdateState.value = CheckUpdateState.Idle
+    }
+
+    /**
+     * Updates the error state for a given key and shows a toast message.
+     *
+     * @param key The key identifying the download item.
+     * @param message The error message to display in the toast.
+     */
     private suspend fun updateErrorState(
         key: String,
         message: String,
@@ -252,3 +302,40 @@ enum class DownloadState {
     Completed,
     Update,
 }
+
+/**
+ * Represents the state of the check for updates button.
+ */
+enum class CheckUpdateState {
+    Idle,
+    Checking,
+    Done,
+}
+
+/**
+ * Data class to hold the state and actions related to downloading data.
+ *
+ * @param downloadStates A map of language keys to their current download states.
+ * @param onDownloadAction Callback for handling download actions when a language is selected and confirmed.
+ * @param onDownloadAll Callback for handling the action to download all languages.
+ * @param initializeStates Callback to initialize download states for given languages.
+ */
+data class DownloadActions(
+    val downloadStates: Map<String, DownloadState>,
+    val onDownloadAction: (String, Boolean) -> Unit,
+    val onDownloadAll: () -> Unit,
+    val initializeStates: (List<String>) -> Unit,
+)
+
+/**
+ * Data class to hold the state and actions related to checking for updates.
+ *
+ * @param checkUpdateState The current state of checking for updates.
+ * @param checkForNewData Callback to initiate checking for new data updates.
+ * @param cancelCheckForNewData Callback to cancel the ongoing check for new data updates.
+ */
+data class CheckUpdateActions(
+    val checkUpdateState: CheckUpdateState,
+    val checkForNewData: () -> Unit,
+    val cancelCheckForNewData: () -> Unit,
+)
