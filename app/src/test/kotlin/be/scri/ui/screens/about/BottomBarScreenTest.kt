@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 package be.scri.ui.screens.about
 
 import be.scri.ui.common.bottombar.BottomBarScreen
