@@ -11,6 +11,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
+import android.os.Build
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
@@ -29,6 +30,9 @@ import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.toColorInt
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import be.scri.R
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
@@ -252,6 +256,7 @@ abstract class GeneralKeyboardIME(
 
     override fun onWindowShown() {
         super.onWindowShown()
+        applyNavBarColor()
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
@@ -317,22 +322,8 @@ abstract class GeneralKeyboardIME(
 
         moveToIdleState()
 
-        val window = window?.window ?: return
-        val isDarkMode = getIsDarkModeOrNot(applicationContext)
-        val color = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
+        applyNavBarColor()
 
-        window.navigationBarColor = ContextCompat.getColor(this, color)
-
-        // Handle Edge-to-Edge Navigation Bar icons color.
-        val decorView = window.decorView
-        var flags = decorView.systemUiVisibility
-        flags =
-            if (isLightColor(window.navigationBarColor)) {
-                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            } else {
-                flags and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
-            }
-        decorView.systemUiVisibility = flags
 
         // Set initial shift state for empty text fields.
         if (keyboardMode == keyboardLetters) {
@@ -513,6 +504,36 @@ abstract class GeneralKeyboardIME(
     private fun isLightColor(color: Int): Boolean {
         val darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
         return darkness < 0.5
+    }
+
+    private fun applyNavBarColor() {
+        val window = window?.window ?: return
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        val colorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
+        val color = ContextCompat.getColor(this, colorRes)
+        if (this::uiManager.isInitialized) uiManager.binding.root.setBackgroundColor(color)
+
+        if (Build.VERSION.SDK_INT >= 35) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.decorView.setBackgroundColor(color)
+            if (this::uiManager.isInitialized) {
+                ViewCompat.setOnApplyWindowInsetsListener(uiManager.binding.root) { view, insets ->
+                    val navBarHeight = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+                    view.setPadding(0, 0, 0, navBarHeight)
+                    ViewCompat.requestApplyInsets(view)
+                    insets
+                }
+                ViewCompat.requestApplyInsets(uiManager.binding.root)
+            }
+        } else {
+            window.navigationBarColor = color
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                window.isNavigationBarContrastEnforced = false
+            }
+        }
+
+        WindowCompat.getInsetsController(window, window.decorView)
+            .isAppearanceLightNavigationBars = isLightColor(color)
     }
 
     /**
