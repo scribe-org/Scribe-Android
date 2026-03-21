@@ -867,12 +867,10 @@ class KeyboardView
                         alpha = SHADOW_ALPHA
                         style = Paint.Style.FILL
                     }
-                mKeyboardBackgroundColor =
-                    if (isUserDarkMode) {
-                        "#1E1E1E".toColorInt()
-                    } else {
-                        "#d2d4da".toColorInt()
-                    }
+                mKeyboardBackgroundColor = resources.getColor(
+                    if (isUserDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+                    context.theme
+                )
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
                 if (id != R.id.mini_keyboard_view) {
                     canvas.drawColor(mKeyboardBackgroundColor)

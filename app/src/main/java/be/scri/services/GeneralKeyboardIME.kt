@@ -511,29 +511,36 @@ abstract class GeneralKeyboardIME(
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
         val colorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
         val color = ContextCompat.getColor(this, colorRes)
-        if (this::uiManager.isInitialized) uiManager.binding.root.setBackgroundColor(color)
 
         if (Build.VERSION.SDK_INT >= 35) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
-            window.decorView.setBackgroundColor(color)
-            if (this::uiManager.isInitialized) {
-                ViewCompat.setOnApplyWindowInsetsListener(uiManager.binding.root) { view, insets ->
-                    val navBarHeight = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
-                    view.setPadding(0, 0, 0, navBarHeight)
-                    ViewCompat.requestApplyInsets(view)
-                    insets
-                }
-                ViewCompat.requestApplyInsets(uiManager.binding.root)
-            }
         } else {
-            window.navigationBarColor = color
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                window.isNavigationBarContrastEnforced = false
-            }
+            window.navigationBarColor = Color.TRANSPARENT
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+        }
+
+        window.decorView.setBackgroundColor(color)
         WindowCompat.getInsetsController(window, window.decorView)
             .isAppearanceLightNavigationBars = isLightColor(color)
+
+        if (this::uiManager.isInitialized) {
+            uiManager.binding.root.setBackgroundColor(color)
+
+            ViewCompat.setOnApplyWindowInsetsListener(uiManager.binding.root) { view, insets ->
+                val navBarHeight = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+                ).bottom
+                view.setPadding(0, 0, 0, navBarHeight)
+                insets
+            }
+
+            uiManager.binding.root.post {
+                ViewCompat.requestApplyInsets(uiManager.binding.root)
+            }
+        }
     }
 
     /**
