@@ -1,4 +1,4 @@
-<a id="top"></a>
+    <a id="top"></a>
 
 <div align="center">
   <a href="https://github.com/scribe-org/Scribe-Android"><img src="https://raw.githubusercontent.com/scribe-org/Organization/main/logo/ScribeGitHubOrgBanner.png" width=1024 alt="Scribe Logo"></a>

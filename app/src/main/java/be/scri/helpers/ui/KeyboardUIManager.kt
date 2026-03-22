@@ -446,7 +446,9 @@ class KeyboardUIManager(
                     val newValue = if (isLeft) current - 1 else current + 1
                     prefs.edit { putInt("conjugate_index", newValue) }
 
-                    listener.onConjugateClicked()
+                    if (listener is GeneralKeyboardIME) {
+                        (listener as GeneralKeyboardIME).refreshUIForConjugation()
+                    }
                 }
             }
         }
