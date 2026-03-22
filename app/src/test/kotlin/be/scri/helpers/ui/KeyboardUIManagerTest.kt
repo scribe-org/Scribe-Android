@@ -281,6 +281,86 @@ class KeyboardUIManagerTest {
     }
 
     @Test
+    fun `invalidInfoBar is hidden and keyboard restored when returning to IDLE after info panel shown from INVALID state`() {
+        // Step 1: Transition to INVALID state
+        uiManager.updateUI(
+            currentState = ScribeState.INVALID,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = null,
+            conjugateLabels = null,
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = null,
+        )
+        assertEquals("Toolbar bar should be visible in INVALID state", View.VISIBLE, toolbarBar.visibility)
+        assertEquals("Info icon should be visible in INVALID state", View.VISIBLE, ivInfo.visibility)
+
+        // Step 2: User taps ⓘ — info panel opens
+        ivInfo.performClick()
+        assertEquals("invalidInfoBar should be visible after tapping info icon", View.VISIBLE, invalidInfoBar.visibility)
+        assertEquals("keyboardView should be GONE while info panel is open", View.GONE, keyboardView.visibility)
+
+        // Step 3: User taps X (scribeKeyClose) — listener.onCloseClicked() fires, IME calls moveToIdleState() -> updateUI(IDLE)
+        scribeKeyClose.performClick()
+        verify { listener.onCloseClicked() }
+
+        // Simulate what the IME does after onCloseClicked(): transition UI to IDLE
+        uiManager.updateUI(
+            currentState = ScribeState.IDLE,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = null,
+            conjugateLabels = null,
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = null,
+        )
+
+        // Step 4: Assert – no orphaned UI elements remain
+        assertEquals("invalidInfoBar must be GONE after returning to IDLE", View.GONE, invalidInfoBar.visibility)
+        assertEquals("keyboardView must be VISIBLE after returning to IDLE", View.VISIBLE, keyboardView.visibility)
+        assertEquals("commandOptionsBar must be VISIBLE in IDLE state", View.VISIBLE, commandOptionsBar.visibility)
+    }
+
+    @Test
+    fun `invalidInfoBar is hidden and keyboard restored when returning to IDLE after info panel shown from ALREADY_PLURAL state`() {
+        // Step 1: Transition to ALREADY_PLURAL state
+        uiManager.updateUI(
+            currentState = ScribeState.ALREADY_PLURAL,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = null,
+            conjugateLabels = null,
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = null,
+        )
+        assertEquals("Info icon should be visible in ALREADY_PLURAL state", View.VISIBLE, ivInfo.visibility)
+
+        // Step 2: User taps ⓘ — info panel opens
+        ivInfo.performClick()
+        assertEquals("invalidInfoBar should be visible after tapping info icon", View.VISIBLE, invalidInfoBar.visibility)
+        assertEquals("keyboardView should be GONE while info panel is open", View.GONE, keyboardView.visibility)
+
+        // Step 3: User taps X — simulate IME returning to IDLE
+        uiManager.updateUI(
+            currentState = ScribeState.IDLE,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = null,
+            conjugateLabels = null,
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = null,
+        )
+
+        // Step 4: Assert – no orphaned UI elements remain
+        assertEquals("invalidInfoBar must be GONE after returning to IDLE from ALREADY_PLURAL", View.GONE, invalidInfoBar.visibility)
+        assertEquals("keyboardView must be VISIBLE after returning to IDLE from ALREADY_PLURAL", View.VISIBLE, keyboardView.visibility)
+    }
+
+    @Test
     fun `disableAutoSuggest resets buttons to commands`() {
         uiManager.updateUI(ScribeState.IDLE, "English", false, null, null, null, null, null)
 
