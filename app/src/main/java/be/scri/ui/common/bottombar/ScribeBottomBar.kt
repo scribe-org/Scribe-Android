@@ -2,10 +2,16 @@
 
 package be.scri.ui.common.bottombar
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -31,12 +37,10 @@ fun ScribeBottomBar(
     pagerState: PagerState,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
+    Column(modifier = modifier) {
         BottomNavigation(
             backgroundColor = MaterialTheme.colorScheme.surface,
-            modifier = Modifier,
+            elevation = 0.dp,
         ) {
             bottomBarScreens.forEachIndexed { index, item ->
                 val isSelected = pagerState.currentPage == index
@@ -98,5 +102,12 @@ fun ScribeBottomBar(
                 )
             }
         }
+        Spacer(
+            modifier =
+                Modifier
+                    .windowInsetsBottomHeight(WindowInsets.navigationBars)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface),
+        )
     }
 }

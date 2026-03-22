@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/keyboard_holder"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/you_keyboard_background_color">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/command_field"
@@ -103,7 +102,7 @@
         style="@style/KeyboardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/theme_dark_background_color"
+        android:background="@color/default_background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
