@@ -425,11 +425,27 @@ abstract class GeneralKeyboardIME(
     /**
      * Handles key input from the keyboard. Delegates to specific handlers based on the key code.
      */
+
     override fun onKey(code: Int) {
+
+        // 🔥🔥 CRITICAL FIX (ADD THIS BLOCK)
+        if (currentState == ScribeState.CONJUGATE ||
+            currentState == ScribeState.SELECT_VERB_CONJUNCTION
+        ) {
+            if (code == KeyboardBase.KEYCODE_LEFT_ARROW ||
+                code == KeyboardBase.KEYCODE_RIGHT_ARROW
+            ) {
+                Log.i("DEBUG", "Arrow blocked at onKey, state=$currentState")
+                return   // 🚫 STOP default flow
+            }
+        }
+        // 🔥🔥 END FIX
+
         val inputConnection = currentInputConnection
         if (inputConnection != null) {
             when (code) {
                 KeyboardBase.KEYCODE_DELETE -> handleDelete()
+
                 KeyboardBase.KEYCODE_SHIFT -> {
                     if (keyboardMode == keyboardLetters) {
                         val shiftState = keyboardView?.mKeyboard?.mShiftState ?: SHIFT_OFF
@@ -444,8 +460,12 @@ abstract class GeneralKeyboardIME(
                         handleModeChange(keyboardMode, keyboardView, this)
                     }
                 }
+
                 KeyboardBase.KEYCODE_ENTER -> handleKeycodeEnter()
-                KeyboardBase.KEYCODE_MODE_CHANGE -> handleModeChange(keyboardMode, keyboardView, this)
+
+                KeyboardBase.KEYCODE_MODE_CHANGE ->
+                    handleModeChange(keyboardMode, keyboardView, this)
+
                 else -> {
                     if (KeyboardBase.SCRIBE_VIEW_KEYS.contains(code)) {
                         val keyLabel = keyboardView?.getKeyLabel(code)
@@ -453,14 +473,16 @@ abstract class GeneralKeyboardIME(
                             commitText("$keyLabel ")
                         }
                     } else {
-                        val commandBarState = currentState != ScribeState.IDLE && currentState != ScribeState.SELECT_COMMAND
+                        val commandBarState =
+                            currentState != ScribeState.IDLE &&
+                                currentState != ScribeState.SELECT_COMMAND
+
                         handleElseCondition(code, keyboardMode, commandBarState)
                     }
                 }
             }
         }
     }
-
     // MARK: Helper Methods
 
     protected fun isPeriodAndCommaEnabled(): Boolean {
@@ -1686,6 +1708,24 @@ abstract class GeneralKeyboardIME(
             }
         }
         return keyLabel
+    }
+
+
+    internal fun refreshUIForConjugation() {
+        if (currentState == ScribeState.CONJUGATE ||
+            currentState == ScribeState.SELECT_VERB_CONJUNCTION
+        ) {
+            uiManager.updateUI(
+                currentState = currentState,
+                language = language,
+                emojiAutoSuggestionEnabled = emojiAutoSuggestionEnabled,
+                autoSuggestEmojis = autoSuggestEmojis,
+                conjugateOutput = conjugateOutput,
+                conjugateLabels = conjugateLabels,
+                selectedConjugationSubCategory = selectedConjugationSubCategory,
+                currentVerbForConjugation = currentVerbForConjugation,
+            )
+        }
     }
 
     /**
