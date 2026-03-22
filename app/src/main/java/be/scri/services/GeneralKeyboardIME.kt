@@ -325,7 +325,6 @@ abstract class GeneralKeyboardIME(
 
         applyNavBarColor()
 
-
         // Set initial shift state for empty text fields.
         if (keyboardMode == keyboardLetters) {
             val textBefore = currentInputConnection?.getTextBeforeCursor(1, 0)?.toString().orEmpty()
@@ -524,16 +523,15 @@ abstract class GeneralKeyboardIME(
         }
 
         window.decorView.setBackgroundColor(color)
-        WindowCompat.getInsetsController(window, window.decorView)
-            .isAppearanceLightNavigationBars = isLightColor(color)
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.isAppearanceLightNavigationBars = isLightColor(color)
 
         if (this::uiManager.isInitialized) {
             uiManager.binding.root.setBackgroundColor(color)
 
             ViewCompat.setOnApplyWindowInsetsListener(uiManager.binding.root) { view, insets ->
-                val navBarHeight = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-                ).bottom
+                val insetTypes = WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+                val navBarHeight = insets.getInsets(insetTypes).bottom
                 view.setPadding(0, 0, 0, navBarHeight)
                 insets
             }

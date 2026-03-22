@@ -103,11 +103,11 @@ fun ScribeBottomBar(
             }
         }
         Spacer(
-            modifier = Modifier
-                .windowInsetsBottomHeight(WindowInsets.navigationBars)
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
+            modifier =
+                Modifier
+                    .windowInsetsBottomHeight(WindowInsets.navigationBars)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface),
         )
-
     }
 }

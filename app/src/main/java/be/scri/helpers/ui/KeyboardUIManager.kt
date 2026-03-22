@@ -328,8 +328,8 @@ class KeyboardUIManager(
             binding.conjugateGridContainer.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
-                    if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
-                )
+                    if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+                ),
             )
 
             val grid = binding.conjugateGrid
@@ -380,10 +380,11 @@ class KeyboardUIManager(
                 val btn = gridContent.findViewById<Button?>(btnId)
                 if (btn != null) {
                     btn.text = forms.getOrNull(i) ?: ""
-                    btn.backgroundTintList = ContextCompat.getColorStateList(
-                        context,
-                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color
-                    )
+                    btn.backgroundTintList =
+                        ContextCompat.getColorStateList(
+                            context,
+                            if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                        )
                     btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                     btn.setOnClickListener {
                         val label = btn.text.toString()
@@ -450,10 +451,11 @@ class KeyboardUIManager(
                 val arrowBtn = gridContent.findViewById<Button?>(arrowBtnId)
                 if (arrowBtn != null) {
                     arrowBtn.background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
-                    arrowBtn.backgroundTintList = ContextCompat.getColorStateList(
-                        context,
-                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color
-                    )
+                    arrowBtn.backgroundTintList =
+                        ContextCompat.getColorStateList(
+                            context,
+                            if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                        )
                     val iconTint = if (isDarkMode) R.color.white else R.color.light_key_text_color
                     arrowBtn.compoundDrawableTintList = ContextCompat.getColorStateList(context, iconTint)
                     arrowBtn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
