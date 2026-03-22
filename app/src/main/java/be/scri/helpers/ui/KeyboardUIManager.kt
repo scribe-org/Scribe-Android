@@ -221,6 +221,8 @@ class KeyboardUIManager(
         binding.ivInfo.visibility = View.GONE
         binding.conjugateGridContainer.visibility = View.GONE
         binding.keyboardView.visibility = View.VISIBLE
+        binding.invalidInfoBar.visibility = View.GONE
+        currentPage = 0
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(context, R.drawable.ic_scribe_icon_vector)
 
