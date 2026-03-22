@@ -13,7 +13,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -49,8 +48,6 @@ class MainActivity : ComponentActivity() {
         applyNavigationBarStyle(isDark)
 
         englishKeyboardIME = EnglishKeyboardIME()
-
-
 
         setContent {
             val context = LocalContext.current
@@ -114,11 +111,12 @@ class MainActivity : ComponentActivity() {
 
     private fun applyNavigationBarStyle(isDark: Boolean) {
         enableEdgeToEdge(
-            navigationBarStyle = if (isDark) {
-                SystemBarStyle.dark(android.graphics.Color.BLACK)
-            } else {
-                SystemBarStyle.light(android.graphics.Color.WHITE, android.graphics.Color.WHITE)
-            }
+            navigationBarStyle =
+                if (isDark) {
+                    SystemBarStyle.dark(android.graphics.Color.BLACK)
+                } else {
+                    SystemBarStyle.light(android.graphics.Color.WHITE, android.graphics.Color.WHITE)
+                },
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
