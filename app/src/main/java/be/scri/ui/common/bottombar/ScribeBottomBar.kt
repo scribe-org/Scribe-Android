@@ -3,6 +3,7 @@
 package be.scri.ui.common.bottombar
 
 import androidx.compose.foundation.background
+import android.annotation.SuppressLint
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  */
 @Composable
 fun ScribeBottomBar(
+    @SuppressLint("ComposeUnstableCollections") screens: List<BottomBarScreen>,
     onItemClick: (Int) -> Unit,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
@@ -42,7 +44,7 @@ fun ScribeBottomBar(
             backgroundColor = MaterialTheme.colorScheme.surface,
             elevation = 0.dp,
         ) {
-            bottomBarScreens.forEachIndexed { index, item ->
+            screens.forEachIndexed { index, item ->
                 val isSelected = pagerState.currentPage == index
 
                 val iconSize = if (isSelected) 26.dp else 24.dp
@@ -56,7 +58,7 @@ fun ScribeBottomBar(
                     }
 
                 BottomNavigationItem(
-                    selected = pagerState.currentPage == index,
+                    selected = isSelected,
                     onClick = { onItemClick(index) },
                     icon = {
                         androidx.compose.material3.Icon(
@@ -65,10 +67,8 @@ fun ScribeBottomBar(
                                     id = item.icon,
                                 ),
                             tint = color,
-                            contentDescription = "Keyboard",
-                            modifier =
-                                Modifier
-                                    .size(iconSize),
+                            contentDescription = item.label,
+                            modifier = Modifier.size(iconSize),
                         )
                     },
                     label = {
