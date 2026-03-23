@@ -69,9 +69,6 @@
     <string name="i18n.app.installation.keyboard.text_4">klavyeleri seçmek için</string>
     <string name="i18n.app.installation.keyboard.title">Klavye kurulumu</string>
     <string name="i18n.app.installation.title">Kurulum</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_1">Wikimedia Vakfı tarafından barındırılan Wikidata, kolaboratif çok dilli bir bilgi grafiğidir. Wikipedia ve diğer birçok projeler için açık veri kaynağı olarak hizmet eder.</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_2">Scribe, birçok temel özelliği için Wikidata\'nın dil verilerini kullanır. İsim cinsiyetleri, fiil çekimleri ve çok daha fazlasını Wikidata\'dan alırız!</string>
-    <string name="i18n.app.keyboard.not_in_wikidata.explanation_3">wikidata.org adresinde bir hesap oluşturabilir, Scribe\'ı ve diğer birçok projeyi destekleyen bu topluluğa katılabilirsiniz. Dünya\'ya ücretsiz bilgi getirmemize yardımcı olun!</string>
     <string name="i18n.app.settings.app_hint_tooltip">Uygulama ve yüklenmiş dil klavyelerinin ayarlarını burada bulun.</string>
     <string name="i18n.app.settings.button_install_keyboards">Klavye yükle</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Önerileri/otomatik tamamlamayı etkinleştir</string>
