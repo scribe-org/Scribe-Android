@@ -2,6 +2,7 @@
 
 package be.scri.ui.screens.about
 
+import be.scri.helpers.AppFlavor
 import be.scri.ui.common.bottombar.BottomBarScreen
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -9,9 +10,7 @@ import kotlin.test.assertEquals
 class BottomBarScreenTest {
     @Test
     fun getScreens_WhenIsConjugateTrue_ReturnsConjugateScreens() {
-        val isConjugate = true
-
-        val result = BottomBarScreen.getScreens(isConjugate)
+        val result = BottomBarScreen.getScreens(AppFlavor.CONJUGATE)
 
         assertEquals(
             listOf(
@@ -25,9 +24,7 @@ class BottomBarScreenTest {
 
     @Test
     fun getScreens_WhenIsConjugateFalse_ReturnsInstallationScreens() {
-        val isConjugate = false
-
-        val result = BottomBarScreen.getScreens(isConjugate)
+        val result = BottomBarScreen.getScreens(AppFlavor.KEYBOARDS)
 
         assertEquals(
             listOf(

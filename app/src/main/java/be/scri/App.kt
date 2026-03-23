@@ -89,7 +89,7 @@ fun ScribeApp(
     val onDownloadAll = downloadViewModel::handleDownloadAllLanguages
     val inititalizeStates = downloadViewModel::initializeStates
     val checkAllForUpdates = downloadViewModel::checkAllForUpdates
-    val screens = remember(context) { BottomBarScreen.getScreens(context) }
+    val screens = remember(context) { BottomBarScreen.getScreens() }
 
     ScribeTheme(
         useDarkTheme = isDarkTheme,

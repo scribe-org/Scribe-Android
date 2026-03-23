@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
 
-            val screens = remember(context) { BottomBarScreen.getScreens(context) }
+            val screens = remember(context) { BottomBarScreen.getScreens() }
 
             val isDarkMode =
                 remember {

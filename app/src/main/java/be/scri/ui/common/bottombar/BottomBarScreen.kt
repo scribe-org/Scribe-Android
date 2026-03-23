@@ -2,9 +2,10 @@
 
 package be.scri.ui.common.bottombar
 
-import android.content.Context
 import androidx.annotation.DrawableRes
 import be.scri.R
+import be.scri.helpers.AppFlavor
+import be.scri.helpers.FlavorProvider
 import be.scri.navigation.Screen
 
 /**
@@ -55,13 +56,15 @@ sealed class BottomBarScreen(
         /**
          * Returns the list of screens to be displayed in the bottom bar based on the app flavor.
          */
-        fun getScreens(isConjugate: Boolean): List<BottomBarScreen> =
-            if (isConjugate) {
-                listOf(Conjugate, Settings, About)
-            } else {
-                listOf(Installation, Settings, About)
+        fun getScreens(flavor: AppFlavor): List<BottomBarScreen> =
+            when (flavor) {
+                AppFlavor.CONJUGATE -> listOf(Conjugate, Settings, About)
+                AppFlavor.KEYBOARDS -> listOf(Installation, Settings, About)
             }
 
-        fun getScreens(context: Context): List<BottomBarScreen> = getScreens(context.resources.getBoolean(R.bool.is_conjugate_app))
+        /**
+         * Gets the list of screens to be displayed in the bottom bar.
+         */
+        fun getScreens(): List<BottomBarScreen> = getScreens(FlavorProvider.get())
     }
 }
