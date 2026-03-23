@@ -33,7 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -155,7 +154,7 @@ fun DownloadDataScreen(
                     text = stringResource(R.string.i18n_app_download_menu_ui_update_data),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 10.dp),
                 )
                 Surface(
@@ -197,7 +196,7 @@ fun DownloadDataScreen(
                     text = stringResource(R.string.i18n_app_download_menu_ui_download_data_title),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 10.dp),
                 )
 
@@ -273,7 +272,7 @@ private fun EmptyStateSection(context: Context) {
             Text(
                 text = stringResource(R.string.i18n_app_download_menu_ui_no_keyboards_installed),
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }

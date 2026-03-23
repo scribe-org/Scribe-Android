@@ -27,11 +27,23 @@ fun createTypography(scale: Float): Typography =
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp.scaled(scale),
             ),
+        titleLarge =
+            TextStyle(
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp.scaled(scale),
+            ),
         titleMedium =
             TextStyle(
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp.scaled(scale),
+            ),
+        bodyLarge =
+            TextStyle(
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp.scaled(scale),
             ),
         bodyMedium =
             TextStyle(
@@ -50,6 +62,18 @@ fun createTypography(scale: Float): Typography =
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp.scaled(scale),
+            ),
+        labelMedium =
+            TextStyle(
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Normal,
+                fontSize = 14.sp.scaled(scale),
+            ),
+        labelSmall =
+            TextStyle(
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Normal,
+                fontSize = 12.sp.scaled(scale),
             ),
     )
 

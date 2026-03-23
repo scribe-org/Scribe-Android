@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 /**
  * A composable component that displays a clickable item with a title and a circular clickable icon on the right.
@@ -51,7 +50,6 @@ fun CircleClickableItemComp(
                 Text(
                     text = title,
                     modifier = Modifier.weight(1f),
-                    fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                 )

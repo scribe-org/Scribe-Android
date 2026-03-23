@@ -18,7 +18,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.scri.R
 import kotlinx.coroutines.flow.MutableSharedFlow
 
@@ -42,7 +41,6 @@ fun ScribeBottomBar(
                 val isSelected = pagerState.currentPage == index
 
                 val iconSize = if (isSelected) 26.dp else 24.dp
-                val textSize = if (isSelected) 13.sp else 12.sp
                 val greyColor = colorResource(id = R.color.nav_item_grey)
                 val color =
                     if (isSelected) {
@@ -71,10 +69,8 @@ fun ScribeBottomBar(
                         Text(
                             text = item.label,
                             style =
-                                MaterialTheme.typography.labelMedium.copy(
-                                    fontSize = textSize,
+                                MaterialTheme.typography.labelSmall.copy(
                                     fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.W600,
-                                    letterSpacing = (0).sp,
                                     color = color,
                                 ),
                         )

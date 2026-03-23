@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import be.scri.ui.screens.Alpha
 
 /**
  * A composable component that displays a switch alongside a title and description.
@@ -95,8 +95,7 @@ fun SwitchableItemComp(
         desc?.let { description ->
             Text(
                 text = description,
-                fontSize = 12.sp,
-                color = Color.Gray,
+                color = Color.Gray.copy(alpha = Alpha.MEDIUM),
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 4.dp),
             )
