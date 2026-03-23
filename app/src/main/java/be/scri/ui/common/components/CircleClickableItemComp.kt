@@ -42,7 +42,8 @@ fun CircleClickableItemComp(
                     .padding(
                         horizontal = 12.dp,
                         vertical = 5.dp,
-                    ).clip(RoundedCornerShape(8.dp)),
+                    )
+                    .clip(RoundedCornerShape(8.dp)),
         ) {
             Row(
                 modifier = Modifier.wrapContentSize(),

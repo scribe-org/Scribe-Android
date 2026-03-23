@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 @file:Suppress("ktlint:standard:kdoc")
+
 /**
  * Implements the main activity with a custom action bar, ViewPager navigation, and dynamic UI adjustments.
  */

@@ -24,12 +24,15 @@ class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
             getIsAccentCharacterDisabled(applicationContext, language) &&
                 !isPeriodAndCommaEnabled() ->
                 R.xml.keys_letter_swedish_without_accent_characters_and_without_period_and_comma
+
             !getIsAccentCharacterDisabled(applicationContext, language) &&
                 isPeriodAndCommaEnabled() ->
                 R.xml.keys_letters_swedish
+
             getIsAccentCharacterDisabled(applicationContext, language) &&
                 isPeriodAndCommaEnabled() ->
                 R.xml.keys_letter_swedish_without_accent_characters
+
             else ->
                 R.xml.keys_letter_swedish_without_period_and_comma
         }

@@ -240,7 +240,8 @@ class ScribeItemListTest {
                     .semantics {
                         toggleableState = if (item.state) ToggleableState.On else ToggleableState.Off
                         stateDescription = if (item.state) "On" else "Off"
-                    }.padding(16.dp),
+                    }
+                    .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -280,6 +281,7 @@ class ScribeItemListTest {
                                 index = itemList.items.indexOf(item),
                             )
                         }
+
                         is ScribeItem.SwitchItem -> {
                             Text(
                                 text = "",
@@ -290,6 +292,7 @@ class ScribeItemListTest {
                                 index = itemList.items.indexOf(item),
                             )
                         }
+
                         else -> {
                             Text(
                                 text = "Unknown item type",

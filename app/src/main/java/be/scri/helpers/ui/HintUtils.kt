@@ -13,7 +13,6 @@ import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
 import be.scri.services.GeneralKeyboardIME
-import kotlin.collections.get
 
 /**
  * Utility object for handling hint-related logic throughout the application.

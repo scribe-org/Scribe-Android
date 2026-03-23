@@ -94,9 +94,6 @@ abstract class GeneralKeyboardIME(
             val text = ic.getTextBeforeCursor(Int.MAX_VALUE, 0)?.trim() ?: ""
             return text.isNotEmpty() && text.lastOrNull() != '.'
         }
-        set(value) {
-            field = value
-        }
 
     // Delegate backspace handling to a separate class.
     private val backspaceHandler = BackspaceHandler(this)
@@ -283,6 +280,7 @@ abstract class GeneralKeyboardIME(
                     keyboardMode = keyboardSymbols
                     R.xml.keys_symbols
                 }
+
                 else -> {
                     keyboardMode = keyboardLetters
                     getKeyboardLayoutXML()
@@ -427,18 +425,16 @@ abstract class GeneralKeyboardIME(
 
     override fun onKey(code: Int) {
 
-        // 🔥🔥 CRITICAL FIX (ADD THIS BLOCK)
+        // Prevent arrow keys from triggering default behavior in conjugation states
         if (currentState == ScribeState.CONJUGATE ||
             currentState == ScribeState.SELECT_VERB_CONJUNCTION
         ) {
             if (code == KeyboardBase.KEYCODE_LEFT_ARROW ||
                 code == KeyboardBase.KEYCODE_RIGHT_ARROW
             ) {
-                Log.i("DEBUG", "Arrow blocked at onKey, state=$currentState")
-                return   // 🚫 STOP default flow
+                return
             }
         }
-        // 🔥🔥 END FIX
 
         val inputConnection = currentInputConnection
         if (inputConnection != null) {
@@ -749,14 +745,17 @@ abstract class GeneralKeyboardIME(
                             refreshUI()
                             return
                         }
+
                         null -> ""
                         else -> if (isAllCaps) pluralResult.uppercase() else pluralResult
                     }
                 }
+
                 ScribeState.TRANSLATE -> {
                     val translation = getTranslation(language, rawInput)
                     if (isAllCaps) translation.uppercase() else translation
                 }
+
                 else -> ""
             }
 
@@ -1260,10 +1259,12 @@ abstract class GeneralKeyboardIME(
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
                     true
                 }
+
                 ((nounTypeSuggestion?.size ?: 0) > 1) -> {
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
                     true
                 }
+
                 handlePluralIfNeeded(isPlural) -> true
                 handleSingleNounSuggestion(nounTypeSuggestion) -> true
                 handleMultipleCases(caseAnnotationSuggestion) -> true
@@ -1440,7 +1441,7 @@ abstract class GeneralKeyboardIME(
         backgroundRes: Int,
     ) {
         button.text = text
-        button.setTextColor(ContextCompat.getColor(applicationContext, be.scri.R.color.white))
+        button.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
         button.isClickable = false
         button.setOnClickListener(null)
 
@@ -1452,7 +1453,7 @@ abstract class GeneralKeyboardIME(
             if (contentDrawable is LayerDrawable) {
                 val shapeDrawable =
                     contentDrawable.findDrawableByLayerId(
-                        be.scri.R.id.button_background_shape,
+                        R.id.button_background_shape,
                     ) as? GradientDrawable
 
                 shapeDrawable?.setColor(
@@ -1494,7 +1495,7 @@ abstract class GeneralKeyboardIME(
                 it,
                 leftSuggestion.first,
                 leftSuggestion.second,
-                be.scri.R.drawable.gender_suggestion_button_left_background,
+                R.drawable.gender_suggestion_button_left_background,
             )
         }
 
@@ -1503,7 +1504,7 @@ abstract class GeneralKeyboardIME(
                 it,
                 rightSuggestion.first,
                 rightSuggestion.second,
-                be.scri.R.drawable.gender_suggestion_button_right_background,
+                R.drawable.gender_suggestion_button_right_background,
             )
         }
     }
@@ -1531,9 +1532,11 @@ abstract class GeneralKeyboardIME(
             "noun" ->
                 handleColorAndTextForNounType(leftType, language, applicationContext) to
                     handleColorAndTextForNounType(rightType, language, applicationContext)
+
             "preposition" ->
                 handleTextForCaseAnnotation(leftType, language, applicationContext) to
                     handleTextForCaseAnnotation(rightType, language, applicationContext)
+
             else -> null
         }
     }
@@ -1582,9 +1585,11 @@ abstract class GeneralKeyboardIME(
             hasLinguisticSuggestions && emojiCount != 0 -> {
                 uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
             }
+
             hasLinguisticSuggestions && emojiCount == 0 -> {
                 setSuggestionButton(uiManager.pluralBtn!!, suggestion2)
             }
+
             else -> {
                 setSuggestionButton(uiManager.binding.translateBtn, suggestion2)
                 setSuggestionButton(uiManager.pluralBtn!!, suggestion3)
@@ -1750,6 +1755,7 @@ abstract class GeneralKeyboardIME(
                 keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_2X1_BOTTOM)
                 subsequentAreaRequired = false
             }
+
             DATA_CONSTANT_3 -> {
                 keyboardView?.setKeyLabel(flattenList[0], "HI", KeyboardBase.CODE_1X3_RIGHT)
                 keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_1X3_CENTER)
@@ -1792,6 +1798,7 @@ abstract class GeneralKeyboardIME(
                     }
                 }
             }
+
             else -> {
                 getKeyboardLayoutXML()
             }

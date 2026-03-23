@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+    // SPDX-License-Identifier: GPL-3.0-or-later
 
 package be.scri.extensions
 
@@ -25,7 +25,7 @@ fun Int.getContrastColor(): Int {
             RED_COEFFICIENT * Color.red(this) +
                 GREEN_COEFFICIENT * Color.green(this) +
                 BLUE_COEFFICIENT * Color.blue(this)
-        ) / COEFFICIENT_SUM
+            ) / COEFFICIENT_SUM
     return if (y >= Y_THRESHOLD && this != Color.BLACK) DARK_GREY else Color.WHITE
 }
 

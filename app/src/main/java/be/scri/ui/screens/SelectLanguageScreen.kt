@@ -100,7 +100,8 @@ fun SelectTranslationSourceLanguageScreen(
                                             selectedLanguage.value = option
                                             showDialog.value = true
                                         }
-                                    }.padding(vertical = 5.dp, horizontal = 8.dp),
+                                    }
+                                    .padding(vertical = 5.dp, horizontal = 8.dp),
                         ) {
                             Text(
                                 text = getDisplayLanguageName(option),

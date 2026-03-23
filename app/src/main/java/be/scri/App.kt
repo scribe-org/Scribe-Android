@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 @file:Suppress("ktlint:standard:kdoc")
+
 /**
  * Handles application-level initialization and sets the default night mode based on user configuration.
  */
@@ -101,7 +102,7 @@ fun ScribeApp(
                     },
                     pagerState = pagerState,
                     modifier =
-                    Modifier,
+                        Modifier,
                 )
             },
             modifier = modifier.fillMaxSize(),
@@ -143,6 +144,7 @@ fun ScribeApp(
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
                             }
+
                             1 -> {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
@@ -170,6 +172,7 @@ fun ScribeApp(
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
                             }
+
                             2 -> {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),

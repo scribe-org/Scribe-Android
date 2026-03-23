@@ -169,6 +169,7 @@ class BackspaceHandler(
             Character.OTHER_PUNCTUATION -> {
                 char in "'\".,@#$%&*+=~`|\\/:;?!^"
             }
+
             Character.CURRENCY_SYMBOL -> true
             Character.MATH_SYMBOL -> char in "+=<>~^"
             Character.OTHER_SYMBOL -> char in "@#$%&*+=~`|\\/:;?!^"

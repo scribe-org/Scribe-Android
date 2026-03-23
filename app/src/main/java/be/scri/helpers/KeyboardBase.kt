@@ -383,7 +383,7 @@ class KeyboardBase {
                     (x < this.x + width || rightEdge && x >= this.x) &&
                     (y >= this.y && y <= this.y + height) &&
                     (y < this.y + height && y >= this.y)
-            )
+                )
         }
     }
 
@@ -588,7 +588,7 @@ class KeyboardBase {
 
                                         EditorInfo.IME_ACTION_NEXT,
                                         EditorInfo.IME_ACTION_GO,
-                                        ->
+                                            ->
                                             R.drawable.ic_arrow_right_vector
 
                                         EditorInfo.IME_ACTION_SEND ->

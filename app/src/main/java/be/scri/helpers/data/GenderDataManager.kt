@@ -55,6 +55,7 @@ class GenderDataManager(
                     genderColumn = contract.genders.canonical.firstOrNull(),
                     genderMap = genderMap,
                 )
+
             hasMasculineFeminine(contract) -> {
                 processGenders(
                     db = db,
@@ -69,6 +70,7 @@ class GenderDataManager(
                     defaultGender = "feminine",
                 )
             }
+
             else -> Log.w("GenderDataManager", "No valid gender columns found in contract for language.")
         }
         return genderMap

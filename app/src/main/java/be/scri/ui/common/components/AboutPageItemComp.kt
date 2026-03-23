@@ -51,7 +51,8 @@ fun AboutPageItemComp(
                         end = 20.dp,
                         top = 10.dp,
                         bottom = 10.dp,
-                    ).clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard))),
+                    )
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard))),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -66,7 +67,9 @@ fun AboutPageItemComp(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = title,
-                modifier = Modifier.weight(1f).padding(start = 4.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 4.dp),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,

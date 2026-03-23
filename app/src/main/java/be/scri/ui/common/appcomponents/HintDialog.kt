@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
@@ -130,17 +129,19 @@ fun HintDialogContent(
 
     Box(
         modifier =
-            modifier.padding(horizontal = 4.dp).background(
-                brush =
-                    Brush.verticalGradient(
-                        colors =
-                            listOf(
-                                Color.Transparent,
-                                shadowColor,
-                            ),
-                    ),
-                shape = RoundedCornerShape(10.dp),
-            ),
+            modifier
+                .padding(horizontal = 4.dp)
+                .background(
+                    brush =
+                        Brush.verticalGradient(
+                            colors =
+                                listOf(
+                                    Color.Transparent,
+                                    shadowColor,
+                                ),
+                        ),
+                    shape = RoundedCornerShape(10.dp),
+                ),
     ) {
         Surface(
             shape = RoundedCornerShape(10.dp),

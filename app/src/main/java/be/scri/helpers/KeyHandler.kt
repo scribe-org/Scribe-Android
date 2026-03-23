@@ -83,43 +83,51 @@ class KeyHandler(
                 commitTab(inputConnection)
                 true
             }
+
             KeyboardBase.KEYCODE_CAPS_LOCK -> {
                 handleCapsLock()
                 true
             }
+
             KeyboardBase.KEYCODE_DELETE -> {
                 handleDeleteKey()
                 true
             }
+
             KeyboardBase.KEYCODE_SHIFT -> handleShiftKeyPress(previousWasLastKeySpace)
             KeyboardBase.KEYCODE_ENTER -> {
                 handleEnterKey()
                 true
             }
+
             KeyboardBase.KEYCODE_MODE_CHANGE -> {
                 handleModeChangeKey()
                 true
             }
+
             KeyboardBase.KEYCODE_SPACE -> handleSpaceKeyPress(previousWasLastKeySpace)
             in KeyboardBase.NAVIGATION_KEYS -> {
 
-                // 🔥 If in conjugation → fully consume event
-                if (ime.currentState == GeneralKeyboardIME.ScribeState.CONJUGATE) {
+                // If in conjugation mode, consume the event to prevent propagation
+                if (ime.currentState == ScribeState.CONJUGATE) {
                     handleNavigationKey(code)
-                    return true // 🔥 STOP propagation
+                    return true
                 }
 
                 handleNavigationKey(code)
                 true
             }
+
             in KeyboardBase.SCRIBE_VIEW_KEYS -> {
                 handleScribeViewKey(code, language)
                 true
             }
+
             KeyboardBase.CODE_CURRENCY -> {
                 handleCurrencyKey(language)
                 true
             }
+
             else -> {
                 handleDefaultKey(code)
                 true
@@ -263,31 +271,25 @@ class KeyHandler(
      * @param code The key code, used to determine direction.
      */
     private fun handleNavigationKey(code: Int) {
-
-
-        Log.i("DEBUG", "NAV pressed, state=${ime.currentState}")
+        Log.i(TAG, "Navigation key pressed, state=${ime.currentState}")
 
         val isLeft = code == KeyboardBase.KEYCODE_LEFT_ARROW
         val isRight = code == KeyboardBase.KEYCODE_RIGHT_ARROW
 
-        // ✅ If in conjugation mode → cycle tenses
-        if (ime.currentState == GeneralKeyboardIME.ScribeState.CONJUGATE) {
+        if (ime.currentState == ScribeState.CONJUGATE) {
 
             val mappedCode = when {
                 isRight -> KeyboardBase.DISPLAY_RIGHT
                 isLeft -> KeyboardBase.DISPLAY_LEFT
                 else -> return
             }
-
             handleConjugateCycleKeys(mappedCode, ime.applicationContext)
 
-            // 🔥 Force state to prevent reset
-            ime.currentState = GeneralKeyboardIME.ScribeState.CONJUGATE
+            ime.currentState = ScribeState.CONJUGATE
 
             return
         }
 
-        // ❌ Normal cursor movement (only when NOT in conjugation)
         ime.currentInputConnection?.let { ic ->
             val currentPos = ic.getTextBeforeCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.length ?: 0
 
@@ -315,13 +317,10 @@ class KeyHandler(
     ) {
         when (code) {
             KeyboardBase.DISPLAY_LEFT, KeyboardBase.DISPLAY_RIGHT -> {
-                // 🔥 FORCE state BEFORE doing anything
-                ime.currentState = GeneralKeyboardIME.ScribeState.CONJUGATE
+                ime.currentState = ScribeState.CONJUGATE
 
                 handleConjugateCycleKeys(code, ime.applicationContext)
-
-                // 🔥 FORCE again after UI update
-                ime.currentState = GeneralKeyboardIME.ScribeState.CONJUGATE
+                ime.currentState = ScribeState.CONJUGATE
             }
             else -> {
                 handleConjugateSelectionKey(code, language)
@@ -350,17 +349,11 @@ class KeyHandler(
         } else if (code == KeyboardBase.DISPLAY_LEFT) {
             currentValue++
         }
-
         editor.putInt("conjugate_index", currentValue)
         editor.apply()
 
-        // 🔥 FIX START
-        val prevState = ime.currentState
-
         ime.refreshUIForConjugation()
-
-        ime.currentState = GeneralKeyboardIME.ScribeState.CONJUGATE
-        // 🔥 FIX END
+        ime.currentState = ScribeState.CONJUGATE
 
         Log.i(TAG, "New conjugate_index: $currentValue")
     }
@@ -378,16 +371,13 @@ class KeyHandler(
         language: String,
     ) {
         if (!ime.returnIsSubsequentRequired()) {
-
             ime.handleConjugateKeys(code, false)
 
-            // 🔥 Prevent exit on navigation
             if (code != KeyboardBase.DISPLAY_LEFT &&
                 code != KeyboardBase.DISPLAY_RIGHT
             ) {
                 ime.moveToIdleState()
             }
-
             ime.saveConjugateModeType(language, isSubsequentArea = false)
 
         } else {
@@ -402,14 +392,13 @@ class KeyHandler(
      *
      * @param code The key code representing the character to input.
      */
-
     private fun handleDefaultKey(code: Int) {
         val isCommandBarActive =
             when (ime.currentState) {
                 ScribeState.TRANSLATE,
                 ScribeState.CONJUGATE,
                 ScribeState.PLURAL,
-                -> true // use command bar for actual commands
+                    -> true // use command bar for actual commands
                 else -> false // use main input field for IDLE and SELECT_COMMAND
             }
 

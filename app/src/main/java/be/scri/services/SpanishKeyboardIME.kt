@@ -24,12 +24,15 @@ class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
             getIsAccentCharacterDisabled(applicationContext, language) &&
                 !isPeriodAndCommaEnabled() ->
                 R.xml.keys_letter_spanish_without_accent_characters_and_without_period_and_comma
+
             !getIsAccentCharacterDisabled(applicationContext, language) &&
                 isPeriodAndCommaEnabled() ->
                 R.xml.keys_letters_spanish
+
             getIsAccentCharacterDisabled(applicationContext, language) &&
                 isPeriodAndCommaEnabled() ->
                 R.xml.keys_letter_spanish_without_accent_character
+
             else ->
                 R.xml.keys_letter_spanish_without_period_and_comma
         }

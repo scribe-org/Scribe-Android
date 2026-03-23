@@ -94,7 +94,8 @@ fun DefaultCurrencySymbolScreen(
                                     .clickable {
                                         selectedSymbol.value = option
                                         PreferencesHelper.setDefaultCurrencySymbol(context, currentLanguage, option)
-                                    }.padding(vertical = 5.dp, horizontal = 8.dp),
+                                    }
+                                    .padding(vertical = 5.dp, horizontal = 8.dp),
                         ) {
                             Text(
                                 text = option,

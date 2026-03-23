@@ -109,7 +109,8 @@ fun InstallationScreen(
                             start = 4.dp,
                             top = Dimensions.PaddingLarge,
                             bottom = Dimensions.PaddingSmall,
-                        ).align(Alignment.Start),
+                        )
+                        .align(Alignment.Start),
             )
 
             Card(
@@ -120,7 +121,8 @@ fun InstallationScreen(
                         .clickable {
                             val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
                             context.startActivity(intent)
-                        }.testTag("keyboardSettingsCard"),
+                        }
+                        .testTag("keyboardSettingsCard"),
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
                 colors =
                     CardDefaults.cardColors(
@@ -239,7 +241,8 @@ fun InstallationScreen(
                             start = 4.dp,
                             top = Dimensions.PaddingLarge,
                             bottom = Dimensions.PaddingSmall,
-                        ).align(Alignment.Start),
+                        )
+                        .align(Alignment.Start),
             )
             Card(
                 modifier =
