@@ -138,7 +138,15 @@ android {
 
 
     sourceSets {
-        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("main") {
+            java.srcDirs("src/main/kotlin")
+        }
+        getByName("keyboards") {
+            java.srcDirs("src/keyboards/java")
+        }
+        getByName("conjugate") {
+            java.srcDirs("src/conjugate/java")
+        }
         named("test") {
             java.srcDirs("src/test/java", "src/test/kotlin")
         }
