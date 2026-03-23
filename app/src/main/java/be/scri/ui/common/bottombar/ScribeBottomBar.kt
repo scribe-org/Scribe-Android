@@ -2,8 +2,8 @@
 
 package be.scri.ui.common.bottombar
 
-import androidx.compose.foundation.background
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
