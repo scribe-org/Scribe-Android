@@ -2,10 +2,17 @@
 
 package be.scri.ui.common.bottombar
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -27,18 +34,17 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  */
 @Composable
 fun ScribeBottomBar(
+    @SuppressLint("ComposeUnstableCollections") screens: List<BottomBarScreen>,
     onItemClick: (Int) -> Unit,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
+    Column(modifier = modifier) {
         BottomNavigation(
             backgroundColor = MaterialTheme.colorScheme.surface,
-            modifier = Modifier,
+            elevation = 0.dp,
         ) {
-            bottomBarScreens.forEachIndexed { index, item ->
+            screens.forEachIndexed { index, item ->
                 val isSelected = pagerState.currentPage == index
 
                 val iconSize = if (isSelected) 26.dp else 24.dp
@@ -52,7 +58,7 @@ fun ScribeBottomBar(
                     }
 
                 BottomNavigationItem(
-                    selected = pagerState.currentPage == index,
+                    selected = isSelected,
                     onClick = { onItemClick(index) },
                     icon = {
                         androidx.compose.material3.Icon(
@@ -61,10 +67,8 @@ fun ScribeBottomBar(
                                     id = item.icon,
                                 ),
                             tint = color,
-                            contentDescription = "Keyboard",
-                            modifier =
-                                Modifier
-                                    .size(iconSize),
+                            contentDescription = item.label,
+                            modifier = Modifier.size(iconSize),
                         )
                     },
                     label = {
@@ -98,5 +102,12 @@ fun ScribeBottomBar(
                 )
             }
         }
+        Spacer(
+            modifier =
+                Modifier
+                    .windowInsetsBottomHeight(WindowInsets.navigationBars)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface),
+        )
     }
 }

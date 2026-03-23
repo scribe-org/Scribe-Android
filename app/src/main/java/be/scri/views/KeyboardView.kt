@@ -35,7 +35,6 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.content.edit
 import androidx.core.graphics.createBitmap
-import androidx.core.graphics.toColorInt
 import androidx.core.graphics.withSave
 import be.scri.R
 import be.scri.databinding.KeyboardViewKeyboardBinding
@@ -927,46 +926,14 @@ constructor(
                             }
                         putInt("conjugate_index", newValue)
                     }
-                    val density = context.resources.displayMetrics.density
-                    key.height = (KEY_HEIGHT * density).toInt() + LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT
-                }
-                if (code == EXTRA_PADDING) {
-                    val density = context.resources.displayMetrics.density
-                    key.height = 0
-                    key.width = 0
-                }
-
-                val shadowRect =
-                    RectF(
-                        (key.x + keyMargin + padding).toFloat(),
-                        (key.y + keyMargin + padding + shadowOffsetY).toFloat(),
-                        (key.x + key.width - keyMargin - padding).toFloat(),
-                        (key.y + key.height - vKeyMargin - padding + shadowOffsetY).toFloat(),
+                mKeyboardBackgroundColor =
+                    resources.getColor(
+                        if (isUserDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+                        context.theme,
                     )
-
-                val keyRect =
-                    RectF(
-                        (key.x + keyMargin - shadowOffset + padding).toFloat(),
-                        (key.y + keyMargin - shadowOffset + padding).toFloat(),
-                        (key.x + key.width - keyMargin + shadowOffset - padding).toFloat(),
-                        (key.y + key.height - vKeyMargin + shadowOffset - padding).toFloat(),
-                    )
-                if (code != EXTRA_PADDING && (mPopupParent.id != R.id.mini_keyboard_view)) {
-                    canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
-                }
-
-                val backgroundColor =
-                    when {
-                        key.focused -> focusedColor
-                        key.pressed -> pressedColor
-                        code == KEYCODE_SHIFT && mKeyboard!!.mShiftState == SHIFT_LOCKED -> pressedColor
-                        code in listOf(KEYCODE_DELETE, KEYCODE_SHIFT, KEYCODE_MODE_CHANGE) -> specialKeyColorValue
-                        code == KEYCODE_ENTER -> mEnterKeyColor
-                        else -> keyBackgroundColor
-                    }
-                keyBackgroundPaint.color = backgroundColor
-                if (code != EXTRA_PADDING) {
-                    canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                if (id != R.id.mini_keyboard_view) {
+                    canvas.drawColor(mKeyboardBackgroundColor)
                 }
                 var label = adjustCase(key.label)?.toString()
                 // Switch the character to uppercase if shift is pressed.
@@ -1082,12 +1049,13 @@ constructor(
                             mTextColor
                         }
 
-                    canvas.drawText(
-                        label,
-                        (key.width / 2).toFloat(),
-                        key.height / 2 + (paint.textSize - paint.descent()) / 2,
-                        paint,
-                    )
+                        // Set key text color based on state.
+                        paint.color =
+                            when {
+                                key.focused -> Color.WHITE
+                                key.pressed -> mPrimaryColor.getContrastColor()
+                                else -> mTextColor
+                            }
 
                     if (key.topSmallNumber.isNotEmpty()) {
                         canvas.drawText(
