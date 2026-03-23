@@ -15,6 +15,11 @@ sealed class Screen(
     data object Installation : Screen("installation_screen")
 
     /**
+     * Screen for the conjugation functionality.
+     */
+    data object Conjugate : Screen("conjugate_screen")
+
+    /**
      * Screen where the user can configure general app settings.
      */
     data object Settings : Screen("settings_screen")
