@@ -65,11 +65,12 @@ fun buildCommunityList(
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.share_icon,
-            title = if (isConjugateApp) {
-                R.string.i18n_app_about_community_share_conjugate
-            } else {
-                R.string.i18n_app_about_community_share_scribe
-            },
+            title =
+                if (isConjugateApp) {
+                    R.string.i18n_app_about_community_share_conjugate
+                } else {
+                    R.string.i18n_app_about_community_share_scribe
+                },
             trailingIcon = R.drawable.external_link,
             url = null,
             onClick = { onShareScribeClick() },
@@ -122,11 +123,12 @@ fun feedbackAndSupportList(
     listOf(
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.star,
-            title = if (isConjugateApp) {
-                R.string.i18n_app_about_feedback_rate_conjugate
-            } else {
-                R.string.i18n_app_about_feedback_rate_scribe
-            },
+            title =
+                if (isConjugateApp) {
+                    R.string.i18n_app_about_feedback_rate_conjugate
+                } else {
+                    R.string.i18n_app_about_feedback_rate_scribe
+                },
             trailingIcon = R.drawable.external_link,
             url = null,
             onClick = { onRateScribeClick() },
@@ -204,7 +206,10 @@ object AboutUtil {
      * @param context Context used to launch the sharing intent.
      * @param isConjugateApp Flag indicating flavor
      */
-    fun onShareScribeClick(context: Context, isConjugateApp: Boolean = false) {
+    fun onShareScribeClick(
+        context: Context,
+        isConjugateApp: Boolean = false,
+    ) {
         shareHelper.shareScribe(context, isConjugateApp)
     }
 
@@ -232,7 +237,7 @@ object AboutUtil {
      * @param onWikimediaAndScribeClick Callback invoked when Wikimedia link is clicked.
      * @param onShareScribeClick Callback invoked when Share Scribe link is clicked.
      * @param context Android context to open URLs.
-     * @param isConjugateApp Flag indicating flavor
+     * @param isConjugateApp Flag indicating flavor.
      *
      * @return A [ScribeItemList] wrapping community external links.
      */
@@ -245,12 +250,13 @@ object AboutUtil {
     ): ScribeItemList =
         remember(isConjugateApp) {
             ScribeItemList(
-                items = buildCommunityList(
-                    context,
-                    onShareScribeClick,
-                    onWikimediaAndScribeClick,
-                    isConjugateApp
-                ),
+                items =
+                    buildCommunityList(
+                        context,
+                        onShareScribeClick,
+                        onWikimediaAndScribeClick,
+                        isConjugateApp,
+                    ),
             )
         }
 
@@ -261,7 +267,7 @@ object AboutUtil {
      * @param onMailClick Callback to open email intent.
      * @param onResetHintsClick Callback to reset onboarding hints.
      * @param context Android context used to launch external intents.
-     * @param isConjugateApp Flag indicating flavor
+     * @param isConjugateApp Flag indicating flavor.
      *
      * @return A [ScribeItemList] wrapping feedback and support options.
      */

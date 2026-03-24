@@ -14,7 +14,10 @@ interface ShareHelperInterface {
      *
      * @param context The Android context used to perform the share action.
      */
-    fun shareScribe(context: Context, isConjugateApp: Boolean = false)
+    fun shareScribe(
+        context: Context,
+        isConjugateApp: Boolean = false,
+    )
 }
 
 /** Implementation of ShareHelperInterface to handle sharing a scribe. */
@@ -24,12 +27,16 @@ class ShareHelperImpl : ShareHelperInterface {
      *
      * @param context The context from which to launch the share intent.
      */
-    override fun shareScribe(context: Context, isConjugateApp: Boolean) {
-        val shareText = if (isConjugateApp) {
-            "Check out Scribe Conjugate!"
-        } else {
-            "Check out Scribe!"
-        }
+    override fun shareScribe(
+        context: Context,
+        isConjugateApp: Boolean,
+    ) {
+        val shareText =
+            if (isConjugateApp) {
+                "Check out Scribe Conjugate!"
+            } else {
+                "Check out Scribe!"
+            }
         val sendIntent =
             Intent().apply {
                 action = Intent.ACTION_SEND
@@ -37,11 +44,12 @@ class ShareHelperImpl : ShareHelperInterface {
                 type = "text/plain"
             }
 
-        val shareTitle = if (isConjugateApp){
-            "Share Scribe Conjugate via…"
-        } else{
-            "Share Scribe via…"
-        }
+        val shareTitle =
+            if (isConjugateApp) {
+                "Share Scribe Conjugate via…"
+            } else {
+                "Share Scribe via…"
+            }
         val shareIntent = Intent.createChooser(sendIntent, shareTitle)
         context.startActivity(shareIntent)
     }

@@ -38,7 +38,6 @@ fun AboutScreen(
     context: Context,
     modifier: Modifier = Modifier,
 ) {
-
     val isConjugateApp = FlavorProvider.get() == AppFlavor.CONJUGATE
     val scrollState = rememberScrollState()
 
