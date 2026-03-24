@@ -39,6 +39,7 @@ fun buildCommunityList(
     context: Context,
     onShareScribeClick: () -> Unit,
     onWikimediaAndScribeClick: () -> Unit,
+    isConjugateApp: Boolean = false,
 ): List<ScribeItem.ExternalLinkItem> =
     listOf(
         ScribeItem.ExternalLinkItem(
@@ -63,7 +64,11 @@ fun buildCommunityList(
         ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.share_icon,
-            title = R.string.i18n_app_about_community_share_scribe,
+            title = if (isConjugateApp) {
+                R.string.i18n_app_about_community_share_conjugate
+            } else {
+                R.string.i18n_app_about_community_share_scribe
+            },
             trailingIcon = R.drawable.external_link,
             url = null,
             onClick = { onShareScribeClick() },
@@ -110,11 +115,16 @@ fun feedbackAndSupportList(
     onRateScribeClick: () -> Unit,
     onMailClick: () -> Unit,
     onResetHintsClick: () -> Unit,
+    isConjugateApp: Boolean = false,
 ): List<ScribeItem.ExternalLinkItem> =
     listOf(
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.star,
-            title = R.string.i18n_app_about_feedback_rate_scribe,
+            title = if (isConjugateApp) {
+                R.string.i18n_app_about_feedback_rate_conjugate
+            } else {
+                R.string.i18n_app_about_feedback_rate_scribe
+            },
             trailingIcon = R.drawable.external_link,
             url = null,
             onClick = { onRateScribeClick() },
@@ -191,8 +201,8 @@ object AboutUtil {
      *
      * @param context Context used to launch the sharing intent.
      */
-    fun onShareScribeClick(context: Context) {
-        shareHelper.shareScribe(context)
+    fun onShareScribeClick(context: Context, isConjugateApp: Boolean = false) {
+        shareHelper.shareScribe(context, isConjugateApp)
     }
 
     /**
@@ -227,10 +237,16 @@ object AboutUtil {
         onWikimediaAndScribeClick: () -> Unit,
         onShareScribeClick: () -> Unit,
         context: Context,
+        isConjugateApp: Boolean = false,
     ): ScribeItemList =
-        remember {
+        remember(isConjugateApp) {
             ScribeItemList(
-                items = buildCommunityList(context, onShareScribeClick, onWikimediaAndScribeClick),
+                items = buildCommunityList(
+                    context,
+                    onShareScribeClick,
+                    onWikimediaAndScribeClick,
+                    isConjugateApp
+                ),
             )
         }
 
@@ -250,8 +266,9 @@ object AboutUtil {
         onMailClick: () -> Unit,
         onResetHintsClick: () -> Unit,
         context: Context,
+        isConjugateApp: Boolean = false,
     ): ScribeItemList =
-        remember {
+        remember(isConjugateApp) {
             ScribeItemList(
                 items =
                     feedbackAndSupportList(
@@ -259,6 +276,7 @@ object AboutUtil {
                         onRateScribeClick,
                         onMailClick,
                         onResetHintsClick,
+                        isConjugateApp,
                     ),
             )
         }
