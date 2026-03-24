@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,7 +44,9 @@ import be.scri.ui.screens.SelectTranslationSourceLanguageScreen
 import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
+import be.scri.ui.screens.download.CheckUpdateActions
 import be.scri.ui.screens.download.DataDownloadViewModel
+import be.scri.ui.screens.download.DownloadActions
 import be.scri.ui.screens.download.DownloadDataScreen
 import be.scri.ui.screens.settings.SettingsScreen
 import be.scri.ui.theme.ScribeTheme
@@ -87,10 +90,23 @@ fun ScribeApp(
     val downloadStates = downloadViewModel.downloadStates
     val onDownloadAction = downloadViewModel::handleDownloadAction
     val onDownloadAll = downloadViewModel::handleDownloadAllLanguages
-    val inititalizeStates = downloadViewModel::initializeStates
-    val checkAllForUpdates = downloadViewModel::checkAllForUpdates
-    val screens = remember(context) { BottomBarScreen.getScreens() }
+    val initializeStates = downloadViewModel::initializeStates
+    val downloadActions =
+        DownloadActions(
+            downloadStates = downloadStates,
+            onDownloadAction = onDownloadAction,
+            onDownloadAll = onDownloadAll,
+            initializeStates = initializeStates,
+        )
+    val checkUpdateState by downloadViewModel.checkUpdateState.collectAsState()
+    val checkUpdateActions =
+        CheckUpdateActions(
+            checkUpdateState = checkUpdateState,
+            checkForNewData = downloadViewModel::checkForNewData,
+            cancelCheckForNewData = downloadViewModel::cancelCheckForNewData,
+        )
 
+    val screens = remember(context) { BottomBarScreen.getScreens() }
     ScribeTheme(
         useDarkTheme = isDarkTheme,
     ) {
@@ -232,11 +248,9 @@ fun ScribeApp(
                                 "translation_language_detail/$language",
                             )
                         },
-                        downloadStates = downloadStates,
-                        onDownloadAction = onDownloadAction,
-                        onDownloadAll = onDownloadAll,
-                        initializeStates = inititalizeStates,
-                        checkAllForUpdates = checkAllForUpdates,
+                        isDarkTheme = isDarkTheme,
+                        downloadActions = downloadActions,
+                        checkUpdateActions = checkUpdateActions,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
