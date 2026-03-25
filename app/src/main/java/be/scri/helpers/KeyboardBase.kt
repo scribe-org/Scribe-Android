@@ -16,7 +16,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import androidx.annotation.XmlRes
 import be.scri.R
-import be.scri.services.GeneralKeyboardIME
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import kotlin.math.roundToInt
@@ -28,6 +27,17 @@ import kotlin.math.roundToInt
  */
 @Suppress("LongMethod", "NestedBlockDepth", "CyclomaticComplexMethod")
 class KeyboardBase {
+
+    /**
+     * Interface for providing keyboard context to KeyboardBase without
+     * a direct dependency on GeneralKeyboardIME.
+     */
+    interface KeyboardContextProvider {
+        val language: String
+        val keyboardMode: Int
+        val keyboardLetters: Int
+        fun isSearchBar(): Boolean
+    }
     /** Horizontal gap default for all rows  */
     private var mDefaultHorizontalGap = 0
 
@@ -532,13 +542,13 @@ class KeyboardBase {
         var currentRow: Row? = null
         val res = context.resources
 
-        // Get the IME instance to check the current keyboard mode.
-        val imeInstance = context as? GeneralKeyboardIME
-        val language = imeInstance?.language
-        val currentKeyboardMode = imeInstance?.keyboardMode
-        val keyboardLettersMode = imeInstance?.keyboardLetters
+        // Get the keyboard context provider if available.
+        val provider = context as? KeyboardContextProvider
+        val language = provider?.language
+        val currentKeyboardMode = provider?.keyboardMode
+        val keyboardLettersMode = provider?.keyboardLetters
 
-        val isSearchBar = imeInstance?.isSearchBar() == true
+        val isSearchBar = provider?.isSearchBar() == true
         val periodAndCommaEnabled: Boolean =
             if (language != null) {
                 PreferencesHelper.getEnablePeriodAndCommaABC(context, language)

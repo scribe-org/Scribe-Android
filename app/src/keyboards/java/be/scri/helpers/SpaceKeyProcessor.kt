@@ -3,7 +3,7 @@
 package be.scri.helpers
 
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
+import be.scri.models.ScribeState
 
 /**
  * Processes key events specifically related to the space key.

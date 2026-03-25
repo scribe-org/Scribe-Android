@@ -12,7 +12,7 @@ import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
-import be.scri.services.GeneralKeyboardIME
+import be.scri.models.ScribeState
 import kotlin.collections.get
 
 /**
@@ -47,12 +47,12 @@ object HintUtils {
      * @return The appropriate hint message for the given state and language.
      */
     fun getCommandBarHint(
-        currentState: GeneralKeyboardIME.ScribeState,
+        currentState: ScribeState,
         language: String,
         word: String?,
     ): String =
         when (currentState) {
-            GeneralKeyboardIME.ScribeState.SELECT_VERB_CONJUNCTION -> word ?: ""
+            ScribeState.SELECT_VERB_CONJUNCTION -> word ?: ""
             else -> getHintForState(currentState)[language] ?: ""
         }
 
@@ -63,11 +63,11 @@ object HintUtils {
      *
      * @return A map of language codes to hint strings for the current state.
      */
-    private fun getHintForState(currentState: GeneralKeyboardIME.ScribeState): Map<String, String> =
+    private fun getHintForState(currentState: ScribeState): Map<String, String> =
         when (currentState) {
-            GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslateHints()
-            GeneralKeyboardIME.ScribeState.CONJUGATE -> getConjugateHints()
-            GeneralKeyboardIME.ScribeState.PLURAL -> getPluralHints()
+            ScribeState.TRANSLATE -> getTranslateHints()
+            ScribeState.CONJUGATE -> getConjugateHints()
+            ScribeState.PLURAL -> getPluralHints()
             else -> emptyMap()
         }
 
@@ -311,16 +311,16 @@ object HintUtils {
      * @return The appropriate prompt text for the given state and language.
      */
     fun getPromptText(
-        currentState: GeneralKeyboardIME.ScribeState,
+        currentState: ScribeState,
         language: String,
         context: Context,
         text: String?,
     ): String =
         when (currentState) {
-            GeneralKeyboardIME.ScribeState.TRANSLATE -> getTranslationPrompt(language, context)
-            GeneralKeyboardIME.ScribeState.CONJUGATE -> getConjugationPrompt(language)
-            GeneralKeyboardIME.ScribeState.PLURAL -> getPluralPrompt(language)
-            GeneralKeyboardIME.ScribeState.SELECT_VERB_CONJUNCTION -> text!!
+            ScribeState.TRANSLATE -> getTranslationPrompt(language, context)
+            ScribeState.CONJUGATE -> getConjugationPrompt(language)
+            ScribeState.PLURAL -> getPluralPrompt(language)
+            ScribeState.SELECT_VERB_CONJUNCTION -> text!!
             else -> ""
         }
 

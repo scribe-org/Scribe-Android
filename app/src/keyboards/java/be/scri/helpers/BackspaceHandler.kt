@@ -5,6 +5,7 @@ package be.scri.helpers
 import android.text.TextUtils
 import android.view.inputmethod.InputConnection
 import be.scri.helpers.PreferencesHelper.getIsWordByWordDeletionEnabled
+import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.Companion.MAX_TEXT_LENGTH
 
@@ -91,7 +92,7 @@ class BackspaceHandler(
         val finalCommandBarText = ime.getCommandBarTextWithoutCursor()
         val isEmptyOrAHint = finalCommandBarText.isEmpty() || finalCommandBarText == ime.currentCommandBarHint
         val isGerman = ime.language == "German"
-        val isPluralState = ime.currentState == GeneralKeyboardIME.ScribeState.PLURAL
+        val isPluralState = ime.currentState == ScribeState.PLURAL
 
         if (isEmptyOrAHint && isGerman && isPluralState) {
             ime.keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
