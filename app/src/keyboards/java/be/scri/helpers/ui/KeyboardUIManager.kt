@@ -22,15 +22,15 @@ import be.scri.R
 import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.KeyboardBase
-import be.scri.helpers.LanguageMappingConstants.conjugatePlaceholder
+import be.scri.helpers.KeyboardLanguageMappingConstants.conjugatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
-import be.scri.helpers.LanguageMappingConstants.pluralPlaceholder
-import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
+import be.scri.helpers.KeyboardLanguageMappingConstants.pluralPlaceholder
+import be.scri.helpers.KeyboardLanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 import be.scri.views.KeyboardView
 
 /**

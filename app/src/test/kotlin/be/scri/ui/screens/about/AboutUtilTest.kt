@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import be.scri.R
 import be.scri.activities.MainActivity
-import be.scri.helpers.ui.HintUtils
+import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.ui.RatingHelper
 import be.scri.helpers.ui.ShareHelper
 import be.scri.helpers.ui.ShareHelperInterface
@@ -146,11 +146,11 @@ class AboutUtilTest {
     }
 
     @Test
-    fun `onResetHintsClick calls HintUtils resetHints`() {
+    fun `onResetHintsClick calls PreferencesHelper resetHints`() {
         val mockContext = mockk<Context>(relaxed = true)
-        mockkObject(HintUtils)
+        mockkObject(PreferencesHelper)
 
-        every { HintUtils.resetHints(mockContext) } returns Unit
+        every { PreferencesHelper.resetHints(mockContext) } returns Unit
 
         var called = false
         val list =
@@ -160,13 +160,13 @@ class AboutUtilTest {
                 onMailClick = {},
                 onResetHintsClick = {
                     called = true
-                    HintUtils.resetHints(mockContext)
+                    PreferencesHelper.resetHints(mockContext)
                 },
             )
 
         list[4].onClick()
 
-        verify(exactly = 1) { HintUtils.resetHints(mockContext) }
+        verify(exactly = 1) { PreferencesHelper.resetHints(mockContext) }
         assertTrue(called)
     }
 }

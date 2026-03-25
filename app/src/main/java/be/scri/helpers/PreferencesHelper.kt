@@ -592,4 +592,19 @@ object PreferencesHelper {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), true)
     }
+
+    /**
+     * Resets the application hints, marking them as not shown in the shared preferences.
+     *
+     * @param context The context used to access shared preferences.
+     */
+    fun resetHints(context: Context) {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean("hint_shown_main", false)
+            putBoolean("hint_shown_settings", false)
+            putBoolean("hint_shown_about", false)
+            apply()
+        }
+    }
 }

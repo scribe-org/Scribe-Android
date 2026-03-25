@@ -57,6 +57,7 @@ import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.KeyboardUIManager
+import be.scri.models.ScribeState
 import be.scri.views.KeyboardView
 import java.util.Locale
 
@@ -65,14 +66,15 @@ private const val DATA_CONSTANT_3 = 3
 
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class GeneralKeyboardIME(
-    var language: String,
+    override var language: String,
 ) : InputMethodService(),
     KeyboardView.OnKeyboardActionListener,
-    KeyboardUIManager.KeyboardUIListener {
+    KeyboardUIManager.KeyboardUIListener,
+    KeyboardBase.KeyboardContextProvider {
     // Abstract members required by subclasses (like EnglishKeyboardIME)
     abstract override fun getKeyboardLayoutXML(): Int
 
-    abstract val keyboardLetters: Int
+    abstract override val keyboardLetters: Int
     abstract val keyboardSymbols: Int
     abstract val keyboardSymbolShift: Int
 
@@ -83,7 +85,7 @@ abstract class GeneralKeyboardIME(
     lateinit var uiManager: KeyboardUIManager
 
     abstract var lastShiftPressTS: Long
-    abstract var keyboardMode: Int
+    abstract override var keyboardMode: Int
     abstract var inputTypeClass: Int
     abstract var enterKeyType: Int
     abstract var switchToLetters: Boolean
@@ -175,7 +177,7 @@ abstract class GeneralKeyboardIME(
         internal const val CUSTOM_CURSOR = "│" // special tall cursor character
     }
 
-    enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID, ALREADY_PLURAL }
+
 
     // MARK: Lifecycle Methods
 
@@ -470,7 +472,7 @@ abstract class GeneralKeyboardIME(
      *
      * @return true if the current input field is likely a search or address bar, false otherwise.
      */
-    fun isSearchBar(): Boolean {
+    override fun isSearchBar(): Boolean {
         val editorInfo = currentInputEditorInfo
         val isActionSearch = (enterKeyType == EditorInfo.IME_ACTION_SEARCH)
         val isUriType = editorInfo?.let { (it.inputType and InputType.TYPE_TEXT_VARIATION_URI) != 0 } == true
@@ -929,7 +931,7 @@ abstract class GeneralKeyboardIME(
      * Sets the flag to indicate that the delete key is currently repeating (long press).
      * Delegated to BackspaceHandler.
      */
-    fun setDeleteRepeating(repeating: Boolean) {
+    override fun setDeleteRepeating(repeating: Boolean) {
         backspaceHandler.isDeleteRepeating = repeating
     }
 
