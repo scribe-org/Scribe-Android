@@ -46,20 +46,21 @@ fun ConjugateScreen(
 
     Scaffold(
         topBar = {
-            // Using PageTitle as a stand-in for the shared TabBar from issue #560 
+            // Using PageTitle as a stand-in for the shared TabBar from issue #560
             // if an explicit TabBar component is not present in the current branch.
             PageTitle(
                 pageTitle = "Conjugate", // Can be replaced by i18n string
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         },
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            contentAlignment = Alignment.Center,
         ) {
             if (!isDataAvailable) {
                 ConjugateEmptyState(
@@ -67,7 +68,7 @@ fun ConjugateScreen(
                     downloadState = conjugateDownloadState,
                     onDownloadClick = {
                         onDownloadAction("conjugate_data", false)
-                    }
+                    },
                 )
             } else {
                 // Next page content (out of scope for #563)
@@ -90,14 +91,14 @@ fun ConjugateEmptyState(
     Column(
         modifier = modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         // SVG Placeholder logo
         Icon(
             painter = painterResource(id = R.drawable.scribe_logo),
             contentDescription = null,
             modifier = Modifier.size(120.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -106,7 +107,7 @@ fun ConjugateEmptyState(
             text = stringResource(id = R.string.i18n_app_download_menu_option_conjugate_description),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -115,7 +116,7 @@ fun ConjugateEmptyState(
             onClick = onDownloadClick,
             isDarkTheme = isDarkTheme,
             downloadState = downloadState,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -124,33 +125,7 @@ fun ConjugateEmptyState(
             text = stringResource(id = R.string.i18n_app_download_menu_option_conjugate_download_data_start),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Suppress("UnusedPrivateMember")
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
-@Composable
-private fun ConjugateEmptyStatePreview() {
-    MaterialTheme {
-        ConjugateEmptyState(
-            isDarkTheme = false,
-            downloadState = DownloadState.Ready,
-            onDownloadClick = {}
-        )
-    }
-}
-
-@Suppress("UnusedPrivateMember")
-@androidx.compose.ui.tooling.preview.Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun ConjugateEmptyStateDarkPreview() {
-    MaterialTheme {
-        ConjugateEmptyState(
-            isDarkTheme = true,
-            downloadState = DownloadState.Ready,
-            onDownloadClick = {}
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
