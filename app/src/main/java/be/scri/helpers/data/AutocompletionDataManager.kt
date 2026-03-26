@@ -2,6 +2,7 @@
 package be.scri.helpers.data
 
 import be.scri.helpers.DatabaseFileManager
+import be.scri.helpers.StringUtils.isWordCapitalized
 
 /**
  * This class manages the autocomplete system.
@@ -72,12 +73,21 @@ class AutocompletionDataManager(
     fun getAutocompletions(
         prefix: String,
         limit: Int = 3,
-    ): List<String> =
-        if (trieLoaded) {
-            trie.searchPrefix(prefix, limit)
+    ): List<String> {
+        val isCapitalized = isWordCapitalized(prefix)
+
+        val results =
+            if (trieLoaded) {
+                trie.searchPrefix(prefix.lowercase().trim(), limit)
+            } else {
+                getAutocompletionsFromNouns(prefix.lowercase().trim(), limit)
+            }
+        return if (isCapitalized) {
+            results.map { it.replaceFirstChar { it.uppercaseChar() } }
         } else {
-            getAutocompletionsFromNouns(prefix, limit)
+            results
         }
+    }
 
     /**
      * Filters the cached noun word list to find matches that start with the given prefix.
