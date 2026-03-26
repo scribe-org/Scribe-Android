@@ -129,9 +129,10 @@ fun ConjugateEmptyState(
     }
 }
 
+@Suppress("UnusedPrivateMember")
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true)
 @Composable
-fun ConjugateEmptyStatePreview() {
+private fun ConjugateEmptyStatePreview() {
     MaterialTheme {
         ConjugateEmptyState(
             isDarkTheme = false,
@@ -141,9 +142,10 @@ fun ConjugateEmptyStatePreview() {
     }
 }
 
+@Suppress("UnusedPrivateMember")
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun ConjugateEmptyStateDarkPreview() {
+private fun ConjugateEmptyStateDarkPreview() {
     MaterialTheme {
         ConjugateEmptyState(
             isDarkTheme = true,
