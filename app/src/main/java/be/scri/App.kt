@@ -49,6 +49,7 @@ import be.scri.ui.screens.download.DataDownloadViewModel
 import be.scri.ui.screens.download.DownloadActions
 import be.scri.ui.screens.download.DownloadDataScreen
 import be.scri.ui.screens.settings.SettingsScreen
+import be.scri.ui.screens.conjugate.ConjugateScreen
 import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -167,13 +168,12 @@ fun ScribeApp(
                             }
                             is BottomBarScreen.Conjugate -> {
                                 Box(
-                                    modifier =
-                                        Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
                                 ) {
-                                    Text(
-                                        text = "Conjugate App",
-                                        style = MaterialTheme.typography.headlineMedium,
+                                    ConjugateScreen(
+                                        isDarkTheme = isDarkTheme,
+                                        downloadStates = downloadStates,
+                                        onDownloadAction = onDownloadAction
                                     )
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
