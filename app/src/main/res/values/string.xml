@@ -124,4 +124,15 @@
     <string name="keyboard.not_in_wikidata.explanation_1">Wikidata is a collaboratively edited knowledge graph that\'s maintained by the Wikimedia Foundation. It serves as a source of open data for projects like Wikipedia and countless others.</string>
     <string name="keyboard.not_in_wikidata.explanation_2">Scribe uses Wikidata\'s language data for many of its core features. We get information like noun genders, verb conjugations and much more!</string>
     <string name="keyboard.not_in_wikidata.explanation_3">You can make an account at wikidata.org to join the community that\'s supporting Scribe and so many other projects. Help us bring free information to the world!</string>
+    <string name="app_conjugate_browser_title">Verb conjugations</string>
+    <string name="app_conjugate_browser_language">Language</string>
+    <string name="app_conjugate_browser_search">Search</string>
+    <string name="app_conjugate_filter_all">All</string>
+    <string name="app_conjugate_browser_not_found">No verb found for this language. Check spelling (use the infinitive).</string>
+    <string name="app_conjugate_browser_empty_query">Enter a verb to search.</string>
+    <string name="app_conjugate_copy">Copy conjugation</string>
+    <string name="app_conjugate_copied">Copied to clipboard</string>
+    <string name="app_conjugate_load_failed">Couldn\'t load conjugations. Try again.</string>
+    <string name="app.settings.menu.conjugate_browser">Verb conjugations</string>
+    <string name="app.settings.menu.conjugate_browser_description">Look up conjugations from downloaded keyboard data.</string>
 </resources>

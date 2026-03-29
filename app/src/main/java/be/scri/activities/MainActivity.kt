@@ -6,6 +6,7 @@
 
 package be.scri.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val context = LocalContext.current
+            val hostActivity = context as? ComponentActivity
 
             val isDarkMode =
                 remember {
@@ -87,6 +89,11 @@ class MainActivity : ComponentActivity() {
                     context = context,
                     navController = navController,
                     modifier = Modifier.navigationBarsPadding(),
+                    onOpenVerbConjugations = {
+                        hostActivity?.startActivity(
+                            Intent(hostActivity, ConjugationActivity::class.java),
+                        )
+                    },
                 )
             }
         }

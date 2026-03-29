@@ -52,6 +52,7 @@ fun ScribeApp(
     context: Context,
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
+    onOpenVerbConjugations: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -124,6 +125,7 @@ fun ScribeApp(
                                                 "${Screen.LanguageSettings.route}/$language",
                                             )
                                         },
+                                        onOpenVerbConjugations = onOpenVerbConjugations,
                                         context = context,
                                     )
                                     HintDialog(

@@ -28,21 +28,30 @@
         },
         "3": {
             "title": "Perfect",
-            "1": { "I": "presentParticiple simplePast" },
-            "2": { "you": "presentParticiple simplePast" },
-            "3": { "he/she/it": "presentParticiple simplePast" },
-            "4": { "we": "presentParticiple simplePast" },
-            "5": { "you all": "presentParticiple simplePast" },
-            "6": { "they": "presentParticiple simplePast" }
+            "1": { "I": "[auxiliaryVerb] pastParticiple" },
+            "2": { "you": "[auxiliaryVerb] pastParticiple" },
+            "3": { "he/she/it": "[auxiliaryVerb] pastParticiple" },
+            "4": { "we": "[auxiliaryVerb] pastParticiple" },
+            "5": { "you all": "[auxiliaryVerb] pastParticiple" },
+            "6": { "they": "[auxiliaryVerb] pastParticiple" }
         },
         "4": {
             "title": "Past Perfect",
-            "1": { "I": "pastParticiple simplePast" },
-            "2": { "you": "pastParticiple simplePast" },
-            "3": { "he/she/it": "pastParticiple simplePast" },
-            "4": { "we": "pastParticiple simplePast" },
-            "5": { "you all": "pastParticiple simplePast" },
-            "6": { "they": "pastParticiple simplePast" }
+            "1": { "I": "'had' pastParticiple" },
+            "2": { "you": "'had' pastParticiple" },
+            "3": { "he/she/it": "'had' pastParticiple" },
+            "4": { "we": "'had' pastParticiple" },
+            "5": { "you all": "'had' pastParticiple" },
+            "6": { "they": "'had' pastParticiple" }
+        },
+        "5": {
+            "title": "Future",
+            "1": { "I": "'will' infinitive" },
+            "2": { "you": "'will' infinitive" },
+            "3": { "he/she/it": "'will' infinitive" },
+            "4": { "we": "'will' infinitive" },
+            "5": { "you all": "'will' infinitive" },
+            "6": { "they": "'will' infinitive" }
         }
     }
 }

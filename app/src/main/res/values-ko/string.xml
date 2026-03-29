@@ -44,6 +44,9 @@
     <string name="app.conjugate.title">활용</string>
     <string name="app.conjugate.verbs_search.placeholder">동사 검색</string>
     <string name="app.conjugate.verbs_search.title">동사 활용</string>
+    <string name="app_conjugate_copy">활용형 복사</string>
+    <string name="app_conjugate_copied">클립보드에 복사됨</string>
+    <string name="app_conjugate_load_failed">활용형을 불러오지 못했습니다. 다시 시도하세요.</string>
     <string name="app.download.menu_option.conjugate_description">Scribe 활용에 새로운 데이터를 추가합니다.</string>
     <string name="app.download.menu_option.conjugate_download_data">동사 데이터 다운로드</string>
     <string name="app.download.menu_option.conjugate_download_data_start">활용을 시작하려면 데이터를 다운로드하세요!</string>

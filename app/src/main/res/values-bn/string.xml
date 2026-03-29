@@ -44,6 +44,9 @@
     <string name="app.conjugate.title">Conjugate</string>
     <string name="app.conjugate.verbs_search.placeholder">ক্রিয়াপদ অনুসন্ধান করুন</string>
     <string name="app.conjugate.verbs_search.title">ক্রিয়াপদ সংযুগ করুন</string>
+    <string name="app_conjugate_copy">কনজুগেশন কপি করুন</string>
+    <string name="app_conjugate_copied">ক্লিপবোর্ডে কপি হয়েছে</string>
+    <string name="app_conjugate_load_failed">কনজুগেশন লোড করা যায়নি। আবার চেষ্টা করুন।</string>
     <string name="app.download.menu_option.conjugate_description">Scribe Conjugate-এ নতুন ডেটা যোগ করুন।</string>
     <string name="app.download.menu_option.conjugate_download_data">ক্রিয়াপদ ডেটা ডাউনলোড করুন</string>
     <string name="app.download.menu_option.conjugate_download_data_start">সংযুগ করা শুরু করতে ডেটা ডাউনলোড করুন!</string>

@@ -44,6 +44,9 @@
     <string name="app.conjugate.title">Konjugieren</string>
     <string name="app.conjugate.verbs_search.placeholder">Nach Verben suchen</string>
     <string name="app.conjugate.verbs_search.title">Verben konjugieren</string>
+    <string name="app_conjugate_copy">Konjugation kopieren</string>
+    <string name="app_conjugate_copied">In die Zwischenablage kopiert</string>
+    <string name="app_conjugate_load_failed">Konjugationen konnten nicht geladen werden. Bitte erneut versuchen.</string>
     <string name="app.download.menu_option.conjugate_description">Neue Daten zu Scribe Conjugate hinzufügen.</string>
     <string name="app.download.menu_option.conjugate_download_data">Daten für Verben herunterladen</string>
     <string name="app.download.menu_option.conjugate_download_data_start">Lade Daten herunter, um mit dem Konjugieren anzufangen!</string>

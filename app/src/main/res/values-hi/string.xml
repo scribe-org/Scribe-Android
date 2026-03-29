@@ -44,6 +44,9 @@
     <string name="app.conjugate.title">संयोजन</string>
     <string name="app.conjugate.verbs_search.placeholder">क्रियाओं के लिए खोजें</string>
     <string name="app.conjugate.verbs_search.title">क्रियाओं का संयोजन</string>
+    <string name="app_conjugate_copy">संयोजन कॉपी करें</string>
+    <string name="app_conjugate_copied">क्लिपबोर्ड पर कॉपी किया गया</string>
+    <string name="app_conjugate_load_failed">संयोजन लोड नहीं हो सके। फिर से प्रयास करें।</string>
     <string name="app.download.menu_option.conjugate_description">स्क्राइब  संयोजन में नया डेटा जोड़ें।</string>
     <string name="app.download.menu_option.conjugate_download_data">क्रिया डेटा डाउनलोड करें</string>
     <string name="app.download.menu_option.conjugate_download_data_start">संयोजन शुरू करने के लिए डेटा डाउनलोड करें!</string>

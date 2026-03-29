@@ -44,6 +44,9 @@
     <string name="app.conjugate.title">Konjugera</string>
     <string name="app.conjugate.verbs_search.placeholder">Sök efter verb</string>
     <string name="app.conjugate.verbs_search.title">Konjugera verb</string>
+    <string name="app_conjugate_copy">Kopiera böjning</string>
+    <string name="app_conjugate_copied">Kopierat till urklipp</string>
+    <string name="app_conjugate_load_failed">Böjningar kunde inte laddas. Försök igen.</string>
     <string name="app.download.menu_option.conjugate_description">Lägg till ny data till Scribe Conjugate.</string>
     <string name="app.download.menu_option.conjugate_download_data">Ladda ner verb-data</string>
     <string name="app.download.menu_option.conjugate_download_data_start">Ladda ner data för att börja konjugera!</string>

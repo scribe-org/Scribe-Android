@@ -37,12 +37,12 @@
         },
         "4": {
             "title": "Futuro Simples",
-            "1": { "eu": "indicativePluperfectFirstPersonSingular" },
-            "2": { "tu": "indicativePluperfectFirstPersonPlural" },
-            "3": { "ele/ela/você": "indicativePluperfectSecondPersonSingular" },
-            "4": { "nós": "indicativePluperfectSecondPersonPlural" },
-            "5": { "vós": "indicativePluperfectThirdPersonSingular" },
-            "6": { "eles/elas/vocês": "indicativePluperfectThirdPersonPlural" }
+            "1": { "eu": "indicativeSimpleFutureFirstPersonSingular" },
+            "2": { "tu": "indicativeSimpleFutureFirstPersonPlural" },
+            "3": { "ele/ela/você": "indicativeSimpleFutureSecondPersonSingular" },
+            "4": { "nós": "indicativeSimpleFutureSecondPersonPlural" },
+            "5": { "vós": "indicativeSimpleFutureThirdPersonSingular" },
+            "6": { "eles/elas/vocês": "indicativeSimpleFutureThirdPersonPlural" }
         }
     }
 }

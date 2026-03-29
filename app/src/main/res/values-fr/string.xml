@@ -44,6 +44,9 @@
     <string name="app.conjugate.title">Conjuguer</string>
     <string name="app.conjugate.verbs_search.placeholder">Rechercher un verbe</string>
     <string name="app.conjugate.verbs_search.title">Conjuguer un verbe</string>
+    <string name="app_conjugate_copy">Copier la conjugaison</string>
+    <string name="app_conjugate_copied">Copié dans le presse-papiers</string>
+    <string name="app_conjugate_load_failed">Impossible de charger les conjugaisons. Réessayez.</string>
     <string name="app.download.menu_option.conjugate_description">Ajouter de nouvelles données à Scribe Conjugaison.</string>
     <string name="app.download.menu_option.conjugate_download_data">Télécharger les données du verbe</string>
     <string name="app.download.menu_option.conjugate_download_data_start">Téléchargez les données pour démarrer la conjugaison !</string>

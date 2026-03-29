@@ -62,6 +62,49 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
     </style>
 
+    <style name="TextAppearance.Conjugation.Toolbar" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Conjugation.Hint" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Widget.Conjugation.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/TextAppearance.Conjugation.Hint</item>
+        <item name="android:textColorHint">@color/conjugation_text_secondary</item>
+        <item name="hintTextColor">@color/conjugation_floating_hint</item>
+        <item name="boxStrokeColor">@color/conjugation_box_stroke</item>
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+    </style>
+
+    <style name="Widget.Conjugation.SearchButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/conjugation_on_accent</item>
+        <item name="backgroundTint">@color/conjugation_accent</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+    </style>
+
+    <!-- MaterialComponents: ConjugationActivity uses MaterialToolbar, TextInputLayout, MaterialButton -->
+    <style name="AppTheme.Conjugation" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/conjugation_accent</item>
+        <item name="colorPrimaryDark">@color/conjugation_accent</item>
+        <item name="colorAccent">@color/conjugation_accent</item>
+        <item name="android:windowBackground">@color/conjugation_screen_background</item>
+        <item name="android:textColorPrimary">@color/conjugation_text_primary</item>
+        <item name="android:textColorSecondary">@color/conjugation_text_secondary</item>
+        <item name="colorControlHighlight">@color/activated_item_foreground</item>
+        <item name="android:colorControlHighlight">@color/activated_item_foreground</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
+    </style>
+
     <style name="AppTheme.Base.System" parent="@android:style/Theme.DeviceDefault.NoActionBar">
         <item name="colorPrimary">@color/you_primary_color</item>
         <item name="colorPrimaryDark">@color/you_primary_dark_color</item>

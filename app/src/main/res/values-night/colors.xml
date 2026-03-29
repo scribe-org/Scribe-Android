@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="conjugation_screen_background">#FF121212</color>
+    <color name="conjugation_card_background">#FF2D3339</color>
+    <color name="conjugation_card_stroke">#66FFFFFF</color>
+    <color name="conjugation_text_primary">#FFF1F3F5</color>
+    <color name="conjugation_text_secondary">#FFB8C0CC</color>
+    <!-- Match Scribe keyboard command blue in dark mode -->
+    <color name="conjugation_accent">@color/dark_scribe_blue</color>
+    <color name="conjugation_on_accent">#FF0D1926</color>
+    <color name="conjugation_figma_header_blue">@color/dark_scribe_color</color>
+    <color name="conjugation_header_subtitle">#B3FFFFFF</color>
+    <color name="conjugation_search_pill_background">@color/conjugation_card_background</color>
+</resources>

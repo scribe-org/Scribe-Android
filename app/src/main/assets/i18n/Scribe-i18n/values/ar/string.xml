@@ -44,6 +44,9 @@
     <string name="app.conjugate.title">تصريف</string>
     <string name="app.conjugate.verbs_search.placeholder">ابحث عن الأفعال</string>
     <string name="app.conjugate.verbs_search.title">تصريف الأفعال</string>
+    <string name="app_conjugate_copy">نسخ التصريف</string>
+    <string name="app_conjugate_copied">تم النسخ إلى الحافظة</string>
+    <string name="app_conjugate_load_failed">تعذر تحميل التصاريف. أعد المحاولة.</string>
     <string name="app.download.menu_option.conjugate_description">أضف بيانات جديدة إلى Scribe Conjugate.</string>
     <string name="app.download.menu_option.conjugate_download_data">تنزيل بيانات الأفعال</string>
     <string name="app.download.menu_option.conjugate_download_data_start">قم بتنزيل البيانات لبدء التصريف!</string>

@@ -30,6 +30,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activities.ConjugationActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.Conjugation" />
+
         <service
             android:name=".services.EnglishKeyboardIME"
             android:exported="true"
