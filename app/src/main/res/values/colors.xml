@@ -6,7 +6,7 @@
     <color name="light_text_color">#000</color>
     <color name="light_tutorial_button_color">#FDAD0D</color>
     <color name="dark_tutorial_button_color">#2A1903</color>
-    <color name="dark_button_outline_color">#D17B0F</color>"
+    <color name="dark_button_outline_color">#D17B0F</color>
     <color name="dark_icon_color">#fff</color>
     <color name="light_icon_color">#000</color>
     <color name="light_scribe_blue">#FF75CEFA</color>
@@ -73,6 +73,19 @@
     <color name="pressed_item_foreground">#08000000</color>
     <color name="activated_item_foreground">#44888888</color>
     <color name="divider_grey">#88808080</color>
+
+    <!-- Conjugation screen (light): high contrast cards vs background -->
+    <color name="conjugation_screen_background">#FFF0F2F5</color>
+    <color name="conjugation_card_background">#FFFFFFFF</color>
+    <color name="conjugation_card_stroke">#33000000</color>
+    <color name="conjugation_text_primary">#FF1A1C1E</color>
+    <color name="conjugation_text_secondary">#FF5F6368</color>
+    <!-- Match Scribe keyboard / nav (dark teal in light mode) -->
+    <color name="conjugation_accent">@color/dark_scribe_color</color>
+    <color name="conjugation_on_accent">@color/white</color>
+    <color name="conjugation_figma_header_blue">@color/light_scribe_color</color>
+    <color name="conjugation_header_subtitle">#D9FFFFFF</color>
+    <color name="conjugation_search_pill_background">@color/white</color>
     <color name="gradient_grey_start">#CC000000</color>
     <color name="dark_grey">#FF333333</color>
 

@@ -35,6 +35,7 @@ import be.scri.ui.screens.settings.SettingsUtil.getLocalizedLanguageName
 fun SettingsScreen(
     onDarkModeChange: (Boolean) -> Unit,
     onLanguageSettingsClick: (String) -> Unit,
+    onOpenVerbConjugations: () -> Unit,
     context: Context,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel =
@@ -70,8 +71,13 @@ fun SettingsScreen(
             items =
                 listOf(
                     ScribeItem.ClickableItem(
-                        title = R.string.i18n_app_settings_menu_app_language,
-                        desc = R.string.i18n_app_settings_menu_app_language_description,
+                        title = R.string.app_settings_menu_conjugate_browser,
+                        desc = R.string.app_settings_menu_conjugate_browser_description,
+                        action = { onOpenVerbConjugations() },
+                    ),
+                    ScribeItem.ClickableItem(
+                        title = R.string.app_settings_menu_app_language,
+                        desc = R.string.app_settings_menu_app_language_description,
                         action = {
                             SettingsUtil.selectLanguage(context)
                         },

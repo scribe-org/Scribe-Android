@@ -25,8 +25,7 @@
     <color name="theme_scribe_blue">@color/dark_scribe_blue</color>
     <color name="navigation_bar_color">@color/dark_keyboard_bg_color</color>
     <color name="default_key_color">@color/dark_key_color</color>
-    <color name ="conjugate_keyboard_color">@color/dark_keyboard_bg_color</color>
-
+    <color name="conjugate_keyboard_color">@color/dark_keyboard_bg_color</color>
 
     <!-- Commons colors -->
     <color name="you_status_bar_color">#20333D</color>
@@ -44,4 +43,17 @@
     <color name="annotateGreen">#85C26F</color>
     <color name="annotateOrange">#FD9F5D</color>
     <color name="toolbar_background_color">@color/dark_keyboard_bg_color</color>
+
+    <!-- Conjugation screen (dark) -->
+    <color name="conjugation_screen_background">#FF121212</color>
+    <color name="conjugation_card_background">#FF2D3339</color>
+    <color name="conjugation_card_stroke">#66FFFFFF</color>
+    <color name="conjugation_text_primary">#FFF1F3F5</color>
+    <color name="conjugation_text_secondary">#FFB8C0CC</color>
+    <!-- Match Scribe keyboard command blue in dark mode -->
+    <color name="conjugation_accent">@color/dark_scribe_blue</color>
+    <color name="conjugation_on_accent">#FF0D1926</color>
+    <color name="conjugation_figma_header_blue">@color/dark_scribe_color</color>
+    <color name="conjugation_header_subtitle">#B3FFFFFF</color>
+    <color name="conjugation_search_pill_background">@color/conjugation_card_background</color>
 </resources>

@@ -1,0 +1,57 @@
+{
+    "numbers": { "singular": "plural" },
+    "genders":  {
+        "canonical": ["NOT_INCLUDED"],
+        "feminines": ["NOT_INCLUDED"],
+        "masculines": ["NOT_INCLUDED"],
+        "commons": ["NOT_INCLUDED"],
+        "neuters": ["NOT_INCLUDED"]
+    },
+    "conjugations": {
+        "1": {
+            "title": "Present",
+            "1": { "I": "simplePresent" },
+            "2": { "you": "simplePresent" },
+            "3": { "he/she/it": "simplePresentThirdPersonSingular" },
+            "4": { "we": "simplePresent" },
+            "5": { "you all": "simplePresent" },
+            "6": { "they": "simplePresent" }
+        },
+        "2": {
+            "title": "Past",
+            "1": { "I": "simplePast" },
+            "2": { "you": "simplePast" },
+            "3": { "he/she/it": "simplePast" },
+            "4": { "we": "simplePast" },
+            "5": { "you all": "simplePast" },
+            "6": { "they": "simplePast" }
+        },
+        "3": {
+            "title": "Perfect",
+            "1": { "I": "[auxiliaryVerb] pastParticiple" },
+            "2": { "you": "[auxiliaryVerb] pastParticiple" },
+            "3": { "he/she/it": "[auxiliaryVerb] pastParticiple" },
+            "4": { "we": "[auxiliaryVerb] pastParticiple" },
+            "5": { "you all": "[auxiliaryVerb] pastParticiple" },
+            "6": { "they": "[auxiliaryVerb] pastParticiple" }
+        },
+        "4": {
+            "title": "Past Perfect",
+            "1": { "I": "'had' pastParticiple" },
+            "2": { "you": "'had' pastParticiple" },
+            "3": { "he/she/it": "'had' pastParticiple" },
+            "4": { "we": "'had' pastParticiple" },
+            "5": { "you all": "'had' pastParticiple" },
+            "6": { "they": "'had' pastParticiple" }
+        },
+        "5": {
+            "title": "Future",
+            "1": { "I": "'will' infinitive" },
+            "2": { "you": "'will' infinitive" },
+            "3": { "he/she/it": "'will' infinitive" },
+            "4": { "we": "'will' infinitive" },
+            "5": { "you all": "'will' infinitive" },
+            "6": { "they": "'will' infinitive" }
+        }
+    }
+}
