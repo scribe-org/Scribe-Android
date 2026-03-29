@@ -431,6 +431,23 @@ object PreferencesHelper {
     }
 
     /**
+     * Whether the user enabled larger app text (1.25× [android.util.DisplayMetrics] font scale for Compose).
+     * Default is off.
+     */
+    fun getIncreaseAppTextSizeEnabled(context: Context): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        return sharedPref.getBoolean(INCREASE_APP_TEXT_SIZE, false)
+    }
+
+    fun setIncreaseAppTextSizeEnabled(
+        context: Context,
+        enabled: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        sharedPref.edit { putBoolean(INCREASE_APP_TEXT_SIZE, enabled) }
+    }
+
+    /**
      * Retrieves whether emoji suggestions are enabled for a given language.
      *
      * @param context The application context.

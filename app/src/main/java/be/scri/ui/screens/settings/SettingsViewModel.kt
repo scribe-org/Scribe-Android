@@ -5,6 +5,7 @@ package be.scri.ui.screens.settings
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import be.scri.helpers.PreferencesHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -31,8 +32,8 @@ class SettingsViewModel(
     private val _isUserDarkMode = MutableStateFlow(sharedPrefs.getBoolean("dark_mode", false))
     val isUserDarkMode: StateFlow<Boolean> = _isUserDarkMode
 
-    private val _holdForAltKeys = MutableStateFlow(sharedPrefs.getBoolean("hold_for_alt_keys", false))
-    val holdForAltKeys: StateFlow<Boolean> = _holdForAltKeys
+    private val _increaseAppTextSize = MutableStateFlow(PreferencesHelper.getIncreaseAppTextSizeEnabled(context))
+    val increaseAppTextSize: StateFlow<Boolean> = _increaseAppTextSize
 
     init {
         viewModelScope.launch { refreshSettings(context) }
@@ -47,6 +48,7 @@ class SettingsViewModel(
     fun refreshSettings(context: Context) {
         _languages.value = SettingsUtil.getKeyboardLanguages(context)
         _isKeyboardInstalled.value = SettingsUtil.checkKeyboardInstallation(context)
+        _increaseAppTextSize.value = PreferencesHelper.getIncreaseAppTextSizeEnabled(context)
     }
 
     /**
@@ -56,5 +58,13 @@ class SettingsViewModel(
      */
     fun setLightDarkMode(value: Boolean) {
         _isUserDarkMode.value = value
+    }
+
+    fun setIncreaseAppTextSize(
+        context: Context,
+        value: Boolean,
+    ) {
+        _increaseAppTextSize.value = value
+        PreferencesHelper.setIncreaseAppTextSizeEnabled(context, value)
     }
 }

@@ -6,6 +6,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 
 private val LightColors =
     lightColorScheme(
@@ -41,12 +45,12 @@ private val DarkColors =
         surfaceVariant = theme_dark_success_color,
     )
 
-/**
- * Light and dark mode themes for the application.
- */
+private const val ACCESSIBILITY_TEXT_SIZE_MULTIPLIER = 1.25f
+
 @Composable
 fun ScribeTheme(
     useDarkTheme: Boolean,
+    increaseTextSize: Boolean = false,
     @Suppress("ktlint:standard:annotation")
     content: @Composable() () -> Unit,
 ) {
@@ -57,9 +61,28 @@ fun ScribeTheme(
             DarkColors
         }
 
+    val baseDensity = LocalDensity.current
+    val targetFontScale =
+        baseDensity.fontScale *
+            if (increaseTextSize) {
+                ACCESSIBILITY_TEXT_SIZE_MULTIPLIER
+            } else {
+                1f
+            }
+    val scaledDensity =
+        remember(baseDensity.density, targetFontScale) {
+            Density(
+                density = baseDensity.density,
+                fontScale = targetFontScale,
+            )
+        }
+
     MaterialTheme(
         colorScheme = colors,
-        content = content,
         typography = ScribeTypography,
-    )
+    ) {
+        CompositionLocalProvider(LocalDensity provides scaledDensity) {
+            content()
+        }
+    }
 }

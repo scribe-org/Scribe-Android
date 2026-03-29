@@ -77,11 +77,13 @@ fun ScribeApp(
     pagerState: PagerState,
     navController: NavHostController,
     onDarkModeChange: (Boolean) -> Unit,
+    onIncreaseTextSizeChange: (Boolean) -> Unit,
     resetHints: () -> Unit,
     @SuppressLint("ComposeUnstableCollections") isHintChanged: Map<Int, Boolean>,
     onDismiss: (Int) -> Unit,
     context: Context,
     isDarkTheme: Boolean,
+    increaseTextSize: Boolean,
     modifier: Modifier = Modifier,
     downloadViewModel: DataDownloadViewModel = viewModel(),
 ) {
@@ -109,6 +111,7 @@ fun ScribeApp(
     val screens = remember(context) { BottomBarScreen.getScreens() }
     ScribeTheme(
         useDarkTheme = isDarkTheme,
+        increaseTextSize = increaseTextSize,
     ) {
         Scaffold(
             bottomBar = {
@@ -186,6 +189,7 @@ fun ScribeApp(
                                         onDarkModeChange = { isDarkMode ->
                                             onDarkModeChange(isDarkMode)
                                         },
+                                        onIncreaseTextSizeChange = onIncreaseTextSizeChange,
                                         onLanguageSettingsClick = { language ->
                                             navController.navigate(
                                                 "${Screen.LanguageSettings.route}/$language",

@@ -13,11 +13,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.rememberNavController
 import be.scri.ScribeApp
 import be.scri.helpers.PreferencesHelper
@@ -42,6 +48,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val context = LocalContext.current
+            val lifecycleOwner = LocalLifecycleOwner.current
 
             val screens = remember(context) { BottomBarScreen.getScreens() }
 
@@ -52,6 +59,20 @@ class MainActivity : ComponentActivity() {
                             .getUserDarkModePreference(context) == AppCompatDelegate.MODE_NIGHT_YES,
                     )
                 }
+            var increaseTextSize by remember {
+                mutableStateOf(PreferencesHelper.getIncreaseAppTextSizeEnabled(context))
+            }
+
+            DisposableEffect(lifecycleOwner) {
+                val observer =
+                    LifecycleEventObserver { _, event ->
+                        if (event == Lifecycle.Event.ON_RESUME) {
+                            increaseTextSize = PreferencesHelper.getIncreaseAppTextSizeEnabled(context)
+                        }
+                    }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+            }
 
             val pagerState =
                 rememberPagerState {
@@ -80,12 +101,17 @@ class MainActivity : ComponentActivity() {
 
             ScribeTheme(
                 useDarkTheme = isDarkMode.value,
+                increaseTextSize = false,
             ) {
                 ScribeApp(
                     pagerState = pagerState,
                     isDarkTheme = isDarkMode.value,
+                    increaseTextSize = increaseTextSize,
                     onDarkModeChange = { darkMode ->
                         updateTheme(darkMode)
+                    },
+                    onIncreaseTextSizeChange = { enabled ->
+                        increaseTextSize = enabled
                     },
                     resetHints = {
                         isHintChangedMap[0] = true
