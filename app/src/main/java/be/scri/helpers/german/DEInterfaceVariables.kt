@@ -31,6 +31,7 @@ object DEInterfaceVariables {
         "Scribe verwendet die Daten von Wiktionary, um Übersetzungen für den Befehl „Übersetzen“ bereitzustellen. Unsere Daten stammen aus den vielen Sprachpaaren, die die Wiktionary-Community erstellt hat!"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
         "Erstellen Sie ein Konto auf wiktionary.org, um der Community beizutreten, die Scribe und viele andere Projekte unterstützt. Helfen Sie uns, freie Informationen in die Welt zu bringen!"
+    const val DOWNLOAD_DATA_MSG = "Bitte Sprachdaten herunterladen"
 
     val BASE_AUTOSUGGESTIONS = listOf("ich", "die", "das")
     val NUMERIC_AUTOSUGGESTIONS = listOf("Prozent", "Milionen", "Meter")

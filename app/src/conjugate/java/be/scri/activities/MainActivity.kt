@@ -6,30 +6,43 @@
 
 package be.scri.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
+import be.scri.R
 import be.scri.ScribeApp
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.setLightDarkModePreference
 import be.scri.ui.common.bottombar.BottomBarScreen
 import be.scri.ui.theme.ScribeTheme
+import kotlinx.coroutines.delay
 
 /**
  * The main entry point of the app.
  * Initializes theme settings, navigation, and sets up the main UI using Jetpack Compose.
  */
 class MainActivity : ComponentActivity() {
+    /**
+     * Incremented when the keyboard asks to show the Installation tab.
+     */
+    private var installTabOpenRequestCount by mutableIntStateOf(0)
+
     /**
      * Initializes the app on launch. Sets the theme based on user preferences, sets up edge-to-edge
      * layout, and builds the UI using Compose.
@@ -39,6 +52,7 @@ class MainActivity : ComponentActivity() {
         AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
 
         enableEdgeToEdge()
+        consumeInstallTabIntentExtra(intent)
 
         setContent {
             val context = LocalContext.current
@@ -59,6 +73,23 @@ class MainActivity : ComponentActivity() {
                 }
 
             val navController = rememberNavController()
+
+            LaunchedEffect(installTabOpenRequestCount) {
+                if (installTabOpenRequestCount == 0) return@LaunchedEffect
+                delay(50)
+                navController.popBackStack(
+                    route = "pager",
+                    inclusive = false,
+                    saveState = false,
+                )
+                pagerState.animateScrollToPage(0)
+                Toast
+                    .makeText(
+                        context,
+                        context.getString(R.string.keyboard_opened_install_tab),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+            }
 
             val isHintChangedMap = remember { mutableStateMapOf<Int, Boolean>() }
 
@@ -102,5 +133,23 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        consumeInstallTabIntentExtra(intent)
+    }
+
+    private fun consumeInstallTabIntentExtra(intent: Intent) {
+        if (intent.getBooleanExtra(EXTRA_OPEN_LANGUAGE_DATA, false)) {
+            intent.removeExtra(EXTRA_OPEN_LANGUAGE_DATA)
+            installTabOpenRequestCount++
+        }
+    }
+
+    companion object {
+        const val EXTRA_OPEN_LANGUAGE_DATA = "be.scri.extra.OPEN_LANGUAGE_DATA"
+        const val EXTRA_KEYBOARD_LANGUAGE = "be.scri.extra.KEYBOARD_LANGUAGE"
     }
 }

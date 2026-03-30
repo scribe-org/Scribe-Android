@@ -31,6 +31,7 @@ object PTInterfaceVariables {
         "O Scribe utiliza os dados do Wikcionário para fornecer traduções para o seu comando Traduzir. Nossos dados são derivados dos diversos pares de idiomas criados pela comunidade do Wikcionário!"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
         "Você pode criar uma conta em wiktionary.org para se juntar à comunidade que apoia o Scribe e muitos outros projetos. Ajude-nos a levar informação gratuita para o mundo!"
+    const val DOWNLOAD_DATA_MSG = "Por favor, descarregue os dados do idioma"
 
     val BASE_AUTOSUGGESTIONS = listOf("o", "a", "eu")
     val NUMERIC_AUTOSUGGESTIONS = listOf("de", "que", "a")

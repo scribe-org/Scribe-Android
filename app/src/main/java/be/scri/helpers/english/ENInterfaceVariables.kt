@@ -31,6 +31,7 @@ object ENInterfaceVariables {
         "Scribe uses Wiktionary's data to provide translations for its Translate command. Our data is derived from the many language pairs that Wiktionary's community has created!"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
         "You can make an account at wiktionary.org to join the community that's supporting Scribe and so many other projects. Help us bring free information to the world!"
+    const val DOWNLOAD_DATA_MSG = "Please download language data"
 
     val BASE_AUTOSUGGESTIONS = listOf("I", "I'm", "we")
     val NUMERIC_AUTOSUGGESTIONS = listOf("is", "to", "and")

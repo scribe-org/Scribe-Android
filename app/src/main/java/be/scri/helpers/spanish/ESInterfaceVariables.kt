@@ -31,6 +31,7 @@ object ESInterfaceVariables {
         "Scribe utiliza los datos de Wikcionario para proporcionar traducciones para su comando Traducir. ¡Nuestros datos provienen de los numerosos pares de idiomas que la comunidad de Wikcionario ha creado!"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
         "Puedes crear una cuenta en wiktionary.org para unirte a la comunidad que apoya a Scribe y a muchos otros proyectos. ¡Ayúdanos a llevar información gratuita al mundo!"
+    const val DOWNLOAD_DATA_MSG = "Por favor descargue los datos del idioma"
 
     val BASE_AUTOSUGGESTIONS = listOf("el", "la", "no")
     val NUMERIC_AUTOSUGGESTIONS = listOf("que", "de", "en")

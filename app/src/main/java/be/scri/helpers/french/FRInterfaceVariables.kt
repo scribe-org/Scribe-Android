@@ -31,6 +31,7 @@ object FRInterfaceVariables {
         "Scribe utilise les données de Wiktionary pour fournir des traductions à sa commande « Traduire ». Nos données proviennent des nombreuses paires de langues créées par la communauté de Wiktionary !"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
         "Vous pouvez créer un compte sur wiktionary.org pour rejoindre la communauté qui soutient Scribe et de nombreux autres projets. Aidez-nous à diffuser l'information libre dans le monde entier !"
+    const val DOWNLOAD_DATA_MSG = "Veuillez télécharger les données linguistiques"
 
     val BASE_AUTOSUGGESTIONS = listOf("je", "il", "le")
     val NUMERIC_AUTOSUGGESTIONS = listOf("je", "que", "c’est")

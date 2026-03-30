@@ -31,6 +31,7 @@ object SVInterfaceVariables {
         "Scribe använder Wiktionarys data för att tillhandahålla översättningar för sitt översättningskommando. Våra data härleds från de många språkpar som Wiktionarys gemenskap har skapat!"
     const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
         "Du kan skapa ett konto på wiktionary.org för att gå med i gemenskapen som stöder Scribe och många andra projekt. Hjälp oss att ge världen fri information!"
+    const val DOWNLOAD_DATA_MSG = "Vänligen ladda ner språkdata"
 
     val BASE_AUTOSUGGESTIONS = listOf("jag", "det", "men")
     val NUMERIC_AUTOSUGGESTIONS = listOf("jag", "det", "och")
