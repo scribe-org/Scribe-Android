@@ -493,7 +493,11 @@ abstract class GeneralKeyboardIME(
                 ?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
-        autocompletionManager.loadWords(languageAlias)
+        val numbersColumns =
+            dataContract?.numbers?.let { map ->
+                (map.keys + map.values).distinct()
+            } ?: emptyList()
+        autocompletionManager.loadWords(languageAlias, numbersColumns)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
 
         val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
