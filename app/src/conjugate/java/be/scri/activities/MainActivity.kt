@@ -56,6 +56,13 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
+            val isIncreaseTextSize =
+                remember {
+                    mutableStateOf(
+                        PreferencesHelper.getIncreaseTextSizePreference(context),
+                    )
+                }
+
             val pagerState =
                 rememberPagerState {
                     screens.size
@@ -84,12 +91,18 @@ class MainActivity : ComponentActivity() {
 
             ScribeTheme(
                 useDarkTheme = isDarkMode.value,
+                isIncreaseTextSize = isIncreaseTextSize.value,
             ) {
                 ScribeApp(
                     pagerState = pagerState,
                     isDarkTheme = isDarkMode.value,
+                    isIncreaseTextSize = isIncreaseTextSize.value,
                     onDarkModeChange = { darkMode ->
                         updateTheme(darkMode)
+                    },
+                    onIncreaseTextSizeChange = { increaseTextSize ->
+                        PreferencesHelper.setIncreaseTextSizePreference(context, increaseTextSize)
+                        isIncreaseTextSize.value = increaseTextSize
                     },
                     resetHints = {
                         isHintChangedMap[0] = true
