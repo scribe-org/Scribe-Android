@@ -46,7 +46,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-
     productFlavors {
         create("keyboards") {
             applicationIdSuffix = ".keyboards"
@@ -54,7 +53,7 @@ android {
             resValue(
                 "string",
                 "app_launcher_name",
-                "Scribe"
+                "Scribe",
             )
         }
         create("conjugate") {
@@ -62,7 +61,7 @@ android {
             resValue(
                 "string",
                 "app_launcher_name",
-                "Conjugate"
+                "Conjugate",
             )
         }
     }
@@ -135,7 +134,6 @@ android {
     }
 
     flavorDimensions.add("variants")
-
 
     sourceSets {
         getByName("main").java.srcDirs("src/main/kotlin")
@@ -283,10 +281,13 @@ dependencies {
     // ==========================
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:$junit5Version")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.13")
+    testImplementation("androidx.test:core-ktx:1.6.1")
+    testImplementation("androidx.test.ext:junit-ktx:1.2.1")
     testImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.20")
     testImplementation("org.mockito:mockito-core:5.12.0")

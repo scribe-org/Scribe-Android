@@ -11,6 +11,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
+import android.os.Build
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
@@ -29,6 +30,9 @@ import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.toColorInt
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import be.scri.R
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
@@ -139,6 +143,7 @@ abstract class GeneralKeyboardIME(
     private var currentEnterKeyType: Int? = null
 
     internal var currentState: ScribeState = ScribeState.IDLE
+    internal var invalidCommandSource: ScribeState = ScribeState.IDLE
 
     // Properties used by BackspaceHandler, delegated to UI Manager.
     internal var currentCommandBarHint: String
@@ -252,6 +257,7 @@ abstract class GeneralKeyboardIME(
 
     override fun onWindowShown() {
         super.onWindowShown()
+        applyNavBarColor()
         keyboardView?.setPreview = isShowPopupOnKeypressEnabled(applicationContext, language)
         keyboardView?.setVibrate = getIsVibrateEnabled(applicationContext, language)
         keyboardView?.setSound = getIsSoundEnabled(applicationContext, language)
@@ -317,22 +323,7 @@ abstract class GeneralKeyboardIME(
 
         moveToIdleState()
 
-        val window = window?.window ?: return
-        val isDarkMode = getIsDarkModeOrNot(applicationContext)
-        val color = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
-
-        window.navigationBarColor = ContextCompat.getColor(this, color)
-
-        // Handle Edge-to-Edge Navigation Bar icons color.
-        val decorView = window.decorView
-        var flags = decorView.systemUiVisibility
-        flags =
-            if (isLightColor(window.navigationBarColor)) {
-                flags or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            } else {
-                flags and View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR.inv()
-            }
-        decorView.systemUiVisibility = flags
+        applyNavBarColor()
 
         // Set initial shift state for empty text fields.
         if (keyboardMode == keyboardLetters) {
@@ -515,6 +506,42 @@ abstract class GeneralKeyboardIME(
         return darkness < 0.5
     }
 
+    private fun applyNavBarColor() {
+        val window = window?.window ?: return
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        val colorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
+        val color = ContextCompat.getColor(this, colorRes)
+
+        if (Build.VERSION.SDK_INT >= 35) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+        } else {
+            window.navigationBarColor = Color.TRANSPARENT
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+        }
+
+        window.decorView.setBackgroundColor(color)
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.isAppearanceLightNavigationBars = isLightColor(color)
+
+        if (this::uiManager.isInitialized) {
+            uiManager.binding.root.setBackgroundColor(color)
+
+            ViewCompat.setOnApplyWindowInsetsListener(uiManager.binding.root) { view, insets ->
+                val insetTypes = WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+                val navBarHeight = insets.getInsets(insetTypes).bottom
+                view.setPadding(0, 0, 0, navBarHeight)
+                insets
+            }
+
+            uiManager.binding.root.post {
+                ViewCompat.requestApplyInsets(uiManager.binding.root)
+            }
+        }
+    }
+
     /**
      * Saves the type of conjugation layout being used (e.g., "2x2", "3x2") to shared preferences.
      *
@@ -559,6 +586,7 @@ abstract class GeneralKeyboardIME(
             conjugateLabels = conjugateLabels,
             selectedConjugationSubCategory = selectedConjugationSubCategory,
             currentVerbForConjugation = currentVerbForConjugation,
+            invalidCommandSource = invalidCommandSource,
         )
     }
 
@@ -739,6 +767,7 @@ abstract class GeneralKeyboardIME(
             }
 
         if (commandModeOutput.isEmpty()) {
+            invalidCommandSource = currentState
             currentState = ScribeState.INVALID
             refreshUI()
         } else {
@@ -775,6 +804,7 @@ abstract class GeneralKeyboardIME(
 
         currentState =
             if (conjugateOutput == null) {
+                invalidCommandSource = ScribeState.CONJUGATE
                 ScribeState.INVALID
             } else {
                 saveConjugateModeType(language)

@@ -17,7 +17,7 @@ import be.scri.data.model.DataResponse
 class DynamicDbHelper(
     context: Context,
     language: String,
-) : SQLiteOpenHelper(context, "$language.db", null, 1) {
+) : SQLiteOpenHelper(context, "${language.uppercase()}LanguageData.sqlite", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {
         // Tables are created dynamically via syncDatabase from API contract.
     }
@@ -36,28 +36,26 @@ class DynamicDbHelper(
      */
     fun syncDatabase(response: DataResponse) {
         val db = writableDatabase
-
-        // Create Tables.
-        response.contract.fields.forEach { (tableName, columns) ->
-            val colDefinition = columns.keys.joinToString(", ") { "$it TEXT" }
-            db.execSQL("CREATE TABLE IF NOT EXISTS $tableName (id INTEGER PRIMARY KEY AUTOINCREMENT, $colDefinition)")
-            db.execSQL("DELETE FROM $tableName") // clear old data
-        }
-
-        // Insert Data with Transaction.
-        db.beginTransaction()
         try {
-            response.data.forEach { (tableName, rows) ->
+            db.beginTransaction()
 
+            response.contract.fields.forEach { (tableName, columns) ->
+                val colDefinition = columns.keys.joinToString(", ") { "$it TEXT" }
+                db.execSQL("DROP TABLE IF EXISTS $tableName")
+                db.execSQL(
+                    "CREATE TABLE $tableName " +
+                        "(id INTEGER PRIMARY KEY AUTOINCREMENT, $colDefinition)",
+                )
+            }
+
+            response.data.forEach { (tableName, rows) ->
+                val cv = ContentValues()
                 rows.forEach { row ->
-                    val cv = ContentValues()
+                    cv.clear()
                     row.forEach { (key, value) ->
                         cv.put(key, value?.toString() ?: "")
                     }
-                    val result = db.insert(tableName, null, cv)
-                    if (result == -1L) {
-                        Log.e("SCRIBE_DB", "Failed to insert row into $tableName")
-                    }
+                    db.insert(tableName, null, cv)
                 }
             }
             db.setTransactionSuccessful()
@@ -65,6 +63,7 @@ class DynamicDbHelper(
             Log.e("SCRIBE_DB", "Error during insert: ${e.message}")
         } finally {
             db.endTransaction()
+            db.close()
         }
     }
 }

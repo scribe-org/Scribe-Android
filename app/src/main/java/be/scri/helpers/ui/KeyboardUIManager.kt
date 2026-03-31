@@ -95,12 +95,7 @@ class KeyboardUIManager(
 
     private var currentPage = 0
     private val totalPages = 3
-    private val explanationStrings =
-        arrayOf(
-            R.string.i18n_app_keyboard_not_in_wikidata_explanation_1,
-            R.string.i18n_app_keyboard_not_in_wikidata_explanation_2,
-            R.string.i18n_app_keyboard_not_in_wikidata_explanation_3,
-        )
+    private var currentInvalidTexts: Array<String> = HintUtils.getInvalidTextsWikidata("English")
 
     init {
         setupClickListeners()
@@ -159,13 +154,14 @@ class KeyboardUIManager(
         conjugateLabels: Set<String>?,
         selectedConjugationSubCategory: String?,
         currentVerbForConjugation: String?,
+        invalidCommandSource: ScribeState = ScribeState.IDLE,
     ) {
         val isUserDarkMode = getIsDarkModeOrNot(context)
 
         when (currentState) {
             ScribeState.IDLE -> setupIdleView(language, emojiAutoSuggestionEnabled, autoSuggestEmojis)
             ScribeState.SELECT_COMMAND -> setupSelectCommandView(language)
-            ScribeState.INVALID -> setupInvalidView(language)
+            ScribeState.INVALID -> setupInvalidView(language, invalidCommandSource)
             ScribeState.TRANSLATE -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
@@ -225,6 +221,8 @@ class KeyboardUIManager(
         binding.ivInfo.visibility = View.GONE
         binding.conjugateGridContainer.visibility = View.GONE
         binding.keyboardView.visibility = View.VISIBLE
+        binding.invalidInfoBar.visibility = View.GONE
+        currentPage = 0
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(context, R.drawable.ic_scribe_icon_vector)
 
@@ -329,6 +327,13 @@ class KeyboardUIManager(
             binding.conjugateGridContainer.visibility = View.VISIBLE
             binding.keyboardView.visibility = View.GONE
 
+            binding.conjugateGridContainer.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+                ),
+            )
+
             val grid = binding.conjugateGrid
             grid.removeAllViews()
 
@@ -377,6 +382,12 @@ class KeyboardUIManager(
                 val btn = gridContent.findViewById<Button?>(btnId)
                 if (btn != null) {
                     btn.text = forms.getOrNull(i) ?: ""
+                    btn.backgroundTintList =
+                        ContextCompat.getColorStateList(
+                            context,
+                            if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                        )
+                    btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                     btn.setOnClickListener {
                         val label = btn.text.toString()
                         if (label.isNotEmpty()) {
@@ -423,6 +434,7 @@ class KeyboardUIManager(
         gridContent: View,
         context: Context,
     ) {
+        val isDarkMode = getIsDarkModeOrNot(context)
         val arrowButtonIds =
             listOf(
                 "conjugate_arrow_left_1",
@@ -439,14 +451,25 @@ class KeyboardUIManager(
             val arrowBtnId = context.resources.getIdentifier(arrowBtnName, "id", context.packageName)
             if (arrowBtnId != 0) {
                 val arrowBtn = gridContent.findViewById<Button?>(arrowBtnId)
-                arrowBtn?.setOnClickListener {
-                    val isLeft = arrowBtnName.contains("left")
-                    val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-                    val current = prefs.getInt("conjugate_index", 0)
-                    val newValue = if (isLeft) current - 1 else current + 1
-                    prefs.edit { putInt("conjugate_index", newValue) }
+                if (arrowBtn != null) {
+                    arrowBtn.background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
+                    arrowBtn.backgroundTintList =
+                        ContextCompat.getColorStateList(
+                            context,
+                            if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                        )
+                    val iconTint = if (isDarkMode) R.color.white else R.color.light_key_text_color
+                    arrowBtn.compoundDrawableTintList = ContextCompat.getColorStateList(context, iconTint)
+                    arrowBtn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                    arrowBtn.setOnClickListener {
+                        val isLeft = arrowBtnName.contains("left")
+                        val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+                        val current = prefs.getInt("conjugate_index", 0)
+                        val newValue = if (isLeft) current - 1 else current + 1
+                        prefs.edit { putInt("conjugate_index", newValue) }
 
-                    listener.onConjugateClicked()
+                        listener.onConjugateClicked()
+                    }
                 }
             }
         }
@@ -454,9 +477,13 @@ class KeyboardUIManager(
 
     /**
      * Configures the UI for the `INVALID` state, which is shown when a command (e.g., translation) fails.
+     * Shows Wikidata info for conjugate/plural commands, and Wiktionary info for the translate command.
      */
     @SuppressLint("SetTextI18n")
-    private fun setupInvalidView(language: String) {
+    private fun setupInvalidView(
+        language: String,
+        invalidCommandSource: ScribeState,
+    ) {
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
         // Original logic: Invalid state actually uses the toolbarBar layout initially.
@@ -469,8 +496,22 @@ class KeyboardUIManager(
             if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
         )
 
+        val isWikidata = invalidCommandSource != ScribeState.TRANSLATE
+        val invalidMsg =
+            if (isWikidata) {
+                HintUtils.getInvalidHintWikidata(language)
+            } else {
+                HintUtils.getInvalidHintWiktionary(language)
+            }
+        currentInvalidTexts =
+            if (isWikidata) {
+                HintUtils.getInvalidTextsWikidata(language)
+            } else {
+                HintUtils.getInvalidTextsWiktionary(language)
+            }
+
         binding.ivInfo.visibility = View.VISIBLE
-        binding.promptText.text = HintUtils.getInvalidHint(language = language) + ": "
+        binding.promptText.text = "$invalidMsg: "
         binding.commandBar.hint = ""
         binding.scribeKeyToolbar.foreground = AppCompatResources.getDrawable(context, R.drawable.ic_scribe_icon_vector)
     }
@@ -852,10 +893,10 @@ class KeyboardUIManager(
     }
 
     /**
-     * Update Wikidata information based on current navigation state.
+     * Update invalid info text based on current navigation state.
      */
     private fun updateWikidataPage() {
-        binding.middleTextview.setText(explanationStrings[currentPage])
+        binding.middleTextview.text = currentInvalidTexts[currentPage]
         updateDotIndicators()
     }
 

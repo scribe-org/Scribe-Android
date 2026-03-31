@@ -15,10 +15,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,6 +34,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import be.scri.helpers.PreferencesHelper
 import be.scri.navigation.Screen
 import be.scri.ui.common.appcomponents.HintDialog
+import be.scri.ui.common.bottombar.BottomBarScreen
 import be.scri.ui.common.bottombar.ScribeBottomBar
 import be.scri.ui.screens.DefaultCurrencySymbolScreen
 import be.scri.ui.screens.InstallationScreen
@@ -38,7 +44,9 @@ import be.scri.ui.screens.SelectTranslationSourceLanguageScreen
 import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
+import be.scri.ui.screens.download.CheckUpdateActions
 import be.scri.ui.screens.download.DataDownloadViewModel
+import be.scri.ui.screens.download.DownloadActions
 import be.scri.ui.screens.download.DownloadDataScreen
 import be.scri.ui.screens.settings.SettingsScreen
 import be.scri.ui.theme.ScribeTheme
@@ -69,11 +77,13 @@ fun ScribeApp(
     pagerState: PagerState,
     navController: NavHostController,
     onDarkModeChange: (Boolean) -> Unit,
+    onIncreaseTextSizeChange: (Boolean) -> Unit,
     resetHints: () -> Unit,
     @SuppressLint("ComposeUnstableCollections") isHintChanged: Map<Int, Boolean>,
     onDismiss: (Int) -> Unit,
     context: Context,
     isDarkTheme: Boolean,
+    isIncreaseTextSize: Boolean,
     modifier: Modifier = Modifier,
     downloadViewModel: DataDownloadViewModel = viewModel(),
 ) {
@@ -82,11 +92,26 @@ fun ScribeApp(
     val downloadStates = downloadViewModel.downloadStates
     val onDownloadAction = downloadViewModel::handleDownloadAction
     val onDownloadAll = downloadViewModel::handleDownloadAllLanguages
-    val inititalizeStates = downloadViewModel::initializeStates
-    val checkAllForUpdates = downloadViewModel::checkAllForUpdates
+    val initializeStates = downloadViewModel::initializeStates
+    val downloadActions =
+        DownloadActions(
+            downloadStates = downloadStates,
+            onDownloadAction = onDownloadAction,
+            onDownloadAll = onDownloadAll,
+            initializeStates = initializeStates,
+        )
+    val checkUpdateState by downloadViewModel.checkUpdateState.collectAsState()
+    val checkUpdateActions =
+        CheckUpdateActions(
+            checkUpdateState = checkUpdateState,
+            checkForNewData = downloadViewModel::checkForNewData,
+            cancelCheckForNewData = downloadViewModel::cancelCheckForNewData,
+        )
 
+    val screens = remember(context) { BottomBarScreen.getScreens() }
     ScribeTheme(
         useDarkTheme = isDarkTheme,
+        isIncreaseTextSize = isIncreaseTextSize,
     ) {
         Scaffold(
             bottomBar = {
@@ -100,8 +125,8 @@ fun ScribeApp(
                         }
                     },
                     pagerState = pagerState,
-                    modifier =
-                    Modifier,
+                    modifier = Modifier,
+                    screens = screens,
                 )
             },
             modifier = modifier.fillMaxSize(),
@@ -113,11 +138,11 @@ fun ScribeApp(
                 composable("pager") {
                     HorizontalPager(
                         state = pagerState,
-                        beyondViewportPageCount = 3,
+                        beyondViewportPageCount = screens.size,
                         modifier = Modifier.padding(innerPadding),
                     ) { page ->
-                        when (page) {
-                            0 -> {
+                        when (screens[page]) {
+                            is BottomBarScreen.Installation -> {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
                                 ) {
@@ -130,10 +155,10 @@ fun ScribeApp(
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
-                                        currentPageIndex = 0,
+                                        currentPageIndex = page,
                                         sharedPrefsKey = "hint_shown_main",
                                         hintMessageResId = R.string.i18n_app_installation_app_hint_tooltip,
-                                        isHintChanged = isHintChanged[0] == true,
+                                        isHintChanged = isHintChanged[page] == true,
                                         onDismiss = { onDismiss(it) },
                                         modifier =
                                             Modifier
@@ -143,13 +168,29 @@ fun ScribeApp(
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
                             }
-                            1 -> {
+                            is BottomBarScreen.Conjugate -> {
+                                Box(
+                                    modifier =
+                                        Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = "Conjugate App",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                    )
+                                }
+                                HandleBackPress(pagerState, coroutineScope)
+                            }
+                            is BottomBarScreen.Settings -> {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
                                 ) {
                                     SettingsScreen(
                                         onDarkModeChange = { isDarkMode ->
                                             onDarkModeChange(isDarkMode)
+                                        },
+                                        onIncreaseTextSizeChange = { increaseTextSize ->
+                                            onIncreaseTextSizeChange(increaseTextSize)
                                         },
                                         onLanguageSettingsClick = { language ->
                                             navController.navigate(
@@ -160,17 +201,17 @@ fun ScribeApp(
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
-                                        currentPageIndex = 1,
+                                        currentPageIndex = page,
                                         sharedPrefsKey = "hint_shown_settings",
                                         hintMessageResId = R.string.i18n_app_settings_app_hint_tooltip,
-                                        isHintChanged = isHintChanged[1] == true,
+                                        isHintChanged = isHintChanged[page] == true,
                                         onDismiss = { onDismiss(it) },
                                         modifier = Modifier.padding(8.dp),
                                     )
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
                             }
-                            2 -> {
+                            is BottomBarScreen.About -> {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
                                 ) {
@@ -189,10 +230,10 @@ fun ScribeApp(
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
-                                        currentPageIndex = 2,
+                                        currentPageIndex = page,
                                         sharedPrefsKey = "hint_shown_about",
                                         hintMessageResId = R.string.i18n_app_about_app_hint_tooltip,
-                                        isHintChanged = isHintChanged[2] == true,
+                                        isHintChanged = isHintChanged[page] == true,
                                         onDismiss = { onDismiss(it) },
                                         modifier = Modifier.padding(8.dp),
                                     )
@@ -213,11 +254,9 @@ fun ScribeApp(
                                 "translation_language_detail/$language",
                             )
                         },
-                        downloadStates = downloadStates,
-                        onDownloadAction = onDownloadAction,
-                        onDownloadAll = onDownloadAll,
-                        initializeStates = inititalizeStates,
-                        checkAllForUpdates = checkAllForUpdates,
+                        isDarkTheme = isDarkTheme,
+                        downloadActions = downloadActions,
+                        checkUpdateActions = checkUpdateActions,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }

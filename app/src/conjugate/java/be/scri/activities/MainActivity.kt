@@ -6,10 +6,26 @@
 
 package be.scri.activities
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
-import be.scri.ui.screens.SampleScreen
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.view.WindowCompat
+import androidx.navigation.compose.rememberNavController
+import be.scri.ScribeApp
+import be.scri.helpers.PreferencesHelper
+import be.scri.helpers.PreferencesHelper.setLightDarkModePreference
+import be.scri.ui.common.bottombar.BottomBarScreen
+import be.scri.ui.theme.ScribeTheme
 
 /**
  * The main entry point of the app.
@@ -22,9 +38,103 @@ class MainActivity : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
+
+        val isDark = PreferencesHelper.getUserDarkModePreference(this) == AppCompatDelegate.MODE_NIGHT_YES
+        applyNavigationBarStyle(isDark)
 
         setContent {
-            SampleScreen()
+            val context = LocalContext.current
+
+            val screens = remember(context) { BottomBarScreen.getScreens() }
+
+            val isDarkMode =
+                remember {
+                    mutableStateOf(
+                        PreferencesHelper
+                            .getUserDarkModePreference(context) == AppCompatDelegate.MODE_NIGHT_YES,
+                    )
+                }
+
+            val isIncreaseTextSize =
+                remember {
+                    mutableStateOf(
+                        PreferencesHelper.getIncreaseTextSizePreference(context),
+                    )
+                }
+
+            val pagerState =
+                rememberPagerState {
+                    screens.size
+                }
+
+            val navController = rememberNavController()
+
+            val isHintChangedMap = remember { mutableStateMapOf<Int, Boolean>() }
+
+            /**
+             * Updates the app's dark/light theme based on user preference and applies it
+             * immediately.
+             *
+             * @param darkMode Whether the dark mode should be enabled.
+             */
+            fun updateTheme(darkMode: Boolean) {
+                setLightDarkModePreference(context, darkMode)
+
+                AppCompatDelegate.setDefaultNightMode(
+                    if (darkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO,
+                )
+
+                isDarkMode.value = darkMode
+                applyNavigationBarStyle(darkMode)
+            }
+
+            ScribeTheme(
+                useDarkTheme = isDarkMode.value,
+                isIncreaseTextSize = isIncreaseTextSize.value,
+            ) {
+                ScribeApp(
+                    pagerState = pagerState,
+                    isDarkTheme = isDarkMode.value,
+                    isIncreaseTextSize = isIncreaseTextSize.value,
+                    onDarkModeChange = { darkMode ->
+                        updateTheme(darkMode)
+                    },
+                    onIncreaseTextSizeChange = { increaseTextSize ->
+                        PreferencesHelper.setIncreaseTextSizePreference(context, increaseTextSize)
+                        isIncreaseTextSize.value = increaseTextSize
+                    },
+                    resetHints = {
+                        isHintChangedMap[0] = true
+                        isHintChangedMap[1] = true
+                        isHintChangedMap[2] = true
+                    },
+                    isHintChanged = isHintChangedMap,
+                    onDismiss = { pageIndex ->
+                        isHintChangedMap[pageIndex] = false
+                    },
+                    context = context,
+                    navController = navController,
+                    modifier = Modifier,
+                )
+            }
+        }
+    }
+
+    private fun applyNavigationBarStyle(isDark: Boolean) {
+        enableEdgeToEdge(
+            navigationBarStyle =
+                if (isDark) {
+                    SystemBarStyle.dark(android.graphics.Color.BLACK)
+                } else {
+                    SystemBarStyle.light(android.graphics.Color.WHITE, android.graphics.Color.WHITE)
+                },
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+        }
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightNavigationBars = !isDark
         }
     }
 }
