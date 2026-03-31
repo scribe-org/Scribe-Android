@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -19,8 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import be.scri.ui.screens.Alpha
 
 /**
  * A composable component that displays a switch alongside a title and description.
@@ -41,7 +43,11 @@ fun SwitchableItemComp(
     Column(
         modifier =
             modifier
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+                .toggleable(
+                    value = isChecked,
+                    onValueChange = onCheckedChange,
+                    role = Role.Switch,
+                ).padding(horizontal = 12.dp, vertical = 10.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -49,14 +55,12 @@ fun SwitchableItemComp(
             Text(
                 text = title,
                 modifier = Modifier.weight(1f),
-                fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
             Switch(
-                interactionSource = null,
                 checked = isChecked,
-                onCheckedChange = onCheckedChange,
+                onCheckedChange = null,
                 modifier =
                     Modifier
                         .width(51.dp)
@@ -91,8 +95,7 @@ fun SwitchableItemComp(
         desc?.let { description ->
             Text(
                 text = description,
-                fontSize = 12.sp,
-                color = Color.Gray,
+                color = Color.Gray.copy(alpha = Alpha.MEDIUM),
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 4.dp),
             )
