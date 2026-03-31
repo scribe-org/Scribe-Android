@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.scri.ui.screens.download.DownloadState
 
 /**
@@ -31,7 +30,6 @@ fun LanguageItemComp(
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
     titleFontWeight: FontWeight = FontWeight.Normal,
-    titleFontSize: androidx.compose.ui.unit.TextUnit = 16.sp,
     isDarkTheme: Boolean = false,
     buttonState: DownloadState? = null,
 ) {
@@ -47,7 +45,6 @@ fun LanguageItemComp(
     ) {
         Text(
             text = title,
-            fontSize = titleFontSize,
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = titleFontWeight,
