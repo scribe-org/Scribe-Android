@@ -46,6 +46,7 @@ class KeyHandler(
      * @param code the key code that was pressed.
      */
     private fun updateKeyboardState(code: Int) {
+        ime.handleColonEmojiMode(code)
         ime.lastWord = ime.getLastWordBeforeCursor()
         Log.d("Debug", "${ime.lastWord}")
         ime.autoSuggestEmojis = ime.findEmojisForLastWord(ime.emojiKeywords, ime.lastWord)
@@ -54,7 +55,9 @@ class KeyHandler(
         Log.i("MY-TAG", "${ime.checkIfPluralWord}")
         Log.d("Debug", "${ime.autoSuggestEmojis}")
         Log.d("MY-TAG", "${ime.nounTypeSuggestion}")
-        ime.updateButtonText(ime.emojiAutoSuggestionEnabled, ime.autoSuggestEmojis)
+        if (!ime.isColonEmojiModeEnabled()) {
+            ime.updateButtonText(ime.emojiAutoSuggestionEnabled, ime.autoSuggestEmojis)
+        }
         if (code != KeyboardBase.KEYCODE_SHIFT) {
             ime.updateShiftKeyState()
         }
@@ -88,7 +91,9 @@ class KeyHandler(
         } else {
             ime.handleElseCondition(code, ime.keyboardMode, ime.keyboardBinding, commandBarState = true)
         }
-        ime.disableAutoSuggest()
+        if (!ime.isColonEmojiModeEnabled()) {
+            ime.disableAutoSuggest()
+        }
     }
 
     /**
@@ -103,7 +108,9 @@ class KeyHandler(
             }
         ime.handleDelete(shouldDelete, ime.keyboardBinding)
         ime.keyboardView!!.invalidateAllKeys()
-        ime.disableAutoSuggest()
+        if (!ime.isColonEmojiModeEnabled()) {
+            ime.disableAutoSuggest()
+        }
     }
 
     /**
@@ -113,7 +120,9 @@ class KeyHandler(
     private fun handleShiftKey() {
         ime.handleKeyboardLetters(ime.keyboardMode, ime.keyboardView)
         ime.keyboardView!!.invalidateAllKeys()
-        ime.disableAutoSuggest()
+        if (!ime.isColonEmojiModeEnabled()) {
+            ime.disableAutoSuggest()
+        }
     }
 
     /**
@@ -129,7 +138,9 @@ class KeyHandler(
             ime.switchToCommandToolBar()
             ime.updateUI()
         }
-        ime.disableAutoSuggest()
+        if (!ime.isColonEmojiModeEnabled()) {
+            ime.disableAutoSuggest()
+        }
     }
 
     /**
@@ -138,7 +149,9 @@ class KeyHandler(
      */
     private fun handleModeChangeKey() {
         ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime)
-        ime.disableAutoSuggest()
+        if (!ime.isColonEmojiModeEnabled()) {
+            ime.disableAutoSuggest()
+        }
     }
 
     /**
@@ -168,7 +181,9 @@ class KeyHandler(
         val code = KeyboardBase.KEYCODE_SPACE
         if (ime.currentState == ScribeState.IDLE || ime.currentState == ScribeState.SELECT_COMMAND) {
             ime.handleElseCondition(code, ime.keyboardMode, binding = null)
-            ime.updateAutoSuggestText(isPlural = ime.checkIfPluralWord)
+            if (!ime.isColonEmojiModeEnabled()) {
+                ime.updateAutoSuggestText(isPlural = ime.checkIfPluralWord)
+            }
         } else {
             ime.handleElseCondition(code, ime.keyboardMode, ime.keyboardBinding, commandBarState = true)
             ime.disableAutoSuggest()

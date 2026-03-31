@@ -87,6 +87,16 @@ abstract class GeneralKeyboardIME(
     private var emojiSpaceTablet2: View? = null
     private var emojiBtnTablet3: Button? = null
 
+    private var colonEmojiBtn1: Button? = null
+    private var colonEmojiBtn2: Button? = null
+    private var colonEmojiBtn3: Button? = null
+    private var colonEmojiBtn4: Button? = null
+    private var colonEmojiBtn5: Button? = null
+    private var colonEmojiBtn6: Button? = null
+    private var colonEmojiBtn7: Button? = null
+    private var colonEmojiBtn8: Button? = null
+    private var colonEmojiBtn9: Button? = null
+
     private var genderSuggestionLeft: Button? = null
     private var genderSuggestionRight: Button? = null
     private var isSingularAndPlural: Boolean = false
@@ -103,6 +113,8 @@ abstract class GeneralKeyboardIME(
     var emojiAutoSuggestionEnabled: Boolean = false
     var lastWord: String? = null
     var autoSuggestEmojis: MutableList<String>? = null
+    private var isColonEmojiModeActive: Boolean = false
+    private var colonEmojiQuery: String = ""
     var caseAnnotationSuggestion: MutableList<String>? = null
     var nounTypeSuggestion: List<String>? = null
     var checkIfPluralWord: Boolean = false
@@ -753,6 +765,15 @@ abstract class GeneralKeyboardIME(
         emojiBtnTablet2 = binding.emojiBtnTablet2
         emojiSpaceTablet2 = binding.emojiSpaceTablet2
         emojiBtnTablet3 = binding.emojiBtnTablet3
+        colonEmojiBtn1 = binding.colonEmojiBtn1
+        colonEmojiBtn2 = binding.colonEmojiBtn2
+        colonEmojiBtn3 = binding.colonEmojiBtn3
+        colonEmojiBtn4 = binding.colonEmojiBtn4
+        colonEmojiBtn5 = binding.colonEmojiBtn5
+        colonEmojiBtn6 = binding.colonEmojiBtn6
+        colonEmojiBtn7 = binding.colonEmojiBtn7
+        colonEmojiBtn8 = binding.colonEmojiBtn8
+        colonEmojiBtn9 = binding.colonEmojiBtn9
         genderSuggestionLeft = binding.translateBtnLeft
         genderSuggestionRight = binding.translateBtnRight
     }
@@ -768,7 +789,43 @@ abstract class GeneralKeyboardIME(
                 resources.configuration.screenLayout and
                     Configuration.SCREENLAYOUT_SIZE_MASK
             ) >= Configuration.SCREENLAYOUT_SIZE_LARGE
+        if (isColonEmojiModeActive) {
+            // Hide all normal toolbar elements.
+            binding.scribeKey.visibility = View.GONE
+            binding.separator1.visibility = View.GONE
+            binding.translateBtn.visibility = View.GONE
+            binding.translateBtnLeft.visibility = View.GONE
+            binding.translateBtnRightText.visibility = View.GONE
+            binding.translateBtnRight.visibility = View.GONE
+            binding.separator2.visibility = View.GONE
+            binding.conjugateBtn.visibility = View.GONE
+            binding.separator3.visibility = View.GONE
+            pluralBtn?.visibility = View.GONE
+            binding.separator4.visibility = View.GONE
+            emojiBtnPhone1?.visibility = View.GONE
+            emojiSpacePhone?.visibility = View.GONE
+            emojiBtnPhone2?.visibility = View.GONE
+            binding.separator5.visibility = View.GONE
+            emojiBtnTablet1?.visibility = View.GONE
+            emojiSpaceTablet1?.visibility = View.GONE
+            emojiBtnTablet2?.visibility = View.GONE
+            emojiSpaceTablet2?.visibility = View.GONE
+            binding.separator6.visibility = View.GONE
+            emojiBtnTablet3?.visibility = View.GONE
+
+            // Show dedicated colon emoji slots.
+            val slotCount = if (isTablet) 9 else 6
+            listOf(
+                colonEmojiBtn1, colonEmojiBtn2, colonEmojiBtn3,
+                colonEmojiBtn4, colonEmojiBtn5, colonEmojiBtn6,
+            ).forEach { btn -> btn?.visibility = View.VISIBLE }
+            listOf(colonEmojiBtn7, colonEmojiBtn8, colonEmojiBtn9).forEach { btn ->
+                btn?.visibility = if (slotCount == 9) View.VISIBLE else View.GONE
+            }
+            return
+        }
         if (isTablet) {
+            binding.scribeKey.visibility = View.VISIBLE
             pluralBtn?.visibility = if (isAutoSuggestEnabled) View.INVISIBLE else View.VISIBLE
             emojiBtnTablet1?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
             emojiSpaceTablet1?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
@@ -776,6 +833,7 @@ abstract class GeneralKeyboardIME(
             emojiSpaceTablet2?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
             emojiBtnTablet3?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
         } else {
+            binding.scribeKey.visibility = View.VISIBLE
             pluralBtn?.visibility = if (isAutoSuggestEnabled) View.INVISIBLE else View.VISIBLE
             emojiBtnPhone1?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
             emojiSpacePhone?.visibility = if (isAutoSuggestEnabled) View.VISIBLE else View.INVISIBLE
@@ -803,6 +861,110 @@ abstract class GeneralKeyboardIME(
         val trimmedText = textBeforeCursor.trim()
         val lastWord = trimmedText.split("\\s+".toRegex()).lastOrNull()
         return lastWord
+    }
+
+    private fun getCurrentTokenBeforeCursor(): String {
+        val textBeforeCursor = getText() ?: return ""
+        if (textBeforeCursor.isEmpty()) return ""
+        val lastWhitespaceIndex = textBeforeCursor.indexOfLast { it.isWhitespace() }
+        return if (lastWhitespaceIndex == -1) {
+            textBeforeCursor
+        } else {
+            textBeforeCursor.substring(lastWhitespaceIndex + 1)
+        }
+    }
+
+    fun isColonEmojiModeEnabled(): Boolean = isColonEmojiModeActive
+
+    fun handleColonEmojiMode(code: Int) {
+        if (code == KeyboardBase.KEYCODE_SPACE) {
+            exitColonEmojiMode()
+            return
+        }
+
+        val token = getCurrentTokenBeforeCursor()
+
+        when {
+            // Token starts with ":" — enter or stay in colon mode.
+            token.startsWith(":") -> {
+                isColonEmojiModeActive = true
+                colonEmojiQuery = token.drop(1).lowercase()
+            }
+            // In colon mode but token no longer starts with ":" — exit.
+            isColonEmojiModeActive && token.isNotBlank() -> {
+                exitColonEmojiMode()
+                return
+            }
+            // Not in colon mode and token doesn't start with ":" — nothing to do.
+            else -> return
+        }
+
+        if (!isColonEmojiModeActive) return
+
+        val isTablet =
+            (
+                resources.configuration.screenLayout and
+                    Configuration.SCREENLAYOUT_SIZE_MASK
+            ) >= Configuration.SCREENLAYOUT_SIZE_LARGE
+        val requiredCount = if (isTablet) 9 else 6
+        val matched =
+            if (colonEmojiQuery.isBlank()) {
+                mutableListOf<String>()
+            } else {
+                findEmojisForQueryPrefix(colonEmojiQuery)
+            }
+        autoSuggestEmojis = fillWithFallbackEmojis(matched, requiredCount)
+
+        updateButtonVisibility(true)
+        updateButtonText(true, autoSuggestEmojis)
+    }
+
+    private fun findEmojisForQueryPrefix(query: String): MutableList<String> {
+        val matched = LinkedHashSet<String>()
+        emojiKeywords
+            .filterKeys { it.startsWith(query, ignoreCase = true) }
+            .values
+            .forEach { emojiList ->
+                emojiList.forEach { matched.add(it) }
+            }
+        return matched.take(MAX_COLON_EMOJI_RESULTS).toMutableList()
+    }
+
+    private fun fillWithFallbackEmojis(
+        matched: List<String>,
+        requiredCount: Int,
+    ): MutableList<String> {
+        val orderedUnique = LinkedHashSet<String>()
+        matched.forEach { emoji ->
+            if (emoji.isNotBlank()) {
+                orderedUnique.add(emoji)
+            }
+        }
+        DEFAULT_COLON_EMOJIS.forEach { emoji ->
+            if (orderedUnique.size < requiredCount) {
+                orderedUnique.add(emoji)
+            }
+        }
+        return orderedUnique.take(requiredCount).toMutableList()
+    }
+
+    private fun exitColonEmojiMode() {
+        isColonEmojiModeActive = false
+        colonEmojiQuery = ""
+        // Hide dedicated colon emoji buttons.
+        listOf(
+            colonEmojiBtn1, colonEmojiBtn2, colonEmojiBtn3,
+            colonEmojiBtn4, colonEmojiBtn5, colonEmojiBtn6,
+            colonEmojiBtn7, colonEmojiBtn8, colonEmojiBtn9,
+        ).forEach { btn -> btn?.visibility = View.GONE }
+        // Restore normal toolbar.
+        binding.scribeKey.visibility = View.VISIBLE
+        binding.separator1.visibility = View.VISIBLE
+        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
+            setupIdleView()
+        }
+        updateButtonVisibility(emojiAutoSuggestionEnabled)
+        disableAutoSuggest()
     }
 
     /**
@@ -909,6 +1071,33 @@ abstract class GeneralKeyboardIME(
         autoSuggestEmojis: MutableList<String>?,
     ) {
         if (isAutoSuggestEnabled) {
+            if (isColonEmojiModeActive) {
+                val emojis = (autoSuggestEmojis ?: mutableListOf()).toList()
+                val isTablet =
+                    (
+                        resources.configuration.screenLayout and
+                            Configuration.SCREENLAYOUT_SIZE_MASK
+                    ) >= Configuration.SCREENLAYOUT_SIZE_LARGE
+                val slotCount = if (isTablet) 9 else 6
+                val slotText = fillWithFallbackEmojis(emojis, slotCount)
+
+                val colonBtns =
+                    listOf(
+                        colonEmojiBtn1, colonEmojiBtn2, colonEmojiBtn3,
+                        colonEmojiBtn4, colonEmojiBtn5, colonEmojiBtn6,
+                        colonEmojiBtn7, colonEmojiBtn8, colonEmojiBtn9,
+                    ).take(slotCount)
+
+                colonBtns.forEachIndexed { index, btn ->
+                    btn?.text = slotText.getOrElse(index) { " " }
+                    btn?.setOnClickListener { insertEmoji(btn.text.toString()) }
+                }
+                return
+            }
+
+            binding.translateBtn.visibility = View.VISIBLE
+            binding.translateBtnLeft.visibility = View.INVISIBLE
+            binding.translateBtnRight.visibility = View.INVISIBLE
             emojiBtnTablet1?.text = autoSuggestEmojis?.get(0)
             emojiBtnTablet2?.text = autoSuggestEmojis?.get(1)
             emojiBtnTablet3?.text = autoSuggestEmojis?.get(2)
@@ -1292,11 +1481,21 @@ abstract class GeneralKeyboardIME(
      * @param emoji The emoji character to be inserted.
      */
     private fun insertEmoji(emoji: String) {
+        if (emoji.isBlank()) return
         val inputConnection = currentInputConnection ?: return
         val maxLookBack = emojiMaxKeywordLength.coerceAtLeast(1)
 
         inputConnection.beginBatchEdit()
         try {
+            if (isColonEmojiModeActive) {
+                val token = getCurrentTokenBeforeCursor()
+                if (token.startsWith(":")) {
+                    inputConnection.deleteSurroundingText(token.length, 0)
+                }
+                inputConnection.commitText(emoji, 1)
+                return
+            }
+
             val previousText = inputConnection.getTextBeforeCursor(maxLookBack, 0)?.toString() ?: ""
 
             // Find last word boundary efficiently
@@ -1707,5 +1906,7 @@ abstract class GeneralKeyboardIME(
         const val LIGHT_THEME = "#4b4b4b"
         const val MAX_TEXT_LENGTH = 1000
         const val COMMIT_TEXT_CURSOR_POSITION = 1
+        private val DEFAULT_COLON_EMOJIS = listOf("😂", "❤️", "😍", "🔥", "👍", "🙏", "😊", "🎉", "😭")
+        private const val MAX_COLON_EMOJI_RESULTS = 9
     }
 }

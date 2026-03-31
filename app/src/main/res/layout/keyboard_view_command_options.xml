@@ -298,6 +298,135 @@
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/emoji_space_tablet_2" />
 
+        <!-- Dedicated equal-width buttons shown only during colon emoji mode -->
+        <Button
+            android:id="@+id/colon_emoji_btn_1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:textSize="20sp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/colon_emoji_btn_2"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/command_field"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <Button
+            android:id="@+id/colon_emoji_btn_2"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:textSize="20sp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/colon_emoji_btn_3"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/colon_emoji_btn_1"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <Button
+            android:id="@+id/colon_emoji_btn_3"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:textSize="20sp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/colon_emoji_btn_4"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/colon_emoji_btn_2"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <Button
+            android:id="@+id/colon_emoji_btn_4"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:textSize="20sp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/colon_emoji_btn_5"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/colon_emoji_btn_3"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <Button
+            android:id="@+id/colon_emoji_btn_5"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:textSize="20sp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/colon_emoji_btn_6"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/colon_emoji_btn_4"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <Button
+            android:id="@+id/colon_emoji_btn_6"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_phone_background_rounded"
+            android:textSize="20sp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toEndOf="@+id/command_field"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/colon_emoji_btn_5"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <!-- Extra 3 colon emoji buttons for tablets (slots 7-9) -->
+        <Button
+            android:id="@+id/colon_emoji_btn_7"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_tablet_background_rounded"
+            android:textSize="20sp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/colon_emoji_btn_8"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/colon_emoji_btn_6"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <Button
+            android:id="@+id/colon_emoji_btn_8"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_tablet_background_rounded"
+            android:textSize="20sp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toStartOf="@+id/colon_emoji_btn_9"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/colon_emoji_btn_7"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
+        <Button
+            android:id="@+id/colon_emoji_btn_9"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_icon_height"
+            android:background="@drawable/emoji_tablet_background_rounded"
+            android:textSize="20sp"
+            android:text=""
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/command_field"
+            app:layout_constraintEnd_toEndOf="@+id/command_field"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/colon_emoji_btn_8"
+            app:layout_constraintTop_toTopOf="@+id/command_field" />
+
         <ImageView
             android:id="@+id/top_keyboard_divider"
             android:layout_width="match_parent"
