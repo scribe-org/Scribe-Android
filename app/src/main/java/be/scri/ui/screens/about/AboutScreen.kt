@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.R
+import be.scri.helpers.AppFlavor
+import be.scri.helpers.FlavorProvider
 import be.scri.helpers.ui.HintUtils
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.ItemCardContainerWithTitle
@@ -36,6 +38,7 @@ fun AboutScreen(
     context: Context,
     modifier: Modifier = Modifier,
 ) {
+    val isConjugateApp = FlavorProvider.get() == AppFlavor.CONJUGATE
     val scrollState = rememberScrollState()
 
     val communityList =
@@ -43,8 +46,9 @@ fun AboutScreen(
             onWikimediaAndScribeClick = {
                 onWikiClick()
             },
-            onShareScribeClick = { AboutUtil.onShareScribeClick(context) },
+            onShareScribeClick = { AboutUtil.onShareScribeClick(context, isConjugateApp) },
             context = context,
+            isConjugateApp = isConjugateApp,
         )
 
     val feedbackAndSupportList =
@@ -56,6 +60,7 @@ fun AboutScreen(
                 resetHints()
             },
             context = context,
+            isConjugateApp = isConjugateApp,
         )
 
     val legalItemsList =

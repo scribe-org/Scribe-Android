@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.ui.screens.download.CheckUpdateState
 
@@ -71,7 +70,6 @@ fun CircleClickableItemComp(
                 Text(
                     text = title,
                     modifier = Modifier.weight(1f),
-                    fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                 )
