@@ -47,6 +47,7 @@ private val DarkColors =
 @Composable
 fun ScribeTheme(
     useDarkTheme: Boolean,
+    isIncreaseTextSize: Boolean = false,
     @Suppress("ktlint:standard:annotation")
     content: @Composable() () -> Unit,
 ) {
@@ -57,9 +58,11 @@ fun ScribeTheme(
             DarkColors
         }
 
+    val typography = if (isIncreaseTextSize) createTypography(1.25f) else ScribeTypography
+
     MaterialTheme(
         colorScheme = colors,
         content = content,
-        typography = ScribeTypography,
+        typography = typography,
     )
 }

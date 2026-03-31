@@ -28,6 +28,7 @@ object PreferencesHelper {
     private const val WORD_BY_WORD_DELETION = "word_by_word_deletion"
     private const val DEFAULT_CURRENCY = "default_currency"
     private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
+    private const val INCREASE_TEXT_SIZE = "increase_text_size"
 
     /**
      * Sets the translation source language for a given language.
@@ -591,5 +592,30 @@ object PreferencesHelper {
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), true)
+    }
+
+    /**
+     * Saves the user's "Increase Text Size" preference.
+     *
+     * @param context The application context used to access SharedPreferences.
+     * @param increaseTextSize `true` to enable larger text size, `false` to use default size.
+     */
+    fun setIncreaseTextSizePreference(
+        context: Context,
+        increaseTextSize: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        sharedPref.edit { putBoolean(INCREASE_TEXT_SIZE, increaseTextSize) }
+    }
+
+    /**
+     * Retrieves the user's "Increase Text Size" preference.
+     *
+     * @param context The application context used to access SharedPreferences.
+     * @return `true` if larger text size is enabled, `false` otherwise.
+     */
+    fun getIncreaseTextSizePreference(context: Context): Boolean {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(INCREASE_TEXT_SIZE, false)
     }
 }

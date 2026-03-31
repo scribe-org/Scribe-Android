@@ -71,7 +71,6 @@ class AboutUtilTest {
 
         assertEquals(5, list.size)
 
-        // Checking the resource IDs are preserved, not string values.
         assertEquals(R.string.i18n_app_about_feedback_rate_scribe, list[0].title)
         assertEquals(R.string.i18n_app_about_feedback_bug_report, list[1].title)
         assertEquals(R.string.i18n_app_about_feedback_send_email, list[2].title)
@@ -109,13 +108,16 @@ class AboutUtilTest {
 
     @Test
     fun testOnShareScribeClick() {
-        // Arrange
         val mockHelper = mockk<ShareHelperInterface>(relaxed = true)
         AboutUtil.shareHelper = mockHelper
 
-        // Act
-        AboutUtil.onShareScribeClick(context)
-        verify { mockHelper.shareScribe(context) }
+        // Conjugate - true
+        AboutUtil.onShareScribeClick(context, isConjugateApp = true)
+        verify { mockHelper.shareScribe(context, true) }
+
+        // Conjugate - false
+        AboutUtil.onShareScribeClick(context, isConjugateApp = false)
+        verify { mockHelper.shareScribe(context, false) }
     }
 
     @Test
@@ -168,5 +170,55 @@ class AboutUtilTest {
 
         verify(exactly = 1) { HintUtils.resetHints(mockContext) }
         assertTrue(called)
+    }
+
+    @Test
+    fun `buildCommunityList returns conjugate share string when isConjugateApp is true`() {
+        val list =
+            buildCommunityList(
+                context = context,
+                onShareScribeClick = {},
+                onWikimediaAndScribeClick = {},
+                isConjugateApp = true,
+            )
+        assertEquals(R.string.i18n_app_about_community_share_conjugate, list[2].title)
+    }
+
+    @Test
+    fun `buildCommunityList returns default share string when isConjugateApp is false`() {
+        val list =
+            buildCommunityList(
+                context = context,
+                onShareScribeClick = {},
+                onWikimediaAndScribeClick = {},
+                isConjugateApp = false,
+            )
+        assertEquals(R.string.i18n_app_about_community_share_scribe, list[2].title)
+    }
+
+    @Test
+    fun `feedbackAndSupportList returns conjugate rate string when isConjugateApp is true`() {
+        val list =
+            feedbackAndSupportList(
+                context = context,
+                onRateScribeClick = {},
+                onMailClick = {},
+                onResetHintsClick = {},
+                isConjugateApp = true,
+            )
+        assertEquals(R.string.i18n_app_about_feedback_rate_conjugate, list[0].title)
+    }
+
+    @Test
+    fun `feedbackAndSupportList returns default rate string when isConjugateApp is false`() {
+        val list =
+            feedbackAndSupportList(
+                context = context,
+                onRateScribeClick = {},
+                onMailClick = {},
+                onResetHintsClick = {},
+                isConjugateApp = false,
+            )
+        assertEquals(R.string.i18n_app_about_feedback_rate_scribe, list[0].title)
     }
 }
