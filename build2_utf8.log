@@ -1,0 +1,216 @@
+﻿> Task :app:moveFromi18n NO-SOURCE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preConjugateDebugBuild UP-TO-DATE
+> Task :app:mergeConjugateDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:dataBindingMergeDependencyArtifactsConjugateDebug UP-TO-DATE
+> Task :app:generateConjugateDebugResValues UP-TO-DATE
+> Task :app:generateConjugateDebugResources UP-TO-DATE
+> Task :app:mergeConjugateDebugResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesConjugateDebug UP-TO-DATE
+> Task :app:generateConjugateDebugBuildConfig UP-TO-DATE
+> Task :app:checkConjugateDebugAarMetadata UP-TO-DATE
+> Task :app:processConjugateDebugNavigationResources UP-TO-DATE
+> Task :app:compileConjugateDebugNavigationResources UP-TO-DATE
+> Task :app:mapConjugateDebugSourceSetPaths UP-TO-DATE
+> Task :app:createConjugateDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksConjugateDebug UP-TO-DATE
+> Task :app:processConjugateDebugMainManifest UP-TO-DATE
+> Task :app:processConjugateDebugManifest UP-TO-DATE
+> Task :app:processConjugateDebugManifestForPackage UP-TO-DATE
+> Task :app:javaPreCompileConjugateDebug UP-TO-DATE
+> Task :app:mergeConjugateDebugShaders UP-TO-DATE
+> Task :app:compileConjugateDebugShaders NO-SOURCE
+> Task :app:generateConjugateDebugAssets UP-TO-DATE
+> Task :app:mergeConjugateDebugAssets UP-TO-DATE
+> Task :app:compressConjugateDebugAssets UP-TO-DATE
+> Task :app:generateConjugateDebugJacocoPropertiesFile UP-TO-DATE
+> Task :app:checkConjugateDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarConjugateDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexConjugateDebug UP-TO-DATE
+> Task :app:mergeLibDexConjugateDebug UP-TO-DATE
+> Task :app:mergeConjugateDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeConjugateDebugNativeLibs UP-TO-DATE
+> Task :app:stripConjugateDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningConjugateDebug UP-TO-DATE
+> Task :app:writeConjugateDebugAppMetadata UP-TO-DATE
+> Task :app:writeConjugateDebugSigningConfigVersions UP-TO-DATE
+> Task :app:preKeyboardsDebugBuild UP-TO-DATE
+> Task :app:mergeKeyboardsDebugNativeDebugMetadata NO-SOURCE
+> Task :app:dataBindingMergeDependencyArtifactsKeyboardsDebug UP-TO-DATE
+> Task :app:generateKeyboardsDebugResValues UP-TO-DATE
+> Task :app:generateKeyboardsDebugResources UP-TO-DATE
+> Task :app:mergeKeyboardsDebugResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesKeyboardsDebug UP-TO-DATE
+> Task :app:generateKeyboardsDebugBuildConfig UP-TO-DATE
+> Task :app:checkKeyboardsDebugAarMetadata UP-TO-DATE
+> Task :app:processKeyboardsDebugNavigationResources UP-TO-DATE
+> Task :app:compileKeyboardsDebugNavigationResources UP-TO-DATE
+> Task :app:mapKeyboardsDebugSourceSetPaths UP-TO-DATE
+> Task :app:createKeyboardsDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksKeyboardsDebug UP-TO-DATE
+> Task :app:processKeyboardsDebugMainManifest UP-TO-DATE
+> Task :app:processKeyboardsDebugManifest UP-TO-DATE
+> Task :app:processKeyboardsDebugManifestForPackage UP-TO-DATE
+> Task :app:javaPreCompileKeyboardsDebug UP-TO-DATE
+> Task :app:mergeKeyboardsDebugShaders UP-TO-DATE
+> Task :app:compileKeyboardsDebugShaders NO-SOURCE
+> Task :app:generateKeyboardsDebugAssets UP-TO-DATE
+> Task :app:mergeKeyboardsDebugAssets UP-TO-DATE
+> Task :app:compressKeyboardsDebugAssets UP-TO-DATE
+> Task :app:checkKeyboardsDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarKeyboardsDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexKeyboardsDebug UP-TO-DATE
+> Task :app:generateKeyboardsDebugJacocoPropertiesFile UP-TO-DATE
+> Task :app:mergeLibDexKeyboardsDebug UP-TO-DATE
+> Task :app:mergeKeyboardsDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeKeyboardsDebugNativeLibs UP-TO-DATE
+> Task :app:stripKeyboardsDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningKeyboardsDebug UP-TO-DATE
+> Task :app:writeKeyboardsDebugAppMetadata UP-TO-DATE
+> Task :app:writeKeyboardsDebugSigningConfigVersions UP-TO-DATE
+warn: removing resource be.scri.conjugate.debug:string/i18n.app.about.community.view_apps without required default value.
+warn: removing resource be.scri.conjugate.debug:string/i18n.app.keyboard.not_in_wiktionary.explanation_1 without required default value.
+warn: removing resource be.scri.conjugate.debug:string/i18n.app.keyboard.not_in_wiktionary.explanation_2 without required default value.
+warn: removing resource be.scri.conjugate.debug:string/i18n.app.keyboard.not_in_wiktionary.explanation_3 without required default value.
+
+> Task :app:processConjugateDebugResources FAILED
+warn: removing resource be.scri.keyboards.debug:string/i18n.app.about.community.view_apps without required default value.
+warn: removing resource be.scri.keyboards.debug:string/i18n.app.keyboard.not_in_wiktionary.explanation_1 without required default value.
+warn: removing resource be.scri.keyboards.debug:string/i18n.app.keyboard.not_in_wiktionary.explanation_2 without required default value.
+warn: removing resource be.scri.keyboards.debug:string/i18n.app.keyboard.not_in_wiktionary.explanation_3 without required default value.
+
+> Task :app:processKeyboardsDebugResources FAILED
+.\gradlew : 
+At line:1 char:1
++ .\gradlew 
+assembleDebug > 
+build2.log 2>&1
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (:String   
+ ) [], RemoteExce    
+ption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+FAILURE: Build 
+completed with 2 
+failures.
+
+1: Task failed with 
+an exception.
+-----------
+* What went wrong:
+Execution failed for 
+task ':app:processCon
+jugateDebugResources'
+.
+> A failure occurred 
+while executing com.a
+ndroid.build.gradle.i
+nternal.res.LinkAppli
+cationAndroidResource
+sTask$TaskAction
+   > Issue parsing 
+symbol table from 
+package 'be.scri' at 
+D:\Code\Scribe\Scribe
+-Android\app\build\in
+termediates\runtime_s
+ymbol_list\conjugateD
+ebug\processConjugate
+DebugResources\R.txt.
+     Duplicate key: 
+(row=string, column=i
+18n_app_download_menu
+_option_conjugate_des
+cription), values: 
+[UNDEFINED string i18
+n_app_download_menu_o
+ption_conjugate_descr
+iption = 0x7f1000f8, 
+UNDEFINED string i18n
+_app_download_menu_op
+tion_conjugate_descri
+ption = 0x7f10009e].
+
+* Try:
+> Run with 
+--stacktrace option 
+to get the stack 
+trace.
+> Run with --info or 
+--debug option to 
+get more log output.
+> Run with --scan to 
+get full insights.
+> Get more help at ht
+tps://help.gradle.org
+.
+=====================
+=====================
+=====================
+===============
+
+2: Task failed with 
+an exception.
+-----------
+* What went wrong:
+Execution failed for 
+task ':app:processKey
+boardsDebugResources'
+.
+> A failure occurred 
+while executing com.a
+ndroid.build.gradle.i
+nternal.res.LinkAppli
+cationAndroidResource
+sTask$TaskAction
+   > Issue parsing 
+symbol table from 
+package 'be.scri' at 
+D:\Code\Scribe\Scribe
+-Android\app\build\in
+termediates\runtime_s
+ymbol_list\keyboardsD
+ebug\processKeyboards
+DebugResources\R.txt.
+     Duplicate key: 
+(row=string, column=i
+18n_app_download_menu
+_option_conjugate_des
+cription), values: 
+[UNDEFINED string i18
+n_app_download_menu_o
+ption_conjugate_descr
+iption = 0x7f1000f8, 
+UNDEFINED string i18n
+_app_download_menu_op
+tion_conjugate_descri
+ption = 0x7f10009e].
+
+* Try:
+> Run with 
+--stacktrace option 
+to get the stack 
+trace.
+> Run with --info or 
+--debug option to 
+get more log output.
+> Run with --scan to 
+get full insights.
+> Get more help at ht
+tps://help.gradle.org
+.
+=====================
+=====================
+=====================
+===============
+
+BUILD FAILED in 4s
+62 actionable tasks: 2 executed, 60 up-to-date

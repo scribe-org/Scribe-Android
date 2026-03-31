@@ -1,0 +1,210 @@
+﻿> Task :app:moveFromi18n NO-SOURCE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preConjugateDebugBuild UP-TO-DATE
+> Task :app:mergeConjugateDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:dataBindingMergeDependencyArtifactsConjugateDebug UP-TO-DATE
+> Task :app:generateConjugateDebugResValues UP-TO-DATE
+> Task :app:generateConjugateDebugResources UP-TO-DATE
+> Task :app:mergeConjugateDebugResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesConjugateDebug UP-TO-DATE
+> Task :app:generateConjugateDebugBuildConfig UP-TO-DATE
+> Task :app:checkConjugateDebugAarMetadata UP-TO-DATE
+> Task :app:processConjugateDebugNavigationResources UP-TO-DATE
+> Task :app:compileConjugateDebugNavigationResources UP-TO-DATE
+> Task :app:mapConjugateDebugSourceSetPaths UP-TO-DATE
+> Task :app:createConjugateDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksConjugateDebug UP-TO-DATE
+> Task :app:processConjugateDebugMainManifest UP-TO-DATE
+> Task :app:processConjugateDebugManifest UP-TO-DATE
+> Task :app:processConjugateDebugManifestForPackage UP-TO-DATE
+> Task :app:processConjugateDebugResources UP-TO-DATE
+> Task :app:kspConjugateDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileConjugateDebug UP-TO-DATE
+> Task :app:mergeConjugateDebugShaders UP-TO-DATE
+> Task :app:compileConjugateDebugShaders NO-SOURCE
+> Task :app:generateConjugateDebugAssets UP-TO-DATE
+> Task :app:mergeConjugateDebugAssets UP-TO-DATE
+> Task :app:compressConjugateDebugAssets UP-TO-DATE
+> Task :app:generateConjugateDebugJacocoPropertiesFile UP-TO-DATE
+> Task :app:checkConjugateDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarConjugateDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexConjugateDebug UP-TO-DATE
+> Task :app:mergeLibDexConjugateDebug UP-TO-DATE
+> Task :app:mergeConjugateDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeConjugateDebugNativeLibs UP-TO-DATE
+> Task :app:stripConjugateDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningConjugateDebug UP-TO-DATE
+> Task :app:writeConjugateDebugAppMetadata UP-TO-DATE
+> Task :app:writeConjugateDebugSigningConfigVersions UP-TO-DATE
+> Task :app:preKeyboardsDebugBuild UP-TO-DATE
+> Task :app:mergeKeyboardsDebugNativeDebugMetadata NO-SOURCE
+> Task :app:dataBindingMergeDependencyArtifactsKeyboardsDebug UP-TO-DATE
+> Task :app:generateKeyboardsDebugResValues UP-TO-DATE
+> Task :app:generateKeyboardsDebugResources UP-TO-DATE
+> Task :app:mergeKeyboardsDebugResources UP-TO-DATE
+> Task :app:dataBindingGenBaseClassesKeyboardsDebug UP-TO-DATE
+> Task :app:generateKeyboardsDebugBuildConfig UP-TO-DATE
+> Task :app:checkKeyboardsDebugAarMetadata UP-TO-DATE
+> Task :app:processKeyboardsDebugNavigationResources UP-TO-DATE
+> Task :app:compileKeyboardsDebugNavigationResources UP-TO-DATE
+> Task :app:mapKeyboardsDebugSourceSetPaths UP-TO-DATE
+> Task :app:createKeyboardsDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksKeyboardsDebug UP-TO-DATE
+> Task :app:processKeyboardsDebugMainManifest UP-TO-DATE
+> Task :app:processKeyboardsDebugManifest UP-TO-DATE
+> Task :app:processKeyboardsDebugManifestForPackage UP-TO-DATE
+> Task :app:processKeyboardsDebugResources UP-TO-DATE
+> Task :app:kspKeyboardsDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileKeyboardsDebug UP-TO-DATE
+> Task :app:mergeKeyboardsDebugShaders UP-TO-DATE
+> Task :app:compileKeyboardsDebugShaders NO-SOURCE
+> Task :app:generateKeyboardsDebugAssets UP-TO-DATE
+> Task :app:mergeKeyboardsDebugAssets UP-TO-DATE
+> Task :app:compressKeyboardsDebugAssets UP-TO-DATE
+> Task :app:checkKeyboardsDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarKeyboardsDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexKeyboardsDebug UP-TO-DATE
+> Task :app:generateKeyboardsDebugJacocoPropertiesFile UP-TO-DATE
+> Task :app:mergeLibDexKeyboardsDebug UP-TO-DATE
+> Task :app:mergeKeyboardsDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeKeyboardsDebugNativeLibs UP-TO-DATE
+> Task :app:stripKeyboardsDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningKeyboardsDebug UP-TO-DATE
+> Task :app:writeKeyboardsDebugAppMetadata UP-TO-DATE
+> Task :app:writeKeyboardsDebugSigningConfigVersions UP-TO-DATE
+
+> Task :app:compileKeyboardsDebugKotlin FAILED
+.\gradlew : e: file:/
+//D:/Code/Scribe/Scri
+be-Android/app/src/ma
+in/java/be/scri/ui/sc
+reens/conjugate/Conju
+gateScreen.kt:52:17 
+No parameter with 
+name 'title' found.
+At line:1 char:1
++ .\gradlew 
+assembleDebug > 
+build3.log 2>&1 ; 
+Get-Content 
+build3.log |  ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (e: file   
+ :///D:/C... 'tit    
+le' found.:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+e: file:///D:/Code/Sc
+ribe/Scribe-Android/a
+pp/src/main/java/be/s
+cri/ui/screens/conjug
+ate/ConjugateScreen.k
+t:53:17 No value 
+passed for parameter 
+'pageTitle'.
+
+> Task :app:compileConjugateDebugKotlin FAILED
+e: file:///D:/Code/Sc
+ribe/Scribe-Android/a
+pp/src/main/java/be/s
+cri/ui/screens/conjug
+ate/ConjugateScreen.k
+t:52:17 No parameter 
+with name 'title' 
+found.
+e: file:///D:/Code/Sc
+ribe/Scribe-Android/a
+pp/src/main/java/be/s
+cri/ui/screens/conjug
+ate/ConjugateScreen.k
+t:53:17 No value 
+passed for parameter 
+'pageTitle'.
+
+FAILURE: Build 
+completed with 2 
+failures.
+
+1: Task failed with 
+an exception.
+-----------
+* What went wrong:
+Execution failed for 
+task ':app:compileKey
+boardsDebugKotlin'.
+> A failure occurred 
+while executing org.j
+etbrains.kotlin.compi
+lerRunner.GradleCompi
+lerRunnerWithWorkers$
+GradleKotlinCompilerW
+orkAction
+   > Compilation 
+error. See log for 
+more details
+
+* Try:
+> Run with 
+--stacktrace option 
+to get the stack 
+trace.
+> Run with --info or 
+--debug option to 
+get more log output.
+> Run with --scan to 
+get full insights.
+> Get more help at ht
+tps://help.gradle.org
+.
+=====================
+=====================
+=====================
+===============
+
+2: Task failed with 
+an exception.
+-----------
+* What went wrong:
+Execution failed for 
+task ':app:compileCon
+jugateDebugKotlin'.
+> A failure occurred 
+while executing org.j
+etbrains.kotlin.compi
+lerRunner.GradleCompi
+lerRunnerWithWorkers$
+GradleKotlinCompilerW
+orkAction
+   > Compilation 
+error. See log for 
+more details
+
+* Try:
+> Run with 
+--stacktrace option 
+to get the stack 
+trace.
+> Run with --info or 
+--debug option to 
+get more log output.
+> Run with --scan to 
+get full insights.
+> Get more help at ht
+tps://help.gradle.org
+.
+=====================
+=====================
+=====================
+===============
+
+BUILD FAILED in 8s
+66 actionable tasks: 2 executed, 64 up-to-date

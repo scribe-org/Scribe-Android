@@ -1,0 +1,56 @@
+﻿Starting a Gradle Daemon, 1 busy and 1 incompatible Daemons could not be reused, use --status for details
+> Task :detekt NO-SOURCE
+> Task :app:detekt
+D:\Code\Scribe\Scribe-Android\app\src\main\java\be\scri\ui\screens\conjugate\ConjugateScreen.kt:134:5: Composables annotated with @Preview that are used only for previewing the UI should not be public.
+
+See https://mrmans0n.github.io/compose-rules/rules/#preview-composables-should-not-be-public for more information. [PreviewPublic]
+D:\Code\Scribe\Scribe-Android\app\src\main\java\be\scri\ui\screens\conjugate\ConjugateScreen.kt:146:5: Composables annotated with @Preview that are used only for previewing the UI should not be public.
+
+See https://mrmans0n.github.io/compose-rules/rules/#preview-composables-should-not-be-public for more information. [PreviewPublic]
+
+
+> Task :app:detekt FAILED
+.\gradlew : 
+At line:1 char:1
++ .\gradlew detekt 
+lintKotlin > 
+detekt.log 2>&1
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (:String   
+ ) [], RemoteExce    
+ption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+FAILURE: Build 
+failed with an 
+exception.
+
+* What went wrong:
+Execution failed for 
+task ':app:detekt'.
+> Analysis failed 
+with 2 weighted 
+issues.
+
+* Try:
+> Run with 
+--stacktrace option 
+to get the stack 
+trace.
+> Run with --info or 
+--debug option to 
+get more log output.
+> Run with --scan to 
+get full insights.
+> Get more help at ht
+tps://help.gradle.org
+.
+
+BUILD FAILED in 1m
+1 actionable task: 1 executed

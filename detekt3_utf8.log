@@ -1,0 +1,54 @@
+﻿> Task :detekt NO-SOURCE
+
+> Task :app:detekt FAILED
+D:\Code\Scribe\Scribe-Android\app\src\main\java\be\scri\ui\screens\conjugate\ConjugateScreen.kt:134:13: Private function `ConjugateEmptyStatePreview` is unused. [UnusedPrivateMember]
+D:\Code\Scribe\Scribe-Android\app\src\main\java\be\scri\ui\screens\conjugate\ConjugateScreen.kt:146:13: Private function `ConjugateEmptyStateDarkPreview` is unused. [UnusedPrivateMember]
+
+.\gradlew : 
+At line:1 char:1
++ .\gradlew detekt 
+lintKotlin > 
+detekt3.log 2>&1 ; 
+Get-Content detekt3. 
+...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~
+    + CategoryInfo   
+           : 
+NotSpecified:     
+(:String) [], Remote 
+   Exception
+    + 
+FullyQualifiedErro   
+ rId : 
+NativeCommandE    
+rror
+ 
+FAILURE: Build 
+failed with an 
+exception.
+
+* What went wrong:
+Execution failed for 
+task ':app:detekt'.
+> Analysis failed 
+with 2 weighted 
+issues.
+
+* Try:
+> Run with 
+--stacktrace option 
+to get the stack 
+trace.
+> Run with --info or 
+--debug option to 
+get more log output.
+> Run with --scan to 
+get full insights.
+> Get more help at ht
+tps://help.gradle.org
+.
+
+BUILD FAILED in 10s
+1 actionable task: 1 executed
