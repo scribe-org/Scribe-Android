@@ -46,7 +46,7 @@ jobs:
       - name: Prepare App
         uses: ./.github/composite/prepareApp
 
-      - name: Run Ktlint
+      - name: Run Unit Tests
         run: ./gradlew test
 
   collect_coverage:
@@ -57,13 +57,8 @@ jobs:
         with:
           submodules: true
 
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-
-      - name: Grant Execute Permission for Gradle Wrapper
-        run: chmod +x gradlew
+      - name: Prepare App
+        uses: ./.github/composite/prepareApp
 
       - name: Get Coverage
         run: ./gradlew koverReport
@@ -91,12 +86,16 @@ jobs:
         if: success()
         with:
           name: latest-apk
-          path: "app/build/outputs/apk/core/debug/app-core-debug.apk"
+          path: "app/build/outputs/apk/conjugate/debug/app-conjugate-debug.apk"
 
   instrumentation_test:
     runs-on: ubuntu-latest
-    name: Run Android Instrumentation Tests
-    timeout-minutes: 50
+    strategy:
+        matrix:
+            flavor: [ Conjugate, Keyboards ]
+        fail-fast: false
+        name: Run Android Instrumentation Tests (${{ matrix.flavor }})
+        timeout-minutes: 45
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -111,6 +110,9 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+
+      - name: Pre-build Android Test APKs
+        run: ./gradlew assemble${{ matrix.flavor }}Debug assemble${{ matrix.flavor }}DebugAndroidTest
 
       - name: Run UI Tests on Emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -127,13 +129,5 @@ jobs:
           force-avd-creation: false
           script: |
             adb wait-for-device
-            sleep 30
             adb shell input keyevent 82
-            adb shell settings put global window_animation_scale 0.0
-            adb shell settings put global transition_animation_scale 0.0
-            adb shell settings put global animator_duration_scale 0.0
-            adb shell pm list packages >/dev/null
-            sleep 10
-            adb shell getprop sys.boot_completed
-            ./gradlew connectedConjugateDebugAndroidTest --stacktrace
-            ./gradlew connectedKeyboardsDebugAndroidTest --stacktrace
+              ./gradlew connected${{ matrix.flavor }}DebugAndroidTest --stacktrace
