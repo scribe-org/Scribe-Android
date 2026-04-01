@@ -123,25 +123,170 @@ object HintUtils {
         )
 
     /**
-     * Provides invalid hint for selected language.
+     * Provides the "Not in Wikidata" hint for the selected language.
+     * Shown when a conjugate or plural command finds no result.
      *
-     * @return A hint string for invalid commands.
+     * @return A hint string for invalid Wikidata commands.
      */
-    fun getInvalidHint(
+    fun getInvalidHintWikidata(
         language: String,
-        defaultHint: String = ENInterfaceVariables.INVALID_COMMAND_MSG,
+        defaultHint: String = ENInterfaceVariables.INVALID_COMMAND_MSG_WIKIDATA,
     ): String =
         when (language) {
-            "English" -> ENInterfaceVariables.INVALID_COMMAND_MSG
-            "French" -> FRInterfaceVariables.INVALID_COMMAND_MSG
-            "German" -> DEInterfaceVariables.INVALID_COMMAND_MSG
-            "Italian" -> ITInterfaceVariables.INVALID_COMMAND_MSG
-            "Portuguese" -> PTInterfaceVariables.INVALID_COMMAND_MSG
-            "Russian" -> RUInterfaceVariables.INVALID_COMMAND_MSG
-            "Spanish" -> ESInterfaceVariables.INVALID_COMMAND_MSG
-            "Swedish" -> SVInterfaceVariables.INVALID_COMMAND_MSG
+            "English" -> ENInterfaceVariables.INVALID_COMMAND_MSG_WIKIDATA
+            "French" -> FRInterfaceVariables.INVALID_COMMAND_MSG_WIKIDATA
+            "German" -> DEInterfaceVariables.INVALID_COMMAND_MSG_WIKIDATA
+            "Italian" -> ITInterfaceVariables.INVALID_COMMAND_MSG_WIKIDATA
+            "Portuguese" -> PTInterfaceVariables.INVALID_COMMAND_MSG_WIKIDATA
+            "Russian" -> RUInterfaceVariables.INVALID_COMMAND_MSG_WIKIDATA
+            "Spanish" -> ESInterfaceVariables.INVALID_COMMAND_MSG_WIKIDATA
+            "Swedish" -> SVInterfaceVariables.INVALID_COMMAND_MSG_WIKIDATA
             else -> defaultHint
         }
+
+    /**
+     * Provides the "Not in Wiktionary" hint for the selected language.
+     * Shown when a translate command finds no result.
+     *
+     * @return A hint string for invalid Wiktionary commands.
+     */
+    fun getInvalidHintWiktionary(
+        language: String,
+        defaultHint: String = ENInterfaceVariables.INVALID_COMMAND_MSG_WIKTIONARY,
+    ): String =
+        when (language) {
+            "English" -> ENInterfaceVariables.INVALID_COMMAND_MSG_WIKTIONARY
+            "French" -> FRInterfaceVariables.INVALID_COMMAND_MSG_WIKTIONARY
+            "German" -> DEInterfaceVariables.INVALID_COMMAND_MSG_WIKTIONARY
+            "Italian" -> ITInterfaceVariables.INVALID_COMMAND_MSG_WIKTIONARY
+            "Portuguese" -> PTInterfaceVariables.INVALID_COMMAND_MSG_WIKTIONARY
+            "Russian" -> RUInterfaceVariables.INVALID_COMMAND_MSG_WIKTIONARY
+            "Spanish" -> ESInterfaceVariables.INVALID_COMMAND_MSG_WIKTIONARY
+            "Swedish" -> SVInterfaceVariables.INVALID_COMMAND_MSG_WIKTIONARY
+            else -> defaultHint
+        }
+
+    /**
+     * Returns the three Wikidata explanation texts for the selected language.
+     * Shown when a conjugate or plural command finds no result and the user taps the info icon.
+     *
+     * @return An array of three explanation strings about Wikidata.
+     */
+    fun getInvalidTextsWikidata(language: String): Array<String> {
+        val (t1, t2, t3) =
+            when (language) {
+                "French" ->
+                    Triple(
+                        FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
+                        FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
+                        FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
+                    )
+                "German" ->
+                    Triple(
+                        DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
+                        DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
+                        DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
+                    )
+                "Italian" ->
+                    Triple(
+                        ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
+                        ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
+                        ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
+                    )
+                "Portuguese" ->
+                    Triple(
+                        PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
+                        PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
+                        PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
+                    )
+                "Russian" ->
+                    Triple(
+                        RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
+                        RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
+                        RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
+                    )
+                "Spanish" ->
+                    Triple(
+                        ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
+                        ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
+                        ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
+                    )
+                "Swedish" ->
+                    Triple(
+                        SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
+                        SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
+                        SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
+                    )
+                else ->
+                    Triple(
+                        ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
+                        ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
+                        ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
+                    )
+            }
+        return arrayOf(t1, t2, t3)
+    }
+
+    /**
+     * Returns the three Wiktionary explanation texts for the selected language.
+     * Shown when a translate command finds no result and the user taps the info icon.
+     *
+     * @return An array of three explanation strings about Wiktionary.
+     */
+    fun getInvalidTextsWiktionary(language: String): Array<String> {
+        val (t1, t2, t3) =
+            when (language) {
+                "French" ->
+                    Triple(
+                        FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
+                        FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
+                        FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
+                    )
+                "German" ->
+                    Triple(
+                        DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
+                        DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
+                        DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
+                    )
+                "Italian" ->
+                    Triple(
+                        ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
+                        ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
+                        ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
+                    )
+                "Portuguese" ->
+                    Triple(
+                        PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
+                        PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
+                        PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
+                    )
+                "Russian" ->
+                    Triple(
+                        RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
+                        RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
+                        RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
+                    )
+                "Spanish" ->
+                    Triple(
+                        ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
+                        ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
+                        ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
+                    )
+                "Swedish" ->
+                    Triple(
+                        SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
+                        SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
+                        SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
+                    )
+                else ->
+                    Triple(
+                        ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
+                        ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
+                        ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
+                    )
+            }
+        return arrayOf(t1, t2, t3)
+    }
 
     fun getBaseAutoSuggestions(language: String): List<String> =
         when (language) {

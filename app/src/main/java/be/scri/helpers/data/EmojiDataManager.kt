@@ -29,6 +29,8 @@ class EmojiDataManager(
         val db = fileManager.getLanguageDatabase(language) ?: return emojiMap
 
         db.use {
+            if (!it.tableExists("emoji_keywords")) return emojiMap
+
             it.rawQuery("SELECT MAX(LENGTH(word)) FROM emoji_keywords", null).use { cursor ->
                 if (cursor.moveToFirst()) {
                     maxKeywordLength = cursor.getInt(0)

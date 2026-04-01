@@ -15,7 +15,23 @@ object ESInterfaceVariables {
 
     const val SPACE_BAR = "espacio"
     const val LANGUAGE = "Español"
-    const val INVALID_COMMAND_MSG = "No en Wikidata"
+
+    const val INVALID_COMMAND_MSG_WIKIDATA = "No en Wikidata"
+    const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
+        "Wikidata es un gráfico de conocimiento editado de forma colaborativa y mantenido por la Fundación Wikimedia. Sirve como fuente de datos abiertos para proyectos como Wikipedia y muchos otros."
+    const val INVALID_COMMAND_TEXT_WIKIDATA_2 =
+        "Scribe utiliza los datos lingüísticos de Wikidata para muchas de sus funciones principales. ¡Obtenemos información como géneros de sustantivos, conjugaciones de verbos y mucho más!"
+    const val INVALID_COMMAND_TEXT_WIKIDATA_3 =
+        "Puedes crear una cuenta en wikidata.org para unirte a la comunidad que apoya a Scribe y a muchos otros proyectos. ¡Ayúdanos a llevar información gratuita al mundo!"
+
+    const val INVALID_COMMAND_MSG_WIKTIONARY = "No en Wiktionary"
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_1 =
+        "Wikcionario es un diccionario editado de forma colaborativa y mantenido por la Fundación Wikimedia. Sirve como fuente de datos lingüísticos gratuitos para proyectos como Wikipedia y muchos otros."
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_2 =
+        "Scribe utiliza los datos de Wikcionario para proporcionar traducciones para su comando Traducir. ¡Nuestros datos provienen de los numerosos pares de idiomas que la comunidad de Wikcionario ha creado!"
+    const val INVALID_COMMAND_TEXT_WIKTIONARY_3 =
+        "Puedes crear una cuenta en wiktionary.org para unirte a la comunidad que apoya a Scribe y a muchos otros proyectos. ¡Ayúdanos a llevar información gratuita al mundo!"
+
     val BASE_AUTOSUGGESTIONS = listOf("el", "la", "no")
     val NUMERIC_AUTOSUGGESTIONS = listOf("que", "de", "en")
 

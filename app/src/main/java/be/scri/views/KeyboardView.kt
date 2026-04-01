@@ -35,7 +35,6 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.content.edit
 import androidx.core.graphics.createBitmap
-import androidx.core.graphics.toColorInt
 import androidx.core.graphics.withSave
 import be.scri.R
 import be.scri.databinding.KeyboardViewKeyboardBinding
@@ -868,11 +867,10 @@ class KeyboardView
                         style = Paint.Style.FILL
                     }
                 mKeyboardBackgroundColor =
-                    if (isUserDarkMode) {
-                        "#1E1E1E".toColorInt()
-                    } else {
-                        "#d2d4da".toColorInt()
-                    }
+                    resources.getColor(
+                        if (isUserDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+                        context.theme,
+                    )
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
                 if (id != R.id.mini_keyboard_view) {
                     canvas.drawColor(mKeyboardBackgroundColor)
@@ -1050,13 +1048,12 @@ class KeyboardView
                             paint.typeface = Typeface.DEFAULT
                         }
 
+                        // Set key text color based on state.
                         paint.color =
-                            if (key.focused) {
-                                Color.WHITE
-                            } else if (key.focused) {
-                                mPrimaryColor.getContrastColor()
-                            } else {
-                                mTextColor
+                            when {
+                                key.focused -> Color.WHITE
+                                key.pressed -> mPrimaryColor.getContrastColor()
+                                else -> mTextColor
                             }
 
                         canvas.drawText(

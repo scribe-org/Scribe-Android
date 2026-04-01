@@ -28,6 +28,7 @@ class PrepositionDataManager(
             return hashMapOf()
         }
         return fileManager.getLanguageDatabase(language)?.use { db ->
+            if (!db.tableExists("prepositions")) return@use hashMapOf()
             db.rawQuery("SELECT preposition, grammaticalCase FROM prepositions", null).use { cursor ->
                 processCursor(cursor)
             } // handle case where cursor is null
