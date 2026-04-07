@@ -13,9 +13,11 @@ import be.scri.helpers.StringUtils.isWordCapitalized
 class AutocompletionDataManager(
     private val fileManager: DatabaseFileManager,
 ) {
-    private val trie = Trie()
+    private var trie = Trie()
     private var trieLoaded = false
     private val nounWords = mutableListOf<String>()
+    private var isGerman = false
+    private val germanNouns = mutableSetOf<String>()
 
     /**
      * Loads all words from the language-specific database into the trie.
@@ -28,10 +30,19 @@ class AutocompletionDataManager(
         language: String,
         numbersColumns: List<String> = emptyList(),
     ) {
+        trie = Trie()
+        trieLoaded = false
+        nounWords.clear()
+        germanNouns.clear()
+        isGerman = language.equals("DE", ignoreCase = true)
+
         val db = fileManager.getLanguageDatabase(language) ?: return
 
         db.use { database ->
-            if (database.tableExists("autocomplete_lexicon")) {
+            val hasLexicon = database.tableExists("autocomplete_lexicon")
+            val hasNouns = database.tableExists("nouns")
+
+            if (hasLexicon) {
                 database.rawQuery("SELECT word FROM autocomplete_lexicon", null).use { cursor ->
                     val wordIndex = cursor.getColumnIndex("word")
                     while (cursor.moveToNext()) {
@@ -42,7 +53,9 @@ class AutocompletionDataManager(
                     }
                 }
                 trieLoaded = true
-            } else if (database.tableExists("nouns") && numbersColumns.isNotEmpty()) {
+            }
+
+            if (hasNouns && numbersColumns.isNotEmpty()) {
                 val unionQuery =
                     numbersColumns.joinToString(" UNION ") { column ->
                         "SELECT DISTINCT $column AS word FROM nouns WHERE $column IS NOT NULL AND $column != ''"
@@ -53,7 +66,12 @@ class AutocompletionDataManager(
                     while (cursor.moveToNext()) {
                         val word = cursor.getString(wordIndex)?.lowercase()?.trim()
                         if (!word.isNullOrEmpty()) {
-                            nounWords.add(word)
+                            if (isGerman) {
+                                germanNouns.add(word)
+                            }
+                            if (!hasLexicon) {
+                                nounWords.add(word)
+                            }
                         }
                     }
                 }
@@ -75,17 +93,22 @@ class AutocompletionDataManager(
         limit: Int = 3,
     ): List<String> {
         val isCapitalized = isWordCapitalized(prefix)
+        val normalizedPrefix = prefix.lowercase().trim()
 
         val results =
             if (trieLoaded) {
-                trie.searchPrefix(prefix.lowercase().trim(), limit)
+                trie.searchPrefix(normalizedPrefix, limit)
             } else {
-                getAutocompletionsFromNouns(prefix.lowercase().trim(), limit)
+                getAutocompletionsFromNouns(normalizedPrefix, limit)
             }
-        return if (isCapitalized) {
-            results.map { it.replaceFirstChar { it.uppercaseChar() } }
-        } else {
-            results
+
+        return results.map { word ->
+            val isNoun = isGerman && germanNouns.contains(word)
+            if (isCapitalized || isNoun) {
+                word.replaceFirstChar { it.uppercaseChar() }
+            } else {
+                word
+            }
         }
     }
 
