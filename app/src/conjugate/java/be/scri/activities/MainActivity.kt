@@ -28,7 +28,7 @@ import be.scri.ui.common.bottombar.BottomBarScreen
 import be.scri.ui.theme.ScribeTheme
 
 /**
- * The main entry point of the app.
+ * The main entry point of the Conjugate app.
  * Initializes theme settings, navigation, and sets up the main UI using Jetpack Compose.
  */
 class MainActivity : ComponentActivity() {
