@@ -5,6 +5,7 @@ package be.scri.services
 import DataContract
 import android.R.color.white
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -34,6 +35,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import be.scri.R
+import be.scri.activities.MainActivity
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
@@ -322,6 +324,25 @@ abstract class GeneralKeyboardIME(
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
 
         moveToIdleState()
+
+        val languageAlias = getLanguageAlias(language)
+        val dbFile = applicationContext.getDatabasePath("${languageAlias}LanguageData.sqlite")
+        val hasData = dbFile.exists()
+        val banner = binding.root.findViewById<Button>(R.id.empty_state_banner)
+        if (hasData) {
+            banner.visibility = View.GONE
+        } else {
+            banner.visibility = View.VISIBLE
+            binding.commandOptionsBar.visibility = View.GONE
+        }
+
+
+        banner.setOnClickListener {
+            val intent = Intent(applicationContext, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(intent)
+        }
 
         applyNavBarColor()
 
