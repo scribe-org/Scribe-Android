@@ -329,18 +329,17 @@ abstract class GeneralKeyboardIME(
         val dbFile = applicationContext.getDatabasePath("${languageAlias}LanguageData.sqlite")
         val hasData = dbFile.exists()
         val banner = binding.root.findViewById<Button>(R.id.empty_state_banner)
-        if (hasData) {
-            banner.visibility = View.GONE
-        } else {
-            banner.visibility = View.VISIBLE
-            binding.commandOptionsBar.visibility = View.GONE
-        }
-
-
+        banner.visibility =
+            if (hasData) View.GONE else View.VISIBLE
+        binding.commandOptionsBar.visibility =
+            if (hasData) View.VISIBLE else View.GONE
         banner.setOnClickListener {
-            val intent = Intent(applicationContext, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
+            val intent =
+                Intent(applicationContext, MainActivity::class.java)
+                    .apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+
             startActivity(intent)
         }
 
