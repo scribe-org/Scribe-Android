@@ -1202,16 +1202,14 @@ abstract class GeneralKeyboardIME(
     fun findEmojisForPrefix(
         emojiKeywords: HashMap<String, MutableList<String>>?,
         prefix: String,
-    ): MutableList<String>? {
-        Log.d("GeneralKeyboardIME", "Prefix: $prefix")
-        return emojiKeywords
+    ): MutableList<String>? =
+        emojiKeywords
             ?.filterKeys { it.startsWith(prefix.lowercase(Locale.ROOT)) }
             ?.values
             ?.flatten()
             ?.distinct()
             ?.toMutableList()
             ?.takeIf { it.isNotEmpty() }
-    }
 
     /**
      * Finds the grammatical gender(s) for the last typed word.
