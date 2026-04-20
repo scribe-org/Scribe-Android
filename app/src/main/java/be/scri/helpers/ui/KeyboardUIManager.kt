@@ -783,8 +783,11 @@ class KeyboardUIManager(
     ) {
         if (currentState != ScribeState.IDLE) return
 
-        val isTablet = (context.resources.configuration.screenLayout
-            and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
+        val isTablet =
+            (
+                context.resources.configuration.screenLayout
+                    and Configuration.SCREENLAYOUT_SIZE_MASK
+            ) >= Configuration.SCREENLAYOUT_SIZE_LARGE
 
         val tabletButtons = listOf(binding.emojiBtnTablet1, binding.emojiBtnTablet2, binding.emojiBtnTablet3)
         val legacyPhoneButtons = listOf(binding.emojiBtnPhone1, binding.emojiBtnPhone2)
