@@ -4,6 +4,7 @@ package be.scri.helpers
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
@@ -116,7 +117,6 @@ class SuggestionHandler(
      */
     fun processEmojiSuggestions(currentWord: String?) {
         emojiSuggestionRunnable?.let { handler.removeCallbacks(it) }
-
         emojiSuggestionRunnable =
             Runnable {
                 if (ime.currentState != ScribeState.IDLE) {
@@ -131,19 +131,27 @@ class SuggestionHandler(
                     return@Runnable
                 }
 
-                val emojis =
-                    if (ime.emojiAutoSuggestionEnabled) {
-                        ime.findEmojisForLastWord(ime.emojiKeywords, currentWord)
+                var emojis: MutableList<String>?
+                if (ime.emojiColonModeOn) {
+                    val currentWordCleaned = currentWord.removePrefix(":") // Drop colon that triggered emojiColonMode
+                    emojis = if (currentWordCleaned.isEmpty()) { // For no word typed yet, show common emojis
+                        EmojiUtils.COMMON_EMOJIS.toMutableList()
                     } else {
-                        null
+                        ime.findEmojisForPrefix(ime.emojiKeywords, currentWordCleaned)
                     }
+                } else {
+                    emojis = null
+                }
 
                 val hasEmojiSuggestion = !emojis.isNullOrEmpty()
 
                 if (hasEmojiSuggestion) {
                     ime.autoSuggestEmojis = emojis
-                    ime.updateEmojiSuggestion(true, emojis)
                     ime.updateButtonVisibility(true)
+                    ime.updateEmojiSuggestion(true, emojis)
+                } else if (ime.emojiColonModeOn) { // Show blank buttons when there are no matches
+                    ime.autoSuggestEmojis = mutableListOf()
+                    ime.updateEmojiSuggestion(true, mutableListOf())
                 } else {
                     ime.updateButtonVisibility(false)
                 }
@@ -172,6 +180,7 @@ class SuggestionHandler(
     fun clearAllSuggestionsAndHideButtonUI() {
         emojiSuggestionRunnable?.let { handler.removeCallbacks(it) }
         linguisticSuggestionRunnable?.let { handler.removeCallbacks(it) }
+        wordSuggestionRunnable?.let { handler.removeCallbacks(it) }
 
         ime.disableAutoSuggest()
 
