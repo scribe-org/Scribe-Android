@@ -208,7 +208,7 @@ class KeyHandler(
      */
 
     private fun handleDeleteKey() {
-        val charToDelete = ime.currentInputConnection?.getTextBeforeCursor(1,0)
+        val charToDelete = ime.currentInputConnection?.getTextBeforeCursor(1, 0)
         ime.handleDelete(ime.isDeleteRepeating()) // pass the actual repeating status
 
         if (ime.currentState == ScribeState.IDLE) {
@@ -381,7 +381,6 @@ class KeyHandler(
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
         if (ime.currentState == ScribeState.IDLE) {
-
             if (code == ':'.code && ime.getLastWordBeforeCursor() == ":") { // " :" triggers emoji colon mode
                 ime.emojiColonModeOn = true
 

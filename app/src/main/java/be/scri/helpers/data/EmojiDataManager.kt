@@ -2,6 +2,7 @@
 package be.scri.helpers.data
 
 import android.database.Cursor
+import android.util.Log
 import be.scri.helpers.DatabaseFileManager
 
 /**
@@ -26,17 +27,22 @@ class EmojiDataManager(
      */
     fun getEmojiKeywords(language: String): HashMap<String, MutableList<String>> {
         val emojiMap = HashMap<String, MutableList<String>>()
+        Log.d("EmojiDataManager", "getEmojiKeywords")
         val db = fileManager.getLanguageDatabase(language) ?: return emojiMap
 
         db.use {
-            if (!it.tableExists("emoji_keywords")) return emojiMap
+            if (!it.tableExists("emojikeywords")) {
+                Log.d("EmojiDataManager", "table doesnt exist")
+                return emojiMap
+            }
+            Log.d("EmojiDataManager", "table exists")
 
-            it.rawQuery("SELECT MAX(LENGTH(word)) FROM emoji_keywords", null).use { cursor ->
+            it.rawQuery("SELECT MAX(LENGTH(word)) FROM emojikeywords", null).use { cursor ->
                 if (cursor.moveToFirst()) {
                     maxKeywordLength = cursor.getInt(0)
                 }
             }
-            it.rawQuery("SELECT * FROM emoji_keywords", null).use { cursor ->
+            it.rawQuery("SELECT * FROM emojikeywords", null).use { cursor ->
                 processEmojiCursor(cursor, emojiMap)
             }
         }

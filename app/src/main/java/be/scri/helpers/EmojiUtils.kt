@@ -50,7 +50,7 @@ object EmojiUtils {
         ic: InputConnection,
         emojiKeywords: HashMap<String, MutableList<String>>?,
         emojiMaxKeywordLength: Int,
-        emojiColonModeOn: Boolean
+        emojiColonModeOn: Boolean,
     ) {
         val maxLookBack = emojiMaxKeywordLength.coerceAtLeast(1)
         ic.beginBatchEdit()

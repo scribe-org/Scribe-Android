@@ -134,16 +134,20 @@ class SuggestionHandler(
                 var emojis: MutableList<String>?
                 if (ime.emojiColonModeOn) {
                     val currentWordCleaned = currentWord.removePrefix(":") // Drop colon that triggered emojiColonMode
-                    emojis = if (currentWordCleaned.isEmpty()) { // For no word typed yet, show common emojis
-                        EmojiUtils.COMMON_EMOJIS.toMutableList()
-                    } else {
-                        ime.findEmojisForPrefix(ime.emojiKeywords, currentWordCleaned)
-                    }
+                    emojis =
+                        if (
+                            currentWordCleaned.isEmpty()
+                        ) { // For no word typed yet, show common emojis
+                            EmojiUtils.COMMON_EMOJIS.toMutableList()
+                        } else {
+                            ime.findEmojisForPrefix(ime.emojiKeywords, currentWordCleaned)
+                        }
                 } else {
                     emojis = null
                 }
 
                 val hasEmojiSuggestion = !emojis.isNullOrEmpty()
+                Log.d("SuggestionHandler", "Has emoji suggestion: $hasEmojiSuggestion")
 
                 if (hasEmojiSuggestion) {
                     ime.autoSuggestEmojis = emojis
