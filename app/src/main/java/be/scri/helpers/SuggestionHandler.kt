@@ -4,7 +4,6 @@ package be.scri.helpers
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.ScribeState
 
@@ -147,7 +146,6 @@ class SuggestionHandler(
                 }
 
                 val hasEmojiSuggestion = !emojis.isNullOrEmpty()
-                Log.d("SuggestionHandler", "Has emoji suggestion: $hasEmojiSuggestion")
 
                 if (hasEmojiSuggestion) {
                     ime.autoSuggestEmojis = emojis
