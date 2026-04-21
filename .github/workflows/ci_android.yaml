@@ -91,11 +91,11 @@ jobs:
   instrumentation_test:
     runs-on: ubuntu-latest
     strategy:
-        matrix:
-            flavor: [ Conjugate, Keyboards ]
-        fail-fast: false
-        name: Run Android Instrumentation Tests (${{ matrix.flavor }})
-        timeout-minutes: 45
+      matrix:
+        flavor: [ Conjugate, Keyboards ]
+      fail-fast: false
+    name: Run Android Instrumentation Tests (${{ matrix.flavor }})
+    timeout-minutes: 45
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -130,4 +130,4 @@ jobs:
           script: |
             adb wait-for-device
             adb shell input keyevent 82
-              ./gradlew connected${{ matrix.flavor }}DebugAndroidTest --stacktrace
+            ./gradlew connected${{ matrix.flavor }}DebugAndroidTest --stacktrace
