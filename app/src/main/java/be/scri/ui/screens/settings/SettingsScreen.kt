@@ -21,6 +21,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
+import be.scri.helpers.AppFlavor
+import be.scri.helpers.FlavorProvider
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.appcomponents.InstallKeyboardButton
 import be.scri.ui.common.components.ItemCardContainerWithTitle
@@ -108,6 +110,8 @@ fun SettingsScreen(
             )
         }
 
+    val isKeyboardsApp = FlavorProvider.get() == AppFlavor.KEYBOARDS
+
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.i18n_app_settings_title),
         onBackNavigation = {},
@@ -121,20 +125,22 @@ fun SettingsScreen(
                 )
             }
 
-            item {
-                if (isKeyboardInstalled) {
-                    ItemCardContainerWithTitle(
-                        title = stringResource(R.string.i18n_app_settings_keyboard_title),
-                        cardItemsList = ScribeItemList(installedKeyboardList),
-                        isDivider = true,
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
-                } else {
-                    InstallKeyboardButton(
-                        onClick = {
-                            SettingsUtil.navigateToKeyboardSettings(context)
-                        },
-                    )
+            if (isKeyboardsApp) {
+                item {
+                    if (isKeyboardInstalled) {
+                        ItemCardContainerWithTitle(
+                            title = stringResource(R.string.i18n_app_settings_keyboard_title),
+                            cardItemsList = ScribeItemList(installedKeyboardList),
+                            isDivider = true,
+                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                    } else {
+                        InstallKeyboardButton(
+                            onClick = {
+                                SettingsUtil.navigateToKeyboardSettings(context)
+                            },
+                        )
+                    }
                 }
             }
 
