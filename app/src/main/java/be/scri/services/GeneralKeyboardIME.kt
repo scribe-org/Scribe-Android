@@ -144,6 +144,7 @@ abstract class GeneralKeyboardIME(
     var wordSuggestions: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
+    var emojiColonModeOn: Boolean = false
 
     internal var currentState: ScribeState = ScribeState.IDLE
     internal var invalidCommandSource: ScribeState = ScribeState.IDLE
@@ -324,6 +325,7 @@ abstract class GeneralKeyboardIME(
         emojiAutoSuggestionEnabled = getIsEmojiSuggestionsEnabled(applicationContext, language)
         autoSuggestEmojis = null
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+        emojiColonModeOn = false
 
         moveToIdleState()
 
@@ -682,6 +684,11 @@ abstract class GeneralKeyboardIME(
             currentVerbForConjugation = null
         } else {
             moveToIdleState()
+            // If the user just closed the command menu without selecting anything,
+            // and emoji colon mode was active, restore emoji suggestions.
+            if (emojiColonModeOn) {
+                suggestionHandler.processEmojiSuggestions(getLastWordBeforeCursor())
+            }
         }
         refreshUI()
     }
@@ -710,11 +717,16 @@ abstract class GeneralKeyboardIME(
 
     override fun onCloseClicked() {
         moveToIdleState()
+        // If the user just closed the command view without doing anything,
+        // and emoji colon mode was active, restore emoji suggestions.
+        if (emojiColonModeOn) {
+            suggestionHandler.processEmojiSuggestions(getLastWordBeforeCursor())
+        }
     }
 
     override fun onEmojiSelected(emoji: String) {
         if (emoji.isNotEmpty()) {
-            insertEmoji(emoji, currentInputConnection, emojiKeywords, emojiMaxKeywordLength)
+            insertEmoji(emoji, currentInputConnection, emojiKeywords, emojiMaxKeywordLength, emojiColonModeOn)
         }
     }
 
@@ -1236,6 +1248,27 @@ abstract class GeneralKeyboardIME(
         emojiKeywords: HashMap<String, MutableList<String>>?,
         lastWord: String?,
     ) = lastWord?.let { emojiKeywords?.get(it.lowercase()) }
+
+    /**
+     * Finds associated emojis for the last typed word by matching prefixes of keywords.
+     * i.e. 'cheer' should match 'cheerful'
+     *
+     * @param emojiKeywords The map of keywords to emojis.
+     * @param prefix The word to look up.
+     *
+     * @return A mutable list of emoji suggestions, or null if none are found.
+     */
+    fun findEmojisForPrefix(
+        emojiKeywords: HashMap<String, MutableList<String>>?,
+        prefix: String,
+    ): MutableList<String>? =
+        emojiKeywords
+            ?.filterKeys { it.startsWith(prefix.lowercase(Locale.ROOT)) }
+            ?.values
+            ?.flatten()
+            ?.distinct()
+            ?.toMutableList()
+            ?.takeIf { it.isNotEmpty() }
 
     /**
      * Finds the grammatical gender(s) for the last typed word.
@@ -1875,7 +1908,7 @@ abstract class GeneralKeyboardIME(
     fun updateEmojiSuggestion(
         enabled: Boolean,
         emojis: MutableList<String>?,
-    ) = uiManager.updateEmojiSuggestion(currentState, enabled, emojis)
+    ) = uiManager.updateEmojiSuggestion(currentState, enabled, emojis, emojiColonModeOn)
 
     /**
      * Disables all auto-suggestions and resets the suggestion buttons to their default, inactive state.

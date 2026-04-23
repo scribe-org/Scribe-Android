@@ -87,6 +87,33 @@ class KeyboardUIManager(
     var genderSuggestionLeft: Button? = binding.translateBtnLeft
     var genderSuggestionRight: Button? = binding.translateBtnRight
 
+    // 6-slot phone colon emoji row buttons
+    private val emojiColonPhoneButtons: List<Button> by lazy {
+        listOf(
+            binding.emojiColonPhone1,
+            binding.emojiColonPhone2,
+            binding.emojiColonPhone3,
+            binding.emojiColonPhone4,
+            binding.emojiColonPhone5,
+            binding.emojiColonPhone6,
+        )
+    }
+
+    // 9-slot tablet colon emoji row buttons
+    private val emojiColonTabletButtons: List<Button> by lazy {
+        listOf(
+            binding.emojiColonTablet1,
+            binding.emojiColonTablet2,
+            binding.emojiColonTablet3,
+            binding.emojiColonTablet4,
+            binding.emojiColonTablet5,
+            binding.emojiColonTablet6,
+            binding.emojiColonTablet7,
+            binding.emojiColonTablet8,
+            binding.emojiColonTablet9,
+        )
+    }
+
     // State variables specific to UI rendering.
     var currentCommandBarHint: String = ""
     var commandBarHintColor: Int = Color.GRAY
@@ -752,30 +779,73 @@ class KeyboardUIManager(
         currentState: ScribeState,
         isAutoSuggestEnabled: Boolean,
         autoSuggestEmojis: MutableList<String>?,
+        emojiColonModeOn: Boolean = false,
     ) {
         if (currentState != ScribeState.IDLE) return
 
+        val isTablet =
+            (
+                context.resources.configuration.screenLayout
+                    and Configuration.SCREENLAYOUT_SIZE_MASK
+            ) >= Configuration.SCREENLAYOUT_SIZE_LARGE
+
         val tabletButtons = listOf(binding.emojiBtnTablet1, binding.emojiBtnTablet2, binding.emojiBtnTablet3)
-        val phoneButtons = listOf(binding.emojiBtnPhone1, binding.emojiBtnPhone2)
+        val legacyPhoneButtons = listOf(binding.emojiBtnPhone1, binding.emojiBtnPhone2)
 
         if (isAutoSuggestEnabled && autoSuggestEmojis != null) {
-            val emojiListener = { emoji: String ->
-                View.OnClickListener { listener.onEmojiSelected(emoji) }
-            }
+            val emojiListener = { emoji: String -> View.OnClickListener { listener.onEmojiSelected(emoji) } }
 
-            tabletButtons.forEachIndexed { index, button ->
-                val emoji = autoSuggestEmojis.getOrNull(index) ?: ""
-                button.text = emoji
-                button.setOnClickListener(if (emoji.isNotEmpty()) emojiListener(emoji) else null)
-            }
+            if (emojiColonModeOn && !isTablet) {
+                // Phone colon mode: show the dedicated 6-slot row, hide word buttons and separators.
+                binding.translateBtn.visibility = View.GONE
+                binding.conjugateBtn.visibility = View.GONE
+                binding.pluralBtn.visibility = View.GONE
+                binding.separator2.visibility = View.GONE
+                binding.separator3.visibility = View.GONE
+                legacyPhoneButtons.forEach { it.visibility = View.GONE }
+                binding.emojiColonRowPhone.visibility = View.VISIBLE
 
-            phoneButtons.forEachIndexed { index, button ->
-                val emoji = autoSuggestEmojis.getOrNull(index) ?: ""
-                button.text = emoji
-                button.setOnClickListener(if (emoji.isNotEmpty()) emojiListener(emoji) else null)
+                emojiColonPhoneButtons.forEachIndexed { index, button ->
+                    val emoji = autoSuggestEmojis.getOrNull(index) ?: ""
+                    button.text = emoji
+                    button.setOnClickListener(if (emoji.isNotEmpty()) emojiListener(emoji) else null)
+                }
+            } else if (emojiColonModeOn && isTablet) {
+                // Tablet colon mode: show the dedicated 9-slot row, hide word buttons and separators.
+                binding.translateBtn.visibility = View.GONE
+                binding.conjugateBtn.visibility = View.GONE
+                binding.pluralBtn.visibility = View.GONE
+                binding.separator2.visibility = View.GONE
+                binding.separator3.visibility = View.GONE
+                legacyPhoneButtons.forEach { it.visibility = View.GONE }
+                tabletButtons.forEach { it.visibility = View.GONE }
+                binding.emojiColonRowPhone.visibility = View.GONE
+                binding.emojiColonRowTablet.visibility = View.VISIBLE
+
+                emojiColonTabletButtons.forEachIndexed { index, button ->
+                    val emoji = autoSuggestEmojis.getOrNull(index) ?: ""
+                    button.text = emoji
+                    button.setOnClickListener(if (emoji.isNotEmpty()) emojiListener(emoji) else null)
+                }
+            } else {
+                // Non-colon mode: ensure both colon rows are hidden, use existing emoji buttons.
+                binding.emojiColonRowPhone.visibility = View.GONE
+                binding.emojiColonRowTablet.visibility = View.GONE
+                tabletButtons.forEachIndexed { index, button ->
+                    val emoji = autoSuggestEmojis.getOrNull(index) ?: ""
+                    button.text = emoji
+                    button.setOnClickListener(if (emoji.isNotEmpty()) emojiListener(emoji) else null)
+                }
+                legacyPhoneButtons.forEachIndexed { index, button ->
+                    val emoji = autoSuggestEmojis.getOrNull(index) ?: ""
+                    button.text = emoji
+                    button.setOnClickListener(if (emoji.isNotEmpty()) emojiListener(emoji) else null)
+                }
             }
         } else {
-            (tabletButtons + phoneButtons).forEach { button ->
+            binding.emojiColonRowPhone.visibility = View.GONE
+            binding.emojiColonRowTablet.visibility = View.GONE
+            (tabletButtons + legacyPhoneButtons).forEach { button ->
                 button.text = ""
                 button.setOnClickListener(null)
             }
@@ -786,6 +856,14 @@ class KeyboardUIManager(
      * Disables all auto-suggestions and resets the suggestion buttons to their default, inactive state.
      */
     fun disableAutoSuggest(language: String) {
+        // Ensure both colon emoji rows are hidden and word buttons are fully restored.
+        binding.emojiColonRowPhone.visibility = View.GONE
+        binding.emojiColonRowTablet.visibility = View.GONE
+        binding.separator2.visibility = View.VISIBLE
+        binding.separator3.visibility = View.VISIBLE
+        binding.conjugateBtn.visibility = View.VISIBLE
+        binding.pluralBtn.visibility = View.VISIBLE
+
         binding.translateBtnRight.visibility = View.INVISIBLE
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtn.visibility = View.VISIBLE
