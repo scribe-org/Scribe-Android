@@ -5,6 +5,7 @@ package be.scri.services
 import DataContract
 import android.R.color.white
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -29,11 +30,13 @@ import android.view.inputmethod.InputConnection
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import be.scri.R
+import be.scri.activities.MainActivity
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
@@ -289,6 +292,7 @@ abstract class GeneralKeyboardIME(
                     keyboardMode = keyboardSymbols
                     R.xml.keys_symbols
                 }
+
                 else -> {
                     keyboardMode = keyboardLetters
                     getKeyboardLayoutXML()
@@ -322,6 +326,57 @@ abstract class GeneralKeyboardIME(
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
 
         moveToIdleState()
+
+        val languageAlias = getLanguageAlias(language)
+        val dbFile = applicationContext.getDatabasePath("${languageAlias}LanguageData.sqlite")
+        val hasData = dbFile.exists()
+        val banner = binding.root.findViewById<Button>(R.id.empty_state_banner)
+        banner.visibility =
+            if (hasData) View.GONE else View.VISIBLE
+        binding.commandOptionsBar.visibility =
+            if (hasData) View.VISIBLE else View.GONE
+        val isDarkMode = getIsDarkModeOrNot(applicationContext)
+        val bannerColor = if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
+        val bannerTextColor = if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
+        banner.setTextColor(ContextCompat.getColor(applicationContext, bannerTextColor))
+        banner.post {
+            val iconColor = ContextCompat.getColor(applicationContext, bannerTextColor)
+            banner.compoundDrawables.forEach { drawable ->
+                drawable?.setTint(iconColor)
+            }
+        }
+        val border = GradientDrawable()
+        border.cornerRadius = 12f * resources.displayMetrics.density
+        border.setColor(ContextCompat.getColor(applicationContext, bannerColor))
+
+        if (isDarkMode) {
+            border.setStroke((2f * resources.displayMetrics.density).toInt(), ContextCompat.getColor(applicationContext, bannerTextColor))
+        }
+
+        val rippleColor =
+            ColorUtils.setAlphaComponent(
+                ContextCompat.getColor(applicationContext, bannerTextColor),
+                51,
+            )
+
+        val ripple =
+            RippleDrawable(
+                android.content.res.ColorStateList
+                    .valueOf(rippleColor),
+                border,
+                null,
+            )
+        banner.background = ripple
+
+        banner.setOnClickListener {
+            val intent =
+                Intent(applicationContext, MainActivity::class.java)
+                    .apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+
+            startActivity(intent)
+        }
 
         applyNavBarColor()
 
@@ -434,6 +489,7 @@ abstract class GeneralKeyboardIME(
                         handleModeChange(keyboardMode, keyboardView, this)
                     }
                 }
+
                 KeyboardBase.KEYCODE_ENTER -> handleKeycodeEnter()
                 KeyboardBase.KEYCODE_MODE_CHANGE -> handleModeChange(keyboardMode, keyboardView, this)
                 else -> {
@@ -759,14 +815,17 @@ abstract class GeneralKeyboardIME(
                             refreshUI()
                             return
                         }
+
                         null -> ""
                         else -> if (isAllCaps) pluralResult.uppercase() else pluralResult
                     }
                 }
+
                 ScribeState.TRANSLATE -> {
                     val translation = getTranslation(language, rawInput)
                     if (isAllCaps) translation.uppercase() else translation
                 }
+
                 else -> ""
             }
 
@@ -1272,10 +1331,12 @@ abstract class GeneralKeyboardIME(
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
                     true
                 }
+
                 ((nounTypeSuggestion?.size ?: 0) > 1) -> {
                     handleMultipleNounFormats(nounTypeSuggestion, "noun")
                     true
                 }
+
                 handlePluralIfNeeded(isPlural) -> true
                 handleSingleNounSuggestion(nounTypeSuggestion) -> true
                 handleMultipleCases(caseAnnotationSuggestion) -> true
@@ -1543,9 +1604,11 @@ abstract class GeneralKeyboardIME(
             "noun" ->
                 handleColorAndTextForNounType(leftType, language, applicationContext) to
                     handleColorAndTextForNounType(rightType, language, applicationContext)
+
             "preposition" ->
                 handleTextForCaseAnnotation(leftType, language, applicationContext) to
                     handleTextForCaseAnnotation(rightType, language, applicationContext)
+
             else -> null
         }
     }
@@ -1594,9 +1657,11 @@ abstract class GeneralKeyboardIME(
             hasLinguisticSuggestions && emojiCount != 0 -> {
                 uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
             }
+
             hasLinguisticSuggestions && emojiCount == 0 -> {
                 setSuggestionButton(uiManager.pluralBtn!!, suggestion2)
             }
+
             else -> {
                 setSuggestionButton(uiManager.binding.translateBtn, suggestion2)
                 setSuggestionButton(uiManager.pluralBtn!!, suggestion3)
@@ -1744,6 +1809,7 @@ abstract class GeneralKeyboardIME(
                 keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_2X1_BOTTOM)
                 subsequentAreaRequired = false
             }
+
             DATA_CONSTANT_3 -> {
                 keyboardView?.setKeyLabel(flattenList[0], "HI", KeyboardBase.CODE_1X3_RIGHT)
                 keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_1X3_CENTER)
@@ -1786,6 +1852,7 @@ abstract class GeneralKeyboardIME(
                     }
                 }
             }
+
             else -> {
                 getKeyboardLayoutXML()
             }
