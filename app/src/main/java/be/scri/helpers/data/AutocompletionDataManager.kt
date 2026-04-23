@@ -103,8 +103,8 @@ class AutocompletionDataManager(
             }
 
         return results.map { word ->
-            val isNoun = isGerman && germanNouns.contains(word)
-            if (isCapitalized || isNoun) {
+            val isGermanNoun = isGerman && germanNouns.contains(word)
+            if (isCapitalized || isGermanNoun) {
                 word.replaceFirstChar { it.uppercaseChar() }
             } else {
                 word
