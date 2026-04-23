@@ -84,10 +84,11 @@ data class TutorialStep(
  * @return true if the active input method belongs to the Scribe package, false otherwise.
  */
 fun isScribeKeyboardActive(context: Context): Boolean {
-    val currentInputMethod = Settings.Secure.getString(
-        context.contentResolver,
-        Settings.Secure.DEFAULT_INPUT_METHOD,
-    )
+    val currentInputMethod =
+        Settings.Secure.getString(
+            context.contentResolver,
+            Settings.Secure.DEFAULT_INPUT_METHOD,
+        )
     return currentInputMethod?.contains("be.scri") == true
 }
 
@@ -102,9 +103,9 @@ fun isScribeKeyboardActive(context: Context): Boolean {
  *
  * @param chapterTitle The title of the current chapter (e.g., "Noun annotation").
  * @param step The [TutorialStep] data for the current step.
- * @param onBackPressed Callback when the back button is pressed.
- * @param onClosePressed Callback when the close (X) button is pressed.
- * @param onNextPressed Callback when the Next/Finish button is pressed.
+ * @param onBackPress Callback when the back button is pressed.
+ * @param onClosePress Callback when the close (X) button is pressed.
+ * @param onNextPress Callback when the Next/Finish button is pressed.
  * @param modifier Modifier for this composable.
  * @param isLastStep Whether this is the final step in the entire tutorial.
  * @param showQuickTutorialHeader Whether to show "Quick tutorial" back link instead of back arrow.
@@ -113,9 +114,9 @@ fun isScribeKeyboardActive(context: Context): Boolean {
 fun TutorialStepScreen(
     chapterTitle: String,
     step: TutorialStep,
-    onBackPressed: () -> Unit,
-    onClosePressed: () -> Unit,
-    onNextPressed: () -> Unit,
+    onBackPress: () -> Unit,
+    onClosePress: () -> Unit,
+    onNextPress: () -> Unit,
     modifier: Modifier = Modifier,
     isLastStep: Boolean = false,
     showQuickTutorialHeader: Boolean = false,
@@ -125,8 +126,8 @@ fun TutorialStepScreen(
 
     if (!isScribeActive) {
         WrongKeyboardScreen(
-            onBackPressed = onBackPressed,
-            onClosePressed = onClosePressed,
+            onBackPress = onBackPress,
+            onClosePress = onClosePress,
         )
         return
     }
@@ -168,7 +169,7 @@ fun TutorialStepScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = onBackPressed) {
+            IconButton(onClick = onBackPress) {
                 if (showQuickTutorialHeader) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
@@ -191,7 +192,7 @@ fun TutorialStepScreen(
                     )
                 }
             }
-            IconButton(onClick = onClosePressed) {
+            IconButton(onClick = onClosePress) {
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = "Close tutorial",
@@ -315,7 +316,7 @@ fun TutorialStepScreen(
 
         // Next / Finish button
         Button(
-            onClick = onNextPressed,
+            onClick = onNextPress,
             enabled = validationState == InputValidationState.CORRECT,
             colors =
                 ButtonDefaults.buttonColors(

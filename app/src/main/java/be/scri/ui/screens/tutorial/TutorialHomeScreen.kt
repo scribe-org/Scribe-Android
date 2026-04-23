@@ -70,15 +70,17 @@ data class TutorialChapter(
  * Displays a list of tutorial chapters and a button to start the full tutorial.
  * This screen is accessible from the About tab.
  *
- * @param onBackPressed Callback when the back button is pressed.
- * @param onChapterSelected Callback when a specific chapter is tapped.
+ * @param onBackPress Callback when the back button is pressed.
+ * @param onChapterSelect Callback when a specific chapter is tapped.
  * @param onStartFullTutorial Callback when the "Start full tutorial" button is pressed.
+ * @param modifier Modifier for this composable.
  */
 @Composable
 fun TutorialHomeScreen(
-    onBackPressed: () -> Unit,
-    onChapterSelected: (Int) -> Unit,
+    onBackPress: () -> Unit,
+    onChapterSelect: (Int) -> Unit,
     onStartFullTutorial: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     val backgroundColor = if (isDarkTheme) TutorialColors.aboutBackgroundDark else TutorialColors.aboutBackground
@@ -97,7 +99,7 @@ fun TutorialHomeScreen(
 
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .background(backgroundColor)
                 .padding(16.dp),
@@ -105,7 +107,7 @@ fun TutorialHomeScreen(
         // Back button
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.clickable { onBackPressed() },
+            modifier = Modifier.clickable { onBackPress() },
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
@@ -186,7 +188,7 @@ fun TutorialHomeScreen(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .clickable { onChapterSelected(chapter.chapterIndex) }
+                                .clickable { onChapterSelect(chapter.chapterIndex) }
                                 .padding(horizontal = 16.dp, vertical = 14.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,

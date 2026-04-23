@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,13 +33,15 @@ import androidx.compose.ui.unit.sp
  * Screen displayed when the user has a non-Scribe keyboard active during the tutorial.
  * Prompts the user to press the globe button to switch to a Scribe keyboard.
  *
- * @param onBackPressed Callback when the back button is pressed.
- * @param onClosePressed Callback when the close (X) button is pressed.
+ * @param onBackPress Callback when the back button is pressed.
+ * @param onClosePress Callback when the close (X) button is pressed.
+ * @param modifier Modifier for this composable.
  */
 @Composable
 fun WrongKeyboardScreen(
-    onBackPressed: () -> Unit,
-    onClosePressed: () -> Unit,
+    onBackPress: () -> Unit,
+    onClosePress: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     val backgroundColor = if (isDarkTheme) TutorialColors.darkBackground else TutorialColors.lightBackground
@@ -49,7 +50,7 @@ fun WrongKeyboardScreen(
 
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .background(backgroundColor),
     ) {
@@ -62,7 +63,7 @@ fun WrongKeyboardScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = onBackPressed) {
+            IconButton(onClick = onBackPress) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     contentDescription = "Back",
@@ -70,7 +71,7 @@ fun WrongKeyboardScreen(
                     modifier = Modifier.size(28.dp),
                 )
             }
-            IconButton(onClick = onClosePressed) {
+            IconButton(onClick = onClosePress) {
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = "Close tutorial",
@@ -89,7 +90,7 @@ fun WrongKeyboardScreen(
             modifier = Modifier.padding(horizontal = 20.dp),
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.padding(8.dp))
 
         // Instruction card
         Card(
@@ -101,7 +102,7 @@ fun WrongKeyboardScreen(
                     .padding(horizontal = 20.dp),
         ) {
             Text(
-                text = "Press the 🌐 button to select a Scribe keyboard.",
+                text = "Press the \uD83C\uDF10 button to select a Scribe keyboard.",
                 color = textColor,
                 fontSize = 15.sp,
                 lineHeight = 22.sp,

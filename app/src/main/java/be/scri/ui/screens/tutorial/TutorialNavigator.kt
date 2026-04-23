@@ -111,8 +111,8 @@ fun TutorialNavigator(onTutorialExit: () -> Unit) {
     when (currentScreen) {
         "home" -> {
             TutorialHomeScreen(
-                onBackPressed = onTutorialExit,
-                onChapterSelected = { chapterIndex ->
+                onBackPress = onTutorialExit,
+                onChapterSelect = { chapterIndex ->
                     currentChapterIndex = chapterIndex
                     currentStepIndex = 0
                     isFullTutorial = false
@@ -139,7 +139,7 @@ fun TutorialNavigator(onTutorialExit: () -> Unit) {
                 step = step,
                 isLastStep = isLastStep,
                 showQuickTutorialHeader = !isFullTutorial && currentStepIndex == 0,
-                onBackPressed = {
+                onBackPress = {
                     when {
                         currentStepIndex > 0 -> {
                             currentStepIndex--
@@ -154,10 +154,10 @@ fun TutorialNavigator(onTutorialExit: () -> Unit) {
                         }
                     }
                 },
-                onClosePressed = {
+                onClosePress = {
                     currentScreen = "home"
                 },
-                onNextPressed = {
+                onNextPress = {
                     when {
                         !isLastStepInChapter -> {
                             currentStepIndex++

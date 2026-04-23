@@ -56,7 +56,7 @@ fun AboutScreen(
 
     if (showTutorial) {
         TutorialNavigator(
-            onTutorialExit = { showTutorial = false }
+            onTutorialExit = { showTutorial = false },
         )
         return
     }
