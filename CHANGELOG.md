@@ -11,3 +11,7 @@ Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJ
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 # Scribe-Android 1.0.0
+
+### ✨ New Features
+
+- Conjugate app download data UI that displays all supported languages alphabetically, using shared components with the keyboard app ([#564](https://github.com/scribe-org/Scribe-Android/issues/564))
