@@ -43,6 +43,7 @@ import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
 import be.scri.ui.screens.download.CheckUpdateActions
+import be.scri.ui.screens.download.ConjugateDownloadDataScreen
 import be.scri.ui.screens.download.DataDownloadViewModel
 import be.scri.ui.screens.download.DownloadActions
 import be.scri.ui.screens.download.DownloadDataScreen
@@ -172,7 +173,7 @@ fun ScribeApp(
                                 ) {
                                     ConjugateScreen(
                                         onNavigateToDownloadData = {
-                                            navController.navigate("download_data")
+                                            navController.navigate("conjugate_download_data")
                                         },
                                     )
                                 }
@@ -250,6 +251,18 @@ fun ScribeApp(
                             navController.navigate(
                                 "translation_language_detail/$language",
                             )
+                        },
+                        isDarkTheme = isDarkTheme,
+                        downloadActions = downloadActions,
+                        checkUpdateActions = checkUpdateActions,
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                }
+
+                composable("conjugate_download_data") {
+                    ConjugateDownloadDataScreen(
+                        onBackNavigation = {
+                            navController.popBackStack()
                         },
                         isDarkTheme = isDarkTheme,
                         downloadActions = downloadActions,
