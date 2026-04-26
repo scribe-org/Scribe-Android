@@ -11,3 +11,7 @@ Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJ
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 # Scribe-Android 1.0.0
+
+### CI/CD
+
+- Added `ci_changelog_check` workflow to enforce `CHANGELOG.md` updates on all PRs targeting `main`, with support for a `no-changelog` label to skip the check when appropriate
