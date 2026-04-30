@@ -697,7 +697,9 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun onConjugateClicked() {
-        currentState = ScribeState.CONJUGATE
+        if (currentState != ScribeState.SELECT_VERB_CONJUNCTION) {
+            currentState = ScribeState.CONJUGATE
+        }
         refreshUI()
     }
 
