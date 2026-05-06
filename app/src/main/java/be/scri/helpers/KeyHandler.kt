@@ -51,7 +51,7 @@ class KeyHandler(
         resetShiftIfNeeded(code)
 
         val previousWasLastKeySpace = wasLastKeySpace
-        if (code != KeyboardBase.KEYCODE_SPACE) {
+        if (code != KeyboardBase.KEYCODE_SPACE && !ime.emojiColonModeOn) { // None to clear in emoji colon mode, causes unnecessary flash when called
             suggestionHandler.clearLinguisticSuggestions()
         }
 
@@ -134,6 +134,7 @@ class KeyHandler(
 
     /**
      * Handles the space key press and returns whether to reset wasLastKeySpace at the end.
+     * Switches emoji colon mode off, if on.
      *
      * @param previousWasLastKeySpace The previous state of wasLastKeySpace.
      *
@@ -141,6 +142,11 @@ class KeyHandler(
      */
     private fun handleSpaceKeyPress(previousWasLastKeySpace: Boolean): Boolean {
         wasLastKeySpace = spaceKeyProcessor.processKeycodeSpace(previousWasLastKeySpace)
+        // If we're suggesting emojis in colon mode, stop. Space should break emoji suggestions, and return to normal
+        if (ime.emojiColonModeOn) {
+            ime.emojiColonModeOn = false
+            ime.clearAutocomplete()
+        }
         return false
     }
 
@@ -198,15 +204,27 @@ class KeyHandler(
     /**
      * Handles the delete/backspace key press. It delegates the deletion logic to the IME
      * and then triggers a re-evaluation of word suggestions based on the new text.
+     * Turns off emoji colon mode if colon is deleted that triggered it.
      */
 
     private fun handleDeleteKey() {
+        val charToDelete = ime.currentInputConnection?.getTextBeforeCursor(1, 0)
         ime.handleDelete(ime.isDeleteRepeating()) // pass the actual repeating status
 
         if (ime.currentState == ScribeState.IDLE) {
+            val deletedChar = charToDelete?.takeIf { it.isNotEmpty() }?.last()
+            if (deletedChar == ':' && ime.emojiColonModeOn) {
+                ime.emojiColonModeOn = false
+                ime.clearAutocomplete()
+            }
+
             val currentWord = ime.getLastWordBeforeCursor()
-            autocompletionHandler.processAutocomplete(currentWord)
-            suggestionHandler.processEmojiSuggestions(currentWord)
+            if (ime.emojiColonModeOn) {
+                suggestionHandler.processEmojiSuggestions(currentWord)
+            } else {
+                autocompletionHandler.processAutocomplete(currentWord)
+                suggestionHandler.processEmojiSuggestions(currentWord)
+            }
         }
     }
 
@@ -243,10 +261,15 @@ class KeyHandler(
     /**
      * Handles the mode change key press (e.g., switching to the symbol keyboard).
      * It delegates the logic to the IME and clears any active suggestions.
+     * In emoji colon mode, restore emoji suggestions from before mode change.
      */
     private fun handleModeChangeKey() {
         ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime)
-        suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+        if (ime.emojiColonModeOn) {
+            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+        } else {
+            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+        }
     }
 
     /**
@@ -341,7 +364,7 @@ class KeyHandler(
     /**
      * Handles default key presses (regular characters, numbers, symbols).
      * Commits the character to the input connection and processes suggestions.
-     *
+     * Toggles colon emoji mode on if ':' typed.
      * @param code The key code representing the character to input.
      */
 
@@ -358,9 +381,31 @@ class KeyHandler(
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
         if (ime.currentState == ScribeState.IDLE) {
+            if (code == ':'.code && ime.getLastWordBeforeCursor() == ":") { // " :" triggers emoji colon mode
+                ime.emojiColonModeOn = true
+
+                val commonEmojis = EmojiUtils.COMMON_EMOJIS.toMutableList()
+                ime.autoSuggestEmojis = commonEmojis
+                ime.updateButtonVisibility(true)
+                ime.updateEmojiSuggestion(true, commonEmojis) // Show common emojis otherwise there's a small delay where words pop up
+            }
+
             val currentWord = ime.getLastWordBeforeCursor()
-            autocompletionHandler.processAutocomplete(currentWord)
-            suggestionHandler.processEmojiSuggestions(currentWord)
+            if (ime.emojiColonModeOn) {
+                currentWord?.startsWith(":")?.let {
+                    if (!it) { // Turn emoji colon mode off if there's no colon anymore (like if an emoji was just selected)
+                        ime.emojiColonModeOn = false
+                        ime.clearAutocomplete()
+                        autocompletionHandler.processAutocomplete(currentWord)
+                        suggestionHandler.processEmojiSuggestions(currentWord)
+                    } else {
+                        suggestionHandler.processEmojiSuggestions(currentWord)
+                    }
+                }
+            } else { // Normal suggestions
+                autocompletionHandler.processAutocomplete(currentWord)
+                suggestionHandler.processEmojiSuggestions(currentWord)
+            }
         } else if (isCommandBarActive) {
             suggestionHandler.clearAllSuggestionsAndHideButtonUI()
             autocompletionHandler.clearAutocomplete()
