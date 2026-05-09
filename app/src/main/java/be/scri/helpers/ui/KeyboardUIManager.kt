@@ -62,6 +62,8 @@ class KeyboardUIManager(
 
         fun getKeyboardLayoutXML(): Int
 
+        fun getCurrentKeyboardLayoutXML(): Int
+
         fun getCurrentEnterKeyType(): Int
 
         fun commitText(text: String)
@@ -226,7 +228,11 @@ class KeyboardUIManager(
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(context, R.drawable.ic_scribe_icon_vector)
 
-        initializeKeyboard(listener.getKeyboardLayoutXML())
+        val keyboardXml = listener.getCurrentKeyboardLayoutXML()
+        initializeKeyboard(keyboardXml)
+        if (keyboardXml == R.xml.keys_symbols) {
+            setupCurrencySymbol(language)
+        }
 
         updateButtonVisibility(ScribeState.IDLE, emojiAutoSuggestionEnabled, autoSuggestEmojis)
         updateEmojiSuggestion(ScribeState.IDLE, emojiAutoSuggestionEnabled, autoSuggestEmojis)
