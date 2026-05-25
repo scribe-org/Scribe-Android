@@ -86,7 +86,7 @@ jobs:
         if: success()
         with:
           name: latest-apk
-          path: "app/build/outputs/apk/conjugate/debug/app-conjugate-debug.apk"
+          path: "app/build/outputs/apk/*/debug/*.apk"
 
   instrumentation_test:
     runs-on: ubuntu-latest
