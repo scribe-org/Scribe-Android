@@ -57,6 +57,7 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
+import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.KeyboardUIManager
@@ -121,6 +122,7 @@ abstract class GeneralKeyboardIME(
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
 
     private lateinit var dbManagers: DatabaseManagers
+    private lateinit var nativeSuggestionEngine: NativeSuggestionEngine
     private lateinit var suggestionHandler: SuggestionHandler
     private lateinit var autocompletionHandler: AutocompletionHandler
     private lateinit var autocompletionManager: AutocompletionDataManager
@@ -188,9 +190,17 @@ abstract class GeneralKeyboardIME(
     override fun onCreate() {
         super.onCreate()
         dbManagers = DatabaseManagers(this)
+        nativeSuggestionEngine = NativeSuggestionEngine(this)
         suggestionHandler = SuggestionHandler(this)
         autocompletionManager = dbManagers.autocompletionManager
         autocompletionHandler = AutocompletionHandler(this)
+    }
+
+    override fun onDestroy() {
+        if (this::nativeSuggestionEngine.isInitialized) {
+            nativeSuggestionEngine.close()
+        }
+        super.onDestroy()
     }
 
     /**
@@ -1007,8 +1017,14 @@ abstract class GeneralKeyboardIME(
     fun getAutocompletions(
         prefix: String,
         limit: Int = 3,
-    ): List<String> =
-        try {
+    ): List<String> {
+        if (this::nativeSuggestionEngine.isInitialized) {
+            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
+            if (nativeCompletions.isNotEmpty()) {
+                return nativeCompletions
+            }
+        }
+        return try {
             dbManagers.autocompletionManager.getAutocompletions(prefix, limit)
         } catch (e: SQLiteException) {
             Log.e("GeneralKeyboardIME", "Database error in autocompletion", e)
@@ -1017,6 +1033,7 @@ abstract class GeneralKeyboardIME(
             Log.e("GeneralKeyboardIME", "Illegal state in autocompletion", e)
             emptyList()
         }
+    }
 
     /**
      * Gets the current text in the command bar without the cursor.
@@ -1285,7 +1302,16 @@ abstract class GeneralKeyboardIME(
     fun getNextWordSuggestions(
         wordSuggestions: HashMap<String, List<String>>,
         lastWord: String?,
-    ): List<String>? = lastWord?.let { wordSuggestions[it.lowercase()] }
+    ): List<String>? {
+        if (lastWord == null) return null
+        if (this::nativeSuggestionEngine.isInitialized) {
+            val nativeSuggestions = nativeSuggestionEngine.getNextWordSuggestions(language, lastWord)
+            if (nativeSuggestions.isNotEmpty()) {
+                return nativeSuggestions
+            }
+        }
+        return wordSuggestions[lastWord.lowercase()]
+    }
 
     /**
      * Finds the required grammatical case(s) for a preposition.
@@ -1663,7 +1689,10 @@ abstract class GeneralKeyboardIME(
             hasLinguisticSuggestions && emojiCount == 0 -> {
                 setSuggestionButton(uiManager.pluralBtn!!, suggestion2)
             }
-
+            !hasLinguisticSuggestions && emojiCount != 0 -> {
+                setSuggestionButton(uiManager.binding.translateBtn, suggestion2)
+                uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
+            }
             else -> {
                 setSuggestionButton(uiManager.binding.translateBtn, suggestion2)
                 setSuggestionButton(uiManager.pluralBtn!!, suggestion3)
