@@ -1,10 +1,12 @@
+@file:Suppress("ktlint", "detekt.all")
+
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 
 package be.scri.helpers
 
 import android.content.Context
 import android.util.Log
-import be.scri.inputmethod.latin.BinaryDictionary
 import be.scri.inputmethod.keyboard.ProximityInfo
 import be.scri.latin.NgramContext
 import be.scri.latin.common.ComposedData

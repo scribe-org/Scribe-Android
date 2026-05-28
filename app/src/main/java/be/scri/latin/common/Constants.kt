@@ -1,3 +1,5 @@
+@file:Suppress("ktlint", "detekt.all")
+
 // SPDX-License-Identifier: GPL-3.0-only
 package be.scri.latin.common
 

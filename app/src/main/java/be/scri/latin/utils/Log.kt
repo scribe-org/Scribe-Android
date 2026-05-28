@@ -1,3 +1,5 @@
+@file:Suppress("ktlint", "detekt.all")
+
 package be.scri.latin.utils
 
 import android.os.Build

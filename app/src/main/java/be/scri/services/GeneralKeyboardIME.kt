@@ -46,6 +46,7 @@ import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
+import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getHoldKeyStyle
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
@@ -57,7 +58,6 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
-import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.KeyboardUIManager

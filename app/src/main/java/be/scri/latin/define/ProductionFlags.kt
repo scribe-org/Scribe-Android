@@ -1,3 +1,5 @@
+@file:Suppress("ktlint", "detekt.all")
+
 /*
  * Copyright (C) 2012 The Android Open Source Project
  * modified
