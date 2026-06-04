@@ -607,7 +607,9 @@ object PreferencesHelper {
             putBoolean("hint_shown_about", false)
             apply()
         }
-     * Saves the user's "Increase Text Size" preference.
+    }
+
+    /** Saves the user's "Increase Text Size" preference.
      *
      * @param context The application context used to access SharedPreferences.
      * @param increaseTextSize `true` to enable larger text size, `false` to use default size.
