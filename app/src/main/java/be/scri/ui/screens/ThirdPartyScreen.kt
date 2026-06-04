@@ -19,12 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
-import be.scri.ui.theme.ScribeTypography
 
 /**
  * The about screen to display third-party legal information for software used in the application.
@@ -51,19 +48,11 @@ fun ThirdPartyScreen(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = stringResource(id = R.string.i18n_app_about_legal_third_party_text),
-                    fontSize = ScribeTypography.bodyMedium.fontSize,
-                    style =
-                        TextStyle.Default.copy(
-                            fontStyle = ScribeTypography.bodyMedium.fontStyle,
-                        ),
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Text(
                     text = stringResource(id = R.string.i18n_app_about_legal_third_party_entry_simple_keyboard),
-                    fontSize = ScribeTypography.bodyMedium.fontSize,
-                    style =
-                        TextStyle.Default.copy(
-                            fontStyle = ScribeTypography.bodyMedium.fontStyle,
-                        ),
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
@@ -92,13 +81,8 @@ fun ThirdPartyScreenContent(
         Text(
             text = title,
             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
-            fontSize = ScribeTypography.headlineMedium.fontSize,
-            style =
-                TextStyle.Default.copy(
-                    fontStyle = ScribeTypography.headlineMedium.fontStyle,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                ),
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Card(
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),

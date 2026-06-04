@@ -34,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import be.scri.R
@@ -102,7 +101,6 @@ fun ConfirmationDialogContent(
     val buttonConfirmColor: Color
     val buttonChangeColor: Color
     val buttonTextColor: Color
-    val textFontSize = 16.sp
     val buttonPadding = 8.dp
     if (isUserDarkMode) {
         buttonConfirmColor = colorResource(R.color.dark_scribe_blue)
@@ -168,7 +166,6 @@ fun ConfirmationDialogContent(
                         Text(
                             text = text,
                             color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = textFontSize,
                             style =
                                 MaterialTheme.typography.bodyMedium.merge(
                                     TextStyle(lineHeight = 1.5.em),
@@ -208,7 +205,7 @@ fun ConfirmationDialogContent(
                             ) {
                                 Text(
                                     text = textChange,
-                                    fontSize = textFontSize,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier,
                                 )
                             }
@@ -243,7 +240,7 @@ fun ConfirmationDialogContent(
                             ) {
                                 Text(
                                     text = textConfirm,
-                                    fontSize = textFontSize,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier,
                                 )
                             }

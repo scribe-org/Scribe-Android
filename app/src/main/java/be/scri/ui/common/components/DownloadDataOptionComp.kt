@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.ui.screens.download.DownloadState
 
@@ -87,7 +86,7 @@ private fun DownloadButtonContent(
                     DownloadState.Completed -> stringResource(R.string.i18n_app_download_menu_ui_download_data_up_to_date)
                     DownloadState.Update -> stringResource(R.string.i18n_app_download_menu_ui_download_data_update)
                 },
-            fontSize = 13.sp,
+            style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.weight(1f),
             maxLines = 1,

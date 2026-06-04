@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.scri.R
 
 /**
@@ -50,7 +49,6 @@ fun ActionBar(
         }
         Text(
             text = title,
-            fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,

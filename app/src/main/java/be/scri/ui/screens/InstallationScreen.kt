@@ -102,7 +102,7 @@ fun InstallationScreen(
                 text = stringResource(R.string.i18n_app_installation_keyboard_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
-                fontSize = Dimensions.TextSizeLarge_I,
+                style = MaterialTheme.typography.headlineMedium,
                 modifier =
                     Modifier
                         .padding(
@@ -137,27 +137,27 @@ fun InstallationScreen(
                         Row(modifier = Modifier.padding(top = Dimensions.PaddingSmall)) {
                             Text(
                                 text = "1. ",
-                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                             Text(
                                 text = stringResource(R.string.i18n_app_installation_keyboard_keyboard_settings),
                                 color = colorResource(R.color.dark_scribe_blue),
-                                fontSize = Dimensions.TextSizeMedium,
                                 fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                         }
 
                         Row(modifier = Modifier.padding(top = Dimensions.PaddingSmall)) {
                             Text(
                                 text = "2. ",
-                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                             Text(
                                 text = stringResource(R.string.i18n_app_installation_keyboard_text_2),
-                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                         }
                         Row(
@@ -166,13 +166,13 @@ fun InstallationScreen(
                         ) {
                             Text(
                                 text = "3. ",
-                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                             Text(
                                 text = stringResource(R.string.i18n_app_installation_keyboard_text_3),
-                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                             Image(
                                 painter = painterResource(resource),
@@ -186,8 +186,8 @@ fun InstallationScreen(
                             )
                             Text(
                                 text = stringResource(R.string.i18n_app_installation_keyboard_text_4),
-                                fontSize = Dimensions.TextSizeMedium,
                                 color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                         }
                     }
@@ -232,7 +232,7 @@ fun InstallationScreen(
                 text = stringResource(R.string.i18n_app_download_menu_option_scribe_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
-                fontSize = Dimensions.TextSizeLarge_I,
+                style = MaterialTheme.typography.headlineMedium,
                 modifier =
                     Modifier
                         .padding(
@@ -268,9 +268,9 @@ fun InstallationScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.i18n_app_download_menu_option_scribe_download_data),
-                            fontSize = Dimensions.TextSizeMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         Image(
                             painter = painterResource(R.drawable.right_arrow),
@@ -283,8 +283,8 @@ fun InstallationScreen(
                     }
                     Text(
                         text = stringResource(R.string.i18n_app_download_menu_option_scribe_description),
-                        fontSize = Dimensions.TextSizeSmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = Alpha.MEDIUM),
+                        style = MaterialTheme.typography.bodySmall,
                     )
                 }
             }
@@ -305,10 +305,10 @@ fun InstallationScreen(
             ) {
                 Text(
                     text = stringResource(R.string.i18n_app_installation_button_quick_tutorial),
-                    fontSize = Dimensions.TextSizeExtraLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.padding(vertical = Dimensions.PaddingLarge),
+                    style = MaterialTheme.typography.labelLarge,
                 )
             }
         }

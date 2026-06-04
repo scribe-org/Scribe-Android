@@ -25,12 +25,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
-import be.scri.ui.theme.ScribeTypography
 
 /**
  * The about screen for describing the relationship between Scribe and the Wikimedia movement.
@@ -56,11 +53,7 @@ fun WikimediaScreen(
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = stringResource(id = R.string.scribe_key),
-                    fontSize = ScribeTypography.bodyMedium.fontSize,
-                    style =
-                        TextStyle.Default.copy(
-                            fontStyle = ScribeTypography.bodyMedium.fontStyle,
-                        ),
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Image(
                     imageVector = ImageVector.vectorResource(R.drawable.wikidata_logo),
@@ -75,11 +68,7 @@ fun WikimediaScreen(
                 )
                 Text(
                     text = stringResource(id = R.string.i18n_app_about_community_wikimedia_text_2),
-                    fontSize = ScribeTypography.bodyMedium.fontSize,
-                    style =
-                        TextStyle.Default.copy(
-                            fontStyle = ScribeTypography.bodyMedium.fontStyle,
-                        ),
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Image(
                     imageVector = ImageVector.vectorResource(id = R.drawable.wikipedia_logo),
@@ -94,11 +83,7 @@ fun WikimediaScreen(
                 )
                 Text(
                     text = stringResource(id = R.string.i18n_app_about_community_wikimedia_text_3),
-                    fontSize = ScribeTypography.bodyMedium.fontSize,
-                    style =
-                        TextStyle.Default.copy(
-                            fontStyle = ScribeTypography.bodyMedium.fontStyle,
-                        ),
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }
@@ -127,13 +112,8 @@ fun WikimediaScreenContent(
         Text(
             text = title,
             modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
-            fontSize = ScribeTypography.headlineMedium.fontSize,
-            style =
-                TextStyle.Default.copy(
-                    fontStyle = ScribeTypography.headlineMedium.fontStyle,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                ),
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Card(
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),

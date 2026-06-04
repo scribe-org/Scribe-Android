@@ -671,6 +671,32 @@
             android:padding="0dp" />
     </FrameLayout>
 
+    <Button
+        android:id="@+id/empty_state_banner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="Please download language data"
+        android:textSize="16sp"
+        android:minHeight="0dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="36dp"
+        android:background="@null"
+        android:stateListAnimator="@null"
+        android:drawableStart="@drawable/clouddownload_keyboard"
+        android:drawablePadding="4dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <be.scri.views.KeyboardView
         android:id="@+id/keyboard_view"
         style="@style/KeyboardView"

@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.scri.ui.models.ScribeItemList
 
 /**
@@ -31,7 +30,7 @@ fun ItemCardContainerWithTitle(
             text = title,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
-            fontSize = 22.sp,
+            style = MaterialTheme.typography.titleLarge,
             modifier =
                 Modifier.padding(
                     start = 16.dp,

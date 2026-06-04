@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
@@ -38,7 +37,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 
@@ -165,7 +163,6 @@ fun HintDialogContent(
                 Text(
                     text = text,
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 14.sp,
                     style =
                         MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.Normal,
@@ -201,7 +198,7 @@ fun HintDialogContent(
                     ) {
                         Text(
                             text = "OK",
-                            fontSize = 20.sp,
+                            style = MaterialTheme.typography.headlineMedium,
                             modifier = Modifier,
                         )
                     }

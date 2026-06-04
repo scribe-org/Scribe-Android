@@ -21,6 +21,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
+import be.scri.helpers.AppFlavor
+import be.scri.helpers.FlavorProvider
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.appcomponents.InstallKeyboardButton
 import be.scri.ui.common.components.ItemCardContainerWithTitle
@@ -34,6 +36,7 @@ import be.scri.ui.screens.settings.SettingsUtil.getLocalizedLanguageName
 @Composable
 fun SettingsScreen(
     onDarkModeChange: (Boolean) -> Unit,
+    onIncreaseTextSizeChange: (Boolean) -> Unit,
     onLanguageSettingsClick: (String) -> Unit,
     context: Context,
     modifier: Modifier = Modifier,
@@ -47,6 +50,7 @@ fun SettingsScreen(
     val vibrateOnKeypress by viewModel.vibrateOnKeypress.collectAsState()
     val popupOnKeypress by viewModel.popupOnKeypress.collectAsState()
     val isUserDarkMode by viewModel.isUserDarkMode.collectAsState()
+    val isIncreaseTextSize by viewModel.isIncreaseTextSize.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -85,6 +89,15 @@ fun SettingsScreen(
                             onDarkModeChange(newDarkMode)
                         },
                     ),
+                    ScribeItem.SwitchItem(
+                        title = R.string.i18n_app_settings_menu_increase_text_size,
+                        desc = R.string.i18n_app_settings_menu_increase_text_size_description,
+                        state = isIncreaseTextSize,
+                        onToggle = { newIncreaseTextSize ->
+                            viewModel.setIncreaseTextSize(newIncreaseTextSize)
+                            onIncreaseTextSizeChange(newIncreaseTextSize)
+                        },
+                    ),
                 ),
         )
 
@@ -96,6 +109,8 @@ fun SettingsScreen(
                 action = { onLanguageSettingsClick(language) },
             )
         }
+
+    val isKeyboardsApp = FlavorProvider.get() == AppFlavor.KEYBOARDS
 
     ScribeBaseScreen(
         pageTitle = stringResource(R.string.i18n_app_settings_title),
@@ -110,20 +125,22 @@ fun SettingsScreen(
                 )
             }
 
-            item {
-                if (isKeyboardInstalled) {
-                    ItemCardContainerWithTitle(
-                        title = stringResource(R.string.i18n_app_settings_keyboard_title),
-                        cardItemsList = ScribeItemList(installedKeyboardList),
-                        isDivider = true,
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
-                } else {
-                    InstallKeyboardButton(
-                        onClick = {
-                            SettingsUtil.navigateToKeyboardSettings(context)
-                        },
-                    )
+            if (isKeyboardsApp) {
+                item {
+                    if (isKeyboardInstalled) {
+                        ItemCardContainerWithTitle(
+                            title = stringResource(R.string.i18n_app_settings_keyboard_title),
+                            cardItemsList = ScribeItemList(installedKeyboardList),
+                            isDivider = true,
+                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                    } else {
+                        InstallKeyboardButton(
+                            onClick = {
+                                SettingsUtil.navigateToKeyboardSettings(context)
+                            },
+                        )
+                    }
                 }
             }
 

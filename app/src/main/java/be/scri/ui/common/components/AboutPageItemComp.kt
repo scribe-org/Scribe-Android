@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.scri.R
 
 /**
@@ -67,7 +66,6 @@ fun AboutPageItemComp(
             Text(
                 text = title,
                 modifier = Modifier.weight(1f).padding(start = 4.dp),
-                fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )

@@ -15,15 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,6 +33,7 @@ import be.scri.navigation.Screen
 import be.scri.ui.common.appcomponents.HintDialog
 import be.scri.ui.common.bottombar.BottomBarScreen
 import be.scri.ui.common.bottombar.ScribeBottomBar
+import be.scri.ui.screens.ConjugateScreen
 import be.scri.ui.screens.DefaultCurrencySymbolScreen
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
@@ -45,6 +43,7 @@ import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
 import be.scri.ui.screens.download.CheckUpdateActions
+import be.scri.ui.screens.download.ConjugateDownloadDataScreen
 import be.scri.ui.screens.download.DataDownloadViewModel
 import be.scri.ui.screens.download.DownloadActions
 import be.scri.ui.screens.download.DownloadDataScreen
@@ -77,11 +76,13 @@ fun ScribeApp(
     pagerState: PagerState,
     navController: NavHostController,
     onDarkModeChange: (Boolean) -> Unit,
+    onIncreaseTextSizeChange: (Boolean) -> Unit,
     resetHints: () -> Unit,
     @SuppressLint("ComposeUnstableCollections") isHintChanged: Map<Int, Boolean>,
     onDismiss: (Int) -> Unit,
     context: Context,
     isDarkTheme: Boolean,
+    isIncreaseTextSize: Boolean,
     modifier: Modifier = Modifier,
     downloadViewModel: DataDownloadViewModel = viewModel(),
 ) {
@@ -109,6 +110,7 @@ fun ScribeApp(
     val screens = remember(context) { BottomBarScreen.getScreens() }
     ScribeTheme(
         useDarkTheme = isDarkTheme,
+        isIncreaseTextSize = isIncreaseTextSize,
     ) {
         Scaffold(
             bottomBar = {
@@ -167,13 +169,12 @@ fun ScribeApp(
                             }
                             is BottomBarScreen.Conjugate -> {
                                 Box(
-                                    modifier =
-                                        Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize(),
                                 ) {
-                                    Text(
-                                        text = "Conjugate App",
-                                        style = MaterialTheme.typography.headlineMedium,
+                                    ConjugateScreen(
+                                        onNavigateToDownloadData = {
+                                            navController.navigate("conjugate_download_data")
+                                        },
                                     )
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
@@ -185,6 +186,9 @@ fun ScribeApp(
                                     SettingsScreen(
                                         onDarkModeChange = { isDarkMode ->
                                             onDarkModeChange(isDarkMode)
+                                        },
+                                        onIncreaseTextSizeChange = { increaseTextSize ->
+                                            onIncreaseTextSizeChange(increaseTextSize)
                                         },
                                         onLanguageSettingsClick = { language ->
                                             navController.navigate(
@@ -247,6 +251,18 @@ fun ScribeApp(
                             navController.navigate(
                                 "translation_language_detail/$language",
                             )
+                        },
+                        isDarkTheme = isDarkTheme,
+                        downloadActions = downloadActions,
+                        checkUpdateActions = checkUpdateActions,
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                }
+
+                composable("conjugate_download_data") {
+                    ConjugateDownloadDataScreen(
+                        onBackNavigation = {
+                            navController.popBackStack()
                         },
                         isDarkTheme = isDarkTheme,
                         downloadActions = downloadActions,

@@ -20,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import be.scri.R
 
 /**
@@ -55,7 +54,6 @@ fun ClickableItemComp(
                 Text(
                     text = title,
                     modifier = Modifier.weight(1f),
-                    fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -73,7 +71,6 @@ fun ClickableItemComp(
             if (!desc.isNullOrEmpty()) {
                 Text(
                     text = desc,
-                    fontSize = 12.sp,
                     color = Color.Gray,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(top = 4.dp),
