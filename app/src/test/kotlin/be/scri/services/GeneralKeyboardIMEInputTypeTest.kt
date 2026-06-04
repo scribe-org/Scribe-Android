@@ -3,7 +3,9 @@
 package be.scri.services
 
 import android.text.InputType
+import be.scri.R
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -32,5 +34,25 @@ class GeneralKeyboardIMEInputTypeTest {
         val inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
 
         assertFalse(GeneralKeyboardIME.shouldUseNumericKeyboard(inputType))
+    }
+
+    @Test
+    fun getKeyboardLayoutXMLForInputType_returnsNumericLayoutForNumberInputs() {
+        val inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+
+        assertEquals(
+            R.xml.keys_numeric,
+            GeneralKeyboardIME.getKeyboardLayoutXMLForInputType(inputType, R.xml.keys_letters_english),
+        )
+    }
+
+    @Test
+    fun getKeyboardLayoutXMLForInputType_returnsLetterLayoutForTextInputs() {
+        val inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+
+        assertEquals(
+            R.xml.keys_letters_english,
+            GeneralKeyboardIME.getKeyboardLayoutXMLForInputType(inputType, R.xml.keys_letters_english),
+        )
     }
 }
