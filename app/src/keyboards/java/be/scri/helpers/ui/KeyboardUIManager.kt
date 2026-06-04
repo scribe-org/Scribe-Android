@@ -23,9 +23,9 @@ import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardLanguageMappingConstants.conjugatePlaceholder
-import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.KeyboardLanguageMappingConstants.pluralPlaceholder
 import be.scri.helpers.KeyboardLanguageMappingConstants.translatePlaceholder
+import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG

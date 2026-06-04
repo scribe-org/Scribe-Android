@@ -4,8 +4,8 @@ package be.scri.helpers
 
 import android.os.Handler
 import android.os.Looper
-import be.scri.services.GeneralKeyboardIME
 import be.scri.models.ScribeState
+import be.scri.services.GeneralKeyboardIME
 
 /**
  * Handles autocompletion when user is typing.

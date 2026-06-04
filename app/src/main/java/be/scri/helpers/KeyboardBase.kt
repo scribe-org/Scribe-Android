@@ -27,7 +27,6 @@ import kotlin.math.roundToInt
  */
 @Suppress("LongMethod", "NestedBlockDepth", "CyclomaticComplexMethod")
 class KeyboardBase {
-
     /**
      * Interface for providing keyboard context to KeyboardBase without
      * a direct dependency on GeneralKeyboardIME.
@@ -36,8 +35,10 @@ class KeyboardBase {
         val language: String
         val keyboardMode: Int
         val keyboardLetters: Int
+
         fun isSearchBar(): Boolean
     }
+
     /** Horizontal gap default for all rows  */
     private var mDefaultHorizontalGap = 0
 

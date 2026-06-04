@@ -180,8 +180,6 @@ abstract class GeneralKeyboardIME(
         internal const val CUSTOM_CURSOR = "│" // special tall cursor character
     }
 
-
-
     // MARK: Lifecycle Methods
 
     /**

@@ -2,8 +2,8 @@
 
 package be.scri.helpers
 
-import be.scri.services.GeneralKeyboardIME
 import be.scri.models.ScribeState
+import be.scri.services.GeneralKeyboardIME
 
 /**
  * Processes key events specifically related to the space key.
