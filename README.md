@@ -17,7 +17,7 @@
 <!-- <a href='https://play.google.com/store/apps'><img alt='Get it on Google Play' src='https://raw.githubusercontent.com/scribe-org/Organization/main/resources/images/badges/google_play_badge.png' height='60px'/></a>
 <a href='https://f-droid.org/packages/'><img src='https://raw.githubusercontent.com/scribe-org/Organization/main/resources/images/badges/f_droid_badge.png' alt='Get it on F-Droid' height='60px' /></a> -->
 
-### Android app with keyboards for language learners
+### Scribe-Android: Keyboards for language learners & Conjugate-Android: Wikidata based verb conjugation app
 
 #### WIP port of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
 
