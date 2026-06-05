@@ -342,7 +342,7 @@ abstract class GeneralKeyboardIME(
         banner.visibility =
             if (hasData) View.GONE else View.VISIBLE
         binding.commandOptionsBar.visibility =
-            if (hasData) View.VISIBLE else View.GONE
+            if (hasData && !isNumericKeyboardActive) View.VISIBLE else View.GONE
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
         val bannerColor = if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
         val bannerTextColor = if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
@@ -735,6 +735,8 @@ abstract class GeneralKeyboardIME(
 
     override fun getCurrentEnterKeyType(): Int = enterKeyType
 
+    override fun isNumericKeyboardActive(): Boolean = isNumericKeyboardActive
+
     override fun getCurrentKeyboardLayoutXML(): Int =
         when (keyboardMode) {
             keyboardSymbols -> getPrimarySymbolKeyboardLayoutXML()
@@ -742,8 +744,11 @@ abstract class GeneralKeyboardIME(
             else -> getKeyboardLayoutXML()
         }
 
-    private fun getPrimarySymbolKeyboardLayoutXML(): Int =
-        if (isNumericKeyboardActive) R.xml.keys_numeric else R.xml.keys_symbols
+    private fun getPrimarySymbolKeyboardLayoutXML(): Int = if (isNumericKeyboardActive) {
+        R.xml.keys_numeric
+    } else {
+        R.xml.keys_symbols
+    }
 
     override fun onKeyboardActionListener(): KeyboardView.OnKeyboardActionListener = this
 
