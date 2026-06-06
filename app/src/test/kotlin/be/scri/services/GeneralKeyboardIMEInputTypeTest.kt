@@ -4,8 +4,8 @@ package be.scri.services
 
 import android.text.InputType
 import be.scri.R
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 

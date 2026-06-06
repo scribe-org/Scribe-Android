@@ -744,11 +744,12 @@ abstract class GeneralKeyboardIME(
             else -> getKeyboardLayoutXML()
         }
 
-    private fun getPrimarySymbolKeyboardLayoutXML(): Int = if (isNumericKeyboardActive) {
-        R.xml.keys_numeric
-    } else {
-        R.xml.keys_symbols
-    }
+    private fun getPrimarySymbolKeyboardLayoutXML(): Int =
+        if (isNumericKeyboardActive) {
+            R.xml.keys_numeric
+        } else {
+            R.xml.keys_symbols
+        }
 
     override fun onKeyboardActionListener(): KeyboardView.OnKeyboardActionListener = this
 
