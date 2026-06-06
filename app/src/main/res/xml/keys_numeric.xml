@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Row app:keyWidth="25%p">
+        <Key
+            app:keyEdgeFlags="left"
+            app:keyLabel="1" />
+        <Key app:keyLabel="2" />
+        <Key app:keyLabel="3" />
+        <Key
+            app:code="-5"
+            app:isRepeatable="true"
+            app:keyEdgeFlags="right"
+            app:keyIcon="@drawable/ic_clear_outline_vector" />
+    </Row>
+    <Row app:keyWidth="25%p">
+        <Key
+            app:keyEdgeFlags="left"
+            app:keyLabel="4" />
+        <Key app:keyLabel="5" />
+        <Key app:keyLabel="6" />
+        <Key app:keyLabel="-" />
+    </Row>
+    <Row app:keyWidth="25%p">
+        <Key
+            app:keyEdgeFlags="left"
+            app:keyLabel="7" />
+        <Key app:keyLabel="8" />
+        <Key app:keyLabel="9" />
+        <Key app:keyLabel="+" />
+    </Row>
+    <Row app:keyWidth="25%p">
+        <Key
+            app:code="-2"
+            app:keyEdgeFlags="left"
+            app:keyLabel="ABC" />
+        <Key app:keyLabel="0" />
+        <Key
+            app:keyLabel="."
+            app:popupCharacters=",/:"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
+        <Key
+            app:code="-4"
+            app:keyEdgeFlags="right"
+            app:keyIcon="@drawable/ic_enter_vector" />
+    </Row>
+</Keyboard>

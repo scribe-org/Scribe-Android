@@ -121,8 +121,8 @@ abstract class GeneralKeyboardIME(
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
 
     private lateinit var dbManagers: DatabaseManagers
-    private lateinit var suggestionHandler: SuggestionHandler
-    private lateinit var autocompletionHandler: AutocompletionHandler
+    internal lateinit var suggestionHandler: SuggestionHandler
+    internal lateinit var autocompletionHandler: AutocompletionHandler
     private lateinit var autocompletionManager: AutocompletionDataManager
     private var dataContract: DataContract? = null
 
@@ -144,6 +144,7 @@ abstract class GeneralKeyboardIME(
     var wordSuggestions: List<String>? = null
     var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
+    private var isNumericKeyboardActive: Boolean = false
 
     internal var currentState: ScribeState = ScribeState.IDLE
     internal var invalidCommandSource: ScribeState = ScribeState.IDLE
@@ -176,6 +177,22 @@ abstract class GeneralKeyboardIME(
         internal const val MAX_TEXT_LENGTH = 1000
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         internal const val CUSTOM_CURSOR = "│" // special tall cursor character
+
+        internal fun shouldUseNumericKeyboard(inputType: Int): Boolean =
+            when (inputType and TYPE_MASK_CLASS) {
+                TYPE_CLASS_NUMBER, TYPE_CLASS_DATETIME, TYPE_CLASS_PHONE -> true
+                else -> false
+            }
+
+        internal fun getKeyboardLayoutXMLForInputType(
+            inputType: Int,
+            letterKeyboardLayoutXML: Int,
+        ): Int =
+            if (shouldUseNumericKeyboard(inputType)) {
+                R.xml.keys_numeric
+            } else {
+                letterKeyboardLayoutXML
+            }
     }
 
     enum class ScribeState { IDLE, SELECT_COMMAND, TRANSLATE, CONJUGATE, PLURAL, SELECT_VERB_CONJUNCTION, INVALID, ALREADY_PLURAL }
@@ -286,25 +303,16 @@ abstract class GeneralKeyboardIME(
         // This setter triggers the logic in the property override if not shadowed.
         hasTextBeforeCursor = currentInputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
 
-        val keyboardXml =
-            when (inputTypeClass) {
-                TYPE_CLASS_NUMBER, TYPE_CLASS_DATETIME, TYPE_CLASS_PHONE -> {
-                    keyboardMode = keyboardSymbols
-                    R.xml.keys_symbols
-                }
-
-                else -> {
-                    keyboardMode = keyboardLetters
-                    getKeyboardLayoutXML()
-                }
-            }
+        isNumericKeyboardActive = shouldUseNumericKeyboard(attribute.inputType)
+        keyboardMode = if (isNumericKeyboardActive) keyboardSymbols else keyboardLetters
+        val keyboardXml = getKeyboardLayoutXMLForInputType(attribute.inputType, getKeyboardLayoutXML())
 
         loadLanguageData()
 
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
         keyboardView?.setKeyboard(keyboard!!)
 
-        if (keyboardXml == R.xml.keys_symbols) {
+        if (this::uiManager.isInitialized && keyboardXml == R.xml.keys_symbols) {
             uiManager.setupCurrencySymbol(language)
         }
     }
@@ -334,7 +342,7 @@ abstract class GeneralKeyboardIME(
         banner.visibility =
             if (hasData) View.GONE else View.VISIBLE
         binding.commandOptionsBar.visibility =
-            if (hasData) View.VISIBLE else View.GONE
+            if (hasData && !isNumericKeyboardActive) View.VISIBLE else View.GONE
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
         val bannerColor = if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
         val bannerTextColor = if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
@@ -726,6 +734,22 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun getCurrentEnterKeyType(): Int = enterKeyType
+
+    override fun isNumericKeyboardActive(): Boolean = isNumericKeyboardActive
+
+    override fun getCurrentKeyboardLayoutXML(): Int =
+        when (keyboardMode) {
+            keyboardSymbols -> getPrimarySymbolKeyboardLayoutXML()
+            keyboardSymbolShift -> R.xml.keys_symbols_shift
+            else -> getKeyboardLayoutXML()
+        }
+
+    private fun getPrimarySymbolKeyboardLayoutXML(): Int =
+        if (isNumericKeyboardActive) {
+            R.xml.keys_numeric
+        } else {
+            R.xml.keys_symbols
+        }
 
     override fun onKeyboardActionListener(): KeyboardView.OnKeyboardActionListener = this
 
@@ -1171,7 +1195,7 @@ abstract class GeneralKeyboardIME(
                     R.xml.keys_symbols_shift
                 } else {
                     this.keyboardMode = keyboardSymbols
-                    R.xml.keys_symbols
+                    getPrimarySymbolKeyboardLayoutXML()
                 }
             keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
             keyboardView!!.setKeyboard(keyboard!!)
@@ -1196,7 +1220,7 @@ abstract class GeneralKeyboardIME(
         val keyboardXml =
             if (keyboardMode == keyboardLetters) {
                 this.keyboardMode = keyboardSymbols
-                R.xml.keys_symbols
+                getPrimarySymbolKeyboardLayoutXML()
             } else {
                 this.keyboardMode = keyboardLetters
                 getKeyboardLayoutXML()
