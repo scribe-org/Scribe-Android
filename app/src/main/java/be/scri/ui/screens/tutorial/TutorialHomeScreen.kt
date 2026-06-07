@@ -116,7 +116,7 @@ fun TutorialHomeScreen(
                 modifier = Modifier.size(24.dp),
             )
             Text(
-                text = "About",
+                text = "Home",
                 color = TutorialColors.accentYellow,
                 fontSize = 16.sp,
             )
