@@ -42,7 +42,6 @@ class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
-    override var hasTextBeforeCursor: Boolean = false
 
     private val keyHandler by lazy { KeyHandler(this) }
 

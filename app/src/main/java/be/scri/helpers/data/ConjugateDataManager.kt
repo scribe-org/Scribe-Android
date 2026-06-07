@@ -91,7 +91,7 @@ class ConjugateDataManager(
         language: String,
     ): String {
         if (form.isNullOrEmpty()) return ""
-        return fileManager.getLanguageDatabase(language)?.use { db ->
+        return fileManager.getConjugateDatabase(language)?.use { db ->
             if (!db.tableExists("verbs")) {
                 return ""
             }
@@ -170,7 +170,7 @@ class ConjugateDataManager(
 
                 val targetForm = words.first()
 
-                val db = fileManager.getLanguageDatabase(language = language)
+                val db = fileManager.getConjugateDatabase(language = language)
                 var auxResult = ""
 
                 val auxCursor =

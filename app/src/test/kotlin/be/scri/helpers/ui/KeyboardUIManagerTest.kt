@@ -57,6 +57,7 @@ class KeyboardUIManagerTest {
         // Mock Listener
         listener = mockk(relaxed = true)
         every { listener.getKeyboardLayoutXML() } returns be.scri.R.xml.keys_letters_english
+        every { listener.getCurrentKeyboardLayoutXML() } returns be.scri.R.xml.keys_letters_english
         every { listener.onKeyboardActionListener() } returns mockk()
 
         // Init Manager
