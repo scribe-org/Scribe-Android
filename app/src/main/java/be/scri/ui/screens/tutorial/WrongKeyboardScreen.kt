@@ -3,7 +3,6 @@
 package be.scri.ui.screens.tutorial
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -60,7 +59,6 @@ fun WrongKeyboardScreen(
     onClosePress: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isDarkTheme = isSystemInDarkTheme()
     val backgroundColor = MaterialTheme.colorScheme.background
     val cardBackground = MaterialTheme.colorScheme.surface
     val textColor = MaterialTheme.colorScheme.onSurface

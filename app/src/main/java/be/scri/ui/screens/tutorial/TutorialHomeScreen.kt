@@ -35,17 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Represents a single tutorial chapter in the home screen.
- *
- * @property title The display name of the chapter.
- * @property chapterIndex The index used to navigate to this chapter.
- */
-data class TutorialChapter(
-    val title: String,
-    val chapterIndex: Int,
-)
-
-/**
  * The tutorial home screen (Screen 0.0 from Figma).
  * Displays a list of tutorial chapters and a button to start the full tutorial.
  * This screen is accessible from the About tab.
