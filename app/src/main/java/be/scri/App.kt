@@ -43,6 +43,7 @@ import be.scri.ui.screens.ThirdPartyScreen
 import be.scri.ui.screens.WikimediaScreen
 import be.scri.ui.screens.about.AboutScreen
 import be.scri.ui.screens.download.CheckUpdateActions
+import be.scri.ui.screens.download.ConjugateDataDownloadViewModel
 import be.scri.ui.screens.download.ConjugateDownloadDataScreen
 import be.scri.ui.screens.download.DataDownloadViewModel
 import be.scri.ui.screens.download.DownloadActions
@@ -85,6 +86,7 @@ fun ScribeApp(
     isIncreaseTextSize: Boolean,
     modifier: Modifier = Modifier,
     downloadViewModel: DataDownloadViewModel = viewModel(),
+    conjugateDownloadViewModel: ConjugateDataDownloadViewModel = viewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -105,6 +107,26 @@ fun ScribeApp(
             checkUpdateState = checkUpdateState,
             checkForNewData = downloadViewModel::checkForNewData,
             cancelCheckForNewData = downloadViewModel::cancelCheckForNewData,
+        )
+
+    // Conjugate-specific download actions
+    val conjugateDownloadStates = conjugateDownloadViewModel.downloadStates
+    val onConjugateDownloadAction = conjugateDownloadViewModel::handleDownloadAction
+    val onConjugateDownloadAll = conjugateDownloadViewModel::handleDownloadAllLanguages
+    val initializeConjugateStates = conjugateDownloadViewModel::initializeStates
+    val conjugateDownloadActions =
+        DownloadActions(
+            downloadStates = conjugateDownloadStates,
+            onDownloadAction = onConjugateDownloadAction,
+            onDownloadAll = onConjugateDownloadAll,
+            initializeStates = initializeConjugateStates,
+        )
+    val conjugateCheckUpdateState by conjugateDownloadViewModel.checkUpdateState.collectAsState()
+    val conjugateCheckUpdateActions =
+        CheckUpdateActions(
+            checkUpdateState = conjugateCheckUpdateState,
+            checkForNewData = conjugateDownloadViewModel::checkForNewData,
+            cancelCheckForNewData = conjugateDownloadViewModel::cancelCheckForNewData,
         )
 
     val screens = remember(context) { BottomBarScreen.getScreens() }
@@ -265,8 +287,8 @@ fun ScribeApp(
                             navController.popBackStack()
                         },
                         isDarkTheme = isDarkTheme,
-                        downloadActions = downloadActions,
-                        checkUpdateActions = checkUpdateActions,
+                        downloadActions = conjugateDownloadActions,
+                        checkUpdateActions = conjugateCheckUpdateActions,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
