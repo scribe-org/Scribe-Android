@@ -5,8 +5,8 @@ package be.scri.helpers
 import android.content.Context
 import android.util.Log
 import android.view.inputmethod.InputConnection
+import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
  * Handles key events for the [GeneralKeyboardIME].

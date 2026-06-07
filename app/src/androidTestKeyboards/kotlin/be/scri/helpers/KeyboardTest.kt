@@ -5,8 +5,8 @@ import android.view.KeyEvent
 import android.view.inputmethod.InputConnection
 import android.widget.Button
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
