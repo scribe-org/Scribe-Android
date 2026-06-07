@@ -24,6 +24,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,27 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-/**
- * Color constants matching the Scribe brand from the Figma designs.
- */
-object TutorialColors {
-    val lightBackground = Color(0xFF6DAFCF)
-    val darkBackground = Color(0xFF1A2634)
-    val cardBackgroundLight = Color(0xFFFFFFFF)
-    val cardBackgroundDark = Color(0xFF2A3A4A)
-    val accentYellow = Color(0xFFF5A623)
-    val textPrimary = Color(0xFF1E1E1E)
-    val textPrimaryDark = Color(0xFFFFFFFF)
-    val textSecondary = Color(0xFF666666)
-    val textSecondaryDark = Color(0xFFAAAAAA)
-    val successGreen = Color(0xFF4CAF50)
-    val errorRed = Color(0xFFE53935)
-    val dividerLight = Color(0xFFE0E0E0)
-    val dividerDark = Color(0xFF3A4A5A)
-    val aboutBackground = Color(0xFFF5F5F5)
-    val aboutBackgroundDark = Color(0xFF1A1A2E)
-}
 
 /**
  * Represents a single tutorial chapter in the home screen.
@@ -83,11 +63,11 @@ fun TutorialHomeScreen(
     modifier: Modifier = Modifier,
 ) {
     val isDarkTheme = isSystemInDarkTheme()
-    val backgroundColor = if (isDarkTheme) TutorialColors.aboutBackgroundDark else TutorialColors.aboutBackground
-    val cardBackground = if (isDarkTheme) TutorialColors.cardBackgroundDark else TutorialColors.cardBackgroundLight
-    val textColor = if (isDarkTheme) TutorialColors.textPrimaryDark else TutorialColors.textPrimary
-    val secondaryTextColor = if (isDarkTheme) TutorialColors.textSecondaryDark else TutorialColors.textSecondary
-    val dividerColor = if (isDarkTheme) TutorialColors.dividerDark else TutorialColors.dividerLight
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val cardBackground = MaterialTheme.colorScheme.surface
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val secondaryTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+    val dividerColor = MaterialTheme.colorScheme.outlineVariant
 
     val chapters =
         listOf(
@@ -112,12 +92,12 @@ fun TutorialHomeScreen(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "Back",
-                tint = TutorialColors.accentYellow,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(24.dp),
             )
             Text(
                 text = "Home",
-                color = TutorialColors.accentYellow,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 16.sp,
             )
         }
@@ -221,8 +201,8 @@ fun TutorialHomeScreen(
             onClick = onStartFullTutorial,
             colors =
                 ButtonDefaults.buttonColors(
-                    containerColor = TutorialColors.accentYellow,
-                    contentColor = Color.White,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = if (isDarkTheme) Color.White else Color.Black,
                 ),
             shape = RoundedCornerShape(12.dp),
             modifier =
