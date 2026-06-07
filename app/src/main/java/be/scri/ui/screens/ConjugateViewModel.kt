@@ -27,7 +27,9 @@ data class ConjugateSearchResult(
 /**
  * ViewModel to manage verb search and recently conjugated items on the Conjugate screen.
  */
-class ConjugateViewModel(application: Application) : AndroidViewModel(application) {
+class ConjugateViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     private val prefs = application.getSharedPreferences("scribe_conjugate_search_prefs", Context.MODE_PRIVATE)
 
     private val _searchQuery = MutableStateFlow("")
@@ -69,36 +71,35 @@ class ConjugateViewModel(application: Application) : AndroidViewModel(applicatio
             val aliases = listOf("EN", "FR", "DE", "IT", "PT", "RU", "ES", "SV")
 
             for (alias in aliases) {
-                val db = try {
-                    fileManager.getConjugateDatabase(alias)
-                } catch (e: Exception) {
-                    null
-                } ?: continue
+                val db = fileManager.getConjugateDatabase(alias) ?: continue
 
                 try {
                     val columnName = if (alias == "SV") "verb" else "infinitive"
                     if (db.tableExists("verbs") && db.columnExists("verbs", columnName)) {
-                        db.rawQuery(
-                            "SELECT DISTINCT $columnName FROM verbs WHERE $columnName LIKE ? LIMIT 10",
-                            arrayOf("$query%")
-                        ).use { cursor ->
-                            val colIndex = cursor.getColumnIndex(columnName)
-                            if (colIndex != -1) {
-                                while (cursor.moveToNext()) {
-                                    val verb = cursor.getString(colIndex)
-                                    if (!verb.isNullOrBlank()) {
-                                        results.add(ConjugateSearchResult(verb, alias))
+                        db
+                            .rawQuery(
+                                "SELECT DISTINCT $columnName FROM verbs WHERE $columnName LIKE ? LIMIT 10",
+                                arrayOf("$query%"),
+                            ).use { cursor ->
+                                val colIndex = cursor.getColumnIndex(columnName)
+                                if (colIndex != -1) {
+                                    while (cursor.moveToNext()) {
+                                        val verb = cursor.getString(colIndex)
+                                        if (!verb.isNullOrBlank()) {
+                                            results.add(ConjugateSearchResult(verb, alias))
+                                        }
                                     }
                                 }
                             }
-                        }
                     }
-                } catch (e: Exception) {
+                } catch (e: android.database.sqlite.SQLiteException) {
+                    Log.e("ConjugateViewModel", "Error searching db for $alias", e)
+                } catch (e: IllegalStateException) {
                     Log.e("ConjugateViewModel", "Error searching db for $alias", e)
                 } finally {
                     try {
                         db.close()
-                    } catch (e: Exception) {
+                    } catch (e: android.database.sqlite.SQLiteException) {
                         Log.e("ConjugateViewModel", "Error closing db for $alias", e)
                     }
                 }
@@ -142,17 +143,16 @@ class ConjugateViewModel(application: Application) : AndroidViewModel(applicatio
         val serialized = prefs.getString("recently_conjugated_list", null) ?: return
         if (serialized.isBlank()) return
 
-        try {
-            val list = serialized.split(";").mapNotNull { part ->
+        val list =
+            serialized.split(";").mapNotNull { part ->
                 val tokens = part.split(",")
                 if (tokens.size == 2) {
                     ConjugateSearchResult(tokens[0], tokens[1])
-                } else null
+                } else {
+                    null
+                }
             }
-            _recentlyConjugated.value = list
-        } catch (e: Exception) {
-            Log.e("ConjugateViewModel", "Error loading recently conjugated list", e)
-        }
+        _recentlyConjugated.value = list
     }
 
     private fun saveRecentlyConjugated(list: List<ConjugateSearchResult>) {

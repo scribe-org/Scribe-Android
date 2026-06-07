@@ -2,6 +2,7 @@
 
 package be.scri.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,7 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import android.widget.Toast
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 
@@ -106,21 +106,21 @@ fun ConjugateScreen(
 
             // Search Bar
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard))
-                    )
-                    .padding(horizontal = Dimensions.PaddingMedium),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
+                        ).padding(horizontal = Dimensions.PaddingMedium),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_search_vector),
                     contentDescription = "Search",
                     colorFilter = ColorFilter.tint(Color.Black),
-                    modifier = Modifier.size(Dimensions.IconSize)
+                    modifier = Modifier.size(Dimensions.IconSize),
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -128,30 +128,32 @@ fun ConjugateScreen(
                 BasicTextField(
                     value = searchQuery,
                     onValueChange = { viewModel.onSearchQueryChanged(it) },
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    ),
+                    textStyle =
+                        MaterialTheme.typography.bodyLarge.copy(
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                        ),
                     singleLine = true,
                     cursorBrush = SolidColor(Color.Black),
                     modifier = Modifier.weight(1f),
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.CenterStart
+                            contentAlignment = Alignment.CenterStart,
                         ) {
                             if (searchQuery.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.i18n_app_conjugate_verbs_search_placeholder),
                                     color = Color.Black.copy(alpha = 0.6f),
-                                    style = MaterialTheme.typography.bodyLarge.copy(
-                                        fontWeight = FontWeight.Bold
-                                    )
+                                    style =
+                                        MaterialTheme.typography.bodyLarge.copy(
+                                            fontWeight = FontWeight.Bold,
+                                        ),
                                 )
                             }
                             innerTextField()
                         }
-                    }
+                    },
                 )
 
                 if (searchQuery.isNotEmpty()) {
@@ -159,9 +161,10 @@ fun ConjugateScreen(
                         painter = painterResource(id = R.drawable.close),
                         contentDescription = "Clear",
                         colorFilter = ColorFilter.tint(Color.Black),
-                        modifier = Modifier
-                            .size(Dimensions.IconSize)
-                            .clickable { viewModel.clearSearchQuery() }
+                        modifier =
+                            Modifier
+                                .size(Dimensions.IconSize)
+                                .clickable { viewModel.clearSearchQuery() },
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
@@ -170,14 +173,15 @@ fun ConjugateScreen(
                     painter = painterResource(id = R.drawable.play_button),
                     contentDescription = "Play button",
                     colorFilter = ColorFilter.tint(Color.Black),
-                    modifier = Modifier
-                        .width(21.dp)
-                        .height(18.dp)
-                        .clickable {
-                            if (searchResults.isNotEmpty()) {
-                                viewModel.onVerbSelected(searchResults.first())
-                            }
-                        }
+                    modifier =
+                        Modifier
+                            .width(21.dp)
+                            .height(18.dp)
+                            .clickable {
+                                if (searchResults.isNotEmpty()) {
+                                    viewModel.onVerbSelected(searchResults.first())
+                                }
+                            },
                 )
             }
 
@@ -186,57 +190,63 @@ fun ConjugateScreen(
             if (searchQuery.isNotEmpty()) {
                 // Search suggestion container
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = Dimensions.PaddingMedium),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = Dimensions.PaddingMedium),
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = Dimensions.ElevationSmall)
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = Dimensions.ElevationSmall),
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(Dimensions.PaddingSmall)
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(Dimensions.PaddingSmall),
                     ) {
                         if (searchResults.isEmpty()) {
                             Text(
                                 text = "No verbs found",
                                 modifier = Modifier.padding(Dimensions.PaddingMedium),
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = Alpha.MEDIUM),
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                         } else {
                             searchResults.forEachIndexed { index, result ->
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { viewModel.onVerbSelected(result) }
-                                        .padding(Dimensions.PaddingMedium),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .clickable { viewModel.onVerbSelected(result) }
+                                            .padding(Dimensions.PaddingMedium),
                                     horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Text(
                                         text = "${result.verb} (${getLanguageDisplayName(result.languageAlias)})",
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSurface,
-                                        style = MaterialTheme.typography.labelMedium
+                                        style = MaterialTheme.typography.labelMedium,
                                     )
                                     Image(
                                         painter = painterResource(id = R.drawable.right_arrow),
                                         contentDescription = "Right Arrow",
-                                        modifier = Modifier
-                                            .size(Dimensions.IconSize)
-                                            .alpha(Alpha.HIGH)
+                                        modifier =
+                                            Modifier
+                                                .size(Dimensions.IconSize)
+                                                .alpha(Alpha.HIGH),
                                     )
                                 }
                                 if (index < searchResults.lastIndex) {
                                     Spacer(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(1.dp)
-                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .height(1.dp)
+                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
                                     )
                                 }
                             }
@@ -276,7 +286,7 @@ fun ConjugateScreen(
                 ) {
                     Column(
                         modifier =
-                            Modifier.Companion
+                            Modifier
                                 .padding(Dimensions.PaddingMedium)
                                 .fillMaxWidth(),
                     ) {
@@ -295,7 +305,7 @@ fun ConjugateScreen(
                                 painter = painterResource(R.drawable.right_arrow),
                                 contentDescription = "Right Arrow",
                                 modifier =
-                                    Modifier.Companion
+                                    Modifier
                                         .size(Dimensions.IconSize)
                                         .alpha(Alpha.HIGH),
                             )
@@ -311,31 +321,33 @@ fun ConjugateScreen(
                 // Header 3: Recently conjugated
                 if (recentlyConjugated.isNotEmpty()) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = Dimensions.PaddingLarge, bottom = Dimensions.PaddingSmall),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = Dimensions.PaddingLarge, bottom = Dimensions.PaddingSmall),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
                             text = stringResource(R.string.i18n_app_conjugate_recently_conjugated_title),
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.headlineMedium
+                            style = MaterialTheme.typography.headlineMedium,
                         )
 
                         Row(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
-                                .clickable { viewModel.clearAllRecentlyConjugated() }
-                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            modifier =
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
+                                    .clickable { viewModel.clearAllRecentlyConjugated() }
+                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
                                 text = "Clear all ✕",
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black,
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
                             )
                         }
                     }
@@ -343,48 +355,53 @@ fun ConjugateScreen(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface,
-                        )
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                            ),
                     ) {
                         Column(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
                         ) {
                             recentlyConjugated.forEachIndexed { index, item ->
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            Toast.makeText(
-                                                context,
-                                                "Conjugating ${item.verb} (${getLanguageDisplayName(item.languageAlias)})...",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                        .padding(Dimensions.PaddingMedium),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(Dimensions.PaddingMedium)
+                                            .clickable {
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "Conjugating ${item.verb} (${getLanguageDisplayName(item.languageAlias)})...",
+                                                        Toast.LENGTH_SHORT,
+                                                    ).show()
+                                            },
                                     horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Text(
                                         text = "${item.verb} (${getLanguageDisplayName(item.languageAlias)})",
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSurface,
-                                        style = MaterialTheme.typography.labelMedium
+                                        style = MaterialTheme.typography.labelMedium,
                                     )
                                     Image(
                                         painter = painterResource(id = R.drawable.right_arrow),
                                         contentDescription = "Right Arrow",
-                                        modifier = Modifier
-                                            .size(Dimensions.IconSize)
-                                            .alpha(Alpha.HIGH)
+                                        modifier =
+                                            Modifier
+                                                .size(Dimensions.IconSize)
+                                                .alpha(Alpha.HIGH),
                                     )
                                 }
                                 if (index < recentlyConjugated.lastIndex) {
                                     Spacer(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(1.dp)
-                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .height(1.dp)
+                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
                                     )
                                 }
                             }
