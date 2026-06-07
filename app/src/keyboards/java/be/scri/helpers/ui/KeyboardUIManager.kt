@@ -22,15 +22,15 @@ import be.scri.R
 import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.KeyboardBase
-import be.scri.helpers.LanguageMappingConstants.conjugatePlaceholder
+import be.scri.helpers.KeyboardLanguageMappingConstants.conjugatePlaceholder
+import be.scri.helpers.KeyboardLanguageMappingConstants.pluralPlaceholder
+import be.scri.helpers.KeyboardLanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
-import be.scri.helpers.LanguageMappingConstants.pluralPlaceholder
-import be.scri.helpers.LanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 import be.scri.views.KeyboardView
 
 /**
@@ -62,6 +62,8 @@ class KeyboardUIManager(
 
         fun getKeyboardLayoutXML(): Int
 
+        fun getCurrentKeyboardLayoutXML(): Int
+
         fun getCurrentEnterKeyType(): Int
 
         fun commitText(text: String)
@@ -69,6 +71,8 @@ class KeyboardUIManager(
         fun onKeyboardActionListener(): KeyboardView.OnKeyboardActionListener
 
         fun processLinguisticSuggestions(word: String)
+
+        fun isNumericKeyboardActive(): Boolean
     }
 
     var keyboardView: KeyboardView = binding.keyboardView
@@ -159,7 +163,12 @@ class KeyboardUIManager(
         val isUserDarkMode = getIsDarkModeOrNot(context)
 
         when (currentState) {
-            ScribeState.IDLE -> setupIdleView(language, emojiAutoSuggestionEnabled, autoSuggestEmojis)
+            ScribeState.IDLE ->
+                setupIdleView(
+                    language,
+                    emojiAutoSuggestionEnabled,
+                    autoSuggestEmojis,
+                )
             ScribeState.SELECT_COMMAND -> setupSelectCommandView(language)
             ScribeState.INVALID -> setupInvalidView(language, invalidCommandSource)
             ScribeState.TRANSLATE -> {
@@ -184,7 +193,7 @@ class KeyboardUIManager(
         emojiAutoSuggestionEnabled: Boolean,
         autoSuggestEmojis: MutableList<String>?,
     ) {
-        binding.commandOptionsBar.visibility = View.VISIBLE
+        binding.commandOptionsBar.visibility = if (listener.isNumericKeyboardActive()) View.GONE else View.VISIBLE
         binding.toolbarBar.visibility = View.GONE
 
         val isUserDarkMode = getIsDarkModeOrNot(context)
@@ -226,7 +235,11 @@ class KeyboardUIManager(
 
         binding.scribeKeyOptions.foreground = AppCompatResources.getDrawable(context, R.drawable.ic_scribe_icon_vector)
 
-        initializeKeyboard(listener.getKeyboardLayoutXML())
+        val keyboardXml = listener.getCurrentKeyboardLayoutXML()
+        initializeKeyboard(keyboardXml)
+        if (keyboardXml == R.xml.keys_symbols) {
+            setupCurrencySymbol(language)
+        }
 
         updateButtonVisibility(ScribeState.IDLE, emojiAutoSuggestionEnabled, autoSuggestEmojis)
         updateEmojiSuggestion(ScribeState.IDLE, emojiAutoSuggestionEnabled, autoSuggestEmojis)
@@ -239,7 +252,7 @@ class KeyboardUIManager(
      * (Translate, Conjugate, Plural).
      */
     private fun setupSelectCommandView(language: String) {
-        binding.commandOptionsBar.visibility = View.VISIBLE
+        binding.commandOptionsBar.visibility = if (listener.isNumericKeyboardActive()) View.GONE else View.VISIBLE
         binding.toolbarBar.visibility = View.GONE
 
         val isUserDarkMode = getIsDarkModeOrNot(context)
@@ -786,6 +799,8 @@ class KeyboardUIManager(
      * Disables all auto-suggestions and resets the suggestion buttons to their default, inactive state.
      */
     fun disableAutoSuggest(language: String) {
+        val isNumericKeyboard = listener.getCurrentKeyboardLayoutXML() == R.xml.keys_numeric
+
         binding.translateBtnRight.visibility = View.INVISIBLE
         binding.translateBtnLeft.visibility = View.INVISIBLE
         binding.translateBtn.visibility = View.VISIBLE
@@ -801,9 +816,20 @@ class KeyboardUIManager(
         binding.translateBtn.background = null
         binding.translateBtn.setOnClickListener(createSuggestionClickListener(suggestion1))
 
-        val suggestion2 = suggestions.getOrNull(1) ?: ""
-        binding.conjugateBtn.text = suggestion2
-        binding.conjugateBtn.setOnClickListener(createSuggestionClickListener(suggestion2))
+        if (isNumericKeyboard) {
+            binding.conjugateBtn.text = ""
+            binding.conjugateBtn.setOnClickListener(null)
+            binding.conjugateBtn.visibility = View.GONE
+            binding.separator2.visibility = View.GONE
+            binding.separator3.visibility = View.GONE
+        } else {
+            val suggestion2 = suggestions.getOrNull(1) ?: ""
+            binding.conjugateBtn.visibility = View.VISIBLE
+            binding.conjugateBtn.text = suggestion2
+            binding.conjugateBtn.setOnClickListener(createSuggestionClickListener(suggestion2))
+            binding.separator2.visibility = View.VISIBLE
+            binding.separator3.visibility = View.VISIBLE
+        }
 
         val suggestion3 = suggestions.getOrNull(2) ?: ""
         binding.pluralBtn.text = suggestion3

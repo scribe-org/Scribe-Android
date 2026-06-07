@@ -8,7 +8,7 @@ import android.view.View
 import androidx.test.core.app.ApplicationProvider
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.ui.KeyboardUIManager.KeyboardUIListener
-import be.scri.services.GeneralKeyboardIME.ScribeState
+import be.scri.models.ScribeState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -57,6 +57,7 @@ class KeyboardUIManagerTest {
         // Mock Listener
         listener = mockk(relaxed = true)
         every { listener.getKeyboardLayoutXML() } returns be.scri.R.xml.keys_letters_english
+        every { listener.getCurrentKeyboardLayoutXML() } returns be.scri.R.xml.keys_letters_english
         every { listener.onKeyboardActionListener() } returns mockk()
 
         // Init Manager

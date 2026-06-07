@@ -5,8 +5,8 @@ package be.scri.helpers
 import android.content.Context
 import android.util.Log
 import android.view.inputmethod.InputConnection
+import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 
 /**
  * Handles key events for the [GeneralKeyboardIME].
@@ -20,9 +20,9 @@ import be.scri.services.GeneralKeyboardIME.ScribeState
 class KeyHandler(
     private val ime: GeneralKeyboardIME,
 ) {
-    private val suggestionHandler = SuggestionHandler(ime)
+    private val suggestionHandler = ime.suggestionHandler
     private val spaceKeyProcessor = SpaceKeyProcessor(ime, suggestionHandler)
-    private val autocompletionHandler = AutocompletionHandler(ime)
+    private val autocompletionHandler = ime.autocompletionHandler
 
     /** Tracks if the last key pressed was a space, used for "period on double space" logic. */
     private var wasLastKeySpace: Boolean = false

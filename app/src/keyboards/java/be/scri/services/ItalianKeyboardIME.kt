@@ -6,12 +6,11 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
-import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
 
 /**
- * The SwedishKeyboardIME class provides the input method for the Swedish language keyboard.
+ * The ItalianKeyboardIME class provides the input method for the Italian language keyboard.
  */
-class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
+class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
     companion object {
         const val SMALLEST_SCREEN_WIDTH_TABLET = 600
     }
@@ -20,18 +19,9 @@ class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
 
     override fun getKeyboardLayoutXML(): Int =
         when {
-            isTablet() -> R.xml.keys_letters_swedish_tablet
-            getIsAccentCharacterDisabled(applicationContext, language) &&
-                !isPeriodAndCommaEnabled() ->
-                R.xml.keys_letter_swedish_without_accent_characters_and_without_period_and_comma
-            !getIsAccentCharacterDisabled(applicationContext, language) &&
-                isPeriodAndCommaEnabled() ->
-                R.xml.keys_letters_swedish
-            getIsAccentCharacterDisabled(applicationContext, language) &&
-                isPeriodAndCommaEnabled() ->
-                R.xml.keys_letter_swedish_without_accent_characters
-            else ->
-                R.xml.keys_letter_swedish_without_period_and_comma
+            isTablet() -> R.xml.keys_letters_italian_tablet
+            isPeriodAndCommaEnabled() -> R.xml.keys_letters_italian
+            else -> R.xml.keys_letter_italian_without_period_and_comma
         }
 
     override val keyboardLetters: Int = 0
@@ -42,7 +32,6 @@ class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
-    override var hasTextBeforeCursor: Boolean = false
 
     private val keyHandler by lazy { KeyHandler(this) }
 

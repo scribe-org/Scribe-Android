@@ -595,7 +595,21 @@ object PreferencesHelper {
     }
 
     /**
-     * Saves the user's "Increase Text Size" preference.
+     * Resets the application hints, marking them as not shown in the shared preferences.
+     *
+     * @param context The context used to access shared preferences.
+     */
+    fun resetHints(context: Context) {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean("hint_shown_main", false)
+            putBoolean("hint_shown_settings", false)
+            putBoolean("hint_shown_about", false)
+            apply()
+        }
+    }
+
+    /** Saves the user's "Increase Text Size" preference.
      *
      * @param context The application context used to access SharedPreferences.
      * @param increaseTextSize `true` to enable larger text size, `false` to use default size.
