@@ -28,12 +28,19 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -122,7 +129,27 @@ fun TutorialStepScreen(
     showQuickTutorialHeader: Boolean = false,
 ) {
     val context = LocalContext.current
-    val isScribeActive = isScribeKeyboardActive(context)
+    var isScribeActive by remember { mutableStateOf(isScribeKeyboardActive(context)) }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                isScribeActive = isScribeKeyboardActive(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000)
+            isScribeActive = isScribeKeyboardActive(context)
+        }
+    }
 
     if (!isScribeActive) {
         WrongKeyboardScreen(
@@ -133,11 +160,17 @@ fun TutorialStepScreen(
     }
 
     val isDarkTheme = isSystemInDarkTheme()
-    val backgroundColor = if (isDarkTheme) TutorialColors.darkBackground else TutorialColors.lightBackground
-    val cardBackground = if (isDarkTheme) TutorialColors.cardBackgroundDark else TutorialColors.cardBackgroundLight
-    val textColor = if (isDarkTheme) TutorialColors.textPrimaryDark else TutorialColors.textPrimary
+    val backgroundColor = MaterialTheme.colorScheme.background
+    val cardBackground = MaterialTheme.colorScheme.surface
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val textSecondaryColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+    val dividerColor = MaterialTheme.colorScheme.outlineVariant
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val headerColor = MaterialTheme.colorScheme.onBackground
+    val successColor = if (isDarkTheme) Color(0xFF08A045) else Color(0xFF9BC53D)
+    val errorColor = Color(0xFFE53935)
 
-    var userInput by remember { mutableStateOf("") }
+    var userInput by remember(step) { mutableStateOf("") }
 
     val validationState =
         when {
@@ -175,11 +208,11 @@ fun TutorialStepScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = "Back",
-                            tint = Color.White,
+                            tint = headerColor,
                         )
                         Text(
                             text = "Quick tutorial",
-                            color = Color.White,
+                            color = headerColor,
                             fontSize = 14.sp,
                         )
                     }
@@ -187,7 +220,7 @@ fun TutorialStepScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Back",
-                        tint = Color.White,
+                        tint = headerColor,
                         modifier = Modifier.size(28.dp),
                     )
                 }
@@ -196,7 +229,7 @@ fun TutorialStepScreen(
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = "Close tutorial",
-                    tint = Color.White,
+                    tint = headerColor,
                     modifier = Modifier.size(24.dp),
                 )
             }
@@ -205,7 +238,7 @@ fun TutorialStepScreen(
         // Chapter title
         Text(
             text = chapterTitle,
-            color = Color.White,
+            color = headerColor,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 20.dp),
@@ -223,7 +256,7 @@ fun TutorialStepScreen(
                     .padding(horizontal = 20.dp)
                     .border(
                         width = 2.dp,
-                        color = TutorialColors.accentYellow,
+                        color = primaryColor,
                         shape = RoundedCornerShape(12.dp),
                     ),
         ) {
@@ -250,7 +283,7 @@ fun TutorialStepScreen(
                     )
                     Text(
                         text = step.hint,
-                        color = if (isDarkTheme) TutorialColors.textSecondaryDark else TutorialColors.textSecondary,
+                        color = textSecondaryColor,
                         fontSize = 13.sp,
                         lineHeight = 18.sp,
                     )
@@ -260,7 +293,7 @@ fun TutorialStepScreen(
 
                 // Text input field
                 HorizontalDivider(
-                    color = if (isDarkTheme) TutorialColors.dividerDark else TutorialColors.dividerLight,
+                    color = dividerColor,
                 )
 
                 BasicTextField(
@@ -280,7 +313,7 @@ fun TutorialStepScreen(
                 )
 
                 HorizontalDivider(
-                    color = if (isDarkTheme) TutorialColors.dividerDark else TutorialColors.dividerLight,
+                    color = dividerColor,
                 )
 
                 // Validation feedback
@@ -290,7 +323,7 @@ fun TutorialStepScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = step.successMessage,
-                                color = TutorialColors.successGreen,
+                                color = successColor,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Medium,
                             )
@@ -300,7 +333,7 @@ fun TutorialStepScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = errorText,
-                            color = TutorialColors.errorRed,
+                            color = errorColor,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Medium,
                         )
@@ -320,10 +353,10 @@ fun TutorialStepScreen(
             enabled = validationState == InputValidationState.CORRECT,
             colors =
                 ButtonDefaults.buttonColors(
-                    containerColor = TutorialColors.accentYellow,
-                    contentColor = Color.White,
-                    disabledContainerColor = TutorialColors.accentYellow.copy(alpha = 0.5f),
-                    disabledContentColor = Color.White.copy(alpha = 0.5f),
+                    containerColor = primaryColor,
+                    contentColor = if (isDarkTheme) Color.White else Color.Black,
+                    disabledContainerColor = primaryColor.copy(alpha = 0.5f),
+                    disabledContentColor = (if (isDarkTheme) Color.White else Color.Black).copy(alpha = 0.5f),
                 ),
             shape = RoundedCornerShape(12.dp),
             modifier =
