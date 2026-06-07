@@ -136,7 +136,7 @@ android {
     flavorDimensions.add("variants")
 
     sourceSets {
-        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("main").java.srcDirs("src/main/java", "src/main/kotlin")
         named("test") {
             java.srcDirs("src/test/java", "src/test/kotlin")
         }
