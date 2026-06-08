@@ -123,7 +123,7 @@ fun ConjugateScreen(
                 Image(
                     painter = painterResource(id = R.drawable.ic_search_vector),
                     contentDescription = "Search",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                     modifier = Modifier.size(Dimensions.IconSize),
                 )
 
@@ -134,11 +134,11 @@ fun ConjugateScreen(
                     onValueChange = { viewModel.onSearchQueryChanged(it) },
                     textStyle =
                         MaterialTheme.typography.bodyLarge.copy(
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.Bold,
                         ),
                     singleLine = true,
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onPrimary),
                     modifier = Modifier.weight(1f),
                     decorationBox = { innerTextField ->
                         Box(
@@ -148,7 +148,7 @@ fun ConjugateScreen(
                             if (searchQuery.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.i18n_app_conjugate_verbs_search_placeholder),
-                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
                                     style =
                                         MaterialTheme.typography.bodyLarge.copy(
                                             fontWeight = FontWeight.Bold,
@@ -164,7 +164,7 @@ fun ConjugateScreen(
                     Image(
                         painter = painterResource(id = R.drawable.close),
                         contentDescription = "Clear",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                         modifier =
                             Modifier
                                 .size(Dimensions.IconSize)
@@ -176,7 +176,7 @@ fun ConjugateScreen(
                 Image(
                     painter = painterResource(id = R.drawable.play_button),
                     contentDescription = "Play button",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                     modifier =
                         Modifier
                             .width(21.dp)
@@ -351,7 +351,7 @@ fun ConjugateScreen(
                             Text(
                                 text = "Clear all ✕",
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         }
