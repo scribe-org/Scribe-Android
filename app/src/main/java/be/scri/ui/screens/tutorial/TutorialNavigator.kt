@@ -1,0 +1,115 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+package be.scri.ui.screens.tutorial
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+
+/**
+ * The main tutorial navigation controller.
+ * Manages the flow between the tutorial home screen, individual chapters, and steps.
+ * Handles forward/backward navigation and tracks the user's current position.
+ *
+ * @param onTutorialExit Callback when the user exits the tutorial (back to About tab).
+ */
+@Composable
+fun TutorialNavigator(onTutorialExit: () -> Unit) {
+    var currentScreen by remember { mutableStateOf("home") }
+    var currentChapterIndex by remember { mutableIntStateOf(0) }
+    var currentStepIndex by remember { mutableIntStateOf(0) }
+    var isFullTutorial by remember { mutableStateOf(false) }
+
+    val allChapters = TutorialContent.getAllChapters()
+
+    BackHandler {
+        if (currentScreen == "home") {
+            onTutorialExit()
+        } else {
+            when {
+                currentStepIndex > 0 -> {
+                    currentStepIndex--
+                }
+                isFullTutorial && currentChapterIndex > 0 -> {
+                    currentChapterIndex--
+                    val prevSteps = allChapters[currentChapterIndex].second
+                    currentStepIndex = prevSteps.size - 1
+                }
+                else -> {
+                    currentScreen = "home"
+                }
+            }
+        }
+    }
+
+    when (currentScreen) {
+        "home" -> {
+            TutorialHomeScreen(
+                onBackPress = onTutorialExit,
+                onChapterSelect = { chapterIndex ->
+                    currentChapterIndex = chapterIndex
+                    currentStepIndex = 0
+                    isFullTutorial = false
+                    currentScreen = "step"
+                },
+                onStartFullTutorial = {
+                    currentChapterIndex = 0
+                    currentStepIndex = 0
+                    isFullTutorial = true
+                    currentScreen = "step"
+                },
+            )
+        }
+        "step" -> {
+            val (chapterTitle, steps) = allChapters[currentChapterIndex]
+            val step = steps[currentStepIndex]
+
+            val isLastStepInChapter = currentStepIndex == steps.size - 1
+            val isLastChapter = currentChapterIndex == allChapters.size - 1
+            val isLastStep = isLastStepInChapter && (isLastChapter || !isFullTutorial)
+
+            TutorialStepScreen(
+                chapterTitle = chapterTitle,
+                step = step,
+                isLastStep = isLastStep,
+                showQuickTutorialHeader = !isFullTutorial && currentStepIndex == 0,
+                onBackPress = {
+                    when {
+                        currentStepIndex > 0 -> {
+                            currentStepIndex--
+                        }
+                        isFullTutorial && currentChapterIndex > 0 -> {
+                            currentChapterIndex--
+                            val prevSteps = allChapters[currentChapterIndex].second
+                            currentStepIndex = prevSteps.size - 1
+                        }
+                        else -> {
+                            currentScreen = "home"
+                        }
+                    }
+                },
+                onClosePress = {
+                    currentScreen = "home"
+                },
+                onNextPress = {
+                    when {
+                        !isLastStepInChapter -> {
+                            currentStepIndex++
+                        }
+                        isFullTutorial && !isLastChapter -> {
+                            currentChapterIndex++
+                            currentStepIndex = 0
+                        }
+                        else -> {
+                            currentScreen = "home"
+                        }
+                    }
+                },
+            )
+        }
+    }
+}

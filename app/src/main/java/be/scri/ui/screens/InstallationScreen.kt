@@ -29,6 +29,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -49,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
+import be.scri.ui.screens.tutorial.TutorialNavigator
 
 /**
  * The installation page of the application with details for installing Scribe keyboards and downloading data.
@@ -61,6 +66,15 @@ fun InstallationScreen(
     onNavigateToDownloadData: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showTutorial by remember { mutableStateOf(false) }
+
+    if (showTutorial) {
+        TutorialNavigator(
+            onTutorialExit = { showTutorial = false },
+        )
+        return
+    }
+
     val layoutDirection = LocalLayoutDirection.current
     val localConfiguration = LocalConfiguration.current
     val resource: Int =
@@ -291,6 +305,7 @@ fun InstallationScreen(
 
             OutlinedButton(
                 onClick = {
+                    showTutorial = true
                 },
                 modifier =
                     Modifier
