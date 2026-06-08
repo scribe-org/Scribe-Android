@@ -5,6 +5,7 @@ package be.scri.ui.screens
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
@@ -111,7 +111,11 @@ fun ConjugateScreen(
                         .fillMaxWidth()
                         .height(56.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.surfaceContainer,
+                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
+                        ).border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
                         ).padding(horizontal = Dimensions.PaddingMedium),
                 verticalAlignment = Alignment.CenterVertically,
@@ -119,7 +123,7 @@ fun ConjugateScreen(
                 Image(
                     painter = painterResource(id = R.drawable.ic_search_vector),
                     contentDescription = "Search",
-                    colorFilter = ColorFilter.tint(Color.Black),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                     modifier = Modifier.size(Dimensions.IconSize),
                 )
 
@@ -130,11 +134,11 @@ fun ConjugateScreen(
                     onValueChange = { viewModel.onSearchQueryChanged(it) },
                     textStyle =
                         MaterialTheme.typography.bodyLarge.copy(
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Bold,
                         ),
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.Black),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     modifier = Modifier.weight(1f),
                     decorationBox = { innerTextField ->
                         Box(
@@ -144,7 +148,7 @@ fun ConjugateScreen(
                             if (searchQuery.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.i18n_app_conjugate_verbs_search_placeholder),
-                                    color = Color.Black.copy(alpha = 0.6f),
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                                     style =
                                         MaterialTheme.typography.bodyLarge.copy(
                                             fontWeight = FontWeight.Bold,
@@ -160,7 +164,7 @@ fun ConjugateScreen(
                     Image(
                         painter = painterResource(id = R.drawable.close),
                         contentDescription = "Clear",
-                        colorFilter = ColorFilter.tint(Color.Black),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                         modifier =
                             Modifier
                                 .size(Dimensions.IconSize)
@@ -172,7 +176,7 @@ fun ConjugateScreen(
                 Image(
                     painter = painterResource(id = R.drawable.play_button),
                     contentDescription = "Play button",
-                    colorFilter = ColorFilter.tint(Color.Black),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                     modifier =
                         Modifier
                             .width(21.dp)
@@ -338,7 +342,8 @@ fun ConjugateScreen(
                         Row(
                             modifier =
                                 Modifier
-                                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(4.dp))
+                                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
                                     .clickable { viewModel.clearAllRecentlyConjugated() }
                                     .padding(horizontal = 8.dp, vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically,
@@ -346,7 +351,7 @@ fun ConjugateScreen(
                             Text(
                                 text = "Clear all ✕",
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Black,
+                                color = MaterialTheme.colorScheme.primary,
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         }
