@@ -50,8 +50,8 @@ import be.scri.ui.common.ScribeBaseScreen
 @Composable
 fun ConjugateScreen(
     onNavigateToDownloadData: () -> Unit,
-    onNavigateToConjugationSelection: (String, String) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier,
+    onNavigateToConjugationSelection: (String, String) -> Unit = { _, _ -> },
     viewModel: ConjugateViewModel = viewModel(),
 ) {
     val localConfiguration = LocalConfiguration.current
@@ -219,8 +219,7 @@ fun ConjugateScreen(
                                         .clickable {
                                             viewModel.onVerbSelected(result)
                                             onNavigateToConjugationSelection(result.verb, result.languageAlias)
-                                        }
-                                        .padding(Dimensions.PaddingMedium),
+                                        }.padding(Dimensions.PaddingMedium),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
@@ -421,8 +420,7 @@ fun ConjugateScreen(
                                             .clickable {
                                                 viewModel.onVerbSelected(item)
                                                 onNavigateToConjugationSelection(item.verb, item.languageAlias)
-                                            }
-                                            .padding(Dimensions.PaddingMedium),
+                                            }.padding(Dimensions.PaddingMedium),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
