@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 
 /**
  * The main tutorial navigation controller.
@@ -18,7 +19,8 @@ import androidx.compose.runtime.setValue
  * @param onTutorialExit Callback when the user exits the tutorial (back to About tab).
  */
 @Composable
-fun TutorialNavigator(onTutorialExit: () -> Unit) {
+fun TutorialNavigator(onTutorialExit: () -> Unit,
+                      modifier: Modifier = Modifier) {
     var currentScreen by remember { mutableStateOf("home") }
     var currentChapterIndex by remember { mutableIntStateOf(0) }
     var currentStepIndex by remember { mutableIntStateOf(0) }
@@ -49,6 +51,7 @@ fun TutorialNavigator(onTutorialExit: () -> Unit) {
     when (currentScreen) {
         "home" -> {
             TutorialHomeScreen(
+                modifier = modifier,
                 onBackPress = onTutorialExit,
                 onChapterSelect = { chapterIndex ->
                     currentChapterIndex = chapterIndex
@@ -73,10 +76,10 @@ fun TutorialNavigator(onTutorialExit: () -> Unit) {
             val isLastStep = isLastStepInChapter && (isLastChapter || !isFullTutorial)
 
             TutorialStepScreen(
+                modifier = modifier,
                 chapterTitle = chapterTitle,
                 step = step,
                 isLastStep = isLastStep,
-                showQuickTutorialHeader = !isFullTutorial && currentStepIndex == 0,
                 onBackPress = {
                     when {
                         currentStepIndex > 0 -> {
@@ -91,9 +94,6 @@ fun TutorialNavigator(onTutorialExit: () -> Unit) {
                             currentScreen = "home"
                         }
                     }
-                },
-                onClosePress = {
-                    currentScreen = "home"
                 },
                 onNextPress = {
                     when {

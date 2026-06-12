@@ -118,9 +118,17 @@ fun feedbackAndSupportList(
     onRateScribeClick: () -> Unit,
     onMailClick: () -> Unit,
     onResetHintsClick: () -> Unit,
+    onTutorialClick: () -> Unit,
     isConjugateApp: Boolean = false,
 ): List<ScribeItem.ExternalLinkItem> =
     listOf(
+        ScribeItem.ExternalLinkItem(
+            leadingIcon = R.drawable.tutorial,
+            title = R.string.i18n_app_installation_button_quick_tutorial,
+            trailingIcon = R.drawable.right_arrow,
+            url = null,
+            onClick = { onTutorialClick() },
+        ),
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.star,
             title =
@@ -276,6 +284,7 @@ object AboutUtil {
         onRateScribeClick: () -> Unit,
         onMailClick: () -> Unit,
         onResetHintsClick: () -> Unit,
+        onTutorialClick : () -> Unit,
         context: Context,
         isConjugateApp: Boolean = false,
     ): ScribeItemList =
@@ -287,6 +296,7 @@ object AboutUtil {
                         onRateScribeClick,
                         onMailClick,
                         onResetHintsClick,
+                        onTutorialClick,
                         isConjugateApp,
                     ),
             )

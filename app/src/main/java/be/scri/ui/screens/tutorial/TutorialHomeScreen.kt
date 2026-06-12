@@ -57,7 +57,7 @@ fun TutorialHomeScreen(
     val textColor = MaterialTheme.colorScheme.onSurface
     val secondaryTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
     val dividerColor = MaterialTheme.colorScheme.outlineVariant
-
+    val headerColor = MaterialTheme.colorScheme.onBackground
     val chapters =
         listOf(
             TutorialChapter("Noun annotation", 0),
@@ -81,43 +81,30 @@ fun TutorialHomeScreen(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(24.dp),
             )
             Text(
-                text = "Home",
-                color = MaterialTheme.colorScheme.primary,
+                text = "About",
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 16.sp,
             )
-        }
 
+
+        }
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Info banner
-        Card(
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = cardBackground),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "\uD83D\uDCA1",
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(end = 12.dp),
-                )
-                Text(
-                    text = "Make sure you select the desired Scribe keyboard by pressing \uD83C\uDF10 when typing.",
-                    color = textColor,
-                    fontSize = 14.sp,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
+        Text(
+            text = "Quick tutorial",
+            color = headerColor,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 8.dp),
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
+
+
 
         // Intro text
         Card(
@@ -126,7 +113,8 @@ fun TutorialHomeScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = "This quick tutorial will show you how to use Scribe to support writing in your second language.",
+                text = "This quick tutorial will show you how to use Scribe to support writing in your second language. " +
+                    "\nMake sure you select the desired Scribe keyboard by pressing \uD83C\uDF10 when typing.",
                 color = textColor,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(16.dp),
