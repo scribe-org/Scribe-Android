@@ -19,8 +19,10 @@ import androidx.compose.ui.Modifier
  * @param onTutorialExit Callback when the user exits the tutorial (back to About tab).
  */
 @Composable
-fun TutorialNavigator(onTutorialExit: () -> Unit,
-                      modifier: Modifier = Modifier) {
+fun TutorialNavigator(
+    onTutorialExit: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var currentScreen by remember { mutableStateOf("home") }
     var currentChapterIndex by remember { mutableIntStateOf(0) }
     var currentStepIndex by remember { mutableIntStateOf(0) }

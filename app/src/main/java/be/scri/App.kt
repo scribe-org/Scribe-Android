@@ -49,10 +49,10 @@ import be.scri.ui.screens.download.DataDownloadViewModel
 import be.scri.ui.screens.download.DownloadActions
 import be.scri.ui.screens.download.DownloadDataScreen
 import be.scri.ui.screens.settings.SettingsScreen
+import be.scri.ui.screens.tutorial.TutorialNavigator
 import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import be.scri.ui.screens.tutorial.TutorialNavigator
 
 /**
  * The root composable function that sets up the app's theme, navigation, and screen layout.
@@ -184,7 +184,7 @@ fun ScribeApp(
                                                     pagerState.scrollToPage(aboutIndex)
                                                 }
                                             }
-                                        }
+                                        },
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
@@ -283,8 +283,8 @@ fun ScribeApp(
                     TutorialNavigator(
                         onTutorialExit = {
                             navController.popBackStack()
-                                         },
-                        modifier = Modifier.padding(innerPadding)
+                        },
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
 

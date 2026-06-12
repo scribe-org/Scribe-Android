@@ -91,7 +91,7 @@ fun WrongKeyboardScreen(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { onBackPress() }.padding(8.dp)
+                modifier = Modifier.clickable { onBackPress() }.padding(8.dp),
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,

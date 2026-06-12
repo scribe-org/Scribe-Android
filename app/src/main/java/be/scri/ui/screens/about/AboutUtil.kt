@@ -284,7 +284,7 @@ object AboutUtil {
         onRateScribeClick: () -> Unit,
         onMailClick: () -> Unit,
         onResetHintsClick: () -> Unit,
-        onTutorialClick : () -> Unit,
+        onTutorialClick: () -> Unit,
         context: Context,
         isConjugateApp: Boolean = false,
     ): ScribeItemList =

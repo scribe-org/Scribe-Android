@@ -89,8 +89,6 @@ fun TutorialHomeScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 16.sp,
             )
-
-
         }
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -104,8 +102,6 @@ fun TutorialHomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
-
         // Intro text
         Card(
             shape = RoundedCornerShape(12.dp),
@@ -113,8 +109,9 @@ fun TutorialHomeScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = "This quick tutorial will show you how to use Scribe to support writing in your second language. " +
-                    "\nMake sure you select the desired Scribe keyboard by pressing \uD83C\uDF10 when typing.",
+                text =
+                    "This quick tutorial will show you how to use Scribe to support writing in your second language. " +
+                        "\nMake sure you select the desired Scribe keyboard by pressing \uD83C\uDF10 when typing.",
                 color = textColor,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(16.dp),
