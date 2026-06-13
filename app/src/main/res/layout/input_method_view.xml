@@ -14,7 +14,6 @@
     android:layout_height="wrap_content">
 
 
-
     <RelativeLayout
         android:id="@+id/emoji_palette_holder"
         android:layout_width="match_parent"
@@ -22,10 +21,10 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/keyboard_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <RelativeLayout
             android:id="@+id/emoji_palette_top_bar"
@@ -44,7 +43,8 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/emojis"
                 android:padding="@dimen/small_margin"
-                android:src="@drawable/ic_arrow_left_vector" />
+                android:src="@drawable/ic_arrow_left_vector"
+                />
 
             <TextView
                 android:id="@+id/emoji_palette_label"
@@ -117,7 +117,8 @@
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:background="@drawable/keyboard_key_selector"
                 android:contentDescription="@string/delete"
-                android:src="@drawable/ic_clear_vector" />
+                android:src="@drawable/ic_clear_vector"
+                />
 
         </RelativeLayout>
     </RelativeLayout>
