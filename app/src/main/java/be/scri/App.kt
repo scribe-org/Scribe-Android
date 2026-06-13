@@ -49,6 +49,7 @@ import be.scri.ui.screens.download.DataDownloadViewModel
 import be.scri.ui.screens.download.DownloadActions
 import be.scri.ui.screens.download.DownloadDataScreen
 import be.scri.ui.screens.settings.SettingsScreen
+import be.scri.ui.screens.tutorial.TutorialNavigator
 import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -173,6 +174,17 @@ fun ScribeApp(
                                         onNavigateToDownloadData = {
                                             navController.navigate("download_data")
                                         },
+                                        onTutorialClick = {
+                                            navController.navigate("tutorial")
+
+                                            coroutineScope.launch {
+                                                kotlinx.coroutines.delay(400)
+                                                val aboutIndex = screens.indexOfFirst { it is BottomBarScreen.About }
+                                                if (aboutIndex != -1) {
+                                                    pagerState.scrollToPage(aboutIndex)
+                                                }
+                                            }
+                                        },
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
@@ -245,6 +257,9 @@ fun ScribeApp(
                                         onWikiClick = {
                                             navController.navigate(Screen.WikimediaScribe.route)
                                         },
+                                        onTutorialClick = {
+                                            navController.navigate("tutorial")
+                                        },
                                         resetHints = { resetHints() },
                                         context = context,
                                     )
@@ -262,6 +277,15 @@ fun ScribeApp(
                             }
                         }
                     }
+                }
+
+                composable("tutorial") {
+                    TutorialNavigator(
+                        onTutorialExit = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.padding(innerPadding),
+                    )
                 }
 
                 composable("download_data") {
