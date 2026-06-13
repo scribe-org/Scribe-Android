@@ -34,6 +34,7 @@ fun AboutScreen(
     onPrivacyPolicyClick: () -> Unit,
     onThirdPartyLicensesClick: () -> Unit,
     onWikiClick: () -> Unit,
+    onTutorialClick: () -> Unit,
     resetHints: () -> Unit,
     context: Context,
     modifier: Modifier = Modifier,
@@ -60,6 +61,7 @@ fun AboutScreen(
                 resetHints()
             },
             context = context,
+            onTutorialClick = onTutorialClick,
             isConjugateApp = isConjugateApp,
         )
 

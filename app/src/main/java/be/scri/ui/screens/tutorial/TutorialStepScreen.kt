@@ -6,6 +6,7 @@ import android.content.Context
 import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,14 +21,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -111,22 +110,18 @@ fun isScribeKeyboardActive(context: Context): Boolean {
  * @param chapterTitle The title of the current chapter (e.g., "Noun annotation").
  * @param step The [TutorialStep] data for the current step.
  * @param onBackPress Callback when the back button is pressed.
- * @param onClosePress Callback when the close (X) button is pressed.
  * @param onNextPress Callback when the Next/Finish button is pressed.
  * @param modifier Modifier for this composable.
  * @param isLastStep Whether this is the final step in the entire tutorial.
- * @param showQuickTutorialHeader Whether to show "Quick tutorial" back link instead of back arrow.
  */
 @Composable
 fun TutorialStepScreen(
     chapterTitle: String,
     step: TutorialStep,
     onBackPress: () -> Unit,
-    onClosePress: () -> Unit,
     onNextPress: () -> Unit,
     modifier: Modifier = Modifier,
     isLastStep: Boolean = false,
-    showQuickTutorialHeader: Boolean = false,
 ) {
     val context = LocalContext.current
     var isScribeActive by remember { mutableStateOf(isScribeKeyboardActive(context)) }
@@ -155,7 +150,6 @@ fun TutorialStepScreen(
     if (!isScribeActive) {
         WrongKeyboardScreen(
             onBackPress = onBackPress,
-            onClosePress = onClosePress,
         )
         return
     }
@@ -200,38 +194,23 @@ fun TutorialStepScreen(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = onBackPress) {
-                if (showQuickTutorialHeader) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                            contentDescription = "Back",
-                            tint = headerColor,
-                        )
-                        Text(
-                            text = "Quick tutorial",
-                            color = headerColor,
-                            fontSize = 14.sp,
-                        )
-                    }
-                } else {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Back",
-                        tint = headerColor,
-                        modifier = Modifier.size(28.dp),
-                    )
-                }
-            }
-            IconButton(onClick = onClosePress) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable { onBackPress() }.padding(8.dp),
+            ) {
                 Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Close tutorial",
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = "Back",
                     tint = headerColor,
                     modifier = Modifier.size(24.dp),
+                )
+                Text(
+                    text = "Quick tutorial",
+                    color = headerColor,
+                    fontSize = 16.sp,
                 )
             }
         }
@@ -257,7 +236,7 @@ fun TutorialStepScreen(
                     .padding(horizontal = 20.dp)
                     .border(
                         width = 2.dp,
-                        color = primaryColor,
+                        color = Color.Transparent,
                         shape = RoundedCornerShape(12.dp),
                     ),
         ) {

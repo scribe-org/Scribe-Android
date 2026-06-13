@@ -64,6 +64,7 @@ fun InstallationScreen(
     isDark: Boolean,
     context: Context,
     onNavigateToDownloadData: () -> Unit,
+    onTutorialClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showTutorial by remember { mutableStateOf(false) }
@@ -305,7 +306,7 @@ fun InstallationScreen(
 
             OutlinedButton(
                 onClick = {
-                    showTutorial = true
+                    onTutorialClick()
                 },
                 modifier =
                     Modifier
