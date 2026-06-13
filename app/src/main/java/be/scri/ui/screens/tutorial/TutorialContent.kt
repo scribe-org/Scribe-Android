@@ -8,9 +8,8 @@ package be.scri.ui.screens.tutorial
  * through a specific Scribe feature.
  */
 object TutorialContent {
-
-    private fun getLanguageName(languageCode: String): String {
-        return when (languageCode) {
+    private fun getLanguageName(languageCode: String): String =
+        when (languageCode) {
             "en" -> "English"
             "es" -> "Spanish"
             "fr" -> "French"
@@ -20,7 +19,6 @@ object TutorialContent {
             "sv" -> "Swedish"
             else -> "German"
         }
-    }
 
     /**
      * Chapter 1: Noun Annotation.
@@ -28,27 +26,29 @@ object TutorialContent {
      */
     fun getNounAnnotationSteps(languageCode: String): List<TutorialStep> {
         val language = getLanguageName(languageCode)
-        val (fatherWord, fatherTag, fatherGender) = when (languageCode) {
-            "en" -> Triple("father", "M", "Masculine")
-            "es" -> Triple("padre", "M", "Masculino")
-            "fr" -> Triple("père", "M", "Masculin")
-            "it" -> Triple("padre", "M", "Maschile")
-            "pt" -> Triple("pai", "M", "Masculino")
-            "ru" -> Triple("отец", "M", "Мужской")
-            "sv" -> Triple("far", "C", "Common")
-            else -> Triple("Vater", "M", "Maskulin")
-        }
+        val (fatherWord, fatherTag, fatherGender) =
+            when (languageCode) {
+                "en" -> Triple("father", "M", "Masculine")
+                "es" -> Triple("padre", "M", "Masculino")
+                "fr" -> Triple("père", "M", "Masculin")
+                "it" -> Triple("padre", "M", "Maschile")
+                "pt" -> Triple("pai", "M", "Masculino")
+                "ru" -> Triple("отец", "M", "Мужской")
+                "sv" -> Triple("far", "C", "Common")
+                else -> Triple("Vater", "M", "Maskulin")
+            }
 
-        val (motherWord, motherTag, motherGender) = when (languageCode) {
-            "en" -> Triple("mother", "F", "Feminine")
-            "es" -> Triple("madre", "F", "Femenino")
-            "fr" -> Triple("mère", "F", "Féminin")
-            "it" -> Triple("madre", "F", "Femminile")
-            "pt" -> Triple("mãe", "F", "Feminino")
-            "ru" -> Triple("мать", "F", "Женский")
-            "sv" -> Triple("mor", "C", "Common")
-            else -> Triple("Mutter", "F", "Feminin")
-        }
+        val (motherWord, motherTag, motherGender) =
+            when (languageCode) {
+                "en" -> Triple("mother", "F", "Feminine")
+                "es" -> Triple("madre", "F", "Femenino")
+                "fr" -> Triple("mère", "F", "Féminin")
+                "it" -> Triple("madre", "F", "Femminile")
+                "pt" -> Triple("mãe", "F", "Feminino")
+                "ru" -> Triple("мать", "F", "Женский")
+                "sv" -> Triple("mor", "C", "Common")
+                else -> Triple("Mutter", "F", "Feminin")
+            }
 
         return listOf(
             TutorialStep(
@@ -74,7 +74,7 @@ object TutorialContent {
      * Chapter 2: Word Translation.
      * Teaches users how to use the Translate command via the Scribe key.
      */
-    fun wordTranslationSteps(languageCode: String): List<TutorialStep>{
+    fun wordTranslationSteps(languageCode: String): List<TutorialStep> {
         val language = getLanguageName(languageCode)
         return listOf(
             TutorialStep(
@@ -86,9 +86,10 @@ object TutorialContent {
                 hint = "If your second language is not $language, change the language in your keyboard.",
                 requiresValidation = false,
             ),
-        )}
+        )
+    }
 
-    fun verbConjugationSteps(languageCode: String) : List<TutorialStep>{
+    fun verbConjugationSteps(languageCode: String): List<TutorialStep> {
         val language = getLanguageName(languageCode)
         return listOf(
             TutorialStep(
@@ -101,9 +102,10 @@ object TutorialContent {
                 hint = "If your second language is not $language, change the language in your keyboard.",
                 requiresValidation = false,
             ),
-        )}
+        )
+    }
 
-    fun nounPluralsSteps (languageCode: String) : List<TutorialStep> {
+    fun nounPluralsSteps(languageCode: String): List<TutorialStep> {
         val language = getLanguageName(languageCode)
         return listOf(
             TutorialStep(
@@ -116,7 +118,8 @@ object TutorialContent {
                 hint = "If your second language is not $language, change the language in your keyboard.",
                 requiresValidation = false,
             ),
-        )}
+        )
+    }
 
     /** Returns all chapters as a list of pairs (title, steps). */
     fun getAllChapters(languageCode: String = "de"): List<Pair<String, List<TutorialStep>>> =
