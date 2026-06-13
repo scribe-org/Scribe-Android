@@ -492,6 +492,7 @@ abstract class GeneralKeyboardIME(
         val inputConnection = currentInputConnection
         if (inputConnection != null) {
             when (code) {
+                KeyboardBase.KEYCODE_EMOJI -> openEmojiKeyboard()
                 KeyboardBase.KEYCODE_DELETE -> handleDelete()
                 KeyboardBase.KEYCODE_SHIFT -> {
                     if (keyboardMode == keyboardLetters) {
@@ -526,7 +527,9 @@ abstract class GeneralKeyboardIME(
     }
 
     // MARK: Helper Methods
-
+    fun openEmojiKeyboard() {
+        uiManager.showEmojiPalette()
+    }
     protected fun isPeriodAndCommaEnabled(): Boolean {
         val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
         val isInSearchBar = isSearchBar()
@@ -1014,7 +1017,31 @@ abstract class GeneralKeyboardIME(
      * @param isLongPress true` if this is a long press/repeat action, false for single tap.
      */
     fun handleDelete(isLongPress: Boolean = false) {
-        val effectiveIsCommandBar = currentState != ScribeState.IDLE && currentState != ScribeState.SELECT_COMMAND
+        val inputConnection = currentInputConnection ?: return
+        val effectiveIsCommandBar = currentState != ScribeState.IDLE &&
+            currentState != ScribeState.SELECT_COMMAND
+
+        if (!effectiveIsCommandBar) {
+            val selectedText = inputConnection.getSelectedText(0)
+            if (selectedText.isNullOrEmpty()) {
+                // Use BreakIterator to delete full emoji characters
+                val prevText = inputConnection.getTextBeforeCursor(8, 0)
+                if (!prevText.isNullOrEmpty()) {
+                    val breakIterator = android.icu.text.BreakIterator.getCharacterInstance()
+                    breakIterator.setText(prevText.toString())
+                    val end = breakIterator.last()
+                    val start = breakIterator.previous()
+                    val count = if (start == android.icu.text.BreakIterator.DONE) {
+                        1
+                    } else {
+                        (end - start).coerceAtLeast(1)
+                    }
+                    inputConnection.deleteSurroundingText(count, 0)
+                    return
+                }
+            }
+        }
+
         backspaceHandler.handleBackspace(effectiveIsCommandBar, isLongPress)
     }
 

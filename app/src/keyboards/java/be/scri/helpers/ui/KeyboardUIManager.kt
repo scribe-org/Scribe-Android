@@ -32,6 +32,15 @@ import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 import be.scri.views.KeyboardView
+import be.scri.helpers.EmojiAdapter
+import be.scri.helpers.EMOJI_SPEC_FILE_PATH
+import be.scri.helpers.parseRawEmojiSpecsFile
+import be.scri.helpers.getCategoryIconRes
+
+import be.scri.helpers.AutoGridLayoutManager
+import be.scri.helpers.EmojiData
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.core.view.updateLayoutParams
 
 /**
  * Manages the UI elements and state transitions for the GeneralKeyboardIME.
@@ -752,6 +761,190 @@ class KeyboardUIManager(
         emojiBtnTablet3?.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
+    }
+
+    /**
+     * Displays the emoji palette by showing the emoji palette holder and hiding the keyboard view.
+     * Based on Fossify's openEmojiPalette() and setupEmojis() approach.
+     * Loads emojis from the emoji spec file on a background thread and populates the grid.
+     */
+    fun showEmojiPalette() {
+        binding.keyboardView.post {
+            val keyboardHeight = binding.keyboardView.measuredHeight
+            val toolbarHeight = binding.commandOptionsBar.measuredHeight.takeIf { it > 0 }
+                ?: context.resources.getDimensionPixelSize(R.dimen.toolbar_height)
+
+            binding.emojiPaletteHolder.updateLayoutParams {
+                height = keyboardHeight + toolbarHeight
+            }
+            binding.emojiPaletteHolder.requestLayout()
+        }
+
+
+        binding.emojiPaletteHolder.visibility = View.VISIBLE
+
+        binding.keyboardView.visibility = View.GONE
+        binding.commandOptionsBar.visibility = View.GONE
+
+        binding.emojiPaletteClose.setOnClickListener {
+            hideEmojiPalette()
+        }
+
+        binding.emojiPaletteModeChange.setOnClickListener {
+            hideEmojiPalette()
+        }
+        binding.emojiPaletteModeChange.text = "ABC"
+        binding.emojiPaletteModeChange.setTextColor(
+            ContextCompat.getColor(context, R.color.emoji_palette_icons)
+        )
+
+        binding.emojiPaletteBackspace.setOnClickListener {
+            listener.onKeyboardActionListener().onKey(KeyboardBase.KEYCODE_DELETE)
+        }
+
+        Thread {
+            val fullEmojiList = parseRawEmojiSpecsFile(context, EMOJI_SPEC_FILE_PATH)
+            val systemFontPaint = android.graphics.Paint().apply {
+                typeface = android.graphics.Typeface.DEFAULT
+            }
+            val emojis = fullEmojiList.filter { emoji ->
+                systemFontPaint.hasGlyph(emoji.emoji)
+            }
+
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                setupEmojiAdapter(emojis)
+            }
+        }.start()
+    }
+
+    /**
+     * Sets up the emoji RecyclerView grid and category strip.
+     *
+     * @param items The flat list of category headers and emojis.
+     * @param categories The map of category name to emoji list for category strip setup.
+     */
+    /**
+     * Sets up the emoji RecyclerView adapter and category strip.
+     * Based on Fossify's setupEmojiAdapter() implementation.
+     *
+     * @param emojis The filtered list of emojis the device can render.
+     */
+    private fun setupEmojiAdapter(emojis: List<EmojiData>) {
+        val emojiCategories = prepareEmojiCategories(emojis)
+        val emojiItems = prepareEmojiItems(emojiCategories)
+
+        val emojiItemSize = context.resources.getDimensionPixelSize(R.dimen.emoji_item_size)
+        val emojiLayoutManager = AutoGridLayoutManager(context, emojiItemSize)
+
+        emojiLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int =
+                if (emojiItems[position] is EmojiAdapter.Item.Category) {
+                    emojiLayoutManager.spanCount
+                } else {
+                    1
+                }
+        }
+
+        binding.emojisList.layoutManager = emojiLayoutManager
+        binding.emojisList.adapter = EmojiAdapter(context, emojiItems) { emojiData ->
+            listener.onEmojiSelected(emojiData.emoji)
+        }
+
+        setupEmojiCategoryStrip(emojiCategories, emojiItems, emojiLayoutManager)
+    }
+
+    /**
+     * Groups emojis by category.
+     * Based on Fossify's prepareEmojiCategories() implementation.
+     *
+     * @param emojis The full list of emojis.
+     * @return A map of category name to list of emojis in that category.
+     */
+    private fun prepareEmojiCategories(emojis: List<EmojiData>): Map<String, List<EmojiData>> =
+        emojis.groupBy { it.category }
+
+    /**
+     * Builds a flat list of category headers and emoji items for the RecyclerView.
+     * Based on Fossify's prepareEmojiItems() implementation.
+     *
+     * @param categories The map of categories to their emojis.
+     * @return A flat list of [EmojiAdapter.Item] objects.
+     */
+    private fun prepareEmojiItems(categories: Map<String, List<EmojiData>>): List<EmojiAdapter.Item> {
+        val emojiItems = mutableListOf<EmojiAdapter.Item>()
+        categories.entries.forEach { (category, emojis) ->
+            emojiItems.add(EmojiAdapter.Item.Category(category))
+            emojis.forEach { emojiItems.add(EmojiAdapter.Item.Emoji(it)) }
+        }
+        return emojiItems
+    }
+
+    /**
+     * Populates the emoji category strip at the bottom of the palette.
+     * Tapping a category icon scrolls the emoji list to that category.
+     *
+     * @param categories The map of category names to their emojis.
+     * @param items The full flat list used to find category positions.
+     * @param layoutManager The GridLayoutManager used to scroll to positions.
+     */
+    /**
+     * Populates the emoji category strip at the bottom of the palette.
+     * Tapping a category icon scrolls the emoji list to that category.
+     * Based on Fossify's setupEmojiAdapter() category strip implementation.
+     *
+     * @param categories The map of category names to their emojis.
+     * @param emojiItems The full flat list used to find category positions.
+     * @param layoutManager The AutoGridLayoutManager used to scroll to positions.
+     */
+    private fun setupEmojiCategoryStrip(
+        categories: Map<String, List<EmojiData>>,
+        emojiItems: List<EmojiAdapter.Item>,
+        layoutManager: AutoGridLayoutManager,
+    ) {
+        binding.emojiCategoriesStrip.removeAllViews()
+
+        var activeButton: android.widget.ImageButton? = null
+
+        categories.keys.forEachIndexed { index, category ->
+            val button = android.widget.ImageButton(context).apply {
+                setImageResource(getCategoryIconRes(category))
+                background = null
+                imageAlpha = if (index == 0) 255 else 128 // 50% opacity for inactive
+                layoutParams = android.widget.LinearLayout.LayoutParams(
+                    0,
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    1f,
+                )
+                setOnClickListener {
+                    activeButton?.imageAlpha = 128 // dim previous
+                    imageAlpha = 255              // full opacity for active
+                    activeButton = this
+
+                    val position = emojiItems.indexOfFirst {
+                        it is EmojiAdapter.Item.Category && it.value == category
+                    }
+                    if (position != -1) {
+                        (layoutManager as androidx.recyclerview.widget.LinearLayoutManager)
+                            .scrollToPositionWithOffset(position, 0)
+                    }
+                }
+            }
+
+            if (index == 0) activeButton = button
+            binding.emojiCategoriesStrip.addView(button)
+        }
+    }
+
+    /**
+     * Hides the emoji palette and restores the normal keyboard view and command options bar.
+     * Called when the user taps the close button, the ABC button, or finishes emoji selection.
+     */
+    fun hideEmojiPalette() {
+        binding.emojiPaletteHolder.visibility = View.GONE
+        binding.keyboardView.visibility = View.VISIBLE
+        binding.commandOptionsBar.visibility = View.VISIBLE
+        binding.emojisList.scrollToPosition(0)
+        binding.emojiCategoriesStrip.removeAllViews()
     }
 
     /**

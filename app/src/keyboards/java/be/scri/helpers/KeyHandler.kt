@@ -113,6 +113,10 @@ class KeyHandler(
                 handleCurrencyKey(language)
                 true
             }
+            KeyboardBase.KEYCODE_EMOJI -> {
+                ime.openEmojiKeyboard()
+                true
+            }
             else -> {
                 handleDefaultKey(code)
                 true
