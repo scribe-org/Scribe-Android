@@ -34,6 +34,7 @@ import be.scri.ui.common.appcomponents.HintDialog
 import be.scri.ui.common.bottombar.BottomBarScreen
 import be.scri.ui.common.bottombar.ScribeBottomBar
 import be.scri.ui.screens.ConjugateScreen
+import be.scri.ui.screens.ConjugationSelectionScreen
 import be.scri.ui.screens.DefaultCurrencySymbolScreen
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
@@ -209,6 +210,11 @@ fun ScribeApp(
                                         onNavigateToDownloadData = {
                                             navController.navigate("conjugate_download_data")
                                         },
+                                        onNavigateToConjugationSelection = { verb, languageAlias ->
+                                            navController.navigate(
+                                                "${Screen.ConjugationSelection.route}/$verb/$languageAlias",
+                                            )
+                                        },
                                     )
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
@@ -313,6 +319,17 @@ fun ScribeApp(
                         isDarkTheme = isDarkTheme,
                         downloadActions = conjugateDownloadActions,
                         checkUpdateActions = conjugateCheckUpdateActions,
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                }
+
+                composable("${Screen.ConjugationSelection.route}/{verb}/{languageAlias}") { backStackEntry ->
+                    val verb = backStackEntry.arguments?.getString("verb") ?: ""
+                    val languageAlias = backStackEntry.arguments?.getString("languageAlias") ?: ""
+                    ConjugationSelectionScreen(
+                        verb = verb,
+                        languageAlias = languageAlias,
+                        onBackNavigation = { navController.popBackStack() },
                         modifier = Modifier.padding(innerPadding),
                     )
                 }

@@ -48,4 +48,9 @@ sealed class Screen(
      * Screen containing the third party codes used in the application.
      */
     data object ThirdParty : Screen("third_party_screen")
+
+    /**
+     * Screen displaying the conjugation selection details for a specific verb.
+     */
+    data object ConjugationSelection : Screen("conjugation_selection_screen")
 }
