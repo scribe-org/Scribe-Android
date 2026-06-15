@@ -10,7 +10,6 @@ const val EMOJI_SPEC_FILE_PATH = "emoji_spec.txt"
 
 /**
  * Reads the emoji spec file and returns a parsed list of EmojiData.
- * Directly based on Fossify's parseRawEmojiSpecsFile() implementation.
  *
  * @param context The application context used to access assets.
  * @param path The path to the emoji spec file within assets.
@@ -20,9 +19,6 @@ fun parseRawEmojiSpecsFile(
     context: Context,
     path: String,
 ): MutableList<EmojiData> {
-   // if (cachedEmojiData != null) {
-   //     return cachedEmojiData!!
-  //  }
 
     val emojis = mutableListOf<EmojiData>()
     var emojiEditorList: MutableList<String>? = null
@@ -71,7 +67,6 @@ fun parseRawEmojiSpecsFile(
 
 /**
  * Data class representing a single emoji with its category and skin tone variants.
- * Directly based on Fossify's EmojiData model.
  *
  * @param category The category this emoji belongs to.
  * @param emoji The base emoji character string.
@@ -85,7 +80,6 @@ data class EmojiData(
 
 /**
  * Returns the drawable resource ID for a given emoji category icon.
- * Based on Fossify's getCategoryIconRes() function.
  *
  * @param category The category name from the emoji spec file.
  * @return The drawable resource ID for the category icon.
@@ -106,7 +100,6 @@ fun getCategoryIconRes(category: String): Int =
 
 /**
  * Returns the string resource ID for a given emoji category title.
- * Based on Fossify's getCategoryTitleRes() function.
  *
  * @param category The category name from the emoji spec file.
  * @return The string resource ID for the category title.

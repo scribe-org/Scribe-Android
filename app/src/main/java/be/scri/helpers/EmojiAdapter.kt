@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
 
 /**
- * RecyclerView adapter for displaying emojis and category headers in the emoji palette.
- * Directly based on Fossify's EmojisAdapter implementation.
+ * Displaying emojis and category headers in the emoji palette.
  *
  * @param context The application context.
  * @param items The list of items to display, either categories or emojis.
@@ -22,7 +21,6 @@ class EmojiAdapter(
     var items: List<Item>,
     val itemClick: (emoji: EmojiData) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     private val layoutInflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(
@@ -30,12 +28,14 @@ class EmojiAdapter(
         viewType: Int,
     ): RecyclerView.ViewHolder =
         when (viewType) {
-            ITEM_TYPE_EMOJI -> EmojiViewHolder(
-                layoutInflater.inflate(R.layout.item_emoji, parent, false),
-            )
-            ITEM_TYPE_CATEGORY -> EmojiCategoryViewHolder(
-                layoutInflater.inflate(R.layout.item_emoji_category_title, parent, false),
-            )
+            ITEM_TYPE_EMOJI ->
+                EmojiViewHolder(
+                    layoutInflater.inflate(R.layout.item_emoji, parent, false),
+                )
+            ITEM_TYPE_CATEGORY ->
+                EmojiCategoryViewHolder(
+                    layoutInflater.inflate(R.layout.item_emoji_category_title, parent, false),
+                )
             else -> throw IllegalArgumentException("Unsupported view type: $viewType")
         }
 
@@ -58,7 +58,7 @@ class EmojiAdapter(
     override fun getItemCount() = items.size
 
     /**
-     * Updates the adapter's item list and refreshes the RecyclerView.
+     * Update the adapter's item list and refreshes the RecyclerView.
      *
      * @param emojiItems The new list of items to display.
      */
@@ -71,7 +71,7 @@ class EmojiAdapter(
     /**
      * ViewHolder for a single emoji item.
      *
-     * @param view The inflated item_emoji view.
+     * @param view The enlarged item_emoji view.
      */
     inner class EmojiViewHolder(
         view: android.view.View,
@@ -89,7 +89,7 @@ class EmojiAdapter(
     /**
      * ViewHolder for a category header.
      *
-     * @param view The inflated item_emoji_category_title view.
+     * @param view The enlarged item_emoji_category_title view.
      */
     inner class EmojiCategoryViewHolder(
         view: android.view.View,
@@ -103,13 +103,17 @@ class EmojiAdapter(
 
     /**
      * Sealed interface representing items in the emoji list.
-     * Either a category header or an individual emoji.
      */
     sealed interface Item {
-        /** A single tappable emoji. */
-        data class Emoji(val emojiData: EmojiData) : Item
-        /** A category header row. */
-        data class Category(val value: String) : Item
+        // A single tappable emoji.
+        data class Emoji(
+            val emojiData: EmojiData,
+        ) : Item
+
+        // A category header row.
+        data class Category(
+            val value: String,
+        ) : Item
     }
 
     companion object {

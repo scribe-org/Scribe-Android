@@ -527,9 +527,11 @@ abstract class GeneralKeyboardIME(
     }
 
     // MARK: Helper Methods
+
     fun openEmojiKeyboard() {
         uiManager.showEmojiPalette()
     }
+
     protected fun isPeriodAndCommaEnabled(): Boolean {
         val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
         val isInSearchBar = isSearchBar()
@@ -1009,7 +1011,7 @@ abstract class GeneralKeyboardIME(
     // MARK: Deletion Logic
 
     /**
-     * Handles the logic for the Delete/Backspace key. It deletes characters from either
+     * Handles the logic for the Delete key. It deletes characters from either
      * the main input field or the command bar, depending on the context.
      * Delegated to BackspaceHandler.
      *
@@ -1018,24 +1020,28 @@ abstract class GeneralKeyboardIME(
      */
     fun handleDelete(isLongPress: Boolean = false) {
         val inputConnection = currentInputConnection ?: return
-        val effectiveIsCommandBar = currentState != ScribeState.IDLE &&
-            currentState != ScribeState.SELECT_COMMAND
+        val effectiveIsCommandBar =
+            currentState != ScribeState.IDLE &&
+                currentState != ScribeState.SELECT_COMMAND
 
         if (!effectiveIsCommandBar) {
             val selectedText = inputConnection.getSelectedText(0)
             if (selectedText.isNullOrEmpty()) {
-                // Use BreakIterator to delete full emoji characters
+                // Use BreakIterator to delete full emoji characters.
                 val prevText = inputConnection.getTextBeforeCursor(8, 0)
                 if (!prevText.isNullOrEmpty()) {
-                    val breakIterator = android.icu.text.BreakIterator.getCharacterInstance()
+                    val breakIterator =
+                        android.icu.text.BreakIterator
+                            .getCharacterInstance()
                     breakIterator.setText(prevText.toString())
                     val end = breakIterator.last()
                     val start = breakIterator.previous()
-                    val count = if (start == android.icu.text.BreakIterator.DONE) {
-                        1
-                    } else {
-                        (end - start).coerceAtLeast(1)
-                    }
+                    val count =
+                        if (start == android.icu.text.BreakIterator.DONE) {
+                            1
+                        } else {
+                            (end - start).coerceAtLeast(1)
+                        }
                     inputConnection.deleteSurroundingText(count, 0)
                     return
                 }

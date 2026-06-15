@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * A GridLayoutManager that automatically calculates the number of columns
  * based on the available width and desired item width.
- * Based on Fossify's AutoGridLayoutManager approach.
  *
  * @param context The application context.
  * @param itemWidth The desired width of each item in pixels.
@@ -17,10 +16,7 @@ class AutoGridLayoutManager(
     context: Context,
     private val itemWidth: Int,
 ) : GridLayoutManager(context, 1) {
-
-    /**
-     * Recalculates the span count based on available width before laying out children.
-     */
+     // Recalculates the span count based on available width before laying out children.
     override fun onLayoutChildren(
         recycler: RecyclerView.Recycler?,
         state: RecyclerView.State?,
