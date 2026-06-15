@@ -19,7 +19,6 @@ fun parseRawEmojiSpecsFile(
     context: Context,
     path: String,
 ): MutableList<EmojiData> {
-
     val emojis = mutableListOf<EmojiData>()
     var emojiEditorList: MutableList<String>? = null
     var category: String? = null

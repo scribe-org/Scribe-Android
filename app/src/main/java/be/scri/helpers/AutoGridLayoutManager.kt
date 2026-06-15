@@ -16,7 +16,7 @@ class AutoGridLayoutManager(
     context: Context,
     private val itemWidth: Int,
 ) : GridLayoutManager(context, 1) {
-     // Recalculates the span count based on available width before laying out children.
+    // Recalculates the span count based on available width before laying out children.
     override fun onLayoutChildren(
         recycler: RecyclerView.Recycler?,
         state: RecyclerView.State?,
