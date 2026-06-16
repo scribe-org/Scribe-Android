@@ -10,9 +10,11 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import be.scri.R
 import be.scri.data.remote.DynamicDbHelper
 import be.scri.data.remote.RetrofitClient
 import be.scri.helpers.LanguageMappingConstants
+import be.scri.helpers.StringUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
@@ -106,7 +108,9 @@ class DataDownloadViewModel(
             }
 
             if (currentState == DownloadState.Completed) {
-                Toast.makeText(getApplication(), "$displayLang data is already up to date", Toast.LENGTH_SHORT).show()
+                val template = getApplication<Application>().getString(R.string.i18n_app_download_menu_ui_download_data_already_up_to_date)
+                val msg = StringUtils.formatStringWithParams(template, displayLang)
+                Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
                 return
             }
         }
@@ -144,23 +148,33 @@ class DataDownloadViewModel(
 
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed
-                            Toast.makeText(getApplication(), "Download $displayLang data finished!", Toast.LENGTH_SHORT).show()
+                            val template = getApplication<Application>().getString(R.string.i18n_app_download_menu_ui_download_data_download_success)
+                            val msg = StringUtils.formatStringWithParams(template, displayLang)
+                            Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         // Already up to date: Skip the DB work.
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed
-                            Toast.makeText(getApplication(), "Already up to date!", Toast.LENGTH_SHORT).show()
+                            val msg = getApplication<Application>().getString(R.string.i18n_app_download_menu_ui_download_data_generic_already_up_to_date)
+                            Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
                         }
                     }
                 } catch (e: IOException) {
-                    updateErrorState(key, "Network Error: ${e.message}")
+                    val template = getApplication<Application>().getString(R.string.i18n_app_download_error_network)
+                    val errorMsg = StringUtils.formatStringWithParams(template, e.message ?: "")
+                    updateErrorState(key, errorMsg)
                 } catch (e: SQLiteException) {
-                    updateErrorState(key, "Database Error: ${e.message}")
+                    val template = getApplication<Application>().getString(R.string.i18n_app_download_error_database)
+                    val errorMsg = StringUtils.formatStringWithParams(template, e.message ?: "")
+                    updateErrorState(key, errorMsg)
                 } catch (e: HttpException) {
-                    updateErrorState(key, "Server Error: ${e.code()}")
+                    val template = getApplication<Application>().getString(R.string.i18n_app_download_error_server)
+                    val errorMsg = StringUtils.formatStringWithParams(template, e.code().toString())
+                    updateErrorState(key, errorMsg)
                 } catch (e: TimeoutCancellationException) {
-                    updateErrorState(key, "Download timed out")
+                    val errorMsg = getApplication<Application>().getString(R.string.i18n_app_download_error_timeout)
+                    updateErrorState(key, errorMsg)
                     throw e
                 } finally {
                     // Clean up the job reference when done.

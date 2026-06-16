@@ -129,13 +129,20 @@ fun SelectTranslationSourceLanguageScreen(
     }
 
     if (showDialog.value) {
+        val localizedSelectedLang = getDisplayLanguageName(selectedLanguage.value)
+        val localizedSavedLang = getDisplayLanguageName(savedLanguage.value)
         ConfirmationDialog(
             text =
-                "You've changed your source translation language. " +
-                    "Would you like to download new data so that you can translate " +
-                    "from ${selectedLanguage.value}?",
-            textConfirm = "Download data",
-            textChange = "Keep ${savedLanguage.value}",
+                be.scri.helpers.StringUtils.stringResourceWithParams(
+                    R.string.i18n_app_settings_keyboard_translation_change_source_tooltip_download_warning,
+                    localizedSelectedLang,
+                ),
+            textConfirm = stringResource(R.string.i18n_app__global_download_data),
+            textChange =
+                be.scri.helpers.StringUtils.stringResourceWithParams(
+                    R.string.i18n_app_settings_keyboard_translation_change_source_tooltip_keep_source_language,
+                    localizedSavedLang,
+                ),
             onConfirm = {
                 // User confirmed - save the new selection permanently.
                 savedLanguage.value = selectedLanguage.value
