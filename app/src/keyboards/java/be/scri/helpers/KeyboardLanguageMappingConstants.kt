@@ -49,4 +49,16 @@ object KeyboardLanguageMappingConstants {
             "RU" to RUInterfaceVariables.PLURAL_KEY_LBL,
             "SV" to SVInterfaceVariables.PLURAL_KEY_LBL,
         )
+
+    val floatPlaceholder =
+        mapOf(
+            "EN" to "Float",
+            "ES" to "Flotante",
+            "DE" to "Schweben",
+            "IT" to "Fluttuante",
+            "FR" to "Flottant",
+            "PT" to "Flutuante",
+            "RU" to "Плавающая",
+            "SV" to "Flytande",
+        )
 }
