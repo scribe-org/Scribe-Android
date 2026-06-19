@@ -509,7 +509,7 @@ abstract class GeneralKeyboardIME(
     override fun onActionUp() {
         if (switchToLetters) {
             keyboardMode = keyboardLetters
-            keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+            keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType, getKeyboardWidth())
             val editorInfo = currentInputEditorInfo
             if (editorInfo != null && editorInfo.inputType != InputType.TYPE_NULL && keyboard?.mShiftState != SHIFT_ON_PERMANENT) {
                 if (currentInputConnection.getCursorCapsMode(editorInfo.inputType) != 0) {
@@ -1294,7 +1294,7 @@ abstract class GeneralKeyboardIME(
                     this.keyboardMode = keyboardSymbols
                     getPrimarySymbolKeyboardLayoutXML()
                 }
-            keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
+            keyboard = KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
             keyboardView!!.setKeyboard(keyboard!!)
             if (keyboardXml == R.xml.keys_symbols) {
                 handleModeChange(keyboardMode, keyboardView, this)
@@ -1322,7 +1322,7 @@ abstract class GeneralKeyboardIME(
                 this.keyboardMode = keyboardLetters
                 getKeyboardLayoutXML()
             }
-        keyboard = KeyboardBase(context, keyboardXml, enterKeyType)
+        keyboard = KeyboardBase(context, keyboardXml, enterKeyType, getKeyboardWidth())
         if (this.keyboardMode == keyboardLetters) {
             val wasShifted = keyboard?.mShiftState == SHIFT_ON_ONE_CHAR || keyboard?.mShiftState == SHIFT_ON_PERMANENT
             if (wasShifted) {
