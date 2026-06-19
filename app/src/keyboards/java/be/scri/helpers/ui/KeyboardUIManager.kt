@@ -299,12 +299,6 @@ class KeyboardUIManager(
         binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
         binding.floatBtn.text = floatPlaceholder[langAlias] ?: "Float"
 
-        // Show the float button as "active" (lighter tint) when floating mode is already on
-        if (listener.isFloatingModeActive()) {
-            binding.floatBtn.backgroundTintList = ContextCompat.getColorStateList(context, R.color.light_key_color)
-            binding.floatBtn.setTextColor(ContextCompat.getColor(context, R.color.theme_scribe_blue))
-        }
-
         val separatorColor = (if (isUserDarkMode) GeneralKeyboardIME.DARK_THEME else GeneralKeyboardIME.LIGHT_THEME).toColorInt()
         binding.separator2.setBackgroundColor(separatorColor)
         binding.separator3.setBackgroundColor(separatorColor)
