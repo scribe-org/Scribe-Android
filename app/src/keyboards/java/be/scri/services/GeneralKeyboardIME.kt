@@ -422,7 +422,7 @@ abstract class GeneralKeyboardIME(
 
     private fun initSwipeTutorial() {
         val sharedPref = applicationContext.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        val tutorialShown = sharedPref.getBoolean("swipe_tutorial_shown", false)
+        val tutorialShown = sharedPref.getBoolean("swipe_tutorial_interactive_shown", false)
         if (!tutorialShown) {
             val ic = currentInputConnection
             if (ic != null) {
@@ -480,7 +480,7 @@ abstract class GeneralKeyboardIME(
 
     private fun dismissSwipeTutorial() {
         val sharedPref = applicationContext.getSharedPreferences("app_preferences", MODE_PRIVATE)
-        sharedPref.edit().putBoolean("swipe_tutorial_shown", true).apply()
+        sharedPref.edit().putBoolean("swipe_tutorial_interactive_shown", true).apply()
         setSwipeTutorialState(SwipeTutorialState.NOT_ACTIVE)
     }
 
