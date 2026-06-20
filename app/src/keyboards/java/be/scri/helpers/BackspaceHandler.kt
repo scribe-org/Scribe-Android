@@ -53,11 +53,12 @@ class BackspaceHandler(
         }
 
         val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.applicationContext, ime.language)
-        val deletionLength = if (isWordByWordEnabled) {
-            getWordDeletionLength(textBeforeCursor)
-        } else {
-            1
-        }
+        val deletionLength =
+            if (isWordByWordEnabled) {
+                getWordDeletionLength(textBeforeCursor)
+            } else {
+                1
+            }
 
         if (deletionLength > 0) {
             val chunkToDelete = textBeforeCursor.takeLast(deletionLength)

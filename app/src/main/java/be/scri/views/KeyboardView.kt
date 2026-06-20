@@ -1694,7 +1694,8 @@ class KeyboardView
             val keyIndex = getPressedKeyIndex(touchX, touchY)
 
             // Ignore all motion events until a DOWN, unless a swipe gesture is active.
-            if (mAbortKey && action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_CANCEL && !mSwipeActive) {
+            val isIgnoredAction = action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_CANCEL
+            if (mAbortKey && !mSwipeActive && isIgnoredAction) {
                 handled = true
             }
 

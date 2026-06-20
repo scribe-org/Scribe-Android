@@ -119,8 +119,9 @@ abstract class GeneralKeyboardIME(
         NOT_ACTIVE,
         SWIPE_LEFT_STEP,
         SWIPE_RIGHT_STEP,
-        COMPLETED
+        COMPLETED,
     }
+
     private var swipeTutorialState = SwipeTutorialState.NOT_ACTIVE
 
     // MARK: State Variables
@@ -502,7 +503,7 @@ abstract class GeneralKeyboardIME(
         newSelStart: Int,
         newSelEnd: Int,
         candidatesStart: Int,
-        candidatesEnd: Int
+        candidatesEnd: Int,
     ) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
         // If the selection/cursor changed manually (not from our programmatic swipe gestures within 500ms), clear the stack
