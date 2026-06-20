@@ -605,6 +605,7 @@ object PreferencesHelper {
             putBoolean("hint_shown_main", false)
             putBoolean("hint_shown_settings", false)
             putBoolean("hint_shown_about", false)
+            putBoolean("swipe_tutorial_shown", false)
             apply()
         }
     }

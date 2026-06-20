@@ -25,6 +25,91 @@ class BackspaceHandler(
     var isDeleteRepeating: Boolean = false
 
     /**
+     * Stack to store deleted text blocks for undo restoration.
+     */
+    private val deletedChunksStack = java.util.Stack<String>()
+
+    /**
+     * Timestamp of the last programmatic swipe operation (delete or restore).
+     */
+    var lastSwipeOperationTime: Long = 0
+
+    /**
+     * Clear all elements in the undo stack.
+     */
+    fun clearUndoStack() {
+        deletedChunksStack.clear()
+    }
+
+    /**
+     * Deletes the character or word before the cursor and pushes it onto the stack.
+     */
+    fun performSwipeDelete() {
+        lastSwipeOperationTime = System.currentTimeMillis()
+        val inputConnection = ime.currentInputConnection ?: return
+        val textBeforeCursor = inputConnection.getTextBeforeCursor(MAX_TEXT_LENGTH, 0)?.toString() ?: ""
+        if (textBeforeCursor.isEmpty()) {
+            return
+        }
+
+        val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.applicationContext, ime.language)
+        val deletionLength = if (isWordByWordEnabled) {
+            getWordDeletionLength(textBeforeCursor)
+        } else {
+            1
+        }
+
+        if (deletionLength > 0) {
+            val chunkToDelete = textBeforeCursor.takeLast(deletionLength)
+            deletedChunksStack.push(chunkToDelete)
+
+            inputConnection.deleteSurroundingText(deletionLength, 0)
+        }
+    }
+
+    /**
+     * Pops the last deleted chunk from the stack and restores it.
+     */
+    fun performSwipeRestore() {
+        lastSwipeOperationTime = System.currentTimeMillis()
+        val inputConnection = ime.currentInputConnection ?: return
+        if (!deletedChunksStack.isEmpty()) {
+            val chunkToRestore = deletedChunksStack.pop()
+
+            inputConnection.commitText(chunkToRestore, 1)
+        }
+    }
+
+    /**
+     * Helper to compute deletion length for the word before the cursor.
+     */
+    private fun getWordDeletionLength(text: String): Int {
+        var deletionLength = 0
+        var index = text.length - 1
+
+        // Skip any whitespace.
+        while (index >= 0 && text[index].isWhitespace()) {
+            deletionLength++
+            index--
+        }
+
+        if (index < 0) {
+            return deletionLength
+        }
+
+        // Delete word characters or a single special character
+        if (isWordCharacter(text[index])) {
+            while (index >= 0 && isWordCharacter(text[index])) {
+                deletionLength++
+                index--
+            }
+        } else {
+            deletionLength++
+        }
+        return deletionLength
+    }
+
+    /**
      * Handles the logic for the Delete/Backspace key. It deletes characters from either
      * the main input field or the command bar, depending on the context.
      *

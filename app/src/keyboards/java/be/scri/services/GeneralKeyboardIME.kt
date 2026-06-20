@@ -115,6 +115,14 @@ abstract class GeneralKeyboardIME(
     internal val binding: InputMethodViewBinding
         get() = uiManager.binding
 
+    private enum class SwipeTutorialState {
+        NOT_ACTIVE,
+        SWIPE_LEFT_STEP,
+        SWIPE_RIGHT_STEP,
+        COMPLETED
+    }
+    private var swipeTutorialState = SwipeTutorialState.NOT_ACTIVE
+
     // MARK: State Variables
 
     internal var isSingularAndPlural: Boolean = false
@@ -306,6 +314,7 @@ abstract class GeneralKeyboardIME(
         restarting: Boolean,
     ) {
         super.onStartInput(attribute, restarting)
+        backspaceHandler.clearUndoStack()
         inputTypeClass = attribute!!.inputType and TYPE_MASK_CLASS
         enterKeyType = attribute.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         currentEnterKeyType = enterKeyType
@@ -406,6 +415,73 @@ abstract class GeneralKeyboardIME(
             }
             keyboardView?.invalidateAllKeys()
         }
+
+        // Show swipe delete & undo gesture tutorial overlay if not already shown
+        initSwipeTutorial()
+    }
+
+    private fun initSwipeTutorial() {
+        val sharedPref = applicationContext.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        val tutorialShown = sharedPref.getBoolean("swipe_tutorial_shown", false)
+        if (!tutorialShown) {
+            val ic = currentInputConnection
+            if (ic != null) {
+                ic.commitText("Scribe ", 1)
+            }
+            binding.swipeTutorialOverlay.visibility = View.VISIBLE
+            binding.swipeTutorialClose.setOnClickListener {
+                dismissSwipeTutorial()
+            }
+            setSwipeTutorialState(SwipeTutorialState.SWIPE_LEFT_STEP)
+        } else {
+            binding.swipeTutorialOverlay.visibility = View.GONE
+            swipeTutorialState = SwipeTutorialState.NOT_ACTIVE
+        }
+    }
+
+    private fun setSwipeTutorialState(state: SwipeTutorialState) {
+        swipeTutorialState = state
+        when (state) {
+            SwipeTutorialState.SWIPE_LEFT_STEP -> {
+                binding.swipeTutorialOverlay.visibility = View.VISIBLE
+                binding.swipeTutorialProgress.text = "Step 1 of 2"
+                binding.swipeTutorialIcon.setImageResource(R.drawable.ic_swipe_left)
+                binding.swipeTutorialTitle.text = "Swipe Left to Delete"
+                binding.swipeTutorialDesc.text = "Swipe left anywhere on the keyboard to delete the last word."
+                binding.swipeTutorialStatus.text = "Practice: Swipe left on the keyboard below to delete 'Scribe'!"
+                binding.swipeTutorialStatus.setTextColor(ContextCompat.getColor(applicationContext, R.color.theme_scribe_blue))
+                binding.swipeTutorialClose.text = "Skip"
+            }
+            SwipeTutorialState.SWIPE_RIGHT_STEP -> {
+                binding.swipeTutorialOverlay.visibility = View.VISIBLE
+                binding.swipeTutorialProgress.text = "Step 2 of 2"
+                binding.swipeTutorialIcon.setImageResource(R.drawable.ic_swipe_right)
+                binding.swipeTutorialTitle.text = "Swipe Right to Restore"
+                binding.swipeTutorialDesc.text = "Swipe right anywhere on the keyboard to restore/undo deletion."
+                binding.swipeTutorialStatus.text = "Practice: Swipe right now to restore the word!"
+                binding.swipeTutorialStatus.setTextColor(ContextCompat.getColor(applicationContext, R.color.theme_scribe_blue))
+                binding.swipeTutorialClose.text = "Skip"
+            }
+            SwipeTutorialState.COMPLETED -> {
+                binding.swipeTutorialOverlay.visibility = View.VISIBLE
+                binding.swipeTutorialProgress.text = "Tutorial Completed!"
+                binding.swipeTutorialIcon.setImageResource(R.drawable.ic_swipe_success)
+                binding.swipeTutorialTitle.text = "You're All Set!"
+                binding.swipeTutorialDesc.text = "You can swipe left to delete and swipe right to restore at any time."
+                binding.swipeTutorialStatus.text = "Success! Tap 'Got it!' to start typing."
+                binding.swipeTutorialStatus.setTextColor(android.graphics.Color.parseColor("#10B981"))
+                binding.swipeTutorialClose.text = "Got it!"
+            }
+            SwipeTutorialState.NOT_ACTIVE -> {
+                binding.swipeTutorialOverlay.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun dismissSwipeTutorial() {
+        val sharedPref = applicationContext.getSharedPreferences("app_preferences", MODE_PRIVATE)
+        sharedPref.edit().putBoolean("swipe_tutorial_shown", true).apply()
+        setSwipeTutorialState(SwipeTutorialState.NOT_ACTIVE)
     }
 
     /**
@@ -416,7 +492,24 @@ abstract class GeneralKeyboardIME(
      */
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
+        backspaceHandler.clearUndoStack()
         moveToIdleState()
+    }
+
+    override fun onUpdateSelection(
+        oldSelStart: Int,
+        oldSelEnd: Int,
+        newSelStart: Int,
+        newSelEnd: Int,
+        candidatesStart: Int,
+        candidatesEnd: Int
+    ) {
+        super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
+        // If the selection/cursor changed manually (not from our programmatic swipe gestures within 500ms), clear the stack
+        val timeSinceLastSwipe = System.currentTimeMillis() - backspaceHandler.lastSwipeOperationTime
+        if (timeSinceLastSwipe > 500) {
+            backspaceHandler.clearUndoStack()
+        }
     }
 
     // MARK: OnKeyboardActionListener
@@ -482,13 +575,35 @@ abstract class GeneralKeyboardIME(
     override fun moveCursorRight() = moveCursor(true)
 
     override fun onText(text: String) {
+        backspaceHandler.clearUndoStack()
         currentInputConnection?.commitText(text, 0)
+    }
+
+    override fun onSwipeLeft() {
+        if (swipeTutorialState == SwipeTutorialState.SWIPE_LEFT_STEP) {
+            backspaceHandler.performSwipeDelete()
+            setSwipeTutorialState(SwipeTutorialState.SWIPE_RIGHT_STEP)
+        } else if (swipeTutorialState == SwipeTutorialState.NOT_ACTIVE) {
+            backspaceHandler.performSwipeDelete()
+        }
+    }
+
+    override fun onSwipeRight() {
+        if (swipeTutorialState == SwipeTutorialState.SWIPE_RIGHT_STEP) {
+            backspaceHandler.performSwipeRestore()
+            setSwipeTutorialState(SwipeTutorialState.COMPLETED)
+        } else if (swipeTutorialState == SwipeTutorialState.NOT_ACTIVE) {
+            backspaceHandler.performSwipeRestore()
+        }
     }
 
     /**
      * Handles key input from the keyboard. Delegates to specific handlers based on the key code.
      */
     override fun onKey(code: Int) {
+        if (code != KeyboardBase.KEYCODE_DELETE) {
+            backspaceHandler.clearUndoStack()
+        }
         val inputConnection = currentInputConnection
         if (inputConnection != null) {
             when (code) {
@@ -734,11 +849,13 @@ abstract class GeneralKeyboardIME(
 
     override fun onEmojiSelected(emoji: String) {
         if (emoji.isNotEmpty()) {
+            backspaceHandler.clearUndoStack()
             insertEmoji(emoji, currentInputConnection, emojiKeywords, emojiMaxKeywordLength)
         }
     }
 
     override fun onSuggestionClicked(suggestion: String) {
+        backspaceHandler.clearUndoStack()
         currentInputConnection?.commitText("$suggestion ", 1)
         moveToIdleState()
     }
@@ -768,6 +885,7 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun commitText(text: String) {
+        backspaceHandler.clearUndoStack()
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
             val label = text.trim()
             val conjugateIndex = getValidatedConjugateIndex()
