@@ -37,6 +37,7 @@ class KeyboardBase {
         val keyboardLetters: Int
 
         fun isSearchBar(): Boolean
+
         fun isFloatingModeActive(): Boolean
     }
 
@@ -655,16 +656,17 @@ class KeyboardBase {
                             floatKey.x = x + floatKey.gap
                             floatKey.y = y
                             floatKey.height = currentRow.defaultHeight
-                            
+
                             val isFloating = provider?.isFloatingModeActive() == true
-                            val floatResourceId = if (isFloating) {
-                                R.drawable.ic_keyboard_dismiss
-                            } else {
-                                R.drawable.ic_float_keyboard
-                            }
+                            val floatResourceId =
+                                if (isFloating) {
+                                    R.drawable.ic_keyboard_dismiss
+                                } else {
+                                    R.drawable.ic_float_keyboard
+                                }
                             floatKey.icon = context.resources.getDrawable(floatResourceId, context.theme)
                             floatKey.icon?.setBounds(0, 0, floatKey.icon!!.intrinsicWidth, floatKey.icon!!.intrinsicHeight)
-                            
+
                             mKeys!!.add(floatKey)
                             currentRow.mKeys.add(floatKey)
                             x += floatKey.gap + floatKey.width

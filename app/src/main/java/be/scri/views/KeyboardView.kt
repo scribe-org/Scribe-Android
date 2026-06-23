@@ -746,7 +746,12 @@ class KeyboardView
             }
         }
 
-        override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        override fun onSizeChanged(
+            w: Int,
+            h: Int,
+            oldw: Int,
+            oldh: Int,
+        ) {
             super.onSizeChanged(w, h, oldw, oldh)
             mKeyboardChanged = true
             invalidateAllKeys()

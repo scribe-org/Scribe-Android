@@ -23,7 +23,6 @@ import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardLanguageMappingConstants.conjugatePlaceholder
-import be.scri.helpers.KeyboardLanguageMappingConstants.floatPlaceholder
 import be.scri.helpers.KeyboardLanguageMappingConstants.pluralPlaceholder
 import be.scri.helpers.KeyboardLanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
