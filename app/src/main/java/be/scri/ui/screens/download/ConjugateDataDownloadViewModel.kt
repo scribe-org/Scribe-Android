@@ -108,7 +108,10 @@ class ConjugateDataDownloadViewModel(
             }
 
             if (currentState == DownloadState.Completed) {
-                val template = getApplication<Application>().getString(R.string.i18n_app_download_menu_ui_conjugate_data_already_up_to_date)
+                val template =
+                    getApplication<Application>().getString(
+                        R.string.i18n_app_download_menu_ui_conjugate_data_already_up_to_date,
+                    )
                 val msg = StringUtils.formatStringWithParams(template, displayLang)
                 Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
                 return
@@ -148,7 +151,10 @@ class ConjugateDataDownloadViewModel(
 
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed
-                            val template = getApplication<Application>().getString(R.string.i18n_app_download_menu_ui_conjugate_data_download_success)
+                            val template =
+                                getApplication<Application>().getString(
+                                    R.string.i18n_app_download_menu_ui_conjugate_data_download_success,
+                                )
                             val msg = StringUtils.formatStringWithParams(template, displayLang)
                             Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
                         }
@@ -156,24 +162,39 @@ class ConjugateDataDownloadViewModel(
                         // Already up to date: Skip the DB work.
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed
-                            val msg = getApplication<Application>().getString(R.string.i18n_app_download_menu_ui_download_data_generic_already_up_to_date)
+                            val msg =
+                                getApplication<Application>().getString(
+                                    R.string.i18n_app_download_menu_ui_download_data_generic_already_up_to_date,
+                                )
                             Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
                         }
                     }
                 } catch (e: IOException) {
-                    val template = getApplication<Application>().getString(R.string.i18n_app_download_error_network)
+                    val template =
+                        getApplication<Application>().getString(
+                            R.string.i18n_app_download_error_network,
+                        )
                     val errorMsg = StringUtils.formatStringWithParams(template, e.message ?: "")
                     updateErrorState(key, errorMsg)
                 } catch (e: SQLiteException) {
-                    val template = getApplication<Application>().getString(R.string.i18n_app_download_error_database)
+                    val template =
+                        getApplication<Application>().getString(
+                            R.string.i18n_app_download_error_database,
+                        )
                     val errorMsg = StringUtils.formatStringWithParams(template, e.message ?: "")
                     updateErrorState(key, errorMsg)
                 } catch (e: HttpException) {
-                    val template = getApplication<Application>().getString(R.string.i18n_app_download_error_server)
+                    val template =
+                        getApplication<Application>().getString(
+                            R.string.i18n_app_download_error_server,
+                        )
                     val errorMsg = StringUtils.formatStringWithParams(template, e.code().toString())
                     updateErrorState(key, errorMsg)
                 } catch (e: TimeoutCancellationException) {
-                    val errorMsg = getApplication<Application>().getString(R.string.i18n_app_download_error_timeout)
+                    val errorMsg =
+                        getApplication<Application>().getString(
+                            R.string.i18n_app_download_error_timeout,
+                        )
                     updateErrorState(key, errorMsg)
                     throw e
                 } finally {
