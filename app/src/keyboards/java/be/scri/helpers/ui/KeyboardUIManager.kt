@@ -87,8 +87,8 @@ class KeyboardUIManager(
 
     // UI Elements
     var pluralBtn: Button? = binding.pluralBtn
-    var floatBtn: Button? = binding.floatBtn
-    var separatorFloat: View? = binding.separatorFloat
+    var floatBtn: Button? = null
+    var separatorFloat: View? = null
     var emojiBtnPhone1: Button? = binding.emojiBtnPhone1
     var emojiSpacePhone: View? = binding.emojiSpacePhone
     var emojiBtnPhone2: Button? = binding.emojiBtnPhone2
@@ -121,7 +121,6 @@ class KeyboardUIManager(
         binding.translateBtn.setOnClickListener { listener.onTranslateClicked() }
         binding.conjugateBtn.setOnClickListener { listener.onConjugateClicked() }
         binding.pluralBtn.setOnClickListener { listener.onPluralClicked() }
-        binding.floatBtn.setOnClickListener { listener.onFloatClicked() }
 
         binding.scribeKeyClose.setOnClickListener { listener.onCloseClicked() }
 
@@ -220,6 +219,7 @@ class KeyboardUIManager(
         listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEachIndexed { index, button ->
             button.visibility = View.VISIBLE
             button.background = null
+            button.foreground = null
             button.setTextColor(textColor)
             button.text = HintUtils.getBaseAutoSuggestions(language).getOrNull(index)
             button.isAllCaps = false
@@ -237,8 +237,6 @@ class KeyboardUIManager(
         }
 
         binding.separator1.visibility = View.GONE
-        binding.floatBtn.visibility = View.GONE
-        binding.separatorFloat.visibility = View.GONE
         binding.ivInfo.visibility = View.GONE
         binding.conjugateGridContainer.visibility = View.GONE
         binding.keyboardView.visibility = View.VISIBLE
@@ -285,7 +283,7 @@ class KeyboardUIManager(
 
         val buttonTextColor = if (isUserDarkMode) Color.WHITE else Color.BLACK
 
-        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn, binding.floatBtn).forEach { button ->
+        listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEach { button ->
             button.visibility = View.VISIBLE
             button.background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
             button.backgroundTintList = ContextCompat.getColorStateList(context, R.color.theme_scribe_blue)
@@ -294,19 +292,36 @@ class KeyboardUIManager(
             button.isAllCaps = false
         }
 
-        binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
-        binding.conjugateBtn.text = conjugatePlaceholder[langAlias] ?: "Conjugate"
-        binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
-        binding.floatBtn.text = floatPlaceholder[langAlias] ?: "Float"
+        val isFloating = listener.isFloatingModeActive()
+        if (isFloating) {
+            binding.translateBtn.text = ""
+            binding.conjugateBtn.text = ""
+            binding.pluralBtn.text = ""
+
+            binding.translateBtn.foreground = ContextCompat.getDrawable(context, R.drawable.ic_translate_command)
+            binding.conjugateBtn.foreground = ContextCompat.getDrawable(context, R.drawable.ic_conjugate_command)
+            binding.pluralBtn.foreground = ContextCompat.getDrawable(context, R.drawable.ic_plural_command)
+
+            binding.translateBtn.foregroundGravity = android.view.Gravity.CENTER
+            binding.conjugateBtn.foregroundGravity = android.view.Gravity.CENTER
+            binding.pluralBtn.foregroundGravity = android.view.Gravity.CENTER
+        } else {
+            binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
+            binding.conjugateBtn.text = conjugatePlaceholder[langAlias] ?: "Conjugate"
+            binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
+
+            binding.translateBtn.foreground = null
+            binding.conjugateBtn.foreground = null
+            binding.pluralBtn.foreground = null
+        }
 
         val separatorColor = (if (isUserDarkMode) GeneralKeyboardIME.DARK_THEME else GeneralKeyboardIME.LIGHT_THEME).toColorInt()
         binding.separator2.setBackgroundColor(separatorColor)
         binding.separator3.setBackgroundColor(separatorColor)
-        binding.separatorFloat.setBackgroundColor(separatorColor)
 
         val spaceInDp = 4
         val spaceInPx = (spaceInDp * context.resources.displayMetrics.density).toInt()
-        listOf(binding.separator2, binding.separator3, binding.separatorFloat).forEach { separator ->
+        listOf(binding.separator2, binding.separator3).forEach { separator ->
             separator.setBackgroundColor(Color.TRANSPARENT)
             val params = separator.layoutParams
             params.width = spaceInPx
@@ -316,7 +331,6 @@ class KeyboardUIManager(
         binding.separator1.visibility = View.GONE
         binding.separator2.visibility = View.VISIBLE
         binding.separator3.visibility = View.VISIBLE
-        binding.separatorFloat.visibility = View.VISIBLE
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
@@ -677,8 +691,6 @@ class KeyboardUIManager(
      */
     private fun setupDefaultButtonVisibility() {
         pluralBtn?.visibility = View.VISIBLE
-        floatBtn?.visibility = View.GONE
-        separatorFloat?.visibility = View.GONE
         emojiBtnPhone1?.visibility = View.GONE
         emojiBtnPhone2?.visibility = View.GONE
         emojiBtnTablet1?.visibility = View.GONE
@@ -687,6 +699,10 @@ class KeyboardUIManager(
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
+
+        binding.translateBtn.foreground = null
+        binding.conjugateBtn.foreground = null
+        pluralBtn?.foreground = null
     }
 
     /**

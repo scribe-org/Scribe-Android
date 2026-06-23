@@ -1816,6 +1816,7 @@ abstract class GeneralKeyboardIME(
         button.textSize = SUGGESTION_SIZE
         button.setOnClickListener(null)
         button.background = null
+        button.foreground = null
         button.setTextColor(textColor)
         button.setOnClickListener {
             currentInputConnection?.commitText("$text ", 1)

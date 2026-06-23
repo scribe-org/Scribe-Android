@@ -746,6 +746,12 @@ class KeyboardView
             }
         }
 
+        override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+            super.onSizeChanged(w, h, oldw, oldh)
+            mKeyboardChanged = true
+            invalidateAllKeys()
+        }
+
         /**
          * Compute the average distance between adjacent keys (horizontally and vertically)
          * and square it to get the proximity threshold.

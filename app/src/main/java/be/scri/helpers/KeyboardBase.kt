@@ -37,6 +37,7 @@ class KeyboardBase {
         val keyboardLetters: Int
 
         fun isSearchBar(): Boolean
+        fun isFloatingModeActive(): Boolean
     }
 
     /** Horizontal gap default for all rows  */
@@ -81,6 +82,7 @@ class KeyboardBase {
         private const val WIDTH_DIVIDER = 10
         const val KEYCODE_SHIFT = -1
         const val KEYCODE_MODE_CHANGE = -2
+        const val KEYCODE_FLOAT_TOGGLE = -10
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
@@ -591,6 +593,23 @@ class KeyboardBase {
                                 key.gap = 0
                             }
 
+                            if (!isSearchBar) {
+                                if (key.code == KEYCODE_MODE_CHANGE) {
+                                    key.width = (mDisplayWidth * 0.115).toInt()
+                                } else if (currentRow.mKeys.any { it.code == KEYCODE_FLOAT_TOGGLE }) {
+                                    if (key.code == ','.code) {
+                                        key.width = (mDisplayWidth * 0.075).toInt()
+                                    } else if (key.label == "_") {
+                                        key.width = (mDisplayWidth * 0.075).toInt()
+                                    } else if (key.code == KEYCODE_SPACE) {
+                                        val isLettersLayout = currentRow.mKeys.none { it.label == "_" }
+                                        if (isLettersLayout) {
+                                            key.width = (mDisplayWidth * 0.475).toInt()
+                                        }
+                                    }
+                                }
+                            }
+
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
                                 val enterResourceId =
@@ -627,6 +646,28 @@ class KeyboardBase {
                         x += key!!.gap + key.width
                         if (x > mMinWidth) {
                             mMinWidth = x
+                        }
+                        if (key.code == KEYCODE_MODE_CHANGE && !isSearchBar) {
+                            val floatKey = Key(currentRow!!)
+                            floatKey.code = KEYCODE_FLOAT_TOGGLE
+                            floatKey.width = (mDisplayWidth * 0.08).toInt()
+                            floatKey.gap = (mDisplayWidth * 0.005).toInt()
+                            floatKey.x = x + floatKey.gap
+                            floatKey.y = y
+                            floatKey.height = currentRow.defaultHeight
+                            
+                            val isFloating = provider?.isFloatingModeActive() == true
+                            val floatResourceId = if (isFloating) {
+                                R.drawable.ic_keyboard_dismiss
+                            } else {
+                                R.drawable.ic_float_keyboard
+                            }
+                            floatKey.icon = context.resources.getDrawable(floatResourceId, context.theme)
+                            floatKey.icon?.setBounds(0, 0, floatKey.icon!!.intrinsicWidth, floatKey.icon!!.intrinsicHeight)
+                            
+                            mKeys!!.add(floatKey)
+                            currentRow.mKeys.add(floatKey)
+                            x += floatKey.gap + floatKey.width
                         }
                     } else if (inRow) {
                         inRow = false

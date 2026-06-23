@@ -251,36 +251,9 @@
             android:contentDescription="@string/command_bar"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/separator_float"
-            app:layout_constraintStart_toEndOf="@+id/separator_3"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Separator Float -->
-        <View
-            android:id="@+id/separator_float"
-            android:layout_width="0.5dp"
-            android:layout_height="0dp"
-            android:background="@color/special_key_light"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/float_btn"
-            app:layout_constraintHeight_percent="0.8"
-            app:layout_constraintStart_toEndOf="@+id/plural_btn"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
-
-        <!-- Float Button -->
-        <Button
-            android:id="@+id/float_btn"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/command_button_height"
-            android:layout_marginEnd="@dimen/tiny_margin"
-            android:background="@drawable/cmd_key_background_rounded"
-            android:contentDescription="Float Keyboard"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/separator_float"
+            android:layout_marginEnd="@dimen/tiny_margin"
+            app:layout_constraintStart_toEndOf="@+id/separator_3"
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Gender suggestion buttons, constrained to the bounds of the translate button -->
