@@ -16,12 +16,14 @@ object RetrofitClient {
     private const val CONNECT_TIMEOUT_SECONDS = 60L
     private const val IO_TIMEOUT_SECONDS = 300L
 
-    private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .callTimeout(IO_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .readTimeout(IO_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .writeTimeout(IO_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .build()
+    private val okHttpClient =
+        OkHttpClient
+            .Builder()
+            .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .callTimeout(IO_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .readTimeout(IO_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .writeTimeout(IO_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .build()
 
     val apiService: ApiService by lazy {
         val retrofit =
