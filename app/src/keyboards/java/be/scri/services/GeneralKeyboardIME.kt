@@ -920,6 +920,7 @@ abstract class GeneralKeyboardIME(
      * @param inputConnection The current input connection.
      */
     private fun handleDefaultEnter(inputConnection: InputConnection) {
+        val wordBeforeEnter = getLastWordBeforeCursor()
         val imeOptionsActionId = getImeOptionsActionId()
         if (imeOptionsActionId != IME_ACTION_NONE) {
             inputConnection.performEditorAction(imeOptionsActionId)
@@ -927,8 +928,12 @@ abstract class GeneralKeyboardIME(
             inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
             inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
         }
-        suggestionHandler.clearAllSuggestionsAndHideButtonUI()
         moveToIdleState()
+        if (!wordBeforeEnter.isNullOrEmpty()) {
+            suggestionHandler.processLinguisticSuggestions(wordBeforeEnter)
+        } else {
+            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+        }
     }
 
     /**
@@ -1695,7 +1700,21 @@ abstract class GeneralKeyboardIME(
         wordSuggestions: List<String>?,
         hasLinguisticSuggestions: Boolean,
     ) {
-        if (wordSuggestions.isNullOrEmpty()) return
+        if (wordSuggestions.isNullOrEmpty()) {
+            if (hasLinguisticSuggestions) {
+                uiManager.binding.conjugateBtn.apply {
+                    text = ""
+                    setOnClickListener(null)
+                    visibility = View.GONE
+                }
+                uiManager.pluralBtn?.apply {
+                    text = ""
+                    setOnClickListener(null)
+                    visibility = View.GONE
+                }
+            }
+            return
+        }
 
         val suggestions = listOfNotNull(wordSuggestions.getOrNull(0), wordSuggestions.getOrNull(1), wordSuggestions.getOrNull(2))
         val suggestion1 = suggestions.getOrNull(0) ?: ""
