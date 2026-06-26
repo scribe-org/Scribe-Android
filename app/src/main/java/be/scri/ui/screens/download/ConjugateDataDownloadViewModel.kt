@@ -129,7 +129,7 @@ class ConjugateDataDownloadViewModel(
                 try {
                     // Fetch API.
                     val response =
-                        withTimeout(30_000) {
+                        withTimeout(300_000) {
                             RetrofitClient.apiService.getData(langCode)
                         }
                     val serverLastUpdate = response.contract.updatedAt
