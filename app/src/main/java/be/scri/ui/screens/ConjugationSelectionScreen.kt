@@ -141,7 +141,6 @@ fun ConjugationSelectionScreen(
                 modifier = Modifier.padding(start = 4.dp, bottom = Dimensions.PaddingMedium),
             )
 
-
             Card(
                 modifier =
                     Modifier
@@ -452,8 +451,7 @@ private fun ConjugationCell(
                     Toast
                         .makeText(context, "Copied \"$form\" to clipboard", Toast.LENGTH_SHORT)
                         .show()
-                }
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                }.padding(horizontal = 12.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(
