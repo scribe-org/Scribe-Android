@@ -1377,7 +1377,9 @@ abstract class GeneralKeyboardIME(
         this.wordSuggestions = wordSuggestions
 
         if (currentState != ScribeState.IDLE) {
-            uiManager.disableAutoSuggest(language)
+            if (currentState != ScribeState.SELECT_COMMAND) {
+                uiManager.disableAutoSuggest(language)
+            }
             return
         }
         val hasLinguisticSuggestions = nounTypeSuggestion != null || isPlural || caseAnnotationSuggestion != null || isSingularAndPlural
@@ -1702,16 +1704,13 @@ abstract class GeneralKeyboardIME(
     ) {
         if (wordSuggestions.isNullOrEmpty()) {
             if (hasLinguisticSuggestions) {
-                uiManager.binding.conjugateBtn.apply {
-                    text = ""
-                    setOnClickListener(null)
-                    visibility = View.GONE
-                }
-                uiManager.pluralBtn?.apply {
-                    text = ""
-                    setOnClickListener(null)
-                    visibility = View.GONE
-                }
+                val baseSuggestions =
+                    be.scri.helpers.ui.HintUtils
+                        .getBaseAutoSuggestions(language)
+                val default1 = baseSuggestions.getOrNull(0) ?: ""
+                val default2 = baseSuggestions.getOrNull(1) ?: ""
+                setSuggestionButton(uiManager.binding.conjugateBtn, default1)
+                uiManager.pluralBtn?.let { setSuggestionButton(it, default2) }
             }
             return
         }
