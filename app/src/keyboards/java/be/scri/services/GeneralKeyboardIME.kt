@@ -1372,7 +1372,9 @@ abstract class GeneralKeyboardIME(
         this.wordSuggestions = wordSuggestions
 
         if (currentState != ScribeState.IDLE) {
-            uiManager.disableAutoSuggest(language)
+            if (currentState != ScribeState.SELECT_COMMAND) {
+                uiManager.disableAutoSuggest(language)
+            }
             return
         }
         val hasLinguisticSuggestions = nounTypeSuggestion != null || isPlural || caseAnnotationSuggestion != null || isSingularAndPlural
