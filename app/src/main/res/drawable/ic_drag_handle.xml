@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="32dp"
+    android:viewportWidth="64"
+    android:viewportHeight="32">
+    <!-- Color is overridden in code per dark/light mode via setColorFilter -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M 10.5 13.5 L 53.5 13.5 C 54.9 13.5 56 14.6 56 16 C 56 17.4 54.9 18.5 53.5 18.5 L 10.5 18.5 C 9.1 18.5 8 17.4 8 16 C 8 14.6 9.1 13.5 10.5 13.5 Z"/>
+</vector>
