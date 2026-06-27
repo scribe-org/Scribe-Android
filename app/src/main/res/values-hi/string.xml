@@ -74,7 +74,6 @@
     <string name="i18n.app.installation.keyboard.text_4">कीबोर्ड चुनने के लिए</string>
     <string name="i18n.app.installation.keyboard.title">कीबोर्ड इंस्टॉलेशन</string>
     <string name="i18n.app.installation.title">इंस्टॉलेशन</string>
-    <string name="i18n.app.settings.app_hint_tooltip">ऐप और इंस्टॉल किए गए भाषा कीबोर्ड की सेटिंग्स यहाँ मिलेंगी।</string>
     <string name="i18n.app.settings.button_install_keyboards">कीबोर्ड इंस्टॉल करें</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">अनोटेट सुझाव/समाप्ति</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">टाइप करते समय सुझाव और समाप्ति को रेखांकित करें ताकि उनके लिंग दिख सकें।</string>
@@ -113,6 +112,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">अनुवाद भाषा</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">जिस भाषा से अनुवाद करना है, उसे बदलें।</string>
     <string name="i18n.app.settings.keyboard.translation.title">अनुवाद स्रोत भाषा</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">ऐप और इंस्टॉल किए गए भाषा कीबोर्ड की सेटिंग्स यहाँ मिलेंगी।</string>
     <string name="i18n.app.settings.menu.app_color_mode">डार्क मोड</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">ऐप प्रदर्शनी को डार्क मोड में बदलें।</string>
     <string name="i18n.app.settings.menu.app_language">ऐप की भाषा</string>

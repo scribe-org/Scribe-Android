@@ -69,7 +69,6 @@
     <string name="i18n.app.installation.keyboard.text_4">klavyeleri seçmek için</string>
     <string name="i18n.app.installation.keyboard.title">Klavye kurulumu</string>
     <string name="i18n.app.installation.title">Kurulum</string>
-    <string name="i18n.app.settings.app_hint_tooltip">Uygulama ve yüklenmiş dil klavyelerinin ayarlarını burada bulun.</string>
     <string name="i18n.app.settings.button_install_keyboards">Klavye yükle</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Önerileri/otomatik tamamlamayı etkinleştir</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Yazarken önerilerin ve otomatik tamamlamaların altını çizerek cinsiyetlerini gösterin.</string>
@@ -110,6 +109,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">Çeviri dili</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">Çevrilecek dili değiştirin.</string>
     <string name="i18n.app.settings.keyboard.translation.title">Çeviri kaynak dili</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">Uygulama ve yüklenmiş dil klavyelerinin ayarlarını burada bulun.</string>
     <string name="i18n.app.settings.menu.app_color_mode">Karanlık mod</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">Uygulama görünümünü karanlık mod olarak değiştirin.</string>
     <string name="i18n.app.settings.menu.app_language">Uygulama dili</string>
