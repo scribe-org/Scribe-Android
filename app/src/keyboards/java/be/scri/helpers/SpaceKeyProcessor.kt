@@ -105,8 +105,7 @@ class SpaceKeyProcessor(
         }
 
         if (shouldEnableAutoCapitalization) {
-            ime.keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
-            ime.keyboardView?.invalidateAllKeys()
+            ime.setShifted(SHIFT_ON_ONE_CHAR)
         }
 
         suggestionHandler.processLinguisticSuggestions(wordBeforeSpace)

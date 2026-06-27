@@ -36,10 +36,9 @@ class BackspaceHandler(
         isLongPress: Boolean = false,
     ) {
         val keyboard = ime.keyboard ?: return
-        val keyboardView = ime.keyboardView ?: return
 
         if (keyboard.mShiftState == SHIFT_ON_ONE_CHAR) {
-            keyboard.mShiftState = SHIFT_OFF
+            ime.setShifted(SHIFT_OFF)
         }
 
         if (isCommandBar) {
@@ -60,8 +59,7 @@ class BackspaceHandler(
 
             // Auto-shift if text is empty
             if (inputConnection.getTextBeforeCursor(1, 0)?.isEmpty() != false) {
-                keyboard.mShiftState = SHIFT_ON_ONE_CHAR
-                keyboardView.invalidateAllKeys()
+                ime.setShifted(SHIFT_ON_ONE_CHAR)
             }
         }
     }
@@ -72,7 +70,7 @@ class BackspaceHandler(
     private fun handleCommandBarDelete() {
         val currentTextWithoutCursor = ime.getCommandBarTextWithoutCursor()
         // If we're already showing the hint, do nothing on delete.
-        if (currentTextWithoutCursor == ime.currentCommandBarHint) {
+        if (currentTextWithoutCursor == ime.commandBarHint) {
             return
         }
 
@@ -80,8 +78,8 @@ class BackspaceHandler(
             val newText = currentTextWithoutCursor.dropLast(1)
             if (newText.isEmpty()) {
                 // All real text has been deleted, so restore the hint.
-                ime.setCommandBarTextWithCursor(ime.currentCommandBarHint, cursorAtStart = true)
-                ime.binding.commandBar.setTextColor(ime.commandBarHintColor)
+                ime.setCommandBarTextWithCursor(ime.commandBarHint, cursorAtStart = true)
+                // Color update is handled by the ViewModel when text is empty/hint is shown.
             } else {
                 // There's still text left, so just update it.
                 ime.setCommandBarTextWithCursor(newText)
@@ -90,12 +88,12 @@ class BackspaceHandler(
 
         // Handle German plural mode shift state.
         val finalCommandBarText = ime.getCommandBarTextWithoutCursor()
-        val isEmptyOrAHint = finalCommandBarText.isEmpty() || finalCommandBarText == ime.currentCommandBarHint
+        val isEmptyOrAHint = finalCommandBarText.isEmpty() || finalCommandBarText == ime.commandBarHint
         val isGerman = ime.language == "German"
         val isPluralState = ime.currentState == ScribeState.PLURAL
 
         if (isEmptyOrAHint && isGerman && isPluralState) {
-            ime.keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
+            ime.setShifted(SHIFT_ON_ONE_CHAR)
         }
     }
 

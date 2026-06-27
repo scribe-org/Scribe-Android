@@ -34,11 +34,6 @@ class FrenchKeyboardIME : GeneralKeyboardIME("French") {
     override var switchToLetters: Boolean = false
     override var hasTextBeforeCursor: Boolean = false
 
-    // REFACTOR_FIX: The 'binding' and 'keyboardView' properties are no longer abstract in the parent class,
-    // so we must remove the overrides here. They are now inherited directly.
-    // override lateinit var binding: KeyboardViewCommandOptionsBinding // REMOVED
-    // override var keyboardView: KeyboardView? = null // REMOVED
-
     private val keyHandler by lazy { KeyHandler(this) }
 
     /**

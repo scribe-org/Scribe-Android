@@ -197,9 +197,7 @@ class KeyHandler(
                 } else {
                     KeyboardBase.SHIFT_OFF
                 }
-            if (kb.setShifted(newState)) {
-                ime.keyboardView?.invalidateAllKeys()
-            }
+            kb.setShifted(newState)
         }
     }
 
@@ -236,8 +234,7 @@ class KeyHandler(
      * and then invalidates the keyboard view to reflect the change.
      */
     private fun handleShiftKey() {
-        ime.handleKeyboardLetters(ime.keyboardMode, ime.keyboardView)
-        ime.keyboardView?.invalidateAllKeys()
+        ime.handleKeyboardLetters(ime.keyboardMode)
     }
 
     /**
@@ -253,7 +250,7 @@ class KeyHandler(
      * It delegates the logic to the IME and clears any active suggestions.
      */
     private fun handleModeChangeKey() {
-        ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime)
+        ime.handleModeChange(ime.keyboardMode, ime)
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
     }
 
