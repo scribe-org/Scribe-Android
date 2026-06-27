@@ -131,7 +131,6 @@ fun ConjugateScreen(
                     } else {
                         null
                     },
-                elevation = CardDefaults.cardElevation(defaultElevation = Dimensions.ElevationSmall),
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     // Search Bar Row (Always at the exact same composition tree location!)
@@ -161,7 +160,6 @@ fun ConjugateScreen(
                                     fontWeight = FontWeight.Bold,
                                 ),
                             singleLine = true,
-                            cursorBrush = SolidColor(MaterialTheme.colorScheme.onPrimary),
                             modifier = Modifier.weight(1f),
                             decorationBox = { innerTextField ->
                                 Box(
