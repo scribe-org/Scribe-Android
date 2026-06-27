@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -52,6 +53,10 @@ fun SettingsScreen(
     val isUserDarkMode by viewModel.isUserDarkMode.collectAsState()
     val isIncreaseTextSize by viewModel.isIncreaseTextSize.collectAsState()
 
+    val isSystemDarkMode = androidx.compose.foundation.isSystemInDarkTheme()
+    var showThemeWarningDialog by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    var pendingDarkMode by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+
     val lifecycleOwner = LocalLifecycleOwner.current
 
     // Observe lifecycle events.
@@ -85,8 +90,13 @@ fun SettingsScreen(
                         desc = R.string.i18n_app_settings_menu_app_color_mode_description,
                         state = isUserDarkMode,
                         onToggle = { newDarkMode ->
-                            viewModel.setLightDarkMode(newDarkMode)
-                            onDarkModeChange(newDarkMode)
+                            if (newDarkMode != isSystemDarkMode) {
+                                pendingDarkMode = newDarkMode
+                                showThemeWarningDialog = true
+                            } else {
+                                viewModel.setLightDarkMode(newDarkMode)
+                                onDarkModeChange(newDarkMode)
+                            }
                         },
                     ),
                     ScribeItem.SwitchItem(
@@ -145,6 +155,32 @@ fun SettingsScreen(
             }
 
             item { Spacer(modifier = Modifier.height(10.dp)) }
+        }
+
+        if (showThemeWarningDialog) {
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = { showThemeWarningDialog = false },
+                title = { androidx.compose.material3.Text(text = stringResource(R.string.i18n_theme_warning_title)) },
+                text = { androidx.compose.material3.Text(text = stringResource(R.string.i18n_theme_warning_message)) },
+                confirmButton = {
+                    androidx.compose.material3.TextButton(
+                        onClick = {
+                            viewModel.setLightDarkMode(pendingDarkMode)
+                            onDarkModeChange(pendingDarkMode)
+                            showThemeWarningDialog = false
+                        },
+                    ) {
+                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_ok))
+                    }
+                },
+                dismissButton = {
+                    androidx.compose.material3.TextButton(
+                        onClick = { showThemeWarningDialog = false },
+                    ) {
+                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_cancel))
+                    }
+                },
+            )
         }
     }
 }
