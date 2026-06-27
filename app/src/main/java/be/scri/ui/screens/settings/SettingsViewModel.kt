@@ -29,7 +29,11 @@ class SettingsViewModel(
         MutableStateFlow(sharedPrefs.getBoolean("show_popup_on_keypress", false))
     val popupOnKeypress: StateFlow<Boolean> = _popupOnKeypress
 
-    private val _isUserDarkMode = MutableStateFlow(sharedPrefs.getBoolean("dark_mode", false))
+    private val _isUserDarkMode =
+        MutableStateFlow(
+            be.scri.helpers.PreferencesHelper
+                .getIsDarkModeOrNot(context),
+        )
     val isUserDarkMode: StateFlow<Boolean> = _isUserDarkMode
 
     private val _holdForAltKeys = MutableStateFlow(sharedPrefs.getBoolean("hold_for_alt_keys", false))
