@@ -214,7 +214,7 @@ class AboutUtilTest {
                 onResetHintsClick = {},
                 isConjugateApp = true,
             )
-        assertEquals(R.string.i18n_app_about_feedback_rate_conjugate, list[1].title) // Updated to 1
+        assertEquals(R.string.i18n_app_about_feedback_rate_conjugate, list[0].title)
     }
 
     @Test
