@@ -155,6 +155,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/separator_1"
             app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -405,6 +406,25 @@
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/emoji_space_tablet_2"
             app:layout_constraintTop_toTopOf="@+id/plural_btn" />
+
+        <Button
+            android:id="@+id/clipboard_suggestion_chip"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/command_button_height"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/cmd_key_background_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:drawableStart="@drawable/ic_clipboard_vector"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/separator_1"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -706,5 +726,108 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Container for the Clipboard History Panel -->
+    <RelativeLayout
+        android:id="@+id/clipboard_panel_holder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/keyboard_view">
+
+        <!-- Top bar of the clipboard panel -->
+        <RelativeLayout
+            android:id="@+id/clipboard_panel_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:background="@color/conjugate_keyboard_color">
+
+            <ImageView
+                android:id="@+id/clipboard_panel_close"
+                android:layout_width="@dimen/toolbar_icon_height"
+                android:layout_height="@dimen/toolbar_icon_height"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Close Clipboard"
+                android:padding="@dimen/small_margin"
+                android:src="@drawable/ic_arrow_left_vector"
+                android:tint="@color/icon_color" />
+
+            <TextView
+                android:id="@+id/clipboard_panel_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_toEndOf="@+id/clipboard_panel_close"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="Clipboard"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/big_text_size"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/clipboard_clear_all"
+                android:layout_width="@dimen/toolbar_icon_height"
+                android:layout_height="@dimen/toolbar_icon_height"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Clear All"
+                android:padding="@dimen/small_margin"
+                android:src="@drawable/ic_delete_vector"
+                android:tint="#E53935" />
+
+        </RelativeLayout>
+
+        <!-- Content list of clipboard items -->
+        <RelativeLayout
+            android:id="@+id/clipboard_content_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/clipboard_panel_top_bar"
+            android:background="@color/conjugate_keyboard_color">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/rounded_all_corners"
+                android:orientation="vertical">
+
+                <be.scri.views.MyRecyclerView
+                    android:id="@+id/clipboard_items_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical"
+                    android:nestedScrollingEnabled="false" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/clipboard_empty_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Clipboard is empty"
+                android:textColor="@color/text_color"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

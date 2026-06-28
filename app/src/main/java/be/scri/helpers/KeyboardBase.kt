@@ -88,6 +88,7 @@ class KeyboardBase {
         const val KEYCODE_CAPS_LOCK = -50
         const val KEYCODE_LEFT_ARROW = -55
         const val KEYCODE_RIGHT_ARROW = -56
+        const val KEYCODE_CLIPBOARD = -60
         const val SHIFT_OFF = 0
         const val SHIFT_ON = 1
         const val SHIFT_ON_PERMANENT = 2
@@ -656,6 +657,43 @@ class KeyboardBase {
                     }
                 }
             }
+        }
+
+        // Dynamically add clipboard key on bottom row of letters keyboard
+        try {
+            if (currentKeyboardMode == keyboardLettersMode && mKeys != null) {
+                val spaceKey = mKeys!!.find { it?.code == 32 }
+                val commaKey = mKeys!!.find { it?.code == ','.code }
+                val row = mRows.lastOrNull()
+                if (spaceKey != null && commaKey != null && row != null) {
+                    val clipWidth = (mDisplayWidth * 0.10).toInt()
+
+                    val clipKey = Key(row)
+                    clipKey.code = KEYCODE_CLIPBOARD
+                    clipKey.width = clipWidth
+                    clipKey.height = spaceKey.height
+                    clipKey.gap = spaceKey.gap
+                    clipKey.icon = context.resources.getDrawable(R.drawable.ic_clipboard_vector, context.theme)
+                    clipKey.icon?.setBounds(0, 0, clipKey.icon!!.intrinsicWidth, clipKey.icon!!.intrinsicHeight)
+
+                    spaceKey.width = spaceKey.width - clipWidth - clipKey.gap
+
+                    val commaIdxInList = mKeys!!.indexOf(commaKey)
+                    val commaIdxInRow = row.mKeys.indexOf(commaKey)
+
+                    if (commaIdxInList != -1 && commaIdxInRow != -1) {
+                        clipKey.x = commaKey.x + commaKey.width + commaKey.gap
+                        clipKey.y = commaKey.y
+
+                        spaceKey.x = clipKey.x + clipKey.width + clipKey.gap
+
+                        mKeys!!.add(commaIdxInList + 1, clipKey)
+                        row.mKeys.add(commaIdxInRow + 1, clipKey)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("KeyboardBase", "Error dynamically adding clipboard key", e)
         }
 
         mHeight = y

@@ -111,7 +111,8 @@
             app:keyLabel=","
             app:keyWidth="10%p" />
         <Key
-            app:keyLabel="_"
+            app:code="-60"
+            app:keyIcon="@drawable/ic_clipboard_vector"
             app:keyWidth="10%p" />
         <Key
             app:code="32"
