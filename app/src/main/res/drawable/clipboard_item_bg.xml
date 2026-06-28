@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/card_view_color" />
+    <stroke android:width="1dp" android:color="#20000000" />
+</shape>
