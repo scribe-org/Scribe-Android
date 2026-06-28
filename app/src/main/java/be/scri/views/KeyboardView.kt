@@ -634,6 +634,8 @@ class KeyboardView
                         background = ColorDrawable(toolbarColor)
                     }
                 }
+            } else {
+                closing()
             }
         }
 
