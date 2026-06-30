@@ -34,6 +34,7 @@ import be.scri.ui.common.appcomponents.HintDialog
 import be.scri.ui.common.bottombar.BottomBarScreen
 import be.scri.ui.common.bottombar.ScribeBottomBar
 import be.scri.ui.screens.ConjugateScreen
+import be.scri.ui.screens.ConjugationSelectionScreen
 import be.scri.ui.screens.DefaultCurrencySymbolScreen
 import be.scri.ui.screens.InstallationScreen
 import be.scri.ui.screens.LanguageSettingsScreen
@@ -49,6 +50,7 @@ import be.scri.ui.screens.download.DataDownloadViewModel
 import be.scri.ui.screens.download.DownloadActions
 import be.scri.ui.screens.download.DownloadDataScreen
 import be.scri.ui.screens.settings.SettingsScreen
+import be.scri.ui.screens.tutorial.TutorialNavigator
 import be.scri.ui.theme.ScribeTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -173,6 +175,17 @@ fun ScribeApp(
                                         onNavigateToDownloadData = {
                                             navController.navigate("download_data")
                                         },
+                                        onTutorialClick = {
+                                            navController.navigate("tutorial")
+
+                                            coroutineScope.launch {
+                                                kotlinx.coroutines.delay(400)
+                                                val aboutIndex = screens.indexOfFirst { it is BottomBarScreen.About }
+                                                if (aboutIndex != -1) {
+                                                    pagerState.scrollToPage(aboutIndex)
+                                                }
+                                            }
+                                        },
                                     )
                                     HintDialog(
                                         pagerState = pagerState,
@@ -196,6 +209,11 @@ fun ScribeApp(
                                     ConjugateScreen(
                                         onNavigateToDownloadData = {
                                             navController.navigate("conjugate_download_data")
+                                        },
+                                        onNavigateToConjugationSelection = { verb, languageAlias ->
+                                            navController.navigate(
+                                                "${Screen.ConjugationSelection.route}/$verb/$languageAlias",
+                                            )
                                         },
                                     )
                                 }
@@ -245,6 +263,9 @@ fun ScribeApp(
                                         onWikiClick = {
                                             navController.navigate(Screen.WikimediaScribe.route)
                                         },
+                                        onTutorialClick = {
+                                            navController.navigate("tutorial")
+                                        },
                                         resetHints = { resetHints() },
                                         context = context,
                                     )
@@ -262,6 +283,15 @@ fun ScribeApp(
                             }
                         }
                     }
+                }
+
+                composable("tutorial") {
+                    TutorialNavigator(
+                        onTutorialExit = {
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.padding(innerPadding),
+                    )
                 }
 
                 composable("download_data") {
@@ -289,6 +319,17 @@ fun ScribeApp(
                         isDarkTheme = isDarkTheme,
                         downloadActions = conjugateDownloadActions,
                         checkUpdateActions = conjugateCheckUpdateActions,
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                }
+
+                composable("${Screen.ConjugationSelection.route}/{verb}/{languageAlias}") { backStackEntry ->
+                    val verb = backStackEntry.arguments?.getString("verb") ?: ""
+                    val languageAlias = backStackEntry.arguments?.getString("languageAlias") ?: ""
+                    ConjugationSelectionScreen(
+                        verb = verb,
+                        languageAlias = languageAlias,
+                        onBackNavigation = { navController.popBackStack() },
                         modifier = Modifier.padding(innerPadding),
                     )
                 }

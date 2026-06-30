@@ -167,6 +167,7 @@ class AboutUtilInstrumentedTest {
     fun testGetFeedbackAndSupportList() {
         println("Testing getFeedbackAndSupportList...")
 
+        var tutorialClicked = false
         var rateClicked = false
         var mailClicked = false
         var resetHintsClicked = false
@@ -177,6 +178,7 @@ class AboutUtilInstrumentedTest {
             CompositionLocalProvider(LocalContext provides context) {
                 val feedbackList =
                     AboutUtil.getFeedbackAndSupportList(
+                        onTutorialClick = { tutorialClicked = true },
                         onRateScribeClick = { rateClicked = true },
                         onMailClick = { mailClicked = true },
                         onResetHintsClick = { resetHintsClicked = true },
@@ -191,7 +193,7 @@ class AboutUtilInstrumentedTest {
 
         // Test list is not empty.
         assertThat(extractedItems).isNotEmpty()
-        assertThat(extractedItems).hasSize(5)
+        assertThat(extractedItems).hasSize(6) // Fixed: size is now 6
 
         // Test each item has required fields.
         extractedItems.forEach { item ->
@@ -204,25 +206,30 @@ class AboutUtilInstrumentedTest {
             assertThat(linkItem.onClick).isNotNull()
         }
 
-        // Test specific items.
-        val rateItem = extractedItems[0] as ScribeItem.ExternalLinkItem
+        // Test specific items
+        val tutorialItem = extractedItems[0] as ScribeItem.ExternalLinkItem
+        assertThat(tutorialItem.title).isEqualTo(R.string.i18n_app_installation_button_quick_tutorial)
+
+        val rateItem = extractedItems[1] as ScribeItem.ExternalLinkItem
         assertThat(rateItem.leadingIcon).isEqualTo(R.drawable.star)
         assertThat(rateItem.title).isEqualTo(R.string.i18n_app_about_feedback_rate_scribe)
 
-        val mailItem = extractedItems[2] as ScribeItem.ExternalLinkItem
+        val mailItem = extractedItems[3] as ScribeItem.ExternalLinkItem
         assertThat(mailItem.leadingIcon).isEqualTo(R.drawable.mail_icon)
         assertThat(mailItem.title).isEqualTo(R.string.i18n_app_about_feedback_send_email)
 
-        val hintsItem = extractedItems[4] as ScribeItem.ExternalLinkItem
+        val hintsItem = extractedItems[5] as ScribeItem.ExternalLinkItem
         assertThat(hintsItem.leadingIcon).isEqualTo(R.drawable.light_bulb_icon)
         assertThat(hintsItem.title).isEqualTo(R.string.i18n_app_about_feedback_reset_app_hints)
 
         // Test onClick callbacks OUTSIDE of setContent
+        tutorialItem.onClick()
         rateItem.onClick()
         mailItem.onClick()
         hintsItem.onClick()
 
         // Verify callbacks were triggered.
+        assertThat(tutorialClicked).isTrue()
         assertThat(rateClicked).isTrue()
         assertThat(mailClicked).isTrue()
         assertThat(resetHintsClicked).isTrue()

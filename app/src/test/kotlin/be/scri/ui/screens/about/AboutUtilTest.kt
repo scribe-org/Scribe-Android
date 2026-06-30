@@ -57,6 +57,7 @@ class AboutUtilTest {
         every { mockContext.packageName } returns "be.scri"
         every { mockContext.startActivity(any()) } just Runs
 
+        var tutorialClicked = false
         var rateClicked = false
         var mailClicked = false
         var resetHintsClicked = false
@@ -64,30 +65,35 @@ class AboutUtilTest {
         val list =
             feedbackAndSupportList(
                 context = mockContext,
+                onTutorialClick = { tutorialClicked = true },
                 onRateScribeClick = { rateClicked = true },
                 onMailClick = { mailClicked = true },
                 onResetHintsClick = { resetHintsClicked = true },
             )
 
-        assertEquals(5, list.size)
+        assertEquals(6, list.size)
 
-        assertEquals(R.string.i18n_app_about_feedback_rate_scribe, list[0].title)
-        assertEquals(R.string.i18n_app_about_feedback_bug_report, list[1].title)
-        assertEquals(R.string.i18n_app_about_feedback_send_email, list[2].title)
-        assertEquals(R.string.i18n_app_about_feedback_version, list[3].title)
-        assertEquals(R.string.i18n_app_about_feedback_reset_app_hints, list[4].title)
+        assertEquals(R.string.i18n_app_installation_button_quick_tutorial, list[0].title)
+        assertEquals(R.string.i18n_app_about_feedback_rate_scribe, list[1].title)
+        assertEquals(R.string.i18n_app_about_feedback_bug_report, list[2].title)
+        assertEquals(R.string.i18n_app_about_feedback_send_email, list[3].title)
+        assertEquals(R.string.i18n_app_about_feedback_version, list[4].title)
+        assertEquals(R.string.i18n_app_about_feedback_reset_app_hints, list[5].title)
 
         list[0].onClick()
-        assertTrue(rateClicked)
-
-        list[2].onClick()
-        assertTrue(mailClicked)
-
-        list[4].onClick()
-        assertTrue(resetHintsClicked)
+        assertTrue(tutorialClicked)
 
         list[1].onClick()
+        assertTrue(rateClicked)
+
         list[3].onClick()
+        assertTrue(mailClicked)
+
+        list[5].onClick()
+        assertTrue(resetHintsClicked)
+
+        list[2].onClick()
+        list[4].onClick()
 
         verify(exactly = 2) { mockContext.startActivity(any<Intent>()) }
     }
@@ -158,6 +164,7 @@ class AboutUtilTest {
         val list =
             feedbackAndSupportList(
                 context = mockContext,
+                onTutorialClick = {},
                 onRateScribeClick = {},
                 onMailClick = {},
                 onResetHintsClick = {
@@ -166,7 +173,7 @@ class AboutUtilTest {
                 },
             )
 
-        list[4].onClick()
+        list[5].onClick() // Updated from index 4 to 5
 
         verify(exactly = 1) { PreferencesHelper.resetHints(mockContext) }
         assertTrue(called)
@@ -201,12 +208,13 @@ class AboutUtilTest {
         val list =
             feedbackAndSupportList(
                 context = context,
+                onTutorialClick = {},
                 onRateScribeClick = {},
                 onMailClick = {},
                 onResetHintsClick = {},
                 isConjugateApp = true,
             )
-        assertEquals(R.string.i18n_app_about_feedback_rate_conjugate, list[0].title)
+        assertEquals(R.string.i18n_app_about_feedback_rate_conjugate, list[1].title) // Updated to 1
     }
 
     @Test
@@ -214,11 +222,12 @@ class AboutUtilTest {
         val list =
             feedbackAndSupportList(
                 context = context,
+                onTutorialClick = {},
                 onRateScribeClick = {},
                 onMailClick = {},
                 onResetHintsClick = {},
                 isConjugateApp = false,
             )
-        assertEquals(R.string.i18n_app_about_feedback_rate_scribe, list[0].title)
+        assertEquals(R.string.i18n_app_about_feedback_rate_scribe, list[1].title) // Updated to 1
     }
 }

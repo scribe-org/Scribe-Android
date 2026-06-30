@@ -2,7 +2,6 @@
 
 package be.scri.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -36,7 +35,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,14 +51,14 @@ import be.scri.ui.common.ScribeBaseScreen
 fun ConjugateScreen(
     onNavigateToDownloadData: () -> Unit,
     modifier: Modifier = Modifier,
+    onNavigateToConjugationSelection: (String, String) -> Unit = { _, _ -> },
     viewModel: ConjugateViewModel = viewModel(),
 ) {
-    val context = LocalContext.current
     val localConfiguration = LocalConfiguration.current
     val scrollState = rememberScrollState()
 
     val searchQuery by viewModel.searchQuery.collectAsState()
-    val searchResults by viewModel.searchResults.collectAsState()
+    val displayResults by viewModel.displayResults.collectAsState()
     val recentlyConjugated by viewModel.recentlyConjugated.collectAsState()
 
     val dynamicSpacing = localConfiguration.screenHeightDp.dp * 0.1f
@@ -182,8 +180,10 @@ fun ConjugateScreen(
                             .width(21.dp)
                             .height(18.dp)
                             .clickable {
-                                if (searchResults.isNotEmpty()) {
-                                    viewModel.onVerbSelected(searchResults.first())
+                                val first = displayResults.firstOrNull { !it.isDummy }
+                                if (first != null) {
+                                    viewModel.onVerbSelected(first)
+                                    onNavigateToConjugationSelection(first.verb, first.languageAlias)
                                 }
                             },
                 )
@@ -192,7 +192,7 @@ fun ConjugateScreen(
             Spacer(modifier = Modifier.height(Dimensions.PaddingMedium))
 
             if (searchQuery.isNotEmpty()) {
-                // Search suggestion container
+                // Search suggestion container — dummy rows until DB is populated (#570)
                 Card(
                     modifier =
                         Modifier
@@ -211,48 +211,41 @@ fun ConjugateScreen(
                                 .fillMaxWidth()
                                 .padding(Dimensions.PaddingSmall),
                     ) {
-                        if (searchResults.isEmpty()) {
-                            Text(
-                                text = "No verbs found",
-                                modifier = Modifier.padding(Dimensions.PaddingMedium),
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = Alpha.MEDIUM),
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        } else {
-                            searchResults.forEachIndexed { index, result ->
-                                Row(
+                        displayResults.forEachIndexed { index, result ->
+                            Row(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            viewModel.onVerbSelected(result)
+                                            onNavigateToConjugationSelection(result.verb, result.languageAlias)
+                                        }.padding(Dimensions.PaddingMedium),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = "${result.verb} (${getLanguageDisplayName(result.languageAlias)})",
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
+                                Image(
+                                    painter = painterResource(id = R.drawable.right_arrow),
+                                    contentDescription = "Right Arrow",
+                                    modifier =
+                                        Modifier
+                                            .size(Dimensions.IconSize)
+                                            .alpha(Alpha.HIGH),
+                                )
+                            }
+                            if (index < displayResults.lastIndex) {
+                                Spacer(
                                     modifier =
                                         Modifier
                                             .fillMaxWidth()
-                                            .clickable { viewModel.onVerbSelected(result) }
-                                            .padding(Dimensions.PaddingMedium),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Text(
-                                        text = "${result.verb} (${getLanguageDisplayName(result.languageAlias)})",
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        style = MaterialTheme.typography.labelMedium,
-                                    )
-                                    Image(
-                                        painter = painterResource(id = R.drawable.right_arrow),
-                                        contentDescription = "Right Arrow",
-                                        modifier =
-                                            Modifier
-                                                .size(Dimensions.IconSize)
-                                                .alpha(Alpha.HIGH),
-                                    )
-                                }
-                                if (index < searchResults.lastIndex) {
-                                    Spacer(
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .height(1.dp)
-                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
-                                    )
-                                }
+                                            .height(1.dp)
+                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
+                                )
                             }
                         }
                     }
@@ -322,7 +315,60 @@ fun ConjugateScreen(
                     }
                 }
 
-                // Header 3: Recently conjugated
+                // Direct link to ConjugationSelectionScreen (issue #567).
+                // Andrew requested a link on the Conjugate tab while search-based
+                // navigation (#570) is not yet wired up.
+                Text(
+                    text = stringResource(R.string.i18n_app_conjugate_choose_conjugation_title),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier =
+                        Modifier
+                            .padding(
+                                start = 4.dp,
+                                top = Dimensions.PaddingLarge,
+                                bottom = Dimensions.PaddingSmall,
+                            ).align(Alignment.Start),
+                )
+                Card(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = Dimensions.PaddingSmall)
+                            .clickable { onNavigateToConjugationSelection("verb", "DE") },
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                ) {
+                    Row(
+                        modifier =
+                            Modifier
+                                .padding(Dimensions.PaddingMedium)
+                                .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.i18n_app_conjugate_choose_conjugation_select_tense),
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.right_arrow),
+                            contentDescription = "Right Arrow",
+                            modifier =
+                                Modifier
+                                    .size(Dimensions.IconSize)
+                                    .alpha(Alpha.HIGH),
+                        )
+                    }
+                }
+
+                // Header 3: Recently conjugated — only shown when real items exist.
                 if (recentlyConjugated.isNotEmpty()) {
                     Row(
                         modifier =
@@ -365,23 +411,16 @@ fun ConjugateScreen(
                                 containerColor = MaterialTheme.colorScheme.surface,
                             ),
                     ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
                             recentlyConjugated.forEachIndexed { index, item ->
                                 Row(
                                     modifier =
                                         Modifier
                                             .fillMaxWidth()
-                                            .padding(Dimensions.PaddingMedium)
                                             .clickable {
-                                                Toast
-                                                    .makeText(
-                                                        context,
-                                                        "Conjugating ${item.verb} (${getLanguageDisplayName(item.languageAlias)})...",
-                                                        Toast.LENGTH_SHORT,
-                                                    ).show()
-                                            },
+                                                viewModel.onVerbSelected(item)
+                                                onNavigateToConjugationSelection(item.verb, item.languageAlias)
+                                            }.padding(Dimensions.PaddingMedium),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {

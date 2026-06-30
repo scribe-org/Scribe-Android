@@ -925,6 +925,7 @@ abstract class GeneralKeyboardIME(
      * @param inputConnection The current input connection.
      */
     private fun handleDefaultEnter(inputConnection: InputConnection) {
+        val wordBeforeEnter = getLastWordBeforeCursor()
         val imeOptionsActionId = getImeOptionsActionId()
         if (imeOptionsActionId != IME_ACTION_NONE) {
             inputConnection.performEditorAction(imeOptionsActionId)
@@ -932,8 +933,12 @@ abstract class GeneralKeyboardIME(
             inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
             inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
         }
-        suggestionHandler.clearAllSuggestionsAndHideButtonUI()
         moveToIdleState()
+        if (!wordBeforeEnter.isNullOrEmpty()) {
+            suggestionHandler.processLinguisticSuggestions(wordBeforeEnter)
+        } else {
+            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+        }
     }
 
     /**
@@ -1405,7 +1410,9 @@ abstract class GeneralKeyboardIME(
         this.wordSuggestions = wordSuggestions
 
         if (currentState != ScribeState.IDLE) {
-            uiManager.disableAutoSuggest(language)
+            if (currentState != ScribeState.SELECT_COMMAND) {
+                uiManager.disableAutoSuggest(language)
+            }
             return
         }
         val hasLinguisticSuggestions = nounTypeSuggestion != null || isPlural || caseAnnotationSuggestion != null || isSingularAndPlural
@@ -1728,7 +1735,18 @@ abstract class GeneralKeyboardIME(
         wordSuggestions: List<String>?,
         hasLinguisticSuggestions: Boolean,
     ) {
-        if (wordSuggestions.isNullOrEmpty()) return
+        if (wordSuggestions.isNullOrEmpty()) {
+            if (hasLinguisticSuggestions) {
+                val baseSuggestions =
+                    be.scri.helpers.ui.HintUtils
+                        .getBaseAutoSuggestions(language)
+                val default1 = baseSuggestions.getOrNull(0) ?: ""
+                val default2 = baseSuggestions.getOrNull(1) ?: ""
+                setSuggestionButton(uiManager.binding.conjugateBtn, default1)
+                uiManager.pluralBtn?.let { setSuggestionButton(it, default2) }
+            }
+            return
+        }
 
         val suggestions = listOfNotNull(wordSuggestions.getOrNull(0), wordSuggestions.getOrNull(1), wordSuggestions.getOrNull(2))
         val suggestion1 = suggestions.getOrNull(0) ?: ""
