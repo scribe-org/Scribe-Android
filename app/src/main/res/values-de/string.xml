@@ -84,7 +84,6 @@
     <string name="i18n.app.installation.keyboard.text_4">um Tastaturen auszuwählen</string>
     <string name="i18n.app.installation.keyboard.title">Tastaturinstallation</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.settings.app_hint_tooltip">Hier sind die Einstellungen der App und installierte Tastaturen zu finden.</string>
     <string name="i18n.app.settings.button_install_keyboards">Tastaturen installieren</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Vorschläge annotieren</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Vorschläge unterstreichen, um ihr Genus beim Tippen anzuzeigen.</string>
@@ -125,6 +124,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">Übersetzungssprache</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">Wähle die Sprache, von der übersetzt wird.</string>
     <string name="i18n.app.settings.keyboard.translation.title">Ausgangssprache für die Übersetzung</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">Hier sind die Einstellungen der App und installierte Tastaturen zu finden.</string>
     <string name="i18n.app.settings.menu.app_color_mode">Dunkler Modus</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">Die App-Darstellung auf dunkel umstellen.</string>
     <string name="i18n.app.settings.menu.app_language">App-Sprache</string>

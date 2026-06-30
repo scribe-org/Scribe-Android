@@ -68,7 +68,6 @@
     <string name="i18n.app.installation.keyboard.text_4">ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು ಆಯ್ಕೆ ಮಾಡಲು</string>
     <string name="i18n.app.installation.keyboard.title">ಕೀಬೋರ್ಡ್ ಇನ್‌ಸ್ಟಾಲೇಷನ್</string>
     <string name="i18n.app.installation.title">ಇನ್‌ಸ್ಟಾಲೇಷನ್</string>
-    <string name="i18n.app.settings.app_hint_tooltip">ಅಪ್ಲಿಕೇಶನ್ ಮತ್ತು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದ ಭಾಷಾ ಕೀಬೋರ್ಡ್‌ಗಳಿಗಾಗಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಇಲ್ಲಿ ಲಭ್ಯವಿದೆ.</string>
     <string name="i18n.app.settings.button_install_keyboards">ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">ಸೂಚನೆಗಳನ್ನು ಎದ್ದುಕಾಣುವಂತೆ ಮಾಡಿ</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">ನೀವು ಟೈಪ್ ಮಾಡುವಾಗ ಅವುಗಳ ಲಿಂಗಗಳನ್ನು ತೋರಿಸಲು ಸೂಚನೆಗಳು ಮತ್ತು ಪೂರ್ಣಗೊಳಿಸುವಿಕೆಯನ್ನು ಅಂಡರ್‌ಲೈನ್ ಮಾಡಿ.</string>
@@ -109,6 +108,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">ಅನುವಾದ ಭಾಷೆ</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">ಯಾವ ಭಾಷೆಯಿಂದ ಅನುವಾದಿಸಬೇಕು ಎಂಬುದನ್ನು ಬದಲಾಯಿಸಿ.</string>
     <string name="i18n.app.settings.keyboard.translation.title">ಅನುವಾದ ಮೂಲ ಭಾಷೆ</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">ಅಪ್ಲಿಕೇಶನ್ ಮತ್ತು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದ ಭಾಷಾ ಕೀಬೋರ್ಡ್‌ಗಳಿಗಾಗಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಇಲ್ಲಿ ಲಭ್ಯವಿದೆ.</string>
     <string name="i18n.app.settings.menu.app_color_mode">ಡಾರ್ಕ್ ಮೋಡ್</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">ಅಪ್ಲಿಕೇಶನ್ ಪ್ರದರ್ಶನವನ್ನು ಡಾರ್ಕ್ ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ.</string>
     <string name="i18n.app.settings.menu.app_language">ಆಪ್ ಭಾಷೆ</string>

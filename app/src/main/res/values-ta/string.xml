@@ -74,7 +74,6 @@
     <string name="i18n.app.installation.keyboard.text_4">விசைப்பலகைகளைத் தேர்ந்தெடுக்க</string>
     <string name="i18n.app.installation.keyboard.title">விசைப்பலகை நிறுவல்</string>
     <string name="i18n.app.installation.title">நிறுவல்</string>
-    <string name="i18n.app.settings.app_hint_tooltip">பயன்பாடு மற்றும் நிறுவப்பட்ட மொழி விசைப்பலகைகளுக்கான அமைப்புகள் இங்கே காணப்படுகின்றன.</string>
     <string name="i18n.app.settings.button_install_keyboards">விசைப்பலகைகளை நிறுவுங்கள்</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">பரிந்துரை/நிறைவுகளைக் குறிப்பிடுங்கள்</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">நீங்கள் தட்டச்சு செய்யும் போது அவற்றின் பாலினத்தைக் காட்ட பரிந்துரைகள் மற்றும் நிறைவுகளுக்கு அடிக்கோடு இடுங்கள்.</string>
@@ -115,6 +114,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">மொழிபெயர்ப்பு மொழி</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">எந்த மொழியிலிருந்து மொழிபெயர்க்க வேண்டும் என்பதை மாற்றவும்.</string>
     <string name="i18n.app.settings.keyboard.translation.title">மொழிபெயர்ப்பு மூல மொழி</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">பயன்பாடு மற்றும் நிறுவப்பட்ட மொழி விசைப்பலகைகளுக்கான அமைப்புகள் இங்கே காணப்படுகின்றன.</string>
     <string name="i18n.app.settings.menu.app_color_mode">இருள் முறை</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">பயன்பாட்டுக் காட்சியை இருள் முறைக்கு மாற்றவும்.</string>
     <string name="i18n.app.settings.menu.app_language">பயன்பாட்டு மொழி</string>

@@ -2,6 +2,8 @@
 
 package be.scri.ui.screens
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,13 +34,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
@@ -73,19 +75,23 @@ fun ConjugateScreen(
                     .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.height(dynamicSpacing))
+            if (searchQuery.isEmpty()) {
+                Spacer(modifier = Modifier.height(dynamicSpacing))
 
-            Image(
-                painter = painterResource(id = R.drawable.scribe_logo),
-                contentDescription = stringResource(R.string.app_launcher_name),
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 16.dp)
-                        .width(248.dp)
-                        .height(122.dp),
-                contentScale = ContentScale.Fit,
-            )
+                Image(
+                    painter = painterResource(id = R.drawable.scribe_logo),
+                    contentDescription = stringResource(R.string.app_launcher_name),
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(bottom = 16.dp)
+                            .width(248.dp)
+                            .height(122.dp),
+                    contentScale = ContentScale.Fit,
+                )
+            } else {
+                Spacer(modifier = Modifier.height(Dimensions.PaddingSmall))
+            }
 
             // Header 1: Conjugate verbs
             Text(
@@ -102,155 +108,188 @@ fun ConjugateScreen(
                         ).align(Alignment.Start),
             )
 
-            // Search Bar
-            Row(
+            Card(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.surfaceContainer,
-                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
-                        ).border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline,
-                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
-                        ).padding(horizontal = Dimensions.PaddingMedium),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_search_vector),
-                    contentDescription = "Search",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                    modifier = Modifier.size(Dimensions.IconSize),
-                )
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                BasicTextField(
-                    value = searchQuery,
-                    onValueChange = { viewModel.onSearchQueryChanged(it) },
-                    textStyle =
-                        MaterialTheme.typography.bodyLarge.copy(
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    singleLine = true,
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.onPrimary),
-                    modifier = Modifier.weight(1f),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.CenterStart,
-                        ) {
+                        .padding(bottom = Dimensions.PaddingMedium)
+                        .animateContentSize(),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor =
                             if (searchQuery.isEmpty()) {
-                                Text(
-                                    text = stringResource(R.string.i18n_app_conjugate_verbs_search_placeholder),
-                                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                                    style =
-                                        MaterialTheme.typography.bodyLarge.copy(
-                                            fontWeight = FontWeight.Bold,
-                                        ),
-                                )
-                            }
-                            innerTextField()
-                        }
-                    },
-                )
-
-                if (searchQuery.isNotEmpty()) {
-                    Image(
-                        painter = painterResource(id = R.drawable.close),
-                        contentDescription = "Clear",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                        modifier =
-                            Modifier
-                                .size(Dimensions.IconSize)
-                                .clickable { viewModel.clearSearchQuery() },
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
-
-                Image(
-                    painter = painterResource(id = R.drawable.play_button),
-                    contentDescription = "Play button",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                    modifier =
-                        Modifier
-                            .width(21.dp)
-                            .height(18.dp)
-                            .clickable {
-                                val first = displayResults.firstOrNull { !it.isDummy }
-                                if (first != null) {
-                                    viewModel.onVerbSelected(first)
-                                    onNavigateToConjugationSelection(first.verb, first.languageAlias)
-                                }
+                                MaterialTheme.colorScheme.surfaceContainer
+                            } else {
+                                MaterialTheme.colorScheme.surface
                             },
-                )
-            }
-
-            Spacer(modifier = Modifier.height(Dimensions.PaddingMedium))
-
-            if (searchQuery.isNotEmpty()) {
-                // Search suggestion container — dummy rows until DB is populated (#570)
-                Card(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = Dimensions.PaddingMedium),
-                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface,
-                        ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = Dimensions.ElevationSmall),
-                ) {
-                    Column(
+                    ),
+                border =
+                    if (searchQuery.isEmpty()) {
+                        BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                    } else {
+                        null
+                    },
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Search Bar Row (Always at the exact same composition tree location!)
+                    Row(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(Dimensions.PaddingSmall),
+                                .height(56.dp)
+                                .padding(horizontal = Dimensions.PaddingMedium),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        displayResults.forEachIndexed { index, result ->
-                            Row(
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_search_vector),
+                            contentDescription = "Search",
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                            modifier = Modifier.size(Dimensions.IconSize),
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        BasicTextField(
+                            value = searchQuery,
+                            onValueChange = { viewModel.onSearchQueryChanged(it) },
+                            textStyle =
+                                MaterialTheme.typography.bodyLarge.copy(
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                            singleLine = true,
+                            modifier = Modifier.weight(1f),
+                            decorationBox = { innerTextField ->
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.CenterStart,
+                                ) {
+                                    if (searchQuery.isEmpty()) {
+                                        Text(
+                                            text = stringResource(R.string.i18n_app_conjugate_verbs_search_placeholder),
+                                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                                            style =
+                                                MaterialTheme.typography.bodyLarge.copy(
+                                                    fontWeight = FontWeight.Bold,
+                                                ),
+                                        )
+                                    }
+                                    innerTextField()
+                                }
+                            },
+                        )
+
+                        if (searchQuery.isNotEmpty()) {
+                            Image(
+                                painter = painterResource(id = R.drawable.close),
+                                contentDescription = "Clear",
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                                 modifier =
                                     Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            viewModel.onVerbSelected(result)
-                                            onNavigateToConjugationSelection(result.verb, result.languageAlias)
-                                        }.padding(Dimensions.PaddingMedium),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = "${result.verb} (${getLanguageDisplayName(result.languageAlias)})",
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    style = MaterialTheme.typography.labelMedium,
-                                )
-                                Image(
-                                    painter = painterResource(id = R.drawable.right_arrow),
-                                    contentDescription = "Right Arrow",
-                                    modifier =
-                                        Modifier
-                                            .size(Dimensions.IconSize)
-                                            .alpha(Alpha.HIGH),
-                                )
-                            }
-                            if (index < displayResults.lastIndex) {
-                                Spacer(
+                                        .size(Dimensions.IconSize)
+                                        .clickable { viewModel.clearSearchQuery() },
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
+
+                        Image(
+                            painter = painterResource(id = R.drawable.play_button),
+                            contentDescription = "Play button",
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                            modifier =
+                                Modifier
+                                    .width(21.dp)
+                                    .height(18.dp)
+                                    .clickable {
+                                        val first = displayResults.firstOrNull()
+                                        if (first != null) {
+                                            viewModel.onVerbSelected(first)
+                                            onNavigateToConjugationSelection(first.verb, first.languageAlias)
+                                        }
+                                    },
+                        )
+                    }
+
+                    if (searchQuery.isNotEmpty()) {
+                        // Thin divider between Search Bar and Results
+                        Spacer(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(1.dp)
+                                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
+                        )
+
+                        if (displayResults.isNotEmpty()) {
+                            displayResults.forEachIndexed { index, result ->
+                                Row(
                                     modifier =
                                         Modifier
                                             .fillMaxWidth()
-                                            .height(1.dp)
-                                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
+                                            .clickable {
+                                                viewModel.onVerbSelected(result)
+                                                onNavigateToConjugationSelection(result.verb, result.languageAlias)
+                                            }.padding(Dimensions.PaddingMedium),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        text = "${result.verb} (${getLanguageDisplayName(result.languageAlias)})",
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        style = MaterialTheme.typography.labelMedium,
+                                    )
+                                    Image(
+                                        painter = painterResource(id = R.drawable.right_arrow),
+                                        contentDescription = "Right Arrow",
+                                        modifier =
+                                            Modifier
+                                                .size(Dimensions.IconSize)
+                                                .alpha(Alpha.HIGH),
+                                    )
+                                }
+                                if (index < displayResults.lastIndex) {
+                                    Spacer(
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .height(1.dp)
+                                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
+                                    )
+                                }
+                            }
+                        } else {
+                            val downloaded = viewModel.getDownloadedLanguages()
+                            val noResultsMessage =
+                                if (downloaded.isEmpty()) {
+                                    "No results found. Please download verb data first."
+                                } else {
+                                    "No results found in ${viewModel.getDownloadedLanguagesFormatted()}"
+                                }
+                            Column(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(Dimensions.PaddingMedium),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                            ) {
+                                Text(
+                                    text = noResultsMessage,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    textAlign = TextAlign.Center,
                                 )
                             }
                         }
                     }
                 }
-            } else {
+            }
+
+            if (searchQuery.isEmpty()) {
+                Spacer(modifier = Modifier.height(Dimensions.PaddingMedium))
                 // normal screen flow when not searching
 
                 // Header 2: Verb data

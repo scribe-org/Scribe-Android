@@ -68,7 +68,6 @@
     <string name="i18n.app.installation.keyboard.text_4">pour sélectionner le clavier</string>
     <string name="i18n.app.installation.keyboard.title">Installation du clavier</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.settings.app_hint_tooltip">Les paramètres de l\'application et des claviers linguistiques installés se trouvent ici.</string>
     <string name="i18n.app.settings.button_install_keyboards">Installer les claviers</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Annoter, suggérer/compléter</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Souligner les suggestions et les complétions pour indiquer leur genre au fur et à mesure de la saisie.</string>
@@ -107,6 +106,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">Langue de traduction</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">Modifier la langue à partir de laquelle la traduction doit être effectuée.</string>
     <string name="i18n.app.settings.keyboard.translation.title">Langue source de la traduction</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">Les paramètres de l\'application et des claviers linguistiques installés se trouvent ici.</string>
     <string name="i18n.app.settings.menu.app_color_mode">Thème sombre</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">Modifier l\'affichage de l\'application en mode sombre.</string>
     <string name="i18n.app.settings.menu.app_language">Langue de l\'application</string>

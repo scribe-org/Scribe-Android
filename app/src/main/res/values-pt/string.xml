@@ -68,7 +68,6 @@
     <string name="i18n.app.installation.keyboard.text_4">para selecionar teclados</string>
     <string name="i18n.app.installation.keyboard.title">Como instalar um teclado</string>
     <string name="i18n.app.installation.title">Instalação</string>
-    <string name="i18n.app.settings.app_hint_tooltip">Aqui você encontra as configurações do aplicativo e teclados de idioma instalados.</string>
     <string name="i18n.app.settings.button_install_keyboards">Instalar teclados</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Sugestões e autocompletar</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Sublinhar sugestões para indicar o gênero enquanto você digita.</string>
@@ -107,6 +106,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">Idioma da tradução</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">Altere o idioma a ser traduzido.</string>
     <string name="i18n.app.settings.keyboard.translation.title">Idioma de origem da tradução</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">Aqui você encontra as configurações do aplicativo e teclados de idioma instalados.</string>
     <string name="i18n.app.settings.menu.app_color_mode">Modo escuro</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">Muda o visual do aplicativo para o modo escuro.</string>
     <string name="i18n.app.settings.menu.app_language">Idioma do aplicativo</string>
