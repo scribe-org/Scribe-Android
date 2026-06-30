@@ -102,7 +102,21 @@ class SuggestionHandler(
                         nextWordSuggestion,
                     )
                 } else {
-                    ime.disableAutoSuggest()
+                    val hasLinguistic = ime.nounTypeSuggestion != null ||
+                                        ime.checkIfPluralWord ||
+                                        ime.caseAnnotationSuggestion != null ||
+                                        ime.isSingularAndPlural
+                    if (hasLinguistic) {
+                        ime.wordSuggestions = null
+                        ime.updateAutoSuggestText(
+                            ime.nounTypeSuggestion,
+                            ime.checkIfPluralWord || ime.isSingularAndPlural,
+                            ime.caseAnnotationSuggestion,
+                            null,
+                        )
+                    } else {
+                        ime.disableAutoSuggest()
+                    }
                 }
             }
 
