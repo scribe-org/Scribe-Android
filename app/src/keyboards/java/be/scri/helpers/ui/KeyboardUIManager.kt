@@ -894,6 +894,7 @@ class KeyboardUIManager(
                     setImageResource(getCategoryIconRes(category))
                     background = null
                     imageAlpha = if (index == 0) 255 else 128 // 50% opacity for inactive
+                    imageTintList = ContextCompat.getColorStateList(context, R.color.emoji_palette_icons)
                     layoutParams =
                         android.widget.LinearLayout.LayoutParams(
                             0,

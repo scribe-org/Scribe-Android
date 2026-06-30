@@ -1134,7 +1134,7 @@ class KeyboardView
                                 }
                             key.icon = resources.getDrawable(drawableId)
                             key.icon!!.applyColorFilter(mTextColor)
-                        } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_TAB) {
+                        } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_TAB || code == KeyboardBase.KEYCODE_EMOJI) {
                             key.icon!!.applyColorFilter(mTextColor)
                         }
 
