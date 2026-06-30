@@ -638,7 +638,7 @@ class KeyboardView
          * Attaches a keyboard to this view.
          * The keyboard can be switched at any time and the view will re-layout itself to accommodate the keyboard.
          *
-         * @param keyboard the keyboard to display in this view
+         * @param keyboard the keyboard to display in this view.
          */
         fun setKeyboard(keyboard: KeyboardBase) {
             if (mKeyboard != null) {
