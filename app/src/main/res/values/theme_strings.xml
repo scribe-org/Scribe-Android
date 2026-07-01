@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="i18n_theme_warning_title">Theme Override</string>
+    <string name="i18n_theme_warning_message">You are selecting a theme that goes against your system default. Are you sure you want to proceed?</string>
+    <string name="i18n_ok">OK</string>
+    <string name="i18n_cancel">Cancel</string>
+</resources>
