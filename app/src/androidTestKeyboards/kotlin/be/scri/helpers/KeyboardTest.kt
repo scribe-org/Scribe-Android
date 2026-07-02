@@ -98,13 +98,15 @@ class KeyboardTest {
         every { mockIME.findWhetherWordIsPlural(any(), "in") } returns false
         every { mockIME.getCaseAnnotationForPreposition(any(), "in") } returns null
 
-        every { mockIME.updateAutoSuggestText(any(), any(), any(), any()) } answers {
+        every { mockIME.updateAutoSuggestText(any(), any(), any()) } answers {
             conjugateBtn.text = "der"
             pluralBtn.text = "den"
             translateBtn.text = "die"
         }
 
         suggestionHandler.processLinguisticSuggestions("in")
+
+        Thread.sleep(100)
 
         verify { conjugateBtn.text = match { it.isNotEmpty() } }
         verify { pluralBtn.text = match { it.isNotEmpty() } }
