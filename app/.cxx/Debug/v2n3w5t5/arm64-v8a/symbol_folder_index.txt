@@ -1,1 +1,0 @@
-C:\Wikimedia hackathon\Scribe-Android\app\build\intermediates\cxx\Debug\v2n3w5t5\obj\arm64-v8a

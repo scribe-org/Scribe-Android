@@ -39,9 +39,6 @@ class KeyboardTest {
         translateBtn = mockk(relaxed = true)
         conjugateBtn = mockk(relaxed = true)
         pluralBtn = mockk(relaxed = true)
-        every { mockIME.binding.translateBtn } returns translateBtn
-        every { mockIME.binding.conjugateBtn } returns conjugateBtn
-        every { mockIME.binding.pluralBtn } returns pluralBtn
     }
 
     @Test

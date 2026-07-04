@@ -33,7 +33,6 @@ import be.scri.ui.theme.ScribeTheme
  * Initializes theme settings, navigation, and sets up the main UI using Jetpack Compose.
  */
 class MainActivity : ComponentActivity() {
-    private var englishKeyboardIME: EnglishKeyboardIME? = null
 
     /**
      * Initializes the app on launch. Sets the theme based on user preferences, sets up edge-to-edge
@@ -46,8 +45,6 @@ class MainActivity : ComponentActivity() {
         val isDark = PreferencesHelper.getUserDarkModePreference(this) == AppCompatDelegate.MODE_NIGHT_YES
 
         applyNavigationBarStyle(isDark)
-
-        englishKeyboardIME = EnglishKeyboardIME()
 
         setContent {
             val context = LocalContext.current

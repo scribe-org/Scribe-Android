@@ -7,6 +7,20 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import android.content.Context
+
+@Composable
+fun isKeyboardDarkMode(): Boolean {
+    val context = LocalContext.current
+    val isSystemDark = androidx.compose.foundation.isSystemInDarkTheme()
+    // Read directly without remember() so that user's dark mode toggle is respected immediately.
+    // SharedPreferences reads are very fast (cached by OS) so this is safe per-recomposition.
+    val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    return sharedPref.getBoolean("dark_mode", isSystemDark)
+}
+
 private val LightColors =
     lightColorScheme(
         primary = theme_light_button_color,

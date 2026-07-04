@@ -51,7 +51,7 @@ class KeyHandler(
         resetShiftIfNeeded(code)
 
         if (code != KeyboardBase.KEYCODE_SHIFT && code != KeyboardBase.KEYCODE_MODE_CHANGE) {
-            ime.hideClipboardSuggestionChip()
+            // ime.hideClipboardSuggestionChip()
         }
 
         val previousWasLastKeySpace = wasLastKeySpace

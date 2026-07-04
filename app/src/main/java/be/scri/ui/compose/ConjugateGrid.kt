@@ -1,5 +1,7 @@
 package be.scri.ui.compose
 
+import androidx.compose.ui.platform.LocalContext
+import be.scri.helpers.PreferencesHelper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,6 +25,11 @@ fun ConjugateGrid(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
     val selectedCategory by viewModel.selectedConjugationSubCategory.collectAsState()
     val language by viewModel.language.collectAsState()
 
+    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val bgColor = if (isDarkMode) Color(0xFF282828) else Color(0xFFEBEBEB)
+    val cardBg = if (isDarkMode) Color(0xFF404040) else Color.White
+    val textColor = if (isDarkMode) Color.White else Color.Black
+
     val title = conjugateOutput?.keys?.firstOrNull()
     val languageOutput = title?.let { conjugateOutput!![it] }
 
@@ -45,7 +52,7 @@ fun ConjugateGrid(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
         modifier = Modifier
             .fillMaxWidth()
             .height(250.dp) // Standard keyboard height approx
-            .background(Color(0xFFEBEBEB))
+            .background(bgColor)
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -64,10 +71,9 @@ fun ConjugateGrid(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight()
-                                .background(Color.White, RoundedCornerShape(8.dp))
+                                .background(cardBg, RoundedCornerShape(8.dp))
                                 .clickable {
                                     if (form.isNotEmpty()) {
-                                        // TODO: handle category logic properly
                                         actionListener.onSuggestionClicked(form)
                                     }
                                 },
@@ -75,7 +81,7 @@ fun ConjugateGrid(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
                         ) {
                             Text(
                                 text = form,
-                                color = Color.Black,
+                                color = textColor,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium,
                                 textAlign = TextAlign.Center,

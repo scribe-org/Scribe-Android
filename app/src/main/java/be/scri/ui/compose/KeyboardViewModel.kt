@@ -85,6 +85,9 @@ class KeyboardViewModel {
     private val _currencySymbol = MutableStateFlow("$")
     val currencySymbol: StateFlow<String> = _currencySymbol.asStateFlow()
 
+    private val _bottomInset = MutableStateFlow(0)
+    val bottomInset: StateFlow<Int> = _bottomInset.asStateFlow()
+
     fun updateState(state: ScribeState) {
         _currentState.value = state
     }
@@ -168,5 +171,24 @@ class KeyboardViewModel {
     
     fun setCurrencySymbol(symbol: String) {
         _currencySymbol.value = symbol
+    }
+
+    fun setBottomInset(inset: Int) {
+        _bottomInset.value = inset
+    }
+
+    // Clipboard
+    private val _isClipboardPanelVisible = MutableStateFlow(false)
+    val isClipboardPanelVisible: StateFlow<Boolean> = _isClipboardPanelVisible.asStateFlow()
+
+    private val _clipboardItems = MutableStateFlow<List<be.scri.helpers.clipboard.ClipboardItem>>(emptyList())
+    val clipboardItems: StateFlow<List<be.scri.helpers.clipboard.ClipboardItem>> = _clipboardItems.asStateFlow()
+
+    fun setClipboardPanelVisible(visible: Boolean) {
+        _isClipboardPanelVisible.value = visible
+    }
+
+    fun updateClipboardItems(items: List<be.scri.helpers.clipboard.ClipboardItem>) {
+        _clipboardItems.value = items
     }
 }

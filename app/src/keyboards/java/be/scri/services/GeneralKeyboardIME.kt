@@ -58,8 +58,10 @@ import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.clipboard.ClipboardMonitor
+import be.scri.helpers.ui.HintUtils
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.models.ScribeState
 import kotlinx.coroutines.launch
 import java.util.Locale
 import androidx.compose.ui.platform.ComposeView
@@ -170,7 +172,15 @@ abstract class GeneralKeyboardIME(
     private var isNumericKeyboardActive: Boolean = false
 
     internal var currentState: ScribeState = ScribeState.IDLE
+        set(value) {
+            field = value
+            keyboardViewModel.updateState(value)
+        }
     internal var invalidCommandSource: ScribeState = ScribeState.IDLE
+        set(value) {
+            field = value
+            keyboardViewModel.setInvalidCommandSource(value)
+        }
 
     var commandBarHint: String
         get() = keyboardViewModel.commandBarHint.value ?: ""
@@ -233,9 +243,9 @@ abstract class GeneralKeyboardIME(
             ClipboardMonitor(this) { text ->
                 latestClipText = text
                 hasNewClip = true
-                if (currentState == ScribeState.IDLE && this::uiManager.isInitialized) {
-                    uiManager.showClipboardSuggestionChip(text)
-                }
+                // if (currentState == ScribeState.IDLE && this::uiManager.isInitialized) {
+                //     uiManager.showClipboardSuggestionChip(text)
+                // }
             }
     }
 
@@ -278,6 +288,12 @@ abstract class GeneralKeyboardIME(
             setViewTreeViewModelStoreOwner(lifecycleOwner)
             setViewTreeSavedStateRegistryOwner(lifecycleOwner)
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+                val navBarBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+                keyboardViewModel.setBottomInset(navBarBottom)
+                insets
+            }
+            androidx.core.view.ViewCompat.requestApplyInsets(this)
             setContent {
                 ScribeKeyboardApp(
                     viewModel = keyboardViewModel,
@@ -381,6 +397,7 @@ abstract class GeneralKeyboardIME(
         val hasData = dbFile.exists()
         // Update ViewModel with data availability status
         keyboardViewModel.setHasData(hasData)
+        keyboardViewModel.setHasLanguageData(hasData)
 
         applyNavBarColor()
 
@@ -647,6 +664,9 @@ abstract class GeneralKeyboardIME(
         saveConjugateModeType("none")
         currentVerbForConjugation = null
         selectedConjugationSubCategory = null
+        keyboardViewModel.setPromptText("")
+        keyboardViewModel.setCommandBarText("")
+        keyboardViewModel.updateConjugateData(null, null, null)
         refreshUI()
     }
 
@@ -681,12 +701,24 @@ abstract class GeneralKeyboardIME(
     override fun onTranslateClicked() {
         currentState = ScribeState.TRANSLATE
         saveConjugateModeType("none")
+        keyboardViewModel.setPromptText(
+            HintUtils.getPromptText(ScribeState.TRANSLATE, language, applicationContext, null),
+        )
+        keyboardViewModel.setCommandBarHint(
+            HintUtils.getCommandBarHint(ScribeState.TRANSLATE, language, null),
+        )
         refreshUI()
     }
 
     override fun onConjugateClicked() {
         if (currentState != ScribeState.SELECT_VERB_CONJUNCTION) {
             currentState = ScribeState.CONJUGATE
+            keyboardViewModel.setPromptText(
+                HintUtils.getPromptText(ScribeState.CONJUGATE, language, applicationContext, null),
+            )
+            keyboardViewModel.setCommandBarHint(
+                HintUtils.getCommandBarHint(ScribeState.CONJUGATE, language, null),
+            )
         }
         refreshUI()
     }
@@ -694,6 +726,12 @@ abstract class GeneralKeyboardIME(
     override fun onPluralClicked() {
         currentState = ScribeState.PLURAL
         saveConjugateModeType("none")
+        keyboardViewModel.setPromptText(
+            HintUtils.getPromptText(ScribeState.PLURAL, language, applicationContext, null),
+        )
+        keyboardViewModel.setCommandBarHint(
+            HintUtils.getCommandBarHint(ScribeState.PLURAL, language, null),
+        )
         if (language == "German") setShifted(SHIFT_ON_ONE_CHAR)
         refreshUI()
     }
@@ -709,8 +747,12 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun onSuggestionClicked(suggestion: String) {
-        currentInputConnection?.commitText("$suggestion ", 1)
-        moveToIdleState()
+        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
+            commitText(suggestion)
+        } else {
+            currentInputConnection?.commitText("$suggestion ", 1)
+            moveToIdleState()
+        }
     }
 
     fun getCurrentEnterKeyType(): Int = enterKeyType
@@ -751,6 +793,7 @@ abstract class GeneralKeyboardIME(
                 val (key, values) = matchingEntry
                 if (values.size > 1) {
                     selectedConjugationSubCategory = key
+                    keyboardViewModel.updateConjugateData(conjugateOutput, selectedConjugationSubCategory, currentVerbForConjugation)
                     refreshUI()
                     return
                 }
@@ -877,6 +920,7 @@ abstract class GeneralKeyboardIME(
                 saveConjugateModeType(language)
                 ScribeState.SELECT_VERB_CONJUNCTION
             }
+        keyboardViewModel.updateConjugateData(conjugateOutput, selectedConjugationSubCategory, currentVerbForConjugation)
         refreshUI()
     }
 
@@ -1613,8 +1657,7 @@ abstract class GeneralKeyboardIME(
                         .getBaseAutoSuggestions(language)
                 val default1 = baseSuggestions.getOrNull(0) ?: ""
                 val default2 = baseSuggestions.getOrNull(1) ?: ""
-                setSuggestionButton(uiManager.binding.conjugateBtn, default1)
-                uiManager.pluralBtn?.let { setSuggestionButton(it, default2) }
+                keyboardViewModel.setSuggestions(null, default1, default2)
             }
             return
         }
@@ -1819,7 +1862,7 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    override fun onClipboardSuggestionClicked() {
+    fun onClipboardSuggestionClicked() {
         latestClipText?.let { text ->
             currentInputConnection?.commitText(text, 1)
         }

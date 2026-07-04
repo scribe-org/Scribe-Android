@@ -7,6 +7,15 @@
 .idea
 *.iml
 .venv
+.vscode/
+.kotlin/
+
+# Python helper/debug artifacts
+########################
+__pycache__/
+*.pyc
+check_braces*.py
+
 # Gradle and build files
 ########################
 app/.cxx

@@ -32,17 +32,20 @@ class ConjugateDataManager(
         yamlData: DataContract?,
         word: String,
     ): MutableMap<String, MutableMap<String, Collection<String>>>? {
+        val db = fileManager.getConjugateDatabase(language) ?: return null
         val finalOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
-        yamlData?.conjugations?.values?.forEach { tenseGroup ->
-            val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
-            tenseGroup.tenses.values.forEach { conjugationCategory ->
-                val forms =
-                    conjugationCategory.tenseForms.values.map { form ->
-                        getTheValueForTheConjugateWord(word.lowercase(), form.value, language)
-                    }
-                conjugateForms[conjugationCategory.tenseTitle] = forms
+        db.use { database ->
+            yamlData?.conjugations?.values?.forEach { tenseGroup ->
+                val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
+                tenseGroup.tenses.values.forEach { conjugationCategory ->
+                    val forms =
+                        conjugationCategory.tenseForms.values.map { form ->
+                            getTheValueForTheConjugateWord(word.lowercase(), form.value, language, database)
+                        }
+                    conjugateForms[conjugationCategory.tenseTitle] = forms
+                }
+                finalOutput[tenseGroup.sectionTitle] = conjugateForms
             }
-            finalOutput[tenseGroup.sectionTitle] = conjugateForms
         }
         return if (finalOutput.isEmpty() || finalOutput.values.all { it.isEmpty() || it.values.all { forms -> forms.all { it.isEmpty() } } }) {
             null
@@ -89,18 +92,17 @@ class ConjugateDataManager(
         word: String,
         form: String?,
         language: String,
+        db: SQLiteDatabase,
     ): String {
         if (form.isNullOrEmpty()) return ""
-        return fileManager.getConjugateDatabase(language)?.use { db ->
-            if (!db.tableExists("verbs")) {
-                return ""
-            }
+        if (!db.tableExists("verbs")) {
+            return ""
+        }
 
-            val columnName = db.getInfinitiveColumnName() ?: return ""
+        val columnName = db.getInfinitiveColumnName() ?: return ""
 
-            getVerbCursor(db, word, columnName)?.use { cursor ->
-                getConjugatedValueFromCursor(cursor, form, language)
-            }
+        return getVerbCursor(db, word, columnName)?.use { cursor ->
+            getConjugatedValueFromCursor(cursor, form, language, db)
         } ?: ""
     }
 
@@ -138,9 +140,10 @@ class ConjugateDataManager(
         cursor: Cursor,
         form: String,
         language: String,
+        db: SQLiteDatabase,
     ): String =
         if (form.contains("[")) {
-            parseComplexForm(cursor, form, language)
+            parseComplexForm(cursor, form, language, db)
         } else {
             try {
                 cursor.getString(getColumnIndexWithFallback(cursor, form))
@@ -164,6 +167,7 @@ class ConjugateDataManager(
         cursor: Cursor,
         form: String,
         language: String,
+        db: SQLiteDatabase,
     ): String {
         val bracketRegex = Regex("""\[(.*?)]""")
         val match = bracketRegex.find(form) ?: return ""
@@ -182,37 +186,42 @@ class ConjugateDataManager(
                 val auxColumn = words.last()
 
                 // Check if this column exists and get the auxiliary verb (e.g. "haben").
-                val auxVerbIndex = cursor.getColumnIndex(auxColumn)
-                require(auxVerbIndex != -1) { "Column $auxColumn not found" }
-                val verbType = cursor.getString(auxVerbIndex)
+                val auxColumnIndex = cursor.getColumnIndex(auxColumn)
+                require(auxColumnIndex != -1) { "Column $auxColumn not found" }
+                val verbType = cursor.getString(auxColumnIndex)
 
                 val targetForm = words.first()
 
-                val db = fileManager.getConjugateDatabase(language = language)
                 var auxResult = ""
 
                 val auxCursor =
-                    db?.rawQuery(
+                    db.rawQuery(
                         "SELECT $targetForm FROM verbs WHERE wdLexemeId = ?",
                         arrayOf(verbType),
                     )
 
-                if (auxCursor?.moveToFirst() == true) {
-                    auxResult = auxCursor.getString(0)
-                } else {
+                val found = auxCursor.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        auxResult = cursor.getString(0)
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+                if (!found) {
                     // Fallback case: Maybe it stores the infinitive.
-                    auxCursor?.close()
                     val auxCursor2 =
-                        db?.rawQuery(
+                        db.rawQuery(
                             "SELECT $targetForm FROM verbs WHERE infinitive = ?",
                             arrayOf(verbType),
                         )
-                    if (auxCursor2?.moveToFirst() == true) {
-                        auxResult = auxCursor2.getString(0)
+                    auxCursor2.use { cursor2 ->
+                        if (cursor2.moveToFirst()) {
+                            auxResult = cursor2.getString(0)
+                        }
                     }
-                    auxCursor2?.close()
                 }
-                auxCursor?.close()
 
                 if (auxResult.isNotEmpty()) {
                     "$auxResult $verbPart".trim()

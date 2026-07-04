@@ -1,5 +1,7 @@
 package be.scri.ui.compose
 
+import androidx.compose.ui.platform.LocalContext
+import be.scri.helpers.PreferencesHelper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,18 +24,21 @@ import be.scri.R
 fun InfoWikiBanner(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
     val invalidTexts by viewModel.invalidInfoTexts.collectAsState()
     
-    var currentPage by remember { mutableIntStateOf(0) }
-    
-    // Ensure we don't go out of bounds if texts change
-    if (currentPage >= invalidTexts.size && invalidTexts.isNotEmpty()) {
-        currentPage = 0
-    }
+    var currentPage by remember(invalidTexts) { mutableIntStateOf(0) }
+
+    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val bgColor = if (isDarkMode) Color(0xFF282828) else Color(0xFFEBEBEB)
+    val textColor = if (isDarkMode) Color.White else Color.Black
+    val arrowColor = if (isDarkMode) Color.White else Color.Black
+    val closeBtnBg = if (isDarkMode) Color(0xFF404040) else Color.LightGray
+    val dotActive = if (isDarkMode) Color.White else Color.Black
+    val dotInactive = if (isDarkMode) Color.DarkGray else Color.Gray
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(250.dp) // Standard keyboard height approx
-            .background(Color(0xFFEBEBEB))
+            .background(bgColor)
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -60,7 +65,7 @@ fun InfoWikiBanner(viewModel: KeyboardViewModel, actionListener: KeyboardActionL
                     if (currentPage > 0) {
                         Text(
                             text = "❮",
-                            color = Color.Black,
+                            color = arrowColor,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -77,7 +82,7 @@ fun InfoWikiBanner(viewModel: KeyboardViewModel, actionListener: KeyboardActionL
                     if (invalidTexts.isNotEmpty()) {
                         Text(
                             text = invalidTexts[currentPage],
-                            color = Color.Black,
+                            color = textColor,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center
@@ -105,7 +110,7 @@ fun InfoWikiBanner(viewModel: KeyboardViewModel, actionListener: KeyboardActionL
                     if (currentPage < invalidTexts.size - 1) {
                         Text(
                             text = "❯",
-                            color = Color.Black,
+                            color = arrowColor,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -125,7 +130,7 @@ fun InfoWikiBanner(viewModel: KeyboardViewModel, actionListener: KeyboardActionL
                             modifier = Modifier
                                 .size(8.dp)
                                 .clip(CircleShape)
-                                .background(if (i == currentPage) Color.Black else Color.Gray)
+                                .background(if (i == currentPage) dotActive else dotInactive)
                         )
                     }
                 }
@@ -135,11 +140,11 @@ fun InfoWikiBanner(viewModel: KeyboardViewModel, actionListener: KeyboardActionL
             Box(
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .background(Color.LightGray, CircleShape)
+                    .background(closeBtnBg, CircleShape)
                     .clickable { viewModel.setInvalidInfoVisible(false) }
                     .padding(horizontal = 24.dp, vertical = 8.dp)
             ) {
-                Text(text = "Close Info", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text(text = "Close Info", color = textColor, fontWeight = FontWeight.Bold)
             }
         }
     }

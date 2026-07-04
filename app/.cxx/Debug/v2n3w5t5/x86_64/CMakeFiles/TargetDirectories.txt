@@ -1,3 +1,0 @@
-C:/Wikimedia hackathon/Scribe-Android/app/.cxx/Debug/v2n3w5t5/x86_64/CMakeFiles/jni_latinime.dir
-C:/Wikimedia hackathon/Scribe-Android/app/.cxx/Debug/v2n3w5t5/x86_64/CMakeFiles/edit_cache.dir
-C:/Wikimedia hackathon/Scribe-Android/app/.cxx/Debug/v2n3w5t5/x86_64/CMakeFiles/rebuild_cache.dir

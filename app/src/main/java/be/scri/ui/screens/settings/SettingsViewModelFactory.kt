@@ -15,7 +15,7 @@ class SettingsViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return SettingsViewModel(context) as T
+            return SettingsViewModel(context.applicationContext) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -1,5 +1,7 @@
 package be.scri.ui.compose
 
+import androidx.compose.ui.platform.LocalContext
+import be.scri.helpers.PreferencesHelper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,11 +28,14 @@ fun TopBarSection(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
     val isNumeric by viewModel.isNumericKeyboardActive.collectAsState()
     val hasLanguageData by viewModel.hasLanguageData.collectAsState()
 
+    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val bgColor = if (isDarkMode) Color(0xFF2C2C2E) else Color(0xFFD1D4DB)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
-            .background(Color(0xFFEBEBEB)) // Toolbar background
+            .background(bgColor) // Toolbar background matching keyboard
     ) {
         if (!hasLanguageData) {
             EmptyStateBanner()
@@ -48,6 +54,10 @@ fun TopBarSection(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
 
 @Composable
 fun EmptyStateBanner() {
+    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val textColor = if (isDarkMode) Color.White else Color.Black
+    val iconTint = if (isDarkMode) Color.White else Color.Black
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -59,12 +69,12 @@ fun EmptyStateBanner() {
             Icon(
                 painter = painterResource(id = R.drawable.clouddownload_keyboard),
                 contentDescription = null,
-                tint = Color.Black,
+                tint = iconTint,
                 modifier = Modifier.padding(end = 4.dp).size(24.dp)
             )
             Text(
                 text = "Please download language data",
-                color = Color.Black,
+                color = textColor,
                 fontSize = 16.sp
             )
         }
@@ -78,6 +88,10 @@ fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListe
     val s3 by viewModel.suggestion3.collectAsState()
     val emojis by viewModel.emojiSuggestions.collectAsState()
     
+    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val dividerColor = if (isDarkMode) Color(0xFF48484A) else Color(0xFFB8B8BC)
+    val scribeBtnBg = if (isDarkMode) Color(0xFF3366CC) else Color(0xFF005FFF)
+
     Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
@@ -88,7 +102,7 @@ fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListe
                 .width(56.dp)
                 .fillMaxHeight()
                 .padding(vertical = 4.dp, horizontal = 4.dp)
-                .background(Color(0xFF005FFF), RoundedCornerShape(8.dp))
+                .background(scribeBtnBg, RoundedCornerShape(8.dp))
                 .clickable { actionListener.onScribeKeyOptionsClicked() },
             contentAlignment = Alignment.Center
         ) {
@@ -100,7 +114,7 @@ fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListe
             )
         }
         
-        Divider(modifier = Modifier.width(1.dp).fillMaxHeight(0.8f).background(Color.LightGray))
+        VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
         
         if (emojis.isNotEmpty()) {
             // Suggestion 1
@@ -109,7 +123,7 @@ fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListe
                 else if (s1 != null) actionListener.onSuggestionClicked(s1!!)
             }
             
-            Divider(modifier = Modifier.width(1.dp).fillMaxHeight(0.8f).background(Color.LightGray))
+            VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
             
             // Suggestion 2
             SuggestionButton(text = emojis.getOrNull(1) ?: s2 ?: "", modifier = Modifier.weight(1f)) {
@@ -117,7 +131,7 @@ fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListe
                 else if (s2 != null) actionListener.onSuggestionClicked(s2!!)
             }
             
-            Divider(modifier = Modifier.width(1.dp).fillMaxHeight(0.8f).background(Color.LightGray))
+            VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
             
             // Suggestion 3
             SuggestionButton(text = emojis.getOrNull(2) ?: s3 ?: "", modifier = Modifier.weight(1f)) {
@@ -130,14 +144,14 @@ fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListe
                 if (s1 != null) actionListener.onSuggestionClicked(s1!!)
             }
             
-            Divider(modifier = Modifier.width(1.dp).fillMaxHeight(0.8f).background(Color.LightGray))
+            VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
             
             // Suggestion 2
             SuggestionButton(text = s2 ?: "", modifier = Modifier.weight(1f)) {
                 if (s2 != null) actionListener.onSuggestionClicked(s2!!)
             }
             
-            Divider(modifier = Modifier.width(1.dp).fillMaxHeight(0.8f).background(Color.LightGray))
+            VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
             
             // Suggestion 3
             SuggestionButton(text = s3 ?: "", modifier = Modifier.weight(1f)) {
@@ -149,17 +163,23 @@ fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListe
 
 @Composable
 fun SelectCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
+    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val closeBtnBg = if (isDarkMode) Color(0xFF3366CC) else Color(0xFF005FFF)
+
     Row(
-        modifier = Modifier.fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         // Close Key
         Box(
             modifier = Modifier
-                .width(56.dp)
+                .width(48.dp)
                 .fillMaxHeight()
-                .padding(vertical = 4.dp, horizontal = 4.dp)
-                .background(Color(0xFF005FFF), RoundedCornerShape(8.dp))
+                .padding(vertical = 5.dp)
+                .background(closeBtnBg, RoundedCornerShape(8.dp))
                 .clickable { actionListener.onCloseClicked() },
             contentAlignment = Alignment.Center
         ) {
@@ -167,28 +187,34 @@ fun SelectCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                 painter = painterResource(id = R.drawable.close),
                 contentDescription = "Close",
                 tint = Color.White,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
         
-        Divider(modifier = Modifier.width(1.dp).fillMaxHeight(0.8f).background(Color.LightGray))
-        
-        // Translate
-        SuggestionButton(text = "Translate", modifier = Modifier.weight(1f)) {
+        // Translate button with background box
+        CommandButton(
+            text = "Translate",
+            isDarkMode = isDarkMode,
+            modifier = Modifier.weight(1f)
+        ) {
             actionListener.onTranslateClicked()
         }
         
-        Divider(modifier = Modifier.width(1.dp).fillMaxHeight(0.8f).background(Color.LightGray))
-        
-        // Conjugate
-        SuggestionButton(text = "Conjugate", modifier = Modifier.weight(1f)) {
+        // Conjugate button with background box
+        CommandButton(
+            text = "Conjugate",
+            isDarkMode = isDarkMode,
+            modifier = Modifier.weight(1f)
+        ) {
             actionListener.onConjugateClicked()
         }
         
-        Divider(modifier = Modifier.width(1.dp).fillMaxHeight(0.8f).background(Color.LightGray))
-        
-        // Plural
-        SuggestionButton(text = "Plural", modifier = Modifier.weight(1f)) {
+        // Plural button with background box
+        CommandButton(
+            text = "Plural",
+            isDarkMode = isDarkMode,
+            modifier = Modifier.weight(1f)
+        ) {
             actionListener.onPluralClicked()
         }
     }
@@ -198,7 +224,19 @@ fun SelectCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
 fun ActiveCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
     val promptText by viewModel.promptText.collectAsState()
     val commandText by viewModel.commandBarText.collectAsState()
+    val hintText by viewModel.commandBarHint.collectAsState()
     
+    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val closeBtnBg = if (isDarkMode) Color(0xFF3366CC) else Color(0xFF005FFF)
+    val promptBg = if (isDarkMode) Color(0xFF48484A) else Color(0xFFB8B8BC)
+    val inputBg = if (isDarkMode) Color(0xFF3A3A3C) else Color.White
+    val textColor = if (isDarkMode) Color.White else Color.Black
+    val promptTextColor = if (isDarkMode) Color.White else Color.Black
+    val hintTextColor = if (isDarkMode) Color(0xFF8E8E93) else Color.Gray
+    
+    val displayText = if (commandText.isEmpty()) hintText ?: "" else commandText
+    val displayColor = if (commandText.isEmpty()) hintTextColor else textColor
+
     Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
@@ -209,7 +247,7 @@ fun ActiveCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                 .width(56.dp)
                 .fillMaxHeight()
                 .padding(vertical = 4.dp, horizontal = 4.dp)
-                .background(Color(0xFF005FFF), RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp))
+                .background(closeBtnBg, RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp))
                 .clickable { actionListener.onScribeKeyToolbarClicked() },
             contentAlignment = Alignment.Center
         ) {
@@ -226,11 +264,11 @@ fun ActiveCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(vertical = 4.dp)
-                .background(Color.LightGray)
+                .background(promptBg)
                 .padding(horizontal = 8.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = promptText, color = Color.Black, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            Text(text = promptText, color = promptTextColor, fontSize = 16.sp, fontWeight = FontWeight.Medium)
         }
         
         // Input Text
@@ -239,17 +277,21 @@ fun ActiveCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                 .weight(1f)
                 .fillMaxHeight()
                 .padding(vertical = 4.dp, horizontal = 4.dp)
-                .background(Color.White, RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp))
+                .background(inputBg, RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp))
                 .padding(start = 8.dp),
             contentAlignment = Alignment.CenterStart
         ) {
-            Text(text = commandText, color = Color.Black, fontSize = 16.sp)
+            Text(text = displayText, color = displayColor, fontSize = 16.sp)
         }
     }
 }
 
 @Composable
 fun InvalidTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
+    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val closeBtnBg = if (isDarkMode) Color(0xFF3366CC) else Color(0xFF005FFF)
+    val inputBg = if (isDarkMode) Color(0xFF3A3A3C) else Color.White
+    
     Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
@@ -260,7 +302,7 @@ fun InvalidTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
                 .width(56.dp)
                 .fillMaxHeight()
                 .padding(vertical = 4.dp, horizontal = 4.dp)
-                .background(Color(0xFF005FFF), RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp))
+                .background(closeBtnBg, RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp))
                 .clickable { actionListener.onCloseClicked() },
             contentAlignment = Alignment.Center
         ) {
@@ -278,7 +320,7 @@ fun InvalidTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
                 .weight(1f)
                 .fillMaxHeight()
                 .padding(vertical = 4.dp, horizontal = 4.dp)
-                .background(Color.White, RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp))
+                .background(inputBg, RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp))
                 .padding(start = 8.dp),
             contentAlignment = Alignment.CenterStart
         ) {
@@ -287,8 +329,49 @@ fun InvalidTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
     }
 }
 
+/**
+ * Command button with a rounded background box (GBoard-style).
+ * Used for Translate, Conjugate, Plural in the SELECT_COMMAND state.
+ */
+@Composable
+fun CommandButton(
+    text: String,
+    isDarkMode: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val bgColor = if (isDarkMode) Color(0xFF4A4A4E) else Color(0xFFFFFFFF)
+    val textColor = if (isDarkMode) Color.White else Color.Black
+
+    Box(
+        modifier = modifier
+            .fillMaxHeight()
+            .padding(vertical = 5.dp)
+            .shadow(
+                elevation = 1.dp,
+                shape = RoundedCornerShape(8.dp),
+                clip = false
+            )
+            .background(bgColor, RoundedCornerShape(8.dp))
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
 @Composable
 fun SuggestionButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val textColor = if (isDarkMode) Color.White else Color.Black
+
     Box(
         modifier = modifier
             .fillMaxHeight()
@@ -297,7 +380,7 @@ fun SuggestionButton(text: String, modifier: Modifier = Modifier, onClick: () ->
     ) {
         Text(
             text = text,
-            color = Color.Black,
+            color = textColor,
             fontSize = 18.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

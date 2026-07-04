@@ -90,6 +90,7 @@ fun ConjugationSelectionScreen(
             if (contract != null) {
                 val fileManager = DatabaseFileManager(context)
                 val manager = ConjugateDataManager(fileManager)
+                val db = fileManager.getLanguageDatabase(languageAlias) ?: return@withContext
 
                 val structuredData = mutableMapOf<String, MutableMap<String, List<Pair<String, String>>>>()
                 contract.conjugations.values.forEach { tenseGroup ->
@@ -98,7 +99,7 @@ fun ConjugationSelectionScreen(
                         val pairs =
                             conjugationCategory.tenseForms.values
                                 .map { form ->
-                                    val resolvedForm = manager.getTheValueForTheConjugateWord(verb.lowercase(), form.value, languageAlias)
+                                    val resolvedForm = manager.getTheValueForTheConjugateWord(verb.lowercase(), form.value, languageAlias, db)
                                     form.label to resolvedForm
                                 }.filter { it.second.isNotEmpty() }
                         if (pairs.isNotEmpty()) {

@@ -11,7 +11,7 @@ class AutoSuggestionDataManager(
 ) {
     fun getSuggestions(language: String): HashMap<String, List<String>> {
         val db = fileManager.getLanguageDatabase(language) ?: return hashMapOf()
-        return processAllSuggestions(db)
+        return db.use { processAllSuggestions(it) }
     }
 
     private fun processAllSuggestions(db: SQLiteDatabase): HashMap<String, List<String>> {
