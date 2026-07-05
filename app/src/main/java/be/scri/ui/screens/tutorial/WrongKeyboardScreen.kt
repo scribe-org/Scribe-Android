@@ -2,7 +2,6 @@
 
 package be.scri.ui.screens.tutorial
 
-import be.scri.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import be.scri.R
 
 /**
  * Screen displayed when the user has a non-Scribe keyboard active during the tutorial.

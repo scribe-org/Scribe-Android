@@ -4,7 +4,6 @@ package be.scri.ui.screens.tutorial
 
 import android.content.Context
 import android.provider.Settings
-import be.scri.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import be.scri.R
 import kotlinx.coroutines.delay
 
 /**
