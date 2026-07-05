@@ -680,13 +680,14 @@ class KeyboardBase {
                 val commaIdxInRow = row.mKeys.indexOf(commaKey)
 
                 if (commaIdxInList != -1 && commaIdxInRow != -1) {
-                    clipKey.x = commaKey.x + commaKey.width + commaKey.gap
+                    clipKey.x = commaKey.x
                     clipKey.y = commaKey.y
 
-                    spaceKey.x = clipKey.x + clipKey.width + clipKey.gap
+                    commaKey.x = clipKey.x + clipKey.width + clipKey.gap
+                    spaceKey.x = commaKey.x + commaKey.width + commaKey.gap
 
-                    mKeys!!.add(commaIdxInList + 1, clipKey)
-                    row.mKeys.add(commaIdxInRow + 1, clipKey)
+                    mKeys!!.add(commaIdxInList, clipKey)
+                    row.mKeys.add(commaIdxInRow, clipKey)
                 }
             }
         }
