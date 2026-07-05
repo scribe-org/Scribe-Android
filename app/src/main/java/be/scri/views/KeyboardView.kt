@@ -4,7 +4,6 @@ package be.scri.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -598,10 +597,9 @@ class KeyboardView
                         mBackgroundColor
                     }
 
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
 
                 val miniKeyboardBackgroundColor =
                     resources.getColor(
@@ -814,10 +812,9 @@ class KeyboardView
                 canvas!!.clipRect(mDirtyRect)
                 val paint = mPaint
                 val keys = mKeys
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
                 val keyBackgroundColor =
                     if (isUserDarkMode) {
                         Color.DKGRAY
@@ -1493,10 +1490,9 @@ class KeyboardView
                             .findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
                 }
 
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
 
                 val miniKeyboardBackgroundColor =
                     resources.getColor(

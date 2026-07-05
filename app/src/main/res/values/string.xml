@@ -121,6 +121,7 @@
     <string name="i18n.app.keyboard.tutorial.verb_conjugation">Verb conjugation</string>
     <string name="i18n.app.keyboard.tutorial.word_translation">Word translation</string>
     <string name="i18n.app.settings.button_install_keyboards">Install keyboards</string>
+    <string name="i18n.app.settings.cancel">Cancel</string>
     <string name="i18n.app.settings.conjugate_app_hint_tooltip">Settings for the app\'s language and interface are found here.</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Annotate suggest/complete</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Underline suggestions and completions to show their genders as you type.</string>
@@ -176,6 +177,9 @@
     <string name="i18n.app.settings.menu.increase_text_size">Increase app text size</string>
     <string name="i18n.app.settings.menu.increase_text_size_description">Increase the size of menu texts for better readability.</string>
     <string name="i18n.app.settings.menu.title">App settings</string>
+    <string name="i18n.app.settings.ok">OK</string>
+    <string name="i18n.app.settings.theme_override_message">You are selecting a theme that goes against your system default. Are you sure you want to proceed?</string>
+    <string name="i18n.app.settings.theme_override_title">Theme override</string>
     <string name="i18n.app.settings.title">Settings</string>
     <string name="i18n.app.settings.translation">Translation</string>
     <string name="i18n.app.share.conjugate.check_out">Check out Scribe Conjugate!</string>
