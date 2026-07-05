@@ -4,7 +4,7 @@
     <Row>
         <Key
             app:keyEdgeFlags="left"
-            app:horizontalGap = "1%"
+            app:horizontalGap="1%"
             app:keyLabel="q"
             app:keyWidth="9.85%p"
             app:popupCharacters="1"
@@ -68,7 +68,7 @@
     <Row>
         <Key
             app:keyLabel="a"
-            app:horizontalGap = "7%"
+            app:horizontalGap="7%"
             app:keyWidth="9.75%p"
             app:popupCharacters="âàáæãåā"
             app:popupKeyboard="@xml/keyboard_popup_template" />
