@@ -309,8 +309,8 @@ abstract class GeneralKeyboardIME(
                     // push app content up or render IME chrome (∨ / 🌐 buttons)
                     // below the card. The touchable region is restricted to the
                     // card bounds so taps outside reach the underlying app.
-                    outInsets.visibleTopInsets = 0
-                    outInsets.contentTopInsets = 0
+                    outInsets.visibleTopInsets = inputView.height
+                    outInsets.contentTopInsets = inputView.height
                     outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_REGION
 
                     val card = binding.keyboardCard

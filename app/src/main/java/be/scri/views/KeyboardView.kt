@@ -1153,7 +1153,8 @@ class KeyboardView
                                 code == KEYCODE_DELETE ||
                                     code == KEYCODE_SHIFT ||
                                     code == KEYCODE_TAB ||
-                                    code == KeyboardBase.KEYCODE_CLIPBOARD
+                                    code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                                    code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
                             if (isIconOnlyKey) {
                                 key.icon!!.applyColorFilter(mTextColor)
                             }
