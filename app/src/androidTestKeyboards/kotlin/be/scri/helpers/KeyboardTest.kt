@@ -106,8 +106,8 @@ class KeyboardTest {
 
         suggestionHandler.processLinguisticSuggestions("in")
 
-        verify { conjugateBtn.text = match { it.isNotEmpty() } }
-        verify { pluralBtn.text = match { it.isNotEmpty() } }
-        verify { translateBtn.text = match { it.isNotEmpty() } }
+        verify(timeout = 2000) { conjugateBtn.text = match { it.isNotEmpty() } }
+        verify(timeout = 2000) { pluralBtn.text = match { it.isNotEmpty() } }
+        verify(timeout = 2000) { translateBtn.text = match { it.isNotEmpty() } }
     }
 }

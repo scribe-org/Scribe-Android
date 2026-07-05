@@ -2,11 +2,9 @@
 
 package be.scri.helpers
 
-import android.app.UiModeManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 
@@ -247,13 +245,7 @@ object PreferencesHelper {
      * @return The dark mode setting as an integer value (AppCompatDelegate.MODE_NIGHT_YES or MODE_NIGHT_NO).
      */
     fun getUserDarkModePreference(context: Context): Int {
-        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
-        val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
-        val isSystemDarkTheme = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
-        if (!sharedPref.contains("dark_mode")) {
-            setLightDarkModePreference(context, isUserDarkMode)
-        }
+        val isUserDarkMode = getIsDarkModeOrNot(context)
         return if (isUserDarkMode) {
             AppCompatDelegate.MODE_NIGHT_YES
         } else {
@@ -370,7 +362,19 @@ object PreferencesHelper {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+
+        val lastSystemTheme = sharedPref.getBoolean("last_system_dark_mode", isSystemDarkMode)
+        var isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+
+        if (!sharedPref.contains("last_system_dark_mode") || lastSystemTheme != isSystemDarkMode) {
+            isUserDarkMode = isSystemDarkMode
+            sharedPref
+                .edit()
+                .putBoolean("dark_mode", isUserDarkMode)
+                .putBoolean("last_system_dark_mode", isSystemDarkMode)
+                .apply()
+        }
+
         return isUserDarkMode
     }
 
