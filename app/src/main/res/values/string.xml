@@ -18,8 +18,6 @@
     <string name="i18n._global.support_scribe">Support Scribe</string>
     <string name="i18n._global.supporters">Supporters</string>
     <string name="i18n._global.trademark_policy">Trademark Policy</string>
-    <string name="i18n.app._global.clipboard">Clipboard</string>
-    <string name="i18n.app._global.copy_to_clipboard">Copy to clipboard</string>
     <string name="i18n.app._global.download_data">Download data</string>
     <string name="i18n.app._global.english">English</string>
     <string name="i18n.app._global.french">French</string>
@@ -60,12 +58,15 @@
     <string name="i18n.app.about.legal.third_party.entry_simple_keyboard">Simple Keyboard\n• Author: Simple Mobile Tools\n• License: GPL-3.0\n• Link: https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE</string>
     <string name="i18n.app.about.legal.third_party.text">The Scribe developers (SCRIBE) built the iOS application "Scribe - Language Keyboards" (SERVICE) using third party code. All source code used in the creation of this SERVICE comes from sources that allow its full use in the manner done so by the SERVICE. This section lists the source code on which the SERVICE was based as well as the coinciding licenses of each.\n\nThe following is a list of all used source code, the main author or authors of the code, the license under which it was released at time of usage, and a link to the license.</string>
     <string name="i18n.app.about.title">About</string>
+    <string name="i18n.app.clipboard.clipboard_is_empty">Clipboard is empty</string>
+    <string name="i18n.app.clipboard.copied_to_clipboard">Copied to clipboard</string>
+    <string name="i18n.app.clipboard.copy_to_clipboard">Copy to clipboard</string>
+    <string name="i18n.app.clipboard.title">Clipboard</string>
     <string name="i18n.app.conjugate.app_hint_tooltip">Download verb data with the menu below to start conjugating verbs.</string>
     <string name="i18n.app.conjugate.choose_conjugation.select_tense">Select tense</string>
     <string name="i18n.app.conjugate.choose_conjugation.title">Choose a conjugation below</string>
     <string name="i18n.app.conjugate.recently_conjugated.title">Recently conjugated</string>
     <string name="i18n.app.conjugate.title">Conjugate</string>
-    <string name="i18n.app.conjugate.verbs_search.copied_to_clipboard">Copied to clipboard</string>
     <string name="i18n.app.conjugate.verbs_search.data_not_in_wikidata">Data not in Wikidata</string>
     <string name="i18n.app.conjugate.verbs_search.placeholder">Search for verbs</string>
     <string name="i18n.app.conjugate.verbs_search.title">Conjugate verbs</string>

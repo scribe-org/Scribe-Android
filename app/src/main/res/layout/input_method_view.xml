@@ -769,7 +769,7 @@
                 android:layout_toEndOf="@+id/clipboard_panel_close"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="@string/i18n.app._global.clipboard"
+                android:text="@string/i18n.app.clipboard.title"
                 android:textColor="@color/text_color"
                 android:textSize="@dimen/big_text_size"
                 android:textStyle="bold" />
@@ -796,24 +796,21 @@
             android:layout_below="@+id/clipboard_panel_top_bar"
             android:background="@color/conjugate_keyboard_color">
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/clipboard_items_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="12dp"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/rounded_all_corners"
-                android:orientation="vertical">
-
-
-
-            </LinearLayout>
+                android:clipToPadding="false"
+                android:padding="@dimen/small_margin"
+                android:scrollbars="vertical" />
 
             <TextView
                 android:id="@+id/clipboard_empty_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Clipboard is empty"
+                android:text="@string/i18n.app.clipboard.clipboard_is_empty"
                 android:textColor="@color/text_color"
                 android:textSize="16sp"
                 android:visibility="gone" />
