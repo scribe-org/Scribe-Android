@@ -1137,8 +1137,15 @@ class KeyboardView
                                 }
                             key.icon = resources.getDrawable(drawableId)
                             key.icon!!.applyColorFilter(mTextColor)
-                        } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_TAB) {
-                            key.icon!!.applyColorFilter(mTextColor)
+                        } else {
+                            val isIconOnlyKey =
+                                code == KEYCODE_DELETE ||
+                                    code == KEYCODE_SHIFT ||
+                                    code == KEYCODE_TAB ||
+                                    code == KeyboardBase.KEYCODE_CLIPBOARD
+                            if (isIconOnlyKey) {
+                                key.icon!!.applyColorFilter(mTextColor)
+                            }
                         }
 
                         // Controls where icons are located on their keys.

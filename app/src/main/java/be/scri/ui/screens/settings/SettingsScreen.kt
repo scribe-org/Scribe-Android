@@ -170,14 +170,14 @@ fun SettingsScreen(
                             showThemeWarningDialog = false
                         },
                     ) {
-                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_app_settings_ok))
+                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_app_settings_option_ok))
                     }
                 },
                 dismissButton = {
                     androidx.compose.material3.TextButton(
                         onClick = { showThemeWarningDialog = false },
                     ) {
-                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_app_settings_cancel))
+                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_app_settings_option_cancel))
                     }
                 },
             )
