@@ -595,19 +595,17 @@ class KeyboardBase {
                                 key.gap = 0
                             }
 
-                            if (!isSearchBar) {
-                                if (key.code == KEYCODE_MODE_CHANGE) {
-                                    key.width = (mDisplayWidth * 0.115).toInt()
-                                } else if (currentRow.mKeys.any { it.code == KEYCODE_FLOAT_TOGGLE }) {
-                                    if (key.code == ','.code) {
-                                        key.width = (mDisplayWidth * 0.1).toInt()
-                                    } else if (key.label == "_") {
-                                        key.width = (mDisplayWidth * 0.1).toInt()
-                                    } else if (key.code == KEYCODE_SPACE) {
-                                        val isLettersLayout = currentRow.mKeys.none { it.label == "_" }
-                                        if (isLettersLayout) {
-                                            key.width = (mDisplayWidth * 0.43).toInt()
-                                        }
+                            if (key.code == KEYCODE_MODE_CHANGE) {
+                                key.width = (mDisplayWidth * 0.115).toInt()
+                            } else if (currentRow.mKeys.any { it.code == KEYCODE_FLOAT_TOGGLE }) {
+                                if (key.code == ','.code && !hideComma) {
+                                    key.width = (mDisplayWidth * 0.1).toInt()
+                                } else if (key.label == "_") {
+                                    key.width = (mDisplayWidth * 0.1).toInt()
+                                } else if (key.code == KEYCODE_SPACE) {
+                                    val isLettersLayout = currentRow.mKeys.none { it.label == "_" }
+                                    if (isLettersLayout) {
+                                        key.width = (mDisplayWidth * 0.43).toInt()
                                     }
                                 }
                             }
@@ -649,7 +647,7 @@ class KeyboardBase {
                         if (x > mMinWidth) {
                             mMinWidth = x
                         }
-                        if (key.code == KEYCODE_MODE_CHANGE && !isSearchBar) {
+                        if (key.code == KEYCODE_MODE_CHANGE) {
                             val floatKey = Key(currentRow!!)
                             floatKey.code = KEYCODE_FLOAT_TOGGLE
                             floatKey.width = (mDisplayWidth * 0.1).toInt()
