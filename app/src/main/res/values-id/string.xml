@@ -8,6 +8,7 @@
     <string name="i18n.app._global.german">Bahasa Jerman</string>
     <string name="i18n.app._global.italian">Bahasa Italia</string>
     <string name="i18n.app._global.portuguese">Bahasa Portugis</string>
+    <string name="i18n.app._global.quick_tutorial">Tutorial singkat</string>
     <string name="i18n.app._global.russian">Bahasa Rusia</string>
     <string name="i18n.app._global.spanish">Bahasa Spanyol</string>
     <string name="i18n.app._global.swedish">Bahasa Swedia</string>
@@ -58,7 +59,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">Periksa data baru</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">Perbarui data secara rutin</string>
     <string name="i18n.app.installation.app_hint_tooltip">Ikuti petunjuk di bawah untuk memasang keyboard Scribe di perangkatmu.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">Tutorial singkat</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">Buka pengaturan keyboard</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">Keyboard</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Buka pengaturan Scribe</string>

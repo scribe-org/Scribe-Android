@@ -96,7 +96,7 @@ fun TutorialHomeScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = stringResource(R.string.i18n_app_installation_button_quick_tutorial),
+            text = stringResource(R.string.i18n_app__global_quick_tutorial),
             color = headerColor,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,

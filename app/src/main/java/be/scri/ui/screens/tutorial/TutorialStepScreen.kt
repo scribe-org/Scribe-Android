@@ -4,6 +4,7 @@ package be.scri.ui.screens.tutorial
 
 import android.content.Context
 import android.provider.Settings
+import be.scri.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -179,7 +181,7 @@ fun TutorialStepScreen(
         if (step.errorMessage.isNotEmpty()) {
             step.errorMessage
         } else {
-            "i18n.app.keyboard.tutorial.not_quite"
+            stringResource(R.string.i18n_app_keyboard_tutorial_not_quite)
         }
 
     Column(
@@ -208,7 +210,7 @@ fun TutorialStepScreen(
                     modifier = Modifier.size(24.dp),
                 )
                 Text(
-                    text = "i18n.app._global.quick_tutorial",
+                    text = stringResource(R.string.i18n_app__global_quick_tutorial),
                     color = headerColor,
                     fontSize = 16.sp,
                 )
@@ -346,7 +348,12 @@ fun TutorialStepScreen(
                     .height(52.dp),
         ) {
             Text(
-                text = if (isLastStep) "i18n.app.keyboard.tutorial.finish_tutorial" else "i18n.app.keyboard.tutorial.next",
+                text =
+                    if (isLastStep) {
+                        stringResource(R.string.i18n_app_keyboard_tutorial_finish_tutorial)
+                    } else {
+                        stringResource(R.string.i18n_app_keyboard_tutorial_next)
+                    },
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
             )

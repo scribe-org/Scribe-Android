@@ -2,6 +2,7 @@
 
 package be.scri.ui.screens.tutorial
 
+import be.scri.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -100,7 +102,7 @@ fun WrongKeyboardScreen(
                     modifier = Modifier.size(24.dp),
                 )
                 Text(
-                    text = "i18n.app._global.quick_tutorial",
+                    text = stringResource(R.string.i18n_app__global_quick_tutorial),
                     color = headerColor,
                     fontSize = 16.sp,
                 )
