@@ -2648,3 +2648,4 @@ private fun Float.coerceInSafe(
     val minVal = if (bound1 < bound2) bound1 else bound2
     val maxVal = if (bound1 > bound2) bound1 else bound2
     return this.coerceIn(minVal, maxVal)
+}
