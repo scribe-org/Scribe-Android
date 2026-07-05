@@ -5,8 +5,10 @@
     android:layout_height="wrap_content"
     android:background="@drawable/clipboard_item_bg"
     android:clickable="true"
+    android:elevation="3dp"
     android:focusable="true"
     android:orientation="vertical"
+    android:outlineProvider="background"
     android:padding="8dp">
 
     <RelativeLayout
