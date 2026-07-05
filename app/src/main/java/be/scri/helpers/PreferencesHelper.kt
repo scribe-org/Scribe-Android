@@ -5,8 +5,6 @@ package be.scri.helpers
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 
