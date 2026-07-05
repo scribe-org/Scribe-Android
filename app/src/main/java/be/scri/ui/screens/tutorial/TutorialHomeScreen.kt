@@ -30,9 +30,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import be.scri.R
 
 /**
  * The tutorial home screen (Screen 0.0 from Figma).
@@ -86,7 +88,7 @@ fun TutorialHomeScreen(
                 modifier = Modifier.size(24.dp),
             )
             Text(
-                text = "i18n.app.about.title",
+                text = stringResource(R.string.i18n_app_about_title),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 16.sp,
             )
@@ -94,7 +96,7 @@ fun TutorialHomeScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "i18n.app.installation.button_quick_tutorial",
+            text = stringResource(R.string.i18n_app_installation_button_quick_tutorial),
             color = headerColor,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
