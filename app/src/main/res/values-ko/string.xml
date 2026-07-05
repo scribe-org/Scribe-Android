@@ -8,6 +8,7 @@
     <string name="i18n.app._global.german">독일어</string>
     <string name="i18n.app._global.italian">이탈리아어</string>
     <string name="i18n.app._global.portuguese">포르투갈어</string>
+    <string name="i18n.app._global.quick_tutorial">빠른 튜토리얼</string>
     <string name="i18n.app._global.russian">러시아어</string>
     <string name="i18n.app._global.spanish">스페인어</string>
     <string name="i18n.app._global.swedish">스웨덴어</string>
@@ -58,7 +59,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">새로운 데이터 확인하기</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">정기적으로 데이터 업데이트히기</string>
     <string name="i18n.app.installation.app_hint_tooltip">아래 지침에 따라 Scribe 키보드를 기기에 설치하세요.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">빠른 튜토리얼</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">키보드 설정 열기</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">키보드</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Scribe 설정 열기</string>

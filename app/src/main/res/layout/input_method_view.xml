@@ -67,7 +67,7 @@
             android:layout_above="@id/emoji_palette_bottom_bar"
             android:layout_below="@+id/emoji_palette_top_bar">
 
-            <be.scri.views.MyRecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/emojis_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

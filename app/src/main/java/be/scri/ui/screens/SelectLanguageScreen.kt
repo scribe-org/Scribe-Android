@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import be.scri.R
+import be.scri.helpers.StringUtils
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.appcomponents.ConfirmationDialog
 
@@ -129,13 +130,20 @@ fun SelectTranslationSourceLanguageScreen(
     }
 
     if (showDialog.value) {
+        val localizedSelectedLang = getDisplayLanguageName(selectedLanguage.value)
+        val localizedSavedLang = getDisplayLanguageName(savedLanguage.value)
         ConfirmationDialog(
             text =
-                "You've changed your source translation language. " +
-                    "Would you like to download new data so that you can translate " +
-                    "from ${selectedLanguage.value}?",
-            textConfirm = "Download data",
-            textChange = "Keep ${savedLanguage.value}",
+                StringUtils.stringResourceWithParams(
+                    R.string.i18n_app_settings_keyboard_translation_change_source_tooltip_download_warning,
+                    localizedSelectedLang,
+                ),
+            textConfirm = stringResource(R.string.i18n_app__global_download_data),
+            textChange =
+                StringUtils.stringResourceWithParams(
+                    R.string.i18n_app_settings_keyboard_translation_change_source_tooltip_keep_source_language,
+                    localizedSavedLang,
+                ),
             onConfirm = {
                 // User confirmed - save the new selection permanently.
                 savedLanguage.value = selectedLanguage.value

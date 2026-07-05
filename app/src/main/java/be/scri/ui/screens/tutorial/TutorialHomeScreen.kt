@@ -30,9 +30,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import be.scri.R
 
 /**
  * The tutorial home screen (Screen 0.0 from Figma).
@@ -73,7 +75,8 @@ fun TutorialHomeScreen(
                 .background(backgroundColor)
                 .padding(16.dp),
     ) {
-        // Back button
+        // MARK: Back Button
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.clickable { onBackPress() },
@@ -85,7 +88,7 @@ fun TutorialHomeScreen(
                 modifier = Modifier.size(24.dp),
             )
             Text(
-                text = "About",
+                text = stringResource(R.string.i18n_app_about_title),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 16.sp,
             )
@@ -93,7 +96,7 @@ fun TutorialHomeScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Quick tutorial",
+            text = stringResource(R.string.i18n_app__global_quick_tutorial),
             color = headerColor,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
@@ -102,7 +105,8 @@ fun TutorialHomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Intro text
+        // MARK: Intro Text
+
         Card(
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(containerColor = cardBackground),
@@ -120,7 +124,8 @@ fun TutorialHomeScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Tutorial chapters header
+        // MARK: Chapter List
+
         Text(
             text = "Tutorial chapters",
             color = textColor,
@@ -130,7 +135,6 @@ fun TutorialHomeScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Chapter list
         Card(
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(containerColor = cardBackground),

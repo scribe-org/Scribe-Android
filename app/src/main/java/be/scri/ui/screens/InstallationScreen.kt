@@ -320,7 +320,7 @@ fun InstallationScreen(
                     ),
             ) {
                 Text(
-                    text = stringResource(R.string.i18n_app_installation_button_quick_tutorial),
+                    text = stringResource(R.string.i18n_app__global_quick_tutorial),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.padding(vertical = Dimensions.PaddingLarge),

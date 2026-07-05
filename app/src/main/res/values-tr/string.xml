@@ -9,6 +9,7 @@
     <string name="i18n.app._global.indonesian">Endonezce</string>
     <string name="i18n.app._global.italian">İtalyanca</string>
     <string name="i18n.app._global.portuguese">Portekizce</string>
+    <string name="i18n.app._global.quick_tutorial">Hızlı eğitim</string>
     <string name="i18n.app._global.russian">Rusça</string>
     <string name="i18n.app._global.spanish">İspanyolca</string>
     <string name="i18n.app._global.swedish">İsveççe</string>
@@ -59,7 +60,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">Yeni verileri kontrol et</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">Veriyi düzenli olarak güncelle</string>
     <string name="i18n.app.installation.app_hint_tooltip">Scribe klavyelerini cihazına yüklemek için aşağıdaki talimatları izleyin.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">Hızlı eğitim</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">Klavye ayarlarını aç</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">Klavye</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Scribe ayarlarını aç</string>

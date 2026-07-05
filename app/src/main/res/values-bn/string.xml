@@ -13,6 +13,7 @@
     <string name="i18n.app._global.german">জার্মান</string>
     <string name="i18n.app._global.italian">ইতালীয়</string>
     <string name="i18n.app._global.portuguese">পর্তুগিজ</string>
+    <string name="i18n.app._global.quick_tutorial">দ্রুত টিউটোরিয়াল</string>
     <string name="i18n.app._global.russian">রুশ</string>
     <string name="i18n.app._global.spanish">স্প্যানিশ</string>
     <string name="i18n.app._global.swedish">সুইডিশ</string>
@@ -63,7 +64,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">নতুন ডেটার জন্য চেক করুন</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">নিয়মিত ডেটা আপডেট করুন</string>
     <string name="i18n.app.installation.app_hint_tooltip">আপনার ডিভাইসে Scribe কীবোর্ড ইনস্টল করতে নিচের নির্দেশনাগুলি অনুসরণ করুন।</string>
-    <string name="i18n.app.installation.button_quick_tutorial">দ্রুত টিউটোরিয়াল</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">কীবোর্ড সেটিংস খুলুন</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">কীবোর্ডসমূহ</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Scribe সেটিংস খুলুন</string>

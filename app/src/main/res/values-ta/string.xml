@@ -14,6 +14,7 @@
     <string name="i18n.app._global.german">ஜெர்மன்</string>
     <string name="i18n.app._global.italian">இத்தாலிய</string>
     <string name="i18n.app._global.portuguese">போர்ச்சுகீஸ்</string>
+    <string name="i18n.app._global.quick_tutorial">விரைவு பயிற்சி</string>
     <string name="i18n.app._global.russian">ரஷ்ய</string>
     <string name="i18n.app._global.spanish">ஸ்பானிஷ்</string>
     <string name="i18n.app._global.swedish">ஸ்வீடிஷ்</string>
@@ -64,7 +65,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">புதிய தரவைச் சரிபார்க்கவும்</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">தரவை வழக்கமாக புதுப்பிக்கவும்</string>
     <string name="i18n.app.installation.app_hint_tooltip">உங்கள் சாధனத்தில் Scribe விசைப்பலகைகளை நிறுவ கீழே உள்ள வழிமுறைகளைப் பின்பற்றுங்கள்.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">விரைவு பயிற்சி</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">விசைப்பலகை அமைப்புகளைத் திறக்கவும்</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">விசைப்பலகைகள்</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Scribe அமைப்புகளைத் திறக்கவும்</string>

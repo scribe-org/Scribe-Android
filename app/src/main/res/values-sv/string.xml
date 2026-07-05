@@ -8,6 +8,7 @@
     <string name="i18n.app._global.german">Tyska</string>
     <string name="i18n.app._global.italian">Italienska</string>
     <string name="i18n.app._global.portuguese">Portugisiska</string>
+    <string name="i18n.app._global.quick_tutorial">Snabb genomgång</string>
     <string name="i18n.app._global.russian">Ryska</string>
     <string name="i18n.app._global.spanish">Spanska</string>
     <string name="i18n.app._global.swedish">Svenska</string>
@@ -58,7 +59,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">Kolla efter ny data</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">Uppdatera regelbundet data</string>
     <string name="i18n.app.installation.app_hint_tooltip">Följ instruktionerna nedan för att installera Scribe-tangentbord på din enhet.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">Snabb genomgång</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">Öppna tangentbords-inställningar</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">Tangentbord</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Öppna Scribe-inställningar</string>

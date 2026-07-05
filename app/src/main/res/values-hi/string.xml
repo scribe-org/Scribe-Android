@@ -14,6 +14,7 @@
     <string name="i18n.app._global.german">जर्मन</string>
     <string name="i18n.app._global.italian">इतालवी</string>
     <string name="i18n.app._global.portuguese">पुर्तगाली</string>
+    <string name="i18n.app._global.quick_tutorial">त्वरित ट्यूटोरियल</string>
     <string name="i18n.app._global.russian">रूसी</string>
     <string name="i18n.app._global.spanish">स्पेनिश</string>
     <string name="i18n.app._global.swedish">स्वीडिश</string>
@@ -64,7 +65,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">नए डेटा की जांच करें</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">नियमित रूप से डेटा अपडेट करें</string>
     <string name="i18n.app.installation.app_hint_tooltip">अपने डिवाइस पर स्क्राइब  कीबोर्ड इंस्टॉल करने के लिए नीचे दिए गए निर्देशों का पालन करें।</string>
-    <string name="i18n.app.installation.button_quick_tutorial">त्वरित ट्यूटोरियल</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">कीबोर्ड सेटिंग्स खोलें</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">कीबोर्ड</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">स्क्राइब  सेटिंग्स खोलें</string>
