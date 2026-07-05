@@ -28,6 +28,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import be.scri.helpers.AppFlavor
+import be.scri.helpers.FlavorProvider
 import be.scri.helpers.PreferencesHelper
 import be.scri.navigation.Screen
 import be.scri.ui.common.appcomponents.HintDialog
@@ -216,6 +218,18 @@ fun ScribeApp(
                                             )
                                         },
                                     )
+                                    HintDialog(
+                                        pagerState = pagerState,
+                                        currentPageIndex = page,
+                                        sharedPrefsKey = "hint_shown_conjugate",
+                                        hintMessageResId = R.string.i18n_app_conjugate_app_hint_tooltip,
+                                        isHintChanged = isHintChanged[page] == true,
+                                        onDismiss = { onDismiss(it) },
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(8.dp),
+                                    )
                                 }
                                 HandleBackPress(pagerState, coroutineScope)
                             }
@@ -241,7 +255,12 @@ fun ScribeApp(
                                         pagerState = pagerState,
                                         currentPageIndex = page,
                                         sharedPrefsKey = "hint_shown_settings",
-                                        hintMessageResId = R.string.i18n_app_settings_app_hint_tooltip,
+                                        hintMessageResId =
+                                            if (FlavorProvider.get() == AppFlavor.CONJUGATE) {
+                                                R.string.i18n_app_settings_conjugate_app_hint_tooltip
+                                            } else {
+                                                R.string.i18n_app_settings_keyboard_app_hint_tooltip
+                                            },
                                         isHintChanged = isHintChanged[page] == true,
                                         onDismiss = { onDismiss(it) },
                                         modifier = Modifier.padding(8.dp),

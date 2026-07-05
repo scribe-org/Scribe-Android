@@ -121,14 +121,18 @@ fun feedbackAndSupportList(
     onTutorialClick: () -> Unit,
     isConjugateApp: Boolean = false,
 ): List<ScribeItem.ExternalLinkItem> =
-    listOf(
-        ScribeItem.ExternalLinkItem(
-            leadingIcon = R.drawable.tutorial,
-            title = R.string.i18n_app_installation_button_quick_tutorial,
-            trailingIcon = R.drawable.right_arrow,
-            url = null,
-            onClick = { onTutorialClick() },
-        ),
+    listOfNotNull(
+        if (!isConjugateApp) {
+            ScribeItem.ExternalLinkItem(
+                leadingIcon = R.drawable.tutorial,
+                title = R.string.i18n_app__global_quick_tutorial,
+                trailingIcon = R.drawable.right_arrow,
+                url = null,
+                onClick = { onTutorialClick() },
+            )
+        } else {
+            null
+        },
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.star,
             title =

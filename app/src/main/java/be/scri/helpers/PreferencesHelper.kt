@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 
@@ -95,13 +96,6 @@ object PreferencesHelper {
                 shouldEnablePeriodOnSpaceBarDoubleTap,
             )
         }
-        Toast
-            .makeText(
-                context,
-                "$language Period on Double Tap of Space Bar " +
-                    if (shouldEnablePeriodOnSpaceBarDoubleTap) "on" else "off",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -123,13 +117,6 @@ object PreferencesHelper {
                 shouldDisableAccentCharacter,
             )
         }
-        Toast
-            .makeText(
-                context,
-                "$language Accent Characters " +
-                    if (shouldDisableAccentCharacter) "off" else "on",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -148,13 +135,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), shouldShowEmojiSuggestions)
         }
-        Toast
-            .makeText(
-                context,
-                "$language Emoji Autosuggestions " +
-                    if (shouldShowEmojiSuggestions) "on" else "off",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -173,13 +153,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), shouldEnablePeriodAndComma)
         }
-        Toast
-            .makeText(
-                context,
-                "$language period and comma on ABC " +
-                    if (shouldEnablePeriodAndComma) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -198,13 +171,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), shouldVibrateOnKeypress)
         }
-        Toast
-            .makeText(
-                context,
-                "$language vibrate on key press " +
-                    if (shouldVibrateOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     fun setSoundOnKeypress(
@@ -216,13 +182,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS, language), shouldSoundOnKeypress)
         }
-        Toast
-            .makeText(
-                context,
-                "$language sound on key press " +
-                    if (shouldSoundOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -241,13 +200,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), shouldShowPopupOnKeypress)
         }
-        Toast
-            .makeText(
-                context,
-                "$language PopUp on Keypress " +
-                    if (shouldShowPopupOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -269,13 +221,6 @@ object PreferencesHelper {
                 shouldEnableWordByWordDeletion,
             )
         }
-        Toast
-            .makeText(
-                context,
-                "$language Word by Word Deletion " +
-                    if (shouldEnableWordByWordDeletion) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -573,13 +518,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), holdForAltKeys)
         }
-        Toast
-            .makeText(
-                context,
-                "$language hold for alternate characters " +
-                    if (holdForAltKeys) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**

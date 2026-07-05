@@ -25,3 +25,13 @@ fun SQLiteDatabase.columnExists(
         }
         false
     }
+
+fun SQLiteDatabase.getInfinitiveColumnName(): String? {
+    val candidates = listOf("infinitive", "verb", "activeInfinitive", "simplePresent")
+    for (candidate in candidates) {
+        if (columnExists("verbs", candidate)) {
+            return candidate
+        }
+    }
+    return null
+}
