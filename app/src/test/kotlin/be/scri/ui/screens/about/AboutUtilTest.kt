@@ -73,7 +73,7 @@ class AboutUtilTest {
 
         assertEquals(6, list.size)
 
-        assertEquals(R.string.i18n_app_installation_button_quick_tutorial, list[0].title)
+        assertEquals(R.string.i18n_app__global_quick_tutorial, list[0].title)
         assertEquals(R.string.i18n_app_about_feedback_rate_scribe, list[1].title)
         assertEquals(R.string.i18n_app_about_feedback_bug_report, list[2].title)
         assertEquals(R.string.i18n_app_about_feedback_send_email, list[3].title)

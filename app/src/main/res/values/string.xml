@@ -26,6 +26,7 @@
     <string name="i18n.app._global.italian">Italian</string>
     <string name="i18n.app._global.norwegian">Norwegian</string>
     <string name="i18n.app._global.portuguese">Portuguese</string>
+    <string name="i18n.app._global.quick_tutorial">Quick tutorial</string>
     <string name="i18n.app._global.russian">Russian</string>
     <string name="i18n.app._global.spanish">Spanish</string>
     <string name="i18n.app._global.swedish">Swedish</string>
@@ -62,6 +63,8 @@
     <string name="i18n.app.conjugate.choose_conjugation.title">Choose a conjugation below</string>
     <string name="i18n.app.conjugate.recently_conjugated.title">Recently conjugated</string>
     <string name="i18n.app.conjugate.title">Conjugate</string>
+    <string name="i18n.app.conjugate.verbs_search.copied_to_clipboard">Copied to clipboard</string>
+    <string name="i18n.app.conjugate.verbs_search.data_not_in_wikidata">Data not in Wikidata</string>
     <string name="i18n.app.conjugate.verbs_search.placeholder">Search for verbs</string>
     <string name="i18n.app.conjugate.verbs_search.title">Conjugate verbs</string>
     <string name="i18n.app.download.error.database">Database error: {error}</string>
@@ -98,7 +101,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">Check for new data</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">Regularly update data</string>
     <string name="i18n.app.installation.app_hint_tooltip">Follow the directions below to install Scribe keyboards on your device.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">Quick tutorial</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">Open keyboard settings</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">Keyboards</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Open Scribe settings</string>
@@ -108,6 +110,16 @@
     <string name="i18n.app.installation.keyboard.text_4">to select keyboards</string>
     <string name="i18n.app.installation.keyboard.title">Keyboard installation</string>
     <string name="i18n.app.installation.title">Installation</string>
+    <string name="i18n.app.keyboard.tutorial.chapters">Tutorial chapters</string>
+    <string name="i18n.app.keyboard.tutorial.description">This quick tutorial will show you how to use Scribe to support writing in your second language.\nMake sure you select the desired Scribe keyboard by pressing 🌐 when typing.</string>
+    <string name="i18n.app.keyboard.tutorial.finish_tutorial">Finish tutorial</string>
+    <string name="i18n.app.keyboard.tutorial.next">Next</string>
+    <string name="i18n.app.keyboard.tutorial.not_quite">Not quite! Try writing {expected_word}.</string>
+    <string name="i18n.app.keyboard.tutorial.noun_annotation">Noun annotation</string>
+    <string name="i18n.app.keyboard.tutorial.noun_plurals">Noun plurals</string>
+    <string name="i18n.app.keyboard.tutorial.start_full_tutorial">Start full tutorial</string>
+    <string name="i18n.app.keyboard.tutorial.verb_conjugation">Verb conjugation</string>
+    <string name="i18n.app.keyboard.tutorial.word_translation">Word translation</string>
     <string name="i18n.app.settings.button_install_keyboards">Install keyboards</string>
     <string name="i18n.app.settings.conjugate_app_hint_tooltip">Settings for the app\'s language and interface are found here.</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Annotate suggest/complete</string>
@@ -166,4 +178,8 @@
     <string name="i18n.app.settings.menu.title">App settings</string>
     <string name="i18n.app.settings.title">Settings</string>
     <string name="i18n.app.settings.translation">Translation</string>
+    <string name="i18n.app.share.conjugate.check_out">Check out Scribe Conjugate!</string>
+    <string name="i18n.app.share.conjugate.share_via">Share Scribe Conjugate via...</string>
+    <string name="i18n.app.share.keyboard.check_out">Check out Scribe!</string>
+    <string name="i18n.app.share.keyboard.share_via">Share Scribe via...</string>
 </resources>

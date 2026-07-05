@@ -392,7 +392,7 @@ private fun TenseGroupGridSection(
                                     ConjugationCell(label = right.first, form = right.second)
                                 }
                             } else {
-                                // Only 1 form in this row -> span full width, no vertical divider
+                                // Only 1 form in this row -> span full width, no vertical divider.
                                 val single = pair[0]
                                 Box(
                                     modifier =
@@ -405,7 +405,7 @@ private fun TenseGroupGridSection(
                             }
                         }
 
-                        // Horizontal Divider (between cell rows)
+                        // Horizontal Divider (between cell rows).
                         if (rowIndex < chunkedForms.lastIndex) {
                             Spacer(
                                 modifier =
@@ -417,7 +417,7 @@ private fun TenseGroupGridSection(
                         }
                     }
 
-                    // Horizontal Divider (between categories)
+                    // Horizontal Divider (between categories).
                     if (catIndex < categories.size - 1) {
                         Spacer(
                             modifier =
@@ -449,7 +449,7 @@ private fun ConjugationCell(
                 .clickable {
                     clipboardManager.setText(AnnotatedString(form))
                     Toast
-                        .makeText(context, "Copied \"$form\" to clipboard", Toast.LENGTH_SHORT)
+                        .makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT)
                         .show()
                 }.padding(horizontal = 12.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.SpaceBetween,

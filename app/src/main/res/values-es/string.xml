@@ -8,6 +8,7 @@
     <string name="i18n.app._global.german">Alemán</string>
     <string name="i18n.app._global.italian">Italiano</string>
     <string name="i18n.app._global.portuguese">Portugués</string>
+    <string name="i18n.app._global.quick_tutorial">Tutorial rápido</string>
     <string name="i18n.app._global.russian">Ruso</string>
     <string name="i18n.app._global.spanish">Español</string>
     <string name="i18n.app._global.swedish">Sueco</string>
@@ -58,7 +59,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">Verificar si hay nuevos datos</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">Actualizar datos periódicamente</string>
     <string name="i18n.app.installation.app_hint_tooltip">Sigue las instrucciones para instalar los teclados Scribe en tu dispositivo.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">Tutorial rápido</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">Abrir los ajustes del teclado</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">Teclados</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Abrir la configuración de Scribe</string>

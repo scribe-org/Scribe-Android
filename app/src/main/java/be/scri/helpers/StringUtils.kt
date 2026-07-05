@@ -43,4 +43,27 @@ object StringUtils {
         }
         return result
     }
+
+    /**
+     * Replaces placeholder variables in a template string with provided parameters.
+     *
+     * This helper function works with template strings that use {variable_name} placeholder syntax,
+     * replacing them in order with the provided parameters.
+     *
+     * @param template The template string (e.g., "Network error: {error}")
+     * @param params Variable number of string parameters to replace placeholders with.
+     *               Placeholders are replaced in the order they appear in the string.
+     *
+     * @return The formatted string with all placeholders replaced by the provided parameters.
+     */
+    fun formatStringWithParams(
+        template: String,
+        vararg params: String,
+    ): String {
+        var result = template
+        params.forEach { param ->
+            result = result.replaceFirst(Regex("""\{[^}]+\}"""), param)
+        }
+        return result
+    }
 }

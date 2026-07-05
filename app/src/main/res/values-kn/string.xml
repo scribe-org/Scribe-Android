@@ -8,6 +8,7 @@
     <string name="i18n.app._global.german">ಜರ್ಮನ್</string>
     <string name="i18n.app._global.italian">ಇಟಾಲಿಯನ್</string>
     <string name="i18n.app._global.portuguese">ಪೋರ್ಚುಗೀಸ್</string>
+    <string name="i18n.app._global.quick_tutorial">ತ್ವರಿತ ಟ್ಯುಟೋರಿಯಲ್</string>
     <string name="i18n.app._global.russian">ರಷ್ಯನ್</string>
     <string name="i18n.app._global.spanish">ಸ್ಪ್ಯಾನಿಷ್</string>
     <string name="i18n.app._global.swedish">ಸ್ವೀಡಿಷ್</string>
@@ -58,7 +59,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">ಹೊಸ ದತ್ತಾಂಶಕ್ಕಾಗಿ ಪರಿಶೀಲಿಸಿ</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">ದತ್ತಾಂಶವನ್ನು ನಿಯಮಿತವಾಗಿ ನವೀಕರಿಸಿ</string>
     <string name="i18n.app.installation.app_hint_tooltip">ನಿಮ್ಮ ಸಾಧನದಲ್ಲಿ Scribe ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲು ಕೆಳಗಿನ ಸೂಚನೆಗಳನ್ನು ಅನುಸರಿಸಿ.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">ತ್ವರಿತ ಟ್ಯುಟೋರಿಯಲ್</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">ಕೀಬೋರ್ಡ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">ಕೀಬೋರ್ಡ್‌ಗಳು</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Scribe ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ</string>
