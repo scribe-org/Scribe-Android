@@ -100,7 +100,7 @@ fun WrongKeyboardScreen(
                     modifier = Modifier.size(24.dp),
                 )
                 Text(
-                    text = "Quick tutorial",
+                    text = "i18n.app._global.quick_tutorial",
                     color = headerColor,
                     fontSize = 16.sp,
                 )

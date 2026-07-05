@@ -179,7 +179,7 @@ fun TutorialStepScreen(
         if (step.errorMessage.isNotEmpty()) {
             step.errorMessage
         } else {
-            "Not quite! Try writing ${step.expectedWord}."
+            "i18n.app.keyboard.tutorial.not_quite"
         }
 
     Column(
@@ -208,7 +208,7 @@ fun TutorialStepScreen(
                     modifier = Modifier.size(24.dp),
                 )
                 Text(
-                    text = "Quick tutorial",
+                    text = "i18n.app._global.quick_tutorial",
                     color = headerColor,
                     fontSize = 16.sp,
                 )
@@ -346,7 +346,7 @@ fun TutorialStepScreen(
                     .height(52.dp),
         ) {
             Text(
-                text = if (isLastStep) "Finish tutorial" else "Next",
+                text = if (isLastStep) "i18n.app.keyboard.tutorial.finish_tutorial" else "i18n.app.keyboard.tutorial.next",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
             )
