@@ -34,6 +34,8 @@ object HintUtils {
             putBoolean("hint_shown_main", false)
             putBoolean("hint_shown_settings", false)
             putBoolean("hint_shown_about", false)
+            putBoolean("swipe_tutorial_shown", false)
+            putBoolean("swipe_tutorial_interactive_shown", false)
             apply()
         }
     }

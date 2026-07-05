@@ -142,6 +142,16 @@ class KeyboardView
              * that don't need delete repeat tracking.
              */
             fun setDeleteRepeating(isRepeating: Boolean) {}
+
+            /**
+             * Triggered when the user swipes left across the keyboard.
+             */
+            fun onSwipeLeft() {}
+
+            /**
+             * Triggered when the user swipes right across the keyboard.
+             */
+            fun onSwipeRight() {}
         }
 
         var mKeyboard: KeyboardBase? = null
@@ -207,6 +217,12 @@ class KeyboardView
         private var mTopSmallNumberMarginHeight = 0f
         private val mSpaceMoveThreshold: Int
         private var ignoreTouches = false
+
+        private var mSwipeActive = false
+        private var mStartX = 0f
+        private var mStartY = 0f
+        private var mLastSwipeX = 0f
+        private var mSwipeAccumulatedDelta = 0f
 
         var mKeyLabel: String = "He"
 
@@ -329,6 +345,8 @@ class KeyboardView
             private const val KEY_HEIGHT = 100
             private var leftShiftForLabel = 0
             private const val LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT = 340
+            private const val SWIPE_THRESHOLD = 80f
+            private const val SWIPE_STEP_PX = 45f
         }
 
         var setPreview: Boolean = true
@@ -1464,6 +1482,14 @@ class KeyboardView
                             override fun commitPeriodAfterSpace() {
                                 mOnKeyboardActionListener!!.commitPeriodAfterSpace()
                             }
+
+                            override fun onSwipeLeft() {
+                                mOnKeyboardActionListener?.onSwipeLeft()
+                            }
+
+                            override fun onSwipeRight() {
+                                mOnKeyboardActionListener?.onSwipeRight()
+                            }
                         }
 
                     val keyboard =
@@ -1695,8 +1721,9 @@ class KeyboardView
             val eventTime = me.eventTime
             val keyIndex = getPressedKeyIndex(touchX, touchY)
 
-            // Ignore all motion events until a DOWN.
-            if (mAbortKey && action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_CANCEL) {
+            // Ignore all motion events until a DOWN, unless a swipe gesture is active.
+            val isIgnoredAction = action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_CANCEL
+            if (mAbortKey && !mSwipeActive && isIgnoredAction) {
                 handled = true
             }
 
@@ -1730,6 +1757,11 @@ class KeyboardView
                         handled = true
                     }
                     MotionEvent.ACTION_DOWN -> {
+                        mStartX = me.x
+                        mStartY = me.y
+                        mLastSwipeX = me.x
+                        mSwipeAccumulatedDelta = 0f
+                        mSwipeActive = false
                         mAbortKey = false
                         mLastCodeX = touchX
                         mLastCodeY = touchY
@@ -1777,6 +1809,46 @@ class KeyboardView
                         }
                     }
                     MotionEvent.ACTION_MOVE -> {
+                        val dx = me.x - mStartX
+                        val dy = me.y - mStartY
+                        if (!mSwipeActive) {
+                            if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy) * 2) {
+                                mSwipeActive = true
+                                mHandler?.removeMessages(MSG_LONGPRESS)
+                                mAbortKey = true
+                                showPreview(NOT_A_KEY)
+                                if (mRepeatKeyIndex != NOT_A_KEY) {
+                                    mHandler?.removeMessages(MSG_REPEAT)
+                                    if (mKeys.getOrNull(mRepeatKeyIndex)?.code == KEYCODE_DELETE) {
+                                        mOnKeyboardActionListener?.setDeleteRepeating(false)
+                                    }
+                                    mRepeatKeyIndex = NOT_A_KEY
+                                }
+                                mLastSwipeX = me.x
+                            }
+                        }
+
+                        if (mSwipeActive) {
+                            val deltaX = me.x - mLastSwipeX
+                            mSwipeAccumulatedDelta += deltaX
+                            mLastSwipeX = me.x
+
+                            while (mSwipeAccumulatedDelta <= -SWIPE_STEP_PX) {
+                                mOnKeyboardActionListener?.onSwipeLeft()
+                                vibrateIfNeeded()
+                                mSwipeAccumulatedDelta += SWIPE_STEP_PX
+                            }
+
+                            while (mSwipeAccumulatedDelta >= SWIPE_STEP_PX) {
+                                mOnKeyboardActionListener?.onSwipeRight()
+                                vibrateIfNeeded()
+                                mSwipeAccumulatedDelta -= SWIPE_STEP_PX
+                            }
+
+                            mLastMoveTime = eventTime
+                            return true
+                        }
+
                         var continueLongPress = false
                         if (keyIndex != NOT_A_KEY) {
                             if (mCurrentKey == NOT_A_KEY) {
@@ -1830,6 +1902,20 @@ class KeyboardView
                         }
                     }
                     MotionEvent.ACTION_UP -> {
+                        if (mSwipeActive) {
+                            mSwipeActive = false
+                            mLastSpaceMoveX = 0
+                            removeMessages()
+                            showPreview(NOT_A_KEY)
+                            if (mRepeatKeyIndex != NOT_A_KEY && mKeys.getOrNull(mRepeatKeyIndex)?.code == KEYCODE_DELETE) {
+                                mOnKeyboardActionListener?.setDeleteRepeating(false)
+                            }
+                            mRepeatKeyIndex = NOT_A_KEY
+                            mOnKeyboardActionListener!!.onActionUp()
+                            mIsLongPressingSpace = false
+                            return true
+                        }
+
                         mLastSpaceMoveX = 0
                         removeMessages()
                         if (keyIndex == mCurrentKey) {
@@ -1880,6 +1966,21 @@ class KeyboardView
                         mIsLongPressingSpace = false
                     }
                     MotionEvent.ACTION_CANCEL -> {
+                        if (mSwipeActive) {
+                            mSwipeActive = false
+                            mIsLongPressingSpace = false
+                            mLastSpaceMoveX = 0
+                            if (mRepeatKeyIndex != NOT_A_KEY && mKeys.getOrNull(mRepeatKeyIndex)?.code == KEYCODE_DELETE) {
+                                mOnKeyboardActionListener?.setDeleteRepeating(false)
+                            }
+                            removeMessages()
+                            dismissPopupKeyboard()
+                            mAbortKey = true
+                            showPreview(NOT_A_KEY)
+                            mRepeatKeyIndex = NOT_A_KEY
+                            return true
+                        }
+
                         mIsLongPressingSpace = false
                         mLastSpaceMoveX = 0
                         // Reset delete repeating flag when action is cancelled.
