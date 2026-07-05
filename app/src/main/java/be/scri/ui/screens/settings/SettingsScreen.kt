@@ -160,8 +160,8 @@ fun SettingsScreen(
         if (showThemeWarningDialog) {
             androidx.compose.material3.AlertDialog(
                 onDismissRequest = { showThemeWarningDialog = false },
-                title = { androidx.compose.material3.Text(text = stringResource(R.string.i18n_theme_warning_title)) },
-                text = { androidx.compose.material3.Text(text = stringResource(R.string.i18n_theme_warning_message)) },
+                title = { androidx.compose.material3.Text(text = stringResource(R.string.i18n_app_settings_theme_override_title)) },
+                text = { androidx.compose.material3.Text(text = stringResource(R.string.i18n_app_settings_theme_override_message)) },
                 confirmButton = {
                     androidx.compose.material3.TextButton(
                         onClick = {
@@ -170,14 +170,14 @@ fun SettingsScreen(
                             showThemeWarningDialog = false
                         },
                     ) {
-                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_ok))
+                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_app_settings_ok))
                     }
                 },
                 dismissButton = {
                     androidx.compose.material3.TextButton(
                         onClick = { showThemeWarningDialog = false },
                     ) {
-                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_cancel))
+                        androidx.compose.material3.Text(text = stringResource(R.string.i18n_app_settings_cancel))
                     }
                 },
             )
