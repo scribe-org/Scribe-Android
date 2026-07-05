@@ -699,7 +699,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
-        android:text="Please download language data"
+        android:text="@string/i18n.app._global.download_data"
         android:textSize="16sp"
         android:minHeight="0dp"
         android:paddingTop="8dp"
@@ -769,7 +769,7 @@
                 android:layout_toEndOf="@+id/clipboard_panel_close"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="Clipboard"
+                android:text="@string/i18n.app._global.clipboard"
                 android:textColor="@color/text_color"
                 android:textSize="@dimen/big_text_size"
                 android:textStyle="bold" />
@@ -804,13 +804,7 @@
                 android:background="@drawable/rounded_all_corners"
                 android:orientation="vertical">
 
-                <be.scri.views.MyRecyclerView
-                    android:id="@+id/clipboard_items_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:scrollbars="vertical"
-                    android:nestedScrollingEnabled="false" />
+
 
             </LinearLayout>
 
