@@ -4,6 +4,18 @@ description: checkout and cache dependencies
 runs:
   using: "composite"
   steps:
+      - name: Free Disk Space
+        shell: bash
+        run: |
+          echo "Disk space before cleanup:"
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/powershell
+          echo "Disk space after cleanup:"
+          df -h
+
       - name: Setup JDK environment
         uses: actions/setup-java@v4
         with:
@@ -19,4 +31,9 @@ runs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
                 ${{ runner.os }}-gradle-   
+
+      - name: Install Android NDK
+        shell: bash
+        run: |
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;27.1.12297006"
               

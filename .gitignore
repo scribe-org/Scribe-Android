@@ -9,6 +9,7 @@
 .venv
 # Gradle and build files
 ########################
+app/.cxx
 .gradle
 local.properties
 *.aab

@@ -64,11 +64,13 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
+import be.scri.helpers.clipboard.ClipboardMonitor
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.KeyboardUIManager
 import be.scri.models.ScribeState
 import be.scri.views.KeyboardView
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 private const val DATA_SIZE_2 = 2
@@ -120,6 +122,10 @@ abstract class GeneralKeyboardIME(
     // Bridge for BackspaceHandler to access binding through UI Manager.
     internal val binding: InputMethodViewBinding
         get() = uiManager.binding
+
+    internal var hasNewClip: Boolean = false
+    internal var latestClipText: String? = null
+    private lateinit var clipboardMonitor: ClipboardMonitor
 
     // MARK: State Variables
 
@@ -217,6 +223,14 @@ abstract class GeneralKeyboardIME(
         suggestionHandler = SuggestionHandler(this)
         autocompletionManager = dbManagers.autocompletionManager
         autocompletionHandler = AutocompletionHandler(this)
+        clipboardMonitor =
+            ClipboardMonitor(this) { text ->
+                latestClipText = text
+                hasNewClip = true
+                if (currentState == ScribeState.IDLE && this::uiManager.isInitialized) {
+                    uiManager.showClipboardSuggestionChip(text)
+                }
+            }
     }
 
     override fun onDestroy() {
@@ -383,6 +397,9 @@ abstract class GeneralKeyboardIME(
         restarting: Boolean,
     ) {
         super.onStartInputView(editorInfo, restarting)
+        if (this::clipboardMonitor.isInitialized) {
+            clipboardMonitor.startMonitoring()
+        }
         emojiAutoSuggestionEnabled = getIsEmojiSuggestionsEnabled(applicationContext, language)
         autoSuggestEmojis = null
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
@@ -460,6 +477,9 @@ abstract class GeneralKeyboardIME(
      */
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
+        if (this::clipboardMonitor.isInitialized) {
+            clipboardMonitor.stopMonitoring()
+        }
         moveToIdleState()
     }
 
@@ -554,6 +574,7 @@ abstract class GeneralKeyboardIME(
 
                 KeyboardBase.KEYCODE_ENTER -> handleKeycodeEnter()
                 KeyboardBase.KEYCODE_MODE_CHANGE -> handleModeChange(keyboardMode, keyboardView, this)
+                KeyboardBase.KEYCODE_CLIPBOARD -> openClipboardPanel()
                 else -> {
                     if (KeyboardBase.SCRIBE_VIEW_KEYS.contains(code)) {
                         val keyLabel = keyboardView?.getKeyLabel(code)
@@ -1000,6 +1021,7 @@ abstract class GeneralKeyboardIME(
      * @param inputConnection The current input connection.
      */
     private fun handleDefaultEnter(inputConnection: InputConnection) {
+        val wordBeforeEnter = getLastWordBeforeCursor()
         val imeOptionsActionId = getImeOptionsActionId()
         if (imeOptionsActionId != IME_ACTION_NONE) {
             inputConnection.performEditorAction(imeOptionsActionId)
@@ -1007,8 +1029,12 @@ abstract class GeneralKeyboardIME(
             inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
             inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
         }
-        suggestionHandler.clearAllSuggestionsAndHideButtonUI()
         moveToIdleState()
+        if (!wordBeforeEnter.isNullOrEmpty()) {
+            suggestionHandler.processLinguisticSuggestions(wordBeforeEnter)
+        } else {
+            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+        }
     }
 
     /**
@@ -1452,7 +1478,9 @@ abstract class GeneralKeyboardIME(
         this.wordSuggestions = wordSuggestions
 
         if (currentState != ScribeState.IDLE) {
-            uiManager.disableAutoSuggest(language)
+            if (currentState != ScribeState.SELECT_COMMAND) {
+                uiManager.disableAutoSuggest(language)
+            }
             return
         }
         val hasLinguisticSuggestions = nounTypeSuggestion != null || isPlural || caseAnnotationSuggestion != null || isSingularAndPlural
@@ -1775,7 +1803,18 @@ abstract class GeneralKeyboardIME(
         wordSuggestions: List<String>?,
         hasLinguisticSuggestions: Boolean,
     ) {
-        if (wordSuggestions.isNullOrEmpty()) return
+        if (wordSuggestions.isNullOrEmpty()) {
+            if (hasLinguisticSuggestions) {
+                val baseSuggestions =
+                    be.scri.helpers.ui.HintUtils
+                        .getBaseAutoSuggestions(language)
+                val default1 = baseSuggestions.getOrNull(0) ?: ""
+                val default2 = baseSuggestions.getOrNull(1) ?: ""
+                setSuggestionButton(uiManager.binding.conjugateBtn, default1)
+                uiManager.pluralBtn?.let { setSuggestionButton(it, default2) }
+            }
+            return
+        }
 
         val suggestions = listOfNotNull(wordSuggestions.getOrNull(0), wordSuggestions.getOrNull(1), wordSuggestions.getOrNull(2))
         val suggestion1 = suggestions.getOrNull(0) ?: ""
@@ -2013,9 +2052,6 @@ abstract class GeneralKeyboardIME(
         emojis: MutableList<String>?,
     ) = uiManager.updateEmojiSuggestion(currentState, enabled, emojis)
 
-    /**
-     * Disables all auto-suggestions and resets the suggestion buttons to their default, inactive state.
-     */
     fun disableAutoSuggest() = uiManager.disableAutoSuggest(language)
 
     // MARK: Floating Keyboard Integration
@@ -2524,6 +2560,85 @@ abstract class GeneralKeyboardIME(
             }
         }
     }
+
+    override fun onClipboardSuggestionClicked() {
+        latestClipText?.let { text ->
+            currentInputConnection?.commitText(text, 1)
+        }
+        hideClipboardSuggestionChip()
+    }
+
+    fun hideClipboardSuggestionChip() {
+        hasNewClip = false
+        latestClipText = null
+        if (this::uiManager.isInitialized) {
+            uiManager.hideClipboardSuggestionChip()
+        }
+    }
+
+    private var clipboardAdapter: be.scri.helpers.clipboard.ClipboardAdapter? = null
+    private val clipboardRepository by lazy {
+        be.scri.helpers.clipboard
+            .ClipboardRepository(this)
+    }
+
+    fun openClipboardPanel() {
+        if (!this::uiManager.isInitialized) return
+        uiManager.showClipboardPanel()
+
+        val recyclerView = binding.clipboardItemsList
+        val emptyText = binding.clipboardEmptyText
+
+        clipboardAdapter =
+            be.scri.helpers.clipboard.ClipboardAdapter(
+                items = emptyList(),
+                onItemClick = { item ->
+                    currentInputConnection?.commitText(item.text, 1)
+                    closeClipboardPanel()
+                },
+                onItemDelete = { item ->
+                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                        clipboardRepository.deleteItem(item.id)
+                        refreshClipboardPanel()
+                    }
+                },
+                onItemPinToggle = { item ->
+                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                        clipboardRepository.togglePin(item.id, item.isPinned)
+                        refreshClipboardPanel()
+                    }
+                },
+            )
+        recyclerView.adapter = clipboardAdapter
+        recyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 2)
+
+        binding.clipboardPanelClose.setOnClickListener { closeClipboardPanel() }
+        binding.clipboardClearAll.setOnClickListener {
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                clipboardRepository.clearAll()
+                refreshClipboardPanel()
+            }
+        }
+
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+            val items = clipboardRepository.getAllItems()
+            clipboardAdapter?.updateItems(items)
+            emptyText.visibility = if (items.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+            recyclerView.visibility = if (items.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
+        }
+    }
+
+    fun closeClipboardPanel() {
+        if (!this::uiManager.isInitialized) return
+        uiManager.hideClipboardPanel()
+    }
+
+    private suspend fun refreshClipboardPanel() {
+        val items = clipboardRepository.getAllItems()
+        clipboardAdapter?.updateItems(items)
+        binding.clipboardEmptyText.visibility = if (items.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+        binding.clipboardItemsList.visibility = if (items.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
+    }
 }
 
 private fun Float.coerceInSafe(
@@ -2533,4 +2648,3 @@ private fun Float.coerceInSafe(
     val minVal = if (bound1 < bound2) bound1 else bound2
     val maxVal = if (bound1 > bound2) bound1 else bound2
     return this.coerceIn(minVal, maxVal)
-}

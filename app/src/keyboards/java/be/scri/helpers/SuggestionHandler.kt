@@ -102,7 +102,21 @@ class SuggestionHandler(
                         nextWordSuggestion,
                     )
                 } else {
-                    ime.disableAutoSuggest()
+                    val hasLinguistic = ime.nounTypeSuggestion != null ||
+                                        ime.checkIfPluralWord ||
+                                        ime.caseAnnotationSuggestion != null ||
+                                        ime.isSingularAndPlural
+                    if (hasLinguistic) {
+                        ime.wordSuggestions = null
+                        ime.updateAutoSuggestText(
+                            ime.nounTypeSuggestion,
+                            ime.checkIfPluralWord || ime.isSingularAndPlural,
+                            ime.caseAnnotationSuggestion,
+                            null,
+                        )
+                    } else {
+                        ime.disableAutoSuggest()
+                    }
                 }
             }
 
@@ -159,7 +173,9 @@ class SuggestionHandler(
      */
     fun clearLinguisticSuggestions() {
         linguisticSuggestionRunnable?.let { handler.removeCallbacks(it) }
-        ime.disableAutoSuggest()
+        if (ime.currentState != ScribeState.SELECT_COMMAND) {
+            ime.disableAutoSuggest()
+        }
         ime.nounTypeSuggestion = null
         ime.checkIfPluralWord = false
         ime.caseAnnotationSuggestion = null
@@ -174,9 +190,8 @@ class SuggestionHandler(
         emojiSuggestionRunnable?.let { handler.removeCallbacks(it) }
         linguisticSuggestionRunnable?.let { handler.removeCallbacks(it) }
 
-        ime.disableAutoSuggest()
-
         if (ime.currentState != ScribeState.SELECT_COMMAND) {
+            ime.disableAutoSuggest()
             ime.updateButtonVisibility(false)
         }
 

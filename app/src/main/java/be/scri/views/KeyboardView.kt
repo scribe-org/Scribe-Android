@@ -4,7 +4,6 @@ package be.scri.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -598,12 +597,15 @@ class KeyboardView
                         mBackgroundColor
                     }
 
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
+
                 val miniKeyboardBackgroundColor =
-                    if (context.config.isUsingSystemTheme) {
-                        resources.getColor(R.color.default_key_color, context.theme)
-                    } else {
-                        resources.getColor(R.color.default_key_color, context.theme)
-                    }
+                    resources.getColor(
+                        if (isUserDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+                        context.theme,
+                    )
 
                 if (changedView.id == R.id.mini_keyboard_view) {
                     val previewBackground = background as LayerDrawable
@@ -614,7 +616,7 @@ class KeyboardView
 
                     previewBackground
                         .findDrawableByLayerId(R.id.button_background_stroke)
-                        .applyColorFilter(context.getColor(R.color.default_key_color))
+                        .applyColorFilter(miniKeyboardBackgroundColor)
 
                     background = previewBackground
                 } else {
@@ -630,6 +632,8 @@ class KeyboardView
                         background = ColorDrawable(toolbarColor)
                     }
                 }
+            } else {
+                closing()
             }
         }
 
@@ -819,10 +823,9 @@ class KeyboardView
                 canvas!!.clipRect(mDirtyRect)
                 val paint = mPaint
                 val keys = mKeys
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
                 val keyBackgroundColor =
                     if (isUserDarkMode) {
                         Color.DKGRAY
@@ -1145,8 +1148,15 @@ class KeyboardView
                                 }
                             key.icon = resources.getDrawable(drawableId)
                             key.icon!!.applyColorFilter(mTextColor)
-                        } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_TAB) {
-                            key.icon!!.applyColorFilter(mTextColor)
+                        } else {
+                            val isIconOnlyKey =
+                                code == KEYCODE_DELETE ||
+                                    code == KEYCODE_SHIFT ||
+                                    code == KEYCODE_TAB ||
+                                    code == KeyboardBase.KEYCODE_CLIPBOARD
+                            if (isIconOnlyKey) {
+                                key.icon!!.applyColorFilter(mTextColor)
+                            }
                         }
 
                         // Controls where icons are located on their keys.
@@ -1489,6 +1499,27 @@ class KeyboardView
                     mMiniKeyboard =
                         mMiniKeyboardContainer!!
                             .findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
+                }
+
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
+
+                val miniKeyboardBackgroundColor =
+                    resources.getColor(
+                        if (isUserDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+                        context.theme,
+                    )
+
+                mMiniKeyboard!!.background?.let { bg ->
+                    if (bg is LayerDrawable) {
+                        bg
+                            .findDrawableByLayerId(R.id.button_background_shape)
+                            ?.applyColorFilter(miniKeyboardBackgroundColor)
+                        bg
+                            .findDrawableByLayerId(R.id.button_background_stroke)
+                            ?.applyColorFilter(miniKeyboardBackgroundColor)
+                    }
                 }
 
                 getLocationInWindow(mCoordinates)

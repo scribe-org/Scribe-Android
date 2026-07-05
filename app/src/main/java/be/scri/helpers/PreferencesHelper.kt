@@ -2,12 +2,9 @@
 
 package be.scri.helpers
 
-import android.app.UiModeManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 
@@ -97,13 +94,6 @@ object PreferencesHelper {
                 shouldEnablePeriodOnSpaceBarDoubleTap,
             )
         }
-        Toast
-            .makeText(
-                context,
-                "$language Period on Double Tap of Space Bar " +
-                    if (shouldEnablePeriodOnSpaceBarDoubleTap) "on" else "off",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -125,13 +115,6 @@ object PreferencesHelper {
                 shouldDisableAccentCharacter,
             )
         }
-        Toast
-            .makeText(
-                context,
-                "$language Accent Characters " +
-                    if (shouldDisableAccentCharacter) "off" else "on",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -150,13 +133,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), shouldShowEmojiSuggestions)
         }
-        Toast
-            .makeText(
-                context,
-                "$language Emoji Autosuggestions " +
-                    if (shouldShowEmojiSuggestions) "on" else "off",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -175,13 +151,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), shouldEnablePeriodAndComma)
         }
-        Toast
-            .makeText(
-                context,
-                "$language period and comma on ABC " +
-                    if (shouldEnablePeriodAndComma) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -200,13 +169,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), shouldVibrateOnKeypress)
         }
-        Toast
-            .makeText(
-                context,
-                "$language vibrate on key press " +
-                    if (shouldVibrateOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     fun setSoundOnKeypress(
@@ -218,13 +180,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS, language), shouldSoundOnKeypress)
         }
-        Toast
-            .makeText(
-                context,
-                "$language sound on key press " +
-                    if (shouldSoundOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -243,13 +198,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), shouldShowPopupOnKeypress)
         }
-        Toast
-            .makeText(
-                context,
-                "$language PopUp on Keypress " +
-                    if (shouldShowPopupOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -271,13 +219,6 @@ object PreferencesHelper {
                 shouldEnableWordByWordDeletion,
             )
         }
-        Toast
-            .makeText(
-                context,
-                "$language Word by Word Deletion " +
-                    if (shouldEnableWordByWordDeletion) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -304,13 +245,7 @@ object PreferencesHelper {
      * @return The dark mode setting as an integer value (AppCompatDelegate.MODE_NIGHT_YES or MODE_NIGHT_NO).
      */
     fun getUserDarkModePreference(context: Context): Int {
-        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
-        val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
-        val isSystemDarkTheme = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
-        if (!sharedPref.contains("dark_mode")) {
-            setLightDarkModePreference(context, isUserDarkMode)
-        }
+        val isUserDarkMode = getIsDarkModeOrNot(context)
         return if (isUserDarkMode) {
             AppCompatDelegate.MODE_NIGHT_YES
         } else {
@@ -427,7 +362,19 @@ object PreferencesHelper {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+
+        val lastSystemTheme = sharedPref.getBoolean("last_system_dark_mode", isSystemDarkMode)
+        var isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+
+        if (!sharedPref.contains("last_system_dark_mode") || lastSystemTheme != isSystemDarkMode) {
+            isUserDarkMode = isSystemDarkMode
+            sharedPref
+                .edit()
+                .putBoolean("dark_mode", isUserDarkMode)
+                .putBoolean("last_system_dark_mode", isSystemDarkMode)
+                .apply()
+        }
+
         return isUserDarkMode
     }
 
@@ -569,13 +516,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), holdForAltKeys)
         }
-        Toast
-            .makeText(
-                context,
-                "$language hold for alternate characters " +
-                    if (holdForAltKeys) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
