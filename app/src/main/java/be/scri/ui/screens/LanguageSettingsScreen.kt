@@ -109,6 +109,13 @@ fun LanguageSettingsScreen(
             )
         }
 
+    val clipboardKeyOnKeyboardState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getIsClipboardKeyEnabled(context, language),
+            )
+        }
+
     val wordByWordDeletionState =
         remember {
             mutableStateOf(
@@ -152,6 +159,15 @@ fun LanguageSettingsScreen(
                             context,
                             language,
                             shouldDisableAccentCharacter,
+                        )
+                    },
+                    toggleClipboardKeyOnKeyboard = clipboardKeyOnKeyboardState.value,
+                    onToggleClipboardKeyOnKeyboard = { isEnabled ->
+                        clipboardKeyOnKeyboardState.value = isEnabled
+                        PreferencesHelper.setClipboardKeyPreference(
+                            context,
+                            language,
+                            isEnabled,
                         )
                     },
                     onCurrencySelect = onCurrencySelect,
@@ -350,6 +366,8 @@ private fun getLayoutListData(
     onTogglePeriodAndComma: (Boolean) -> Unit,
     toggleDisableAccentCharacter: Boolean,
     onToggleDisableAccentCharacter: (Boolean) -> Unit,
+    toggleClipboardKeyOnKeyboard: Boolean,
+    onToggleClipboardKeyOnKeyboard: (Boolean) -> Unit,
     onCurrencySelect: () -> Unit,
 ): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
@@ -373,6 +391,14 @@ private fun getLayoutListData(
             desc = R.string.i18n_app_settings_keyboard_layout_period_and_comma_description,
             state = togglePeriodAndCommaState,
             onToggle = onTogglePeriodAndComma,
+        ),
+    )
+    list.add(
+        ScribeItem.SwitchItem(
+            title = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard,
+            desc = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard_description,
+            state = toggleClipboardKeyOnKeyboard,
+            onToggle = onToggleClipboardKeyOnKeyboard,
         ),
     )
     list.add(
