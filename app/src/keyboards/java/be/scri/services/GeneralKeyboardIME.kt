@@ -2101,6 +2101,16 @@ abstract class GeneralKeyboardIME(
         window?.window?.decorView?.requestLayout()
     }
 
+    fun disableFloatingMode() {
+        if (isFloatingMode) {
+            isFloatingMode = false
+            PreferencesHelper.setIsFloatingModeEnabled(this, language, isFloatingMode)
+            lastAppliedFloatingMode = null
+            applyFloatingModeState()
+            window?.window?.decorView?.requestLayout()
+        }
+    }
+
     private fun applyFloatingModeState() {
         if (!this::uiManager.isInitialized) return
         val card = binding.keyboardCard
@@ -2150,9 +2160,11 @@ abstract class GeneralKeyboardIME(
                 card.layoutParams = params
             }
 
-            val scaleFactor = PreferencesHelper.getFloatingScale(this, language)
-            card.scaleX = scaleFactor
-            card.scaleY = scaleFactor
+            val scaleFactorX = PreferencesHelper.getFloatingScaleX(this, language)
+            val scaleFactorY = PreferencesHelper.getFloatingScaleY(this, language)
+            card.scaleX = scaleFactorX
+            card.scaleY = scaleFactorY
+            card.alpha = 1.0f
 
             // Setup resize corner handlers
             binding.resizeHandleTopLeft.setOnTouchListener(resizeTouchListener)
@@ -2160,11 +2172,13 @@ abstract class GeneralKeyboardIME(
             binding.resizeHandleBottomLeft.setOnTouchListener(resizeTouchListener)
             binding.resizeHandleBottomRight.setOnTouchListener(resizeTouchListener)
 
-            // Hide initially
-            binding.resizeHandleTopLeft.visibility = View.GONE
-            binding.resizeHandleTopRight.visibility = View.GONE
-            binding.resizeHandleBottomLeft.visibility = View.GONE
-            binding.resizeHandleBottomRight.visibility = View.GONE
+            // Hide initially on mode change
+            if (modeChanged) {
+                binding.resizeHandleTopLeft.visibility = View.GONE
+                binding.resizeHandleTopRight.visibility = View.GONE
+                binding.resizeHandleBottomLeft.visibility = View.GONE
+                binding.resizeHandleBottomRight.visibility = View.GONE
+            }
 
             val isDarkMode = getIsDarkModeOrNot(this)
             val kbBgColorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
@@ -2196,7 +2210,8 @@ abstract class GeneralKeyboardIME(
                 disableParentClipping(root)
                 var storedX = PreferencesHelper.getFloatingX(this, language)
                 var storedY = PreferencesHelper.getFloatingY(this, language)
-                val currentScale = PreferencesHelper.getFloatingScale(this, language)
+                val currentScaleX = PreferencesHelper.getFloatingScaleX(this, language)
+                val currentScaleY = PreferencesHelper.getFloatingScaleY(this, language)
 
                 // Default starting position: 100dp from the bottom of the screen
                 if (storedY == 0f) storedY = 100f * density
@@ -2207,16 +2222,16 @@ abstract class GeneralKeyboardIME(
                 val cardHeight = card.height.toFloat()
 
                 if (cardWidth > 0f && cardHeight > 0f) {
-                    val maxTranslationX = (screenWidth - cardWidth * currentScale) / 2f
+                    val maxTranslationX = (screenWidth - cardWidth * currentScaleX) / 2f
                     val minTranslationX = -maxTranslationX
 
                     val minTranslationY = 0f
-                    val maxTranslationY = screenHeight.toFloat() - cardHeight * currentScale
+                    val maxTranslationY = screenHeight.toFloat() - cardHeight * currentScaleY
 
                     val targetX = storedX.coerceInSafe(minTranslationX, maxTranslationX)
                     val targetY = storedY.coerceInSafe(minTranslationY, maxTranslationY)
 
-                    updateFloatingViewsPosition(targetX, targetY, currentScale)
+                    updateFloatingViewsPosition(targetX, targetY, currentScaleX, currentScaleY)
 
                     val attr = win?.attributes
                     if (attr != null) {
@@ -2239,6 +2254,7 @@ abstract class GeneralKeyboardIME(
 
             card.scaleX = 1.0f
             card.scaleY = 1.0f
+            card.alpha = 1.0f
 
             val isDarkMode = getIsDarkModeOrNot(this)
             val kbBgColorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
@@ -2297,7 +2313,8 @@ abstract class GeneralKeyboardIME(
     private fun updateFloatingViewsPosition(
         targetX: Float,
         targetY: Float,
-        scale: Float,
+        scaleX: Float,
+        scaleY: Float,
     ) {
         val card = binding.keyboardCard
         val screenHeight = resources.displayMetrics.heightPixels.toFloat()
@@ -2306,30 +2323,31 @@ abstract class GeneralKeyboardIME(
         val cardHeight = card.height.toFloat()
         if (cardWidth == 0f || cardHeight == 0f) return
 
-        card.scaleX = scale
-        card.scaleY = scale
+        card.scaleX = scaleX
+        card.scaleY = scaleY
 
         val transX = targetX
-        val transY = (screenHeight - cardHeight * scale) / 2f - targetY
+        val transY = (screenHeight - cardHeight * scaleY) / 2f - targetY
 
         card.translationX = transX
         card.translationY = transY
 
-        val scaleOffset = scale - 1.0f
+        val scaleOffsetX = scaleX - 1.0f
+        val scaleOffsetY = scaleY - 1.0f
         val halfW = cardWidth / 2f
         val halfH = cardHeight / 2f
 
-        binding.resizeHandleTopLeft.translationX = transX - halfW * scaleOffset
-        binding.resizeHandleTopLeft.translationY = transY - halfH * scaleOffset
+        binding.resizeHandleTopLeft.translationX = transX - halfW * scaleOffsetX
+        binding.resizeHandleTopLeft.translationY = transY - halfH * scaleOffsetY
 
-        binding.resizeHandleTopRight.translationX = transX + halfW * scaleOffset
-        binding.resizeHandleTopRight.translationY = transY - halfH * scaleOffset
+        binding.resizeHandleTopRight.translationX = transX + halfW * scaleOffsetX
+        binding.resizeHandleTopRight.translationY = transY - halfH * scaleOffsetY
 
-        binding.resizeHandleBottomLeft.translationX = transX - halfW * scaleOffset
-        binding.resizeHandleBottomLeft.translationY = transY + halfH * scaleOffset
+        binding.resizeHandleBottomLeft.translationX = transX - halfW * scaleOffsetX
+        binding.resizeHandleBottomLeft.translationY = transY + halfH * scaleOffsetY
 
-        binding.resizeHandleBottomRight.translationX = transX + halfW * scaleOffset
-        binding.resizeHandleBottomRight.translationY = transY + halfH * scaleOffset
+        binding.resizeHandleBottomRight.translationX = transX + halfW * scaleOffsetX
+        binding.resizeHandleBottomRight.translationY = transY + halfH * scaleOffsetY
     }
 
     private fun disableParentClipping(view: View) {
@@ -2358,7 +2376,10 @@ abstract class GeneralKeyboardIME(
 
     private var initialTouchX = 0f
     private var initialTouchY = 0f
-    private var initialScale = 1.0f
+    private var initialScaleX = 1.0f
+    private var initialScaleY = 1.0f
+    private var dragFactorX = 1f
+    private var dragFactorY = 1f
     private var keyboardCenterX = 0f
     private var keyboardCenterY = 0f
     private var initialDistance = 0f
@@ -2407,25 +2428,21 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    private fun applyScaleAndPosition(scale: Float) {
+    private fun applyScaleAndPosition(scaleX: Float, scaleY: Float) {
         val card = binding.keyboardCard
         val screenHeight = resources.displayMetrics.heightPixels.toFloat()
         val cardHeight = card.height.toFloat()
 
-        // Recover current logical Y from live translationY (inverse of updateFloatingViewsPosition formula)
-        // transY = (screenHeight - cardHeight * scale) / 2f - targetY
-        // => targetY = (screenHeight - cardHeight * scale) / 2f - transY
-        // Use the previous scale to get the consistent Y value before scale changes
         val liveX = card.translationX
         val liveTransY = card.translationY
-        val prevScale = card.scaleX
-        val liveY = (screenHeight - cardHeight * prevScale) / 2f - liveTransY
+        val prevScaleY = card.scaleY
+        val liveY = (screenHeight - cardHeight * prevScaleY) / 2f - liveTransY
 
-        updateFloatingViewsPosition(liveX, liveY, scale)
+        updateFloatingViewsPosition(liveX, liveY, scaleX, scaleY)
     }
 
     private val resizeTouchListener =
-        View.OnTouchListener { _, event ->
+        View.OnTouchListener { view, event ->
             if (!isFloatingMode) return@OnTouchListener false
 
             when (event.action) {
@@ -2435,9 +2452,33 @@ abstract class GeneralKeyboardIME(
 
                     initialTouchX = event.rawX
                     initialTouchY = event.rawY
-                    initialScale = PreferencesHelper.getFloatingScale(this, language)
+                    initialScaleX = PreferencesHelper.getFloatingScaleX(this, language)
+                    initialScaleY = PreferencesHelper.getFloatingScaleY(this, language)
+
+                    val viewId = view.id
+                    dragFactorX = when (viewId) {
+                        R.id.resize_handle_top_left -> -1f
+                        R.id.resize_handle_bottom_left -> -1f
+                        R.id.resize_handle_top_right -> 1f
+                        R.id.resize_handle_bottom_right -> 1f
+                        else -> 1f
+                    }
+                    dragFactorY = when (viewId) {
+                        R.id.resize_handle_top_left -> -1f
+                        R.id.resize_handle_top_right -> -1f
+                        R.id.resize_handle_bottom_left -> 1f
+                        R.id.resize_handle_bottom_right -> 1f
+                        else -> 1f
+                    }
 
                     val card = binding.keyboardCard
+                    card.animate().cancel()
+                    card.alpha = 0.7f
+
+                    val density = resources.displayMetrics.density
+                    val activeColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
+                    (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
+
                     val location = IntArray(2)
                     card.getLocationOnScreen(location)
 
@@ -2456,17 +2497,21 @@ abstract class GeneralKeyboardIME(
                 MotionEvent.ACTION_MOVE -> {
                     if (!isResizing) return@OnTouchListener false
 
-                    val currentDistance =
-                        Math
-                            .hypot(
-                                (event.rawX - keyboardCenterX).toDouble(),
-                                (event.rawY - keyboardCenterY).toDouble(),
-                            ).toFloat()
+                    val dx = event.rawX - initialTouchX
+                    val dy = event.rawY - initialTouchY
 
-                    if (initialDistance > 0) {
-                        var targetScale = initialScale * (currentDistance / initialDistance)
-                        targetScale = targetScale.coerceIn(0.7f, 1.3f)
-                        applyScaleAndPosition(targetScale)
+                    val card = binding.keyboardCard
+                    val cardWidth = card.width.toFloat()
+                    val cardHeight = card.height.toFloat()
+
+                    if (cardWidth > 0 && cardHeight > 0) {
+                        var targetScaleX = initialScaleX + (dragFactorX * dx) / cardWidth
+                        var targetScaleY = initialScaleY + (dragFactorY * dy) / cardHeight
+
+                        targetScaleX = targetScaleX.coerceIn(0.6f, 1.5f)
+                        targetScaleY = targetScaleY.coerceIn(0.6f, 1.5f)
+
+                        applyScaleAndPosition(targetScaleX, targetScaleY)
                     }
                     true
                 }
@@ -2474,18 +2519,21 @@ abstract class GeneralKeyboardIME(
                     isResizing = false
                     startHideCornersTimer()
 
-                    val finalScale = binding.keyboardCard.scaleX
-                    PreferencesHelper.setFloatingScale(this, language, finalScale)
+                    val card = binding.keyboardCard
+                    val finalScaleX = card.scaleX
+                    val finalScaleY = card.scaleY
+                    PreferencesHelper.setFloatingScaleX(this, language, finalScaleX)
+                    PreferencesHelper.setFloatingScaleY(this, language, finalScaleY)
 
                     // Save live position so applyFloatingModeState restores it correctly
-                    val card = binding.keyboardCard
                     val screenHeight = resources.displayMetrics.heightPixels.toFloat()
                     val cardHeight = card.height.toFloat()
-                    val liveY = (screenHeight - cardHeight * finalScale) / 2f - card.translationY
+                    val liveY = (screenHeight - cardHeight * finalScaleY) / 2f - card.translationY
                     PreferencesHelper.setFloatingX(this, language, card.translationX)
                     PreferencesHelper.setFloatingY(this, language, liveY)
 
                     applyFloatingModeState()
+                    card.animate().alpha(1.0f).setDuration(200).start()
                     true
                 }
                 else -> false
@@ -2504,18 +2552,27 @@ abstract class GeneralKeyboardIME(
                     initialX = event.rawX
                     initialY = event.rawY
 
+                    val card = binding.keyboardCard
+                    card.animate().cancel()
+                    card.alpha = 0.7f
+
+                    val density = resources.displayMetrics.density
+                    val activeColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
+                    (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
+
                     val displayMetrics = resources.displayMetrics
                     val screenWidth = displayMetrics.widthPixels
                     val screenHeight = displayMetrics.heightPixels
-                    val cardWidth = binding.keyboardCard.width.toFloat()
-                    val cardHeight = binding.keyboardCard.height.toFloat()
-                    val scaleFactor = PreferencesHelper.getFloatingScale(this@GeneralKeyboardIME, language)
+                    val cardWidth = card.width.toFloat()
+                    val cardHeight = card.height.toFloat()
+                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(this@GeneralKeyboardIME, language)
+                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(this@GeneralKeyboardIME, language)
 
-                    maxTranslationX = (screenWidth - cardWidth * scaleFactor) / 2f
+                    maxTranslationX = (screenWidth - cardWidth * scaleFactorX) / 2f
                     minTranslationX = -maxTranslationX
 
                     minTranslationY = 0f
-                    maxTranslationY = screenHeight.toFloat() - cardHeight * scaleFactor
+                    maxTranslationY = screenHeight.toFloat() - cardHeight * scaleFactorY
 
                     initialTranslationX = PreferencesHelper.getFloatingX(this@GeneralKeyboardIME, language).coerceInSafe(minTranslationX, maxTranslationX)
                     initialTranslationY = PreferencesHelper.getFloatingY(this@GeneralKeyboardIME, language).coerceInSafe(minTranslationY, maxTranslationY)
@@ -2533,8 +2590,24 @@ abstract class GeneralKeyboardIME(
                     targetX = targetX.coerceInSafe(minTranslationX, maxTranslationX)
                     targetY = targetY.coerceInSafe(minTranslationY, maxTranslationY)
 
-                    val scaleFactor = PreferencesHelper.getFloatingScale(this@GeneralKeyboardIME, language)
-                    updateFloatingViewsPosition(targetX, targetY, scaleFactor)
+                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(this@GeneralKeyboardIME, language)
+                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(this@GeneralKeyboardIME, language)
+                    updateFloatingViewsPosition(targetX, targetY, scaleFactorX, scaleFactorY)
+
+                    val card = binding.keyboardCard
+                    val density = resources.displayMetrics.density
+                    val isNearBottom = targetY < 60f * density
+                    if (isNearBottom) {
+                        // Highlight to indicate ready to dock
+                        val dockColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
+                        (card.background as? GradientDrawable)?.setStroke((4.0f * density).toInt(), dockColor)
+                        card.alpha = 0.85f
+                    } else {
+                        // Normal dragging active outline
+                        val activeColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
+                        (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
+                        card.alpha = 0.7f
+                    }
 
                     true
                 }
@@ -2546,12 +2619,23 @@ abstract class GeneralKeyboardIME(
                     finalTargetX = finalTargetX.coerceInSafe(minTranslationX, maxTranslationX)
                     finalTargetY = finalTargetY.coerceInSafe(minTranslationY, maxTranslationY)
 
-                    val scaleFactor = PreferencesHelper.getFloatingScale(this@GeneralKeyboardIME, language)
-                    updateFloatingViewsPosition(finalTargetX, finalTargetY, scaleFactor)
+                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(this@GeneralKeyboardIME, language)
+                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(this@GeneralKeyboardIME, language)
+                    val density = resources.displayMetrics.density
+                    val isNearBottom = finalTargetY < 60f * density
 
-                    PreferencesHelper.setFloatingX(this@GeneralKeyboardIME, language, finalTargetX)
-                    PreferencesHelper.setFloatingY(this@GeneralKeyboardIME, language, finalTargetY)
+                    val card = binding.keyboardCard
 
+                    if (isNearBottom) {
+                        disableFloatingMode()
+                    } else {
+                        updateFloatingViewsPosition(finalTargetX, finalTargetY, scaleFactorX, scaleFactorY)
+                        PreferencesHelper.setFloatingX(this@GeneralKeyboardIME, language, finalTargetX)
+                        PreferencesHelper.setFloatingY(this@GeneralKeyboardIME, language, finalTargetY)
+                        applyFloatingModeState()
+                    }
+
+                    card.animate().alpha(1.0f).setDuration(200).start()
                     binding.root.requestLayout()
                     startHideCornersTimer()
                     true

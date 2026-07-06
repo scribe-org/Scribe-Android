@@ -579,6 +579,8 @@ object PreferencesHelper {
     private const val FLOATING_X = "floating_x"
     private const val FLOATING_Y = "floating_y"
     private const val FLOATING_SCALE = "floating_scale"
+    private const val FLOATING_SCALE_X = "floating_scale_x"
+    private const val FLOATING_SCALE_Y = "floating_scale_y"
 
     fun setIsFloatingModeEnabled(
         context: Context,
@@ -646,5 +648,41 @@ object PreferencesHelper {
     ): Float {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE, language), 1.0f)
+    }
+
+    fun setFloatingScaleX(
+        context: Context,
+        language: String,
+        scaleX: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_X, language), scaleX) }
+    }
+
+    fun getFloatingScaleX(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val defaultScale = getFloatingScale(context, language)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_X, language), defaultScale)
+    }
+
+    fun setFloatingScaleY(
+        context: Context,
+        language: String,
+        scaleY: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_Y, language), scaleY) }
+    }
+
+    fun getFloatingScaleY(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val defaultScale = getFloatingScale(context, language)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_Y, language), defaultScale)
     }
 }
