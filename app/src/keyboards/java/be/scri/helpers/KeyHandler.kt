@@ -50,6 +50,10 @@ class KeyHandler(
 
         resetShiftIfNeeded(code)
 
+        if (code != KeyboardBase.KEYCODE_SHIFT && code != KeyboardBase.KEYCODE_MODE_CHANGE) {
+            ime.hideClipboardSuggestionChip()
+        }
+
         val previousWasLastKeySpace = wasLastKeySpace
         if (code != KeyboardBase.KEYCODE_SPACE && code != KeyboardBase.KEYCODE_ENTER) {
             suggestionHandler.clearLinguisticSuggestions()
@@ -114,13 +118,17 @@ class KeyHandler(
                 true
             }
             KeyboardBase.KEYCODE_EMOJI -> {
-                ime.openEmojiKeyboard()
-                true
+              ime.openEmojiKeyboard()
+              true
             }
-            else -> {
-                handleDefaultKey(code)
-                true
-            }
+          KeyboardBase.KEYCODE_CLIPBOARD -> {
+            ime.openClipboardPanel()
+            true
+          }
+          else -> {
+            handleDefaultKey(code)
+            true
+          }
         }
 
     /**

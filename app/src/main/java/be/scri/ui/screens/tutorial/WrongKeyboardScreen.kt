@@ -35,10 +35,12 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import be.scri.R
 
 /**
  * Screen displayed when the user has a non-Scribe keyboard active during the tutorial.
@@ -100,7 +102,7 @@ fun WrongKeyboardScreen(
                     modifier = Modifier.size(24.dp),
                 )
                 Text(
-                    text = "Quick tutorial",
+                    text = stringResource(R.string.i18n_app__global_quick_tutorial),
                     color = headerColor,
                     fontSize = 16.sp,
                 )

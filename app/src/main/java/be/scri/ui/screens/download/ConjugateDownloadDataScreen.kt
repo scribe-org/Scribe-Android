@@ -143,7 +143,7 @@ fun ConjugateDownloadDataScreen(
                 ) {
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
                         Text(
-                            text = "Update all",
+                            text = stringResource(R.string.i18n_app_download_menu_ui_download_data_update_all),
                             color = colorResource(R.color.dark_scribe_blue),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Medium,

@@ -57,7 +57,7 @@
     <Row>
         <Key
             app:keyEdgeFlags="left"
-            app:horizontalGap = "5.545%"
+            app:horizontalGap="5.545%"
             app:keyLabel="a"
             app:popupCharacters="áàäâãåąæā"
             app:popupKeyboard="@xml/keyboard_popup_template" />

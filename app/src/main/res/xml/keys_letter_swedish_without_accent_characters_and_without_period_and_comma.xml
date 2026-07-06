@@ -3,7 +3,7 @@
     <Row>
         <Key
             app:keyEdgeFlags="left"
-            app:horizontalGap = "1%"
+            app:horizontalGap="1%"
             app:keyLabel="q"
             app:keyWidth="9.85%p"
             app:popupCharacters="1"
@@ -53,7 +53,6 @@
             app:topSmallNumber="8" />
         <Key
             app:keyLabel="o"
-
             app:popupCharacters="óœøōõò9ô"
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="9" />
@@ -70,7 +69,7 @@
     </Row>
     <Row>
         <Key
-            app:horizontalGap= "8.854%"
+            app:horizontalGap="8.854%"
             app:keyEdgeFlags="left"
             app:keyLabel="a"
             app:keyWidth="9.05%p"
@@ -151,7 +150,7 @@
             app:keyEdgeFlags="right"
             app:keyIcon="@drawable/ic_clear_outline_vector"
             app:keyWidth="15%p"
-            />
+        />
     </Row>
     <Row>
         <Key

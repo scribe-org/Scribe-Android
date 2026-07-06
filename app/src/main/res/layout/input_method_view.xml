@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // This is the new, unified layout for the InputMethodService.
 // It combines the "command options" bar and the "toolbar" bar into a single file.
-// We will manage the visibility of 'command_options_bar' and 'toolbar_bar' from GeneralKeyboardIME.kt
+// We will manage the visibility of 'command_options_bar' and 'toolbar_bar' from
+GeneralKeyboardIME.kt
 // to avoid re-inflating the view on state changes, which significantly improves performance.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,7 +68,7 @@
             android:layout_above="@id/emoji_palette_bottom_bar"
             android:layout_below="@+id/emoji_palette_top_bar">
 
-            <be.scri.views.MyRecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/emojis_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -125,7 +126,8 @@
 
 
     <!-- ================================================================================= -->
-    <!--  Container for the "IDLE" and "SELECT_COMMAND" state (previously from keyboard_view_command_options.xml) -->
+    <!--  Container for the "IDLE" and "SELECT_COMMAND" state (previously from
+    keyboard_view_command_options.xml) -->
     <!-- ================================================================================= -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/command_options_bar"
@@ -156,6 +158,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/separator_1"
             app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -407,6 +410,25 @@
             app:layout_constraintStart_toEndOf="@+id/emoji_space_tablet_2"
             app:layout_constraintTop_toTopOf="@+id/plural_btn" />
 
+        <Button
+            android:id="@+id/clipboard_suggestion_chip"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/command_button_height"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/cmd_key_background_rounded"
+            android:backgroundTint="@color/theme_scribe_blue"
+            android:drawableStart="@drawable/ic_clipboard_vector"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/separator_1"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ================================================================================= -->
@@ -443,14 +465,10 @@
             android:id="@+id/prompt_text"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            
-            app:layout_constraintStart_toEndOf="@+id/scribe_key_toolbar" 
-
+            app:layout_constraintStart_toEndOf="@+id/scribe_key_toolbar"
             app:layout_constraintEnd_toStartOf="@id/command_bar_layout"
-            
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            
             android:background="@drawable/cmd_bar_prompt_background"
             android:ellipsize="end"
             android:gravity="center"
@@ -586,59 +604,59 @@
 
             <!-- Middle TextView -->
             <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:orientation="vertical"
-            android:backgroundTint="@color/button_color"
-            android:background="@drawable/rounded_all_corners">
-            
-            <TextView
-                android:id="@+id/middle_textview"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:gravity="center"
-                android:textColor="@color/key_text_color"
-                android:textSize="16sp" />
-            
-            <LinearLayout
-                android:id="@+id/page_indicators"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:orientation="vertical"
+                android:backgroundTint="@color/button_color"
+                android:background="@drawable/rounded_all_corners">
 
-                <View
-                    android:layout_width="6dp"
-                    android:layout_height="6dp"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/dot_active" />
-                    
-                <View
-                    android:layout_width="6dp"
-                    android:layout_height="6dp"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/dot_inactive" />
-                    
-                <View
-                    android:layout_width="6dp"
-                    android:layout_height="6dp"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/dot_inactive" />
-                    
+                <TextView
+                    android:id="@+id/middle_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:gravity="center"
+                    android:textColor="@color/key_text_color"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/page_indicators"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <View
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/dot_active" />
+
+                    <View
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/dot_inactive" />
+
+                    <View
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/dot_inactive" />
+
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
             <!-- Right Button -->
             <Button
@@ -680,7 +698,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
-        android:text="Please download language data"
+        android:text="@string/i18n.app._global.download_data"
         android:textSize="16sp"
         android:minHeight="0dp"
         android:paddingTop="8dp"
@@ -707,5 +725,96 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/clipboard_panel_holder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/keyboard_view">
+
+        <RelativeLayout
+            android:id="@+id/clipboard_panel_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:background="@color/conjugate_keyboard_color">
+
+            <ImageView
+                android:id="@+id/clipboard_panel_close"
+                android:layout_width="@dimen/toolbar_icon_height"
+                android:layout_height="@dimen/toolbar_icon_height"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Close Clipboard"
+                android:padding="@dimen/small_margin"
+                android:src="@drawable/ic_arrow_left_vector"
+                android:tint="@color/icon_color" />
+
+            <TextView
+                android:id="@+id/clipboard_panel_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_toEndOf="@+id/clipboard_panel_close"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@string/i18n.app.clipboard.title"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/big_text_size"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/clipboard_clear_all"
+                android:layout_width="@dimen/toolbar_icon_height"
+                android:layout_height="@dimen/toolbar_icon_height"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Clear All"
+                android:padding="@dimen/small_margin"
+                android:src="@drawable/ic_delete_vector"
+                android:tint="#E53935" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/clipboard_content_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/clipboard_panel_top_bar"
+            android:background="@color/conjugate_keyboard_color">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/clipboard_items_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="12dp"
+                android:clipToPadding="false"
+                android:padding="@dimen/small_margin"
+                android:scrollbars="vertical" />
+
+            <TextView
+                android:id="@+id/clipboard_empty_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/i18n.app.clipboard.clipboard_is_empty"
+                android:textColor="@color/text_color"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

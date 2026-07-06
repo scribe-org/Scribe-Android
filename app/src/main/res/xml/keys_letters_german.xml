@@ -64,7 +64,6 @@
             app:popupKeyboard="@xml/keyboard_popup_template"
             app:topSmallNumber="0" />
         <Key
-
             app:keyEdgeFlags="right"
             app:keyLabel="ü"
             app:keyWidth="9.05%p" />

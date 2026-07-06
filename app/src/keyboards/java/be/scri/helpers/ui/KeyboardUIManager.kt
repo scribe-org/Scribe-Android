@@ -81,6 +81,8 @@ class KeyboardUIManager(
         fun processLinguisticSuggestions(word: String)
 
         fun isNumericKeyboardActive(): Boolean
+
+        fun onClipboardSuggestionClicked()
     }
 
     var keyboardView: KeyboardView = binding.keyboardView
@@ -114,14 +116,22 @@ class KeyboardUIManager(
     }
 
     private fun setupClickListeners() {
-        binding.scribeKeyOptions.setOnClickListener { listener.onScribeKeyOptionsClicked() }
-        binding.scribeKeyToolbar.setOnClickListener { listener.onScribeKeyToolbarClicked() }
+        binding.scribeKeyOptions.setOnClickListener {
+            hideClipboardSuggestionChip()
+            listener.onScribeKeyOptionsClicked()
+        }
+        binding.scribeKeyToolbar.setOnClickListener {
+            hideClipboardSuggestionChip()
+            listener.onScribeKeyToolbarClicked()
+        }
 
         binding.translateBtn.setOnClickListener { listener.onTranslateClicked() }
         binding.conjugateBtn.setOnClickListener { listener.onConjugateClicked() }
         binding.pluralBtn.setOnClickListener { listener.onPluralClicked() }
 
         binding.scribeKeyClose.setOnClickListener { listener.onCloseClicked() }
+
+        binding.clipboardSuggestionChip.setOnClickListener { listener.onClipboardSuggestionClicked() }
 
         // Info button listener for INVALID state.
         binding.ivInfo.setOnClickListener { showInvalidInfo() }
@@ -1119,5 +1129,54 @@ class KeyboardUIManager(
                     if (i == currentPage) R.drawable.dot_active else R.drawable.dot_inactive,
                 )
         }
+    }
+
+    fun showClipboardSuggestionChip(clipText: String) {
+        val truncatedText =
+            if (clipText.length > 25) {
+                clipText.take(22) + "..."
+            } else {
+                clipText
+            }
+        binding.clipboardSuggestionChip.text = truncatedText
+        binding.clipboardSuggestionChip.visibility = View.VISIBLE
+
+        binding.translateBtn.visibility = View.GONE
+        binding.conjugateBtn.visibility = View.GONE
+        binding.pluralBtn.visibility = View.GONE
+        binding.separator2.visibility = View.GONE
+        binding.separator3.visibility = View.GONE
+
+        binding.emojiBtnPhone1?.visibility = View.GONE
+        binding.emojiBtnPhone2?.visibility = View.GONE
+        binding.emojiBtnTablet1?.visibility = View.GONE
+        binding.emojiBtnTablet2?.visibility = View.GONE
+        binding.emojiBtnTablet3?.visibility = View.GONE
+        binding.separator4.visibility = View.GONE
+        binding.separator5.visibility = View.GONE
+        binding.separator6.visibility = View.GONE
+    }
+
+    fun hideClipboardSuggestionChip() {
+        if (binding.clipboardSuggestionChip.visibility == View.VISIBLE) {
+            binding.clipboardSuggestionChip.visibility = View.GONE
+            binding.translateBtn.visibility = View.VISIBLE
+            binding.conjugateBtn.visibility = View.VISIBLE
+            binding.pluralBtn.visibility = View.VISIBLE
+            binding.separator2.visibility = View.VISIBLE
+            binding.separator3.visibility = View.VISIBLE
+        }
+    }
+
+    fun showClipboardPanel() {
+        binding.clipboardPanelHolder.visibility = View.VISIBLE
+        keyboardView.visibility = View.INVISIBLE
+        binding.commandOptionsBar.visibility = View.INVISIBLE
+    }
+
+    fun hideClipboardPanel() {
+        binding.clipboardPanelHolder.visibility = View.GONE
+        keyboardView.visibility = View.VISIBLE
+        binding.commandOptionsBar.visibility = View.VISIBLE
     }
 }

@@ -4,7 +4,6 @@ package be.scri.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -599,10 +598,9 @@ class KeyboardView
                         mBackgroundColor
                     }
 
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
 
                 val miniKeyboardBackgroundColor =
                     resources.getColor(
@@ -815,10 +813,9 @@ class KeyboardView
                 canvas!!.clipRect(mDirtyRect)
                 val paint = mPaint
                 val keys = mKeys
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
                 val keyBackgroundColor =
                     if (isUserDarkMode) {
                         Color.DKGRAY
@@ -1141,8 +1138,16 @@ class KeyboardView
                                 }
                             key.icon = resources.getDrawable(drawableId)
                             key.icon!!.applyColorFilter(mTextColor)
-                        } else if (code in listOf(KEYCODE_DELETE, KEYCODE_SHIFT, KEYCODE_TAB, KEYCODE_EMOJI)) {
-                            key.icon!!.applyColorFilter(mTextColor)
+                        } else {
+                            val isIconOnlyKey =
+                                code == KEYCODE_DELETE ||
+                                    code == KEYCODE_SHIFT ||
+                                    code == KEYCODE_TAB ||
+                                    code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                                    code == KeyboardBase.KEYCODE_EMOJI
+                            if (isIconOnlyKey) {
+                                key.icon!!.applyColorFilter(mTextColor)
+                            }
                         }
 
                         // Controls where icons are located on their keys.
@@ -1487,10 +1492,9 @@ class KeyboardView
                             .findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
                 }
 
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
 
                 val miniKeyboardBackgroundColor =
                     resources.getColor(
