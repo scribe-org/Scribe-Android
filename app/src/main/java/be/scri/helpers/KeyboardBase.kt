@@ -37,6 +37,7 @@ class KeyboardBase {
         val keyboardLetters: Int
 
         fun isSearchBar(): Boolean
+
         fun isClipboardKeyEnabled(): Boolean
     }
 

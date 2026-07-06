@@ -552,7 +552,10 @@ object PreferencesHelper {
     /**
      * Retrieves whether the clipboard key is enabled on the keyboard for a given language.
      */
-    fun getIsClipboardKeyEnabled(context: Context, language: String): Boolean {
+    fun getIsClipboardKeyEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(CLIPBOARD_KEY_ON_KEYBOARD, language), true)
     }

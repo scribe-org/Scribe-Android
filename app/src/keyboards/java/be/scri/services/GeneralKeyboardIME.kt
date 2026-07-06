@@ -576,9 +576,7 @@ abstract class GeneralKeyboardIME(
         return isActionSearch || isUriType || hasSearchHint
     }
 
-    override fun isClipboardKeyEnabled(): Boolean {
-        return PreferencesHelper.getIsClipboardKeyEnabled(this, language)
-    }
+    override fun isClipboardKeyEnabled(): Boolean = PreferencesHelper.getIsClipboardKeyEnabled(this, language)
 
     private fun loadLanguageData() {
         val languageAlias = getLanguageAlias(language)
