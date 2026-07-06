@@ -734,6 +734,53 @@ class KeyboardBase {
             }
         }
 
+        // Realign/shrink keys in any row that contains a float toggle key to fit the display width.
+        for (currentRow in mRows) {
+            if (currentRow != null) {
+                val hasFloatToggle = currentRow.mKeys.any { it?.code == KEYCODE_FLOAT_TOGGLE }
+                if (hasFloatToggle) {
+                    var totalRowWidth = 0
+                    for (key in currentRow.mKeys) {
+                        if (key != null) {
+                            totalRowWidth += key.width + key.gap
+                        }
+                    }
+
+                    val excess = totalRowWidth - mDisplayWidth
+                    if (excess > 0) {
+                        val spaceKey = currentRow.mKeys.find { it?.code == KEYCODE_SPACE }
+                        if (spaceKey != null && spaceKey.width > excess) {
+                            spaceKey.width -= excess
+                        } else {
+                            val normalKeys =
+                                currentRow.mKeys.filterNotNull().filter {
+                                    it.code != KEYCODE_FLOAT_TOGGLE &&
+                                        it.code != KEYCODE_MODE_CHANGE &&
+                                        it.code != KEYCODE_ENTER &&
+                                        it.code != KEYCODE_DELETE
+                                }
+                            if (normalKeys.isNotEmpty()) {
+                                val reductionPerKey = excess / normalKeys.size
+                                for (key in normalKeys) {
+                                    key.width -= reductionPerKey
+                                }
+                                val remainder = excess % normalKeys.size
+                                normalKeys.first().width -= remainder
+                            }
+                        }
+
+                        var currentX = 0
+                        for (key in currentRow.mKeys) {
+                            if (key != null) {
+                                key.x = currentX + key.gap
+                                currentX += key.width + key.gap
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         mHeight = y
     }
 
