@@ -2428,7 +2428,10 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    private fun applyScaleAndPosition(scaleX: Float, scaleY: Float) {
+    private fun applyScaleAndPosition(
+        scaleX: Float,
+        scaleY: Float,
+    ) {
         val card = binding.keyboardCard
         val screenHeight = resources.displayMetrics.heightPixels.toFloat()
         val cardHeight = card.height.toFloat()
@@ -2456,20 +2459,22 @@ abstract class GeneralKeyboardIME(
                     initialScaleY = PreferencesHelper.getFloatingScaleY(this, language)
 
                     val viewId = view.id
-                    dragFactorX = when (viewId) {
-                        R.id.resize_handle_top_left -> -1f
-                        R.id.resize_handle_bottom_left -> -1f
-                        R.id.resize_handle_top_right -> 1f
-                        R.id.resize_handle_bottom_right -> 1f
-                        else -> 1f
-                    }
-                    dragFactorY = when (viewId) {
-                        R.id.resize_handle_top_left -> -1f
-                        R.id.resize_handle_top_right -> -1f
-                        R.id.resize_handle_bottom_left -> 1f
-                        R.id.resize_handle_bottom_right -> 1f
-                        else -> 1f
-                    }
+                    dragFactorX =
+                        when (viewId) {
+                            R.id.resize_handle_top_left -> -1f
+                            R.id.resize_handle_bottom_left -> -1f
+                            R.id.resize_handle_top_right -> 1f
+                            R.id.resize_handle_bottom_right -> 1f
+                            else -> 1f
+                        }
+                    dragFactorY =
+                        when (viewId) {
+                            R.id.resize_handle_top_left -> -1f
+                            R.id.resize_handle_top_right -> -1f
+                            R.id.resize_handle_bottom_left -> 1f
+                            R.id.resize_handle_bottom_right -> 1f
+                            else -> 1f
+                        }
 
                     val card = binding.keyboardCard
                     card.animate().cancel()
@@ -2533,7 +2538,11 @@ abstract class GeneralKeyboardIME(
                     PreferencesHelper.setFloatingY(this, language, liveY)
 
                     applyFloatingModeState()
-                    card.animate().alpha(1.0f).setDuration(200).start()
+                    card
+                        .animate()
+                        .alpha(1.0f)
+                        .setDuration(200)
+                        .start()
                     true
                 }
                 else -> false
@@ -2635,7 +2644,11 @@ abstract class GeneralKeyboardIME(
                         applyFloatingModeState()
                     }
 
-                    card.animate().alpha(1.0f).setDuration(200).start()
+                    card
+                        .animate()
+                        .alpha(1.0f)
+                        .setDuration(200)
+                        .start()
                     binding.root.requestLayout()
                     startHideCornersTimer()
                     true
