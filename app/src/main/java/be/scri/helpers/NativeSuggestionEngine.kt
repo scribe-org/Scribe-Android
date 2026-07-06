@@ -144,6 +144,22 @@ class NativeSuggestionEngine(private val context: Context) {
     }
 
     /**
+     * Checks whether the given word is itself a complete, valid word in the native dictionary,
+     * independent of whatever completions [getAutocompletions] returns for it.
+     */
+    fun isValidWord(language: String, word: String): Boolean {
+        val dict = getDictionary(language) ?: return false
+        if (word.isBlank()) return false
+
+        return try {
+            dict.isValidWord(word) || dict.isValidWord(word.lowercase(Locale.ROOT))
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking dictionary validity for $word", e)
+            false
+        }
+    }
+
+    /**
      * Queries the native dictionary engine for next-word suggestions (bigram/trigram predictions) given the last typed word.
      */
     fun getNextWordSuggestions(

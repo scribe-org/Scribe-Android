@@ -1071,13 +1071,37 @@ abstract class GeneralKeyboardIME(
         prefix: String,
         limit: Int = 3,
     ): List<String> {
-        if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
-            if (nativeCompletions.isNotEmpty()) {
-                return nativeCompletions
+        val completions =
+            if (this::nativeSuggestionEngine.isInitialized) {
+                val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
+                if (nativeCompletions.isNotEmpty()) {
+                    nativeCompletions
+                } else {
+                    getFallbackAutocompletions(prefix, limit)
+                }
+            } else {
+                getFallbackAutocompletions(prefix, limit)
             }
+
+        // The native dictionary only returns completions that extend `prefix`, never `prefix`
+        // itself. If what the user has already typed is itself a valid word, surface it as the
+        // first suggestion so it can be highlighted, rather than relying on it happening to be
+        // among the completions above.
+        val isPrefixItselfAValidWord =
+            this::nativeSuggestionEngine.isInitialized && nativeSuggestionEngine.isValidWord(language, prefix)
+
+        return if (isPrefixItselfAValidWord && completions.none { it.equals(prefix, ignoreCase = true) }) {
+            (listOf(prefix) + completions).take(limit)
+        } else {
+            completions
         }
-        return try {
+    }
+
+    private fun getFallbackAutocompletions(
+        prefix: String,
+        limit: Int,
+    ): List<String> =
+        try {
             dbManagers.autocompletionManager.getAutocompletions(prefix, limit)
         } catch (e: SQLiteException) {
             Log.e("GeneralKeyboardIME", "Database error in autocompletion", e)
@@ -1086,7 +1110,6 @@ abstract class GeneralKeyboardIME(
             Log.e("GeneralKeyboardIME", "Illegal state in autocompletion", e)
             emptyList()
         }
-    }
 
     /**
      * Gets the current text in the command bar without the cursor.
