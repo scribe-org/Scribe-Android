@@ -49,7 +49,7 @@ class AutocompletionHandler(
                 val completions = ime.getAutocompletions(currentWord, limit = 5)
 
                 if (completions.isNotEmpty()) {
-                    ime.updateAutocompleteSuggestions(completions)
+                    ime.updateAutocompleteSuggestions(completions, currentWord)
                 } else {
                     ime.clearAutocomplete()
                 }

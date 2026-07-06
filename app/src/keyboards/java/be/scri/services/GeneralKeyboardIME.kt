@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
@@ -1768,9 +1769,17 @@ abstract class GeneralKeyboardIME(
     private fun setSuggestionButton(
         button: Button,
         text: String,
+        isExactMatch: Boolean = false,
     ) {
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
+        val textColor =
+            if (isExactMatch) {
+                ContextCompat.getColor(applicationContext, R.color.theme_scribe_blue)
+            } else if (isUserDarkMode) {
+                Color.WHITE
+            } else {
+                "#1E1E1E".toColorInt()
+            }
         button.text = text
         button.isAllCaps = false
         button.visibility = View.VISIBLE
@@ -1778,6 +1787,7 @@ abstract class GeneralKeyboardIME(
         button.setOnClickListener(null)
         button.background = null
         button.setTextColor(textColor)
+        button.setTypeface(button.typeface, if (isExactMatch) Typeface.BOLD else Typeface.NORMAL)
         button.setOnClickListener {
             currentInputConnection?.commitText("$text ", 1)
             moveToIdleState()
@@ -1790,7 +1800,10 @@ abstract class GeneralKeyboardIME(
      * Updates autocomplete UI with a new list of suggestions.
      * Clears it if not idle or no completions.
      */
-    fun updateAutocompleteSuggestions(completions: List<String>?) {
+    fun updateAutocompleteSuggestions(
+        completions: List<String>?,
+        currentWord: String? = null,
+    ) {
         if (currentState != ScribeState.IDLE) {
             uiManager.disableAutoSuggest(language)
             return
@@ -1804,9 +1817,9 @@ abstract class GeneralKeyboardIME(
         val completion2 = completions.getOrNull(1) ?: ""
         val completion3 = completions.getOrNull(2) ?: ""
 
-        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1)
-        setAutocompleteButton(uiManager.binding.translateBtn, completion2)
-        setAutocompleteButton(uiManager.pluralBtn!!, completion3)
+        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1, currentWord)
+        setAutocompleteButton(uiManager.binding.translateBtn, completion2, currentWord)
+        setAutocompleteButton(uiManager.pluralBtn!!, completion3, currentWord)
 
         uiManager.binding.separator1.visibility = View.VISIBLE
         uiManager.binding.separator2.visibility = View.VISIBLE
@@ -1815,12 +1828,16 @@ abstract class GeneralKeyboardIME(
     /**
      * Sets up an autocomplete button with the given suggestion text.
      * When clicked, it replaces the current word with the suggestion.
+     * If the suggestion exactly matches what the user has already typed,
+     * the button is highlighted to signal that pressing it is a no-op.
      */
     private fun setAutocompleteButton(
         button: Button,
         text: String,
+        currentWord: String? = null,
     ) {
-        setSuggestionButton(button, text)
+        val isExactMatch = text.isNotBlank() && text.equals(currentWord, ignoreCase = true)
+        setSuggestionButton(button, text, isExactMatch)
         if (text.isBlank()) {
             button.setOnClickListener(null)
             return
