@@ -752,7 +752,7 @@ GeneralKeyboardIME.kt
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Close Clipboard"
+                android:contentDescription="@string/i18n.app.clipboard.close"
                 android:padding="@dimen/small_margin"
                 android:src="@drawable/ic_arrow_left_vector"
                 android:tint="@color/icon_color" />
@@ -779,7 +779,7 @@ GeneralKeyboardIME.kt
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Clear All"
+                android:contentDescription="@string/i18n.app.clipboard.clear_all"
                 android:padding="@dimen/small_margin"
                 android:src="@drawable/ic_delete_vector"
                 android:tint="#E53935" />
