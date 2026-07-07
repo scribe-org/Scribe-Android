@@ -622,6 +622,8 @@ abstract class GeneralKeyboardIME(
 
     override fun isClipboardKeyEnabled(): Boolean = PreferencesHelper.getIsClipboardKeyEnabled(this, language)
 
+    override fun isFloatingKeyEnabled(): Boolean = PreferencesHelper.getIsFloatingKeyEnabled(this, language)
+
     private fun loadLanguageData() {
         val languageAlias = getLanguageAlias(language)
         dataContract = dbManagers.getLanguageContract(languageAlias)

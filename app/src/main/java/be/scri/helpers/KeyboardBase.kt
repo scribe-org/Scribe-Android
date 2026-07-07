@@ -40,6 +40,7 @@ class KeyboardBase {
 
         fun isFloatingModeActive(): Boolean
         fun isClipboardKeyEnabled(): Boolean
+        fun isFloatingKeyEnabled(): Boolean
     }
 
     /** Horizontal gap default for all rows  */
@@ -597,8 +598,10 @@ class KeyboardBase {
                             }
 
                             if (key.code == KEYCODE_MODE_CHANGE) {
-                                key.width = (mDisplayWidth * 0.115).toInt()
-                            } else if (currentRow.mKeys.any { it.code == KEYCODE_FLOAT_TOGGLE }) {
+                                if (provider?.isFloatingKeyEnabled() == true) {
+                                    key.width = (mDisplayWidth * 0.115).toInt()
+                                }
+                            } else if (provider?.isFloatingKeyEnabled() == true && currentRow.mKeys.any { it.code == KEYCODE_FLOAT_TOGGLE }) {
                                 if (key.code == ','.code && !hideComma) {
                                     key.width = (mDisplayWidth * 0.1).toInt()
                                 } else if (key.label == "_") {
@@ -648,7 +651,7 @@ class KeyboardBase {
                         if (x > mMinWidth) {
                             mMinWidth = x
                         }
-                        if (key.code == KEYCODE_MODE_CHANGE) {
+                        if (key.code == KEYCODE_MODE_CHANGE && provider?.isFloatingKeyEnabled() == true) {
                             val floatKey = Key(currentRow!!)
                             floatKey.code = KEYCODE_FLOAT_TOGGLE
                             floatKey.width = (mDisplayWidth * 0.1).toInt()

@@ -27,6 +27,7 @@ object PreferencesHelper {
     private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
     private const val INCREASE_TEXT_SIZE = "increase_text_size"
     private const val CLIPBOARD_KEY_ON_KEYBOARD = "clipboard_key_on_keyboard"
+    private const val FLOATING_KEY_ON_KEYBOARD = "floating_key_on_keyboard"
 
     /**
      * Sets the translation source language for a given language.
@@ -558,6 +559,31 @@ object PreferencesHelper {
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(CLIPBOARD_KEY_ON_KEYBOARD, language), true)
+    }
+
+    /**
+     * Sets the preference for showing or hiding the floating key on the keyboard.
+     */
+    fun setFloatingKeyPreference(
+        context: Context,
+        language: String,
+        enabled: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(FLOATING_KEY_ON_KEYBOARD, language), enabled)
+        }
+    }
+
+    /**
+     * Retrieves whether the floating key is enabled on the keyboard for a given language.
+     */
+    fun getIsFloatingKeyEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(FLOATING_KEY_ON_KEYBOARD, language), false)
     }
 
     /**
