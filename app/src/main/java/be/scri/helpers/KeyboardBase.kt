@@ -39,6 +39,7 @@ class KeyboardBase {
         fun isSearchBar(): Boolean
 
         fun isFloatingModeActive(): Boolean
+        fun isClipboardKeyEnabled(): Boolean
     }
 
     /** Horizontal gap default for all rows  */
@@ -701,7 +702,7 @@ class KeyboardBase {
             }
         }
 
-        if (currentKeyboardMode == keyboardLettersMode && mKeys != null) {
+        if (currentKeyboardMode == keyboardLettersMode && mKeys != null && provider?.isClipboardKeyEnabled() == true) {
             val spaceKey = mKeys!!.find { it?.code == 32 }
             val commaKey = mKeys!!.find { it?.code == ','.code }
             val row = mRows.lastOrNull()
