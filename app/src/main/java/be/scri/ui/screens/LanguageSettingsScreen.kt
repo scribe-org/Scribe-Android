@@ -376,6 +376,7 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
  * @return A list of [ScribeItem]s to be displayed in the UI.
  */
 @Composable
+@Suppress("LongParameterList")
 private fun getLayoutListData(
     language: String,
     togglePeriodAndCommaState: Boolean,
