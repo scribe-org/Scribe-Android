@@ -9,7 +9,9 @@ import android.content.Intent
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
@@ -183,6 +185,9 @@ abstract class GeneralKeyboardIME(
         const val TEXT_LENGTH = 20
         const val NOUN_TYPE_SIZE = 20f
         const val SUGGESTION_SIZE = 15f
+        const val SUGGESTION_HIGHLIGHT_ALPHA = 51
+        const val SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP = 8f
+        const val SUGGESTION_HIGHLIGHT_INSET_DP = 4f
         const val DARK_THEME = "#aeb3be"
         const val LIGHT_THEME = "#4b4b4b"
         internal const val MAX_TEXT_LENGTH = 1000
@@ -1792,29 +1797,42 @@ abstract class GeneralKeyboardIME(
     private fun setSuggestionButton(
         button: Button,
         text: String,
-        isExactMatch: Boolean = false,
+        isHighlighted: Boolean = false,
     ) {
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-        val textColor =
-            if (isExactMatch) {
-                ContextCompat.getColor(applicationContext, R.color.theme_scribe_blue)
-            } else if (isUserDarkMode) {
-                Color.WHITE
-            } else {
-                "#1E1E1E".toColorInt()
-            }
+        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
         button.text = text
         button.isAllCaps = false
         button.visibility = View.VISIBLE
         button.textSize = SUGGESTION_SIZE
         button.setOnClickListener(null)
-        button.background = null
+        button.background = if (isHighlighted) buildSuggestionHighlightBackground() else null
         button.setTextColor(textColor)
-        button.setTypeface(button.typeface, if (isExactMatch) Typeface.BOLD else Typeface.NORMAL)
+        button.setTypeface(button.typeface, Typeface.NORMAL)
         button.setOnClickListener {
             currentInputConnection?.commitText("$text ", 1)
             moveToIdleState()
         }
+    }
+
+    /**
+     * Builds the rounded, tinted background used to highlight a suggestion chip that the
+     * keyboard considers "obvious" (e.g. the user has already typed it in full).
+     */
+    private fun buildSuggestionHighlightBackground(): Drawable {
+        val highlightColor =
+            ColorUtils.setAlphaComponent(
+                ContextCompat.getColor(applicationContext, R.color.theme_scribe_blue),
+                SUGGESTION_HIGHLIGHT_ALPHA,
+            )
+        val background =
+            GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP * resources.displayMetrics.density
+                setColor(highlightColor)
+            }
+        val insetPx = (SUGGESTION_HIGHLIGHT_INSET_DP * resources.displayMetrics.density).toInt()
+        return InsetDrawable(background, insetPx, insetPx, insetPx, insetPx)
     }
 
     // MARK: Autocomplete
@@ -1860,7 +1878,7 @@ abstract class GeneralKeyboardIME(
         currentWord: String? = null,
     ) {
         val isExactMatch = text.isNotBlank() && text.equals(currentWord, ignoreCase = true)
-        setSuggestionButton(button, text, isExactMatch)
+        setSuggestionButton(button, text, isHighlighted = isExactMatch)
         if (text.isBlank()) {
             button.setOnClickListener(null)
             return
