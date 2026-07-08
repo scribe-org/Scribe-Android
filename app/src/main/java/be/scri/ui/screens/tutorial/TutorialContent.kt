@@ -8,24 +8,11 @@ package be.scri.ui.screens.tutorial
  * through a specific Scribe feature.
  */
 object TutorialContent {
-    private fun getLanguageName(languageCode: String): String =
-        when (languageCode) {
-            "en" -> "English"
-            "es" -> "Spanish"
-            "fr" -> "French"
-            "it" -> "Italian"
-            "pt" -> "Portuguese"
-            "ru" -> "Russian"
-            "sv" -> "Swedish"
-            else -> "German"
-        }
-
     /**
      * Chapter 1: Noun Annotation.
      * Teaches users about gender tags that appear when typing nouns.
      */
     fun getNounAnnotationSteps(languageCode: String): List<TutorialStep> {
-        val language = getLanguageName(languageCode)
         val (fatherWord, fatherTag, fatherGender) =
             when (languageCode) {
                 "en" -> Triple("father", "M", "Masculine")
@@ -53,19 +40,17 @@ object TutorialContent {
         return listOf(
             TutorialStep(
                 instruction =
-                    "Write the word \"$fatherWord\". Notice the word suggestions " +
+                    "Write the word \"$motherWord\". Notice the word suggestions " +
                         "that appear on the keyboard's top bar.\n\n" +
                         "Then, press space. You will see the word's gender " +
-                        "tag on the keyboard's top bar \u2013 in this case, \"$fatherTag\" for $fatherGender.",
-                hint = "If your second language is not $language, change the language in your keyboard.",
-                expectedWord = fatherWord,
+                        "tag on the keyboard's top bar \u2013 in this case, \"$motherTag\" for $motherGender.",
+                expectedWord = motherWord,
             ),
             TutorialStep(
                 instruction =
-                    "Now write the word \"$motherWord\" and then press space. " +
-                        "The gender tag will be \"$motherTag\", for $motherGender.",
-                hint = "If your second language is not $language, change the language in your keyboard.",
-                expectedWord = motherWord,
+                    "Now write the word \"$fatherWord\" and then press space. " +
+                        "The gender tag will be \"$fatherTag\", for $fatherGender.",
+                expectedWord = fatherWord,
             ),
         )
     }
@@ -75,47 +60,74 @@ object TutorialContent {
      * Teaches users how to use the Translate command via the Scribe key.
      */
     fun wordTranslationSteps(languageCode: String): List<TutorialStep> {
-        val language = getLanguageName(languageCode)
+        val translation =
+            when (languageCode) {
+                "en" -> "Translate"
+                "es" -> "Traducir"
+                "fr" -> "Traduire"
+                "it" -> "Tradurre"
+                "pt" -> "Traduzir"
+                "ru" -> "Перевести"
+                "sv" -> "Översätt"
+                else -> "Übersetzen"
+            }
         return listOf(
             TutorialStep(
                 instruction =
-                    "Let's translate! Tap the \u27A1 Scribe key on the top-left " +
-                        "corner of your keyboard, and select \u00DCbersetzen.\n\n" +
+                    "Let's translate! Tap the pencil-like Scribe key on the top-left " +
+                        "corner of your keyboard, and select $translation.\n\n" +
                         "Then write the word you want to translate, press \u25B6, " +
                         "and the translation will be returned to you.",
-                hint = "If your second language is not $language, change the language in your keyboard.",
                 requiresValidation = false,
             ),
         )
     }
 
     fun verbConjugationSteps(languageCode: String): List<TutorialStep> {
-        val language = getLanguageName(languageCode)
+        val conjugation =
+            when (languageCode) {
+                "en" -> "Conjugate"
+                "es" -> "Conjugar"
+                "fr" -> "Conjuguer"
+                "it" -> "Coniugare"
+                "pt" -> "Conjugar"
+                "ru" -> "Спрягать"
+                "sv" -> "Konjugera"
+                else -> "Konjugieren"
+            }
         return listOf(
             TutorialStep(
                 instruction =
-                    "On to the verbs. Tap the \u27A1 Scribe key on the top-left " +
-                        "corner of your keyboard, and select Konjugieren.\n\n" +
+                    "On to the verbs. Tap the pencil-like Scribe key on the top-left " +
+                        "corner of your keyboard, and select $conjugation.\n\n" +
                         "Write the verb you want to conjugate, press \u25B6, and " +
                         "you will see a table with all the verb tenses. Select " +
                         "the one you need and it will be inserted!",
-                hint = "If your second language is not $language, change the language in your keyboard.",
                 requiresValidation = false,
             ),
         )
     }
 
     fun nounPluralsSteps(languageCode: String): List<TutorialStep> {
-        val language = getLanguageName(languageCode)
+        val plural =
+            when (languageCode) {
+                "en" -> "Plural"
+                "es" -> "Plural"
+                "fr" -> "Pluriel"
+                "it" -> "Plurale"
+                "pt" -> "Plural"
+                "ru" -> "Множ-ое"
+                "sv" -> "Plural"
+                else -> "Plural"
+            }
         return listOf(
             TutorialStep(
                 instruction =
                     "Finding the plural of a noun with Scribe is easy. Tap " +
                         "the \u27A1 Scribe key on the top-left corner of your " +
-                        "keyboard, and select Plural.\n\n" +
+                        "keyboard, and select $plural.\n\n" +
                         "Then write the noun you want the plural for, press " +
                         "\u25B6, and the plural will be returned to you.",
-                hint = "If your second language is not $language, change the language in your keyboard.",
                 requiresValidation = false,
             ),
         )
