@@ -118,17 +118,17 @@ class KeyHandler(
                 true
             }
             KeyboardBase.KEYCODE_EMOJI -> {
-              ime.openEmojiKeyboard()
-              true
+                ime.openEmojiKeyboard()
+                true
             }
-          KeyboardBase.KEYCODE_CLIPBOARD -> {
-            ime.openClipboardPanel()
-            true
-          }
-          else -> {
-            handleDefaultKey(code)
-            true
-          }
+            KeyboardBase.KEYCODE_CLIPBOARD -> {
+                ime.openClipboardPanel()
+                true
+            }
+            else -> {
+                handleDefaultKey(code)
+                true
+            }
         }
 
     /**
