@@ -4,6 +4,7 @@ package be.scri.helpers.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.text.Spannable
@@ -794,21 +795,26 @@ class KeyboardUIManager(
         binding.keyboardView.visibility = View.GONE
         binding.commandOptionsBar.visibility = View.GONE
 
+        val isDarkMode = getIsDarkModeOrNot(context)
+
         binding.emojiPaletteClose.setOnClickListener {
             hideEmojiPalette()
         }
+        binding.emojiPaletteClose.setColorFilter(if (isDarkMode) Color.WHITE else Color.BLACK)
 
         binding.emojiPaletteModeChange.setOnClickListener {
             hideEmojiPalette()
         }
         binding.emojiPaletteModeChange.text = "ABC"
-        binding.emojiPaletteModeChange.setTextColor(
-            ContextCompat.getColor(context, R.color.emoji_palette_icons),
-        )
+        binding.emojiPaletteModeChange.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
 
         binding.emojiPaletteBackspace.setOnClickListener {
             listener.onKeyboardActionListener().onKey(KeyboardBase.KEYCODE_DELETE)
         }
+        binding.emojiPaletteBackspace.setColorFilter(if (isDarkMode) Color.WHITE else Color.BLACK)
+        val keySelector = if (isDarkMode) R.drawable.keyboard_key_selector_dark else R.drawable.keyboard_key_selector
+        binding.emojiPaletteModeChange.setBackgroundResource(keySelector)
+        binding.emojiPaletteBackspace.setBackgroundResource(keySelector)
 
         Thread {
             val fullEmojiList = parseRawEmojiSpecsFile(context, EMOJI_SPEC_FILE_PATH)
@@ -895,6 +901,13 @@ class KeyboardUIManager(
         layoutManager: AutoGridLayoutManager,
     ) {
         binding.emojiCategoriesStrip.removeAllViews()
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val activeColor =
+            ContextCompat.getColor(
+                context,
+                if (isDarkMode) R.color.nav_bar_selected_color_dark else R.color.nav_bar_selected_color_light,
+            )
+        val inactiveColor = ContextCompat.getColor(context, R.color.nav_item_grey)
 
         var activeButton: android.widget.ImageButton? = null
 
@@ -903,8 +916,8 @@ class KeyboardUIManager(
                 android.widget.ImageButton(context).apply {
                     setImageResource(getCategoryIconRes(category))
                     background = null
-                    imageAlpha = if (index == 0) 255 else 128 // 50% opacity for inactive
-                    imageTintList = ContextCompat.getColorStateList(context, R.color.emoji_palette_icons)
+                    imageTintList =
+                        ColorStateList.valueOf(if (index == 0) activeColor else inactiveColor)
                     layoutParams =
                         android.widget.LinearLayout.LayoutParams(
                             0,
@@ -912,8 +925,8 @@ class KeyboardUIManager(
                             1f,
                         )
                     setOnClickListener {
-                        activeButton?.imageAlpha = 128 // dim previous.
-                        imageAlpha = 255 // full opacity for active.
+                        activeButton?.imageTintList = ColorStateList.valueOf(inactiveColor)
+                        imageTintList = ColorStateList.valueOf(activeColor)
                         activeButton = this
 
                         val position =
