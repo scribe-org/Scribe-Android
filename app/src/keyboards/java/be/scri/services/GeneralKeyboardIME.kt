@@ -159,6 +159,12 @@ abstract class GeneralKeyboardIME(
     private var currentEnterKeyType: Int? = null
     private var isNumericKeyboardActive: Boolean = false
 
+    /**
+     * The autocomplete suggestion currently shown highlighted (if any), so a following space
+     * press can insert it in place of what the user has typed, matching Scribe-iOS behavior.
+     */
+    private var highlightedAutocompleteSuggestion: String? = null
+
     internal var currentState: ScribeState = ScribeState.IDLE
     internal var invalidCommandSource: ScribeState = ScribeState.IDLE
 
@@ -1846,10 +1852,12 @@ abstract class GeneralKeyboardIME(
         currentWord: String? = null,
     ) {
         if (currentState != ScribeState.IDLE) {
+            highlightedAutocompleteSuggestion = null
             uiManager.disableAutoSuggest(language)
             return
         }
         if (completions.isNullOrEmpty()) {
+            highlightedAutocompleteSuggestion = null
             uiManager.disableAutoSuggest(language)
             return
         }
@@ -1857,6 +1865,9 @@ abstract class GeneralKeyboardIME(
         val completion1 = completions.getOrNull(0) ?: ""
         val completion2 = completions.getOrNull(1) ?: ""
         val completion3 = completions.getOrNull(2) ?: ""
+
+        highlightedAutocompleteSuggestion =
+            completion1.takeIf { it.isNotBlank() && it.equals(currentWord, ignoreCase = true) }
 
         setAutocompleteButton(uiManager.binding.conjugateBtn, completion1, currentWord)
         setAutocompleteButton(uiManager.binding.translateBtn, completion2, currentWord)
@@ -1884,14 +1895,37 @@ abstract class GeneralKeyboardIME(
             return
         }
         button.setOnClickListener {
-            val ic = currentInputConnection ?: return@setOnClickListener
-            val beforeText = ic.getTextBeforeCursor(50, 0) ?: ""
-            val wordStartIndex = beforeText.lastIndexOfAny(charArrayOf(' ', '\n', '\t', '.', ',', '?', '!')) + 1
-            val currentWord = beforeText.substring(wordStartIndex)
-            ic.deleteSurroundingText(currentWord.length, 0)
-            ic.commitText(text, 1)
+            replaceCurrentWordWithSuggestion(text)
             moveToIdleState()
         }
+    }
+
+    /**
+     * Deletes the word currently being typed (immediately before the cursor) and commits
+     * [text] in its place.
+     */
+    private fun replaceCurrentWordWithSuggestion(text: String) {
+        val ic = currentInputConnection ?: return
+        val beforeText = ic.getTextBeforeCursor(50, 0) ?: ""
+        val wordStartIndex = beforeText.lastIndexOfAny(charArrayOf(' ', '\n', '\t', '.', ',', '?', '!')) + 1
+        val currentWord = beforeText.substring(wordStartIndex)
+        ic.deleteSurroundingText(currentWord.length, 0)
+        ic.commitText(text, 1)
+    }
+
+    /**
+     * If an autocomplete suggestion is currently highlighted (i.e. the user has typed a word
+     * that's "obviously" what they want), replaces the typed word with it, appends a space, and
+     * returns true. Otherwise does nothing and returns false. Lets the space key complete an
+     * obvious word instead of just inserting a literal space, matching Scribe-iOS behavior.
+     */
+    fun tryInsertHighlightedAutocompleteSuggestion(): Boolean {
+        val suggestion = highlightedAutocompleteSuggestion ?: return false
+        highlightedAutocompleteSuggestion = null
+        replaceCurrentWordWithSuggestion(suggestion)
+        currentInputConnection?.commitText(" ", 1)
+        moveToIdleState()
+        return true
     }
 
     /**
@@ -1899,6 +1933,7 @@ abstract class GeneralKeyboardIME(
      * to the default command buttons via the UI Manager.
      */
     fun clearAutocomplete() {
+        highlightedAutocompleteSuggestion = null
         if (this::uiManager.isInitialized) {
             uiManager.disableAutoSuggest(language)
         }
