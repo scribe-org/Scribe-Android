@@ -1075,13 +1075,22 @@ abstract class GeneralKeyboardIME(
     // MARK: State & Logic Helpers
 
     /**
+     * The result of an autocomplete lookup: the ordered suggestions to display, and which one
+     * (if any) is "obvious" enough to highlight and auto-insert on space.
+     */
+    data class AutocompleteResult(
+        val completions: List<String>,
+        val highlightedSuggestion: String?,
+    )
+
+    /**
      * Safely fetches autocomplete suggestions for the given prefix.
-     * Returns an empty list if a database or state error occurs.
+     * Returns an empty result if a database or state error occurs.
      */
     fun getAutocompletions(
         prefix: String,
         limit: Int = 3,
-    ): List<String> {
+    ): AutocompleteResult {
         val completions =
             if (this::nativeSuggestionEngine.isInitialized) {
                 val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
@@ -1101,11 +1110,19 @@ abstract class GeneralKeyboardIME(
         val isPrefixItselfAValidWord =
             this::nativeSuggestionEngine.isInitialized && nativeSuggestionEngine.isValidWord(language, prefix)
 
-        return if (isPrefixItselfAValidWord && completions.none { it.equals(prefix, ignoreCase = true) }) {
-            (listOf(prefix) + completions).take(limit)
-        } else {
-            completions
+        if (isPrefixItselfAValidWord && completions.none { it.equals(prefix, ignoreCase = true) }) {
+            return AutocompleteResult((listOf(prefix) + completions).take(limit), highlightedSuggestion = prefix)
         }
+
+        // If exactly one word could possibly complete what's been typed, it's unambiguous: highlight
+        // it as the first suggestion, but still offer the literally typed prefix as another option,
+        // in case the user actually wanted to keep typing their own word.
+        if (!isPrefixItselfAValidWord && completions.size == 1) {
+            val onlyCompletion = completions.first()
+            return AutocompleteResult(listOf(onlyCompletion, prefix).take(limit), highlightedSuggestion = onlyCompletion)
+        }
+
+        return AutocompleteResult(completions, highlightedSuggestion = null)
     }
 
     private fun getFallbackAutocompletions(
@@ -1849,7 +1866,7 @@ abstract class GeneralKeyboardIME(
      */
     fun updateAutocompleteSuggestions(
         completions: List<String>?,
-        currentWord: String? = null,
+        highlightedSuggestion: String? = null,
     ) {
         if (currentState != ScribeState.IDLE) {
             highlightedAutocompleteSuggestion = null
@@ -1866,12 +1883,11 @@ abstract class GeneralKeyboardIME(
         val completion2 = completions.getOrNull(1) ?: ""
         val completion3 = completions.getOrNull(2) ?: ""
 
-        highlightedAutocompleteSuggestion =
-            completion1.takeIf { it.isNotBlank() && it.equals(currentWord, ignoreCase = true) }
+        highlightedAutocompleteSuggestion = highlightedSuggestion
 
-        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1, currentWord)
-        setAutocompleteButton(uiManager.binding.translateBtn, completion2, currentWord)
-        setAutocompleteButton(uiManager.pluralBtn!!, completion3, currentWord)
+        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1, highlightedSuggestion)
+        setAutocompleteButton(uiManager.binding.translateBtn, completion2, highlightedSuggestion)
+        setAutocompleteButton(uiManager.pluralBtn!!, completion3, highlightedSuggestion)
 
         uiManager.binding.separator1.visibility = View.VISIBLE
         uiManager.binding.separator2.visibility = View.VISIBLE
@@ -1880,16 +1896,17 @@ abstract class GeneralKeyboardIME(
     /**
      * Sets up an autocomplete button with the given suggestion text.
      * When clicked, it replaces the current word with the suggestion.
-     * If the suggestion exactly matches what the user has already typed,
-     * the button is highlighted to signal that pressing it is a no-op.
+     * If this suggestion is the one the keyboard considers "obvious" (whether because the user
+     * typed it in full, or because it's the only word that can follow what's been typed), the
+     * button is highlighted to signal that pressing space will also insert it.
      */
     private fun setAutocompleteButton(
         button: Button,
         text: String,
-        currentWord: String? = null,
+        highlightedSuggestion: String? = null,
     ) {
-        val isExactMatch = text.isNotBlank() && text.equals(currentWord, ignoreCase = true)
-        setSuggestionButton(button, text, isHighlighted = isExactMatch)
+        val isHighlighted = text.isNotBlank() && text.equals(highlightedSuggestion, ignoreCase = true)
+        setSuggestionButton(button, text, isHighlighted)
         if (text.isBlank()) {
             button.setOnClickListener(null)
             return
