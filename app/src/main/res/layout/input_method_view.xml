@@ -752,7 +752,7 @@ GeneralKeyboardIME.kt
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/i18n.app.clipboard.close"
+                android:contentDescription="@string/i18n.app.clipboard.close_clipboard"
                 android:padding="@dimen/small_margin"
                 android:src="@drawable/ic_arrow_left_vector"
                 android:tint="@color/icon_color" />
