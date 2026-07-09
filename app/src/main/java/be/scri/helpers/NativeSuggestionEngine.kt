@@ -134,8 +134,11 @@ class NativeSuggestionEngine(private val context: Context) {
             )
 
             suggestions?.map { it.mWord }
-                ?.filter { it.isNotBlank() && it.lowercase(Locale.ROOT) != prefix.lowercase(Locale.ROOT) }
-                ?.take(limit)
+                ?.filter {
+                    it.isNotBlank() &&
+                        it.lowercase(Locale.ROOT) != prefix.lowercase(Locale.ROOT) &&
+                        it.startsWith(prefix, ignoreCase = true)
+                }?.take(limit)
                 ?: emptyList()
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching native suggestions for $prefix", e)
