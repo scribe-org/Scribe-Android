@@ -22,6 +22,7 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.util.Log
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -194,6 +195,7 @@ abstract class GeneralKeyboardIME(
         const val SUGGESTION_HIGHLIGHT_ALPHA = 51
         const val SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP = 8f
         const val SUGGESTION_HIGHLIGHT_INSET_DP = 4f
+        const val SUGGESTION_UNDERLINE_HEIGHT_DP = 3f
         const val DARK_THEME = "#aeb3be"
         const val LIGHT_THEME = "#4b4b4b"
         internal const val MAX_TEXT_LENGTH = 1000
@@ -1821,6 +1823,7 @@ abstract class GeneralKeyboardIME(
         button: Button,
         text: String,
         isHighlighted: Boolean = false,
+        showUnderline: Boolean = false,
     ) {
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
@@ -1829,7 +1832,7 @@ abstract class GeneralKeyboardIME(
         button.visibility = View.VISIBLE
         button.textSize = SUGGESTION_SIZE
         button.setOnClickListener(null)
-        button.background = if (isHighlighted) buildSuggestionHighlightBackground() else null
+        button.background = if (showUnderline && text.isNotBlank()) buildSuggestionBackground(isHighlighted) else null
         button.setTextColor(textColor)
         button.setTypeface(button.typeface, Typeface.NORMAL)
         button.setOnClickListener {
@@ -1839,23 +1842,47 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Builds the rounded, tinted background used to highlight a suggestion chip that the
-     * keyboard considers "obvious" (e.g. the user has already typed it in full).
+     * Builds the background for an autocomplete suggestion chip: a colored underline (green when
+     * the suggestion is highlighted as "obvious", red otherwise), plus a rounded, tinted fill
+     * behind the text when highlighted -- matching the Scribe-iOS reference design.
      */
-    private fun buildSuggestionHighlightBackground(): Drawable {
+    private fun buildSuggestionBackground(isHighlighted: Boolean): Drawable {
+        val density = resources.displayMetrics.density
+        val insetPx = (SUGGESTION_HIGHLIGHT_INSET_DP * density).toInt()
+        val underlineHeightPx = (SUGGESTION_UNDERLINE_HEIGHT_DP * density).toInt()
+        val underlineColorRes = if (isHighlighted) R.color.annotateGreen else R.color.annotateRed
+        val underline =
+            GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = underlineHeightPx / 2f
+                setColor(ContextCompat.getColor(applicationContext, underlineColorRes))
+            }
+
+        val layers = if (isHighlighted) arrayOf(buildSuggestionHighlightFill(), underline) else arrayOf(underline)
+        val underlineIndex = layers.lastIndex
+        val layered =
+            LayerDrawable(layers).apply {
+                setLayerGravity(underlineIndex, Gravity.BOTTOM)
+                setLayerHeight(underlineIndex, underlineHeightPx)
+            }
+        return InsetDrawable(layered, insetPx, insetPx, insetPx, insetPx)
+    }
+
+    /**
+     * Builds the rounded, tinted fill used to highlight a suggestion chip that the keyboard
+     * considers "obvious" (e.g. the user has already typed it in full).
+     */
+    private fun buildSuggestionHighlightFill(): Drawable {
         val highlightColor =
             ColorUtils.setAlphaComponent(
                 ContextCompat.getColor(applicationContext, R.color.theme_scribe_blue),
                 SUGGESTION_HIGHLIGHT_ALPHA,
             )
-        val background =
-            GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP * resources.displayMetrics.density
-                setColor(highlightColor)
-            }
-        val insetPx = (SUGGESTION_HIGHLIGHT_INSET_DP * resources.displayMetrics.density).toInt()
-        return InsetDrawable(background, insetPx, insetPx, insetPx, insetPx)
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP * resources.displayMetrics.density
+            setColor(highlightColor)
+        }
     }
 
     // MARK: Autocomplete
@@ -1909,7 +1936,7 @@ abstract class GeneralKeyboardIME(
         highlightedSuggestion: String? = null,
     ) {
         val isHighlighted = text.isNotBlank() && text.equals(highlightedSuggestion, ignoreCase = true)
-        setSuggestionButton(button, text, isHighlighted)
+        setSuggestionButton(button, text, isHighlighted, showUnderline = true)
         if (text.isBlank()) {
             button.setOnClickListener(null)
             return
