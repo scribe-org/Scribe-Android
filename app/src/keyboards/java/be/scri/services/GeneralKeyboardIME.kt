@@ -1885,8 +1885,11 @@ abstract class GeneralKeyboardIME(
 
         highlightedAutocompleteSuggestion = highlightedSuggestion
 
-        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1, highlightedSuggestion)
-        setAutocompleteButton(uiManager.binding.translateBtn, completion2, highlightedSuggestion)
+        // Visual left-to-right order of these buttons is translateBtn, conjugateBtn, pluralBtn
+        // (see input_method_view.xml's constraint chain), so completion1 -- the one that may be
+        // highlighted -- must go in translateBtn to actually land in the first, leftmost slot.
+        setAutocompleteButton(uiManager.binding.translateBtn, completion1, highlightedSuggestion)
+        setAutocompleteButton(uiManager.binding.conjugateBtn, completion2, highlightedSuggestion)
         setAutocompleteButton(uiManager.pluralBtn!!, completion3, highlightedSuggestion)
 
         uiManager.binding.separator1.visibility = View.VISIBLE

@@ -152,7 +152,9 @@ class NativeSuggestionEngine(private val context: Context) {
         if (word.isBlank()) return false
 
         return try {
-            dict.isValidWord(word) || dict.isValidWord(word.lowercase(Locale.ROOT))
+            dict.isValidWord(word) ||
+                dict.isValidWord(word.lowercase(Locale.ROOT)) ||
+                dict.isValidWord(word.replaceFirstChar { it.uppercaseChar() })
         } catch (e: Exception) {
             Log.e(TAG, "Error checking dictionary validity for $word", e)
             false
