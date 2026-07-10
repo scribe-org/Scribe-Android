@@ -1,5 +1,7 @@
 package be.scri.ui.compose
 
+import be.scri.helpers.clipboard.ClipboardItem
+
 interface KeyboardActionListener {
     fun onPress(primaryCode: Int)
     fun onKey(code: Int)
@@ -19,4 +21,11 @@ interface KeyboardActionListener {
     fun onPluralClicked()
     fun onCloseClicked()
     fun onSuggestionClicked(suggestion: String)
+
+    // Clipboard panel actions
+    fun onClipboardItemClicked(item: ClipboardItem) {}
+    fun onClipboardItemDelete(item: ClipboardItem) {}
+    fun onClipboardItemPinToggle(item: ClipboardItem) {}
+    fun onClipboardClearAll() {}
+    fun onClipboardPanelClose() {}
 }

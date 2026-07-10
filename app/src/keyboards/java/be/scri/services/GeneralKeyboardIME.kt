@@ -44,6 +44,7 @@ import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.KeyboardLanguageMappingConstants
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
@@ -265,7 +266,14 @@ abstract class GeneralKeyboardIME(
      */
     override fun onCreateInputView(): View {
         keyboardViewModel.updateLanguage(language)
-        
+
+        val langAlias = getLanguageAlias(language)
+        keyboardViewModel.updateCommandLabels(
+            KeyboardLanguageMappingConstants.translatePlaceholder[langAlias] ?: "Translate",
+            KeyboardLanguageMappingConstants.conjugatePlaceholder[langAlias] ?: "Conjugate",
+            KeyboardLanguageMappingConstants.pluralPlaceholder[langAlias] ?: "Plural",
+        )
+
         keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
         
         currentState = ScribeState.IDLE
@@ -1872,17 +1880,51 @@ abstract class GeneralKeyboardIME(
 
     fun openClipboardPanel() {
         keyboardViewModel.setClipboardPanelVisible(true)
+        refreshClipboardItems()
+    }
 
-        val clipboardRepository =
-            be.scri.helpers.clipboard
-                .ClipboardRepository(this)
+    fun closeClipboardPanel() {
+        keyboardViewModel.setClipboardPanelVisible(false)
+    }
+
+    private val clipboardRepository by lazy {
+        be.scri.helpers.clipboard.ClipboardRepository(this)
+    }
+
+    private fun refreshClipboardItems() {
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
             val items = clipboardRepository.getAllItems()
             keyboardViewModel.updateClipboardItems(items)
         }
     }
 
-    fun closeClipboardPanel() {
-        keyboardViewModel.setClipboardPanelVisible(false)
+    override fun onClipboardItemClicked(item: be.scri.helpers.clipboard.ClipboardItem) {
+        currentInputConnection?.commitText(item.text, 1)
+        closeClipboardPanel()
+    }
+
+    override fun onClipboardItemDelete(item: be.scri.helpers.clipboard.ClipboardItem) {
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+            clipboardRepository.deleteItem(item.id)
+            refreshClipboardItems()
+        }
+    }
+
+    override fun onClipboardItemPinToggle(item: be.scri.helpers.clipboard.ClipboardItem) {
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+            clipboardRepository.togglePin(item.id, item.isPinned)
+            refreshClipboardItems()
+        }
+    }
+
+    override fun onClipboardClearAll() {
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+            clipboardRepository.clearAll()
+            refreshClipboardItems()
+        }
+    }
+
+    override fun onClipboardPanelClose() {
+        closeClipboardPanel()
     }
 }

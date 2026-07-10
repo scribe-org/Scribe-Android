@@ -88,6 +88,21 @@ class KeyboardViewModel {
     private val _bottomInset = MutableStateFlow(0)
     val bottomInset: StateFlow<Int> = _bottomInset.asStateFlow()
 
+    private val _translateLabel = MutableStateFlow("Translate")
+    val translateLabel: StateFlow<String> = _translateLabel.asStateFlow()
+
+    private val _conjugateLabel = MutableStateFlow("Conjugate")
+    val conjugateLabel: StateFlow<String> = _conjugateLabel.asStateFlow()
+
+    private val _pluralLabel = MutableStateFlow("Plural")
+    val pluralLabel: StateFlow<String> = _pluralLabel.asStateFlow()
+
+    fun updateCommandLabels(translate: String, conjugate: String, plural: String) {
+        _translateLabel.value = translate
+        _conjugateLabel.value = conjugate
+        _pluralLabel.value = plural
+    }
+
     fun updateState(state: ScribeState) {
         _currentState.value = state
     }

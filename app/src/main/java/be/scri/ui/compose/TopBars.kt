@@ -166,6 +166,10 @@ fun SelectCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
     val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
     val closeBtnBg = if (isDarkMode) Color(0xFF3366CC) else Color(0xFF005FFF)
 
+    val translateLabel by viewModel.translateLabel.collectAsState()
+    val conjugateLabel by viewModel.conjugateLabel.collectAsState()
+    val pluralLabel by viewModel.pluralLabel.collectAsState()
+
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -190,28 +194,25 @@ fun SelectCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                 modifier = Modifier.size(20.dp)
             )
         }
-        
-        // Translate button with background box
+
         CommandButton(
-            text = "Translate",
+            text = translateLabel,
             isDarkMode = isDarkMode,
             modifier = Modifier.weight(1f)
         ) {
             actionListener.onTranslateClicked()
         }
-        
-        // Conjugate button with background box
+
         CommandButton(
-            text = "Conjugate",
+            text = conjugateLabel,
             isDarkMode = isDarkMode,
             modifier = Modifier.weight(1f)
         ) {
             actionListener.onConjugateClicked()
         }
-        
-        // Plural button with background box
+
         CommandButton(
-            text = "Plural",
+            text = pluralLabel,
             isDarkMode = isDarkMode,
             modifier = Modifier.weight(1f)
         ) {

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 fun ScribeKeyboardApp(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
     val currentState by viewModel.currentState.collectAsState()
     val isInvalidInfoVisible by viewModel.isInvalidInfoVisible.collectAsState()
+    val isClipboardPanelVisible by viewModel.isClipboardPanelVisible.collectAsState()
     val bottomInset by viewModel.bottomInset.collectAsState()
 
     val bottomInsetDp = with(LocalDensity.current) { bottomInset.toDp() }
@@ -23,16 +24,18 @@ fun ScribeKeyboardApp(viewModel: KeyboardViewModel, actionListener: KeyboardActi
             .fillMaxWidth()
             .padding(bottom = bottomInsetDp)
     ) {
-        // Top Bar (Command Bar, Toolbar, etc. based on state)
-        TopBarSection(viewModel = viewModel, actionListener = actionListener)
-
-        // The Keyboard Grid or Conjugate Grid or Info Wiki
-        if (isInvalidInfoVisible) {
-            InfoWikiBanner(viewModel = viewModel, actionListener = actionListener)
-        } else if (currentState == be.scri.models.ScribeState.SELECT_VERB_CONJUNCTION) {
-            ConjugateGrid(viewModel = viewModel, actionListener = actionListener)
+        if (isClipboardPanelVisible) {
+            ClipboardPanel(viewModel = viewModel, actionListener = actionListener)
         } else {
-            ComposeKeyboardView(viewModel = viewModel, actionListener = actionListener)
+            TopBarSection(viewModel = viewModel, actionListener = actionListener)
+
+            if (isInvalidInfoVisible) {
+                InfoWikiBanner(viewModel = viewModel, actionListener = actionListener)
+            } else if (currentState == be.scri.models.ScribeState.SELECT_VERB_CONJUNCTION) {
+                ConjugateGrid(viewModel = viewModel, actionListener = actionListener)
+            } else {
+                ComposeKeyboardView(viewModel = viewModel, actionListener = actionListener)
+            }
         }
     }
 }
