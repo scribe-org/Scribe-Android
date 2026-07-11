@@ -104,6 +104,10 @@ class KeyHandler(
                 handleModeChangeKey()
                 true
             }
+            KeyboardBase.KEYCODE_FLOAT_TOGGLE -> {
+                ime.toggleFloatingMode()
+                true
+            }
             KeyboardBase.KEYCODE_SPACE -> handleSpaceKeyPress(previousWasLastKeySpace)
             in KeyboardBase.NAVIGATION_KEYS -> {
                 handleNavigationKey(code)

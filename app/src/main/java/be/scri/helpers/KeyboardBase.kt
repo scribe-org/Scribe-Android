@@ -38,7 +38,11 @@ class KeyboardBase {
 
         fun isSearchBar(): Boolean
 
+        fun isFloatingModeActive(): Boolean
+
         fun isClipboardKeyEnabled(): Boolean
+
+        fun isFloatingKeyEnabled(): Boolean
     }
 
     /** Horizontal gap default for all rows  */
@@ -83,6 +87,7 @@ class KeyboardBase {
         private const val WIDTH_DIVIDER = 10
         const val KEYCODE_SHIFT = -1
         const val KEYCODE_MODE_CHANGE = -2
+        const val KEYCODE_FLOAT_TOGGLE = -10
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
@@ -414,8 +419,9 @@ class KeyboardBase {
         context: Context,
         @XmlRes xmlLayoutResId: Int,
         enterKeyType: Int,
+        customWidth: Int? = null,
     ) {
-        mDisplayWidth = context.resources.displayMetrics.widthPixels
+        mDisplayWidth = customWidth ?: context.resources.displayMetrics.widthPixels
         mDefaultHorizontalGap = 0
         mDefaultWidth = mDisplayWidth / WIDTH_DIVIDER
         mDefaultHeight = mDefaultWidth
@@ -593,6 +599,23 @@ class KeyboardBase {
                                 key.gap = 0
                             }
 
+                            if (key.code == KEYCODE_MODE_CHANGE) {
+                                if (provider?.isFloatingKeyEnabled() == true) {
+                                    key.width = (mDisplayWidth * 0.115).toInt()
+                                }
+                            } else if (provider?.isFloatingKeyEnabled() == true && currentRow.mKeys.any { it.code == KEYCODE_FLOAT_TOGGLE }) {
+                                if (key.code == ','.code && !hideComma) {
+                                    key.width = (mDisplayWidth * 0.1).toInt()
+                                } else if (key.label == "_") {
+                                    key.width = (mDisplayWidth * 0.1).toInt()
+                                } else if (key.code == KEYCODE_SPACE) {
+                                    val isLettersLayout = currentRow.mKeys.none { it.label == "_" }
+                                    if (isLettersLayout) {
+                                        key.width = (mDisplayWidth * 0.43).toInt()
+                                    }
+                                }
+                            }
+
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
                                 val enterResourceId =
@@ -629,6 +652,29 @@ class KeyboardBase {
                         x += key!!.gap + key.width
                         if (x > mMinWidth) {
                             mMinWidth = x
+                        }
+                        if (key.code == KEYCODE_MODE_CHANGE && provider?.isFloatingKeyEnabled() == true) {
+                            val floatKey = Key(currentRow!!)
+                            floatKey.code = KEYCODE_FLOAT_TOGGLE
+                            floatKey.width = (mDisplayWidth * 0.1).toInt()
+                            floatKey.gap = (mDisplayWidth * 0.005).toInt()
+                            floatKey.x = x + floatKey.gap
+                            floatKey.y = y
+                            floatKey.height = currentRow.defaultHeight
+
+                            val isFloating = provider?.isFloatingModeActive() == true
+                            val floatResourceId =
+                                if (isFloating) {
+                                    R.drawable.ic_keyboard_dismiss
+                                } else {
+                                    R.drawable.ic_float_keyboard
+                                }
+                            floatKey.icon = context.resources.getDrawable(floatResourceId, context.theme)
+                            floatKey.icon?.setBounds(0, 0, floatKey.icon!!.intrinsicWidth, floatKey.icon!!.intrinsicHeight)
+
+                            mKeys!!.add(floatKey)
+                            currentRow.mKeys.add(floatKey)
+                            x += floatKey.gap + floatKey.width
                         }
                     } else if (inRow) {
                         inRow = false
@@ -690,6 +736,53 @@ class KeyboardBase {
 
                     mKeys!!.add(commaIdxInList, clipKey)
                     row.mKeys.add(commaIdxInRow, clipKey)
+                }
+            }
+        }
+
+        // Realign/shrink keys in any row that contains a float toggle key to fit the display width.
+        for (currentRow in mRows) {
+            if (currentRow != null) {
+                val hasFloatToggle = currentRow.mKeys.any { it?.code == KEYCODE_FLOAT_TOGGLE }
+                if (hasFloatToggle) {
+                    var totalRowWidth = 0
+                    for (key in currentRow.mKeys) {
+                        if (key != null) {
+                            totalRowWidth += key.width + key.gap
+                        }
+                    }
+
+                    val excess = totalRowWidth - mDisplayWidth
+                    if (excess > 0) {
+                        val spaceKey = currentRow.mKeys.find { it?.code == KEYCODE_SPACE }
+                        if (spaceKey != null && spaceKey.width > excess) {
+                            spaceKey.width -= excess
+                        } else {
+                            val normalKeys =
+                                currentRow.mKeys.filterNotNull().filter {
+                                    it.code != KEYCODE_FLOAT_TOGGLE &&
+                                        it.code != KEYCODE_MODE_CHANGE &&
+                                        it.code != KEYCODE_ENTER &&
+                                        it.code != KEYCODE_DELETE
+                                }
+                            if (normalKeys.isNotEmpty()) {
+                                val reductionPerKey = excess / normalKeys.size
+                                for (key in normalKeys) {
+                                    key.width -= reductionPerKey
+                                }
+                                val remainder = excess % normalKeys.size
+                                normalKeys.first().width -= remainder
+                            }
+                        }
+
+                        var currentX = 0
+                        for (key in currentRow.mKeys) {
+                            if (key != null) {
+                                key.x = currentX + key.gap
+                                currentX += key.width + key.gap
+                            }
+                        }
+                    }
                 }
             }
         }

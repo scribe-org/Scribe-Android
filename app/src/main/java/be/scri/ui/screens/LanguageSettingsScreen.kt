@@ -116,6 +116,13 @@ fun LanguageSettingsScreen(
             )
         }
 
+    val floatingKeyOnKeyboardState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getIsFloatingKeyEnabled(context, language),
+            )
+        }
+
     val wordByWordDeletionState =
         remember {
             mutableStateOf(
@@ -165,6 +172,15 @@ fun LanguageSettingsScreen(
                     onToggleClipboardKeyOnKeyboard = { isEnabled ->
                         clipboardKeyOnKeyboardState.value = isEnabled
                         PreferencesHelper.setClipboardKeyPreference(
+                            context,
+                            language,
+                            isEnabled,
+                        )
+                    },
+                    toggleFloatingKeyOnKeyboard = floatingKeyOnKeyboardState.value,
+                    onToggleFloatingKeyOnKeyboard = { isEnabled ->
+                        floatingKeyOnKeyboardState.value = isEnabled
+                        PreferencesHelper.setFloatingKeyPreference(
                             context,
                             language,
                             isEnabled,
@@ -360,6 +376,7 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
  * @return A list of [ScribeItem]s to be displayed in the UI.
  */
 @Composable
+@Suppress("LongParameterList")
 private fun getLayoutListData(
     language: String,
     togglePeriodAndCommaState: Boolean,
@@ -368,6 +385,8 @@ private fun getLayoutListData(
     onToggleDisableAccentCharacter: (Boolean) -> Unit,
     toggleClipboardKeyOnKeyboard: Boolean,
     onToggleClipboardKeyOnKeyboard: (Boolean) -> Unit,
+    toggleFloatingKeyOnKeyboard: Boolean,
+    onToggleFloatingKeyOnKeyboard: (Boolean) -> Unit,
     onCurrencySelect: () -> Unit,
 ): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
@@ -399,6 +418,14 @@ private fun getLayoutListData(
             desc = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard_description,
             state = toggleClipboardKeyOnKeyboard,
             onToggle = onToggleClipboardKeyOnKeyboard,
+        ),
+    )
+    list.add(
+        ScribeItem.SwitchItem(
+            title = R.string.i18n_app_settings_keyboard_layout_floating_on_keyboard,
+            desc = R.string.i18n_app_settings_keyboard_layout_floating_on_keyboard_description,
+            state = toggleFloatingKeyOnKeyboard,
+            onToggle = onToggleFloatingKeyOnKeyboard,
         ),
     )
     list.add(

@@ -27,6 +27,7 @@ object PreferencesHelper {
     private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
     private const val INCREASE_TEXT_SIZE = "increase_text_size"
     private const val CLIPBOARD_KEY_ON_KEYBOARD = "clipboard_key_on_keyboard"
+    private const val FLOATING_KEY_ON_KEYBOARD = "floating_key_on_keyboard"
 
     /**
      * Sets the translation source language for a given language.
@@ -561,6 +562,31 @@ object PreferencesHelper {
     }
 
     /**
+     * Sets the preference for showing or hiding the floating key on the keyboard.
+     */
+    fun setFloatingKeyPreference(
+        context: Context,
+        language: String,
+        enabled: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(getLanguageSpecificPreferenceKey(FLOATING_KEY_ON_KEYBOARD, language), enabled)
+        }
+    }
+
+    /**
+     * Retrieves whether the floating key is enabled on the keyboard for a given language.
+     */
+    fun getIsFloatingKeyEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(FLOATING_KEY_ON_KEYBOARD, language), false)
+    }
+
+    /**
      * Resets the application hints, marking them as not shown in the shared preferences.
      *
      * @param context The context used to access shared preferences.
@@ -597,5 +623,118 @@ object PreferencesHelper {
     fun getIncreaseTextSizePreference(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return sharedPref.getBoolean(INCREASE_TEXT_SIZE, false)
+    }
+
+    // MARK: Floating Keyboard Preferences
+
+    private const val FLOATING_MODE_ENABLED = "floating_mode_enabled"
+    private const val FLOATING_X = "floating_x"
+    private const val FLOATING_Y = "floating_y"
+    private const val FLOATING_SCALE = "floating_scale"
+    private const val FLOATING_SCALE_X = "floating_scale_x"
+    private const val FLOATING_SCALE_Y = "floating_scale_y"
+
+    fun setIsFloatingModeEnabled(
+        context: Context,
+        language: String,
+        enabled: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putBoolean(getLanguageSpecificPreferenceKey(FLOATING_MODE_ENABLED, language), enabled) }
+    }
+
+    fun getIsFloatingModeEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(FLOATING_MODE_ENABLED, language), false)
+    }
+
+    fun setFloatingX(
+        context: Context,
+        language: String,
+        x: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_X, language), x) }
+    }
+
+    fun getFloatingX(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_X, language), 0f)
+    }
+
+    fun setFloatingY(
+        context: Context,
+        language: String,
+        y: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_Y, language), y) }
+    }
+
+    fun getFloatingY(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_Y, language), 0f)
+    }
+
+    fun setFloatingScale(
+        context: Context,
+        language: String,
+        scale: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE, language), scale) }
+    }
+
+    fun getFloatingScale(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE, language), 1.0f)
+    }
+
+    fun setFloatingScaleX(
+        context: Context,
+        language: String,
+        scaleX: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_X, language), scaleX) }
+    }
+
+    fun getFloatingScaleX(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val defaultScale = getFloatingScale(context, language)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_X, language), defaultScale)
+    }
+
+    fun setFloatingScaleY(
+        context: Context,
+        language: String,
+        scaleY: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_Y, language), scaleY) }
+    }
+
+    fun getFloatingScaleY(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val defaultScale = getFloatingScale(context, language)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_Y, language), defaultScale)
     }
 }

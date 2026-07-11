@@ -750,6 +750,17 @@ class KeyboardView
             }
         }
 
+        override fun onSizeChanged(
+            w: Int,
+            h: Int,
+            oldw: Int,
+            oldh: Int,
+        ) {
+            super.onSizeChanged(w, h, oldw, oldh)
+            mKeyboardChanged = true
+            invalidateAllKeys()
+        }
+
         /**
          * Compute the average distance between adjacent keys (horizontally and vertically)
          * and square it to get the proximity threshold.
@@ -1142,7 +1153,8 @@ class KeyboardView
                                 code == KEYCODE_DELETE ||
                                     code == KEYCODE_SHIFT ||
                                     code == KEYCODE_TAB ||
-                                    code == KeyboardBase.KEYCODE_CLIPBOARD
+                                    code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                                    code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
                             if (isIconOnlyKey) {
                                 key.icon!!.applyColorFilter(mTextColor)
                             }

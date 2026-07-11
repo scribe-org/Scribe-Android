@@ -56,6 +56,10 @@ class KeyboardUIManager(
 
         fun onCloseClicked()
 
+        fun onFloatClicked()
+
+        fun isFloatingModeActive(): Boolean
+
         fun onEmojiSelected(emoji: String)
 
         fun onSuggestionClicked(suggestion: String)
@@ -74,6 +78,8 @@ class KeyboardUIManager(
 
         fun isNumericKeyboardActive(): Boolean
 
+        fun getKeyboardWidth(): Int
+
         fun onClipboardSuggestionClicked()
     }
 
@@ -82,6 +88,8 @@ class KeyboardUIManager(
 
     // UI Elements
     var pluralBtn: Button? = binding.pluralBtn
+    var floatBtn: Button? = null
+    var separatorFloat: View? = null
     var emojiBtnPhone1: Button? = binding.emojiBtnPhone1
     var emojiSpacePhone: View? = binding.emojiSpacePhone
     var emojiBtnPhone2: Button? = binding.emojiBtnPhone2
@@ -220,6 +228,7 @@ class KeyboardUIManager(
         listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEachIndexed { index, button ->
             button.visibility = View.VISIBLE
             button.background = null
+            button.foreground = null
             button.setTextColor(textColor)
             button.text = HintUtils.getBaseAutoSuggestions(language).getOrNull(index)
             button.isAllCaps = false
@@ -289,11 +298,31 @@ class KeyboardUIManager(
             button.backgroundTintList = ContextCompat.getColorStateList(context, R.color.theme_scribe_blue)
             button.setTextColor(buttonTextColor)
             button.textSize = GeneralKeyboardIME.SUGGESTION_SIZE
+            button.isAllCaps = false
         }
 
-        binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
-        binding.conjugateBtn.text = conjugatePlaceholder[langAlias] ?: "Conjugate"
-        binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
+        val isFloating = listener.isFloatingModeActive()
+        if (isFloating) {
+            binding.translateBtn.text = ""
+            binding.conjugateBtn.text = ""
+            binding.pluralBtn.text = ""
+
+            binding.translateBtn.foreground = ContextCompat.getDrawable(context, R.drawable.ic_translate_command)
+            binding.conjugateBtn.foreground = ContextCompat.getDrawable(context, R.drawable.ic_conjugate_command)
+            binding.pluralBtn.foreground = ContextCompat.getDrawable(context, R.drawable.ic_plural_command)
+
+            binding.translateBtn.foregroundGravity = android.view.Gravity.CENTER
+            binding.conjugateBtn.foregroundGravity = android.view.Gravity.CENTER
+            binding.pluralBtn.foregroundGravity = android.view.Gravity.CENTER
+        } else {
+            binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
+            binding.conjugateBtn.text = conjugatePlaceholder[langAlias] ?: "Conjugate"
+            binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
+
+            binding.translateBtn.foreground = null
+            binding.conjugateBtn.foreground = null
+            binding.pluralBtn.foreground = null
+        }
 
         val separatorColor = (if (isUserDarkMode) GeneralKeyboardIME.DARK_THEME else GeneralKeyboardIME.LIGHT_THEME).toColorInt()
         binding.separator2.setBackgroundColor(separatorColor)
@@ -610,7 +639,8 @@ class KeyboardUIManager(
      */
     fun initializeKeyboard(xmlId: Int) {
         val enterKeyType = listener.getCurrentEnterKeyType()
-        keyboard = KeyboardBase(context, xmlId, enterKeyType)
+        val width = listener.getKeyboardWidth()
+        keyboard = KeyboardBase(context, xmlId, enterKeyType, width)
         keyboardView.setKeyboard(keyboard!!)
         keyboardView.mOnKeyboardActionListener = listener.onKeyboardActionListener()
         keyboardView.requestLayout()
@@ -678,6 +708,10 @@ class KeyboardUIManager(
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
+
+        binding.translateBtn.foreground = null
+        binding.conjugateBtn.foreground = null
+        pluralBtn?.foreground = null
     }
 
     /**

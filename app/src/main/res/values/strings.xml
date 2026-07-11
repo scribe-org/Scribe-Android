@@ -13,4 +13,5 @@
     <string name="keycode_enter">Enter</string>
     <string name="keycode_delete">Delete</string>
     <string name="keycode_mode_change">Change keyboard type</string>
+    <string name="drag_keyboard">Drag keyboard</string>
 </resources>

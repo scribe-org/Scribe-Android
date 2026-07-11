@@ -33,12 +33,10 @@
         name="conjugate_keyboard_color">@color/light_keyboard_bg_color</color>
 
 
-    <color
-        name="nav_bar_selected_color_light">@color/dark_scribe_color</color>
-    <color
-        name="nav_bar_selected_color_dark">@color/light_scribe_color</color>
-    <color
-        name="nav_item_grey">#808080</color>
+    <color name="nav_bar_selected_color_light">@color/dark_scribe_color</color>
+    <color name="resize_handle_color">#FF555555</color>
+    <color name="nav_bar_selected_color_dark">@color/light_scribe_color</color>
+    <color name="nav_item_grey">#808080</color>
 
     <!-- Light theme -->
     <color name="light_key_color">#FFFFFFFF</color>
