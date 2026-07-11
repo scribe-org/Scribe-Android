@@ -133,12 +133,18 @@ fun ScribeApp(
             cancelCheckForNewData = conjugateDownloadViewModel::cancelCheckForNewData,
         )
 
+    val downloadToastMessage by downloadViewModel.toastMessage.collectAsState()
+    val conjugateToastMessage by conjugateDownloadViewModel.toastMessage.collectAsState()
+    val activeToastMessage = downloadToastMessage ?: conjugateToastMessage
+    val isOfflineErrorVisible = activeToastMessage != null
+
     val screens = remember(context) { BottomBarScreen.getScreens() }
     ScribeTheme(
         useDarkTheme = isDarkTheme,
         isIncreaseTextSize = isIncreaseTextSize,
     ) {
-        Scaffold(
+        Box(modifier = Modifier.fillMaxSize()) {
+            Scaffold(
             bottomBar = {
                 ScribeBottomBar(
                     onItemClick = {
@@ -425,10 +431,33 @@ fun ScribeApp(
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
+            } // Ends NavHost
+        } // Ends Scaffold content
+
+            androidx.compose.animation.AnimatedVisibility(
+                visible = isOfflineErrorVisible,
+                enter = androidx.compose.animation.slideInVertically(initialOffsetY = { it }) + androidx.compose.animation.fadeIn(),
+                exit = androidx.compose.animation.slideOutVertically(targetOffsetY = { it }) + androidx.compose.animation.fadeOut(),
+                modifier = Modifier
+                    .align(androidx.compose.ui.Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(bottom = 120.dp, start = 16.dp, end = 16.dp)
+            ) {
+                androidx.compose.material3.Surface(
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                    color = androidx.compose.ui.graphics.Color.White,
+                    shadowElevation = 8.dp
+                ) {
+                    androidx.compose.material3.Text(
+                        text = activeToastMessage ?: "",
+                        color = androidx.compose.ui.graphics.Color(0xFFE68A00),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
-        }
-    }
-}
+    } // Ends Box
+    } // Ends ScribeTheme
+} // Ends App
 
 /**
  * Handles the back press behavior within the pager.

@@ -14,6 +14,7 @@ import be.scri.R
 import be.scri.data.remote.ConjugateDynamicDbHelper
 import be.scri.data.remote.RetrofitClient
 import be.scri.helpers.LanguageMappingConstants
+import be.scri.helpers.NetworkMonitor
 import be.scri.helpers.StringUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -38,6 +39,9 @@ class ConjugateDataDownloadViewModel(
     private val prefs = getApplication<Application>().getSharedPreferences("scribe_conjugate_prefs", Context.MODE_PRIVATE)
     private val _checkUpdateState = MutableStateFlow(CheckUpdateState.Idle)
     val checkUpdateState = _checkUpdateState.asStateFlow()
+
+    private val _toastMessage = MutableStateFlow<String?>(null)
+    val toastMessage = _toastMessage.asStateFlow()
 
     private var checkUpdateJob: Job? = null
 
@@ -98,6 +102,11 @@ class ConjugateDataDownloadViewModel(
         key: String,
         forceDownload: Boolean = false,
     ) {
+        if (!NetworkMonitor.isOnline(getApplication())) {
+            showToast("No internet connection. Please connect and try again.")
+            return
+        }
+
         val currentState = downloadStates[key] ?: DownloadState.Ready
         val displayLang = key.replaceFirstChar { it.uppercase() }
         if (forceDownload) {
@@ -113,7 +122,7 @@ class ConjugateDataDownloadViewModel(
                         R.string.i18n_app_download_menu_ui_conjugate_data_already_up_to_date,
                     )
                 val msg = StringUtils.formatStringWithParams(template, displayLang)
-                Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
+                showToast(msg)
                 return
             }
         }
@@ -156,7 +165,7 @@ class ConjugateDataDownloadViewModel(
                                     R.string.i18n_app_download_menu_ui_conjugate_data_download_success,
                                 )
                             val msg = StringUtils.formatStringWithParams(template, displayLang)
-                            Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
+                            showToast(msg)
                         }
                     } else {
                         // Already up to date: Skip the DB work.
@@ -166,7 +175,7 @@ class ConjugateDataDownloadViewModel(
                                 getApplication<Application>().getString(
                                     R.string.i18n_app_download_menu_ui_download_data_generic_already_up_to_date,
                                 )
-                            Toast.makeText(getApplication(), msg, Toast.LENGTH_SHORT).show()
+                            showToast(msg)
                         }
                     }
                 } catch (e: IOException) {
@@ -209,6 +218,11 @@ class ConjugateDataDownloadViewModel(
      * Handles the "All languages" download action by initiating downloads for all languages that are not already completed or downloading.
      */
     fun handleDownloadAllLanguages() {
+        if (!NetworkMonitor.isOnline(getApplication())) {
+            showToast("No internet connection. Please connect and try again.")
+            return
+        }
+
         val toDownload =
             downloadStates.keys.filter { key ->
                 downloadStates[key] != DownloadState.Completed && downloadStates[key] != DownloadState.Downloading
@@ -272,6 +286,11 @@ class ConjugateDataDownloadViewModel(
      * Checks for new data updates for all completed languages.
      */
     fun checkForNewData() {
+        if (!NetworkMonitor.isOnline(getApplication())) {
+            showToast("No internet connection. Please connect and try again.")
+            return
+        }
+
         checkUpdateJob?.cancel()
 
         val keysToCheck = downloadStates.keys.filter { downloadStates[it] == DownloadState.Completed }
@@ -314,7 +333,7 @@ class ConjugateDataDownloadViewModel(
         withContext(Dispatchers.Main) {
             // Reset status so user can retry.
             downloadStates[key] = DownloadState.Ready
-            Toast.makeText(getApplication(), message, Toast.LENGTH_LONG).show()
+            showToast(message)
         }
     }
 
@@ -325,5 +344,13 @@ class ConjugateDataDownloadViewModel(
         super.onCleared()
         downloadJobs.values.forEach { it.cancel() }
         downloadJobs.clear()
+    }
+
+    private fun showToast(msg: String) {
+        viewModelScope.launch {
+            _toastMessage.value = msg
+            kotlinx.coroutines.delay(3000)
+            _toastMessage.value = null
+        }
     }
 }
