@@ -38,11 +38,10 @@ fun AboutPageItemComp(
     modifier: Modifier = Modifier,
     altText: String? = null,
 ) {
-    val semanticsModifier = if (altText != null) {
-        Modifier.semantics(mergeDescendants = true) { contentDescription = altText }
-    } else {
-        Modifier
-    }
+    val semanticsModifier =
+        altText?.let { text ->
+            Modifier.semantics(mergeDescendants = true) { contentDescription = text }
+        } ?: Modifier
 
     Box(
         modifier =
