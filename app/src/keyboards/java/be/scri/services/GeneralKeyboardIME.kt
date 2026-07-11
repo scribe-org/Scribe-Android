@@ -7,7 +7,12 @@ import android.R.color.white
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteException
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PixelFormat
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -1826,7 +1831,7 @@ abstract class GeneralKeyboardIME(
         button: Button,
         text: String,
         isHighlighted: Boolean = false,
-        showUnderline: Boolean = false,
+        underlineColors: List<Int> = emptyList(),
     ) {
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
@@ -1835,7 +1840,12 @@ abstract class GeneralKeyboardIME(
         button.visibility = View.VISIBLE
         button.textSize = SUGGESTION_SIZE
         button.setOnClickListener(null)
-        button.background = if (showUnderline && text.isNotBlank()) buildSuggestionBackground(isHighlighted) else null
+        button.background =
+            if (text.isNotBlank() && (isHighlighted || underlineColors.isNotEmpty())) {
+                buildSuggestionBackground(isHighlighted, underlineColors)
+            } else {
+                null
+            }
         button.setTextColor(textColor)
         button.setTypeface(button.typeface, Typeface.NORMAL)
         button.setOnClickListener {
@@ -1845,35 +1855,34 @@ abstract class GeneralKeyboardIME(
     }
 
     /**
-     * Builds the background for an autocomplete suggestion chip: a colored underline (green when
-     * the suggestion is highlighted as "obvious", red otherwise), plus a rounded, tinted fill
-     * behind the text when highlighted -- matching the Scribe-iOS reference design.
+     * Builds the background for a suggestion chip: a rounded, tinted fill behind the text when
+     * the suggestion is highlighted as "obvious" (matching the Scribe-iOS reference design), plus
+     * a colored underline showing the word's grammatical gender(s) when known (existing
+     * annotation feature -- see [AnnotationTextUtils]), narrower than the highlight fill above
+     * it. Nouns with multiple genders (e.g. German "Schild") get a split underline, one color
+     * per gender, per #407.
      */
-    private fun buildSuggestionBackground(isHighlighted: Boolean): Drawable {
+    private fun buildSuggestionBackground(
+        isHighlighted: Boolean,
+        underlineColors: List<Int>,
+    ): Drawable {
         val density = resources.displayMetrics.density
         val horizontalInsetPx = (SUGGESTION_HIGHLIGHT_HORIZONTAL_INSET_DP * density).toInt()
         val verticalInsetPx = (SUGGESTION_HIGHLIGHT_VERTICAL_INSET_DP * density).toInt()
         val underlineHeightPx = (SUGGESTION_UNDERLINE_HEIGHT_DP * density).toInt()
         val underlineExtraInsetPx = (SUGGESTION_UNDERLINE_EXTRA_HORIZONTAL_INSET_DP * density).toInt()
-        val underlineColorRes =
-            if (isHighlighted) R.color.autocomplete_highlight_indicator else R.color.autocomplete_alternate_indicator
-        val underline =
-            GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                cornerRadius = underlineHeightPx / 2f
-                setColor(ContextCompat.getColor(applicationContext, underlineColorRes))
-            }
 
-        val layers = if (isHighlighted) arrayOf(buildSuggestionHighlightFill(), underline) else arrayOf(underline)
-        val underlineIndex = layers.lastIndex
-        val layered =
-            LayerDrawable(layers).apply {
-                // The underline sits narrower than the highlight fill above it, matching the
-                // iOS reference design.
-                setLayerInset(underlineIndex, underlineExtraInsetPx, 0, underlineExtraInsetPx, 0)
-                setLayerGravity(underlineIndex, Gravity.BOTTOM)
-                setLayerHeight(underlineIndex, underlineHeightPx)
-            }
+        val layers = mutableListOf<Drawable>()
+        if (isHighlighted) layers.add(buildSuggestionHighlightFill())
+        if (underlineColors.isNotEmpty()) layers.add(SplitColorDrawable(underlineColors))
+
+        val layered = LayerDrawable(layers.toTypedArray())
+        if (underlineColors.isNotEmpty()) {
+            val underlineIndex = layers.lastIndex
+            layered.setLayerInset(underlineIndex, underlineExtraInsetPx, 0, underlineExtraInsetPx, 0)
+            layered.setLayerGravity(underlineIndex, Gravity.BOTTOM)
+            layered.setLayerHeight(underlineIndex, underlineHeightPx)
+        }
         return InsetDrawable(layered, horizontalInsetPx, verticalInsetPx, horizontalInsetPx, verticalInsetPx)
     }
 
@@ -1945,7 +1954,7 @@ abstract class GeneralKeyboardIME(
         highlightedSuggestion: String? = null,
     ) {
         val isHighlighted = text.isNotBlank() && text.equals(highlightedSuggestion, ignoreCase = true)
-        setSuggestionButton(button, text, isHighlighted, showUnderline = true)
+        setSuggestionButton(button, text, isHighlighted, getGenderUnderlineColors(text))
         if (text.isBlank()) {
             button.setOnClickListener(null)
             return
@@ -1954,6 +1963,24 @@ abstract class GeneralKeyboardIME(
             replaceCurrentWordWithSuggestion(text)
             moveToIdleState()
         }
+    }
+
+    /**
+     * Looks up the given suggestion's grammatical gender(s) (if it's a known noun) and returns
+     * the matching annotation colors, reusing the existing gender-annotation feature (see
+     * [AnnotationTextUtils]) rather than inventing a new color scheme. Returns an empty list if
+     * the word has no known gender -- most suggestions won't, and that's expected; it just means
+     * no underline is drawn for that chip. Words with multiple genders (e.g. German "Schild",
+     * which is both masculine and neuter) get one color per gender, per #407.
+     */
+    private fun getGenderUnderlineColors(text: String): List<Int> {
+        if (text.isBlank()) return emptyList()
+        val genders = findGenderForLastWord(nounKeywords, text) ?: return emptyList()
+        return genders
+            .map { handleColorAndTextForNounType(it, language, applicationContext).first }
+            .filter { it != R.color.transparent }
+            .distinct()
+            .map { ContextCompat.getColor(applicationContext, it) }
     }
 
     /**
@@ -2202,4 +2229,56 @@ abstract class GeneralKeyboardIME(
         binding.clipboardEmptyText.visibility = if (items.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
         binding.clipboardItemsList.visibility = if (items.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
     }
+}
+
+/**
+ * A pill-shaped drawable that splits its bounds into equal horizontal segments, one per color.
+ * Used to render a noun's gender annotation as a single-color underline, or a half-and-half
+ * split underline for nouns with more than one gender (e.g. German "Schild"), per #407.
+ */
+private class SplitColorDrawable(
+    private val colors: List<Int>,
+) : Drawable() {
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    override fun draw(canvas: Canvas) {
+        val b = bounds
+        if (colors.isEmpty() || b.width() <= 0 || b.height() <= 0) return
+
+        val cornerRadius = b.height() / 2f
+        val clipPath =
+            Path().apply {
+                addRoundRect(
+                    b.left.toFloat(),
+                    b.top.toFloat(),
+                    b.right.toFloat(),
+                    b.bottom.toFloat(),
+                    cornerRadius,
+                    cornerRadius,
+                    Path.Direction.CW,
+                )
+            }
+        canvas.save()
+        canvas.clipPath(clipPath)
+
+        val segmentWidth = b.width().toFloat() / colors.size
+        colors.forEachIndexed { index, color ->
+            paint.color = color
+            val left = b.left + segmentWidth * index
+            val right = if (index == colors.lastIndex) b.right.toFloat() else b.left + segmentWidth * (index + 1)
+            canvas.drawRect(left, b.top.toFloat(), right, b.bottom.toFloat(), paint)
+        }
+        canvas.restore()
+    }
+
+    override fun setAlpha(alpha: Int) {
+        paint.alpha = alpha
+    }
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        paint.colorFilter = colorFilter
+    }
+
+    @Deprecated("Deprecated in Java", ReplaceWith("PixelFormat.TRANSLUCENT"))
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 }

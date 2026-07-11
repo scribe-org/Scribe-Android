@@ -800,8 +800,6 @@
     <color
         name="annotateGreen">#3D7946</color>
     <color name="annotateOrange">#F85A39</color>
-    <color name="autocomplete_highlight_indicator">#3D7946</color>
-    <color name="autocomplete_alternate_indicator">#9F1722</color>
     <color
         name="toolbar_background_color">@color/light_keyboard_bg_color</color>
 
