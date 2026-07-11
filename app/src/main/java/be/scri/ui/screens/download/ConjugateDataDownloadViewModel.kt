@@ -6,7 +6,6 @@ import android.app.Application
 import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope

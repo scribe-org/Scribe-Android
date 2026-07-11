@@ -145,317 +145,322 @@ fun ScribeApp(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
-            bottomBar = {
-                ScribeBottomBar(
-                    onItemClick = {
-                        coroutineScope.launch {
-                            if (navBackStackEntry?.destination?.route != "pager") {
-                                navController.popBackStack()
-                            }
-                            pagerState.animateScrollToPage(it)
-                        }
-                    },
-                    pagerState = pagerState,
-                    modifier = Modifier,
-                    screens = screens,
-                )
-            },
-            modifier = modifier.fillMaxSize(),
-        ) { innerPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = "pager",
-            ) {
-                composable("pager") {
-                    HorizontalPager(
-                        state = pagerState,
-                        beyondViewportPageCount = screens.size,
-                        modifier = Modifier.padding(innerPadding),
-                    ) { page ->
-                        when (screens[page]) {
-                            is BottomBarScreen.Installation -> {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                ) {
-                                    InstallationScreen(
-                                        isDark = isDarkTheme,
-                                        context = context,
-                                        onNavigateToDownloadData = {
-                                            navController.navigate("download_data")
-                                        },
-                                        onTutorialClick = {
-                                            navController.navigate("tutorial")
-
-                                            coroutineScope.launch {
-                                                kotlinx.coroutines.delay(400)
-                                                val aboutIndex = screens.indexOfFirst { it is BottomBarScreen.About }
-                                                if (aboutIndex != -1) {
-                                                    pagerState.scrollToPage(aboutIndex)
-                                                }
-                                            }
-                                        },
-                                    )
-                                    HintDialog(
-                                        pagerState = pagerState,
-                                        currentPageIndex = page,
-                                        sharedPrefsKey = "hint_shown_main",
-                                        hintMessageResId = R.string.i18n_app_installation_app_hint_tooltip,
-                                        isHintChanged = isHintChanged[page] == true,
-                                        onDismiss = { onDismiss(it) },
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .padding(8.dp),
-                                    )
+                bottomBar = {
+                    ScribeBottomBar(
+                        onItemClick = {
+                            coroutineScope.launch {
+                                if (navBackStackEntry?.destination?.route != "pager") {
+                                    navController.popBackStack()
                                 }
-                                HandleBackPress(pagerState, coroutineScope)
+                                pagerState.animateScrollToPage(it)
                             }
-                            is BottomBarScreen.Conjugate -> {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                ) {
-                                    ConjugateScreen(
-                                        onNavigateToDownloadData = {
-                                            navController.navigate("conjugate_download_data")
-                                        },
-                                        onNavigateToConjugationSelection = { verb, languageAlias ->
-                                            navController.navigate(
-                                                "${Screen.ConjugationSelection.route}/$verb/$languageAlias",
-                                            )
-                                        },
-                                    )
-                                    HintDialog(
-                                        pagerState = pagerState,
-                                        currentPageIndex = page,
-                                        sharedPrefsKey = "hint_shown_conjugate",
-                                        hintMessageResId = R.string.i18n_app_conjugate_app_hint_tooltip,
-                                        isHintChanged = isHintChanged[page] == true,
-                                        onDismiss = { onDismiss(it) },
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .padding(8.dp),
-                                    )
-                                }
-                                HandleBackPress(pagerState, coroutineScope)
-                            }
-                            is BottomBarScreen.Settings -> {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                ) {
-                                    SettingsScreen(
-                                        onDarkModeChange = { isDarkMode ->
-                                            onDarkModeChange(isDarkMode)
-                                        },
-                                        onIncreaseTextSizeChange = { increaseTextSize ->
-                                            onIncreaseTextSizeChange(increaseTextSize)
-                                        },
-                                        onLanguageSettingsClick = { language ->
-                                            navController.navigate(
-                                                "${Screen.LanguageSettings.route}/$language",
-                                            )
-                                        },
-                                        context = context,
-                                    )
-                                    HintDialog(
-                                        pagerState = pagerState,
-                                        currentPageIndex = page,
-                                        sharedPrefsKey = "hint_shown_settings",
-                                        hintMessageResId =
-                                            if (FlavorProvider.get() == AppFlavor.CONJUGATE) {
-                                                R.string.i18n_app_settings_conjugate_app_hint_tooltip
-                                            } else {
-                                                R.string.i18n_app_settings_keyboard_app_hint_tooltip
+                        },
+                        pagerState = pagerState,
+                        modifier = Modifier,
+                        screens = screens,
+                    )
+                },
+                modifier = modifier.fillMaxSize(),
+            ) { innerPadding ->
+                NavHost(
+                    navController = navController,
+                    startDestination = "pager",
+                ) {
+                    composable("pager") {
+                        HorizontalPager(
+                            state = pagerState,
+                            beyondViewportPageCount = screens.size,
+                            modifier = Modifier.padding(innerPadding),
+                        ) { page ->
+                            when (screens[page]) {
+                                is BottomBarScreen.Installation -> {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                    ) {
+                                        InstallationScreen(
+                                            isDark = isDarkTheme,
+                                            context = context,
+                                            onNavigateToDownloadData = {
+                                                navController.navigate("download_data")
                                             },
-                                        isHintChanged = isHintChanged[page] == true,
-                                        onDismiss = { onDismiss(it) },
-                                        modifier = Modifier.padding(8.dp),
-                                    )
+                                            onTutorialClick = {
+                                                navController.navigate("tutorial")
+
+                                                coroutineScope.launch {
+                                                    kotlinx.coroutines.delay(400)
+                                                    val aboutIndex = screens.indexOfFirst { it is BottomBarScreen.About }
+                                                    if (aboutIndex != -1) {
+                                                        pagerState.scrollToPage(aboutIndex)
+                                                    }
+                                                }
+                                            },
+                                        )
+                                        HintDialog(
+                                            pagerState = pagerState,
+                                            currentPageIndex = page,
+                                            sharedPrefsKey = "hint_shown_main",
+                                            hintMessageResId = R.string.i18n_app_installation_app_hint_tooltip,
+                                            isHintChanged = isHintChanged[page] == true,
+                                            onDismiss = { onDismiss(it) },
+                                            modifier =
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(8.dp),
+                                        )
+                                    }
+                                    HandleBackPress(pagerState, coroutineScope)
                                 }
-                                HandleBackPress(pagerState, coroutineScope)
-                            }
-                            is BottomBarScreen.About -> {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                ) {
-                                    AboutScreen(
-                                        onPrivacyPolicyClick = {
-                                            navController.navigate(Screen.PrivacyPolicy.route)
-                                        },
-                                        onThirdPartyLicensesClick = {
-                                            navController.navigate(Screen.ThirdParty.route)
-                                        },
-                                        onWikiClick = {
-                                            navController.navigate(Screen.WikimediaScribe.route)
-                                        },
-                                        onTutorialClick = {
-                                            navController.navigate("tutorial")
-                                        },
-                                        resetHints = { resetHints() },
-                                        context = context,
-                                    )
-                                    HintDialog(
-                                        pagerState = pagerState,
-                                        currentPageIndex = page,
-                                        sharedPrefsKey = "hint_shown_about",
-                                        hintMessageResId = R.string.i18n_app_about_app_hint_tooltip,
-                                        isHintChanged = isHintChanged[page] == true,
-                                        onDismiss = { onDismiss(it) },
-                                        modifier = Modifier.padding(8.dp),
-                                    )
+                                is BottomBarScreen.Conjugate -> {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                    ) {
+                                        ConjugateScreen(
+                                            onNavigateToDownloadData = {
+                                                navController.navigate("conjugate_download_data")
+                                            },
+                                            onNavigateToConjugationSelection = { verb, languageAlias ->
+                                                navController.navigate(
+                                                    "${Screen.ConjugationSelection.route}/$verb/$languageAlias",
+                                                )
+                                            },
+                                        )
+                                        HintDialog(
+                                            pagerState = pagerState,
+                                            currentPageIndex = page,
+                                            sharedPrefsKey = "hint_shown_conjugate",
+                                            hintMessageResId = R.string.i18n_app_conjugate_app_hint_tooltip,
+                                            isHintChanged = isHintChanged[page] == true,
+                                            onDismiss = { onDismiss(it) },
+                                            modifier =
+                                                Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(8.dp),
+                                        )
+                                    }
+                                    HandleBackPress(pagerState, coroutineScope)
                                 }
-                                HandleBackPress(pagerState, coroutineScope)
+                                is BottomBarScreen.Settings -> {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                    ) {
+                                        SettingsScreen(
+                                            onDarkModeChange = { isDarkMode ->
+                                                onDarkModeChange(isDarkMode)
+                                            },
+                                            onIncreaseTextSizeChange = { increaseTextSize ->
+                                                onIncreaseTextSizeChange(increaseTextSize)
+                                            },
+                                            onLanguageSettingsClick = { language ->
+                                                navController.navigate(
+                                                    "${Screen.LanguageSettings.route}/$language",
+                                                )
+                                            },
+                                            context = context,
+                                        )
+                                        HintDialog(
+                                            pagerState = pagerState,
+                                            currentPageIndex = page,
+                                            sharedPrefsKey = "hint_shown_settings",
+                                            hintMessageResId =
+                                                if (FlavorProvider.get() == AppFlavor.CONJUGATE) {
+                                                    R.string.i18n_app_settings_conjugate_app_hint_tooltip
+                                                } else {
+                                                    R.string.i18n_app_settings_keyboard_app_hint_tooltip
+                                                },
+                                            isHintChanged = isHintChanged[page] == true,
+                                            onDismiss = { onDismiss(it) },
+                                            modifier = Modifier.padding(8.dp),
+                                        )
+                                    }
+                                    HandleBackPress(pagerState, coroutineScope)
+                                }
+                                is BottomBarScreen.About -> {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                    ) {
+                                        AboutScreen(
+                                            onPrivacyPolicyClick = {
+                                                navController.navigate(Screen.PrivacyPolicy.route)
+                                            },
+                                            onThirdPartyLicensesClick = {
+                                                navController.navigate(Screen.ThirdParty.route)
+                                            },
+                                            onWikiClick = {
+                                                navController.navigate(Screen.WikimediaScribe.route)
+                                            },
+                                            onTutorialClick = {
+                                                navController.navigate("tutorial")
+                                            },
+                                            resetHints = { resetHints() },
+                                            context = context,
+                                        )
+                                        HintDialog(
+                                            pagerState = pagerState,
+                                            currentPageIndex = page,
+                                            sharedPrefsKey = "hint_shown_about",
+                                            hintMessageResId = R.string.i18n_app_about_app_hint_tooltip,
+                                            isHintChanged = isHintChanged[page] == true,
+                                            onDismiss = { onDismiss(it) },
+                                            modifier = Modifier.padding(8.dp),
+                                        )
+                                    }
+                                    HandleBackPress(pagerState, coroutineScope)
+                                }
                             }
                         }
                     }
-                }
 
-                composable("tutorial") {
-                    TutorialNavigator(
-                        onTutorialExit = {
-                            navController.popBackStack()
-                        },
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
+                    composable("tutorial") {
+                        TutorialNavigator(
+                            onTutorialExit = {
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier.padding(innerPadding),
+                        )
+                    }
 
-                composable("download_data") {
-                    DownloadDataScreen(
-                        onBackNavigation = {
-                            navController.popBackStack()
-                        },
-                        onNavigateToTranslation = { language ->
-                            navController.navigate(
-                                "translation_language_detail/$language",
+                    composable("download_data") {
+                        DownloadDataScreen(
+                            onBackNavigation = {
+                                navController.popBackStack()
+                            },
+                            onNavigateToTranslation = { language ->
+                                navController.navigate(
+                                    "translation_language_detail/$language",
+                                )
+                            },
+                            isDarkTheme = isDarkTheme,
+                            downloadActions = downloadActions,
+                            checkUpdateActions = checkUpdateActions,
+                            modifier = Modifier.padding(innerPadding),
+                        )
+                    }
+
+                    composable("conjugate_download_data") {
+                        ConjugateDownloadDataScreen(
+                            onBackNavigation = {
+                                navController.popBackStack()
+                            },
+                            isDarkTheme = isDarkTheme,
+                            downloadActions = conjugateDownloadActions,
+                            checkUpdateActions = conjugateCheckUpdateActions,
+                            modifier = Modifier.padding(innerPadding),
+                        )
+                    }
+
+                    composable("${Screen.ConjugationSelection.route}/{verb}/{languageAlias}") { backStackEntry ->
+                        val verb = backStackEntry.arguments?.getString("verb") ?: ""
+                        val languageAlias = backStackEntry.arguments?.getString("languageAlias") ?: ""
+                        ConjugationSelectionScreen(
+                            verb = verb,
+                            languageAlias = languageAlias,
+                            onBackNavigation = { navController.popBackStack() },
+                            modifier = Modifier.padding(innerPadding),
+                        )
+                    }
+
+                    composable("${Screen.LanguageSettings.route}/{languageName}") {
+                        val language = it.arguments?.getString("languageName")
+                        if (language != null) {
+                            LanguageSettingsScreen(
+                                language = language,
+                                onBackNavigation = {
+                                    navController.popBackStack()
+                                },
+                                modifier = Modifier.padding(innerPadding),
+                                onTranslationLanguageSelect = {
+                                    navController.navigate("translation_language_detail/$language")
+                                },
+                                onCurrencySelect = {
+                                    val currentSymbol = PreferencesHelper.getDefaultCurrencySymbol(context, language)
+                                    navController.navigate("currency_symbol_detail/$currentSymbol/$language")
+                                },
                             )
-                        },
-                        isDarkTheme = isDarkTheme,
-                        downloadActions = downloadActions,
-                        checkUpdateActions = checkUpdateActions,
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
+                        }
+                    }
 
-                composable("conjugate_download_data") {
-                    ConjugateDownloadDataScreen(
-                        onBackNavigation = {
-                            navController.popBackStack()
-                        },
-                        isDarkTheme = isDarkTheme,
-                        downloadActions = conjugateDownloadActions,
-                        checkUpdateActions = conjugateCheckUpdateActions,
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
+                    composable("translation_language_detail" + "/{languageName}") { backStackEntry ->
+                        val language = backStackEntry.arguments?.getString("languageName") ?: ""
+                        SelectTranslationSourceLanguageScreen(
+                            onBackNavigation = {
+                                navController.popBackStack()
+                            },
+                            onNavigateToDownloadData = {
+                                navController.navigate("download_data")
+                            },
+                            onDownloadAction = onDownloadAction,
+                            modifier = Modifier.padding(innerPadding),
+                            currentLanguage = language,
+                        )
+                    }
 
-                composable("${Screen.ConjugationSelection.route}/{verb}/{languageAlias}") { backStackEntry ->
-                    val verb = backStackEntry.arguments?.getString("verb") ?: ""
-                    val languageAlias = backStackEntry.arguments?.getString("languageAlias") ?: ""
-                    ConjugationSelectionScreen(
-                        verb = verb,
-                        languageAlias = languageAlias,
-                        onBackNavigation = { navController.popBackStack() },
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
-
-                composable("${Screen.LanguageSettings.route}/{languageName}") {
-                    val language = it.arguments?.getString("languageName")
-                    if (language != null) {
-                        LanguageSettingsScreen(
-                            language = language,
+                    composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
+                        val language = backStackEntry.arguments?.getString("languageName") ?: ""
+                        DefaultCurrencySymbolScreen(
+                            currentLanguage = language,
                             onBackNavigation = {
                                 navController.popBackStack()
                             },
                             modifier = Modifier.padding(innerPadding),
-                            onTranslationLanguageSelect = {
-                                navController.navigate("translation_language_detail/$language")
-                            },
-                            onCurrencySelect = {
-                                val currentSymbol = PreferencesHelper.getDefaultCurrencySymbol(context, language)
-                                navController.navigate("currency_symbol_detail/$currentSymbol/$language")
-                            },
                         )
                     }
-                }
 
-                composable("translation_language_detail" + "/{languageName}") { backStackEntry ->
-                    val language = backStackEntry.arguments?.getString("languageName") ?: ""
-                    SelectTranslationSourceLanguageScreen(
-                        onBackNavigation = {
-                            navController.popBackStack()
-                        },
-                        onNavigateToDownloadData = {
-                            navController.navigate("download_data")
-                        },
-                        onDownloadAction = onDownloadAction,
-                        modifier = Modifier.padding(innerPadding),
-                        currentLanguage = language,
-                    )
-                }
+                    composable(Screen.WikimediaScribe.route) {
+                        WikimediaScreen(
+                            onBackNavigation = {
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier.padding(innerPadding),
+                        )
+                    }
 
-                composable("currency_symbol_detail/{symbolName}/{languageName}") { backStackEntry ->
-                    val language = backStackEntry.arguments?.getString("languageName") ?: ""
-                    DefaultCurrencySymbolScreen(
-                        currentLanguage = language,
-                        onBackNavigation = {
-                            navController.popBackStack()
-                        },
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
+                    composable(Screen.PrivacyPolicy.route) {
+                        PrivacyPolicyScreen(
+                            onBackNavigation = {
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier.padding(innerPadding),
+                        )
+                    }
 
-                composable(Screen.WikimediaScribe.route) {
-                    WikimediaScreen(
-                        onBackNavigation = {
-                            navController.popBackStack()
-                        },
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
-
-                composable(Screen.PrivacyPolicy.route) {
-                    PrivacyPolicyScreen(
-                        onBackNavigation = {
-                            navController.popBackStack()
-                        },
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
-
-                composable(Screen.ThirdParty.route) {
-                    ThirdPartyScreen(
-                        onBackNavigation = {
-                            navController.popBackStack()
-                        },
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                }
-            } // Ends NavHost
-        } // Ends Scaffold content
+                    composable(Screen.ThirdParty.route) {
+                        ThirdPartyScreen(
+                            onBackNavigation = {
+                                navController.popBackStack()
+                            },
+                            modifier = Modifier.padding(innerPadding),
+                        )
+                    }
+                } // Ends NavHost
+            } // Ends Scaffold content
 
             androidx.compose.animation.AnimatedVisibility(
                 visible = isOfflineErrorVisible,
                 enter = androidx.compose.animation.slideInVertically(initialOffsetY = { it }) + androidx.compose.animation.fadeIn(),
                 exit = androidx.compose.animation.slideOutVertically(targetOffsetY = { it }) + androidx.compose.animation.fadeOut(),
-                modifier = Modifier
-                    .align(androidx.compose.ui.Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(bottom = 120.dp, start = 16.dp, end = 16.dp)
+                modifier =
+                    Modifier
+                        .align(androidx.compose.ui.Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(bottom = 120.dp, start = 16.dp, end = 16.dp),
             ) {
                 androidx.compose.material3.Surface(
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                    shape =
+                        androidx.compose.foundation.shape
+                            .RoundedCornerShape(12.dp),
                     color = androidx.compose.ui.graphics.Color.White,
-                    shadowElevation = 8.dp
+                    shadowElevation = 8.dp,
                 ) {
                     androidx.compose.material3.Text(
                         text = activeToastMessage ?: "",
-                        color = androidx.compose.ui.graphics.Color(0xFFE68A00),
-                        modifier = Modifier.padding(16.dp)
+                        color =
+                            androidx.compose.ui.graphics
+                                .Color(0xFFE68A00),
+                        modifier = Modifier.padding(16.dp),
                     )
                 }
             }
-    } // Ends Box
+        } // Ends Box
     } // Ends ScribeTheme
 } // Ends App
 

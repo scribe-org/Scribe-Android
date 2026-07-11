@@ -9,7 +9,6 @@ import android.net.NetworkCapabilities
  * Utility singleton to check network connectivity status.
  */
 object NetworkMonitor {
-
     /**
      * Checks if the device is currently connected to the internet.
      *
@@ -17,13 +16,14 @@ object NetworkMonitor {
      * @return true if connected via WiFi, Cellular, or Ethernet, false otherwise.
      */
     fun isOnline(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
-            ?: return false
-            
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                ?: return false
+
         val activeNetwork = connectivityManager.activeNetwork ?: return false
         val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-        
+
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-               capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 }
