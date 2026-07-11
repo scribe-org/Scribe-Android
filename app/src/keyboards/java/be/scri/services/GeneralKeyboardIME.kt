@@ -193,9 +193,11 @@ abstract class GeneralKeyboardIME(
         const val NOUN_TYPE_SIZE = 20f
         const val SUGGESTION_SIZE = 15f
         const val SUGGESTION_HIGHLIGHT_ALPHA = 51
-        const val SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP = 8f
-        const val SUGGESTION_HIGHLIGHT_INSET_DP = 4f
+        const val SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP = 12f
+        const val SUGGESTION_HIGHLIGHT_HORIZONTAL_INSET_DP = 4f
+        const val SUGGESTION_HIGHLIGHT_VERTICAL_INSET_DP = 1f
         const val SUGGESTION_UNDERLINE_HEIGHT_DP = 3f
+        const val SUGGESTION_UNDERLINE_EXTRA_HORIZONTAL_INSET_DP = 6f
         const val DARK_THEME = "#aeb3be"
         const val LIGHT_THEME = "#4b4b4b"
         internal const val MAX_TEXT_LENGTH = 1000
@@ -1093,16 +1095,17 @@ abstract class GeneralKeyboardIME(
         prefix: String,
         limit: Int = 3,
     ): AutocompleteResult {
+        // The SQL/Trie-backed lexicon is a deterministic, pure prefix match and is preferred.
+        // The native dictionary engine's suggestions can drift from the typed prefix on longer
+        // words (see PR discussion), so it's only used when the lexicon has no data for this
+        // language/prefix yet.
         val completions =
-            if (this::nativeSuggestionEngine.isInitialized) {
-                val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
-                if (nativeCompletions.isNotEmpty()) {
-                    nativeCompletions
+            getDeterministicAutocompletions(prefix, limit).ifEmpty {
+                if (this::nativeSuggestionEngine.isInitialized) {
+                    nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
                 } else {
-                    getFallbackAutocompletions(prefix, limit)
+                    emptyList()
                 }
-            } else {
-                getFallbackAutocompletions(prefix, limit)
             }
 
         // The native dictionary only returns completions that extend `prefix`, never `prefix`
@@ -1127,7 +1130,7 @@ abstract class GeneralKeyboardIME(
         return AutocompleteResult(completions, highlightedSuggestion = null)
     }
 
-    private fun getFallbackAutocompletions(
+    private fun getDeterministicAutocompletions(
         prefix: String,
         limit: Int,
     ): List<String> =
@@ -1848,9 +1851,12 @@ abstract class GeneralKeyboardIME(
      */
     private fun buildSuggestionBackground(isHighlighted: Boolean): Drawable {
         val density = resources.displayMetrics.density
-        val insetPx = (SUGGESTION_HIGHLIGHT_INSET_DP * density).toInt()
+        val horizontalInsetPx = (SUGGESTION_HIGHLIGHT_HORIZONTAL_INSET_DP * density).toInt()
+        val verticalInsetPx = (SUGGESTION_HIGHLIGHT_VERTICAL_INSET_DP * density).toInt()
         val underlineHeightPx = (SUGGESTION_UNDERLINE_HEIGHT_DP * density).toInt()
-        val underlineColorRes = if (isHighlighted) R.color.annotateGreen else R.color.annotateRed
+        val underlineExtraInsetPx = (SUGGESTION_UNDERLINE_EXTRA_HORIZONTAL_INSET_DP * density).toInt()
+        val underlineColorRes =
+            if (isHighlighted) R.color.autocomplete_highlight_indicator else R.color.autocomplete_alternate_indicator
         val underline =
             GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
@@ -1862,10 +1868,13 @@ abstract class GeneralKeyboardIME(
         val underlineIndex = layers.lastIndex
         val layered =
             LayerDrawable(layers).apply {
+                // The underline sits narrower than the highlight fill above it, matching the
+                // iOS reference design.
+                setLayerInset(underlineIndex, underlineExtraInsetPx, 0, underlineExtraInsetPx, 0)
                 setLayerGravity(underlineIndex, Gravity.BOTTOM)
                 setLayerHeight(underlineIndex, underlineHeightPx)
             }
-        return InsetDrawable(layered, insetPx, insetPx, insetPx, insetPx)
+        return InsetDrawable(layered, horizontalInsetPx, verticalInsetPx, horizontalInsetPx, verticalInsetPx)
     }
 
     /**
