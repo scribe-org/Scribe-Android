@@ -29,6 +29,7 @@ import java.io.IOException
 import java.time.LocalDate
 
 /** ViewModel to manage data download states and actions. */
+@Suppress("TooManyFunctions")
 class DataDownloadViewModel(
     application: Application,
 ) : AndroidViewModel(application) {

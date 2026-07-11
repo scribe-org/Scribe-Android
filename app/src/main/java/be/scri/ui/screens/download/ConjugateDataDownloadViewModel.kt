@@ -29,6 +29,7 @@ import java.io.IOException
 import java.time.LocalDate
 
 /** ViewModel to manage conjugate data download states and actions. */
+@Suppress("TooManyFunctions")
 class ConjugateDataDownloadViewModel(
     application: Application,
 ) : AndroidViewModel(application) {

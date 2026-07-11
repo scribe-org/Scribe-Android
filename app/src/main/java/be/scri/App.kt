@@ -143,7 +143,7 @@ fun ScribeApp(
         useDarkTheme = isDarkTheme,
         isIncreaseTextSize = isIncreaseTextSize,
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = modifier.fillMaxSize()) {
             Scaffold(
                 bottomBar = {
                     ScribeBottomBar(
@@ -160,7 +160,7 @@ fun ScribeApp(
                         screens = screens,
                     )
                 },
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
             ) { innerPadding ->
                 NavHost(
                     navController = navController,
