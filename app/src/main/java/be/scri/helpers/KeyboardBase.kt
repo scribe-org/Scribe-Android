@@ -664,9 +664,14 @@ class KeyboardBase {
 
         if (currentKeyboardMode == keyboardLettersMode && mKeys != null && provider?.isClipboardKeyEnabled() == true) {
             val spaceKey = mKeys!!.find { it?.code == 32 }
+            val emojiKey = mKeys!!.find { it?.code == KEYCODE_EMOJI }
             val commaKey = mKeys!!.find { it?.code == ','.code }
+            val periodKey = mKeys!!.find { it?.code == '.'.code }
+            val enterKey = mKeys!!.find { it?.code == KEYCODE_ENTER }
+            val modeChangeKey = mKeys!!.find { it?.code == KEYCODE_MODE_CHANGE }
+
             val row = mRows.lastOrNull()
-            if (spaceKey != null && commaKey != null && row != null) {
+            if (emojiKey != null && spaceKey != null && commaKey != null && row != null) {
                 val clipWidth = (mDisplayWidth * 0.10).toInt()
 
                 val clipKey = Key(row)
@@ -677,20 +682,28 @@ class KeyboardBase {
                 clipKey.icon = context.resources.getDrawable(R.drawable.ic_clipboard_vector, context.theme)
                 clipKey.icon?.setBounds(0, 0, clipKey.icon!!.intrinsicWidth, clipKey.icon!!.intrinsicHeight)
 
-                spaceKey.width = spaceKey.width - clipWidth - clipKey.gap
+                spaceKey.width -= (clipWidth + clipKey.gap)
 
-                val commaIdxInList = mKeys!!.indexOf(commaKey)
-                val commaIdxInRow = row.mKeys.indexOf(commaKey)
+                val emojiIdxInList = mKeys!!.indexOf(emojiKey)
+                val emojiIdxInRow = row.mKeys.indexOf(emojiKey)
 
-                if (commaIdxInList != -1 && commaIdxInRow != -1) {
-                    clipKey.x = commaKey.x
-                    clipKey.y = commaKey.y
+                if (emojiIdxInList != -1 && emojiIdxInRow != -1) {
+                    modeChangeKey?.let { emojiKey.x = it.x + it.width + it.gap }
+
+                    clipKey.x = emojiKey.x + emojiKey.width + emojiKey.gap
+                    clipKey.y = emojiKey.y
 
                     commaKey.x = clipKey.x + clipKey.width + clipKey.gap
-                    spaceKey.x = commaKey.x + commaKey.width + commaKey.gap
+                    commaKey.y = emojiKey.y
 
-                    mKeys!!.add(commaIdxInList, clipKey)
-                    row.mKeys.add(commaIdxInRow, clipKey)
+                    spaceKey.x = commaKey.x + commaKey.width + commaKey.gap
+                    periodKey?.x = spaceKey.x + spaceKey.width + spaceKey.gap
+
+                    val lastPositionedKey = periodKey ?: spaceKey
+                    enterKey?.x = lastPositionedKey.x + lastPositionedKey.width + lastPositionedKey.gap
+
+                    mKeys!!.add(emojiIdxInList + 1, clipKey)
+                    row.mKeys.add(emojiIdxInRow + 1, clipKey)
                 }
             }
         }
