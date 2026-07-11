@@ -662,49 +662,48 @@ class KeyboardBase {
             }
         }
 
-        if (currentKeyboardMode == keyboardLettersMode && mKeys != null && provider?.isClipboardKeyEnabled() == true) {
-            val spaceKey = mKeys!!.find { it?.code == 32 }
-            val emojiKey = mKeys!!.find { it?.code == KEYCODE_EMOJI }
-            val commaKey = mKeys!!.find { it?.code == ','.code }
+        if (currentKeyboardMode == keyboardLettersMode && mKeys != null) {
+            val spaceKey = mKeys!!.find { it?.code == 32 } ?: return
+            val emojiKey = mKeys!!.find { it?.code == KEYCODE_EMOJI } ?: return
+            val commaKey = mKeys!!.find { it?.code == ','.code } ?: return
             val periodKey = mKeys!!.find { it?.code == '.'.code }
             val enterKey = mKeys!!.find { it?.code == KEYCODE_ENTER }
             val modeChangeKey = mKeys!!.find { it?.code == KEYCODE_MODE_CHANGE }
 
-            val row = mRows.lastOrNull()
-            if (emojiKey != null && spaceKey != null && commaKey != null && row != null) {
-                val clipWidth = (mDisplayWidth * 0.10).toInt()
+            val row = mRows.lastOrNull() ?: return
 
-                val clipKey = Key(row)
-                clipKey.code = KEYCODE_CLIPBOARD
-                clipKey.width = clipWidth
-                clipKey.height = spaceKey.height
-                clipKey.gap = spaceKey.gap
-                clipKey.icon = context.resources.getDrawable(R.drawable.ic_clipboard_vector, context.theme)
-                clipKey.icon?.setBounds(0, 0, clipKey.icon!!.intrinsicWidth, clipKey.icon!!.intrinsicHeight)
+            val clipWidth = (mDisplayWidth * 0.10).toInt()
 
-                spaceKey.width -= (clipWidth + clipKey.gap)
+            val clipKey = Key(row)
+            clipKey.code = KEYCODE_CLIPBOARD
+            clipKey.width = clipWidth
+            clipKey.height = spaceKey.height
+            clipKey.gap = spaceKey.gap
+            clipKey.icon = context.resources.getDrawable(R.drawable.ic_clipboard_vector, context.theme)
+            clipKey.icon?.setBounds(0, 0, clipKey.icon!!.intrinsicWidth, clipKey.icon!!.intrinsicHeight)
 
-                val emojiIdxInList = mKeys!!.indexOf(emojiKey)
-                val emojiIdxInRow = row.mKeys.indexOf(emojiKey)
+            spaceKey.width -= (clipWidth + clipKey.gap)
 
-                if (emojiIdxInList != -1 && emojiIdxInRow != -1) {
-                    modeChangeKey?.let { emojiKey.x = it.x + it.width + it.gap }
+            val emojiIdxInList = mKeys!!.indexOf(emojiKey)
+            val emojiIdxInRow = row.mKeys.indexOf(emojiKey)
 
-                    clipKey.x = emojiKey.x + emojiKey.width + emojiKey.gap
-                    clipKey.y = emojiKey.y
+            if (emojiIdxInList != -1 && emojiIdxInRow != -1) {
+                modeChangeKey?.let { emojiKey.x = it.x + it.width + it.gap }
 
-                    commaKey.x = clipKey.x + clipKey.width + clipKey.gap
-                    commaKey.y = emojiKey.y
+                clipKey.x = emojiKey.x + emojiKey.width + emojiKey.gap
+                clipKey.y = emojiKey.y
 
-                    spaceKey.x = commaKey.x + commaKey.width + commaKey.gap
-                    periodKey?.x = spaceKey.x + spaceKey.width + spaceKey.gap
+                commaKey.x = clipKey.x + clipKey.width + clipKey.gap
+                commaKey.y = emojiKey.y
 
-                    val lastPositionedKey = periodKey ?: spaceKey
-                    enterKey?.x = lastPositionedKey.x + lastPositionedKey.width + lastPositionedKey.gap
+                spaceKey.x = commaKey.x + commaKey.width + commaKey.gap
+                periodKey?.x = spaceKey.x + spaceKey.width + spaceKey.gap
 
-                    mKeys!!.add(emojiIdxInList + 1, clipKey)
-                    row.mKeys.add(emojiIdxInRow + 1, clipKey)
-                }
+                val lastPositionedKey = periodKey ?: spaceKey
+                enterKey?.x = lastPositionedKey.x + lastPositionedKey.width + lastPositionedKey.gap
+
+                mKeys!!.add(emojiIdxInList + 1, clipKey)
+                row.mKeys.add(emojiIdxInRow + 1, clipKey)
             }
         }
 
