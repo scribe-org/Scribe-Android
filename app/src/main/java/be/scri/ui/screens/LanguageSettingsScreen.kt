@@ -301,42 +301,49 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
             ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_functionality_double_space_period,
                 desc = R.string.i18n_app_settings_keyboard_functionality_double_space_period_description,
+                altText = R.string.i18n_app_settings_keyboard_functionality_double_space_period_alt_text,
                 state = settings.periodOnDoubleTapState,
                 onToggle = settings.onTogglePeriodOnDoubleTap,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_functionality_auto_suggest_emoji,
                 desc = R.string.i18n_app_settings_keyboard_functionality_auto_suggest_emoji_description,
+                altText = R.string.i18n_app_settings_keyboard_functionality_auto_suggest_emoji_alt_text,
                 state = settings.emojiSuggestionsState,
                 onToggle = settings.onToggleEmojiSuggestions,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_keypress_vibration,
                 desc = R.string.i18n_app_settings_keyboard_keypress_vibration_description,
+                altText = R.string.i18n_app_settings_keyboard_keypress_vibration_alt_text,
                 state = settings.toggleVibrateOnKeyPress,
                 onToggle = settings.onToggleVibrateOnKeyPress,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_keypress_sound,
                 desc = R.string.i18n_app_settings_keyboard_keypress_sound_description,
+                altText = R.string.i18n_app_settings_keyboard_keypress_sound_alt_text,
                 state = settings.toggleSoundOnKeyPress,
                 onToggle = settings.onToggleSoundOnKeyPress,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_functionality_popup_on_keypress,
                 desc = R.string.i18n_app_settings_keyboard_functionality_popup_on_keypress_description,
+                altText = R.string.i18n_app_settings_keyboard_functionality_popup_on_keypress_alt_text,
                 state = settings.togglePopUpOnKeyPress,
                 onToggle = settings.onTogglePopUpOnKeyPress,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_functionality_delete_word_by_word,
                 desc = R.string.i18n_app_settings_keyboard_functionality_delete_word_by_word_description,
+                altText = R.string.i18n_app_settings_keyboard_functionality_delete_word_by_word_alt_text,
                 state = settings.wordByWordDeletionState,
                 onToggle = settings.onToggleWordByWordDeletion,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_functionality_hold_for_alt_chars,
                 desc = R.string.i18n_app_settings_keyboard_functionality_hold_for_alt_chars_description,
+                altText = R.string.i18n_app_settings_keyboard_functionality_hold_for_alt_chars_alt_text,
                 state = settings.holdForAltKeysState,
                 onToggle = settings.onToggleHoldForAltKeys,
             ),
@@ -378,6 +385,7 @@ private fun getLayoutListData(
                 ScribeItem.SwitchItem(
                     title = R.string.i18n_app_settings_keyboard_layout_disable_accent_characters,
                     desc = R.string.i18n_app_settings_keyboard_layout_disable_accent_characters_description,
+                    altText = R.string.i18n_app_settings_keyboard_layout_disable_accent_characters_alt_text,
                     state = toggleDisableAccentCharacter,
                     onToggle = onToggleDisableAccentCharacter,
                 ),
@@ -389,6 +397,7 @@ private fun getLayoutListData(
         ScribeItem.SwitchItem(
             title = R.string.i18n_app_settings_keyboard_layout_period_and_comma,
             desc = R.string.i18n_app_settings_keyboard_layout_period_and_comma_description,
+            altText = R.string.i18n_app_settings_keyboard_layout_period_and_comma_alt_text,
             state = togglePeriodAndCommaState,
             onToggle = onTogglePeriodAndComma,
         ),
@@ -397,6 +406,7 @@ private fun getLayoutListData(
         ScribeItem.SwitchItem(
             title = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard,
             desc = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard_description,
+            altText = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard_alt_text,
             state = toggleClipboardKeyOnKeyboard,
             onToggle = onToggleClipboardKeyOnKeyboard,
         ),
@@ -405,6 +415,7 @@ private fun getLayoutListData(
         ScribeItem.ClickableItem(
             title = R.string.i18n_app_settings_keyboard_layout_default_currency,
             desc = R.string.i18n_app_settings_keyboard_layout_default_currency_description,
+            altText = R.string.i18n_app_settings_keyboard_layout_default_currency_alt_text,
             action = {
                 Log.d("Navigation", "onCurrencySelect clicked")
                 onCurrencySelect()
@@ -455,6 +466,7 @@ private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: ()
         ScribeItem.ClickableItem(
             title = R.string.i18n_app_settings_keyboard_translation_select_source,
             desc = R.string.i18n_app_settings_keyboard_translation_select_source_description,
+            altText = R.string.i18n_app_settings_keyboard_translation_select_source_alt_text,
             action = {
                 Log.d("Navigation", "onTranslationLanguageSelect clicked")
                 onTranslationLanguageSelect()

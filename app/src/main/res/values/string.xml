@@ -195,4 +195,43 @@
     <string name="i18n.app.share.conjugate.share_via">Share Scribe Conjugate via...</string>
     <string name="i18n.app.share.keyboard.check_out">Check out Scribe!</string>
     <string name="i18n.app.share.keyboard.share_via">Share Scribe via...</string>
+    
+    <!-- Accessibility Alt Texts -->
+    <string name="i18n.app.installation.title_alt_text">Installation tab</string>
+    <string name="i18n.app.conjugate.title_alt_text">Conjugate tab</string>
+    <string name="i18n.app.settings.title_alt_text">Settings tab</string>
+    <string name="i18n.app.about.title_alt_text">About tab</string>
+    <string name="i18n.app.about.community.github_alt_text">GitHub page for Scribe</string>
+    <string name="i18n.app.about.community.visit.website_alt_text">Visit Scribe website</string>
+    <string name="i18n.app.about.community.share.scribe_alt_text">Share Scribe</string>
+    <string name="i18n.app.about.community.share.conjugate_alt_text">Share Scribe Conjugate</string>
+    <string name="i18n.app.about.community.wikimedia_alt_text">Wikimedia Community</string>
+    <string name="i18n.global.privacy.policy_alt_text">Privacy policy</string>
+    <string name="i18n.app.about.legal.third.party_alt_text">Third party licenses</string>
+    <string name="i18n.app.global.quick.tutorial_alt_text">Quick tutorial</string>
+    <string name="i18n.app.about.feedback.rate.conjugate_alt_text">Rate Scribe Conjugate</string>
+    <string name="i18n.app.about.feedback.rate.scribe_alt_text">Rate Scribe</string>
+    <string name="i18n.app.about.feedback.bug.report_alt_text">Bug report</string>
+    <string name="i18n.app.about.feedback.send.email_alt_text">Send email</string>
+    <string name="i18n.app.about.feedback.version_alt_text">App version</string>
+    <string name="i18n.app.about.feedback.reset.app.hints_alt_text">Reset app hints</string>
+    
+    <!-- Settings Screen Alt Texts -->
+    <string name="i18n.app.settings.menu.app.language_alt_text">App language settings</string>
+    <string name="i18n.app.settings.menu.app.color.mode_alt_text">Toggle dark mode</string>
+    <string name="i18n.app.settings.menu.increase.text.size_alt_text">Increase text size</string>
+
+    <!-- Language Settings Screen Alt Texts -->
+    <string name="i18n.app.settings.keyboard.functionality.double.space.period_alt_text">Double space for period</string>
+    <string name="i18n.app.settings.keyboard.functionality.auto.suggest.emoji_alt_text">Emoji suggestions</string>
+    <string name="i18n.app.settings.keyboard.keypress.vibration_alt_text">Keypress vibration</string>
+    <string name="i18n.app.settings.keyboard.keypress.sound_alt_text">Keypress sound</string>
+    <string name="i18n.app.settings.keyboard.functionality.popup.on.keypress_alt_text">Popup on keypress</string>
+    <string name="i18n.app.settings.keyboard.functionality.delete.word.by.word_alt_text">Delete word by word</string>
+    <string name="i18n.app.settings.keyboard.functionality.hold.for.alt.chars_alt_text">Hold for alternative characters</string>
+    <string name="i18n.app.settings.keyboard.layout.disable.accent.characters_alt_text">Disable accent characters</string>
+    <string name="i18n.app.settings.keyboard.layout.period.and.comma_alt_text">Period and comma layout</string>
+    <string name="i18n.app.settings.keyboard.layout.clipboard.on.keyboard_alt_text">Clipboard key on keyboard</string>
+    <string name="i18n.app.settings.keyboard.layout.default.currency_alt_text">Default currency layout</string>
+    <string name="i18n.app.settings.keyboard.translation.select.source_alt_text">Select translation source language</string>
 </resources>
