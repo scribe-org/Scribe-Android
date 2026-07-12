@@ -80,13 +80,13 @@ object DEInterfaceVariables {
 
     // MARK: Emoji Sections
 
-    const val SMILEYS_EMOTIONS_EMOJI_HEADER = ""
-    const val PEOPLE_BODY_EMOJI_HEADER = ""
-    const val ANIMALS_NATURE_EMOJI_HEADER = ""
-    const val FOOD_DRINK_EMOJI_HEADER = ""
-    const val TRAVEL_PLACES_EMOJI_HEADER = ""
-    const val ACTIVITIES_EMOJI_HEADER = ""
-    const val OBJECTS_EMOJI_HEADER = ""
-    const val SYMBOLS_EMOJI_HEADER = ""
-    const val FLAGS_EMOJI_HEADER = ""
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Smileys & Emotionen"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Personen & Körper"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Tiere & Natur"
+    const val FOOD_DRINK_EMOJI_HEADER = "Essen & Trinken"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Reisen & Orte"
+    const val ACTIVITIES_EMOJI_HEADER = "Aktivitäten"
+    const val OBJECTS_EMOJI_HEADER = "Objekte"
+    const val SYMBOLS_EMOJI_HEADER = "Symbole"
+    const val FLAGS_EMOJI_HEADER = "Flaggen"
 }

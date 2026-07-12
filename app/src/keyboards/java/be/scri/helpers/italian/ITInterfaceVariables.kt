@@ -62,13 +62,13 @@ object ITInterfaceVariables {
 
     // MARK: Emoji Sections
 
-    const val SMILEYS_EMOTIONS_EMOJI_HEADER = ""
-    const val PEOPLE_BODY_EMOJI_HEADER = ""
-    const val ANIMALS_NATURE_EMOJI_HEADER = ""
-    const val FOOD_DRINK_EMOJI_HEADER = ""
-    const val TRAVEL_PLACES_EMOJI_HEADER = ""
-    const val ACTIVITIES_EMOJI_HEADER = ""
-    const val OBJECTS_EMOJI_HEADER = ""
-    const val SYMBOLS_EMOJI_HEADER = ""
-    const val FLAGS_EMOJI_HEADER = ""
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Faccine ed Emozioni"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Persone e Corpo"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Animali e Natura"
+    const val FOOD_DRINK_EMOJI_HEADER = "Cibo e Bevande"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Viaggi e Luoghi"
+    const val ACTIVITIES_EMOJI_HEADER = "Attività"
+    const val OBJECTS_EMOJI_HEADER = "Oggetti"
+    const val SYMBOLS_EMOJI_HEADER = "Simboli"
+    const val FLAGS_EMOJI_HEADER = "Bandiere"
 }

@@ -83,13 +83,13 @@ object ESInterfaceVariables {
 
     // MARK: Emoji Sections
 
-    const val SMILEYS_EMOTIONS_EMOJI_HEADER = ""
-    const val PEOPLE_BODY_EMOJI_HEADER = ""
-    const val ANIMALS_NATURE_EMOJI_HEADER = ""
-    const val FOOD_DRINK_EMOJI_HEADER = ""
-    const val TRAVEL_PLACES_EMOJI_HEADER = ""
-    const val ACTIVITIES_EMOJI_HEADER = ""
-    const val OBJECTS_EMOJI_HEADER = ""
-    const val SYMBOLS_EMOJI_HEADER = ""
-    const val FLAGS_EMOJI_HEADER = ""
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Caras y Emociones"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Personas y Cuerpo"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Animales y Naturaleza"
+    const val FOOD_DRINK_EMOJI_HEADER = "Comida y Bebida"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Viajes y Lugares"
+    const val ACTIVITIES_EMOJI_HEADER = "Actividades"
+    const val OBJECTS_EMOJI_HEADER = "Objetos"
+    const val SYMBOLS_EMOJI_HEADER = "Símbolos"
+    const val FLAGS_EMOJI_HEADER = "Banderas"
 }

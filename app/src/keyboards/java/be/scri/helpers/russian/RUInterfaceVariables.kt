@@ -62,13 +62,13 @@ object RUInterfaceVariables {
 
     // MARK: Emoji Sections
 
-    const val SMILEYS_EMOTIONS_EMOJI_HEADER = ""
-    const val PEOPLE_BODY_EMOJI_HEADER = ""
-    const val ANIMALS_NATURE_EMOJI_HEADER = ""
-    const val FOOD_DRINK_EMOJI_HEADER = ""
-    const val TRAVEL_PLACES_EMOJI_HEADER = ""
-    const val ACTIVITIES_EMOJI_HEADER = ""
-    const val OBJECTS_EMOJI_HEADER = ""
-    const val SYMBOLS_EMOJI_HEADER = ""
-    const val FLAGS_EMOJI_HEADER = ""
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Смайлики и Эмоции"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Люди и Тело"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Животные и Природа"
+    const val FOOD_DRINK_EMOJI_HEADER = "Еда и Напиток"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Путешествия и Места"
+    const val ACTIVITIES_EMOJI_HEADER = "Активность"
+    const val OBJECTS_EMOJI_HEADER = "Предметы"
+    const val SYMBOLS_EMOJI_HEADER = "Символы"
+    const val FLAGS_EMOJI_HEADER = "Флаги"
 }
