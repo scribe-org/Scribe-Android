@@ -54,7 +54,6 @@ object ENInterfaceVariables {
 
     // MARK: Translate Command
 
-    
     const val DOWNLOAD_DATA_LBL = "Please download language data"
     const val TRANSLATE_KEY_LBL = "Translate"
     const val TRANSLATE_PLACEHOLDER = "Enter a word"
