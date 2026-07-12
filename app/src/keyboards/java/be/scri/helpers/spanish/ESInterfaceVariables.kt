@@ -58,6 +58,8 @@ object ESInterfaceVariables {
 
     // MARK: Translate Command
 
+    const val DOWNLOAD_DATA_LBL = "Please download language data"
+
     const val TRANSLATE_KEY_LBL = "Traducir"
     const val TRANSLATE_PLACEHOLDER = "Ingrese una palabra"
     const val TRANSLATE_PROMPT = " es -› ${"targetLanguage()"}"

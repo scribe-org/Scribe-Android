@@ -37,6 +37,8 @@ object RUInterfaceVariables {
 
     // MARK: Translate Command
 
+    const val DOWNLOAD_DATA_LBL = "Please download language data"
+
     const val TRANSLATE_KEY_LBL = "Перевести"
     const val TRANSLATE_PLACEHOLDER = "Введите слово"
     const val TRANSLATE_PROMPT = "ru -› targetLanguage()"

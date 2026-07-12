@@ -37,6 +37,8 @@ object ITInterfaceVariables {
 
     // MARK: Translate Command
 
+    const val DOWNLOAD_DATA_LBL = "Please download language data"
+
     const val TRANSLATE_KEY_LBL = "Tradurre"
     const val TRANSLATE_PLACEHOLDER = "Inserisci una parola"
     const val TRANSLATE_PROMPT = "it -› targetLanguage()"

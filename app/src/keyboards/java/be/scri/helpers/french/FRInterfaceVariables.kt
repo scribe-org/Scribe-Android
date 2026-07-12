@@ -56,6 +56,8 @@ object FRInterfaceVariables {
 
     // MARK: Translate Command
 
+    const val DOWNLOAD_DATA_LBL = "Please download language data"
+
     const val TRANSLATE_KEY_LBL = "Traduire"
     const val TRANSLATE_PLACEHOLDER = "Entrez un mot"
     const val TRANSLATE_PROMPT = "fr -› targetLanguage()"

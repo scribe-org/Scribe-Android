@@ -37,6 +37,8 @@ object PTInterfaceVariables {
 
     // MARK: Translate Command
 
+    const val DOWNLOAD_DATA_LBL = "Please download language data"
+
     const val TRANSLATE_KEY_LBL = "Traduzir"
     const val TRANSLATE_PLACEHOLDER = "Digite uma palavra"
     const val TRANSLATE_PROMPT = "pt -› targetLanguage()"

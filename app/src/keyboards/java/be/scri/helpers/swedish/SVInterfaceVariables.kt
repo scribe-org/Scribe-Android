@@ -37,6 +37,8 @@ object SVInterfaceVariables {
 
     // MARK: Translate Command
 
+    const val DOWNLOAD_DATA_LBL = "Please download language data"
+
     const val TRANSLATE_KEY_LBL = "Översätt"
     const val TRANSLATE_PLACEHOLDER = "Ange ett ord"
     const val TRANSLATE_PROMPT = "sv -› targetLanguage()"

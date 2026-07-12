@@ -28,6 +28,7 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.ColorUtils
@@ -365,8 +366,11 @@ abstract class GeneralKeyboardIME(
         val languageAlias = getLanguageAlias(language)
         val dbFile = applicationContext.getDatabasePath("${languageAlias}LanguageData.sqlite")
         val hasData = dbFile.exists()
-        val banner = binding.root.findViewById<Button>(R.id.empty_state_banner)
-        banner.visibility =
+        val bannerContainer = binding.root.findViewById<View>(R.id.empty_state_banner_container)
+        val banner = binding.root.findViewById<TextView>(R.id.empty_state_banner)
+        val downloadDataText = be.scri.helpers.KeyboardLanguageMappingConstants.downloadDataPlaceholder[languageAlias] ?: "Please download language data"
+        banner.text = downloadDataText
+        bannerContainer.visibility =
             if (hasData) View.GONE else View.VISIBLE
         binding.commandOptionsBar.visibility =
             if (hasData && !isNumericKeyboardActive) View.VISIBLE else View.GONE
@@ -385,7 +389,7 @@ abstract class GeneralKeyboardIME(
         border.setColor(ContextCompat.getColor(applicationContext, bannerColor))
 
         if (isDarkMode) {
-            border.setStroke((2f * resources.displayMetrics.density).toInt(), ContextCompat.getColor(applicationContext, bannerTextColor))
+            border.setStroke((1.5f * resources.displayMetrics.density).toInt(), ContextCompat.getColor(applicationContext, bannerTextColor))
         }
 
         val rippleColor =
@@ -393,21 +397,21 @@ abstract class GeneralKeyboardIME(
                 ContextCompat.getColor(applicationContext, bannerTextColor),
                 51,
             )
+        val rippleDrawable =
+            RippleDrawable(android.content.res.ColorStateList.valueOf(rippleColor), border, null)
 
-        val ripple =
-            RippleDrawable(
-                android.content.res.ColorStateList
-                    .valueOf(rippleColor),
-                border,
-                null,
-            )
-        banner.background = ripple
+        bannerContainer.background = rippleDrawable
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            bannerContainer.outlineAmbientShadowColor = Color.TRANSPARENT
+            bannerContainer.outlineSpotShadowColor = Color.TRANSPARENT
+        }
 
-        banner.setOnClickListener {
+        bannerContainer.setOnClickListener {
             val intent =
                 Intent(applicationContext, MainActivity::class.java)
                     .apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        putExtra("navigate_to", "download_data")
                     }
 
             startActivity(intent)

@@ -55,6 +55,8 @@ object DEInterfaceVariables {
 
     // MARK: Translate Command
 
+    const val DOWNLOAD_DATA_LBL = "Please download language data"
+
     const val TRANSLATE_KEY_LBL = "Übersetzen"
     const val TRANSLATE_PLACEHOLDER = "Wort eingeben"
     const val TRANSLATE_PROMPT = "de -› targetLanguage()"
