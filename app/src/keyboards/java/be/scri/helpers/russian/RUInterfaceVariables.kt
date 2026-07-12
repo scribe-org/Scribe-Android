@@ -61,4 +61,16 @@ object RUInterfaceVariables {
     const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Уже во множ-ом"
+
+    // MARK: Emoji Sections
+
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Смайлики и Эмоции"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Люди и Тело"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Животные и Природа"
+    const val FOOD_DRINK_EMOJI_HEADER = "Еда и Напиток"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Путешествия и Места"
+    const val ACTIVITIES_EMOJI_HEADER = "Активность"
+    const val OBJECTS_EMOJI_HEADER = "Предметы"
+    const val SYMBOLS_EMOJI_HEADER = "Символы"
+    const val FLAGS_EMOJI_HEADER = "Флаги"
 }

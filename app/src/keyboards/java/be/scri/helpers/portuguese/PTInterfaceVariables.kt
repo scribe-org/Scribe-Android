@@ -61,4 +61,16 @@ object PTInterfaceVariables {
     const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Já plural"
+
+    // MARK: Emoji Sections
+
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Smileys e Emoções"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Pessoas e Corpo"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Animais e Natureza"
+    const val FOOD_DRINK_EMOJI_HEADER = "Comida e Bebida"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Viagem e Lugares"
+    const val ACTIVITIES_EMOJI_HEADER = "Atividades"
+    const val OBJECTS_EMOJI_HEADER = "Objetos"
+    const val SYMBOLS_EMOJI_HEADER = "Símbolos"
+    const val FLAGS_EMOJI_HEADER = "Bandeiras"
 }
