@@ -59,4 +59,16 @@ object SVInterfaceVariables {
     const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Redan plural"
+
+    // MARK: Emoji Sections
+
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Smileys och Känslor"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Människor och Kropp"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Djur och Natur"
+    const val FOOD_DRINK_EMOJI_HEADER = "Mat och Dryck"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Resor och Platser"
+    const val ACTIVITIES_EMOJI_HEADER = "Aktiviteter"
+    const val OBJECTS_EMOJI_HEADER = "Objekt"
+    const val SYMBOLS_EMOJI_HEADER = "Symboler"
+    const val FLAGS_EMOJI_HEADER = "Flaggor"
 }

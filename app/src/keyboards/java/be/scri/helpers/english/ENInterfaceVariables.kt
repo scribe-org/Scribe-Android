@@ -76,4 +76,16 @@ object ENInterfaceVariables {
     const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Already plural"
+
+    // MARK: Emoji Sections
+
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Smileys & Emotions"
+    const val PEOPLE_BODY_EMOJI_HEADER = "People & Body"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Animals & Nature"
+    const val FOOD_DRINK_EMOJI_HEADER = "Food & Drink"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Travel & Places"
+    const val ACTIVITIES_EMOJI_HEADER = "Activities"
+    const val OBJECTS_EMOJI_HEADER = "Objects"
+    const val SYMBOLS_EMOJI_HEADER = "Symbols"
+    const val FLAGS_EMOJI_HEADER = "Flags"
 }

@@ -53,6 +53,7 @@ import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_EMOJI
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_ENTER
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_LEFT_ARROW
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_MODE_CHANGE
@@ -641,7 +642,7 @@ class KeyboardView
          * Attaches a keyboard to this view.
          * The keyboard can be switched at any time and the view will re-layout itself to accommodate the keyboard.
          *
-         * @param keyboard the keyboard to display in this view
+         * @param keyboard the keyboard to display in this view.
          */
         fun setKeyboard(keyboard: KeyboardBase) {
             if (mKeyboard != null) {
@@ -1142,7 +1143,8 @@ class KeyboardView
                                 code == KEYCODE_DELETE ||
                                     code == KEYCODE_SHIFT ||
                                     code == KEYCODE_TAB ||
-                                    code == KeyboardBase.KEYCODE_CLIPBOARD
+                                    code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                                    code == KeyboardBase.KEYCODE_EMOJI
                             if (isIconOnlyKey) {
                                 key.icon!!.applyColorFilter(mTextColor)
                             }
