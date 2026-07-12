@@ -6,15 +6,12 @@ package be.scri.helpers.italian
  * Interface variables for Italian language keyboards.
  */
 object ITInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "€"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "spazio"
     const val LANGUAGE = "Italiano"
+
+    const val DOWNLOAD_DATA_LBL = "Scarica i dati della lingua"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Non in Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -35,9 +32,12 @@ object ITInterfaceVariables {
     val BASE_AUTOSUGGESTIONS = listOf("ho", "non", "ma")
     val NUMERIC_AUTOSUGGESTIONS = listOf("utenti", "anni", "e")
 
-    // MARK: Translate Command
+    // MARK: Currency Symbols
 
-    const val DOWNLOAD_DATA_LBL = "Please download language data"
+    const val CURRENCY_SYMBOL = "€"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
+
+    // MARK: Translate Command
 
     const val TRANSLATE_KEY_LBL = "Tradurre"
     const val TRANSLATE_PLACEHOLDER = "Inserisci una parola"

@@ -6,15 +6,12 @@ package be.scri.helpers.french
  * Interface variables for French language keyboards.
  */
 object FRInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "€"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "espace"
     const val LANGUAGE = "Français"
+
+    const val DOWNLOAD_DATA_LBL = "Veuillez télécharger les données linguistiques"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Pas dans Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -34,6 +31,11 @@ object FRInterfaceVariables {
 
     val BASE_AUTOSUGGESTIONS = listOf("je", "il", "le")
     val NUMERIC_AUTOSUGGESTIONS = listOf("je", "que", "c’est")
+
+    // MARK: Currency Symbols
+
+    const val CURRENCY_SYMBOL = "€"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
 
     // MARK: Suggestion Pronouns
 
@@ -55,8 +57,6 @@ object FRInterfaceVariables {
         )
 
     // MARK: Translate Command
-
-    const val DOWNLOAD_DATA_LBL = "Please download language data"
 
     const val TRANSLATE_KEY_LBL = "Traduire"
     const val TRANSLATE_PLACEHOLDER = "Entrez un mot"

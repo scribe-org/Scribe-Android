@@ -6,15 +6,12 @@ package be.scri.helpers.spanish
  * Interface variables for Spanish language keyboards.
  */
 object ESInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "$"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("₡", "S", "€", "£", "₲", "¢")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "espacio"
     const val LANGUAGE = "Español"
+
+    const val DOWNLOAD_DATA_LBL = "Por favor, descarga los datos del idioma"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "No en Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -34,6 +31,11 @@ object ESInterfaceVariables {
 
     val BASE_AUTOSUGGESTIONS = listOf("el", "la", "no")
     val NUMERIC_AUTOSUGGESTIONS = listOf("que", "de", "en")
+
+    // MARK: Currency Symbols
+
+    const val CURRENCY_SYMBOL = "$"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("₡", "S", "€", "£", "₲", "¢")
 
     // MARK: Suggestion Pronouns
 
@@ -57,8 +59,6 @@ object ESInterfaceVariables {
         )
 
     // MARK: Translate Command
-
-    const val DOWNLOAD_DATA_LBL = "Please download language data"
 
     const val TRANSLATE_KEY_LBL = "Traducir"
     const val TRANSLATE_PLACEHOLDER = "Ingrese una palabra"

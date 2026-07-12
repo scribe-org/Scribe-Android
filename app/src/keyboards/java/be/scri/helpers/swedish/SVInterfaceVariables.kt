@@ -6,15 +6,12 @@ package be.scri.helpers.swedish
  * Interface variables for Swedish language keyboards.
  */
 object SVInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "kr"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("kr", "$", "€", "£", "¥")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "mellanslag"
     const val LANGUAGE = "Svenska"
+
+    const val DOWNLOAD_DATA_LBL = "Var god ladda ner språkdata"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Inte i Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -35,9 +32,12 @@ object SVInterfaceVariables {
     val BASE_AUTOSUGGESTIONS = listOf("jag", "det", "men")
     val NUMERIC_AUTOSUGGESTIONS = listOf("jag", "det", "och")
 
-    // MARK: Translate Command
+    // MARK: Currency Symbols
 
-    const val DOWNLOAD_DATA_LBL = "Please download language data"
+    const val CURRENCY_SYMBOL = "kr"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("kr", "$", "€", "£", "¥")
+
+    // MARK: Translate Command
 
     const val TRANSLATE_KEY_LBL = "Översätt"
     const val TRANSLATE_PLACEHOLDER = "Ange ett ord"

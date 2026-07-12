@@ -6,15 +6,12 @@ package be.scri.helpers.english
  * Interface variables for English language keyboards.
  */
 object ENInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "$"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("$", "€", "£", "¥", "₩", "¢")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "space"
     const val LANGUAGE = "English"
+
+    const val DOWNLOAD_DATA_LBL = "Please download language data"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Not in Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -35,6 +32,11 @@ object ENInterfaceVariables {
     val BASE_AUTOSUGGESTIONS = listOf("I", "I'm", "we")
     val NUMERIC_AUTOSUGGESTIONS = listOf("is", "to", "and")
 
+    // MARK: Currency Symbols
+
+    const val CURRENCY_SYMBOL = "$"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("$", "€", "£", "¥", "₩", "¢")
+
     // MARK: Suggestion Pronouns
 
     val VERBS_AFTER_PRONOUNS_ARRAY = listOf("have", "be", "can")
@@ -54,7 +56,6 @@ object ENInterfaceVariables {
 
     // MARK: Translate Command
 
-    const val DOWNLOAD_DATA_LBL = "Please download language data"
     const val TRANSLATE_KEY_LBL = "Translate"
     const val TRANSLATE_PLACEHOLDER = "Enter a word"
     const val TRANSLATE_PROMPT = " en -› ${"targetLanguage()"}"

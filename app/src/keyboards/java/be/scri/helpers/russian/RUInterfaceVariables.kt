@@ -6,15 +6,12 @@ package be.scri.helpers.russian
  * Interface variables for Russian language keyboards.
  */
 object RUInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "₽"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("₽", "$", "€", "£", "¥")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "Пробел"
     const val LANGUAGE = "Pусский"
+
+    const val DOWNLOAD_DATA_LBL = "Пожалуйста, скачайте языковые данные"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Нет в Викиданных"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -35,9 +32,12 @@ object RUInterfaceVariables {
     val BASE_AUTOSUGGESTIONS = listOf("я", "а", "в")
     val NUMERIC_AUTOSUGGESTIONS = listOf("в", "и", "я")
 
-    // MARK: Translate Command
+    // MARK: Currency Symbols
 
-    const val DOWNLOAD_DATA_LBL = "Please download language data"
+    const val CURRENCY_SYMBOL = "₽"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("₽", "$", "€", "£", "¥")
+
+    // MARK: Translate Command
 
     const val TRANSLATE_KEY_LBL = "Перевести"
     const val TRANSLATE_PLACEHOLDER = "Введите слово"
