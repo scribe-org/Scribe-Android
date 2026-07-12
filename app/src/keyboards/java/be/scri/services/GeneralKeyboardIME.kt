@@ -550,7 +550,7 @@ abstract class GeneralKeyboardIME(
     // MARK: Helper Methods
 
     fun openEmojiKeyboard() {
-        uiManager.showEmojiPalette()
+        uiManager.showEmojiPalette(language)
     }
 
     protected fun isPeriodAndCommaEnabled(): Boolean {

@@ -30,6 +30,7 @@ import be.scri.helpers.EmojiAdapter
 import be.scri.helpers.EmojiData
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardLanguageMappingConstants.conjugatePlaceholder
+import be.scri.helpers.KeyboardLanguageMappingConstants.emojiCategoryHeaders
 import be.scri.helpers.KeyboardLanguageMappingConstants.pluralPlaceholder
 import be.scri.helpers.KeyboardLanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
@@ -777,7 +778,7 @@ class KeyboardUIManager(
      * Displays the emoji palette and hides the keyboard view.
      * Loads emojis from the emoji spec file on a background thread and populates the grid.
      */
-    fun showEmojiPalette() {
+    fun showEmojiPalette(language: String) {
         binding.keyboardView.post {
             val keyboardHeight = binding.keyboardView.measuredHeight
             val toolbarHeight =
@@ -828,7 +829,7 @@ class KeyboardUIManager(
                 }
 
             android.os.Handler(android.os.Looper.getMainLooper()).post {
-                setupEmojiAdapter(emojis)
+                setupEmojiAdapter(emojis, language)
             }
         }.start()
     }
@@ -838,9 +839,13 @@ class KeyboardUIManager(
      *
      * @param emojis The filtered list of emojis the device can render.
      */
-    private fun setupEmojiAdapter(emojis: List<EmojiData>) {
+    private fun setupEmojiAdapter(
+        emojis: List<EmojiData>,
+        language: String,
+    ) {
         val emojiCategories = prepareEmojiCategories(emojis)
         val emojiItems = prepareEmojiItems(emojiCategories)
+        val categoryHeaders = emojiCategoryHeaders[getLanguageAlias(language)] ?: emptyMap()
 
         val emojiItemSize = context.resources.getDimensionPixelSize(R.dimen.emoji_item_size)
         val emojiLayoutManager = AutoGridLayoutManager(context, emojiItemSize)
@@ -857,7 +862,7 @@ class KeyboardUIManager(
 
         binding.emojisList.layoutManager = emojiLayoutManager
         binding.emojisList.adapter =
-            EmojiAdapter(context, emojiItems) { emojiData ->
+            EmojiAdapter(context, emojiItems, categoryHeaders) { emojiData ->
                 listener.onEmojiSelected(emojiData.emoji)
             }
 

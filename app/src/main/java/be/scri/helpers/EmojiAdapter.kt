@@ -19,6 +19,7 @@ import be.scri.R
 class EmojiAdapter(
     val context: Context,
     var items: List<Item>,
+    val categoryHeaders: Map<String, String> = emptyMap(),
     val itemClick: (emoji: EmojiData) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val layoutInflater = LayoutInflater.from(context)
@@ -97,7 +98,7 @@ class EmojiAdapter(
         private val emojiCategoryTitle: TextView = view.findViewById(R.id.emoji_category_title)
 
         fun bindView(category: Item.Category) {
-            emojiCategoryTitle.text = context.getString(getCategoryTitleRes(category.value))
+            emojiCategoryTitle.text = categoryHeaders[category.value] ?: context.getString(getCategoryTitleRes(category.value))
         }
     }
 
