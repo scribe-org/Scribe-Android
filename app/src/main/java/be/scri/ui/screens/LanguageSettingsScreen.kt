@@ -109,13 +109,6 @@ fun LanguageSettingsScreen(
             )
         }
 
-    val clipboardKeyOnKeyboardState =
-        remember {
-            mutableStateOf(
-                PreferencesHelper.getIsClipboardKeyEnabled(context, language),
-            )
-        }
-
     val wordByWordDeletionState =
         remember {
             mutableStateOf(
@@ -159,15 +152,6 @@ fun LanguageSettingsScreen(
                             context,
                             language,
                             shouldDisableAccentCharacter,
-                        )
-                    },
-                    toggleClipboardKeyOnKeyboard = clipboardKeyOnKeyboardState.value,
-                    onToggleClipboardKeyOnKeyboard = { isEnabled ->
-                        clipboardKeyOnKeyboardState.value = isEnabled
-                        PreferencesHelper.setClipboardKeyPreference(
-                            context,
-                            language,
-                            isEnabled,
                         )
                     },
                     onCurrencySelect = onCurrencySelect,
@@ -366,8 +350,6 @@ private fun getLayoutListData(
     onTogglePeriodAndComma: (Boolean) -> Unit,
     toggleDisableAccentCharacter: Boolean,
     onToggleDisableAccentCharacter: (Boolean) -> Unit,
-    toggleClipboardKeyOnKeyboard: Boolean,
-    onToggleClipboardKeyOnKeyboard: (Boolean) -> Unit,
     onCurrencySelect: () -> Unit,
 ): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()

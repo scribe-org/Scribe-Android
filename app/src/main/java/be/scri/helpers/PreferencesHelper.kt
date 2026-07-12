@@ -26,7 +26,6 @@ object PreferencesHelper {
     private const val DEFAULT_CURRENCY = "default_currency"
     private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
     private const val INCREASE_TEXT_SIZE = "increase_text_size"
-    private const val CLIPBOARD_KEY_ON_KEYBOARD = "clipboard_key_on_keyboard"
 
     /**
      * Sets the translation source language for a given language.
@@ -533,31 +532,6 @@ object PreferencesHelper {
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), true)
-    }
-
-    /**
-     * Sets the preference for showing or hiding the clipboard key on the keyboard.
-     */
-    fun setClipboardKeyPreference(
-        context: Context,
-        language: String,
-        enabled: Boolean,
-    ) {
-        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
-        sharedPref.edit {
-            putBoolean(getLanguageSpecificPreferenceKey(CLIPBOARD_KEY_ON_KEYBOARD, language), enabled)
-        }
-    }
-
-    /**
-     * Retrieves whether the clipboard key is enabled on the keyboard for a given language.
-     */
-    fun getIsClipboardKeyEnabled(
-        context: Context,
-        language: String,
-    ): Boolean {
-        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
-        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(CLIPBOARD_KEY_ON_KEYBOARD, language), true)
     }
 
     /**
