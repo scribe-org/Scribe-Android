@@ -6,15 +6,12 @@ package be.scri.helpers.german
  * Interface variables for German language keyboards.
  */
 object DEInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "€"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "Leerzeichen"
     const val LANGUAGE = "Deutsch"
+
+    const val DOWNLOAD_DATA_LBL = "Bitte Sprachdaten herunterladen"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Nicht in Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -34,6 +31,11 @@ object DEInterfaceVariables {
 
     val BASE_AUTOSUGGESTIONS = listOf("ich", "die", "das")
     val NUMERIC_AUTOSUGGESTIONS = listOf("Prozent", "Milionen", "Meter")
+
+    // MARK: Currency Symbols
+
+    const val CURRENCY_SYMBOL = "€"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
 
     // MARK: Suggestion Pronouns
 
