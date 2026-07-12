@@ -37,8 +37,6 @@ class KeyboardBase {
         val keyboardLetters: Int
 
         fun isSearchBar(): Boolean
-
-        fun isClipboardKeyEnabled(): Boolean
     }
 
     /** Horizontal gap default for all rows  */

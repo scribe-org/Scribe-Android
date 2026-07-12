@@ -80,6 +80,7 @@
     <string name="i18n.app.download.error.network">Network error: {error}</string>
     <string name="i18n.app.download.error.server">Server error: {code}</string>
     <string name="i18n.app.download.error.timeout">Download timed out</string>
+    <string name="i18n.app.download.error.no_network">No internet connection. Please connect and try again.</string>
     <string name="i18n.app.download.menu_option.conjugate_description">Add new data to Scribe Conjugate.</string>
     <string name="i18n.app.download.menu_option.conjugate_download_data">Download verb data</string>
     <string name="i18n.app.download.menu_option.conjugate_download_data_start">Download data to start conjugating!</string>
@@ -149,8 +150,6 @@
     <string name="i18n.app.settings.keyboard.keypress_sound_description">Have the device play a sound when keys are pressed.</string>
     <string name="i18n.app.settings.keyboard.keypress_vibration">Vibrate on key press</string>
     <string name="i18n.app.settings.keyboard.keypress_vibration_description">Have the device vibrate when keys are pressed.</string>
-    <string name="i18n.app.settings.keyboard.layout.clipboard_on_keyboard">Clipboard key on keyboard</string>
-    <string name="i18n.app.settings.keyboard.layout.clipboard_on_keyboard_description">Include a key to access the clipboard on the main keyboard.</string>
     <string name="i18n.app.settings.keyboard.layout.default_currency">Default currency symbol</string>
     <string name="i18n.app.settings.keyboard.layout.default_currency.caption">Symbol for the 123 keys</string>
     <string name="i18n.app.settings.keyboard.layout.default_currency_description">Select which currency symbol appears on the number keys.</string>
@@ -159,8 +158,6 @@
     <string name="i18n.app.settings.keyboard.layout.default_layout_description">Select a keyboard layout that suits your typing preference and language needs.</string>
     <string name="i18n.app.settings.keyboard.layout.disable_accent_characters">Disable accent characters</string>
     <string name="i18n.app.settings.keyboard.layout.disable_accent_characters_description">Remove accented letter keys on the primary keyboard layout.</string>
-    <string name="i18n.app.settings.keyboard.layout.floating_on_keyboard">Floating key on keyboard</string>
-    <string name="i18n.app.settings.keyboard.layout.floating_on_keyboard_description">Include a key to float the keyboard UI on the main keyboard.</string>
     <string name="i18n.app.settings.keyboard.layout.period_and_comma">Period and comma on ABC</string>
     <string name="i18n.app.settings.keyboard.layout.period_and_comma_description">Include period and comma keys on the main keyboard for convenient typing.</string>
     <string name="i18n.app.settings.keyboard.layout.title">Layout</string>
