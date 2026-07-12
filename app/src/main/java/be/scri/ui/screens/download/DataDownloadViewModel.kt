@@ -103,7 +103,7 @@ class DataDownloadViewModel(
         forceDownload: Boolean = false,
     ) {
         if (!NetworkMonitor.isOnline(getApplication())) {
-            showToast("No internet connection. Please connect and try again.")
+            showToast(getApplication<Application>().getString(R.string.i18n_app_download_error_no_network))
             return
         }
 
@@ -219,7 +219,7 @@ class DataDownloadViewModel(
      */
     fun handleDownloadAllLanguages() {
         if (!NetworkMonitor.isOnline(getApplication())) {
-            showToast("No internet connection. Please connect and try again.")
+            showToast(getApplication<Application>().getString(R.string.i18n_app_download_error_no_network))
             return
         }
 
@@ -287,7 +287,7 @@ class DataDownloadViewModel(
      */
     fun checkForNewData() {
         if (!NetworkMonitor.isOnline(getApplication())) {
-            showToast("No internet connection. Please connect and try again.")
+            showToast(getApplication<Application>().getString(R.string.i18n_app_download_error_no_network))
             return
         }
 
