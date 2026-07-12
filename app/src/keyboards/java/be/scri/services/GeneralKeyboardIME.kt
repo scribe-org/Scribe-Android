@@ -46,6 +46,7 @@ import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.KeyboardLanguageMappingConstants
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
@@ -368,7 +369,9 @@ abstract class GeneralKeyboardIME(
         val hasData = dbFile.exists()
         val bannerContainer = binding.root.findViewById<View>(R.id.empty_state_banner_container)
         val banner = binding.root.findViewById<TextView>(R.id.empty_state_banner)
-        val downloadDataText = be.scri.helpers.KeyboardLanguageMappingConstants.downloadDataPlaceholder[languageAlias] ?: "Please download language data"
+        val downloadDataText =
+            KeyboardLanguageMappingConstants.downloadDataPlaceholder[languageAlias]
+                ?: "Please download language data"
         banner.text = downloadDataText
         bannerContainer.visibility =
             if (hasData) View.GONE else View.VISIBLE
@@ -389,7 +392,10 @@ abstract class GeneralKeyboardIME(
         border.setColor(ContextCompat.getColor(applicationContext, bannerColor))
 
         if (isDarkMode) {
-            border.setStroke((1.5f * resources.displayMetrics.density).toInt(), ContextCompat.getColor(applicationContext, bannerTextColor))
+            border.setStroke(
+                (1.5f * resources.displayMetrics.density).toInt(),
+                ContextCompat.getColor(applicationContext, bannerTextColor),
+            )
         }
 
         val rippleColor =

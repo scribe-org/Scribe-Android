@@ -14,6 +14,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,7 +78,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 
             val navigateTo = intent.getStringExtra("navigate_to")
-            androidx.compose.runtime.LaunchedEffect(navigateTo) {
+            LaunchedEffect(navigateTo) {
                 if (navigateTo == "download_data") {
                     navController.navigate("download_data")
                 }
