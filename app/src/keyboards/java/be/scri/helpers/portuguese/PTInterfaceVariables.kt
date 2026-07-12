@@ -6,15 +6,12 @@ package be.scri.helpers.portuguese
  * Interface variables for Portuguese language keyboards.
  */
 object PTInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "$"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("$", "€", "£", "¥", "₩", "¢")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "espaço"
     const val LANGUAGE = "Português"
+
+    const val DOWNLOAD_DATA_LBL = "Por favor, baixe os dados do idioma"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Não está no Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -34,6 +31,11 @@ object PTInterfaceVariables {
 
     val BASE_AUTOSUGGESTIONS = listOf("o", "a", "eu")
     val NUMERIC_AUTOSUGGESTIONS = listOf("de", "que", "a")
+
+    // MARK: Currency Symbols
+
+    const val CURRENCY_SYMBOL = "$"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("$", "€", "£", "¥", "₩", "¢")
 
     // MARK: Translate Command
 

@@ -14,6 +14,18 @@ import be.scri.helpers.swedish.SVInterfaceVariables
  * Object containing keyboard-specific constant mappings related to language-specific UI elements.
  */
 object KeyboardLanguageMappingConstants {
+    val downloadDataPlaceholder =
+        mapOf(
+            "EN" to ENInterfaceVariables.DOWNLOAD_DATA_LBL,
+            "ES" to ESInterfaceVariables.DOWNLOAD_DATA_LBL,
+            "DE" to DEInterfaceVariables.DOWNLOAD_DATA_LBL,
+            "IT" to ITInterfaceVariables.DOWNLOAD_DATA_LBL,
+            "FR" to FRInterfaceVariables.DOWNLOAD_DATA_LBL,
+            "PT" to PTInterfaceVariables.DOWNLOAD_DATA_LBL,
+            "RU" to RUInterfaceVariables.DOWNLOAD_DATA_LBL,
+            "SV" to SVInterfaceVariables.DOWNLOAD_DATA_LBL,
+        )
+
     val translatePlaceholder =
         mapOf(
             "EN" to ENInterfaceVariables.TRANSLATE_KEY_LBL,
