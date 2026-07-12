@@ -6,6 +6,7 @@ import DataContract
 import android.R.color.white
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -378,8 +379,10 @@ abstract class GeneralKeyboardIME(
         binding.commandOptionsBar.visibility =
             if (hasData && !isNumericKeyboardActive) View.VISIBLE else View.GONE
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
-        val bannerColor = if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
-        val bannerTextColor = if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
+        val bannerColor =
+            if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
+        val bannerTextColor =
+            if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
         banner.setTextColor(ContextCompat.getColor(applicationContext, bannerTextColor))
         banner.post {
             val iconColor = ContextCompat.getColor(applicationContext, bannerTextColor)
@@ -404,7 +407,7 @@ abstract class GeneralKeyboardIME(
                 51,
             )
         val rippleDrawable =
-            RippleDrawable(android.content.res.ColorStateList.valueOf(rippleColor), border, null)
+            RippleDrawable(ColorStateList.valueOf(rippleColor), border, null)
 
         bannerContainer.background = rippleDrawable
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
