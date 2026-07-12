@@ -59,4 +59,16 @@ object ITInterfaceVariables {
     const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Già plurale"
+
+    // MARK: Emoji Sections
+
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = ""
+    const val PEOPLE_BODY_EMOJI_HEADER = ""
+    const val ANIMALS_NATURE_EMOJI_HEADER = ""
+    const val FOOD_DRINK_EMOJI_HEADER = ""
+    const val TRAVEL_PLACES_EMOJI_HEADER = ""
+    const val ACTIVITIES_EMOJI_HEADER = ""
+    const val OBJECTS_EMOJI_HEADER = ""
+    const val SYMBOLS_EMOJI_HEADER = ""
+    const val FLAGS_EMOJI_HEADER = ""
 }
