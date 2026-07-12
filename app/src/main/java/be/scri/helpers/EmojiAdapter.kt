@@ -98,7 +98,7 @@ class EmojiAdapter(
         private val emojiCategoryTitle: TextView = view.findViewById(R.id.emoji_category_title)
 
         fun bindView(category: Item.Category) {
-            emojiCategoryTitle.text = categoryHeaders[category.value] ?: context.getString(getCategoryTitleRes(category.value))
+            emojiCategoryTitle.text = categoryHeaders[category.value] ?: category.value
         }
     }
 

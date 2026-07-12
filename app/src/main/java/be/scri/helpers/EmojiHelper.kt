@@ -96,23 +96,3 @@ fun getCategoryIconRes(category: String): Int =
         "flags" -> R.drawable.ic_emoji_flags
         else -> R.drawable.ic_emoji_vector
     }
-
-/**
- * Returns the string resource ID for a given emoji category title.
- *
- * @param category The category name from the emoji spec file.
- * @return The string resource ID for the category title.
- */
-fun getCategoryTitleRes(category: String): Int =
-    when (category) {
-        "smileys_emotion" -> R.string.smileys_and_emotions
-        "people_body" -> R.string.people_and_body
-        "animals_nature" -> R.string.animals_and_nature
-        "food_drink" -> R.string.food_and_drink
-        "travel_places" -> R.string.travel_and_places
-        "activities" -> R.string.activities
-        "objects" -> R.string.objects
-        "symbols" -> R.string.symbols
-        "flags" -> R.string.flags
-        else -> R.string.recently_used
-    }

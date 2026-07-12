@@ -845,7 +845,8 @@ class KeyboardUIManager(
     ) {
         val emojiCategories = prepareEmojiCategories(emojis)
         val emojiItems = prepareEmojiItems(emojiCategories)
-        val categoryHeaders = emojiCategoryHeaders[getLanguageAlias(language)] ?: emptyMap()
+        val categoryHeaders =
+            (emojiCategoryHeaders["EN"] ?: emptyMap()) + (emojiCategoryHeaders[getLanguageAlias(language)] ?: emptyMap())
 
         val emojiItemSize = context.resources.getDimensionPixelSize(R.dimen.emoji_item_size)
         val emojiLayoutManager = AutoGridLayoutManager(context, emojiItemSize)
