@@ -393,14 +393,7 @@ private fun getLayoutListData(
             onToggle = onTogglePeriodAndComma,
         ),
     )
-    list.add(
-        ScribeItem.SwitchItem(
-            title = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard,
-            desc = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard_description,
-            state = toggleClipboardKeyOnKeyboard,
-            onToggle = onToggleClipboardKeyOnKeyboard,
-        ),
-    )
+
     list.add(
         ScribeItem.ClickableItem(
             title = R.string.i18n_app_settings_keyboard_layout_default_currency,
