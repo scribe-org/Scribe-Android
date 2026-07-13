@@ -22,10 +22,10 @@ GeneralKeyboardIME.kt
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/keyboard_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <RelativeLayout
             android:id="@+id/emoji_palette_top_bar"
@@ -44,7 +44,8 @@ GeneralKeyboardIME.kt
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/emojis"
                 android:padding="@dimen/small_margin"
-                android:src="@drawable/ic_arrow_left_vector" />
+                android:src="@drawable/ic_arrow_left_vector"
+                />
 
             <TextView
                 android:id="@+id/emoji_palette_label"
@@ -94,7 +95,8 @@ GeneralKeyboardIME.kt
                 android:background="@drawable/keyboard_key_selector"
                 android:gravity="center"
                 android:text="@string/abc"
-                android:textStyle="bold" />
+                android:textStyle="normal"
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:id="@+id/emoji_categories_strip"
@@ -117,7 +119,8 @@ GeneralKeyboardIME.kt
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:background="@drawable/keyboard_key_selector"
                 android:contentDescription="@string/delete"
-                android:src="@drawable/ic_clear_vector" />
+                android:src="@drawable/emoji_backspace"
+                />
 
         </RelativeLayout>
     </RelativeLayout>
@@ -688,31 +691,37 @@ GeneralKeyboardIME.kt
             android:padding="0dp" />
     </FrameLayout>
 
-    <Button
-        android:id="@+id/empty_state_banner"
+    <FrameLayout
+        android:id="@+id/empty_state_banner_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
-        android:text="@string/i18n.app._global.download_data"
-        android:textSize="16sp"
-        android:minHeight="0dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="36dp"
-        android:background="@null"
-        android:stateListAnimator="@null"
-        android:drawableStart="@drawable/clouddownload_keyboard"
-        android:drawablePadding="4dp"
-        android:gravity="center"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/empty_state_banner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/i18n.app._global.download_data"
+            android:textSize="16sp"
+            android:minHeight="40dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@null"
+            android:drawableStart="@drawable/ic_arrow_circle_down_24"
+            android:drawablePadding="8dp"
+            android:gravity="center" />
+    </FrameLayout>
 
     <be.scri.views.KeyboardView
         android:id="@+id/keyboard_view"

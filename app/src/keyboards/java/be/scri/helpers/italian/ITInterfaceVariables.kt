@@ -6,15 +6,12 @@ package be.scri.helpers.italian
  * Interface variables for Italian language keyboards.
  */
 object ITInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "€"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "spazio"
     const val LANGUAGE = "Italiano"
+
+    const val DOWNLOAD_DATA_LBL = "Scarica i dati della lingua"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Non in Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -34,6 +31,11 @@ object ITInterfaceVariables {
 
     val BASE_AUTOSUGGESTIONS = listOf("ho", "non", "ma")
     val NUMERIC_AUTOSUGGESTIONS = listOf("utenti", "anni", "e")
+
+    // MARK: Currency Symbols
+
+    const val CURRENCY_SYMBOL = "€"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
 
     // MARK: Translate Command
 
@@ -59,4 +61,16 @@ object ITInterfaceVariables {
     const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Già plurale"
+
+    // MARK: Emoji Sections
+
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Faccine ed Emozioni"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Persone e Corpo"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Animali e Natura"
+    const val FOOD_DRINK_EMOJI_HEADER = "Cibo e Bevande"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Viaggi e Luoghi"
+    const val ACTIVITIES_EMOJI_HEADER = "Attività"
+    const val OBJECTS_EMOJI_HEADER = "Oggetti"
+    const val SYMBOLS_EMOJI_HEADER = "Simboli"
+    const val FLAGS_EMOJI_HEADER = "Bandiere"
 }

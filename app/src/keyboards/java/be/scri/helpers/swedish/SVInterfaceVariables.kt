@@ -6,15 +6,12 @@ package be.scri.helpers.swedish
  * Interface variables for Swedish language keyboards.
  */
 object SVInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "kr"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("kr", "$", "€", "£", "¥")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "mellanslag"
     const val LANGUAGE = "Svenska"
+
+    const val DOWNLOAD_DATA_LBL = "Var god ladda ner språkdata"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Inte i Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -34,6 +31,11 @@ object SVInterfaceVariables {
 
     val BASE_AUTOSUGGESTIONS = listOf("jag", "det", "men")
     val NUMERIC_AUTOSUGGESTIONS = listOf("jag", "det", "och")
+
+    // MARK: Currency Symbols
+
+    const val CURRENCY_SYMBOL = "kr"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("kr", "$", "€", "£", "¥")
 
     // MARK: Translate Command
 
@@ -59,4 +61,16 @@ object SVInterfaceVariables {
     const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Redan plural"
+
+    // MARK: Emoji Sections
+
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Smileys och Känslor"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Människor och Kropp"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Djur och Natur"
+    const val FOOD_DRINK_EMOJI_HEADER = "Mat och Dryck"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Resor och Platser"
+    const val ACTIVITIES_EMOJI_HEADER = "Aktiviteter"
+    const val OBJECTS_EMOJI_HEADER = "Objekt"
+    const val SYMBOLS_EMOJI_HEADER = "Symboler"
+    const val FLAGS_EMOJI_HEADER = "Flaggor"
 }

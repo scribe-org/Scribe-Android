@@ -6,6 +6,7 @@ import DataContract
 import android.R.color.white
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -28,6 +29,7 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.ColorUtils
@@ -45,6 +47,7 @@ import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.KeyboardLanguageMappingConstants
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
@@ -365,14 +368,21 @@ abstract class GeneralKeyboardIME(
         val languageAlias = getLanguageAlias(language)
         val dbFile = applicationContext.getDatabasePath("${languageAlias}LanguageData.sqlite")
         val hasData = dbFile.exists()
-        val banner = binding.root.findViewById<Button>(R.id.empty_state_banner)
-        banner.visibility =
+        val bannerContainer = binding.root.findViewById<View>(R.id.empty_state_banner_container)
+        val banner = binding.root.findViewById<TextView>(R.id.empty_state_banner)
+        val downloadDataText =
+            KeyboardLanguageMappingConstants.downloadDataPlaceholder[languageAlias]
+                ?: "Please download language data"
+        banner.text = downloadDataText
+        bannerContainer.visibility =
             if (hasData) View.GONE else View.VISIBLE
         binding.commandOptionsBar.visibility =
             if (hasData && !isNumericKeyboardActive) View.VISIBLE else View.GONE
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
-        val bannerColor = if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
-        val bannerTextColor = if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
+        val bannerColor =
+            if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
+        val bannerTextColor =
+            if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
         banner.setTextColor(ContextCompat.getColor(applicationContext, bannerTextColor))
         banner.post {
             val iconColor = ContextCompat.getColor(applicationContext, bannerTextColor)
@@ -385,7 +395,10 @@ abstract class GeneralKeyboardIME(
         border.setColor(ContextCompat.getColor(applicationContext, bannerColor))
 
         if (isDarkMode) {
-            border.setStroke((2f * resources.displayMetrics.density).toInt(), ContextCompat.getColor(applicationContext, bannerTextColor))
+            border.setStroke(
+                (1.5f * resources.displayMetrics.density).toInt(),
+                ContextCompat.getColor(applicationContext, bannerTextColor),
+            )
         }
 
         val rippleColor =
@@ -393,21 +406,21 @@ abstract class GeneralKeyboardIME(
                 ContextCompat.getColor(applicationContext, bannerTextColor),
                 51,
             )
+        val rippleDrawable =
+            RippleDrawable(ColorStateList.valueOf(rippleColor), border, null)
 
-        val ripple =
-            RippleDrawable(
-                android.content.res.ColorStateList
-                    .valueOf(rippleColor),
-                border,
-                null,
-            )
-        banner.background = ripple
+        bannerContainer.background = rippleDrawable
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            bannerContainer.outlineAmbientShadowColor = Color.TRANSPARENT
+            bannerContainer.outlineSpotShadowColor = Color.TRANSPARENT
+        }
 
-        banner.setOnClickListener {
+        bannerContainer.setOnClickListener {
             val intent =
                 Intent(applicationContext, MainActivity::class.java)
                     .apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        putExtra("navigate_to", "download_data")
                     }
 
             startActivity(intent)
@@ -512,6 +525,7 @@ abstract class GeneralKeyboardIME(
         val inputConnection = currentInputConnection
         if (inputConnection != null) {
             when (code) {
+                KeyboardBase.KEYCODE_EMOJI -> openEmojiKeyboard()
                 KeyboardBase.KEYCODE_DELETE -> handleDelete()
                 KeyboardBase.KEYCODE_SHIFT -> {
                     if (keyboardMode == keyboardLetters) {
@@ -548,6 +562,10 @@ abstract class GeneralKeyboardIME(
 
     // MARK: Helper Methods
 
+    fun openEmojiKeyboard() {
+        uiManager.showEmojiPalette(language)
+    }
+
     protected fun isPeriodAndCommaEnabled(): Boolean {
         val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
         val isInSearchBar = isSearchBar()
@@ -575,8 +593,6 @@ abstract class GeneralKeyboardIME(
             } == true
         return isActionSearch || isUriType || hasSearchHint
     }
-
-    override fun isClipboardKeyEnabled(): Boolean = PreferencesHelper.getIsClipboardKeyEnabled(this, language)
 
     private fun loadLanguageData() {
         val languageAlias = getLanguageAlias(language)
@@ -1034,7 +1050,7 @@ abstract class GeneralKeyboardIME(
     // MARK: Deletion Logic
 
     /**
-     * Handles the logic for the Delete/Backspace key. It deletes characters from either
+     * Handles the logic for the Delete key. It deletes characters from either
      * the main input field or the command bar, depending on the context.
      * Delegated to BackspaceHandler.
      *
@@ -1042,7 +1058,35 @@ abstract class GeneralKeyboardIME(
      * @param isLongPress true` if this is a long press/repeat action, false for single tap.
      */
     fun handleDelete(isLongPress: Boolean = false) {
-        val effectiveIsCommandBar = currentState != ScribeState.IDLE && currentState != ScribeState.SELECT_COMMAND
+        val inputConnection = currentInputConnection ?: return
+        val effectiveIsCommandBar =
+            currentState != ScribeState.IDLE &&
+                currentState != ScribeState.SELECT_COMMAND
+
+        if (!effectiveIsCommandBar) {
+            val selectedText = inputConnection.getSelectedText(0)
+            if (selectedText.isNullOrEmpty()) {
+                // Use BreakIterator to delete full emoji characters.
+                val prevText = inputConnection.getTextBeforeCursor(8, 0)
+                if (!prevText.isNullOrEmpty()) {
+                    val breakIterator =
+                        android.icu.text.BreakIterator
+                            .getCharacterInstance()
+                    breakIterator.setText(prevText.toString())
+                    val end = breakIterator.last()
+                    val start = breakIterator.previous()
+                    val count =
+                        if (start == android.icu.text.BreakIterator.DONE) {
+                            1
+                        } else {
+                            (end - start).coerceAtLeast(1)
+                        }
+                    inputConnection.deleteSurroundingText(count, 0)
+                    return
+                }
+            }
+        }
+
         backspaceHandler.handleBackspace(effectiveIsCommandBar, isLongPress)
     }
 

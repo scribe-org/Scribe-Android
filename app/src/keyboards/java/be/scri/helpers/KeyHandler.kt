@@ -117,6 +117,10 @@ class KeyHandler(
                 handleCurrencyKey(language)
                 true
             }
+            KeyboardBase.KEYCODE_EMOJI -> {
+                ime.openEmojiKeyboard()
+                true
+            }
             KeyboardBase.KEYCODE_CLIPBOARD -> {
                 ime.openClipboardPanel()
                 true
