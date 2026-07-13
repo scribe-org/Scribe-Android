@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,11 +49,11 @@ import androidx.compose.runtime.mutableStateOf
 fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
     val keyboard by viewModel.keyboard.collectAsState()
     val shiftState by viewModel.shiftState.collectAsState()
+    val currentState by viewModel.currentState.collectAsState()
     
     val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
     val density = androidx.compose.ui.platform.LocalDensity.current
 
-    // GBoard-matched background colors
     val keyboardBgColor = if (isDarkMode) Color(0xFF2C2C2E) else Color(0xFFD1D4DB)
 
     var pressedKey by remember { mutableStateOf<KeyboardBase.Key?>(null) }
@@ -69,9 +70,9 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                 .height(kbHeightDp)
                 .background(keyboardBgColor)
                 .pointerInput(kb) {
-                    val btnWidthPx = 45.dp.toPx()
-                    val popupOffsetPx = 65.dp.toPx()
-                    val popupHeightPx = 45.dp.toPx()
+                    val btnWidthPx = 42.dp.toPx()
+                    val popupOffsetPx = 58.dp.toPx()
+                    val popupHeightPx = 44.dp.toPx()
 
                     kotlinx.coroutines.coroutineScope {
                         val scope = this
@@ -118,7 +119,7 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                                     val altList = mutableListOf<String>()
                                     popupChars.forEach { altList.add(it.toString()) }
                                     if (smallNum.isNotEmpty() && !altList.contains(smallNum)) {
-                                        altList.add(smallNum)
+                                        altList.add(0, smallNum)
                                     }
                                     
                                     val listSize = altList.size
@@ -131,7 +132,7 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                                     if (touchY in popupTop..popupBottom && touchX in popupLeft..popupRight) {
                                         hoveredAltIndex = ((touchX - popupLeft) / btnWidthPx).toInt().coerceIn(0, listSize - 1)
                                     } else {
-                                        hoveredAltIndex = -1
+                                        hoveredAltIndex = 0
                                     }
                                 } else {
                                     val newKey = kb.mKeys?.find { it?.isInside(touchX, touchY) == true }
@@ -150,6 +151,7 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                                                 longPressJob = scope.launch {
                                                     delay(500)
                                                     activeLongPressKey = currentKey
+                                                    hoveredAltIndex = 0
                                                 }
                                             }
                                         }
@@ -167,7 +169,7 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                                 val altList = mutableListOf<String>()
                                 popupChars.forEach { altList.add(it.toString()) }
                                 if (smallNum.isNotEmpty() && !altList.contains(smallNum)) {
-                                    altList.add(smallNum)
+                                    altList.add(0, smallNum)
                                 }
 
                                 if (hoveredAltIndex in altList.indices) {
@@ -201,13 +203,13 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                             key = key,
                             shiftState = shiftState,
                             isDarkMode = isDarkMode,
-                            isPressed = isPressed
+                            isPressed = isPressed,
+                            currentState = currentState
                         )
                     }
                 }
             }
 
-            // 1. Key Preview overlay
             if (pressedKey != null && activeLongPressKey == null && !isSpecialKey(pressedKey!!)) {
                 val key = pressedKey!!
                 val keyLabel = adjustCase(key.label, shiftState) ?: ""
@@ -217,34 +219,33 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                     val keyXDp = with(density) { key.x.toDp() }
                     val keyYDp = with(density) { key.y.toDp() }
                     val kbWidthDp = with(density) { kb.mMinWidth.toDp() }
-                    val previewXDp = (keyXDp + (keyWidthDp - 56.dp) / 2).coerceIn(0.dp, kbWidthDp - 56.dp)
+                    val previewXDp = (keyXDp + (keyWidthDp - 48.dp) / 2).coerceIn(0.dp, kbWidthDp - 48.dp)
                     
                     Box(
                         modifier = Modifier
-                            .offset(x = previewXDp, y = keyYDp - 68.dp)
-                            .size(width = 56.dp, height = 70.dp)
+                            .offset(x = previewXDp, y = keyYDp - 48.dp)
+                            .size(48.dp)
                             .shadow(
                                 elevation = 6.dp,
-                                shape = RoundedCornerShape(8.dp),
+                                shape = CircleShape,
                                 clip = false
                             )
                             .background(
                                 color = if (isDarkMode) Color(0xFF555558) else Color.White,
-                                shape = RoundedCornerShape(8.dp)
+                                shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = keyLabel,
                             color = if (isDarkMode) Color.White else Color.Black,
-                            fontSize = 28.sp,
+                            fontSize = 24.sp,
                             fontWeight = FontWeight.Normal
                         )
                     }
                 }
             }
 
-            // 2. Alternate Characters Popup overlay
             if (activeLongPressKey != null) {
                 val key = activeLongPressKey!!
                 val popupChars = key.popupCharacters?.toString() ?: ""
@@ -253,7 +254,7 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                     val list = mutableListOf<String>()
                     popupChars.forEach { list.add(it.toString()) }
                     if (smallNum.isNotEmpty() && !list.contains(smallNum)) {
-                        list.add(smallNum)
+                        list.add(0, smallNum)
                     }
                     list
                 }
@@ -264,33 +265,33 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
                     val keyXDp = with(density) { key.x.toDp() }
                     val keyYDp = with(density) { key.y.toDp() }
                     val kbWidthDp = with(density) { kb.mMinWidth.toDp() }
-                    val btnWidth = 45.dp
+                    val btnWidth = 42.dp
                     val totalWidth = btnWidth * altList.size
                     val popupXDp = (keyXDp + (keyWidthDp - totalWidth) / 2).coerceIn(0.dp, kbWidthDp - totalWidth)
                     
                     Box(
                         modifier = Modifier
-                            .offset(x = popupXDp, y = keyYDp - 65.dp)
+                            .offset(x = popupXDp, y = keyYDp - 58.dp)
                             .shadow(
                                 elevation = 8.dp,
-                                shape = RoundedCornerShape(8.dp),
+                                shape = RoundedCornerShape(24.dp),
                                 clip = false
                             )
                             .background(
                                 color = if (isDarkMode) Color(0xFF3A3A3C) else Color(0xFFF0F0F0),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = RoundedCornerShape(24.dp)
                             )
-                            .padding(horizontal = 4.dp, vertical = 2.dp)
+                            .padding(horizontal = 6.dp, vertical = 3.dp)
                     ) {
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             altList.forEachIndexed { index, char ->
                                 val isHovered = hoveredAltIndex == index
                                 Box(
                                     modifier = Modifier
-                                        .size(width = btnWidth - 4.dp, height = 40.dp)
+                                        .size(width = btnWidth - 4.dp, height = 44.dp)
                                         .background(
                                             color = if (isHovered) (if (isDarkMode) Color(0xFF636366) else Color(0xFFD0D0D0)) else Color.Transparent,
-                                            shape = RoundedCornerShape(4.dp)
+                                            shape = CircleShape
                                         ),
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -318,7 +319,7 @@ fun ComposeKeyboardView(viewModel: KeyboardViewModel, actionListener: KeyboardAc
 }
 
 @Composable
-fun KeyboardKey(key: KeyboardBase.Key, shiftState: Int, isDarkMode: Boolean, isPressed: Boolean) {
+fun KeyboardKey(key: KeyboardBase.Key, shiftState: Int, isDarkMode: Boolean, isPressed: Boolean, currentState: be.scri.models.ScribeState) {
     val density = LocalDensity.current
     
     val xDp = with(density) { key.x.toDp() }
@@ -328,7 +329,6 @@ fun KeyboardKey(key: KeyboardBase.Key, shiftState: Int, isDarkMode: Boolean, isP
 
     val isSpecial = isSpecialKey(key)
     
-    // GBoard-matched colors
     val pressedKeyBg = if (isDarkMode) Color(0xFF5A5A5E) else Color(0xFFCDCDD2)
     val pressedSpecialKeyBg = if (isDarkMode) Color(0xFF48484A) else Color(0xFF9D9DA3)
     
@@ -344,7 +344,6 @@ fun KeyboardKey(key: KeyboardBase.Key, shiftState: Int, isDarkMode: Boolean, isP
 
     val label = adjustCase(key.label, shiftState)
 
-    // GBoard-style key with shadow
     Box(
         modifier = Modifier
             .offset(x = xDp, y = yDp)
@@ -358,7 +357,6 @@ fun KeyboardKey(key: KeyboardBase.Key, shiftState: Int, isDarkMode: Boolean, isP
             .background(bg, shape = RoundedCornerShape(5.dp)),
         contentAlignment = Alignment.Center
     ) {
-        // Number hint in top-right corner (like GBoard)
         val smallNumber = key.topSmallNumber
         if (!smallNumber.isNullOrEmpty() && !isSpecial) {
             Box(
@@ -391,6 +389,16 @@ fun KeyboardKey(key: KeyboardBase.Key, shiftState: Int, isDarkMode: Boolean, isP
             KeyboardBase.KEYCODE_LEFT_ARROW -> R.drawable.ic_left_arrow
             KeyboardBase.KEYCODE_RIGHT_ARROW -> R.drawable.ic_right_arrow
             KeyboardBase.KEYCODE_CLIPBOARD -> R.drawable.ic_clipboard_vector
+            KeyboardBase.KEYCODE_ENTER -> {
+                if (currentState == be.scri.models.ScribeState.TRANSLATE ||
+                    currentState == be.scri.models.ScribeState.CONJUGATE ||
+                    currentState == be.scri.models.ScribeState.PLURAL
+                ) {
+                    R.drawable.play_button
+                } else {
+                    null
+                }
+            }
             else -> null
         }
 

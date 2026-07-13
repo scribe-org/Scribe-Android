@@ -35,12 +35,11 @@ fun TopBarSection(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
-            .background(bgColor) // Toolbar background matching keyboard
+            .background(bgColor) 
     ) {
         if (!hasLanguageData) {
             EmptyStateBanner()
         } else if (isNumeric) {
-            // No top bar for numeric layout
         } else {
             when (currentState) {
                 be.scri.models.ScribeState.IDLE -> IdleTopBar(viewModel, actionListener)
@@ -82,21 +81,39 @@ fun EmptyStateBanner() {
 }
 
 @Composable
+private fun getGenderColor(text: String, isDarkMode: Boolean): Color {
+    val t = text.uppercase().trim()
+    return when {
+        t == "F" -> if (isDarkMode) Color(0xFFFB5F6C) else Color(0xFF9F1722)
+        t == "M" -> if (isDarkMode) Color(0xFF339EEB) else Color(0xFF335C99)
+        t == "N" -> if (isDarkMode) Color(0xFF85C26F) else Color(0xFF3D7946)
+        t == "PL" || t == "P" -> if (isDarkMode) Color(0xFFFD9F5D) else Color(0xFFF85A39)
+        t == "C" -> if (isDarkMode) Color(0xFFAC6DEC) else Color(0xFF700589)
+        t.startsWith("GEN") || t.startsWith("ACC") || t.startsWith("DAT") || t.startsWith("LOC") || t.startsWith("PRE") || t.startsWith("INS") || t.startsWith("AKK") -> {
+            if (isDarkMode) Color(0xFFFD9F5D) else Color(0xFFF85A39)
+        }
+        else -> if (isDarkMode) Color(0xFFFD9F5D) else Color(0xFFF85A39)
+    }
+}
+
+@Composable
 fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
     val s1 by viewModel.suggestion1.collectAsState()
     val s2 by viewModel.suggestion2.collectAsState()
     val s3 by viewModel.suggestion3.collectAsState()
     val emojis by viewModel.emojiSuggestions.collectAsState()
+    val clipboardSuggestion by viewModel.clipboardSuggestion.collectAsState()
+    val genderLeft by viewModel.genderSuggestionLeft.collectAsState()
+    val genderRight by viewModel.genderSuggestionRight.collectAsState()
     
     val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
     val dividerColor = if (isDarkMode) Color(0xFF48484A) else Color(0xFFB8B8BC)
-    val scribeBtnBg = if (isDarkMode) Color(0xFF3366CC) else Color(0xFF005FFF)
+    val scribeBtnBg = Color(0xFF54B0E6)
 
     Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Scribe Key
         Box(
             modifier = Modifier
                 .width(56.dp)
@@ -116,46 +133,187 @@ fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListe
         
         VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
         
-        if (emojis.isNotEmpty()) {
-            // Suggestion 1
-            SuggestionButton(text = emojis.getOrNull(0) ?: s1 ?: "", modifier = Modifier.weight(1f)) {
-                if (emojis.isNotEmpty()) actionListener.onSuggestionClicked(emojis[0])
-                else if (s1 != null) actionListener.onSuggestionClicked(s1!!)
+        if (clipboardSuggestion != null) {
+            val clipText = clipboardSuggestion!!
+            val displayClipText = if (clipText.length > 20) {
+                clipText.take(18) + "..."
+            } else {
+                clipText
             }
-            
-            VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
-            
-            // Suggestion 2
-            SuggestionButton(text = emojis.getOrNull(1) ?: s2 ?: "", modifier = Modifier.weight(1f)) {
-                if (emojis.size > 1) actionListener.onSuggestionClicked(emojis[1])
-                else if (s2 != null) actionListener.onSuggestionClicked(s2!!)
-            }
-            
-            VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
-            
-            // Suggestion 3
-            SuggestionButton(text = emojis.getOrNull(2) ?: s3 ?: "", modifier = Modifier.weight(1f)) {
-                if (emojis.size > 2) actionListener.onSuggestionClicked(emojis[2])
-                else if (s3 != null) actionListener.onSuggestionClicked(s3!!)
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .offset(x = (-16).dp)
+                        .shadow(
+                            elevation = 2.dp,
+                            shape = RoundedCornerShape(16.dp),
+                            clip = false
+                        )
+                        .background(Color(0xFF54B0E6), RoundedCornerShape(16.dp))
+                        .clickable {
+                            actionListener.onText(clipText)
+                            viewModel.showClipboardSuggestion(null)
+                        }
+                        .padding(horizontal = 14.dp, vertical = 6.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_clipboard_vector),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "Paste: \"$displayClipText\"",
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
             }
         } else {
-            // Suggestion 1
-            SuggestionButton(text = s1 ?: "", modifier = Modifier.weight(1f)) {
-                if (s1 != null) actionListener.onSuggestionClicked(s1!!)
-            }
-            
-            VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
-            
-            // Suggestion 2
-            SuggestionButton(text = s2 ?: "", modifier = Modifier.weight(1f)) {
-                if (s2 != null) actionListener.onSuggestionClicked(s2!!)
-            }
-            
-            VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
-            
-            // Suggestion 3
-            SuggestionButton(text = s3 ?: "", modifier = Modifier.weight(1f)) {
-                if (s3 != null) actionListener.onSuggestionClicked(s3!!)
+            val showGender = (genderLeft != null || genderRight != null)
+            if (emojis.isNotEmpty()) {
+                if (showGender) {
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .padding(vertical = 4.dp, horizontal = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (genderLeft != null) {
+                            val color = getGenderColor(genderLeft!!, isDarkMode)
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .background(color, RoundedCornerShape(8.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = genderLeft!!,
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        if (genderRight != null) {
+                            val color = getGenderColor(genderRight!!, isDarkMode)
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .background(color, RoundedCornerShape(8.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = genderRight!!,
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    SuggestionButton(text = emojis.getOrNull(0) ?: s1 ?: "", modifier = Modifier.weight(1f)) {
+                        if (emojis.isNotEmpty()) actionListener.onSuggestionClicked(emojis[0])
+                        else if (s1 != null) actionListener.onSuggestionClicked(s1!!)
+                    }
+                }
+                
+                VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
+                
+                SuggestionButton(text = emojis.getOrNull(1) ?: s2 ?: "", modifier = Modifier.weight(1f)) {
+                    if (emojis.size > 1) actionListener.onSuggestionClicked(emojis[1])
+                    else if (s2 != null) actionListener.onSuggestionClicked(s2!!)
+                }
+                
+                VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
+                
+                SuggestionButton(text = emojis.getOrNull(2) ?: s3 ?: "", modifier = Modifier.weight(1f)) {
+                    if (emojis.size > 2) actionListener.onSuggestionClicked(emojis[2])
+                    else if (s3 != null) actionListener.onSuggestionClicked(s3!!)
+                }
+            } else {
+                if (showGender) {
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .padding(vertical = 4.dp, horizontal = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (genderLeft != null) {
+                            val color = getGenderColor(genderLeft!!, isDarkMode)
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .background(color, RoundedCornerShape(8.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = genderLeft!!,
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        if (genderRight != null) {
+                            val color = getGenderColor(genderRight!!, isDarkMode)
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .background(color, RoundedCornerShape(8.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = genderRight!!,
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    SuggestionButton(text = s1 ?: "", modifier = Modifier.weight(1f)) {
+                        if (s1 != null) actionListener.onSuggestionClicked(s1!!)
+                    }
+                }
+                
+                VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
+                
+                SuggestionButton(text = s2 ?: "", modifier = Modifier.weight(1f)) {
+                    if (s2 != null) actionListener.onSuggestionClicked(s2!!)
+                }
+                
+                VerticalDivider(modifier = Modifier.fillMaxHeight(0.8f), color = dividerColor)
+                
+                SuggestionButton(text = s3 ?: "", modifier = Modifier.weight(1f)) {
+                    if (s3 != null) actionListener.onSuggestionClicked(s3!!)
+                }
             }
         }
     }
@@ -164,7 +322,7 @@ fun IdleTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListe
 @Composable
 fun SelectCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
     val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
-    val closeBtnBg = if (isDarkMode) Color(0xFF3366CC) else Color(0xFF005FFF)
+    val closeBtnBg = Color(0xFF54B0E6)
 
     val translateLabel by viewModel.translateLabel.collectAsState()
     val conjugateLabel by viewModel.conjugateLabel.collectAsState()
@@ -177,7 +335,6 @@ fun SelectCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        // Close Key
         Box(
             modifier = Modifier
                 .width(48.dp)
@@ -228,7 +385,7 @@ fun ActiveCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
     val hintText by viewModel.commandBarHint.collectAsState()
     
     val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
-    val closeBtnBg = if (isDarkMode) Color(0xFF3366CC) else Color(0xFF005FFF)
+    val closeBtnBg = Color(0xFF54B0E6)
     val promptBg = if (isDarkMode) Color(0xFF48484A) else Color(0xFFB8B8BC)
     val inputBg = if (isDarkMode) Color(0xFF3A3A3C) else Color.White
     val textColor = if (isDarkMode) Color.White else Color.Black
@@ -242,7 +399,6 @@ fun ActiveCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Close Key
         Box(
             modifier = Modifier
                 .width(56.dp)
@@ -260,7 +416,6 @@ fun ActiveCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
             )
         }
         
-        // Prompt Text
         Box(
             modifier = Modifier
                 .fillMaxHeight()
@@ -272,7 +427,6 @@ fun ActiveCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
             Text(text = promptText, color = promptTextColor, fontSize = 16.sp, fontWeight = FontWeight.Medium)
         }
         
-        // Input Text
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -290,14 +444,13 @@ fun ActiveCommandTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardAc
 @Composable
 fun InvalidTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
     val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
-    val closeBtnBg = if (isDarkMode) Color(0xFF3366CC) else Color(0xFF005FFF)
+    val closeBtnBg = Color(0xFF54B0E6)
     val inputBg = if (isDarkMode) Color(0xFF3A3A3C) else Color.White
     
     Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Close Key
         Box(
             modifier = Modifier
                 .width(56.dp)
@@ -315,7 +468,6 @@ fun InvalidTopBar(viewModel: KeyboardViewModel, actionListener: KeyboardActionLi
             )
         }
         
-        // Error Text
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -341,7 +493,7 @@ fun CommandButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val bgColor = if (isDarkMode) Color(0xFF4A4A4E) else Color(0xFFFFFFFF)
+    val bgColor = Color(0xFF54B0E6)
     val textColor = if (isDarkMode) Color.White else Color.Black
 
     Box(

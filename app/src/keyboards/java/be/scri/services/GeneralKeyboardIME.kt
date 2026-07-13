@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
 
 package be.scri.services
 
@@ -86,7 +85,6 @@ abstract class GeneralKeyboardIME(
 ) : InputMethodService(),
     KeyboardActionListener,
     KeyboardBase.KeyboardContextProvider {
-    // Abstract members required by subclasses (like EnglishKeyboardIME)
     abstract fun getKeyboardLayoutXML(): Int
 
     abstract override val keyboardLetters: Int
@@ -131,13 +129,11 @@ abstract class GeneralKeyboardIME(
             field = value
         }
 
-    // Delegate backspace handling to a separate class.
     private val backspaceHandler = BackspaceHandler(this)
 
     internal var hasNewClip: Boolean = false
     internal var latestClipText: String? = null
     private lateinit var clipboardMonitor: ClipboardMonitor
-    // MARK: State Variables
 
     internal var isSingularAndPlural: Boolean = false
     private var subsequentAreaRequired: Boolean = false
@@ -195,7 +191,6 @@ abstract class GeneralKeyboardIME(
             keyboardViewModel.setCommandBarHintColor(value)
         }
 
-    // MARK: Conjugation State
 
     private var currentVerbForConjugation: String? = null
     private var selectedConjugationSubCategory: String? = null
@@ -209,7 +204,7 @@ abstract class GeneralKeyboardIME(
         const val LIGHT_THEME = "#4b4b4b"
         internal const val MAX_TEXT_LENGTH = 1000
         const val COMMIT_TEXT_CURSOR_POSITION = 1
-        internal const val CUSTOM_CURSOR = "│" // special tall cursor character
+        internal const val CUSTOM_CURSOR = "│" 
 
         internal fun shouldUseNumericKeyboard(inputType: Int): Boolean =
             when (inputType and TYPE_MASK_CLASS) {
@@ -228,7 +223,6 @@ abstract class GeneralKeyboardIME(
             }
     }
 
-    // MARK: Lifecycle Methods
 
     /**
      * Called when the service is first created. Initializes database and suggestion handlers.
@@ -244,9 +238,7 @@ abstract class GeneralKeyboardIME(
             ClipboardMonitor(this) { text ->
                 latestClipText = text
                 hasNewClip = true
-                // if (currentState == ScribeState.IDLE && this::uiManager.isInitialized) {
-                //     uiManager.showClipboardSuggestionChip(text)
-                // }
+                keyboardViewModel.showClipboardSuggestion(text)
             }
     }
 
@@ -345,7 +337,6 @@ abstract class GeneralKeyboardIME(
             }
         }
         applyNavBarColor()
-        // Handled by Compose theme settings dynamically
     }
 
     /**
@@ -364,7 +355,6 @@ abstract class GeneralKeyboardIME(
         enterKeyType = attribute.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         currentEnterKeyType = enterKeyType
 
-        // This setter triggers the logic in the property override if not shadowed.
         hasTextBeforeCursor = currentInputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
 
         isNumericKeyboardActive = shouldUseNumericKeyboard(attribute.inputType)
@@ -374,7 +364,6 @@ abstract class GeneralKeyboardIME(
         loadLanguageData()
 
         keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
-        // Keyboard set dynamically via keyboardViewModel setter
 
     }
 
@@ -403,13 +392,11 @@ abstract class GeneralKeyboardIME(
         val languageAlias = getLanguageAlias(language)
         val dbFile = applicationContext.getDatabasePath("${languageAlias}LanguageData.sqlite")
         val hasData = dbFile.exists()
-        // Update ViewModel with data availability status
         keyboardViewModel.setHasData(hasData)
         keyboardViewModel.setHasLanguageData(hasData)
 
         applyNavBarColor()
 
-        // Set initial shift state for empty text fields.
         if (keyboardMode == keyboardLetters) {
             val textBefore = currentInputConnection?.getTextBeforeCursor(1, 0)?.toString().orEmpty()
             if (textBefore.isEmpty()) {
@@ -433,7 +420,6 @@ abstract class GeneralKeyboardIME(
         moveToIdleState()
     }
 
-    // MARK: OnKeyboardActionListener
 
     /**
      * Interface method called by ComposeKeyboardView.
@@ -462,6 +448,7 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun onPress(primaryCode: Int) {
+        keyboardViewModel.showClipboardSuggestion(null)
         if (primaryCode != 0) {
             val view = window?.window?.decorView
             if (view != null) {
@@ -499,6 +486,7 @@ abstract class GeneralKeyboardIME(
     override fun moveCursorRight() = moveCursor(true)
 
     override fun onText(text: String) {
+        keyboardViewModel.showClipboardSuggestion(null)
         currentInputConnection?.commitText(text, 0)
     }
 
@@ -506,6 +494,7 @@ abstract class GeneralKeyboardIME(
      * Handles key input from the keyboard. Delegates to specific handlers based on the key code.
      */
     override fun onKey(code: Int) {
+        keyboardViewModel.showClipboardSuggestion(null)
         val inputConnection = currentInputConnection
         if (inputConnection != null) {
             when (code) {
@@ -543,7 +532,6 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    // MARK: Helper Methods
 
     protected fun isPeriodAndCommaEnabled(): Boolean {
         val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
@@ -624,7 +612,6 @@ abstract class GeneralKeyboardIME(
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
         insetsController.isAppearanceLightNavigationBars = isLightColor(color)
 
-        // Compose view handles its own background or doesn't need this specific imperative color setting
     }
 
     /**
@@ -651,7 +638,6 @@ abstract class GeneralKeyboardIME(
         sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
 
-    // MARK: UI Update Delegation
 
     /**
      * The main dispatcher for updating the entire keyboard UI. It calls the appropriate setup function
@@ -660,7 +646,6 @@ abstract class GeneralKeyboardIME(
     internal fun updateUI() = refreshUI()
 
     private fun refreshUI() {
-        // UI updates are handled automatically by Compose observing ViewModel states
     }
 
     /**
@@ -688,9 +673,9 @@ abstract class GeneralKeyboardIME(
         isSingularAndPlural = false
     }
 
-    // MARK: KeyboardUIListener
 
     override fun onScribeKeyOptionsClicked() {
+        keyboardViewModel.showClipboardSuggestion(null)
         if (currentState == ScribeState.IDLE) {
             clearSuggestionData()
             currentState = ScribeState.SELECT_COMMAND
@@ -817,7 +802,6 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    // MARK: Input Logic
 
     /**
      * Handles the logic for the Enter key press. This can either perform an editor action,
@@ -1027,7 +1011,6 @@ abstract class GeneralKeyboardIME(
         }
     }
 
-    // MARK: Deletion Logic
 
     /**
      * Handles the logic for the Delete/Backspace key. It deletes characters from either
@@ -1056,7 +1039,6 @@ abstract class GeneralKeyboardIME(
         backspaceHandler.isDeleteRepeating = repeating
     }
 
-    // MARK: State & Logic Helpers
 
     /**
      * Safely fetches autocomplete suggestions for the given prefix.
@@ -1115,7 +1097,6 @@ abstract class GeneralKeyboardIME(
      */
     fun getText(): String? = currentInputConnection?.getTextBeforeCursor(TEXT_LENGTH, 0)?.toString()
 
-    // MARK: Misc Private Helpers
 
     /**
      * Gets the IME action ID (e.g., Go, Search, Done) from the current editor info.
@@ -1362,8 +1343,6 @@ abstract class GeneralKeyboardIME(
         lastWord: String?,
     ) = lastWord?.let { caseAnnotation[it.lowercase()] }
 
-    // Logic for updating auto-suggest text and buttons.
-    // Since KeyboardUIManager doesn't have linguistic logic, we manipulate views here.
 
     /**
      * The main dispatcher for displaying linguistic auto-suggestions (gender, case, plurality).
@@ -1415,7 +1394,6 @@ abstract class GeneralKeyboardIME(
         handleWordSuggestions(wordSuggestions, hasLinguisticSuggestions)
     }
 
-    // MARK: Linguistic Logic
 
     /**
      * A helper function to specifically trigger the plural suggestion UI if needed.
@@ -1681,7 +1659,6 @@ abstract class GeneralKeyboardIME(
 
         when {
             hasLinguisticSuggestions && emojiCount != 0 -> {
-                // Emojis handled via State
             }
             hasLinguisticSuggestions && emojiCount == 0 -> {
                 sPlural = suggestion2
@@ -1698,7 +1675,6 @@ abstract class GeneralKeyboardIME(
         keyboardViewModel.setSuggestions(sTranslate, sConjugate, sPlural)
     }
 
-    // MARK: Autocomplete
 
     /**
      * Updates autocomplete UI with a new list of suggestions.
@@ -1781,10 +1757,8 @@ abstract class GeneralKeyboardIME(
         val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
         prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
         val keyboardXmlId = getKeyboardLayoutForState(currentState, true, flattenList.size)
-        // UI is initialized completely via Compose!
         subsequentAreaRequired = false
         prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
-        // Info visibility tracked by compose
     }
 
     /**
@@ -1830,7 +1804,6 @@ abstract class GeneralKeyboardIME(
      * @param enabled true if suggestions are available.
      */
     fun updateButtonVisibility(enabled: Boolean) {
-        // Handled by Compose TopBars.kt automatically tracking states
     }
 
     /**

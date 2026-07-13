@@ -13,7 +13,6 @@ interface KeyboardActionListener {
     fun commitPeriodAfterSpace()
     fun setDeleteRepeating(isRepeating: Boolean) {}
 
-    // Toolbar actions
     fun onScribeKeyOptionsClicked()
     fun onScribeKeyToolbarClicked()
     fun onTranslateClicked()
@@ -22,7 +21,6 @@ interface KeyboardActionListener {
     fun onCloseClicked()
     fun onSuggestionClicked(suggestion: String)
 
-    // Clipboard panel actions
     fun onClipboardItemClicked(item: ClipboardItem) {}
     fun onClipboardItemDelete(item: ClipboardItem) {}
     fun onClipboardItemPinToggle(item: ClipboardItem) {}

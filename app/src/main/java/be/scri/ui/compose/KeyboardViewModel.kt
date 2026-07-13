@@ -1,6 +1,7 @@
 package be.scri.ui.compose
 
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.clipboard.ClipboardItem
 import be.scri.models.ScribeState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,6 @@ class KeyboardViewModel {
     private val _shiftState = MutableStateFlow(0)
     val shiftState: StateFlow<Int> = _shiftState.asStateFlow()
 
-    // Suggestions
     private val _emojiSuggestions = MutableStateFlow<List<String>>(emptyList())
     val emojiSuggestions: StateFlow<List<String>> = _emojiSuggestions.asStateFlow()
 
@@ -45,7 +45,6 @@ class KeyboardViewModel {
     private val _hasData = MutableStateFlow(true)
     val hasData: StateFlow<Boolean> = _hasData.asStateFlow()
 
-    // Conjugation data
     private val _conjugateOutput = MutableStateFlow<Map<String, Map<String, Collection<String>>>?>(null)
     val conjugateOutput: StateFlow<Map<String, Map<String, Collection<String>>>?> = _conjugateOutput.asStateFlow()
     
@@ -64,7 +63,9 @@ class KeyboardViewModel {
     private val _invalidInfoTexts = MutableStateFlow<List<String>>(emptyList())
     val invalidInfoTexts: StateFlow<List<String>> = _invalidInfoTexts.asStateFlow()
     
-    // Command Bar Suggestions
+    private val _invalidMsg = MutableStateFlow("")
+    val invalidMsg: StateFlow<String> = _invalidMsg.asStateFlow()
+    
     private val _suggestion1 = MutableStateFlow<String?>(null)
     val suggestion1: StateFlow<String?> = _suggestion1.asStateFlow()
     
@@ -74,19 +75,29 @@ class KeyboardViewModel {
     private val _suggestion3 = MutableStateFlow<String?>(null)
     val suggestion3: StateFlow<String?> = _suggestion3.asStateFlow()
     
-    // Gender Suggestions
     private val _genderSuggestionLeft = MutableStateFlow<String?>(null)
     val genderSuggestionLeft: StateFlow<String?> = _genderSuggestionLeft.asStateFlow()
     
     private val _genderSuggestionRight = MutableStateFlow<String?>(null)
     val genderSuggestionRight: StateFlow<String?> = _genderSuggestionRight.asStateFlow()
+
+    private val _genderColorLeft = MutableStateFlow<Int?>(null)
+    val genderColorLeft: StateFlow<Int?> = _genderColorLeft.asStateFlow()
+
+    private val _genderColorRight = MutableStateFlow<Int?>(null)
+    val genderColorRight: StateFlow<Int?> = _genderColorRight.asStateFlow()
     
-    // Currency Symbol
     private val _currencySymbol = MutableStateFlow("$")
     val currencySymbol: StateFlow<String> = _currencySymbol.asStateFlow()
 
-    private val _bottomInset = MutableStateFlow(0)
-    val bottomInset: StateFlow<Int> = _bottomInset.asStateFlow()
+    private val _bottomInsetPx = MutableStateFlow(0)
+    val bottomInsetPx: StateFlow<Int> = _bottomInsetPx.asStateFlow()
+
+    private val _isClipboardPanelVisible = MutableStateFlow(false)
+    val isClipboardPanelVisible: StateFlow<Boolean> = _isClipboardPanelVisible.asStateFlow()
+
+    private val _clipboardItems = MutableStateFlow<List<ClipboardItem>>(emptyList())
+    val clipboardItems: StateFlow<List<ClipboardItem>> = _clipboardItems.asStateFlow()
 
     private val _translateLabel = MutableStateFlow("Translate")
     val translateLabel: StateFlow<String> = _translateLabel.asStateFlow()
@@ -97,10 +108,11 @@ class KeyboardViewModel {
     private val _pluralLabel = MutableStateFlow("Plural")
     val pluralLabel: StateFlow<String> = _pluralLabel.asStateFlow()
 
-    fun updateCommandLabels(translate: String, conjugate: String, plural: String) {
-        _translateLabel.value = translate
-        _conjugateLabel.value = conjugate
-        _pluralLabel.value = plural
+    private val _clipboardSuggestion = MutableStateFlow<String?>(null)
+    val clipboardSuggestion: StateFlow<String?> = _clipboardSuggestion.asStateFlow()
+
+    fun showClipboardSuggestion(text: String?) {
+        _clipboardSuggestion.value = text
     }
 
     fun updateState(state: ScribeState) {
@@ -173,37 +185,42 @@ class KeyboardViewModel {
         _invalidInfoTexts.value = texts
     }
     
+    fun setInvalidMsg(msg: String) {
+        _invalidMsg.value = msg
+    }
+    
     fun setSuggestions(s1: String?, s2: String?, s3: String?) {
         _suggestion1.value = s1
         _suggestion2.value = s2
         _suggestion3.value = s3
     }
     
-    fun setGenderSuggestions(left: String?, right: String?) {
+    fun setGenderSuggestions(left: String?, right: String?, leftColor: Int? = null, rightColor: Int? = null) {
         _genderSuggestionLeft.value = left
         _genderSuggestionRight.value = right
+        _genderColorLeft.value = leftColor
+        _genderColorRight.value = rightColor
     }
     
     fun setCurrencySymbol(symbol: String) {
         _currencySymbol.value = symbol
     }
 
-    fun setBottomInset(inset: Int) {
-        _bottomInset.value = inset
+    fun setBottomInset(px: Int) {
+        _bottomInsetPx.value = px
     }
-
-    // Clipboard
-    private val _isClipboardPanelVisible = MutableStateFlow(false)
-    val isClipboardPanelVisible: StateFlow<Boolean> = _isClipboardPanelVisible.asStateFlow()
-
-    private val _clipboardItems = MutableStateFlow<List<be.scri.helpers.clipboard.ClipboardItem>>(emptyList())
-    val clipboardItems: StateFlow<List<be.scri.helpers.clipboard.ClipboardItem>> = _clipboardItems.asStateFlow()
 
     fun setClipboardPanelVisible(visible: Boolean) {
         _isClipboardPanelVisible.value = visible
     }
 
-    fun updateClipboardItems(items: List<be.scri.helpers.clipboard.ClipboardItem>) {
+    fun updateClipboardItems(items: List<ClipboardItem>) {
         _clipboardItems.value = items
+    }
+
+    fun updateCommandLabels(translate: String, conjugate: String, plural: String) {
+        _translateLabel.value = translate
+        _conjugateLabel.value = conjugate
+        _pluralLabel.value = plural
     }
 }
