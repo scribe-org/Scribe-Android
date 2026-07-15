@@ -73,7 +73,7 @@ fun ClickableItemComp(
                             .padding(start = 6.dp)
                             .size(17.dp),
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = "Right Arrow",
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_right_arrow),
                 )
             }
 

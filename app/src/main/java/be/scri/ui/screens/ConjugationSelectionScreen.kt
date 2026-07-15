@@ -187,7 +187,7 @@ fun ConjugationSelectionScreen(
                             )
                             Image(
                                 painter = painterResource(id = R.drawable.ic_tab_rounded),
-                                contentDescription = "Expand tenses",
+                                contentDescription = stringResource(R.string.i18n_app_accessibility_expand_tenses),
                                 colorFilter = ColorFilter.tint(Color.Black),
                                 modifier = Modifier.size(18.dp),
                             )
@@ -234,7 +234,7 @@ fun ConjugationSelectionScreen(
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
-                                        text = "Data not present in Wikidata",
+                                        text = stringResource(R.string.i18n_app_conjugate_data_not_present_in_wikidata),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                                     )
@@ -269,7 +269,7 @@ fun ConjugationSelectionScreen(
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
-                                    text = "Loading conjugation tables...",
+                                    text = stringResource(R.string.i18n_app_conjugate_loading_tables),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                                 )
@@ -467,7 +467,7 @@ private fun ConjugationCell(
             )
             Image(
                 painter = painterResource(id = R.drawable.ic_clipboard_vector),
-                contentDescription = "Copy conjugation",
+                contentDescription = stringResource(R.string.i18n_app_accessibility_copy_conjugation),
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)),
                 modifier =
                     Modifier

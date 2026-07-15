@@ -191,7 +191,7 @@ fun InstallationScreen(
                             )
                             Image(
                                 painter = painterResource(resource),
-                                contentDescription = "Select Keyboard",
+                                contentDescription = stringResource(R.string.i18n_app_installation_select_keyboard_alt_text),
                                 modifier =
                                     Modifier
                                         .size(30.dp)
@@ -289,7 +289,7 @@ fun InstallationScreen(
                         )
                         Image(
                             painter = painterResource(R.drawable.right_arrow),
-                            contentDescription = "Right Arrow",
+                            contentDescription = stringResource(R.string.i18n_app_accessibility_right_arrow),
                             modifier =
                                 Modifier
                                     .size(Dimensions.IconSize)

@@ -81,7 +81,6 @@ fun SettingsScreen(
                     ScribeItem.ClickableItem(
                         title = R.string.i18n_app_settings_menu_app_language,
                         desc = R.string.i18n_app_settings_menu_app_language_description,
-                        altText = R.string.i18n_app_settings_menu_app_language_alt_text,
                         action = {
                             SettingsUtil.selectLanguage(context)
                         },
@@ -89,7 +88,6 @@ fun SettingsScreen(
                     ScribeItem.SwitchItem(
                         title = R.string.i18n_app_settings_menu_app_color_mode,
                         desc = R.string.i18n_app_settings_menu_app_color_mode_description,
-                        altText = R.string.i18n_app_settings_menu_app_color_mode_alt_text,
                         state = isUserDarkMode,
                         onToggle = { newDarkMode ->
                             if (newDarkMode != isSystemDarkMode) {
@@ -104,7 +102,6 @@ fun SettingsScreen(
                     ScribeItem.SwitchItem(
                         title = R.string.i18n_app_settings_menu_increase_text_size,
                         desc = R.string.i18n_app_settings_menu_increase_text_size_description,
-                        altText = R.string.i18n_app_settings_menu_increase_text_size_alt_text,
                         state = isIncreaseTextSize,
                         onToggle = { newIncreaseTextSize ->
                             viewModel.setIncreaseTextSize(newIncreaseTextSize)
