@@ -52,12 +52,12 @@ fun WikimediaScreen(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = stringResource(id = R.string.scribe_key),
+                    text = stringResource(id = R.string.i18n_app_keyboard_scribe_key),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Image(
                     imageVector = ImageVector.vectorResource(R.drawable.wikidata_logo),
-                    contentDescription = stringResource(R.string.wikimedia_logo),
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_wikimedia_logo),
                     modifier =
                         Modifier
                             .align(Alignment.CenterHorizontally)
@@ -72,7 +72,7 @@ fun WikimediaScreen(
                 )
                 Image(
                     imageVector = ImageVector.vectorResource(id = R.drawable.wikipedia_logo),
-                    contentDescription = stringResource(R.string.wikimedia_logo),
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_wikimedia_logo),
                     modifier =
                         Modifier
                             .align(Alignment.CenterHorizontally)

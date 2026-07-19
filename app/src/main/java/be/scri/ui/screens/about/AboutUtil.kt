@@ -94,11 +94,13 @@ fun getLegalItemSpecs(): List<LegalItemSpec> =
         LegalItemSpec(
             icon = R.drawable.shield_lock,
             title = R.string.i18n__global_privacy_policy,
+            altText = R.string.i18n__global_privacy_policy,
             destination = Destination.PrivacyPolicy,
         ),
         LegalItemSpec(
             icon = R.drawable.license_icon,
             title = R.string.i18n_app_about_legal_third_party,
+            altText = R.string.i18n_app_about_legal_third_party,
             destination = Destination.ThirdPartyLicenses,
         ),
     )
@@ -191,6 +193,7 @@ fun feedbackAndSupportList(
 data class LegalItemSpec(
     val icon: Int,
     val title: Int,
+    val altText: Int,
     val destination: Destination,
 )
 
@@ -331,6 +334,7 @@ object AboutUtil {
                     ScribeItem.ExternalLinkItem(
                         leadingIcon = spec.icon,
                         title = spec.title,
+                        altText = spec.altText,
                         trailingIcon = R.drawable.right_arrow,
                         url = null,
                         onClick = clickHandler,

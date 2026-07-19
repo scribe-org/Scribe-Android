@@ -14,7 +14,8 @@ import be.scri.navigation.Screen
 sealed class BottomBarScreen(
     val route: String,
     @DrawableRes val icon: Int,
-    val label: String,
+    val labelRes: Int,
+    val altTextRes: Int,
 ) {
     /**
      * Represents the Installation screen and its associated route.
@@ -22,7 +23,8 @@ sealed class BottomBarScreen(
     data object Installation : BottomBarScreen(
         Screen.Installation.route,
         R.drawable.material_keyboard,
-        "Installation",
+        R.string.i18n_app_installation_title,
+        R.string.i18n_app_installation_title_alt_text,
     )
 
     /**
@@ -31,7 +33,8 @@ sealed class BottomBarScreen(
     data object Conjugate : BottomBarScreen(
         Screen.Conjugate.route,
         R.drawable.material_keyboard,
-        "Conjugate",
+        R.string.i18n_app_conjugate_title,
+        R.string.i18n_app_conjugate_title_alt_text,
     )
 
     /**
@@ -40,7 +43,8 @@ sealed class BottomBarScreen(
     data object Settings : BottomBarScreen(
         Screen.Settings.route,
         R.drawable.material_settings,
-        "Settings",
+        R.string.i18n_app_settings_title,
+        R.string.i18n_app_settings_title_alt_text,
     )
 
     /**
@@ -49,7 +53,8 @@ sealed class BottomBarScreen(
     data object About : BottomBarScreen(
         Screen.About.route,
         R.drawable.material_info,
-        "About",
+        R.string.i18n_app_about_title,
+        R.string.i18n_app_about_title_alt_text,
     )
 
     companion object {

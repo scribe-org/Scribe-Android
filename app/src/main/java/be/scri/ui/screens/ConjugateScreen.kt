@@ -143,7 +143,7 @@ fun ConjugateScreen(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_search_vector),
-                            contentDescription = "Search",
+                            contentDescription = stringResource(R.string.i18n_app_accessibility_search),
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                             modifier = Modifier.size(Dimensions.IconSize),
                         )
@@ -183,7 +183,7 @@ fun ConjugateScreen(
                         if (searchQuery.isNotEmpty()) {
                             Image(
                                 painter = painterResource(id = R.drawable.close),
-                                contentDescription = "Clear",
+                                contentDescription = stringResource(R.string.i18n_app_accessibility_clear),
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                                 modifier =
                                     Modifier
@@ -195,7 +195,7 @@ fun ConjugateScreen(
 
                         Image(
                             painter = painterResource(id = R.drawable.play_button),
-                            contentDescription = "Play button",
+                            contentDescription = stringResource(R.string.i18n_app_accessibility_play_button),
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                             modifier =
                                 Modifier
@@ -242,7 +242,7 @@ fun ConjugateScreen(
                                     )
                                     Image(
                                         painter = painterResource(id = R.drawable.right_arrow),
-                                        contentDescription = "Right Arrow",
+                                        contentDescription = stringResource(R.string.i18n_app_accessibility_right_arrow),
                                         modifier =
                                             Modifier
                                                 .size(Dimensions.IconSize)
@@ -339,7 +339,7 @@ fun ConjugateScreen(
                             )
                             Image(
                                 painter = painterResource(R.drawable.right_arrow),
-                                contentDescription = "Right Arrow",
+                                contentDescription = stringResource(R.string.i18n_app_accessibility_right_arrow),
                                 modifier =
                                     Modifier
                                         .size(Dimensions.IconSize)
@@ -398,7 +398,7 @@ fun ConjugateScreen(
                         )
                         Image(
                             painter = painterResource(R.drawable.right_arrow),
-                            contentDescription = "Right Arrow",
+                            contentDescription = stringResource(R.string.i18n_app_accessibility_right_arrow),
                             modifier =
                                 Modifier
                                     .size(Dimensions.IconSize)
@@ -471,7 +471,7 @@ fun ConjugateScreen(
                                     )
                                     Image(
                                         painter = painterResource(id = R.drawable.right_arrow),
-                                        contentDescription = "Right Arrow",
+                                        contentDescription = stringResource(R.string.i18n_app_accessibility_right_arrow),
                                         modifier =
                                             Modifier
                                                 .size(Dimensions.IconSize)
