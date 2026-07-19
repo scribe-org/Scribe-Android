@@ -8,8 +8,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.database.sqlite.SQLiteException
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PixelFormat
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
@@ -20,6 +28,7 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.util.Log
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -159,6 +168,12 @@ abstract class GeneralKeyboardIME(
     private var currentEnterKeyType: Int? = null
     private var isNumericKeyboardActive: Boolean = false
 
+    /**
+     * The autocomplete suggestion currently shown highlighted (if any), so a following space
+     * press can insert it in place of what the user has typed, matching Scribe-iOS behavior.
+     */
+    private var highlightedAutocompleteSuggestion: String? = null
+
     internal var currentState: ScribeState = ScribeState.IDLE
     internal var invalidCommandSource: ScribeState = ScribeState.IDLE
 
@@ -185,6 +200,12 @@ abstract class GeneralKeyboardIME(
         const val TEXT_LENGTH = 20
         const val NOUN_TYPE_SIZE = 20f
         const val SUGGESTION_SIZE = 15f
+        const val SUGGESTION_HIGHLIGHT_ALPHA = 51
+        const val SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP = 12f
+        const val SUGGESTION_HIGHLIGHT_HORIZONTAL_INSET_DP = 4f
+        const val SUGGESTION_HIGHLIGHT_VERTICAL_INSET_DP = 1f
+        const val SUGGESTION_UNDERLINE_HEIGHT_DP = 3f
+        const val SUGGESTION_UNDERLINE_EXTRA_HORIZONTAL_INSET_DP = 6f
         const val DARK_THEME = "#aeb3be"
         const val LIGHT_THEME = "#4b4b4b"
         internal const val MAX_TEXT_LENGTH = 1000
@@ -1107,20 +1128,62 @@ abstract class GeneralKeyboardIME(
     // MARK: State & Logic Helpers
 
     /**
+     * The result of an autocomplete lookup: the ordered suggestions to display, and which one
+     * (if any) is "obvious" enough to highlight and auto-insert on space.
+     */
+    data class AutocompleteResult(
+        val completions: List<String>,
+        val highlightedSuggestion: String?,
+    )
+
+    /**
      * Safely fetches autocomplete suggestions for the given prefix.
-     * Returns an empty list if a database or state error occurs.
+     * Returns an empty result if a database or state error occurs.
      */
     fun getAutocompletions(
         prefix: String,
         limit: Int = 3,
-    ): List<String> {
-        if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
-            if (nativeCompletions.isNotEmpty()) {
-                return nativeCompletions
+    ): AutocompleteResult {
+        // The SQL/Trie-backed lexicon is a deterministic, pure prefix match and is preferred.
+        // The native dictionary engine's suggestions can drift from the typed prefix on longer
+        // words (see PR discussion), so it's only used when the lexicon has no data for this
+        // language/prefix yet.
+        val completions =
+            getDeterministicAutocompletions(prefix, limit).ifEmpty {
+                if (this::nativeSuggestionEngine.isInitialized) {
+                    nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
+                } else {
+                    emptyList()
+                }
             }
+
+        // The native dictionary only returns completions that extend `prefix`, never `prefix`
+        // itself. If what the user has already typed is itself a valid word, surface it as the
+        // first suggestion so it can be highlighted, rather than relying on it happening to be
+        // among the completions above.
+        val isPrefixItselfAValidWord =
+            this::nativeSuggestionEngine.isInitialized && nativeSuggestionEngine.isValidWord(language, prefix)
+
+        if (isPrefixItselfAValidWord && completions.none { it.equals(prefix, ignoreCase = true) }) {
+            return AutocompleteResult((listOf(prefix) + completions).take(limit), highlightedSuggestion = prefix)
         }
-        return try {
+
+        // If exactly one word could possibly complete what's been typed, it's unambiguous: highlight
+        // it as the first suggestion, but still offer the literally typed prefix as another option,
+        // in case the user actually wanted to keep typing their own word.
+        if (!isPrefixItselfAValidWord && completions.size == 1) {
+            val onlyCompletion = completions.first()
+            return AutocompleteResult(listOf(onlyCompletion, prefix).take(limit), highlightedSuggestion = onlyCompletion)
+        }
+
+        return AutocompleteResult(completions, highlightedSuggestion = null)
+    }
+
+    private fun getDeterministicAutocompletions(
+        prefix: String,
+        limit: Int,
+    ): List<String> =
+        try {
             dbManagers.autocompletionManager.getAutocompletions(prefix, limit)
         } catch (e: SQLiteException) {
             Log.e("GeneralKeyboardIME", "Database error in autocompletion", e)
@@ -1129,7 +1192,6 @@ abstract class GeneralKeyboardIME(
             Log.e("GeneralKeyboardIME", "Illegal state in autocompletion", e)
             emptyList()
         }
-    }
 
     /**
      * Gets the current text in the command bar without the cursor.
@@ -1812,6 +1874,8 @@ abstract class GeneralKeyboardIME(
     private fun setSuggestionButton(
         button: Button,
         text: String,
+        isHighlighted: Boolean = false,
+        underlineColors: List<Int> = emptyList(),
     ) {
         val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
         val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
@@ -1820,11 +1884,66 @@ abstract class GeneralKeyboardIME(
         button.visibility = View.VISIBLE
         button.textSize = SUGGESTION_SIZE
         button.setOnClickListener(null)
-        button.background = null
+        button.background =
+            if (text.isNotBlank() && (isHighlighted || underlineColors.isNotEmpty())) {
+                buildSuggestionBackground(isHighlighted, underlineColors)
+            } else {
+                null
+            }
         button.setTextColor(textColor)
+        button.setTypeface(button.typeface, Typeface.NORMAL)
         button.setOnClickListener {
             currentInputConnection?.commitText("$text ", 1)
             moveToIdleState()
+        }
+    }
+
+    /**
+     * Builds the background for a suggestion chip: a rounded, tinted fill behind the text when
+     * the suggestion is highlighted as "obvious" (matching the Scribe-iOS reference design), plus
+     * a colored underline showing the word's grammatical gender(s) when known (existing
+     * annotation feature -- see [AnnotationTextUtils]), narrower than the highlight fill above
+     * it. Nouns with multiple genders (e.g. German "Schild") get a split underline, one color
+     * per gender, per #407.
+     */
+    private fun buildSuggestionBackground(
+        isHighlighted: Boolean,
+        underlineColors: List<Int>,
+    ): Drawable {
+        val density = resources.displayMetrics.density
+        val horizontalInsetPx = (SUGGESTION_HIGHLIGHT_HORIZONTAL_INSET_DP * density).toInt()
+        val verticalInsetPx = (SUGGESTION_HIGHLIGHT_VERTICAL_INSET_DP * density).toInt()
+        val underlineHeightPx = (SUGGESTION_UNDERLINE_HEIGHT_DP * density).toInt()
+        val underlineExtraInsetPx = (SUGGESTION_UNDERLINE_EXTRA_HORIZONTAL_INSET_DP * density).toInt()
+
+        val layers = mutableListOf<Drawable>()
+        if (isHighlighted) layers.add(buildSuggestionHighlightFill())
+        if (underlineColors.isNotEmpty()) layers.add(SplitColorDrawable(underlineColors))
+
+        val layered = LayerDrawable(layers.toTypedArray())
+        if (underlineColors.isNotEmpty()) {
+            val underlineIndex = layers.lastIndex
+            layered.setLayerInset(underlineIndex, underlineExtraInsetPx, 0, underlineExtraInsetPx, 0)
+            layered.setLayerGravity(underlineIndex, Gravity.BOTTOM)
+            layered.setLayerHeight(underlineIndex, underlineHeightPx)
+        }
+        return InsetDrawable(layered, horizontalInsetPx, verticalInsetPx, horizontalInsetPx, verticalInsetPx)
+    }
+
+    /**
+     * Builds the rounded, tinted fill used to highlight a suggestion chip that the keyboard
+     * considers "obvious" (e.g. the user has already typed it in full).
+     */
+    private fun buildSuggestionHighlightFill(): Drawable {
+        val highlightColor =
+            ColorUtils.setAlphaComponent(
+                ContextCompat.getColor(applicationContext, R.color.theme_scribe_blue),
+                SUGGESTION_HIGHLIGHT_ALPHA,
+            )
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP * resources.displayMetrics.density
+            setColor(highlightColor)
         }
     }
 
@@ -1834,12 +1953,17 @@ abstract class GeneralKeyboardIME(
      * Updates autocomplete UI with a new list of suggestions.
      * Clears it if not idle or no completions.
      */
-    fun updateAutocompleteSuggestions(completions: List<String>?) {
+    fun updateAutocompleteSuggestions(
+        completions: List<String>?,
+        highlightedSuggestion: String? = null,
+    ) {
         if (currentState != ScribeState.IDLE) {
+            highlightedAutocompleteSuggestion = null
             uiManager.disableAutoSuggest(language)
             return
         }
         if (completions.isNullOrEmpty()) {
+            highlightedAutocompleteSuggestion = null
             uiManager.disableAutoSuggest(language)
             return
         }
@@ -1848,9 +1972,14 @@ abstract class GeneralKeyboardIME(
         val completion2 = completions.getOrNull(1) ?: ""
         val completion3 = completions.getOrNull(2) ?: ""
 
-        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1)
-        setAutocompleteButton(uiManager.binding.translateBtn, completion2)
-        setAutocompleteButton(uiManager.pluralBtn!!, completion3)
+        highlightedAutocompleteSuggestion = highlightedSuggestion
+
+        // Visual left-to-right order of these buttons is translateBtn, conjugateBtn, pluralBtn
+        // (see input_method_view.xml's constraint chain), so completion1 -- the one that may be
+        // highlighted -- must go in translateBtn to actually land in the first, leftmost slot.
+        setAutocompleteButton(uiManager.binding.translateBtn, completion1, highlightedSuggestion)
+        setAutocompleteButton(uiManager.binding.conjugateBtn, completion2, highlightedSuggestion)
+        setAutocompleteButton(uiManager.pluralBtn!!, completion3, highlightedSuggestion)
 
         uiManager.binding.separator1.visibility = View.VISIBLE
         uiManager.binding.separator2.visibility = View.VISIBLE
@@ -1859,25 +1988,71 @@ abstract class GeneralKeyboardIME(
     /**
      * Sets up an autocomplete button with the given suggestion text.
      * When clicked, it replaces the current word with the suggestion.
+     * If this suggestion is the one the keyboard considers "obvious" (whether because the user
+     * typed it in full, or because it's the only word that can follow what's been typed), the
+     * button is highlighted to signal that pressing space will also insert it.
      */
     private fun setAutocompleteButton(
         button: Button,
         text: String,
+        highlightedSuggestion: String? = null,
     ) {
-        setSuggestionButton(button, text)
+        val isHighlighted = text.isNotBlank() && text.equals(highlightedSuggestion, ignoreCase = true)
+        setSuggestionButton(button, text, isHighlighted, getGenderUnderlineColors(text))
         if (text.isBlank()) {
             button.setOnClickListener(null)
             return
         }
         button.setOnClickListener {
-            val ic = currentInputConnection ?: return@setOnClickListener
-            val beforeText = ic.getTextBeforeCursor(50, 0) ?: ""
-            val wordStartIndex = beforeText.lastIndexOfAny(charArrayOf(' ', '\n', '\t', '.', ',', '?', '!')) + 1
-            val currentWord = beforeText.substring(wordStartIndex)
-            ic.deleteSurroundingText(currentWord.length, 0)
-            ic.commitText(text, 1)
+            replaceCurrentWordWithSuggestion(text)
             moveToIdleState()
         }
+    }
+
+    /**
+     * Looks up the given suggestion's grammatical gender(s) (if it's a known noun) and returns
+     * the matching annotation colors, reusing the existing gender-annotation feature (see
+     * [AnnotationTextUtils]) rather than inventing a new color scheme. Returns an empty list if
+     * the word has no known gender -- most suggestions won't, and that's expected; it just means
+     * no underline is drawn for that chip. Words with multiple genders (e.g. German "Schild",
+     * which is both masculine and neuter) get one color per gender, per #407.
+     */
+    private fun getGenderUnderlineColors(text: String): List<Int> {
+        if (text.isBlank()) return emptyList()
+        val genders = findGenderForLastWord(nounKeywords, text) ?: return emptyList()
+        return genders
+            .map { handleColorAndTextForNounType(it, language, applicationContext).first }
+            .filter { it != R.color.transparent }
+            .distinct()
+            .map { ContextCompat.getColor(applicationContext, it) }
+    }
+
+    /**
+     * Deletes the word currently being typed (immediately before the cursor) and commits
+     * [text] in its place.
+     */
+    private fun replaceCurrentWordWithSuggestion(text: String) {
+        val ic = currentInputConnection ?: return
+        val beforeText = ic.getTextBeforeCursor(50, 0) ?: ""
+        val wordStartIndex = beforeText.lastIndexOfAny(charArrayOf(' ', '\n', '\t', '.', ',', '?', '!')) + 1
+        val currentWord = beforeText.substring(wordStartIndex)
+        ic.deleteSurroundingText(currentWord.length, 0)
+        ic.commitText(text, 1)
+    }
+
+    /**
+     * If an autocomplete suggestion is currently highlighted (i.e. the user has typed a word
+     * that's "obviously" what they want), replaces the typed word with it, appends a space, and
+     * returns true. Otherwise does nothing and returns false. Lets the space key complete an
+     * obvious word instead of just inserting a literal space, matching Scribe-iOS behavior.
+     */
+    fun tryInsertHighlightedAutocompleteSuggestion(): Boolean {
+        val suggestion = highlightedAutocompleteSuggestion ?: return false
+        highlightedAutocompleteSuggestion = null
+        replaceCurrentWordWithSuggestion(suggestion)
+        currentInputConnection?.commitText(" ", 1)
+        moveToIdleState()
+        return true
     }
 
     /**
@@ -1885,6 +2060,7 @@ abstract class GeneralKeyboardIME(
      * to the default command buttons via the UI Manager.
      */
     fun clearAutocomplete() {
+        highlightedAutocompleteSuggestion = null
         if (this::uiManager.isInitialized) {
             uiManager.disableAutoSuggest(language)
         }
@@ -2097,4 +2273,56 @@ abstract class GeneralKeyboardIME(
         binding.clipboardEmptyText.visibility = if (items.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
         binding.clipboardItemsList.visibility = if (items.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
     }
+}
+
+/**
+ * A pill-shaped drawable that splits its bounds into equal horizontal segments, one per color.
+ * Used to render a noun's gender annotation as a single-color underline, or a half-and-half
+ * split underline for nouns with more than one gender (e.g. German "Schild"), per #407.
+ */
+private class SplitColorDrawable(
+    private val colors: List<Int>,
+) : Drawable() {
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    override fun draw(canvas: Canvas) {
+        val b = bounds
+        if (colors.isEmpty() || b.width() <= 0 || b.height() <= 0) return
+
+        val cornerRadius = b.height() / 2f
+        val clipPath =
+            Path().apply {
+                addRoundRect(
+                    b.left.toFloat(),
+                    b.top.toFloat(),
+                    b.right.toFloat(),
+                    b.bottom.toFloat(),
+                    cornerRadius,
+                    cornerRadius,
+                    Path.Direction.CW,
+                )
+            }
+        canvas.save()
+        canvas.clipPath(clipPath)
+
+        val segmentWidth = b.width().toFloat() / colors.size
+        colors.forEachIndexed { index, color ->
+            paint.color = color
+            val left = b.left + segmentWidth * index
+            val right = if (index == colors.lastIndex) b.right.toFloat() else b.left + segmentWidth * (index + 1)
+            canvas.drawRect(left, b.top.toFloat(), right, b.bottom.toFloat(), paint)
+        }
+        canvas.restore()
+    }
+
+    override fun setAlpha(alpha: Int) {
+        paint.alpha = alpha
+    }
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        paint.colorFilter = colorFilter
+    }
+
+    @Deprecated("Deprecated in Java", ReplaceWith("PixelFormat.TRANSLUCENT"))
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 }

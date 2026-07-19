@@ -134,12 +134,33 @@ class NativeSuggestionEngine(private val context: Context) {
             )
 
             suggestions?.map { it.mWord }
-                ?.filter { it.isNotBlank() && it.lowercase(Locale.ROOT) != prefix.lowercase(Locale.ROOT) }
-                ?.take(limit)
+                ?.filter {
+                    it.isNotBlank() &&
+                        it.lowercase(Locale.ROOT) != prefix.lowercase(Locale.ROOT) &&
+                        it.startsWith(prefix, ignoreCase = true)
+                }?.take(limit)
                 ?: emptyList()
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching native suggestions for $prefix", e)
             emptyList()
+        }
+    }
+
+    /**
+     * Checks whether the given word is itself a complete, valid word in the native dictionary,
+     * independent of whatever completions [getAutocompletions] returns for it.
+     */
+    fun isValidWord(language: String, word: String): Boolean {
+        val dict = getDictionary(language) ?: return false
+        if (word.isBlank()) return false
+
+        return try {
+            dict.isValidWord(word) ||
+                dict.isValidWord(word.lowercase(Locale.ROOT)) ||
+                dict.isValidWord(word.replaceFirstChar { it.uppercaseChar() })
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking dictionary validity for $word", e)
+            false
         }
     }
 

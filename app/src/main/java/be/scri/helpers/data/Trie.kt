@@ -82,8 +82,8 @@ class Trie {
     ) {
         if (results.size >= limit) return
         if (node.isWord) results.add(prefix)
-        for ((char, child) in node.children) {
-            collectWords(child, prefix + char, results, limit)
+        for (char in node.children.keys.sorted()) {
+            collectWords(node.children.getValue(char), prefix + char, results, limit)
             if (results.size >= limit) return
         }
     }
