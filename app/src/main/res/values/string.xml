@@ -64,7 +64,7 @@
     <string name="i18n.app.about.legal.third_party.entry_simple_keyboard">Simple Keyboard\n• Author: Simple Mobile Tools\n• License: GPL-3.0\n• Link: https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE</string>
     <string name="i18n.app.about.legal.third_party.text">The Scribe developers (SCRIBE) built the iOS application "Scribe - Language Keyboards" (SERVICE) using third party code. All source code used in the creation of this SERVICE comes from sources that allow its full use in the manner done so by the SERVICE. This section lists the source code on which the SERVICE was based as well as the coinciding licenses of each.\n\nThe following is a list of all used source code, the main author or authors of the code, the license under which it was released at time of usage, and a link to the license.</string>
     <string name="i18n.app.about.title">About</string>
-    <string name="i18n.app.about.title_alt_text">About tab.</string>
+    <string name="i18n.app.about.title_alt_text">Navigate to the About tab.</string>
     <string name="i18n.app.accessibility.back">Back</string>
     <string name="i18n.app.accessibility.clear">Clear</string>
     <string name="i18n.app.accessibility.copy_conjugation">Copy conjugation</string>
@@ -87,7 +87,7 @@
     <string name="i18n.app.conjugate.loading_tables">Loading conjugation tables...</string>
     <string name="i18n.app.conjugate.recently_conjugated.title">Recently conjugated</string>
     <string name="i18n.app.conjugate.title">Conjugate</string>
-    <string name="i18n.app.conjugate.title_alt_text">Conjugate tab.</string>
+    <string name="i18n.app.conjugate.title_alt_text">Navigate to the Conjugate tab.</string>
     <string name="i18n.app.conjugate.verbs_search.data_not_in_wikidata">Data not in Wikidata</string>
     <string name="i18n.app.conjugate.verbs_search.placeholder">Search for verbs</string>
     <string name="i18n.app.conjugate.verbs_search.title">Conjugate verbs</string>
@@ -134,9 +134,9 @@
     <string name="i18n.app.installation.keyboard.text_3">When typing, press</string>
     <string name="i18n.app.installation.keyboard.text_4">to select keyboards</string>
     <string name="i18n.app.installation.keyboard.title">Keyboard installation</string>
-    <string name="i18n.app.installation.select_keyboard_alt_text">Select Keyboard.</string>
+    <string name="i18n.app.installation.select_keyboard_icon_description">the Select Keyboard icon</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.installation.title_alt_text">Installation tab.</string>
+    <string name="i18n.app.installation.title_alt_text">Navigate to the Installation tab.</string>
     <string name="i18n.app.keyboard.change_keyboard_type">Change keyboard type</string>
     <string name="i18n.app.keyboard.command_bar">Command Bar</string>
     <string name="i18n.app.keyboard.enter">Enter</string>
@@ -221,7 +221,7 @@
     <string name="i18n.app.settings.theme_override_message">You are selecting a theme that goes against your system default. Are you sure you want to proceed?</string>
     <string name="i18n.app.settings.theme_override_title">Theme override</string>
     <string name="i18n.app.settings.title">Settings</string>
-    <string name="i18n.app.settings.title_alt_text">Settings tab.</string>
+    <string name="i18n.app.settings.title_alt_text">Navigate to the Settings tab.</string>
     <string name="i18n.app.settings.translation">Translation</string>
     <string name="i18n.app.share.conjugate.check_out">Check out Scribe Conjugate!</string>
     <string name="i18n.app.share.conjugate.share_via">Share Scribe Conjugate via...</string>

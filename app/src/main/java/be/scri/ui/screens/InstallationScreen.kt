@@ -191,7 +191,7 @@ fun InstallationScreen(
                             )
                             Image(
                                 painter = painterResource(resource),
-                                contentDescription = stringResource(R.string.i18n_app_installation_select_keyboard_alt_text),
+                                contentDescription = stringResource(R.string.i18n_app_installation_select_keyboard_icon_description),
                                 modifier =
                                     Modifier
                                         .size(30.dp)
