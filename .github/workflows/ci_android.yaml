@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        flavor: [ Conjugate, Keyboards ]
+        flavor: [Conjugate, Keyboards]
       fail-fast: false
     name: Run Android Instrumentation Tests (${{ matrix.flavor }})
     timeout-minutes: 45
