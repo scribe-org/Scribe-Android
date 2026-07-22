@@ -20,6 +20,7 @@
     <string name="i18n.app._global.italian">Italienisch</string>
     <string name="i18n.app._global.norwegian">Norwegisch</string>
     <string name="i18n.app._global.portuguese">Portugiesisch</string>
+    <string name="i18n.app._global.quick_tutorial">Schnelltutorial</string>
     <string name="i18n.app._global.russian">Russisch</string>
     <string name="i18n.app._global.spanish">Spanisch</string>
     <string name="i18n.app._global.swedish">Schwedisch</string>
@@ -74,7 +75,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">Nach neuen Daten prüfen</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">Regelmäßig Daten aktualisieren</string>
     <string name="i18n.app.installation.app_hint_tooltip">Folge den Anweisungen unten, um Scribe-Tastaturen auf deinem Gerät zu installieren.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">Schnelltutorial</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">Tastatureinstellungen öffnen</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">Tastaturen</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Scribe-Einstellungen öffnen</string>
@@ -84,7 +84,6 @@
     <string name="i18n.app.installation.keyboard.text_4">um Tastaturen auszuwählen</string>
     <string name="i18n.app.installation.keyboard.title">Tastaturinstallation</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.settings.app_hint_tooltip">Hier sind die Einstellungen der App und installierte Tastaturen zu finden.</string>
     <string name="i18n.app.settings.button_install_keyboards">Tastaturen installieren</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Vorschläge annotieren</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Vorschläge unterstreichen, um ihr Genus beim Tippen anzuzeigen.</string>
@@ -125,6 +124,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">Übersetzungssprache</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">Wähle die Sprache, von der übersetzt wird.</string>
     <string name="i18n.app.settings.keyboard.translation.title">Ausgangssprache für die Übersetzung</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">Hier sind die Einstellungen der App und installierte Tastaturen zu finden.</string>
     <string name="i18n.app.settings.menu.app_color_mode">Dunkler Modus</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">Die App-Darstellung auf dunkel umstellen.</string>
     <string name="i18n.app.settings.menu.app_language">App-Sprache</string>

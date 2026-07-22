@@ -8,6 +8,7 @@
     <string name="i18n.app._global.german">जर्मन</string>
     <string name="i18n.app._global.italian">इटालियन</string>
     <string name="i18n.app._global.portuguese">पोर्तुगीज</string>
+    <string name="i18n.app._global.quick_tutorial">त्वरित ट्युटोरियल</string>
     <string name="i18n.app._global.russian">रशियन</string>
     <string name="i18n.app._global.spanish">स्पॅनिश</string>
     <string name="i18n.app._global.swedish">स्वीडिश</string>
@@ -58,7 +59,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">नवीन डेटाची तपासणी करा</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">नियमित डेटा अद्ययावत करा</string>
     <string name="i18n.app.installation.app_hint_tooltip">तुमच्या डिव्हाइसवर स्क्राइब कीबोर्ड इंस्टॉल करण्यासाठी खालील सूचनांचे पालन करा.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">त्वरित ट्युटोरियल</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">कीबोर्ड सेटिंग्ज उघडा</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">कीबोर्ड</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">स्क्राइब सेटिंग्ज उघडा</string>
@@ -68,7 +68,6 @@
     <string name="i18n.app.installation.keyboard.text_4">कीबोर्ड निवडण्यासाठी</string>
     <string name="i18n.app.installation.keyboard.title">कीबोर्ड इंस्टॉलेशन</string>
     <string name="i18n.app.installation.title">इंस्टॉलेशन</string>
-    <string name="i18n.app.settings.app_hint_tooltip">अ‍ॅप आणि इंस्टॉल केलेल्या भाषा कीबोर्डची सेटिंग्ज इथे मिळतील.</string>
     <string name="i18n.app.settings.button_install_keyboards">कीबोर्ड इंस्टॉल करा</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">सुचवण्या/समाप्ति वर्णन करा</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">टाइप करताना सुचवण्या आणि समाप्ति रेखांकित करा जेणेकरून त्यांच्या लिंगाची माहिती मिळू शकेल.</string>
@@ -107,6 +106,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">अनुवाद भाषा</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">अनुवाद करायची भाषा बदला.</string>
     <string name="i18n.app.settings.keyboard.translation.title">अनुवाद स्रोत भाषा</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">अ‍ॅप आणि इंस्टॉल केलेल्या भाषा कीबोर्डची सेटिंग्ज इथे मिळतील.</string>
     <string name="i18n.app.settings.menu.app_color_mode">डार्क मोड</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">अ‍ॅप डिस्प्ले डार्क मोडमध्ये बदला.</string>
     <string name="i18n.app.settings.menu.app_language">अ‍ॅपची भाषा</string>
