@@ -235,7 +235,11 @@ fun ScribeApp(
                                         pagerState = pagerState,
                                         currentPageIndex = page,
                                         sharedPrefsKey = "hint_shown_settings",
-                                        hintMessageResId = R.string.i18n_app_settings_app_hint_tooltip,
+                                        hintMessageResId = if (be.scri.BuildConfig.FLAVOR == "conjugate") {
+                                            R.string.i18n_app_settings_conjugate_app_hint_tooltip
+                                        } else {
+                                            R.string.i18n_app_settings_keyboard_app_hint_tooltip
+                                        },
                                         isHintChanged = isHintChanged[page] == true,
                                         onDismiss = { onDismiss(it) },
                                         modifier = Modifier.padding(8.dp),

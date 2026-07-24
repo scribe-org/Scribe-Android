@@ -8,6 +8,7 @@
     <string name="i18n.app._global.german">Tyska</string>
     <string name="i18n.app._global.italian">Italienska</string>
     <string name="i18n.app._global.portuguese">Portugisiska</string>
+    <string name="i18n.app._global.quick_tutorial">Snabb genomgång</string>
     <string name="i18n.app._global.russian">Ryska</string>
     <string name="i18n.app._global.spanish">Spanska</string>
     <string name="i18n.app._global.swedish">Svenska</string>
@@ -58,7 +59,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">Kolla efter ny data</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">Uppdatera regelbundet data</string>
     <string name="i18n.app.installation.app_hint_tooltip">Följ instruktionerna nedan för att installera Scribe-tangentbord på din enhet.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">Snabb genomgång</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">Öppna tangentbords-inställningar</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">Tangentbord</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Öppna Scribe-inställningar</string>
@@ -68,7 +68,6 @@
     <string name="i18n.app.installation.keyboard.text_4">För att välja tangentbord</string>
     <string name="i18n.app.installation.keyboard.title">Tangentbords-installation</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.settings.app_hint_tooltip">Inställningar för appen och installerade tangentbord finns här.</string>
     <string name="i18n.app.settings.button_install_keyboards">Installera tangentbord</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Kommentera förslag/kompletteringar</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Stryk under förslag och kompletteringar och visa deras genus medan du skriver.</string>
@@ -107,6 +106,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">Språk för översättning</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">Välj ett språk att översätta ifrån</string>
     <string name="i18n.app.settings.keyboard.translation.title">Källspråk för översättning</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">Inställningar för appen och installerade tangentbord finns här.</string>
     <string name="i18n.app.settings.menu.app_color_mode">Mörkt läge</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">Ändra programmets visning till mörkt läge.</string>
     <string name="i18n.app.settings.menu.app_language">App-språk</string>

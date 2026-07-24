@@ -30,9 +30,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import be.scri.R
 
 /**
  * The tutorial home screen (Screen 0.0 from Figma).
@@ -60,10 +62,10 @@ fun TutorialHomeScreen(
     val headerColor = MaterialTheme.colorScheme.onBackground
     val chapters =
         listOf(
-            TutorialChapter("Noun annotation", 0),
-            TutorialChapter("Word translation", 1),
-            TutorialChapter("Verb conjugation", 2),
-            TutorialChapter("Noun plurals", 3),
+            TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_noun_annotation), 0),
+            TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_word_translation), 1),
+            TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_verb_conjugation), 2),
+            TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_noun_plurals), 3),
         )
 
     Column(
@@ -85,7 +87,7 @@ fun TutorialHomeScreen(
                 modifier = Modifier.size(24.dp),
             )
             Text(
-                text = "About",
+                text = stringResource(R.string.i18n_app_about_title),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 16.sp,
             )
@@ -93,7 +95,7 @@ fun TutorialHomeScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Quick tutorial",
+            text = stringResource(R.string.i18n_app__global_quick_tutorial),
             color = headerColor,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
@@ -109,9 +111,7 @@ fun TutorialHomeScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text =
-                    "This quick tutorial will show you how to use Scribe to support writing in your second language. " +
-                        "\nMake sure you select the desired Scribe keyboard by pressing \uD83C\uDF10 when typing.",
+                text = stringResource(R.string.i18n_app_keyboard_tutorial_description),
                 color = textColor,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(16.dp),
@@ -122,7 +122,7 @@ fun TutorialHomeScreen(
 
         // Tutorial chapters header
         Text(
-            text = "Tutorial chapters",
+            text = stringResource(R.string.i18n_app_keyboard_tutorial_chapters),
             color = textColor,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
@@ -185,7 +185,7 @@ fun TutorialHomeScreen(
                     .height(52.dp),
         ) {
             Text(
-                text = "Start full tutorial",
+                text = stringResource(R.string.i18n_app_keyboard_tutorial_start_full_tutorial),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
             )

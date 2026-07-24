@@ -41,8 +41,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import be.scri.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -179,7 +181,8 @@ fun TutorialStepScreen(
         if (step.errorMessage.isNotEmpty()) {
             step.errorMessage
         } else {
-            "Not quite! Try writing ${step.expectedWord}."
+            stringResource(R.string.i18n_app_keyboard_tutorial_not_quite)
+                .replace("{expected_word}", step.expectedWord)
         }
 
     Column(
@@ -208,7 +211,7 @@ fun TutorialStepScreen(
                     modifier = Modifier.size(24.dp),
                 )
                 Text(
-                    text = "Quick tutorial",
+                    text = stringResource(R.string.i18n_app__global_quick_tutorial),
                     color = headerColor,
                     fontSize = 16.sp,
                 )
@@ -348,7 +351,7 @@ fun TutorialStepScreen(
                     .height(52.dp),
         ) {
             Text(
-                text = if (isLastStep) "Finish tutorial" else "Next",
+                text = if (isLastStep) stringResource(R.string.i18n_app_keyboard_tutorial_finish_tutorial) else stringResource(R.string.i18n_app_keyboard_tutorial_next),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
             )

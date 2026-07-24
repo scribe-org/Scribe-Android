@@ -85,7 +85,7 @@ fun TutorialNavigator(
 
     val allChapters =
         remember(activeLanguageCode) {
-            TutorialContent.getAllChapters(activeLanguageCode)
+            TutorialContent.getAllChapters(activeLanguageCode, context)
         }
 
     BackHandler {
