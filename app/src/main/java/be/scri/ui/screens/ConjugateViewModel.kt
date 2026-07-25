@@ -12,7 +12,10 @@ import be.scri.helpers.data.columnExists
 import be.scri.helpers.data.tableExists
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -22,6 +25,8 @@ import kotlinx.coroutines.withContext
 data class ConjugateSearchResult(
     val verb: String,
     val languageAlias: String,
+    /** True when this entry is a static placeholder shown before DB data is available. */
+    val isDummy: Boolean = false,
 )
 
 /**
@@ -40,6 +45,28 @@ class ConjugateViewModel(
 
     private val _recentlyConjugated = MutableStateFlow<List<ConjugateSearchResult>>(emptyList())
     val recentlyConjugated = _recentlyConjugated.asStateFlow()
+
+    /**
+     * Results shown in the search dropdown.
+     * - Blank query → empty
+     * - Real DB results → show them
+     * - No DB yet → dummy rows using the typed query as label
+     */
+    val displayResults =
+        combine(_searchQuery, _searchResults) { query, results ->
+            when {
+                query.isBlank() -> emptyList()
+                results.isNotEmpty() -> results
+                else ->
+                    listOf("DE", "ES", "FR", "IT", "PT", "RU", "SV", "EN", "DE").map { alias ->
+                        ConjugateSearchResult(verb = query, languageAlias = alias, isDummy = true)
+                    }
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList(),
+        )
 
     init {
         loadRecentlyConjugated()
@@ -114,10 +141,11 @@ class ConjugateViewModel(
     }
 
     /**
-     * Triggers when a verb search result or recently conjugated item is clicked.
+     * Triggers when a verb is selected. Always persists to recently conjugated
+     * (stripping isDummy) so the section shows real user history.
      */
     fun onVerbSelected(result: ConjugateSearchResult) {
-        addToRecentlyConjugated(result)
+        addToRecentlyConjugated(result.copy(isDummy = false))
         clearSearchQuery()
     }
 

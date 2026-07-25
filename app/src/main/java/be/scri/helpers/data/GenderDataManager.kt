@@ -172,18 +172,22 @@ class GenderDataManager(
     ) {
         val noun = cursor.getString(nounIndex)?.lowercase()?.takeIf { it.isNotEmpty() } ?: return
 
-        val gender =
+        val genderStr =
             if (genderIndex != -1) {
                 cursor.getString(genderIndex)
             } else {
                 defaultGender
             }
 
-        if (!gender.isNullOrEmpty()) {
+        if (!genderStr.isNullOrEmpty()) {
             @Suppress("UNCHECKED_CAST")
             val list = genderMap.getOrPut(noun) { mutableListOf() } as MutableList<String>
-            if (!list.contains(gender)) {
-                list.add(gender)
+            val parts = genderStr.split(" | ")
+            for (part in parts) {
+                val processed = part.trim().lowercase()
+                if (processed.isNotEmpty() && !list.contains(processed)) {
+                    list.add(processed)
+                }
             }
         }
     }

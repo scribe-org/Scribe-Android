@@ -51,7 +51,7 @@ class KeyHandler(
         resetShiftIfNeeded(code)
 
         val previousWasLastKeySpace = wasLastKeySpace
-        if (code != KeyboardBase.KEYCODE_SPACE) {
+        if (code != KeyboardBase.KEYCODE_SPACE && code != KeyboardBase.KEYCODE_ENTER) {
             suggestionHandler.clearLinguisticSuggestions()
         }
 

@@ -75,7 +75,10 @@ object AnnotationTextUtils {
     fun processValueForNouns(
         language: String,
         text: String,
-    ): String = nounAnnotationConversionDict[language]?.get(text) ?: text
+    ): String {
+        val result = nounAnnotationConversionDict[language]?.get(text) ?: text
+        return if (language.equals("German", ignoreCase = true)) result.uppercase() else result
+    }
 
     /**
      * Processes a preposition case abbreviation for display, converting it based on language-specific conventions.
