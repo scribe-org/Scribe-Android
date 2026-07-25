@@ -208,7 +208,7 @@ class AboutUtilInstrumentedTest {
 
         // Test specific items
         val tutorialItem = extractedItems[0] as ScribeItem.ExternalLinkItem
-        assertThat(tutorialItem.title).isEqualTo(R.string.i18n_app_installation_button_quick_tutorial)
+        assertThat(tutorialItem.title).isEqualTo(R.string.i18n_app__global_quick_tutorial)
 
         val rateItem = extractedItems[1] as ScribeItem.ExternalLinkItem
         assertThat(rateItem.leadingIcon).isEqualTo(R.drawable.star)

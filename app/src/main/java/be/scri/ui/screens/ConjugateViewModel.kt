@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import be.scri.helpers.DatabaseFileManager
-import be.scri.helpers.data.columnExists
+import be.scri.helpers.data.getInfinitiveColumnName
 import be.scri.helpers.data.tableExists
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,23 +50,43 @@ class ConjugateViewModel(
      * Results shown in the search dropdown.
      * - Blank query → empty
      * - Real DB results → show them
-     * - No DB yet → dummy rows using the typed query as label
      */
     val displayResults =
         combine(_searchQuery, _searchResults) { query, results ->
-            when {
-                query.isBlank() -> emptyList()
-                results.isNotEmpty() -> results
-                else ->
-                    listOf("DE", "ES", "FR", "IT", "PT", "RU", "SV", "EN", "DE").map { alias ->
-                        ConjugateSearchResult(verb = query, languageAlias = alias, isDummy = true)
-                    }
+            if (query.isBlank()) {
+                emptyList()
+            } else {
+                results
             }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList(),
         )
+
+    /**
+     * Returns a list of language aliases that have been downloaded (i.e. conjugate database exists).
+     */
+    fun getDownloadedLanguages(): List<String> {
+        val aliases = listOf("EN", "FR", "DE", "IT", "PT", "RU", "ES", "SV")
+        return aliases.filter { alias ->
+            val dbName = "${alias}ConjugateData.sqlite"
+            getApplication<Application>().getDatabasePath(dbName).exists()
+        }
+    }
+
+    /**
+     * Formats the list of downloaded languages into a user-friendly display string.
+     */
+    fun getDownloadedLanguagesFormatted(): String {
+        val downloaded = getDownloadedLanguages()
+        val names = downloaded.map { getLanguageDisplayName(it) }
+        return when {
+            names.isEmpty() -> ""
+            names.size == 1 -> names.first()
+            else -> names.dropLast(1).joinToString(", ") + " and " + names.last()
+        }
+    }
 
     init {
         loadRecentlyConjugated()
@@ -101,8 +121,8 @@ class ConjugateViewModel(
                 val db = fileManager.getConjugateDatabase(alias) ?: continue
 
                 try {
-                    val columnName = if (alias == "SV") "verb" else "infinitive"
-                    if (db.tableExists("verbs") && db.columnExists("verbs", columnName)) {
+                    val columnName = db.getInfinitiveColumnName()
+                    if (columnName != null && db.tableExists("verbs")) {
                         db
                             .rawQuery(
                                 "SELECT DISTINCT $columnName FROM verbs WHERE $columnName LIKE ? LIMIT 10",
@@ -134,7 +154,17 @@ class ConjugateViewModel(
 
             withContext(Dispatchers.Main) {
                 if (_searchQuery.value == query) {
-                    _searchResults.value = results.distinctBy { it.verb.lowercase() + "_" + it.languageAlias }
+                    val distinctResults = results.distinctBy { it.verb.lowercase() + "_" + it.languageAlias }
+                    _searchResults.value =
+                        distinctResults.sortedWith(
+                            compareBy<ConjugateSearchResult> {
+                                if (it.verb.equals(query, ignoreCase = true)) 0 else 1
+                            }.thenBy {
+                                it.verb.length
+                            }.thenBy {
+                                it.verb.lowercase()
+                            },
+                        )
                 }
             }
         }

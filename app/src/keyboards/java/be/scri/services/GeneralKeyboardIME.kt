@@ -6,6 +6,7 @@ import DataContract
 import android.R.color.white
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -28,6 +29,7 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.ColorUtils
@@ -45,6 +47,7 @@ import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.KeyboardLanguageMappingConstants
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
@@ -58,11 +61,13 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
+import be.scri.helpers.clipboard.ClipboardMonitor
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.KeyboardUIManager
 import be.scri.models.ScribeState
 import be.scri.views.KeyboardView
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 private const val DATA_SIZE_2 = 2
@@ -114,6 +119,10 @@ abstract class GeneralKeyboardIME(
     // Bridge for BackspaceHandler to access binding through UI Manager.
     internal val binding: InputMethodViewBinding
         get() = uiManager.binding
+
+    internal var hasNewClip: Boolean = false
+    internal var latestClipText: String? = null
+    private lateinit var clipboardMonitor: ClipboardMonitor
 
     // MARK: State Variables
 
@@ -211,6 +220,14 @@ abstract class GeneralKeyboardIME(
         suggestionHandler = SuggestionHandler(this)
         autocompletionManager = dbManagers.autocompletionManager
         autocompletionHandler = AutocompletionHandler(this)
+        clipboardMonitor =
+            ClipboardMonitor(this) { text ->
+                latestClipText = text
+                hasNewClip = true
+                if (currentState == ScribeState.IDLE && this::uiManager.isInitialized) {
+                    uiManager.showClipboardSuggestionChip(text)
+                }
+            }
     }
 
     override fun onDestroy() {
@@ -339,6 +356,9 @@ abstract class GeneralKeyboardIME(
         restarting: Boolean,
     ) {
         super.onStartInputView(editorInfo, restarting)
+        if (this::clipboardMonitor.isInitialized) {
+            clipboardMonitor.startMonitoring()
+        }
         emojiAutoSuggestionEnabled = getIsEmojiSuggestionsEnabled(applicationContext, language)
         autoSuggestEmojis = null
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
@@ -348,14 +368,21 @@ abstract class GeneralKeyboardIME(
         val languageAlias = getLanguageAlias(language)
         val dbFile = applicationContext.getDatabasePath("${languageAlias}LanguageData.sqlite")
         val hasData = dbFile.exists()
-        val banner = binding.root.findViewById<Button>(R.id.empty_state_banner)
-        banner.visibility =
+        val bannerContainer = binding.root.findViewById<View>(R.id.empty_state_banner_container)
+        val banner = binding.root.findViewById<TextView>(R.id.empty_state_banner)
+        val downloadDataText =
+            KeyboardLanguageMappingConstants.downloadDataPlaceholder[languageAlias]
+                ?: "Please download language data"
+        banner.text = downloadDataText
+        bannerContainer.visibility =
             if (hasData) View.GONE else View.VISIBLE
         binding.commandOptionsBar.visibility =
             if (hasData && !isNumericKeyboardActive) View.VISIBLE else View.GONE
         val isDarkMode = getIsDarkModeOrNot(applicationContext)
-        val bannerColor = if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
-        val bannerTextColor = if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
+        val bannerColor =
+            if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
+        val bannerTextColor =
+            if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
         banner.setTextColor(ContextCompat.getColor(applicationContext, bannerTextColor))
         banner.post {
             val iconColor = ContextCompat.getColor(applicationContext, bannerTextColor)
@@ -368,7 +395,10 @@ abstract class GeneralKeyboardIME(
         border.setColor(ContextCompat.getColor(applicationContext, bannerColor))
 
         if (isDarkMode) {
-            border.setStroke((2f * resources.displayMetrics.density).toInt(), ContextCompat.getColor(applicationContext, bannerTextColor))
+            border.setStroke(
+                (1.5f * resources.displayMetrics.density).toInt(),
+                ContextCompat.getColor(applicationContext, bannerTextColor),
+            )
         }
 
         val rippleColor =
@@ -376,21 +406,21 @@ abstract class GeneralKeyboardIME(
                 ContextCompat.getColor(applicationContext, bannerTextColor),
                 51,
             )
+        val rippleDrawable =
+            RippleDrawable(ColorStateList.valueOf(rippleColor), border, null)
 
-        val ripple =
-            RippleDrawable(
-                android.content.res.ColorStateList
-                    .valueOf(rippleColor),
-                border,
-                null,
-            )
-        banner.background = ripple
+        bannerContainer.background = rippleDrawable
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            bannerContainer.outlineAmbientShadowColor = Color.TRANSPARENT
+            bannerContainer.outlineSpotShadowColor = Color.TRANSPARENT
+        }
 
-        banner.setOnClickListener {
+        bannerContainer.setOnClickListener {
             val intent =
                 Intent(applicationContext, MainActivity::class.java)
                     .apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        putExtra("navigate_to", "download_data")
                     }
 
             startActivity(intent)
@@ -416,6 +446,9 @@ abstract class GeneralKeyboardIME(
      */
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
+        if (this::clipboardMonitor.isInitialized) {
+            clipboardMonitor.stopMonitoring()
+        }
         moveToIdleState()
     }
 
@@ -492,6 +525,7 @@ abstract class GeneralKeyboardIME(
         val inputConnection = currentInputConnection
         if (inputConnection != null) {
             when (code) {
+                KeyboardBase.KEYCODE_EMOJI -> openEmojiKeyboard()
                 KeyboardBase.KEYCODE_DELETE -> handleDelete()
                 KeyboardBase.KEYCODE_SHIFT -> {
                     if (keyboardMode == keyboardLetters) {
@@ -510,6 +544,7 @@ abstract class GeneralKeyboardIME(
 
                 KeyboardBase.KEYCODE_ENTER -> handleKeycodeEnter()
                 KeyboardBase.KEYCODE_MODE_CHANGE -> handleModeChange(keyboardMode, keyboardView, this)
+                KeyboardBase.KEYCODE_CLIPBOARD -> openClipboardPanel()
                 else -> {
                     if (KeyboardBase.SCRIBE_VIEW_KEYS.contains(code)) {
                         val keyLabel = keyboardView?.getKeyLabel(code)
@@ -526,6 +561,10 @@ abstract class GeneralKeyboardIME(
     }
 
     // MARK: Helper Methods
+
+    fun openEmojiKeyboard() {
+        uiManager.showEmojiPalette(language)
+    }
 
     protected fun isPeriodAndCommaEnabled(): Boolean {
         val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
@@ -1011,7 +1050,7 @@ abstract class GeneralKeyboardIME(
     // MARK: Deletion Logic
 
     /**
-     * Handles the logic for the Delete/Backspace key. It deletes characters from either
+     * Handles the logic for the Delete key. It deletes characters from either
      * the main input field or the command bar, depending on the context.
      * Delegated to BackspaceHandler.
      *
@@ -1019,7 +1058,35 @@ abstract class GeneralKeyboardIME(
      * @param isLongPress true` if this is a long press/repeat action, false for single tap.
      */
     fun handleDelete(isLongPress: Boolean = false) {
-        val effectiveIsCommandBar = currentState != ScribeState.IDLE && currentState != ScribeState.SELECT_COMMAND
+        val inputConnection = currentInputConnection ?: return
+        val effectiveIsCommandBar =
+            currentState != ScribeState.IDLE &&
+                currentState != ScribeState.SELECT_COMMAND
+
+        if (!effectiveIsCommandBar) {
+            val selectedText = inputConnection.getSelectedText(0)
+            if (selectedText.isNullOrEmpty()) {
+                // Use BreakIterator to delete full emoji characters.
+                val prevText = inputConnection.getTextBeforeCursor(8, 0)
+                if (!prevText.isNullOrEmpty()) {
+                    val breakIterator =
+                        android.icu.text.BreakIterator
+                            .getCharacterInstance()
+                    breakIterator.setText(prevText.toString())
+                    val end = breakIterator.last()
+                    val start = breakIterator.previous()
+                    val count =
+                        if (start == android.icu.text.BreakIterator.DONE) {
+                            1
+                        } else {
+                            (end - start).coerceAtLeast(1)
+                        }
+                    inputConnection.deleteSurroundingText(count, 0)
+                    return
+                }
+            }
+        }
+
         backspaceHandler.handleBackspace(effectiveIsCommandBar, isLongPress)
     }
 
@@ -1950,8 +2017,84 @@ abstract class GeneralKeyboardIME(
         emojis: MutableList<String>?,
     ) = uiManager.updateEmojiSuggestion(currentState, enabled, emojis)
 
-    /**
-     * Disables all auto-suggestions and resets the suggestion buttons to their default, inactive state.
-     */
     fun disableAutoSuggest() = uiManager.disableAutoSuggest(language)
+
+    override fun onClipboardSuggestionClicked() {
+        latestClipText?.let { text ->
+            currentInputConnection?.commitText(text, 1)
+        }
+        hideClipboardSuggestionChip()
+    }
+
+    fun hideClipboardSuggestionChip() {
+        hasNewClip = false
+        latestClipText = null
+        if (this::uiManager.isInitialized) {
+            uiManager.hideClipboardSuggestionChip()
+        }
+    }
+
+    private var clipboardAdapter: be.scri.helpers.clipboard.ClipboardAdapter? = null
+    private val clipboardRepository by lazy {
+        be.scri.helpers.clipboard
+            .ClipboardRepository(this)
+    }
+
+    fun openClipboardPanel() {
+        if (!this::uiManager.isInitialized) return
+        uiManager.showClipboardPanel()
+
+        val recyclerView = binding.clipboardItemsList
+        val emptyText = binding.clipboardEmptyText
+
+        clipboardAdapter =
+            be.scri.helpers.clipboard.ClipboardAdapter(
+                items = emptyList(),
+                onItemClick = { item ->
+                    currentInputConnection?.commitText(item.text, 1)
+                    closeClipboardPanel()
+                },
+                onItemDelete = { item ->
+                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                        clipboardRepository.deleteItem(item.id)
+                        refreshClipboardPanel()
+                    }
+                },
+                onItemPinToggle = { item ->
+                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                        clipboardRepository.togglePin(item.id, item.isPinned)
+                        refreshClipboardPanel()
+                    }
+                },
+            )
+        recyclerView.adapter = clipboardAdapter
+        recyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 2)
+
+        binding.clipboardPanelClose.setOnClickListener { closeClipboardPanel() }
+        binding.clipboardClearAll.setOnClickListener {
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                clipboardRepository.clearAll()
+                refreshClipboardPanel()
+            }
+        }
+
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+            val items = clipboardRepository.getAllItems()
+            clipboardAdapter?.updateItems(items)
+            emptyText.visibility = if (items.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+            recyclerView.visibility = if (items.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
+        }
+    }
+
+    fun closeClipboardPanel() {
+        if (!this::uiManager.isInitialized) return
+        uiManager.hideClipboardPanel()
+    }
+
+    private suspend fun refreshClipboardPanel() {
+        val items = clipboardRepository.getAllItems()
+        clipboardAdapter?.updateItems(items)
+        binding.clipboardEmptyText.visibility = if (items.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+        binding.clipboardItemsList.visibility = if (items.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
+    }
 }

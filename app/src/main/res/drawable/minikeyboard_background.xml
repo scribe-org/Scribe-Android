@@ -6,7 +6,6 @@
             <corners android:radius="12dp" />
         </shape>
     </item>
-
     <item android:id="@+id/button_background_stroke">
         <shape android:shape="rectangle">
             <stroke

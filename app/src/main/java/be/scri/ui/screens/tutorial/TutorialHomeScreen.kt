@@ -75,14 +75,15 @@ fun TutorialHomeScreen(
                 .background(backgroundColor)
                 .padding(16.dp),
     ) {
-        // Back button
+        // MARK: Back Button
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.clickable { onBackPress() },
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.i18n_app_accessibility_back),
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(24.dp),
             )
@@ -104,7 +105,8 @@ fun TutorialHomeScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Intro text
+        // MARK: Intro Text
+
         Card(
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(containerColor = cardBackground),
@@ -120,7 +122,8 @@ fun TutorialHomeScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Tutorial chapters header
+        // MARK: Chapter List
+
         Text(
             text = stringResource(R.string.i18n_app_keyboard_tutorial_chapters),
             color = textColor,
@@ -130,7 +133,6 @@ fun TutorialHomeScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Chapter list
         Card(
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(containerColor = cardBackground),

@@ -85,7 +85,7 @@ class ConjugateDataManager(
      *
      * @return The conjugated word as a [String], or an empty string if not found.
      */
-    private fun getTheValueForTheConjugateWord(
+    fun getTheValueForTheConjugateWord(
         word: String,
         form: String?,
         language: String,
@@ -96,15 +96,33 @@ class ConjugateDataManager(
                 return ""
             }
 
-            val columnName = if (language == "SV") "verb" else "infinitive"
-            if (!db.columnExists("verbs", columnName)) {
-                return ""
-            }
+            val columnName = db.getInfinitiveColumnName() ?: return ""
 
-            getVerbCursor(db, word, language)?.use { cursor ->
+            getVerbCursor(db, word, columnName)?.use { cursor ->
                 getConjugatedValueFromCursor(cursor, form, language)
             }
         } ?: ""
+    }
+
+    private fun getColumnIndexWithFallback(
+        cursor: Cursor,
+        columnName: String,
+    ): Int {
+        var idx = cursor.getColumnIndex(columnName)
+        if (idx != -1) return idx
+
+        val fallbacks =
+            listOf(
+                "combined" + columnName.replaceFirstChar { it.uppercase() },
+                columnName.replace("presentParticiple", "combinedPresentParticiple"),
+                columnName.replace("pastParticiple", "combinedPastParticiple"),
+            )
+        for (fallback in fallbacks) {
+            idx = cursor.getColumnIndex(fallback)
+            if (idx != -1) return idx
+        }
+
+        throw IllegalArgumentException("column '$columnName' does not exist. Available columns: " + cursor.columnNames.joinToString(", "))
     }
 
     /**
@@ -125,7 +143,7 @@ class ConjugateDataManager(
             parseComplexForm(cursor, form, language)
         } else {
             try {
-                cursor.getString(cursor.getColumnIndexOrThrow(form))
+                cursor.getString(getColumnIndexWithFallback(cursor, form))
             } catch (e: IllegalArgumentException) {
                 Log.e("ConjugateDataManager", "Simple form column not found: '$form'", e)
                 ""
@@ -154,7 +172,7 @@ class ConjugateDataManager(
         val dbColumnName = form.replace(bracketRegex, "").trim()
 
         return try {
-            val verbPart = cursor.getString(cursor.getColumnIndexOrThrow(dbColumnName))
+            val verbPart = cursor.getString(getColumnIndexWithFallback(cursor, dbColumnName))
 
             // Try to handle it as a dynamic lookup (German style: [form auxiliary_column]).
             try {
@@ -219,11 +237,10 @@ class ConjugateDataManager(
 
     /**
      * Creates and returns a database cursor pointing to the requested verb's data row.
-     * Note: Handles a special case for Swedish ("SV") where the key column is 'verb' instead of 'infinitive'.
      *
      * @param db The SQLite database instance to query.
      * @param word The verb to search for.
-     * @param language The language code, used for special query conditions.
+     * @param columnName The name of the infinitive/verb column.
      *
      * @return A [Cursor] positioned at the verb's row, or null if the verb is not found.
      * The caller is responsible for closing the cursor.
@@ -231,14 +248,9 @@ class ConjugateDataManager(
     private fun getVerbCursor(
         db: SQLiteDatabase,
         word: String,
-        language: String,
+        columnName: String,
     ): Cursor? {
-        val query =
-            if (language == "SV") {
-                "SELECT * FROM verbs WHERE verb = ?"
-            } else {
-                "SELECT * FROM verbs WHERE infinitive = ?"
-            }
+        val query = "SELECT * FROM verbs WHERE $columnName = ?"
         val cursor = db.rawQuery(query, arrayOf(word))
         return if (cursor.moveToFirst()) {
             cursor

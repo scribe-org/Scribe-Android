@@ -375,6 +375,7 @@ private fun getLayoutListData(
             onToggle = onTogglePeriodAndComma,
         ),
     )
+
     list.add(
         ScribeItem.ClickableItem(
             title = R.string.i18n_app_settings_keyboard_layout_default_currency,

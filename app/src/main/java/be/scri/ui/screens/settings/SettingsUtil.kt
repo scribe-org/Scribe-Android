@@ -125,7 +125,7 @@ object SettingsUtil {
             "Russian" -> R.string.i18n_app__global_russian
             "Spanish" -> R.string.i18n_app__global_spanish
             "Swedish" -> R.string.i18n_app__global_swedish
-            else -> return R.string.language
+            else -> return R.string.i18n_app_settings_menu_app_language
         }
     }
 }

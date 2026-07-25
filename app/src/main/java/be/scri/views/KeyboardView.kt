@@ -4,7 +4,6 @@ package be.scri.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -54,6 +53,7 @@ import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_EMOJI
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_ENTER
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_LEFT_ARROW
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_MODE_CHANGE
@@ -598,10 +598,9 @@ class KeyboardView
                         mBackgroundColor
                     }
 
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
 
                 val miniKeyboardBackgroundColor =
                     resources.getColor(
@@ -643,7 +642,7 @@ class KeyboardView
          * Attaches a keyboard to this view.
          * The keyboard can be switched at any time and the view will re-layout itself to accommodate the keyboard.
          *
-         * @param keyboard the keyboard to display in this view
+         * @param keyboard the keyboard to display in this view.
          */
         fun setKeyboard(keyboard: KeyboardBase) {
             if (mKeyboard != null) {
@@ -814,10 +813,9 @@ class KeyboardView
                 canvas!!.clipRect(mDirtyRect)
                 val paint = mPaint
                 val keys = mKeys
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
                 val keyBackgroundColor =
                     if (isUserDarkMode) {
                         Color.DKGRAY
@@ -1140,8 +1138,16 @@ class KeyboardView
                                 }
                             key.icon = resources.getDrawable(drawableId)
                             key.icon!!.applyColorFilter(mTextColor)
-                        } else if (code == KEYCODE_DELETE || code == KEYCODE_SHIFT || code == KEYCODE_TAB) {
-                            key.icon!!.applyColorFilter(mTextColor)
+                        } else {
+                            val isIconOnlyKey =
+                                code == KEYCODE_DELETE ||
+                                    code == KEYCODE_SHIFT ||
+                                    code == KEYCODE_TAB ||
+                                    code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                                    code == KeyboardBase.KEYCODE_EMOJI
+                            if (isIconOnlyKey) {
+                                key.icon!!.applyColorFilter(mTextColor)
+                            }
                         }
 
                         // Controls where icons are located on their keys.
@@ -1339,10 +1345,10 @@ class KeyboardView
                 onInitializeAccessibilityEvent(event)
                 val text: String =
                     when (code) {
-                        KEYCODE_DELETE -> context.getString(R.string.keycode_delete)
-                        KEYCODE_ENTER -> context.getString(R.string.keycode_enter)
-                        KEYCODE_MODE_CHANGE -> context.getString(R.string.keycode_mode_change)
-                        KEYCODE_SHIFT -> context.getString(R.string.keycode_shift)
+                        KEYCODE_DELETE -> context.getString(R.string.i18n_app__global_delete)
+                        KEYCODE_ENTER -> context.getString(R.string.i18n_app_keyboard_enter)
+                        KEYCODE_MODE_CHANGE -> context.getString(R.string.i18n_app_keyboard_change_keyboard_type)
+                        KEYCODE_SHIFT -> context.getString(R.string.i18n_app_keyboard_shift)
                         else -> code.toChar().toString()
                     }
                 event.text.add(text)
@@ -1486,10 +1492,9 @@ class KeyboardView
                             .findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
                 }
 
-                val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-                val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-                val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+                val isUserDarkMode =
+                    be.scri.helpers.PreferencesHelper
+                        .getIsDarkModeOrNot(context)
 
                 val miniKeyboardBackgroundColor =
                     resources.getColor(

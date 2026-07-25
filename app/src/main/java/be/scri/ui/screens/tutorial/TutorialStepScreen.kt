@@ -206,7 +206,7 @@ fun TutorialStepScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_back),
                     tint = headerColor,
                     modifier = Modifier.size(24.dp),
                 )
@@ -351,7 +351,12 @@ fun TutorialStepScreen(
                     .height(52.dp),
         ) {
             Text(
-                text = if (isLastStep) stringResource(R.string.i18n_app_keyboard_tutorial_finish_tutorial) else stringResource(R.string.i18n_app_keyboard_tutorial_next),
+                text =
+                    if (isLastStep) {
+                        stringResource(R.string.i18n_app_keyboard_tutorial_finish_tutorial)
+                    } else {
+                        stringResource(R.string.i18n_app_keyboard_tutorial_next)
+                    },
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
             )

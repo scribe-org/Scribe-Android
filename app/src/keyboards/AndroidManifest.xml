@@ -6,7 +6,7 @@
             android:name=".services.EnglishKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -19,7 +19,7 @@
             android:name=".services.FrenchKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -32,7 +32,7 @@
             android:name=".services.GermanKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -45,7 +45,7 @@
             android:name=".services.PortugueseKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -58,7 +58,7 @@
             android:name=".services.RussianKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -71,7 +71,7 @@
             android:name=".services.SpanishKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -84,7 +84,7 @@
             android:name=".services.SwedishKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
@@ -97,7 +97,7 @@
             android:name=".services.ItalianKeyboardIME"
             android:exported="true"
             android:label="Scribe"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>

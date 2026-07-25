@@ -334,7 +334,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     implementation("com.charleskorn.kaml:kaml:0.57.0")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
-
 }
 
 tasks.register<Copy>("moveFromi18n") {
