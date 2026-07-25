@@ -15,7 +15,10 @@ object TutorialContent {
      * Chapter 1: Noun Annotation.
      * Teaches users about gender tags that appear when typing nouns.
      */
-    fun getNounAnnotationSteps(languageCode: String, context: Context): List<TutorialStep> {
+    fun getNounAnnotationSteps(
+        languageCode: String,
+        context: Context,
+    ): List<TutorialStep> {
         val (fatherWord, fatherTag, fatherGender) =
             when (languageCode) {
                 "en" -> Triple("father", "M", "Masculine")
@@ -43,7 +46,8 @@ object TutorialContent {
         return listOf(
             TutorialStep(
                 instruction =
-                    context.getString(R.string.i18n_app_keyboard_tutorial_noun_annotation_instruction_1)
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_noun_annotation_instruction_1)
                         .replace("{mother_word}", motherWord)
                         .replace("{mother_tag}", motherTag)
                         .replace("{mother_gender}", motherGender),
@@ -51,7 +55,8 @@ object TutorialContent {
             ),
             TutorialStep(
                 instruction =
-                    context.getString(R.string.i18n_app_keyboard_tutorial_noun_annotation_instruction_2)
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_noun_annotation_instruction_2)
                         .replace("{father_word}", fatherWord)
                         .replace("{father_tag}", fatherTag)
                         .replace("{father_gender}", fatherGender),
@@ -64,7 +69,10 @@ object TutorialContent {
      * Chapter 2: Word Translation.
      * Teaches users how to use the Translate command via the Scribe key.
      */
-    fun wordTranslationSteps(languageCode: String, context: Context): List<TutorialStep> {
+    fun wordTranslationSteps(
+        languageCode: String,
+        context: Context,
+    ): List<TutorialStep> {
         val translation =
             when (languageCode) {
                 "en" -> "Translate"
@@ -79,14 +87,18 @@ object TutorialContent {
         return listOf(
             TutorialStep(
                 instruction =
-                    context.getString(R.string.i18n_app_keyboard_tutorial_word_translation_instruction)
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_word_translation_instruction)
                         .replace("{translate}", translation),
                 requiresValidation = false,
             ),
         )
     }
 
-    fun verbConjugationSteps(languageCode: String, context: Context): List<TutorialStep> {
+    fun verbConjugationSteps(
+        languageCode: String,
+        context: Context,
+    ): List<TutorialStep> {
         val conjugation =
             when (languageCode) {
                 "en" -> "Conjugate"
@@ -101,14 +113,18 @@ object TutorialContent {
         return listOf(
             TutorialStep(
                 instruction =
-                    context.getString(R.string.i18n_app_keyboard_tutorial_verb_conjugation_instruction)
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_verb_conjugation_instruction)
                         .replace("{conjugate}", conjugation),
                 requiresValidation = false,
             ),
         )
     }
 
-    fun nounPluralsSteps(languageCode: String, context: Context): List<TutorialStep> {
+    fun nounPluralsSteps(
+        languageCode: String,
+        context: Context,
+    ): List<TutorialStep> {
         val plural =
             when (languageCode) {
                 "en" -> "Plural"
@@ -123,7 +139,8 @@ object TutorialContent {
         return listOf(
             TutorialStep(
                 instruction =
-                    context.getString(R.string.i18n_app_keyboard_tutorial_noun_plurals_instruction)
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_noun_plurals_instruction)
                         .replace("{plural}", plural),
                 requiresValidation = false,
             ),
@@ -131,7 +148,10 @@ object TutorialContent {
     }
 
     /** Returns all chapters as a list of pairs (title, steps). */
-    fun getAllChapters(languageCode: String = "de", context: Context): List<Pair<String, List<TutorialStep>>> =
+    fun getAllChapters(
+        languageCode: String = "de",
+        context: Context,
+    ): List<Pair<String, List<TutorialStep>>> =
         listOf(
             context.getString(R.string.i18n_app_keyboard_tutorial_noun_annotation) to getNounAnnotationSteps(languageCode, context),
             context.getString(R.string.i18n_app_keyboard_tutorial_word_translation) to wordTranslationSteps(languageCode, context),
