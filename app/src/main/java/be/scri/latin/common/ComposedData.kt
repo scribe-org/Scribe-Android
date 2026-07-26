@@ -8,8 +8,6 @@
  */
 package be.scri.latin.common
 
-import kotlin.random.Random
-
 /** An immutable class that encapsulates a snapshot of word composition data. */
 class ComposedData(
     @JvmField val mInputPointers: InputPointers,
@@ -48,10 +46,12 @@ class ComposedData(
     companion object {
         fun createForWord(word: String): ComposedData {
             val codePoints = StringUtils.toCodePointArray(word)
-            val coordinates = CoordinateUtils.newCoordinateArray(codePoints.size)
-            for (i in codePoints.indices) {
-                CoordinateUtils.setXYInArray(coordinates, i, Random.nextBits(2), Random.nextBits(2))
-            }
+            val coordinates =
+                CoordinateUtils.newCoordinateArray(
+                    codePoints.size,
+                    Constants.NOT_A_COORDINATE,
+                    Constants.NOT_A_COORDINATE,
+                )
             val pointers = InputPointers(codePoints.size).apply {
                 for (i in codePoints.indices) {
                     addPointer(CoordinateUtils.xFromArray(coordinates, i), CoordinateUtils.yFromArray(coordinates, i), 0, 0)
