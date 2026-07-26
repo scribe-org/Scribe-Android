@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import be.scri.R
@@ -65,13 +66,13 @@ fun ScribeBottomBar(
                                     id = item.icon,
                                 ),
                             tint = color,
-                            contentDescription = item.label,
+                            contentDescription = stringResource(id = item.altTextRes),
                             modifier = Modifier.size(iconSize),
                         )
                     },
                     label = {
                         Text(
-                            text = item.label,
+                            text = stringResource(id = item.labelRes),
                             style =
                                 MaterialTheme.typography.labelSmall.copy(
                                     fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.W600,

@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="scribe_key">Scribe Key</string>
-    <string name="command_bar">Command Bar</string>
     <string name="app_launcher_name">Scribe</string>
     <string name="emojis" />
     <string name="abc" />
-    <string name="suggestion">Suggestion</string>
-    <string name="wikimedia_logo">Wikimedia Logo</string>
-    <string name="delete">Delete</string>
-    <string name="language">Language</string>
-    <string name="keycode_shift">Shift</string>
-    <string name="keycode_enter">Enter</string>
-    <string name="keycode_delete">Delete</string>
-    <string name="keycode_mode_change">Change keyboard type</string>
 </resources>

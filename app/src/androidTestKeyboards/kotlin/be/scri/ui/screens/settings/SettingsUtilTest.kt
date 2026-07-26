@@ -133,6 +133,6 @@ class SettingsUtilTest {
     fun testGetLocalizedLanguageName_Undeclared() {
         val result = SettingsUtil.getLocalizedLanguageName("Yoruba")
 
-        assertEquals("Language", context.getString(result))
+        assertEquals("App language", context.getString(result))
     }
 }

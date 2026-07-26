@@ -1345,10 +1345,10 @@ class KeyboardView
                 onInitializeAccessibilityEvent(event)
                 val text: String =
                     when (code) {
-                        KEYCODE_DELETE -> context.getString(R.string.keycode_delete)
-                        KEYCODE_ENTER -> context.getString(R.string.keycode_enter)
-                        KEYCODE_MODE_CHANGE -> context.getString(R.string.keycode_mode_change)
-                        KEYCODE_SHIFT -> context.getString(R.string.keycode_shift)
+                        KEYCODE_DELETE -> context.getString(R.string.i18n_app__global_delete)
+                        KEYCODE_ENTER -> context.getString(R.string.i18n_app_keyboard_enter)
+                        KEYCODE_MODE_CHANGE -> context.getString(R.string.i18n_app_keyboard_change_keyboard_type)
+                        KEYCODE_SHIFT -> context.getString(R.string.i18n_app_keyboard_shift)
                         else -> code.toChar().toString()
                     }
                 event.text.add(text)
