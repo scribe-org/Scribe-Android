@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Popup keyboard shown when the user long-presses the emoji key.
+  Slide to select:
+    - Left: Emoji palette
+    - Right: Clipboard panel
+-->
+<Keyboard xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Row>
+        <Key
+            app:code="-6"
+            app:keyIcon="@drawable/ic_emoji_vector" />
+        <Key
+            app:code="-60"
+            app:keyIcon="@drawable/ic_clipboard_vector" />
+    </Row>
+</Keyboard>
