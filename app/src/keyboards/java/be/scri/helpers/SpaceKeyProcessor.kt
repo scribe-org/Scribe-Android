@@ -61,6 +61,13 @@ class SpaceKeyProcessor(
      * @param wasLastKeySpace true if the previous key pressed was a space.
      */
     private fun handleSpaceOutsideCommandBar(wasLastKeySpace: Boolean) {
+        if (ime.tryInsertHighlightedAutocompleteSuggestion()) {
+            val wordBeforeSpace = ime.getLastWordBeforeCursor()
+            suggestionHandler.processLinguisticSuggestions(wordBeforeSpace)
+            suggestionHandler.processWordSuggestions(wordBeforeSpace)
+            return
+        }
+
         val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
         val ic = ime.currentInputConnection ?: return
         val wordBeforeSpace = ime.getLastWordBeforeCursor()
