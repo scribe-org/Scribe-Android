@@ -1,6 +1,7 @@
 # Conjugate-Android Changelog
 
-Please note that this repository contains the code for two different applications: Scribe-Android and Conjugate-Android. This is the changelog for Conjugate-Android. See [CHANGELOG.md](/CHANGELOG.md) for the Scribe-Android changelog.
+> [!NOTE]
+> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Conjugate-Android. See [CHANGELOG.md](/CHANGELOG.md) for the Scribe-Android changelog.
 
 See the [releases for this repository](https://github.com/scribe-org/Scribe-Android/releases) for an up to date list of versions and their release dates. Versions that are marked as released may yet to be on Google Play and other stores if it's within the submission review period.
 
