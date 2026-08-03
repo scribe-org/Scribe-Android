@@ -802,7 +802,7 @@ class KeyboardView
         @SuppressLint("UseCompatLoadingForDrawables")
         private fun onBufferDraw() {
             val keyMargin = KEY_MARGIN
-            val vKeyMargin = V_KEY_MARGIN
+            val vKeyMargin = if (id == R.id.mini_keyboard_view) KEY_MARGIN else V_KEY_MARGIN
             val shadowOffset = SHADOW_OFFSET
             if (mBuffer == null || mKeyboardChanged) {
                 if (mBuffer?.let { buffer -> buffer.width != width || buffer.height != height } != false) {
@@ -1170,7 +1170,7 @@ class KeyboardView
                             code == KeyboardBase.KEYCODE_EMOJI ||
                                 code == KeyboardBase.KEYCODE_CLIPBOARD ||
                                 code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
-                        val scaleFactor = if (isEmojiOrClipboard) 0.45f else 0.6f
+                        val scaleFactor = if (isEmojiOrClipboard) 0.5f else 0.6f
                         val maxIconWidth = (key.width * scaleFactor).toInt()
                         val maxIconHeight = (key.height * scaleFactor).toInt()
                         if (iconWidth > maxIconWidth || iconHeight > maxIconHeight) {

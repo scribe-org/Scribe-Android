@@ -37,6 +37,7 @@ class KeyboardBase {
         val keyboardLetters: Int
 
         fun isSearchBar(): Boolean
+
         fun isFloatingModeActive(): Boolean
 
         fun isClipboardKeyEnabled(): Boolean
@@ -599,8 +600,6 @@ class KeyboardBase {
                                 key.gap = 0
                             }
 
-
-
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
                                 val enterResourceId =
@@ -638,7 +637,6 @@ class KeyboardBase {
                         if (x > mMinWidth) {
                             mMinWidth = x
                         }
-
                     } else if (inRow) {
                         inRow = false
                         y += currentRow!!.defaultHeight
@@ -669,7 +667,6 @@ class KeyboardBase {
                 }
             }
         }
-
 
         mHeight = y
     }

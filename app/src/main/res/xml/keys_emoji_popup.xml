@@ -10,12 +10,15 @@
     <Row>
         <Key
             app:code="-10"
-            app:keyIcon="@drawable/ic_float_keyboard" />
+            app:keyIcon="@drawable/ic_float_keyboard"
+            app:keyWidth="12%p" />
         <Key
             app:code="-6"
-            app:keyIcon="@drawable/ic_emoji_vector" />
+            app:keyIcon="@drawable/ic_emoji_vector"
+            app:keyWidth="12%p" />
         <Key
             app:code="-60"
-            app:keyIcon="@drawable/ic_clipboard_vector" />
+            app:keyIcon="@drawable/ic_clipboard_vector"
+            app:keyWidth="12%p" />
     </Row>
 </Keyboard>
