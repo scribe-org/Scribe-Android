@@ -37,7 +37,6 @@ class KeyboardBase {
         val keyboardLetters: Int
 
         fun isSearchBar(): Boolean
-
         fun isFloatingModeActive(): Boolean
 
         fun isClipboardKeyEnabled(): Boolean
@@ -91,6 +90,7 @@ class KeyboardBase {
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
+        const val KEYCODE_EMOJI = -6
         const val KEYCODE_TAB = -30
         const val KEYCODE_CAPS_LOCK = -50
         const val KEYCODE_LEFT_ARROW = -55
@@ -786,7 +786,6 @@ class KeyboardBase {
                 }
             }
         }
-
         mHeight = y
     }
 

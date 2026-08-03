@@ -21,6 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.scri.R
 
@@ -34,12 +36,19 @@ fun AboutPageItemComp(
     trailingIcon: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    altText: String? = null,
 ) {
+    val semanticsModifier =
+        altText?.let { text ->
+            Modifier.semantics(mergeDescendants = true) { contentDescription = text }
+        } ?: Modifier
+
     Box(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick),
+                .clickable(onClick = onClick)
+                .then(semanticsModifier),
     ) {
         Row(
             modifier =

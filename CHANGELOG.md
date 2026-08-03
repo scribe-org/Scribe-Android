@@ -1,6 +1,9 @@
-# Changelog
+# Scribe-Android Changelog
 
-See the [releases for Scribe-Android](https://github.com/scribe-org/Scribe-Android/releases) for an up to date list of versions and their release dates. Versions that are marked as released may yet to be on Google Play and other stores if it's within the submission review period.
+> [!NOTE]
+> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for iOS). This is the changelog for Scribe-Android. See [CHANGELOG_CONJUGATE.md](/CHANGELOG_CONJUGATE.md) for the Conjugate-Android changelog.
+
+See the [releases for this repository](https://github.com/scribe-org/Scribe-Android/releases) for an up to date list of versions and their release dates. Versions that are marked as released may not yet be on Google Play and other stores if it's within the submission review period.
 
 Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJOR.MINOR.PATCH version where increments are made of the:
 
@@ -10,8 +13,8 @@ Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJ
 
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
-# Scribe-Android 1.0.0
+## Scribe-Android 1.0.0
 
 ### ✨ New Features
 
-- Conjugate app download data UI that displays all supported languages alphabetically, using shared components with the keyboard app ([#564](https://github.com/scribe-org/Scribe-Android/issues/564))
+- Feature

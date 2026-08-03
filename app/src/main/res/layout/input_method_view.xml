@@ -35,10 +35,10 @@ GeneralKeyboardIME.kt
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/keyboard_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <RelativeLayout
             android:id="@+id/emoji_palette_top_bar"
@@ -57,7 +57,8 @@ GeneralKeyboardIME.kt
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/emojis"
                 android:padding="@dimen/small_margin"
-                android:src="@drawable/ic_arrow_left_vector" />
+                android:src="@drawable/ic_arrow_left_vector"
+                />
 
             <TextView
                 android:id="@+id/emoji_palette_label"
@@ -107,7 +108,8 @@ GeneralKeyboardIME.kt
                 android:background="@drawable/keyboard_key_selector"
                 android:gravity="center"
                 android:text="@string/abc"
-                android:textStyle="bold" />
+                android:textStyle="normal"
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:id="@+id/emoji_categories_strip"
@@ -129,8 +131,9 @@ GeneralKeyboardIME.kt
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:background="@drawable/keyboard_key_selector"
-                android:contentDescription="@string/delete"
-                android:src="@drawable/ic_clear_vector" />
+                android:contentDescription="@string/i18n.app._global.delete"
+                android:src="@drawable/emoji_backspace"
+                />
 
         </RelativeLayout>
     </RelativeLayout>
@@ -168,7 +171,7 @@ GeneralKeyboardIME.kt
             android:layout_marginStart="@dimen/small_margin"
             android:background="@drawable/cmd_key_background_rounded"
             android:backgroundTint="@color/theme_scribe_blue"
-            android:contentDescription="@string/scribe_key"
+            android:contentDescription="@string/i18n.app.keyboard.scribe_key"
             android:drawablePadding="100dp"
             android:foreground="@drawable/ic_scribe_icon_vector"
             android:foregroundGravity="center"
@@ -199,7 +202,7 @@ GeneralKeyboardIME.kt
             android:layout_height="@dimen/command_button_height"
             android:layout_marginStart="4dp"
             android:background="@drawable/cmd_key_background_rounded"
-            android:contentDescription="@string/command_bar"
+            android:contentDescription="@string/i18n.app.keyboard.command_bar"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/separator_2"
@@ -225,7 +228,7 @@ GeneralKeyboardIME.kt
             android:layout_width="0dp"
             android:layout_height="@dimen/command_button_height"
             android:background="@drawable/cmd_key_background_rounded"
-            android:contentDescription="@string/command_bar"
+            android:contentDescription="@string/i18n.app.keyboard.command_bar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/separator_3"
             app:layout_constraintStart_toEndOf="@+id/separator_2"
@@ -250,7 +253,7 @@ GeneralKeyboardIME.kt
             android:layout_width="0dp"
             android:layout_height="@dimen/command_button_height"
             android:background="@drawable/cmd_key_background_rounded"
-            android:contentDescription="@string/command_bar"
+            android:contentDescription="@string/i18n.app.keyboard.command_bar"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -471,7 +474,7 @@ GeneralKeyboardIME.kt
             android:layout_marginStart="@dimen/small_margin"
             android:background="@drawable/scribe_key_background_left_rounded"
             android:backgroundTint="@color/theme_scribe_blue"
-            android:contentDescription="@string/scribe_key"
+            android:contentDescription="@string/i18n.app.keyboard.scribe_key"
             android:foreground="@drawable/close"
             android:foregroundGravity="center"
             android:foregroundTint="@color/light_key_text_color"
@@ -519,7 +522,7 @@ GeneralKeyboardIME.kt
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:backgroundTint="@null"
-                android:contentDescription="@string/command_bar"
+                android:contentDescription="@string/i18n.app.keyboard.command_bar"
                 android:cursorVisible="false"
                 android:inputType="text"
                 android:paddingTop="4dp"
@@ -571,7 +574,7 @@ GeneralKeyboardIME.kt
             android:layout_marginTop="4dp"
             android:background="@drawable/scribe_key_background_left_rounded"
             android:backgroundTint="@color/theme_scribe_blue"
-            android:contentDescription="@string/scribe_key"
+            android:contentDescription="@string/i18n.app.keyboard.scribe_key"
             android:foreground="@drawable/close"
             android:foregroundGravity="center"
             android:foregroundTint="@color/light_key_text_color"
@@ -710,31 +713,37 @@ GeneralKeyboardIME.kt
             android:padding="0dp" />
     </FrameLayout>
 
-    <Button
-        android:id="@+id/empty_state_banner"
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/empty_state_banner_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
-        android:text="@string/i18n.app._global.download_data"
-        android:textSize="16sp"
-        android:minHeight="0dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="36dp"
-        android:background="@null"
-        android:stateListAnimator="@null"
-        android:drawableStart="@drawable/clouddownload_keyboard"
-        android:drawablePadding="4dp"
-        android:gravity="center"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/empty_state_banner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/i18n.app._global.download_data"
+            android:textSize="16sp"
+            android:minHeight="40dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@null"
+            android:drawableStart="@drawable/ic_arrow_circle_down_24"
+            android:drawablePadding="8dp"
+            android:gravity="center" />
+    </FrameLayout>
 
     </LinearLayout>
 
@@ -804,7 +813,7 @@ GeneralKeyboardIME.kt
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Close Clipboard"
+                android:contentDescription="@string/i18n.app.clipboard.close_clipboard"
                 android:padding="@dimen/small_margin"
                 android:src="@drawable/ic_arrow_left_vector"
                 android:tint="@color/icon_color" />
@@ -831,7 +840,7 @@ GeneralKeyboardIME.kt
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Clear All"
+                android:contentDescription="@string/i18n.app._global.clear_all"
                 android:padding="@dimen/small_margin"
                 android:src="@drawable/ic_delete_vector"
                 android:tint="#E53935" />

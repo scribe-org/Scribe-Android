@@ -205,7 +205,7 @@ fun TutorialStepScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_back),
                     tint = headerColor,
                     modifier = Modifier.size(24.dp),
                 )

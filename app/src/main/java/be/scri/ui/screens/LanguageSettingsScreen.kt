@@ -122,7 +122,6 @@ fun LanguageSettingsScreen(
                 PreferencesHelper.getIsFloatingKeyEnabled(context, language),
             )
         }
-
     val wordByWordDeletionState =
         remember {
             mutableStateOf(
@@ -412,14 +411,7 @@ private fun getLayoutListData(
             onToggle = onTogglePeriodAndComma,
         ),
     )
-    list.add(
-        ScribeItem.SwitchItem(
-            title = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard,
-            desc = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard_description,
-            state = toggleClipboardKeyOnKeyboard,
-            onToggle = onToggleClipboardKeyOnKeyboard,
-        ),
-    )
+
     list.add(
         ScribeItem.SwitchItem(
             title = R.string.i18n_app_settings_keyboard_layout_floating_on_keyboard,

@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="i18n._global.about_scribe">കുറിച്ച്</string>
+    <string name="i18n._global.android_changelog">ആൻഡ്രോയിഡ് മാറ്റങ്ങളുടെ ലോഗ്</string>
+    <string name="i18n._global.available_data">ലഭ്യമായ ഡാറ്റ</string>
+    <string name="i18n._global.blog_posts">ബ്ലോഗ് പോസ്റ്റുകൾ</string>
+    <string name="i18n._global.changelog">മാറ്റങ്ങളുടെ ലോഗ്</string>
+    <string name="i18n._global.conjugate_apps">കോൺജുഗേറ്റ് ആപ്പുകൾ</string>
     <string name="i18n._global.data_extraction">ഇൻഫ്രാസ്ട്രക്ചർ</string>
+    <string name="i18n._global.data_server">ഡാറ്റാ സെർവർ</string>
     <string name="i18n._global.imprint">മുദ്ര</string>
+    <string name="i18n._global.ios_changelog">ഐ.ഒ.എസ് മാറ്റങ്ങളുടെ ലോഗ്</string>
+    <string name="i18n._global.keyboard_apps">കീബോർഡ് ആപ്പുകൾ</string>
     <string name="i18n._global.learn_more">കൂടുതൽ അറിയുക</string>
+    <string name="i18n._global.legal">നിയമപരം</string>
+    <string name="i18n._global.our_community">ഞങ്ങളുടെ സമൂഹം</string>
     <string name="i18n._global.privacy_policy">സ്വകാര്യതാ നയം</string>
     <string name="i18n._global.supporters">പിന്തുണക്കാർ</string>
     <string name="i18n._global.trademark_policy">വ്യാപാരമുദ്ര നയം</string>
+    <string name="i18n.app._global.check">പരിശോധിക്കുക</string>
+    <string name="i18n.app._global.clear_all">എല്ലാം മായ്‌ക്കുക</string>
+    <string name="i18n.app._global.confirmation">സ്ഥിരീകരണം</string>
+    <string name="i18n.app._global.delete">ഇല്ലാതാക്കുക</string>
 </resources>

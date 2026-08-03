@@ -53,6 +53,7 @@ import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
+import be.scri.helpers.KeyboardBase.Companion.KEYCODE_EMOJI
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_ENTER
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_LEFT_ARROW
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_MODE_CHANGE
@@ -63,6 +64,7 @@ import be.scri.helpers.KeyboardBase.Companion.KEYCODE_TAB
 import be.scri.helpers.KeyboardBase.Companion.SHIFT_LOCKED
 import be.scri.helpers.KeyboardBase.MyCustomActions
 import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
+import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -641,7 +643,7 @@ class KeyboardView
          * Attaches a keyboard to this view.
          * The keyboard can be switched at any time and the view will re-layout itself to accommodate the keyboard.
          *
-         * @param keyboard the keyboard to display in this view
+         * @param keyboard the keyboard to display in this view.
          */
         fun setKeyboard(keyboard: KeyboardBase) {
             if (mKeyboard != null) {
@@ -1154,19 +1156,49 @@ class KeyboardView
                                     code == KEYCODE_SHIFT ||
                                     code == KEYCODE_TAB ||
                                     code == KeyboardBase.KEYCODE_CLIPBOARD ||
-                                    code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
+                                    code == KeyboardBase.KEYCODE_FLOAT_TOGGLE ||
+                                    code == KeyboardBase.KEYCODE_EMOJI
                             if (isIconOnlyKey) {
                                 key.icon!!.applyColorFilter(mTextColor)
                             }
                         }
 
                         // Controls where icons are located on their keys.
-                        val drawableX = (key.width - key.icon!!.intrinsicWidth) / 2
-                        val drawableY = (key.height - key.icon!!.intrinsicHeight) / 2
+                        var iconWidth = key.icon!!.intrinsicWidth
+                        var iconHeight = key.icon!!.intrinsicHeight
+                        val isEmojiOrClipboard = code == KeyboardBase.KEYCODE_EMOJI || code == KeyboardBase.KEYCODE_CLIPBOARD
+                        val scaleFactor = if (isEmojiOrClipboard) 0.45f else 0.6f
+                        val maxIconWidth = (key.width * scaleFactor).toInt()
+                        val maxIconHeight = (key.height * scaleFactor).toInt()
+                        if (iconWidth > maxIconWidth || iconHeight > maxIconHeight) {
+                            val ratio = iconWidth.toFloat() / iconHeight.toFloat()
+                            if (ratio > 1) {
+                                iconWidth = maxIconWidth
+                                iconHeight = (maxIconWidth / ratio).toInt()
+                            } else {
+                                iconHeight = maxIconHeight
+                                iconWidth = (maxIconHeight * ratio).toInt()
+                            }
+                        }
+                        val drawableX = (key.width - iconWidth) / 2
+                        val drawableY = (key.height - iconHeight) / 2
                         canvas.translate(drawableX.toFloat(), drawableY.toFloat())
-                        key.icon!!.setBounds(0, 0, key.icon!!.intrinsicWidth, key.icon!!.intrinsicHeight)
+                        key.icon!!.setBounds(0, 0, iconWidth, iconHeight)
                         key.icon!!.draw(canvas)
                         canvas.translate(-drawableX.toFloat(), -drawableY.toFloat())
+
+                        if (code == KeyboardBase.KEYCODE_EMOJI) {
+                            val settingsIcon = resources.getDrawable(R.drawable.ic_settings_cog_vector, context.theme)
+                            settingsIcon.applyColorFilter(mTextColor)
+                            val density = context.resources.displayMetrics.density
+                            val cogSize = (12 * density).toInt()
+                            val rightPadding = keyMargin - shadowOffset + padding + (2 * density).toInt()
+                            val topPadding = keyMargin - shadowOffset + padding + (2 * density).toInt()
+                            val cogX = key.width - cogSize - rightPadding
+                            val cogY = topPadding
+                            settingsIcon.setBounds(cogX, cogY, cogX + cogSize, cogY + cogSize)
+                            settingsIcon.draw(canvas)
+                        }
                     }
                     canvas.translate(-key.x.toFloat(), -key.y.toFloat())
                 }
@@ -1355,10 +1387,10 @@ class KeyboardView
                 onInitializeAccessibilityEvent(event)
                 val text: String =
                     when (code) {
-                        KEYCODE_DELETE -> context.getString(R.string.keycode_delete)
-                        KEYCODE_ENTER -> context.getString(R.string.keycode_enter)
-                        KEYCODE_MODE_CHANGE -> context.getString(R.string.keycode_mode_change)
-                        KEYCODE_SHIFT -> context.getString(R.string.keycode_shift)
+                        KEYCODE_DELETE -> context.getString(R.string.i18n_app__global_delete)
+                        KEYCODE_ENTER -> context.getString(R.string.i18n_app_keyboard_enter)
+                        KEYCODE_MODE_CHANGE -> context.getString(R.string.i18n_app_keyboard_change_keyboard_type)
+                        KEYCODE_SHIFT -> context.getString(R.string.i18n_app_keyboard_shift)
                         else -> code.toChar().toString()
                     }
                 event.text.add(text)
@@ -1406,6 +1438,16 @@ class KeyboardView
         }
 
         private fun openPopupIfRequired(me: MotionEvent): Boolean {
+            val currentKey = if (mCurrentKey in mKeys.indices) mKeys[mCurrentKey] else null
+            if (currentKey?.code == KeyboardBase.KEYCODE_EMOJI) {
+                val result = onLongPress(currentKey, me)
+                if (result) {
+                    mAbortKey = true
+                    showPreview(NOT_A_KEY)
+                }
+                return result
+            }
+
             if (mPopupLayout == 0 || mCurrentKey !in mKeys.indices) {
                 return false
             }
@@ -1420,21 +1462,14 @@ class KeyboardView
             return result
         }
 
-        /**
-         * Called when a key is long pressed.
-         * By default this will open any popup keyboard associated with this key through the attributes
-         * popupLayout and popupCharacters.
-         *
-         * @param popupKey The key that was long pressed.
-         *
-         * @return true if the long press is handled, false otherwise.
-         * Subclasses should call the method on the base class if the subclass doesn't wish to
-         * handle the call.
-         */
         private fun onLongPress(
             popupKey: KeyboardBase.Key,
             me: MotionEvent,
         ): Boolean {
+            if (popupKey.code == KeyboardBase.KEYCODE_EMOJI) {
+                popupKey.popupResId = R.xml.keys_emoji_popup
+            }
+
             val popupKeyboardId = popupKey.popupResId
             if (popupKeyboardId != 0) {
                 mMiniKeyboardContainer = mMiniKeyboardCache[popupKey]
@@ -1527,11 +1562,9 @@ class KeyboardView
                 mPopupX = popupKey.x
                 mPopupY = popupKey.y
 
-                val widthToUse =
-                    mMiniKeyboardContainer!!.measuredWidth -
-                        (popupKey.popupCharacters!!.length / 2) *
-                        popupKey.width
-                mPopupX = mPopupX + popupKey.width - widthToUse
+                var leftX = popupKey.x + (popupKey.width - mMiniKeyboardContainer!!.measuredWidth) / 2
+                leftX = leftX.coerceIn(0, (width - mMiniKeyboardContainer!!.measuredWidth).coerceAtLeast(0))
+                mPopupX = leftX
                 mPopupY -= mMiniKeyboardContainer!!.measuredHeight
                 val x = mPopupX + mCoordinates[0]
                 val y = mPopupY + mCoordinates[1]
@@ -1554,7 +1587,14 @@ class KeyboardView
                 }
                 selectedKeyIndex = Math.max(0, Math.min(selectedKeyIndex, keysCnt - 1))
 
-                if (setHoldForAltCharacters) {
+                val isEmojiPopup = mMiniKeyboard!!.mKeys.any { it.code == KeyboardBase.KEYCODE_EMOJI || it.code == KeyboardBase.KEYCODE_CLIPBOARD }
+                if (isEmojiPopup) {
+                    // Emoji popup: start with no pre-selection; user slides to choose and lifts to confirm.
+                    for (i in 0 until keysCnt) {
+                        mMiniKeyboard!!.mKeys[i].focused = false
+                    }
+                    mMiniKeyboardSelectedKeyIndex = -1
+                } else if (setHoldForAltCharacters) {
                     for (i in 0 until keysCnt) {
                         mMiniKeyboard!!.mKeys[i].focused = i == selectedKeyIndex
                     }
@@ -1601,6 +1641,7 @@ class KeyboardView
             }
 
             if (mPopupKeyboard.isShowing) {
+                val isEmojiPopup = mMiniKeyboard?.mKeys?.any { it.code == KeyboardBase.KEYCODE_EMOJI || it.code == KeyboardBase.KEYCODE_CLIPBOARD } == true
                 when (action) {
                     MotionEvent.ACTION_MOVE -> {
                         val miniKeyboard = mMiniKeyboard
@@ -1611,11 +1652,11 @@ class KeyboardView
                             miniKeyboard.getGlobalVisibleRect(popupRect)
                             val widthPerKey = miniKeyboard.width / keysCnt.toFloat()
 
-                            var selectedKeyIndex = ((me.x - popupRect.left) / widthPerKey).toInt()
+                            var selectedKeyIndex = ((me.rawX - popupRect.left) / widthPerKey).toInt()
                             selectedKeyIndex = selectedKeyIndex.coerceIn(0, keysCnt - 1)
 
                             if (selectedKeyIndex != mMiniKeyboardSelectedKeyIndex) {
-                                if (setHoldForAltCharacters) {
+                                if (setHoldForAltCharacters || isEmojiPopup) {
                                     for (i in 0 until keysCnt) {
                                         miniKeyboard.mKeys[i].focused = i == selectedKeyIndex
                                     }
@@ -1634,35 +1675,54 @@ class KeyboardView
 
                                 mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
 
-                                if (setHoldForAltCharacters) {
-                                    // Hold mode, so use long delay.
-                                    hoverRunnable =
-                                        Runnable {
-                                            val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
-                                            key.focused = false
-                                            miniKeyboard.invalidateAllKeys()
+                                if (!isEmojiPopup) {
+                                    // Non-emoji popup: auto-fire after hover delay.
+                                    if (setHoldForAltCharacters) {
+                                        hoverRunnable =
+                                            Runnable {
+                                                val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
+                                                key.focused = false
+                                                miniKeyboard.invalidateAllKeys()
 
-                                            mOnKeyboardActionListener?.onKey(key.code)
-                                            mMiniKeyboardSelectedKeyIndex = -1
-                                            hoverRunnable = null
-                                            dismissPopupKeyboard()
-                                        }
-                                    hoverHandler?.postDelayed(hoverRunnable!!, hoverDelay)
-                                } else {
-                                    hoverRunnable =
-                                        Runnable {
-                                            val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
-                                            key.focused = false
-                                            miniKeyboard.invalidateAllKeys()
+                                                mOnKeyboardActionListener?.onKey(key.code)
+                                                mMiniKeyboardSelectedKeyIndex = -1
+                                                hoverRunnable = null
+                                                dismissPopupKeyboard()
+                                            }
+                                        hoverHandler?.postDelayed(hoverRunnable!!, hoverDelay)
+                                    } else {
+                                        hoverRunnable =
+                                            Runnable {
+                                                val key = miniKeyboard.mKeys[mMiniKeyboardSelectedKeyIndex]
+                                                key.focused = false
+                                                miniKeyboard.invalidateAllKeys()
 
-                                            mOnKeyboardActionListener?.onKey(key.code)
-                                            mMiniKeyboardSelectedKeyIndex = -1
-                                            hoverRunnable = null
-                                            dismissPopupKeyboard()
-                                        }
-                                    hoverHandler?.postDelayed(hoverRunnable!!, 220L)
+                                                mOnKeyboardActionListener?.onKey(key.code)
+                                                mMiniKeyboardSelectedKeyIndex = -1
+                                                hoverRunnable = null
+                                                dismissPopupKeyboard()
+                                            }
+                                        hoverHandler?.postDelayed(hoverRunnable!!, 220L)
+                                    }
                                 }
+                                // Emoji popup: no auto-fire on hover; wait for finger lift (ACTION_UP).
                             }
+                        }
+                    }
+
+                    MotionEvent.ACTION_UP -> {
+                        if (isEmojiPopup) {
+                            // Fire whichever key is currently highlighted when the finger lifts.
+                            val idx = mMiniKeyboardSelectedKeyIndex
+                            if (idx >= 0 && idx < (mMiniKeyboard?.mKeys?.size ?: 0)) {
+                                val key = mMiniKeyboard!!.mKeys[idx]
+                                key.focused = false
+                                mMiniKeyboard!!.invalidateAllKeys()
+                                mOnKeyboardActionListener?.onKey(key.code)
+                            }
+                            mMiniKeyboardSelectedKeyIndex = -1
+                            dismissPopupKeyboard()
+                            return true
                         }
                     }
 
@@ -1674,7 +1734,7 @@ class KeyboardView
                             return onModifiedTouchEvent(me)
                         }
 
-                        if (setHoldForAltCharacters) {
+                        if (!isEmojiPopup && setHoldForAltCharacters) {
                             if (mMiniKeyboardSelectedKeyIndex >= 0) {
                                 val key = mMiniKeyboard!!.mKeys[mMiniKeyboardSelectedKeyIndex]
                                 mOnKeyboardActionListener?.onKey(key.code)

@@ -6,15 +6,12 @@ package be.scri.helpers.french
  * Interface variables for French language keyboards.
  */
 object FRInterfaceVariables {
-    // MARK: Currency Symbols
-
-    const val CURRENCY_SYMBOL = "€"
-    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
-
     // MARK: Keyboard Labels
 
     const val SPACE_BAR = "espace"
     const val LANGUAGE = "Français"
+
+    const val DOWNLOAD_DATA_LBL = "Veuillez télécharger les données linguistiques"
 
     const val INVALID_COMMAND_MSG_WIKIDATA = "Pas dans Wikidata"
     const val INVALID_COMMAND_TEXT_WIKIDATA_1 =
@@ -34,6 +31,11 @@ object FRInterfaceVariables {
 
     val BASE_AUTOSUGGESTIONS = listOf("je", "il", "le")
     val NUMERIC_AUTOSUGGESTIONS = listOf("je", "que", "c’est")
+
+    // MARK: Currency Symbols
+
+    const val CURRENCY_SYMBOL = "€"
+    val CURRENCY_SYMBOL_ALTERNATES = listOf("€", "$", "£", "¥", "₩", "¢")
 
     // MARK: Suggestion Pronouns
 
@@ -78,4 +80,16 @@ object FRInterfaceVariables {
     const val PLURAL_PROMPT_AND_CURSOR = PLURAL_PROMPT + "COMMAND_CURSOR"
     const val PLURAL_PROMPT_AND_PLACEHOLDER = PLURAL_PROMPT_AND_CURSOR + "$PLURAL_PLACEHOLDER"
     const val ALREADY_PLURAL_MSG = "Déjà pluriel"
+
+    // MARK: Emoji Sections
+
+    const val SMILEYS_EMOTIONS_EMOJI_HEADER = "Smileys et Émotions"
+    const val PEOPLE_BODY_EMOJI_HEADER = "Personnes et Corps"
+    const val ANIMALS_NATURE_EMOJI_HEADER = "Animaux et Nature"
+    const val FOOD_DRINK_EMOJI_HEADER = "Nourriture et Boissons"
+    const val TRAVEL_PLACES_EMOJI_HEADER = "Voyages et Lieux"
+    const val ACTIVITIES_EMOJI_HEADER = "Activités"
+    const val OBJECTS_EMOJI_HEADER = "Objets"
+    const val SYMBOLS_EMOJI_HEADER = "Symboles"
+    const val FLAGS_EMOJI_HEADER = "Drapeaux"
 }
