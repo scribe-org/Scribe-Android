@@ -585,6 +585,8 @@ object PreferencesHelper {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(FLOATING_KEY_ON_KEYBOARD, language), false)
     }
+
+    /**
      * Resets the application hints, marking them as not shown in the shared preferences.
      *
      * @param context The context used to access shared preferences.
