@@ -1590,7 +1590,12 @@ class KeyboardView
                 }
                 selectedKeyIndex = Math.max(0, Math.min(selectedKeyIndex, keysCnt - 1))
 
-                val isEmojiPopup = mMiniKeyboard!!.mKeys.any { it.code == KeyboardBase.KEYCODE_EMOJI || it.code == KeyboardBase.KEYCODE_CLIPBOARD }
+                val isEmojiPopup =
+                    mMiniKeyboard!!.mKeys.any {
+                        it.code == KeyboardBase.KEYCODE_EMOJI ||
+                            it.code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                            it.code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
+                    }
                 if (isEmojiPopup) {
                     // Emoji popup: start with no pre-selection; user slides to choose and lifts to confirm.
                     for (i in 0 until keysCnt) {
@@ -1644,7 +1649,12 @@ class KeyboardView
             }
 
             if (mPopupKeyboard.isShowing) {
-                val isEmojiPopup = mMiniKeyboard?.mKeys?.any { it.code == KeyboardBase.KEYCODE_EMOJI || it.code == KeyboardBase.KEYCODE_CLIPBOARD } == true
+                val isEmojiPopup =
+                    mMiniKeyboard?.mKeys?.any {
+                        it.code == KeyboardBase.KEYCODE_EMOJI ||
+                            it.code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                            it.code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
+                    } == true
                 when (action) {
                     MotionEvent.ACTION_MOVE -> {
                         val miniKeyboard = mMiniKeyboard

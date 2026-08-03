@@ -599,22 +599,7 @@ class KeyboardBase {
                                 key.gap = 0
                             }
 
-                            if (key.code == KEYCODE_MODE_CHANGE) {
-                                if (provider?.isFloatingKeyEnabled() == true) {
-                                    key.width = (mDisplayWidth * 0.115).toInt()
-                                }
-                            } else if (provider?.isFloatingKeyEnabled() == true && currentRow.mKeys.any { it.code == KEYCODE_FLOAT_TOGGLE }) {
-                                if (key.code == ','.code && !hideComma) {
-                                    key.width = (mDisplayWidth * 0.1).toInt()
-                                } else if (key.label == "_") {
-                                    key.width = (mDisplayWidth * 0.1).toInt()
-                                } else if (key.code == KEYCODE_SPACE) {
-                                    val isLettersLayout = currentRow.mKeys.none { it.label == "_" }
-                                    if (isLettersLayout) {
-                                        key.width = (mDisplayWidth * 0.43).toInt()
-                                    }
-                                }
-                            }
+
 
                             mKeys!!.add(key)
                             if (key.code == KEYCODE_ENTER) {
@@ -653,29 +638,7 @@ class KeyboardBase {
                         if (x > mMinWidth) {
                             mMinWidth = x
                         }
-                        if (key.code == KEYCODE_MODE_CHANGE && provider?.isFloatingKeyEnabled() == true) {
-                            val floatKey = Key(currentRow!!)
-                            floatKey.code = KEYCODE_FLOAT_TOGGLE
-                            floatKey.width = (mDisplayWidth * 0.1).toInt()
-                            floatKey.gap = (mDisplayWidth * 0.005).toInt()
-                            floatKey.x = x + floatKey.gap
-                            floatKey.y = y
-                            floatKey.height = currentRow.defaultHeight
 
-                            val isFloating = provider?.isFloatingModeActive() == true
-                            val floatResourceId =
-                                if (isFloating) {
-                                    R.drawable.ic_keyboard_dismiss
-                                } else {
-                                    R.drawable.ic_float_keyboard
-                                }
-                            floatKey.icon = context.resources.getDrawable(floatResourceId, context.theme)
-                            floatKey.icon?.setBounds(0, 0, floatKey.icon!!.intrinsicWidth, floatKey.icon!!.intrinsicHeight)
-
-                            mKeys!!.add(floatKey)
-                            currentRow.mKeys.add(floatKey)
-                            x += floatKey.gap + floatKey.width
-                        }
                     } else if (inRow) {
                         inRow = false
                         y += currentRow!!.defaultHeight
@@ -707,85 +670,7 @@ class KeyboardBase {
             }
         }
 
-        if (currentKeyboardMode == keyboardLettersMode && mKeys != null && provider?.isClipboardKeyEnabled() == true) {
-            val spaceKey = mKeys!!.find { it?.code == 32 }
-            val commaKey = mKeys!!.find { it?.code == ','.code }
-            val row = mRows.lastOrNull()
-            if (spaceKey != null && commaKey != null && row != null) {
-                val clipWidth = (mDisplayWidth * 0.10).toInt()
 
-                val clipKey = Key(row)
-                clipKey.code = KEYCODE_CLIPBOARD
-                clipKey.width = clipWidth
-                clipKey.height = spaceKey.height
-                clipKey.gap = spaceKey.gap
-                clipKey.icon = context.resources.getDrawable(R.drawable.ic_clipboard_vector, context.theme)
-                clipKey.icon?.setBounds(0, 0, clipKey.icon!!.intrinsicWidth, clipKey.icon!!.intrinsicHeight)
-
-                spaceKey.width = spaceKey.width - clipWidth - clipKey.gap
-
-                val commaIdxInList = mKeys!!.indexOf(commaKey)
-                val commaIdxInRow = row.mKeys.indexOf(commaKey)
-
-                if (commaIdxInList != -1 && commaIdxInRow != -1) {
-                    clipKey.x = commaKey.x
-                    clipKey.y = commaKey.y
-
-                    commaKey.x = clipKey.x + clipKey.width + clipKey.gap
-                    spaceKey.x = commaKey.x + commaKey.width + commaKey.gap
-
-                    mKeys!!.add(commaIdxInList, clipKey)
-                    row.mKeys.add(commaIdxInRow, clipKey)
-                }
-            }
-        }
-
-        // Realign/shrink keys in any row that contains a float toggle key to fit the display width.
-        for (currentRow in mRows) {
-            if (currentRow != null) {
-                val hasFloatToggle = currentRow.mKeys.any { it?.code == KEYCODE_FLOAT_TOGGLE }
-                if (hasFloatToggle) {
-                    var totalRowWidth = 0
-                    for (key in currentRow.mKeys) {
-                        if (key != null) {
-                            totalRowWidth += key.width + key.gap
-                        }
-                    }
-
-                    val excess = totalRowWidth - mDisplayWidth
-                    if (excess > 0) {
-                        val spaceKey = currentRow.mKeys.find { it?.code == KEYCODE_SPACE }
-                        if (spaceKey != null && spaceKey.width > excess) {
-                            spaceKey.width -= excess
-                        } else {
-                            val normalKeys =
-                                currentRow.mKeys.filterNotNull().filter {
-                                    it.code != KEYCODE_FLOAT_TOGGLE &&
-                                        it.code != KEYCODE_MODE_CHANGE &&
-                                        it.code != KEYCODE_ENTER &&
-                                        it.code != KEYCODE_DELETE
-                                }
-                            if (normalKeys.isNotEmpty()) {
-                                val reductionPerKey = excess / normalKeys.size
-                                for (key in normalKeys) {
-                                    key.width -= reductionPerKey
-                                }
-                                val remainder = excess % normalKeys.size
-                                normalKeys.first().width -= remainder
-                            }
-                        }
-
-                        var currentX = 0
-                        for (key in currentRow.mKeys) {
-                            if (key != null) {
-                                key.x = currentX + key.gap
-                                currentX += key.width + key.gap
-                            }
-                        }
-                    }
-                }
-            }
-        }
         mHeight = y
     }
 

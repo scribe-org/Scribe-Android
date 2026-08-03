@@ -566,11 +566,23 @@ abstract class GeneralKeyboardIME(
      * Handles key input from the keyboard. Delegates to specific handlers based on the key code.
      */
     override fun onKey(code: Int) {
+        when (code) {
+            KeyboardBase.KEYCODE_EMOJI -> {
+                openEmojiKeyboard()
+                return
+            }
+            KeyboardBase.KEYCODE_FLOAT_TOGGLE -> {
+                toggleFloatingMode()
+                return
+            }
+            KeyboardBase.KEYCODE_CLIPBOARD -> {
+                openClipboardPanel()
+                return
+            }
+        }
         val inputConnection = currentInputConnection
         if (inputConnection != null) {
             when (code) {
-                KeyboardBase.KEYCODE_EMOJI -> openEmojiKeyboard()
-                KeyboardBase.KEYCODE_FLOAT_TOGGLE -> toggleFloatingMode()
                 KeyboardBase.KEYCODE_DELETE -> handleDelete()
                 KeyboardBase.KEYCODE_SHIFT -> {
                     if (keyboardMode == keyboardLetters) {
