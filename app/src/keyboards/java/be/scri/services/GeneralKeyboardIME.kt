@@ -570,6 +570,7 @@ abstract class GeneralKeyboardIME(
         if (inputConnection != null) {
             when (code) {
                 KeyboardBase.KEYCODE_EMOJI -> openEmojiKeyboard()
+                KeyboardBase.KEYCODE_FLOAT_TOGGLE -> toggleFloatingMode()
                 KeyboardBase.KEYCODE_DELETE -> handleDelete()
                 KeyboardBase.KEYCODE_SHIFT -> {
                     if (keyboardMode == keyboardLetters) {

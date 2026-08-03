@@ -1166,7 +1166,10 @@ class KeyboardView
                         // Controls where icons are located on their keys.
                         var iconWidth = key.icon!!.intrinsicWidth
                         var iconHeight = key.icon!!.intrinsicHeight
-                        val isEmojiOrClipboard = code == KeyboardBase.KEYCODE_EMOJI || code == KeyboardBase.KEYCODE_CLIPBOARD
+                        val isEmojiOrClipboard =
+                            code == KeyboardBase.KEYCODE_EMOJI ||
+                                code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                                code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
                         val scaleFactor = if (isEmojiOrClipboard) 0.45f else 0.6f
                         val maxIconWidth = (key.width * scaleFactor).toInt()
                         val maxIconHeight = (key.height * scaleFactor).toInt()
@@ -1187,7 +1190,7 @@ class KeyboardView
                         key.icon!!.draw(canvas)
                         canvas.translate(-drawableX.toFloat(), -drawableY.toFloat())
 
-                        if (code == KeyboardBase.KEYCODE_EMOJI) {
+                        if (code == KeyboardBase.KEYCODE_EMOJI && id != R.id.mini_keyboard_view) {
                             val settingsIcon = resources.getDrawable(R.drawable.ic_settings_cog_vector, context.theme)
                             settingsIcon.applyColorFilter(mTextColor)
                             val density = context.resources.displayMetrics.density
