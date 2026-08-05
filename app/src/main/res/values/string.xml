@@ -152,12 +152,15 @@
     <string name="i18n.app.keyboard.tutorial.noun_annotation">Noun annotation</string>
     <string name="i18n.app.keyboard.tutorial.noun_annotation.instruction_1">Write the word "{mother_word}". Notice the word suggestions that appear on the keyboard\'s top bar.\n\nThen, press space. You will see the word\'s gender tag on the keyboard\'s top bar – in this case, "{mother_tag}" for {mother_gender}.</string>
     <string name="i18n.app.keyboard.tutorial.noun_annotation.instruction_2">Now write the word "{father_word}" and then press space. The gender tag will be "{father_tag}", for {father_gender}.</string>
+    <string name="i18n.app.keyboard.tutorial.noun_annotation.invalid_language">Noun annotation is not available for {language} as nouns don\'t have genders. Please proceed to the next tutorial.</string>
     <string name="i18n.app.keyboard.tutorial.noun_plurals">Noun plurals</string>
     <string name="i18n.app.keyboard.tutorial.noun_plurals.instruction">Scribe can easily find the plural of any noun that Wikidata has. Tap the pencil-like Scribe key on the top-left corner of your keyboard, and select {plural}.\n\nThen write the noun you want the plural for, press ▶, and the plural will be returned to you.</string>
+    <string name="i18n.app.keyboard.tutorial.noun_plurals.invalid_language">Noun plurals are not available for {language} as nouns don\'t have grammatical number. Please proceed to the next tutorial.</string>
     <string name="i18n.app.keyboard.tutorial.select_keyboard">Press the 🌐 button to select a Scribe keyboard.</string>
     <string name="i18n.app.keyboard.tutorial.start_full_tutorial">Start full tutorial</string>
     <string name="i18n.app.keyboard.tutorial.verb_conjugation">Verb conjugation</string>
     <string name="i18n.app.keyboard.tutorial.verb_conjugation.instruction">Scribe can conjugate any verb on Wikidata! Tap the pencil-like Scribe key on the top-left corner of your keyboard, and select {conjugate}.\n\nWrite the verb you want to conjugate, press ▶, and your will see a table with all the verb tenses. Select the one you need and it will be inserted!</string>
+    <string name="i18n.app.keyboard.tutorial.verb_conjugation.invalid_language">Verb conjugation isn\'t available for {language} as verbs don\'t have conjugations. Please proceed to the next tutorial.</string>
     <string name="i18n.app.keyboard.tutorial.word_translation">Word translation</string>
     <string name="i18n.app.keyboard.tutorial.word_translation.instruction">Let\'s translate with Wiktionary translations! Tap the pencil-like Scribe key on the top-left corner of your keyboard, and select {translate}.\n\nThen write the word you want to translate, press ▶, and the translation will be returned to you.</string>
     <string name="i18n.app.settings.button_install_keyboards">Install keyboards</string>

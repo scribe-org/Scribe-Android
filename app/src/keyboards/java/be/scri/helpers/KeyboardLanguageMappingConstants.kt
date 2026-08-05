@@ -62,6 +62,18 @@ object KeyboardLanguageMappingConstants {
             "SV" to SVInterfaceVariables.PLURAL_KEY_LBL,
         )
 
+    val floatPlaceholder =
+        mapOf(
+            "EN" to "Float",
+            "ES" to "Flotante",
+            "DE" to "Schweben",
+            "IT" to "Fluttuante",
+            "FR" to "Flottant",
+            "PT" to "Flutuante",
+            "RU" to "Плавающая",
+            "SV" to "Flytande",
+        )
+
     /**
      * Maps a keyboard language alias to its localized emoji category header labels,
      * keyed by the category name used in the emoji spec file.
