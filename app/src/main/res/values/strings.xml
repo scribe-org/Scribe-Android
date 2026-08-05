@@ -3,7 +3,20 @@
     <string name="app_launcher_name">Scribe</string>
     <string name="emojis" />
     <string name="abc" />
+    <string name="suggestion">Suggestion</string>
+    <string name="wikimedia_logo">Wikimedia Logo</string>
+    <string name="delete">Delete</string>
+    <string name="language">Language</string>
+    <string name="keycode_shift">Shift</string>
+    <string name="keycode_enter">Enter</string>
+    <string name="keycode_delete">Delete</string>
+    <string name="keycode_mode_change">Change keyboard type</string>
+    <string name="drag_keyboard">Drag keyboard</string>
     <string name="clipboard">Clipboard</string>
     <string name="floating_keyboard">Floating keyboard</string>
+    <string name="i18n.app.settings.keyboard.layout.clipboard_on_keyboard">Clipboard key on keyboard</string>
+    <string name="i18n.app.settings.keyboard.layout.clipboard_on_keyboard_description">Include a key to access the clipboard on the main keyboard.</string>
+    <string name="i18n.app.settings.keyboard.layout.floating_on_keyboard">Floating key on keyboard</string>
+    <string name="i18n.app.settings.keyboard.layout.floating_on_keyboard_description">Include a key to float the keyboard UI on the main keyboard.</string>
 </resources>
 
