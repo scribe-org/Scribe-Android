@@ -109,19 +109,6 @@ fun LanguageSettingsScreen(
             )
         }
 
-    val clipboardKeyOnKeyboardState =
-        remember {
-            mutableStateOf(
-                PreferencesHelper.getIsClipboardKeyEnabled(context, language),
-            )
-        }
-
-    val floatingKeyOnKeyboardState =
-        remember {
-            mutableStateOf(
-                PreferencesHelper.getIsFloatingKeyEnabled(context, language),
-            )
-        }
     val wordByWordDeletionState =
         remember {
             mutableStateOf(
@@ -165,24 +152,6 @@ fun LanguageSettingsScreen(
                             context,
                             language,
                             shouldDisableAccentCharacter,
-                        )
-                    },
-                    toggleClipboardKeyOnKeyboard = clipboardKeyOnKeyboardState.value,
-                    onToggleClipboardKeyOnKeyboard = { isEnabled ->
-                        clipboardKeyOnKeyboardState.value = isEnabled
-                        PreferencesHelper.setClipboardKeyPreference(
-                            context,
-                            language,
-                            isEnabled,
-                        )
-                    },
-                    toggleFloatingKeyOnKeyboard = floatingKeyOnKeyboardState.value,
-                    onToggleFloatingKeyOnKeyboard = { isEnabled ->
-                        floatingKeyOnKeyboardState.value = isEnabled
-                        PreferencesHelper.setFloatingKeyPreference(
-                            context,
-                            language,
-                            isEnabled,
                         )
                     },
                     onCurrencySelect = onCurrencySelect,
@@ -374,17 +343,12 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
  *
  * @return A list of [ScribeItem]s to be displayed in the UI.
  */
-@Suppress("LongParameterList", "UnusedParameter")
 private fun getLayoutListData(
     language: String,
     togglePeriodAndCommaState: Boolean,
     onTogglePeriodAndComma: (Boolean) -> Unit,
     toggleDisableAccentCharacter: Boolean,
     onToggleDisableAccentCharacter: (Boolean) -> Unit,
-    toggleClipboardKeyOnKeyboard: Boolean,
-    onToggleClipboardKeyOnKeyboard: (Boolean) -> Unit,
-    toggleFloatingKeyOnKeyboard: Boolean,
-    onToggleFloatingKeyOnKeyboard: (Boolean) -> Unit,
     onCurrencySelect: () -> Unit,
 ): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
@@ -411,14 +375,6 @@ private fun getLayoutListData(
         ),
     )
 
-    list.add(
-        ScribeItem.SwitchItem(
-            title = R.string.i18n_app_settings_keyboard_layout_floating_on_keyboard,
-            desc = R.string.i18n_app_settings_keyboard_layout_floating_on_keyboard_description,
-            state = toggleFloatingKeyOnKeyboard,
-            onToggle = onToggleFloatingKeyOnKeyboard,
-        ),
-    )
     list.add(
         ScribeItem.ClickableItem(
             title = R.string.i18n_app_settings_keyboard_layout_default_currency,
