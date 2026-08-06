@@ -1151,6 +1151,18 @@ class KeyboardView
                             key.icon = resources.getDrawable(drawableId)
                             key.icon!!.applyColorFilter(mTextColor)
                         } else {
+                            if (code == KeyboardBase.KEYCODE_FLOAT_TOGGLE) {
+                                val isFloating =
+                                    (context as? KeyboardBase.KeyboardContextProvider)?.isFloatingModeActive() == true ||
+                                        (mPopupParent?.context as? KeyboardBase.KeyboardContextProvider)?.isFloatingModeActive() == true
+                                val floatIconRes =
+                                    if (isFloating) {
+                                        R.drawable.ic_keyboard_dismiss
+                                    } else {
+                                        R.drawable.ic_float_keyboard
+                                    }
+                                key.icon = resources.getDrawable(floatIconRes, context.theme)
+                            }
                             val isIconOnlyKey =
                                 code == KEYCODE_DELETE ||
                                     code == KEYCODE_SHIFT ||
