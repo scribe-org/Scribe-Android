@@ -86,7 +86,7 @@ abstract class GeneralKeyboardIME(
     KeyboardView.OnKeyboardActionListener,
     KeyboardUIManager.KeyboardUIListener,
     KeyboardBase.KeyboardContextProvider {
-    // Abstract members required by subclasses (like EnglishKeyboardIME)
+    // Abstract members required by subclasses (like EnglishKeyboardIME).
     abstract override fun getKeyboardLayoutXML(): Int
 
     abstract override val keyboardLetters: Int
@@ -650,10 +650,6 @@ abstract class GeneralKeyboardIME(
             } == true
         return isActionSearch || isUriType || hasSearchHint
     }
-
-    override fun isClipboardKeyEnabled(): Boolean = PreferencesHelper.getIsClipboardKeyEnabled(this, language)
-
-    override fun isFloatingKeyEnabled(): Boolean = PreferencesHelper.getIsFloatingKeyEnabled(this, language)
 
     private fun loadLanguageData() {
         val languageAlias = getLanguageAlias(language)
@@ -2171,7 +2167,7 @@ abstract class GeneralKeyboardIME(
     fun toggleFloatingMode() {
         isFloatingMode = !isFloatingMode
         PreferencesHelper.setIsFloatingModeEnabled(this, language, isFloatingMode)
-        // Reset the cached mode so applyFloatingModeState always treats this as a change
+        // Reset the cached mode so applyFloatingModeState always treats this as a change.
         lastAppliedFloatingMode = null
         applyFloatingModeState()
         window?.window?.decorView?.requestLayout()
@@ -2242,13 +2238,13 @@ abstract class GeneralKeyboardIME(
             card.scaleY = scaleFactorY
             card.alpha = 1.0f
 
-            // Setup resize corner handlers
+            // Setup resize corner handlers.
             binding.resizeHandleTopLeft.setOnTouchListener(resizeTouchListener)
             binding.resizeHandleTopRight.setOnTouchListener(resizeTouchListener)
             binding.resizeHandleBottomLeft.setOnTouchListener(resizeTouchListener)
             binding.resizeHandleBottomRight.setOnTouchListener(resizeTouchListener)
 
-            // Hide initially on mode change
+            // Hide initially on mode change.
             if (modeChanged) {
                 binding.resizeHandleTopLeft.visibility = View.GONE
                 binding.resizeHandleTopRight.visibility = View.GONE
@@ -2260,7 +2256,7 @@ abstract class GeneralKeyboardIME(
             val kbBgColorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
             val kbBgColor = ContextCompat.getColor(this, kbBgColorRes)
 
-            // Build a floating card background that matches the keyboard's actual theme color
+            // Build a floating card background that matches the keyboard's actual theme color.
             val floatingBg =
                 GradientDrawable().apply {
                     shape = GradientDrawable.RECTANGLE
@@ -2272,9 +2268,9 @@ abstract class GeneralKeyboardIME(
             card.elevation = 8f * density
             card.clipToOutline = true
 
-            // Drag bar must match the keyboard background — not the default (always-light) color
+            // Drag bar must match the keyboard background — not the default (always-light) color.
             binding.floatingDragBar.setBackgroundColor(kbBgColor)
-            // Pill color: visible on both dark and light keyboard backgrounds
+            // Pill color: visible on both dark and light keyboard backgrounds.
             val pillColor = if (isDarkMode) 0x4DFFFFFF.toInt() else 0x40000000.toInt()
             binding.floatingDragHandle.setColorFilter(pillColor)
 
@@ -2289,7 +2285,7 @@ abstract class GeneralKeyboardIME(
                 val currentScaleX = PreferencesHelper.getFloatingScaleX(this, language)
                 val currentScaleY = PreferencesHelper.getFloatingScaleY(this, language)
 
-                // Default starting position: 100dp from the bottom of the screen
+                // Default starting position: 100dp from the bottom of the screen.
                 if (storedY == 0f) storedY = 100f * density
 
                 val screenWidth = resources.displayMetrics.widthPixels
@@ -2356,7 +2352,7 @@ abstract class GeneralKeyboardIME(
             binding.resizeHandleBottomRight.translationX = 0f
             binding.resizeHandleBottomRight.translationY = 0f
 
-            // Hide resize handles
+            // Hide resize handles.
             binding.resizeHandleTopLeft.visibility = View.GONE
             binding.resizeHandleTopRight.visibility = View.GONE
             binding.resizeHandleBottomLeft.visibility = View.GONE
@@ -2606,7 +2602,7 @@ abstract class GeneralKeyboardIME(
                     PreferencesHelper.setFloatingScaleX(this, language, finalScaleX)
                     PreferencesHelper.setFloatingScaleY(this, language, finalScaleY)
 
-                    // Save live position so applyFloatingModeState restores it correctly
+                    // Save live position so applyFloatingModeState restores it correctly.
                     val screenHeight = resources.displayMetrics.heightPixels.toFloat()
                     val cardHeight = card.height.toFloat()
                     val liveY = (screenHeight - cardHeight * finalScaleY) / 2f - card.translationY
@@ -2683,12 +2679,12 @@ abstract class GeneralKeyboardIME(
                     val density = resources.displayMetrics.density
                     val isNearBottom = targetY < 60f * density
                     if (isNearBottom) {
-                        // Highlight to indicate ready to dock
+                        // Highlight to indicate ready to dock.
                         val dockColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
                         (card.background as? GradientDrawable)?.setStroke((4.0f * density).toInt(), dockColor)
                         card.alpha = 0.85f
                     } else {
-                        // Normal dragging active outline
+                        // Normal dragging active outline.
                         val activeColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
                         (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
                         card.alpha = 0.7f

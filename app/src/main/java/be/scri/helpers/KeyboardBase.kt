@@ -39,10 +39,6 @@ class KeyboardBase {
         fun isSearchBar(): Boolean
 
         fun isFloatingModeActive(): Boolean
-
-        fun isClipboardKeyEnabled(): Boolean
-
-        fun isFloatingKeyEnabled(): Boolean
     }
 
     /** Horizontal gap default for all rows  */
