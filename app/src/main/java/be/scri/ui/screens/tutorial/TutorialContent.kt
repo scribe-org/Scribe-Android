@@ -21,7 +21,6 @@ object TutorialContent {
     ): List<TutorialStep> {
         val (fatherWord, fatherTag, fatherGender) =
             when (languageCode) {
-                "en" -> Triple("father", "M", "Masculine")
                 "es" -> Triple("padre", "M", "Masculino")
                 "fr" -> Triple("père", "M", "Masculin")
                 "it" -> Triple("padre", "M", "Maschile")
@@ -33,7 +32,6 @@ object TutorialContent {
 
         val (motherWord, motherTag, motherGender) =
             when (languageCode) {
-                "en" -> Triple("mother", "F", "Feminine")
                 "es" -> Triple("madre", "F", "Femenino")
                 "fr" -> Triple("mère", "F", "Féminin")
                 "it" -> Triple("madre", "F", "Femminile")
@@ -43,6 +41,17 @@ object TutorialContent {
                 else -> Triple("Mutter", "F", "Feminin")
             }
 
+        if (languageCode == "en") {
+            return listOf(
+                TutorialStep(
+                    instruction =
+                        context
+                            .getString(R.string.i18n_app_keyboard_tutorial_noun_annotation_invalid_language)
+                            .replace("{language}","English"),
+                    requiresValidation = false,
+                ),
+            )
+        }
         return listOf(
             TutorialStep(
                 instruction =
