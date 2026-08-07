@@ -1205,10 +1205,11 @@ abstract class GeneralKeyboardIME(
      */
     fun getAutocompletions(
         prefix: String,
+        previousWord: String? = null,
         limit: Int = 3,
     ): List<String> {
         if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
+            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, previousWord, limit)
             if (nativeCompletions.isNotEmpty()) {
                 return nativeCompletions
             }
@@ -1248,6 +1249,18 @@ abstract class GeneralKeyboardIME(
      * @return The last word as a [String], or null if no word is found.
      */
     fun getLastWordBeforeCursor(): String? = getText()?.trim()?.split("\\s+".toRegex())?.lastOrNull()
+
+    /**
+     * Extracts the word immediately before the one currently being composed, i.e. the last
+     * completed word preceding the in-progress word at the cursor. Used to give the autocomplete
+     * engine sentence context so it can bias completions instead of scoring the prefix in isolation.
+     *
+     * @return The previous completed word as a [String], or null if there isn't one.
+     */
+    fun getPreviousWordBeforeCursor(): String? {
+        val words = getText()?.trim()?.split("\\s+".toRegex()) ?: return null
+        return words.getOrNull(words.size - 2)
+    }
 
     /**
      * Retrieves the text immediately preceding the cursor.
