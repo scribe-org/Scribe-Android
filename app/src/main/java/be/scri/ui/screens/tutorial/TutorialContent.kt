@@ -47,7 +47,7 @@ object TutorialContent {
                     instruction =
                         context
                             .getString(R.string.i18n_app_keyboard_tutorial_noun_annotation_invalid_language)
-                            .replace("{language}","English"),
+                            .replace("{language}", "English"),
                     requiresValidation = false,
                 ),
             )
