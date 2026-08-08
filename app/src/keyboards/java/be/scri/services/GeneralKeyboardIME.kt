@@ -10,7 +10,6 @@ import android.content.res.ColorStateList
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
@@ -23,10 +22,7 @@ import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.util.Log
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
@@ -148,7 +144,9 @@ abstract class GeneralKeyboardIME(
     private var dataContract: DataContract? = null
 
     internal val isUiManagerInitialized: Boolean get() = this::uiManager.isInitialized
+
     internal fun recreateKeyboardPublic() = recreateKeyboard()
+
     internal fun applyNavBarColorPublic() = applyNavBarColor()
 
     var emojiKeywords: HashMap<String, MutableList<String>>? = null

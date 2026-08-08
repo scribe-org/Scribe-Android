@@ -67,7 +67,10 @@ class FloatingKeyboardHandler(
         PreferencesHelper.setIsFloatingModeEnabled(ime, ime.language, isFloatingMode)
         lastAppliedFloatingMode = null
         applyFloatingModeState()
-        ime.window?.window?.decorView?.requestLayout()
+        ime.window
+            ?.window
+            ?.decorView
+            ?.requestLayout()
     }
 
     fun disableFloatingMode() {
@@ -76,7 +79,10 @@ class FloatingKeyboardHandler(
             PreferencesHelper.setIsFloatingModeEnabled(ime, ime.language, isFloatingMode)
             lastAppliedFloatingMode = null
             applyFloatingModeState()
-            ime.window?.window?.decorView?.requestLayout()
+            ime.window
+                ?.window
+                ?.decorView
+                ?.requestLayout()
         }
     }
 
@@ -269,7 +275,9 @@ class FloatingKeyboardHandler(
         scaleY: Float,
     ) {
         val card = ime.binding.keyboardCard
-        val screenHeight = ime.resources.displayMetrics.heightPixels.toFloat()
+        val screenHeight =
+            ime.resources.displayMetrics.heightPixels
+                .toFloat()
 
         val cardWidth = card.width.toFloat()
         val cardHeight = card.height.toFloat()
@@ -359,7 +367,9 @@ class FloatingKeyboardHandler(
         scaleY: Float,
     ) {
         val card = ime.binding.keyboardCard
-        val screenHeight = ime.resources.displayMetrics.heightPixels.toFloat()
+        val screenHeight =
+            ime.resources.displayMetrics.heightPixels
+                .toFloat()
         val cardHeight = card.height.toFloat()
 
         val liveX = card.translationX
@@ -456,7 +466,9 @@ class FloatingKeyboardHandler(
                     PreferencesHelper.setFloatingScaleX(ime, ime.language, finalScaleX)
                     PreferencesHelper.setFloatingScaleY(ime, ime.language, finalScaleY)
 
-                    val screenHeight = ime.resources.displayMetrics.heightPixels.toFloat()
+                    val screenHeight =
+                        ime.resources.displayMetrics.heightPixels
+                            .toFloat()
                     val cardHeight = card.height.toFloat()
                     val liveY = (screenHeight - cardHeight * finalScaleY) / 2f - card.translationY
                     PreferencesHelper.setFloatingX(ime, ime.language, card.translationX)
