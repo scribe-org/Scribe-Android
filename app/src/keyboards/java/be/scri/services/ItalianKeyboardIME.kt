@@ -11,12 +11,6 @@ import be.scri.helpers.KeyHandler
  * The ItalianKeyboardIME class provides the input method for the Italian language keyboard.
  */
 class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_italian_tablet

@@ -11,12 +11,6 @@ import be.scri.helpers.KeyHandler
  * The RussianKeyboardIME class provides the input method for the Russian language keyboard.
  */
 class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_russian_tablet
