@@ -5,7 +5,6 @@ package be.scri.services
 import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
-import be.scri.helpers.KeyHandler
 
 /**
  * The EnglishKeyboardIME class provides the input method for the English language keyboard.
@@ -32,13 +31,4 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
-
-    private val keyHandler by lazy { KeyHandler(this) }
-
-    /**
-     * Handles key input from the keyboard and delegates it to [KeyHandler].
-     */
-    override fun onKey(code: Int) {
-        keyHandler.handleKey(code, language)
-    }
 }

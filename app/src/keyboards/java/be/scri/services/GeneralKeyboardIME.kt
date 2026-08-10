@@ -46,6 +46,7 @@ import be.scri.helpers.AutocompletionHandler
 import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
+import be.scri.helpers.KeyHandler
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardLanguageMappingConstants
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
@@ -137,6 +138,7 @@ abstract class GeneralKeyboardIME(
     internal lateinit var suggestionHandler: SuggestionHandler
     internal lateinit var autocompletionHandler: AutocompletionHandler
     private lateinit var autocompletionManager: AutocompletionDataManager
+    internal lateinit var keyHandler: KeyHandler
     private var dataContract: DataContract? = null
 
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
@@ -220,6 +222,7 @@ abstract class GeneralKeyboardIME(
         suggestionHandler = SuggestionHandler(this)
         autocompletionManager = dbManagers.autocompletionManager
         autocompletionHandler = AutocompletionHandler(this)
+        keyHandler = KeyHandler(this)
         clipboardMonitor =
             ClipboardMonitor(this) { text ->
                 latestClipText = text
@@ -522,42 +525,7 @@ abstract class GeneralKeyboardIME(
      * Handles key input from the keyboard. Delegates to specific handlers based on the key code.
      */
     override fun onKey(code: Int) {
-        val inputConnection = currentInputConnection
-        if (inputConnection != null) {
-            when (code) {
-                KeyboardBase.KEYCODE_EMOJI -> openEmojiKeyboard()
-                KeyboardBase.KEYCODE_DELETE -> handleDelete()
-                KeyboardBase.KEYCODE_SHIFT -> {
-                    if (keyboardMode == keyboardLetters) {
-                        val shiftState = keyboardView?.mKeyboard?.mShiftState ?: SHIFT_OFF
-                        when {
-                            shiftState == SHIFT_ON_PERMANENT -> keyboardView?.setShifted(SHIFT_OFF)
-                            System.currentTimeMillis() - lastShiftPressTS < shiftPermToggleSpeed -> keyboardView?.setShifted(SHIFT_ON_PERMANENT)
-                            shiftState == SHIFT_ON_ONE_CHAR -> keyboardView?.setShifted(SHIFT_OFF)
-                            shiftState == SHIFT_OFF -> keyboardView?.setShifted(SHIFT_ON_ONE_CHAR)
-                        }
-                        lastShiftPressTS = System.currentTimeMillis()
-                    } else {
-                        handleModeChange(keyboardMode, keyboardView, this)
-                    }
-                }
-
-                KeyboardBase.KEYCODE_ENTER -> handleKeycodeEnter()
-                KeyboardBase.KEYCODE_MODE_CHANGE -> handleModeChange(keyboardMode, keyboardView, this)
-                KeyboardBase.KEYCODE_CLIPBOARD -> openClipboardPanel()
-                else -> {
-                    if (KeyboardBase.SCRIBE_VIEW_KEYS.contains(code)) {
-                        val keyLabel = keyboardView?.getKeyLabel(code)
-                        if (!keyLabel.isNullOrEmpty()) {
-                            commitText("$keyLabel ")
-                        }
-                    } else {
-                        val commandBarState = currentState != ScribeState.IDLE && currentState != ScribeState.SELECT_COMMAND
-                        handleElseCondition(code, keyboardMode, commandBarState)
-                    }
-                }
-            }
-        }
+        keyHandler.handleKey(code, language)
     }
 
     // MARK: Helper Methods
@@ -1841,6 +1809,10 @@ abstract class GeneralKeyboardIME(
         }
         if (completions.isNullOrEmpty()) {
             uiManager.disableAutoSuggest(language)
+            if (!autoSuggestEmojis.isNullOrEmpty() && emojiAutoSuggestionEnabled) {
+                updateEmojiSuggestion(true, autoSuggestEmojis)
+                updateButtonVisibility(true)
+            }
             return
         }
 

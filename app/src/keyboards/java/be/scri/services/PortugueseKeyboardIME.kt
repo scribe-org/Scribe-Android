@@ -5,7 +5,6 @@ package be.scri.services
 import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
-import be.scri.helpers.KeyHandler
 
 /**
  * The PortugueseKeyboardIME class provides the input method for the Portuguese language keyboard.
@@ -33,10 +32,4 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
     override var hasTextBeforeCursor: Boolean = false
-
-    private val keyHandler by lazy { KeyHandler(this) }
-
-    override fun onKey(code: Int) {
-        keyHandler.handleKey(code, language)
-    }
 }
