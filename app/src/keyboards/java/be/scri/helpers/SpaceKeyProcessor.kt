@@ -17,7 +17,6 @@ class SpaceKeyProcessor(
     private val ime: GeneralKeyboardIME,
     private val suggestionHandler: SuggestionHandler,
 ) {
-
     /**
      * Handles the "Space" key press.
      * If not in command bar mode, it implements "period on double tap" logic or commits a normal space.
@@ -68,9 +67,10 @@ class SpaceKeyProcessor(
 
         val textBefore = ic.getTextBeforeCursor(2, 0)?.toString()
         val charBeforeSpace = if (textBefore != null && textBefore.length == 2) textBefore[0] else null
-        val isPunctuationOrSpaceBefore = charBeforeSpace == null ||
-            charBeforeSpace.isWhitespace() ||
-            charBeforeSpace in listOf('.', '?', '!', ',')
+        val isPunctuationOrSpaceBefore =
+            charBeforeSpace == null ||
+                charBeforeSpace.isWhitespace() ||
+                charBeforeSpace in listOf('.', '?', '!', ',')
 
         var shouldEnableAutoCapitalization = false
 
