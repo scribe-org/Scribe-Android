@@ -11,12 +11,6 @@ import be.scri.helpers.KeyHandler
  * The EnglishKeyboardIME class provides the input method for the English language keyboard.
  */
 class EnglishKeyboardIME : GeneralKeyboardIME("English") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_english_tablet

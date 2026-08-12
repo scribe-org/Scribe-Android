@@ -12,12 +12,6 @@ import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
  * The SpanishKeyboardIME class provides the input method for the Spanish language keyboard.
  */
 class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_spanish_tablet

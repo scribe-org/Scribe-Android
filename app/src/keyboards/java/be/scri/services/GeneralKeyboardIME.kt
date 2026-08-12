@@ -195,7 +195,10 @@ abstract class GeneralKeyboardIME(
     private var currentVerbForConjugation: String? = null
     private var selectedConjugationSubCategory: String? = null
 
+    protected open fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
+
     internal companion object {
+        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
         const val NOUN_TYPE_SIZE = 20f
