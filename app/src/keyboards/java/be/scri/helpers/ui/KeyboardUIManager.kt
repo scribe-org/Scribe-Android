@@ -697,7 +697,8 @@ class KeyboardUIManager(
 
         val isTablet =
             (context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >=
-                Configuration.SCREENLAYOUT_SIZE_LARGE
+                Configuration.SCREENLAYOUT_SIZE_LARGE ||
+                context.resources.configuration.smallestScreenWidthDp >= GeneralKeyboardIME.SMALLEST_SCREEN_WIDTH_TABLET
 
         val emojiCount = if (isAutoSuggestEnabled) autoSuggestEmojis?.size ?: 0 else 0
 
