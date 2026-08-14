@@ -6,11 +6,12 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
+import be.scri.models.ScribeLanguage
 
 /**
  * The ItalianKeyboardIME class provides the input method for the Italian language keyboard.
  */
-class ItalianKeyboardIME : GeneralKeyboardIME("Italian") {
+class ItalianKeyboardIME : GeneralKeyboardIME(ScribeLanguage.ITALIAN) {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_italian_tablet

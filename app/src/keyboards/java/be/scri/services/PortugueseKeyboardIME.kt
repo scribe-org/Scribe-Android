@@ -6,11 +6,12 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
+import be.scri.models.ScribeLanguage
 
 /**
  * The PortugueseKeyboardIME class provides the input method for the Portuguese language keyboard.
  */
-class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
+class PortugueseKeyboardIME : GeneralKeyboardIME(ScribeLanguage.PORTUGUESE) {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_portuguese_tablet

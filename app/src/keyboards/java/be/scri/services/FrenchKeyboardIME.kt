@@ -6,11 +6,12 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
+import be.scri.models.ScribeLanguage
 
 /**
  * The FrenchKeyboardIME class provides the input method for the French language keyboard.
  */
-class FrenchKeyboardIME : GeneralKeyboardIME("French") {
+class FrenchKeyboardIME : GeneralKeyboardIME(ScribeLanguage.FRENCH) {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_french_tablet

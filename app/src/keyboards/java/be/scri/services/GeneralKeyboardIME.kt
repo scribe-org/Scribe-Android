@@ -68,6 +68,7 @@ import be.scri.helpers.clipboard.ClipboardHandler
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.KeyboardUIManager
+import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.views.KeyboardView
 import java.util.Locale
@@ -77,11 +78,16 @@ private const val DATA_CONSTANT_3 = 3
 
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class GeneralKeyboardIME(
-    override var language: String,
+    val scribeLanguage: ScribeLanguage,
 ) : InputMethodService(),
     KeyboardView.OnKeyboardActionListener,
     KeyboardUIManager.KeyboardUIListener,
     KeyboardBase.KeyboardContextProvider {
+    constructor(languageName: String) : this(ScribeLanguage.fromDisplayName(languageName))
+
+    override val language: String
+        get() = scribeLanguage.displayName
+
     // Abstract members required by subclasses (like EnglishKeyboardIME).
     abstract override fun getKeyboardLayoutXML(): Int
 
@@ -762,10 +768,9 @@ abstract class GeneralKeyboardIME(
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
         val mode =
             if (!isSubsequentArea) {
-                when (language) {
-                    "English", "Russian", "Swedish" -> "2x2"
-                    "German", "French", "Italian", "Portuguese", "Spanish" -> "3x2"
-                    else -> "none"
+                when (scribeLanguage) {
+                    ScribeLanguage.ENGLISH, ScribeLanguage.RUSSIAN, ScribeLanguage.SWEDISH -> "2x2"
+                    ScribeLanguage.GERMAN, ScribeLanguage.FRENCH, ScribeLanguage.ITALIAN, ScribeLanguage.PORTUGUESE, ScribeLanguage.SPANISH -> "3x2"
                 }
             } else {
                 "none"
@@ -853,7 +858,7 @@ abstract class GeneralKeyboardIME(
     override fun onPluralClicked() {
         currentState = ScribeState.PLURAL
         saveConjugateModeType("none")
-        if (language == "German") keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
+        if (scribeLanguage == ScribeLanguage.GERMAN) keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         refreshUI()
     }
 
@@ -2077,8 +2082,8 @@ abstract class GeneralKeyboardIME(
             ScribeState.SELECT_VERB_CONJUNCTION -> {
                 saveConjugateModeType(language)
                 if (!isSubsequentArea && dataSize == 0) {
-                    when (language) {
-                        "English", "Russian", "Swedish" -> R.xml.conjugate_view_2x2
+                    when (scribeLanguage) {
+                        ScribeLanguage.ENGLISH, ScribeLanguage.RUSSIAN, ScribeLanguage.SWEDISH -> R.xml.conjugate_view_2x2
                         else -> R.xml.conjugate_view_3x2
                     }
                 } else {
