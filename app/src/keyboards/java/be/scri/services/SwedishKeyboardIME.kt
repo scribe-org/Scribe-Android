@@ -7,11 +7,12 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
 import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
+import be.scri.models.ScribeLanguage
 
 /**
  * The SwedishKeyboardIME class provides the input method for the Swedish language keyboard.
  */
-class SwedishKeyboardIME : GeneralKeyboardIME("Swedish") {
+class SwedishKeyboardIME : GeneralKeyboardIME(ScribeLanguage.SWEDISH) {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_swedish_tablet

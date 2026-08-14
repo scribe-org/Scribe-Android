@@ -6,11 +6,12 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
+import be.scri.models.ScribeLanguage
 
 /**
  * The RussianKeyboardIME class provides the input method for the Russian language keyboard.
  */
-class RussianKeyboardIME : GeneralKeyboardIME("Russian") {
+class RussianKeyboardIME : GeneralKeyboardIME(ScribeLanguage.RUSSIAN) {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_russian_tablet
