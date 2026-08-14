@@ -101,6 +101,11 @@ abstract class GeneralKeyboardIME(
     abstract var enterKeyType: Int
     abstract var switchToLetters: Boolean
 
+    // Language-specific layout and behavior configurations (decoupled from base class).
+    open val defaultConjugateModeType: String = "3x2"
+    open val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_3x2
+    open val isPluralCapitalized: Boolean = false
+
     /**
      * Property used by EnglishKeyboardIME override.
      * We define a custom getter here for the base logic, but subclasses can override the field.
@@ -756,20 +761,11 @@ abstract class GeneralKeyboardIME(
      * @param isSubsequentArea true if this is for a secondary view.
      */
     internal fun saveConjugateModeType(
-        language: String,
+        language: String = this.language,
         isSubsequentArea: Boolean = false,
     ) {
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        val mode =
-            if (!isSubsequentArea) {
-                when (language) {
-                    "English", "Russian", "Swedish" -> "2x2"
-                    "German", "French", "Italian", "Portuguese", "Spanish" -> "3x2"
-                    else -> "none"
-                }
-            } else {
-                "none"
-            }
+        val mode = if (!isSubsequentArea) defaultConjugateModeType else "none"
         sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
 
@@ -853,7 +849,7 @@ abstract class GeneralKeyboardIME(
     override fun onPluralClicked() {
         currentState = ScribeState.PLURAL
         saveConjugateModeType("none")
-        if (language == "German") keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
+        if (isPluralCapitalized) keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         refreshUI()
     }
 
@@ -2077,10 +2073,7 @@ abstract class GeneralKeyboardIME(
             ScribeState.SELECT_VERB_CONJUNCTION -> {
                 saveConjugateModeType(language)
                 if (!isSubsequentArea && dataSize == 0) {
-                    when (language) {
-                        "English", "Russian", "Swedish" -> R.xml.conjugate_view_2x2
-                        else -> R.xml.conjugate_view_3x2
-                    }
+                    defaultConjugateLayoutXML
                 } else {
                     when (dataSize) {
                         DATA_SIZE_2 -> R.xml.conjugate_view_2x1
