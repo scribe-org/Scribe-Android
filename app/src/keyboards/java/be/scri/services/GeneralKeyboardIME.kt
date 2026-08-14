@@ -68,6 +68,7 @@ import be.scri.helpers.clipboard.ClipboardHandler
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.KeyboardUIManager
+import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.views.KeyboardView
 import java.util.Locale
@@ -77,11 +78,16 @@ private const val DATA_CONSTANT_3 = 3
 
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class GeneralKeyboardIME(
-    override var language: String,
+    val scribeLanguage: ScribeLanguage,
 ) : InputMethodService(),
     KeyboardView.OnKeyboardActionListener,
     KeyboardUIManager.KeyboardUIListener,
     KeyboardBase.KeyboardContextProvider {
+    constructor(languageName: String) : this(ScribeLanguage.fromDisplayName(languageName))
+
+    override val language: String
+        get() = scribeLanguage.displayName
+
     // Abstract members required by subclasses (like EnglishKeyboardIME).
     abstract override fun getKeyboardLayoutXML(): Int
 
