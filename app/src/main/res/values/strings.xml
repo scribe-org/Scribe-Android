@@ -14,7 +14,5 @@
     <string name="drag_keyboard">Drag keyboard</string>
     <string name="clipboard">Clipboard</string>
     <string name="floating_keyboard">Floating keyboard</string>
-    <string name="i18n.app.settings.keyboard.functionality.auto_space_punctuation">Auto-space after punctuation</string>
-    <string name="i18n.app.settings.keyboard.functionality.auto_space_punctuation_description">Automatically insert a space after typing punctuation marks.</string>
 </resources>
 
