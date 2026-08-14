@@ -18,6 +18,9 @@ class EnglishKeyboardIME : GeneralKeyboardIME("English") {
             else -> R.xml.keys_letters_english_without_period_and_comma
         }
 
+    override val defaultConjugateModeType: String = "2x2"
+    override val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_2x2
+
     override val keyboardLetters: Int = 0
     override val keyboardSymbols: Int = 1
     override val keyboardSymbolShift: Int = 2
