@@ -12,12 +12,6 @@ import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
  * The GermanKeyboardIME class provides the input method for the German language keyboard.
  */
 class GermanKeyboardIME : GeneralKeyboardIME("German") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
     override fun getKeyboardLayoutXML(): Int =
         if (isTablet()) {
             R.xml.keys_letters_german_tablet
