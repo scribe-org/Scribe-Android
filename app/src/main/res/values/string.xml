@@ -167,6 +167,8 @@
     <string name="i18n.app.settings.conjugate_app_hint_tooltip">Settings for the app\'s language and interface are found here.</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Annotate suggest/complete</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Underline suggestions and completions to show their genders as you type.</string>
+    <string name="i18n.app.settings.keyboard.functionality.auto_space_punctuation">Auto-space punctuation</string>
+    <string name="i18n.app.settings.keyboard.functionality.auto_space_punctuation_description">Automatically adjust spaces around punctuation marks.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">Autosuggest emojis</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji_description">Turn on emoji suggestions and completions for more expressive typing.</string>
     <string name="i18n.app.settings.keyboard.functionality.default_emoji_tone">Default emoji skin tone</string>
@@ -174,8 +176,6 @@
     <string name="i18n.app.settings.keyboard.functionality.default_emoji_tone_description">Set a default skin tone for emoji autosuggestions and completions.</string>
     <string name="i18n.app.settings.keyboard.functionality.delete_word_by_word">Word for word deletion on long press</string>
     <string name="i18n.app.settings.keyboard.functionality.delete_word_by_word_description">Delete text word by word when the delete key is pressed and held.</string>
-    <string name="i18n.app.settings.keyboard.functionality.auto_space_punctuation">Auto-space after punctuation</string>
-    <string name="i18n.app.settings.keyboard.functionality.auto_space_punctuation_description">Automatically insert a space after typing punctuation marks.</string>
     <string name="i18n.app.settings.keyboard.functionality.double_space_period">Double space periods</string>
     <string name="i18n.app.settings.keyboard.functionality.double_space_period_description">Automatically insert a period when the space key is pressed twice.</string>
     <string name="i18n.app.settings.keyboard.functionality.hold_for_alt_chars">Hold for alternate characters</string>

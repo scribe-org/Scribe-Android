@@ -60,10 +60,10 @@ class SpaceKeyProcessorTest {
         every { ime.currentState } returns be.scri.models.ScribeState.IDLE
         every { inputConnection.getTextBeforeCursor(2, 0) } returns "s "
 
-        // First press initializes lastSpacePressTime
+        // First press initializes lastSpacePressTime.
         spaceKeyProcessor.processKeycodeSpace(currentWasLastKeySpace = false)
 
-        // Rapid second press with wasLastKeySpace = true
+        // Rapid second press with wasLastKeySpace = true.
         spaceKeyProcessor.processKeycodeSpace(currentWasLastKeySpace = true)
 
         verify { ime.commitPeriodAfterSpace() }
