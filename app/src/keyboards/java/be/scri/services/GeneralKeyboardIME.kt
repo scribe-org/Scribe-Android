@@ -518,22 +518,11 @@ abstract class GeneralKeyboardIME(
      */
     override fun hasTextBeforeCursor(): Boolean = hasTextBeforeCursor
 
-    /**
-     * Handles the "period on double tap" feature. If enabled, it replaces the two spaces with a period and a space.
-     */
     override fun commitPeriodAfterSpace() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            val isPeriodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(this, language)
-            if (isPeriodOnDoubleTapEnabled) {
-                currentInputConnection?.apply {
-                    deleteSurroundingText(1, 0)
-                    commitText(". ", 1)
-                }
-            } else {
-                currentInputConnection?.apply {
-                    deleteSurroundingText(1, 0)
-                    commitText("  ", 1)
-                }
+            currentInputConnection?.apply {
+                deleteSurroundingText(1, 0)
+                commitText(". ", 1)
             }
         }
     }

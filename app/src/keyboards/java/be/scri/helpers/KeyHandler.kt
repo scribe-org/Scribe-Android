@@ -130,7 +130,7 @@ class KeyHandler(
                 true
             }
             else -> {
-                handleDefaultKey(code)
+                handleDefaultKey(code, language)
                 true
             }
         }
@@ -361,7 +361,10 @@ class KeyHandler(
      * @param code The key code representing the character to input.
      */
 
-    private fun handleDefaultKey(code: Int) {
+    private fun handleDefaultKey(
+        code: Int,
+        language: String,
+    ) {
         val isCommandBarActive =
             when (ime.currentState) {
                 ScribeState.TRANSLATE,
@@ -371,7 +374,37 @@ class KeyHandler(
                 else -> false // use main input field for IDLE and SELECT_COMMAND
             }
 
+        val charCode = code.toChar()
+        val isPunctuation = charCode in listOf('.', ',', '!', '?')
+        val isAutoSpaceEnabled =
+            !isCommandBarActive &&
+                isPunctuation &&
+                PreferencesHelper.getAutoSpaceAfterPunctuationPreference(ime.applicationContext, language)
+
+        if (isAutoSpaceEnabled) {
+            val ic = ime.currentInputConnection
+            val textBefore = ic?.getTextBeforeCursor(2, 0)?.toString()
+            if (textBefore != null && textBefore.length == 2 && textBefore.endsWith(" ")) {
+                val charBeforeSpace = textBefore[0]
+                if (charBeforeSpace in listOf('.', ',', '!', '?')) {
+                    ic.deleteSurroundingText(1, 0)
+                }
+            }
+        }
+
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
+
+        if (isAutoSpaceEnabled) {
+            val ic = ime.currentInputConnection
+            val textBefore = ic?.getTextBeforeCursor(2, 0)?.toString()
+            if (textBefore != null && textBefore.length == 2) {
+                val prevChar = textBefore[0]
+                val typedPunct = textBefore[1]
+                if (typedPunct in listOf('.', ',', '!', '?') && !prevChar.isWhitespace() && prevChar !in listOf('.', ',', '!', '?')) {
+                    ic.commitText(" ", 1)
+                }
+            }
+        }
 
         if (ime.currentState == ScribeState.IDLE) {
             val currentWord = ime.getLastWordBeforeCursor()

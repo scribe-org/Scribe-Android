@@ -30,6 +30,8 @@ import be.scri.ui.models.ScribeItemList
 private data class FunctionalitySettings(
     val periodOnDoubleTapState: Boolean,
     val onTogglePeriodOnDoubleTap: (Boolean) -> Unit,
+    val autoSpaceAfterPunctuationState: Boolean,
+    val onToggleAutoSpaceAfterPunctuation: (Boolean) -> Unit,
     val emojiSuggestionsState: Boolean,
     val onToggleEmojiSuggestions: (Boolean) -> Unit,
     val togglePopUpOnKeyPress: Boolean,
@@ -64,6 +66,13 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context, language),
+            )
+        }
+
+    val autoSpaceAfterPunctuationState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getAutoSpaceAfterPunctuationPreference(context, language),
             )
         }
 
@@ -165,6 +174,15 @@ fun LanguageSettingsScreen(
             onTogglePeriodOnDoubleTap = { isEnabled ->
                 periodOnDoubleTapState.value = isEnabled
                 PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(
+                    context,
+                    language,
+                    isEnabled,
+                )
+            },
+            autoSpaceAfterPunctuationState = autoSpaceAfterPunctuationState.value,
+            onToggleAutoSpaceAfterPunctuation = { isEnabled ->
+                autoSpaceAfterPunctuationState.value = isEnabled
+                PreferencesHelper.setAutoSpaceAfterPunctuationPreference(
                     context,
                     language,
                     isEnabled,
@@ -287,6 +305,12 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
                 desc = R.string.i18n_app_settings_keyboard_functionality_double_space_period_description,
                 state = settings.periodOnDoubleTapState,
                 onToggle = settings.onTogglePeriodOnDoubleTap,
+            ),
+            ScribeItem.SwitchItem(
+                title = R.string.i18n_app_settings_keyboard_functionality_auto_space_punctuation,
+                desc = R.string.i18n_app_settings_keyboard_functionality_auto_space_punctuation_description,
+                state = settings.autoSpaceAfterPunctuationState,
+                onToggle = settings.onToggleAutoSpaceAfterPunctuation,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_functionality_auto_suggest_emoji,
