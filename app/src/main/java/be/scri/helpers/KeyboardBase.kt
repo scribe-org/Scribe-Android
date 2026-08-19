@@ -211,7 +211,7 @@ class KeyboardBase {
 
             val resources = Resources.getSystem()
             val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-            val conjugateMode = sharedPreferences.getString("conjugate_mode_type", "2x1")
+            val conjugateMode = sharedPreferences.getString("conjugate_mode_type", "none")
             defaultHeight =
                 if (conjugateMode != "none") {
                     when (conjugateMode) {

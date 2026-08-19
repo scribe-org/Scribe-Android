@@ -347,7 +347,7 @@ class KeyHandler(
         if (!ime.returnIsSubsequentRequired()) {
             ime.handleConjugateKeys(code, false)
             ime.moveToIdleState()
-            ime.saveConjugateModeType(language, isSubsequentArea = false)
+            ime.saveConjugateModeType("none")
         } else {
             val word = ime.handleConjugateKeys(code, true)
             ime.setupConjugateSubView(ime.returnSubsequentData(), word)

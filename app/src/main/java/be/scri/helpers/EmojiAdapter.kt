@@ -10,17 +10,20 @@ import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
 
 /**
- * Displaying emojis and category headers in the emoji palette.
+ * Displaying emojis, kaomojis, and category headers in the emoji palette.
  *
  * @param context The application context.
- * @param items The list of items to display, either categories or emojis.
+ * @param items The list of items to display, either categories, emojis, or kaomojis.
+ * @param categoryHeaders Localized headers map for categories.
  * @param itemClick Callback invoked when the user taps an emoji.
+ * @param kaomojiClick Callback invoked when the user taps a kaomoji.
  */
 class EmojiAdapter(
     val context: Context,
     var items: List<Item>,
     val categoryHeaders: Map<String, String> = emptyMap(),
     val itemClick: (emoji: EmojiData) -> Unit,
+    val kaomojiClick: ((kaomoji: KaomojiData) -> Unit)? = null,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val layoutInflater = LayoutInflater.from(context)
 
@@ -32,6 +35,10 @@ class EmojiAdapter(
             ITEM_TYPE_EMOJI ->
                 EmojiViewHolder(
                     layoutInflater.inflate(R.layout.item_emoji, parent, false),
+                )
+            ITEM_TYPE_KAOMOJI ->
+                KaomojiViewHolder(
+                    layoutInflater.inflate(R.layout.item_kaomoji, parent, false),
                 )
             ITEM_TYPE_CATEGORY ->
                 EmojiCategoryViewHolder(
@@ -46,6 +53,7 @@ class EmojiAdapter(
     ) {
         when (holder) {
             is EmojiViewHolder -> holder.bindView(items[position] as Item.Emoji)
+            is KaomojiViewHolder -> holder.bindView(items[position] as Item.Kaomoji)
             is EmojiCategoryViewHolder -> holder.bindView(items[position] as Item.Category)
         }
     }
@@ -53,6 +61,7 @@ class EmojiAdapter(
     override fun getItemViewType(position: Int): Int =
         when (items[position]) {
             is Item.Emoji -> ITEM_TYPE_EMOJI
+            is Item.Kaomoji -> ITEM_TYPE_KAOMOJI
             is Item.Category -> ITEM_TYPE_CATEGORY
         }
 
@@ -72,7 +81,7 @@ class EmojiAdapter(
     /**
      * ViewHolder for a single emoji item.
      *
-     * @param view The enlarged item_emoji view.
+     * @param view The item_emoji view.
      */
     inner class EmojiViewHolder(
         view: android.view.View,
@@ -88,9 +97,27 @@ class EmojiAdapter(
     }
 
     /**
+     * ViewHolder for a single kaomoji item.
+     *
+     * @param view The item_kaomoji view.
+     */
+    inner class KaomojiViewHolder(
+        view: android.view.View,
+    ) : RecyclerView.ViewHolder(view) {
+        private val kaomojiValue: TextView = view.findViewById(R.id.kaomoji_value)
+
+        fun bindView(kaomoji: Item.Kaomoji) {
+            kaomojiValue.text = kaomoji.kaomojiData.kaomoji
+            itemView.setOnClickListener {
+                kaomojiClick?.invoke(kaomoji.kaomojiData)
+            }
+        }
+    }
+
+    /**
      * ViewHolder for a category header.
      *
-     * @param view The enlarged item_emoji_category_title view.
+     * @param view The item_emoji_category_title view.
      */
     inner class EmojiCategoryViewHolder(
         view: android.view.View,
@@ -111,6 +138,11 @@ class EmojiAdapter(
             val emojiData: EmojiData,
         ) : Item
 
+        // A single tappable kaomoji.
+        data class Kaomoji(
+            val kaomojiData: KaomojiData,
+        ) : Item
+
         // A category header row.
         data class Category(
             val value: String,
@@ -119,6 +151,7 @@ class EmojiAdapter(
 
     companion object {
         private const val ITEM_TYPE_EMOJI = 0
-        private const val ITEM_TYPE_CATEGORY = 1
+        private const val ITEM_TYPE_KAOMOJI = 1
+        private const val ITEM_TYPE_CATEGORY = 2
     }
 }

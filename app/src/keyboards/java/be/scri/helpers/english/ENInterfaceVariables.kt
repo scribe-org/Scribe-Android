@@ -90,4 +90,14 @@ object ENInterfaceVariables {
     const val OBJECTS_EMOJI_HEADER = "Objects"
     const val SYMBOLS_EMOJI_HEADER = "Symbols"
     const val FLAGS_EMOJI_HEADER = "Flags"
+
+    const val KAOMOJI_RECENT_HEADER = "Recent"
+    const val KAOMOJI_JOY_HEADER = "Joy"
+    const val KAOMOJI_LOVE_HEADER = "Love"
+    const val KAOMOJI_COOL_HEADER = "Cool"
+    const val KAOMOJI_SAD_HEADER = "Sad"
+    const val KAOMOJI_ANGRY_HEADER = "Angry"
+    const val KAOMOJI_SURPRISED_HEADER = "Surprised"
+    const val KAOMOJI_SHRUG_HEADER = "Shrug"
+    const val KAOMOJI_ANIMALS_HEADER = "Animals"
 }

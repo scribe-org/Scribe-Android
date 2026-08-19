@@ -1,0 +1,114 @@
+# Kaomoji Specification File
+[kaomoji_joy]
+(•‿•);Happy;(•‿•)
+(｡◕‿◕｡);Smile;(｡◕‿◕｡)
+(*^ω^*);Joy;(*^ω^*)
+(≧◡≦);Delight;(≧◡≦)
+(─‿─);Satisfied;(─‿─)
+(★^O^★);Excited;(★^O^★)
+(•ө•);Cute;(•ө•)
+(◠‿◠);Peaceful;(◠‿◠)
+(◕‿◕✿);Flower;(◕‿◕✿)
+(o^▽^o);Giggle;(o^▽^o)
+(☆▽☆);Sparkle;(☆▽☆)
+(⌒▽⌒);Cheerful;(⌒▽⌒)
+\(^ヮ^)/;Yay;(^ヮ^)
+(￣▽￣);Relaxed;(￣▽￣)
+(っ˘▽˘)っ;Happy Hug;(っ˘▽˘)っ
+＼(￣▽￣)／;Hurray;＼(￣▽￣)／
+(＾▽＾);Big Smile;(＾▽＾)
+(*≧ω≦);Super Happy;(*≧ω≦)
+(❁´◡`❁);Blushing Smile;(❁´◡`❁)
+(๑˃̵ᴗ˂̵)و;Victory;(๑˃̵ᴗ˂̵)و
+
+[kaomoji_love]
+(♡‿♡);Love Eyes;(♡‿♡)
+(灬♥ω♥灬);In Love;(灬♥ω♥灬)
+(*♡∀♡);Heart Eyes;(*♡∀♡)
+(っ˘з(˘⌣˘ );Kiss;(っ˘з(˘⌣˘ )
+(◍•ᴗ•◍)❤;Cute Heart;(◍•ᴗ•◍)❤
+(づ￣ ³￣)づ;Blow Kiss;(づ￣ ³￣)づ
+(っ°v°)っ;Hug;(っ°v°)っ
+(♥_♥);Heart Face;(♥_♥)
+(✿ ♥‿♥);Flower Love;(✿ ♥‿♥)
+(๑ºvº๑);Loving;(๑ºvº๑)
+(⁄ ⁄•⁄ω⁄•⁄ ⁄);Shy Love;(⁄ ⁄•⁄ω⁄•⁄ ⁄)
+(˘∀˘)/(♥v♥);Romantic;(˘∀˘)/(♥v♥)
+
+[kaomoji_cool]
+(⌐■_■);Sunglasses;(⌐■_■)
+( ͡° ͜ʖ ͡°);Lenny;( ͡° ͜ʖ ͡°)
+( ▀ ͜▄ ͡▀);Cool Shades;( ▀ ͜▄ ͡▀)
+ᕙ(  •̀ ᗜ •́  )ᕗ;Flexing;ᕙ(  •̀ ᗜ •́  )ᕗ
+(￣ω￣)/;Yo;(￣ω￣)/
+(ಠ_┴);Monocle;(ಠ_┴)
+( ͡° 9 ͡°);Smirk;( ͡° 9 ͡°)
+(✧ω✧);Dazzling;(✧ω✧)
+( •_•)>⌐■-■;Putting Shades On;( •_•)>⌐■-■
+(⌐■_■);Cool Guy;(⌐■_■)
+ᕙ(⇀‸↼")ᕗ;Strong;ᕙ(⇀‸↼")ᕗ
+( ఠ_ఠ );Inspector;( ఠ_ఠ )
+
+[kaomoji_sad]
+(T_T);Crying;(T_T)
+(ノ﹏ヽ);Sobbing;(ノ﹏ヽ)
+(╥﹏╥);Tears;(╥﹏╥)
+(._.);Gloomy;(._.)
+(u_u);Sorrow;(u_u)
+(っω-`｡);Wiping Tears;(っω-`｡)
+(>_<);Pain;(>_<)
+( p_q);Depressed;( p_q)
+(;(A););Wailing;(;(A);)
+(｡╯︵╰｡);Heartbroken;(｡╯︵╰｡)
+(ಥ﹏ಥ);Sobbing Hard;(ಥ﹏ಥ)
+(ノ_<_)^;Down;(ノ_<_)^
+(︶︹︶);Disappointed;(︶︹︶)
+
+[kaomoji_angry]
+(╯°□°)╯︵ ┻━┻;Table Flip;(╯°□°)╯︵ ┻━┻
+(ง'̀-'́)ง;Fight;(ง'̀-'́)ง
+(ಠ_ಠ);Disapproval;(ಠ_ಠ)
+(¬_¬);Side Eye;(¬_¬)
+(╬▔▔);Rage;(╬▔▔)
+(ಠ益ಠ);Furious;(ಠ益ಠ)
+┬─┬ノ( º _ ºノ);Put Table Back;┬─┬ノ( º _ ºノ)
+(ノಠ益ಠ)ノ彡┻━┻;Rage Table Flip;(ノಠ益ಠ)ノ彡┻━┻
+( ಠ ┬─┬ ಠ );Angry Table;( ಠ ┬─┬ ಠ )
+(＃`Д´);Mad;(＃`Д´)
+(≖_≖);Glare;(≖_≖)
+(ʘ╬ʘ);Fire Rage;(ʘ╬ʘ)
+
+[kaomoji_surprised]
+(⊙_⊙);Shocked;(⊙_⊙)
+(°0°);Gasp;(°0°)
+(・_・;);Nervous;(・_・;)
+(ⴲ﹏ⴲ);Dizzy;(ⴲ﹏ⴲ)
+(O_O);Wide Eyes;(O_O)
+(°o°);Astonished;(°o°)
+(°△°);Surprised Mouth;(°△°)
+(꒪o꒪);Mind Blown;(꒪o꒪)
+(⊙_⊙;);Perplexed;(⊙_⊙;)
+(º_º);Stunned;(º_º)
+
+[kaomoji_shrug]
+¯\_(ツ)_/¯;Shrug;¯\_(ツ)_/¯
+┐(‘～`;)┌;Whatever;┐(‘～`;)┌
+┐(￣ヘ￣)┌;Meh;┐(￣ヘ￣)┌
+╮(─▽─)╭;Helpless;╮(─▽─)╭
+¯\_(⊙_ʖ⊙)_/¯;Baffled Shrug;¯\_(⊙_ʖ⊙)_/¯
+¯\_(►_◄)_/¯;Confused Shrug;¯\_(►_◄)_/¯
+┐(‘～` )┌;Unsure;┐(‘～` )┌
+╮(╯_╰)╭;Resigned;╮(╯_╰)╭
+
+[kaomoji_animals]
+(::^ω^::);Cat;(::^ω^::)
+(=^･ω･^=);Kitty;(=^･ω･^=)
+(◕ᴥ◕);Bear;(◕ᴥ◕)
+ʕ•ᴥ•ʔ;Teddy Bear;ʕ•ᴥ•ʔ
+(ᵔᴥᵔ);Puppy;(ᵔᴥᵔ)
+(•ᴥ•);Dog;(•ᴥ•)
+( ᐢ. ᐢ );Rabbit;( ᐢ. ᐢ )
+( • ɞ • );Bird;( • ɞ • )
+(='o'=);Bunny;(='o'=)
+ʕ ᴥ ʔ;Panda;ʕ ᴥ ʔ
+(=`ω´=);Fierce Cat;(=`ω´=)

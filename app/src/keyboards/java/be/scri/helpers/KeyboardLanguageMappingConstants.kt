@@ -93,6 +93,15 @@ object KeyboardLanguageMappingConstants {
                     "objects" to ENInterfaceVariables.OBJECTS_EMOJI_HEADER,
                     "symbols" to ENInterfaceVariables.SYMBOLS_EMOJI_HEADER,
                     "flags" to ENInterfaceVariables.FLAGS_EMOJI_HEADER,
+                    "kaomoji_recent" to ENInterfaceVariables.KAOMOJI_RECENT_HEADER,
+                    "kaomoji_joy" to ENInterfaceVariables.KAOMOJI_JOY_HEADER,
+                    "kaomoji_love" to ENInterfaceVariables.KAOMOJI_LOVE_HEADER,
+                    "kaomoji_cool" to ENInterfaceVariables.KAOMOJI_COOL_HEADER,
+                    "kaomoji_sad" to ENInterfaceVariables.KAOMOJI_SAD_HEADER,
+                    "kaomoji_angry" to ENInterfaceVariables.KAOMOJI_ANGRY_HEADER,
+                    "kaomoji_surprised" to ENInterfaceVariables.KAOMOJI_SURPRISED_HEADER,
+                    "kaomoji_shrug" to ENInterfaceVariables.KAOMOJI_SHRUG_HEADER,
+                    "kaomoji_animals" to ENInterfaceVariables.KAOMOJI_ANIMALS_HEADER,
                 ),
             "ES" to
                 mapOf(

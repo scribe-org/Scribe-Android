@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/kaomoji_value"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/emoji_item_size"
+    android:gravity="center"
+    android:textSize="14sp"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:singleLine="true"
+    android:ellipsize="end" />

@@ -756,11 +756,9 @@ abstract class GeneralKeyboardIME(
      * @param isSubsequentArea true if this is for a secondary view.
      */
     internal fun saveConjugateModeType(
-        language: String = this.language,
-        isSubsequentArea: Boolean = false,
+        mode: String = "none",
     ) {
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        val mode = if (!isSubsequentArea) defaultConjugateModeType else "none"
         sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
 
@@ -1032,7 +1030,7 @@ abstract class GeneralKeyboardIME(
                 invalidCommandSource = ScribeState.CONJUGATE
                 ScribeState.INVALID
             } else {
-                saveConjugateModeType(language)
+                saveConjugateModeType(defaultConjugateModeType)
                 ScribeState.SELECT_VERB_CONJUNCTION
             }
         refreshUI()
@@ -2024,7 +2022,7 @@ abstract class GeneralKeyboardIME(
         val uniqueData = data.distinct()
         val filteredData = uniqueData.filter { sublist -> sublist.contains(word) }
         val flattenList = filteredData.flatten()
-        saveConjugateModeType(language = language, true)
+        saveConjugateModeType("2x1")
         val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
         prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
         val keyboardXmlId = getKeyboardLayoutForState(currentState, true, flattenList.size)
@@ -2066,7 +2064,7 @@ abstract class GeneralKeyboardIME(
     ): Int =
         when (state) {
             ScribeState.SELECT_VERB_CONJUNCTION -> {
-                saveConjugateModeType(language)
+                saveConjugateModeType(defaultConjugateModeType)
                 if (!isSubsequentArea && dataSize == 0) {
                     defaultConjugateLayoutXML
                 } else {

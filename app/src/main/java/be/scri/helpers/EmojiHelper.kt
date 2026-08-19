@@ -84,15 +84,16 @@ data class EmojiData(
  * @return The drawable resource ID for the category icon.
  */
 fun getCategoryIconRes(category: String): Int =
-    when (category) {
-        "smileys_emotion" -> R.drawable.ic_emoji_smileys
-        "people_body" -> R.drawable.ic_emoji_people
-        "animals_nature" -> R.drawable.ic_emoji_animals
-        "food_drink" -> R.drawable.ic_emoji_food
-        "travel_places" -> R.drawable.ic_emoji_travel
-        "activities" -> R.drawable.ic_emoji_activities
-        "objects" -> R.drawable.ic_emoji_objects
-        "symbols" -> R.drawable.ic_emoji_symbols
-        "flags" -> R.drawable.ic_emoji_flags
+    when {
+        category.startsWith("kaomoji") -> R.drawable.ic_emoji_kaomoji
+        category == "smileys_emotion" -> R.drawable.ic_emoji_smileys
+        category == "people_body" -> R.drawable.ic_emoji_people
+        category == "animals_nature" -> R.drawable.ic_emoji_animals
+        category == "food_drink" -> R.drawable.ic_emoji_food
+        category == "travel_places" -> R.drawable.ic_emoji_travel
+        category == "activities" -> R.drawable.ic_emoji_activities
+        category == "objects" -> R.drawable.ic_emoji_objects
+        category == "symbols" -> R.drawable.ic_emoji_symbols
+        category == "flags" -> R.drawable.ic_emoji_flags
         else -> R.drawable.ic_emoji_vector
     }

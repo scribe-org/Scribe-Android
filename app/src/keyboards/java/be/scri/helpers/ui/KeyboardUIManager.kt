@@ -28,6 +28,7 @@ import be.scri.helpers.AutoGridLayoutManager
 import be.scri.helpers.EMOJI_SPEC_FILE_PATH
 import be.scri.helpers.EmojiAdapter
 import be.scri.helpers.EmojiData
+import be.scri.helpers.KaomojiData
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardLanguageMappingConstants.conjugatePlaceholder
 import be.scri.helpers.KeyboardLanguageMappingConstants.emojiCategoryHeaders
@@ -38,10 +39,16 @@ import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.getCategoryIconRes
+import be.scri.helpers.getRecentKaomojis
 import be.scri.helpers.parseRawEmojiSpecsFile
+import be.scri.helpers.parseRawKaomojiSpecsFile
+import be.scri.helpers.saveRecentKaomoji
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 import be.scri.views.KeyboardView
+
+private const val PALETTE_MODE_EMOJI = 0
+private const val PALETTE_MODE_KAOMOJI = 1
 
 /**
  * Manages the UI elements and state transitions for the GeneralKeyboardIME.
@@ -854,6 +861,7 @@ class KeyboardUIManager(
 
         Thread {
             val fullEmojiList = parseRawEmojiSpecsFile(context, EMOJI_SPEC_FILE_PATH)
+            val kaomojisList = parseRawKaomojiSpecsFile(context)
             val systemFontPaint =
                 android.graphics.Paint().apply {
                     typeface = android.graphics.Typeface.DEFAULT
@@ -864,15 +872,64 @@ class KeyboardUIManager(
                 }
 
             android.os.Handler(android.os.Looper.getMainLooper()).post {
-                setupEmojiAdapter(emojis, language)
+                setupPaletteModeTabs(emojis, kaomojisList, language)
             }
         }.start()
     }
 
+    private var activePaletteMode = PALETTE_MODE_EMOJI
+
     /**
-     * Sets up the emoji RecyclerView adapter and category strip.
-     *
-     * @param emojis The filtered list of emojis the device can render.
+     * Handles toggle switching between standard Emojis and Kaomojis via top_bar_emoji_toggle and top_bar_kaomoji_toggle.
+     */
+    private fun setupPaletteModeTabs(
+        emojis: List<EmojiData>,
+        kaomojis: List<KaomojiData>,
+        language: String,
+    ) {
+        fun updateToggleState() {
+            val isDarkMode = getIsDarkModeOrNot(context)
+            if (activePaletteMode == PALETTE_MODE_EMOJI) {
+                binding.topBarEmojiToggle.isSelected = true
+                binding.topBarEmojiToggle.imageTintList = ColorStateList.valueOf(Color.WHITE)
+
+                binding.topBarKaomojiToggle.isSelected = false
+                binding.topBarKaomojiToggle.setTextColor(if (isDarkMode) Color.LTGRAY else Color.DKGRAY)
+            } else {
+                binding.topBarKaomojiToggle.isSelected = true
+                binding.topBarKaomojiToggle.setTextColor(Color.WHITE)
+
+                binding.topBarEmojiToggle.isSelected = false
+                binding.topBarEmojiToggle.imageTintList = ColorStateList.valueOf(if (isDarkMode) Color.LTGRAY else Color.DKGRAY)
+            }
+        }
+
+        binding.topBarEmojiToggle.setOnClickListener {
+            if (activePaletteMode != PALETTE_MODE_EMOJI) {
+                activePaletteMode = PALETTE_MODE_EMOJI
+                updateToggleState()
+                setupEmojiAdapter(emojis, language)
+            }
+        }
+
+        binding.topBarKaomojiToggle.setOnClickListener {
+            if (activePaletteMode != PALETTE_MODE_KAOMOJI) {
+                activePaletteMode = PALETTE_MODE_KAOMOJI
+                updateToggleState()
+                setupKaomojiAdapter(kaomojis, language)
+            }
+        }
+
+        updateToggleState()
+        if (activePaletteMode == PALETTE_MODE_EMOJI) {
+            setupEmojiAdapter(emojis, language)
+        } else {
+            setupKaomojiAdapter(kaomojis, language)
+        }
+    }
+
+    /**
+     * Sets up the emoji RecyclerView adapter and category strip for standard emojis.
      */
     private fun setupEmojiAdapter(
         emojis: List<EmojiData>,
@@ -889,7 +946,7 @@ class KeyboardUIManager(
         emojiLayoutManager.spanSizeLookup =
             object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int =
-                    if (emojiItems[position] is EmojiAdapter.Item.Category) {
+                    if (emojiItems.getOrNull(position) is EmojiAdapter.Item.Category) {
                         emojiLayoutManager.spanCount
                     } else {
                         1
@@ -898,46 +955,92 @@ class KeyboardUIManager(
 
         binding.emojisList.layoutManager = emojiLayoutManager
         binding.emojisList.adapter =
-            EmojiAdapter(context, emojiItems, categoryHeaders) { emojiData ->
-                listener.onEmojiSelected(emojiData.emoji)
+            EmojiAdapter(
+                context = context,
+                items = emojiItems,
+                categoryHeaders = categoryHeaders,
+                itemClick = { emojiData ->
+                    listener.onEmojiSelected(emojiData.emoji)
+                },
+            )
+
+        setupEmojiCategoryIconStrip(emojiCategories.keys, emojiItems, emojiLayoutManager)
+    }
+
+    /**
+     * Sets up the kaomoji RecyclerView adapter and category strip for Kaomojis mode.
+     */
+    private fun setupKaomojiAdapter(
+        kaomojis: List<KaomojiData>,
+        language: String,
+    ) {
+        val recentKaomojis = getRecentKaomojis(context)
+        val kaomojiCategories = mutableMapOf<String, List<KaomojiData>>()
+        if (recentKaomojis.isNotEmpty()) {
+            kaomojiCategories["kaomoji_recent"] = recentKaomojis
+        }
+        kaomojiCategories.putAll(prepareKaomojiCategories(kaomojis))
+
+        val categoryHeaders =
+            (emojiCategoryHeaders["EN"] ?: emptyMap()) + (emojiCategoryHeaders[getLanguageAlias(language)] ?: emptyMap())
+
+        val defaultCategoryKey = if (recentKaomojis.isNotEmpty()) "kaomoji_recent" else (kaomojiCategories.keys.firstOrNull() ?: "kaomoji_joy")
+        updateKaomojiGrid(defaultCategoryKey, kaomojiCategories, categoryHeaders)
+        setupKaomojiCategoryNameStrip(kaomojiCategories.keys, kaomojiCategories, categoryHeaders)
+    }
+
+    /**
+     * Updates the Kaomoji grid to show ONLY items from the selected category (no section titles).
+     */
+    private fun updateKaomojiGrid(
+        selectedCategoryKey: String,
+        kaomojiCategories: Map<String, List<KaomojiData>>,
+        categoryHeaders: Map<String, String>,
+    ) {
+        val categoryKaomojis = kaomojiCategories[selectedCategoryKey] ?: emptyList()
+        val kaomojiItems = categoryKaomojis.map { EmojiAdapter.Item.Kaomoji(it) }
+
+        val emojiItemSize = context.resources.getDimensionPixelSize(R.dimen.emoji_item_size)
+        val emojiLayoutManager = AutoGridLayoutManager(context, emojiItemSize)
+
+        emojiLayoutManager.spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int =
+                    (emojiLayoutManager.spanCount / 2).coerceAtLeast(2)
             }
 
-        setupEmojiCategoryStrip(emojiCategories, emojiItems, emojiLayoutManager)
+        binding.emojisList.layoutManager = emojiLayoutManager
+        binding.emojisList.adapter =
+            EmojiAdapter(
+                context = context,
+                items = kaomojiItems,
+                categoryHeaders = categoryHeaders,
+                itemClick = {},
+                kaomojiClick = { kaomojiData ->
+                    saveRecentKaomoji(context, kaomojiData)
+                    listener.onEmojiSelected(kaomojiData.kaomoji)
+                },
+            )
     }
 
-    /**
-     * Groups emojis by category.
-     *
-     * @param emojis The full list of emojis.
-     * @return A map of category name to list of emojis in corresponding category.
-     */
     private fun prepareEmojiCategories(emojis: List<EmojiData>): Map<String, List<EmojiData>> = emojis.groupBy { it.category }
 
-    /**
-     * Builds a list of category headers and emoji items for the RecyclerView.
-     *
-     * @param categories The map of categories to their emojis.
-     * @return A flat list of [EmojiAdapter.Item] objects.
-     */
+    private fun prepareKaomojiCategories(kaomojis: List<KaomojiData>): Map<String, List<KaomojiData>> = kaomojis.groupBy { it.category }
+
     private fun prepareEmojiItems(categories: Map<String, List<EmojiData>>): List<EmojiAdapter.Item> {
-        val emojiItems = mutableListOf<EmojiAdapter.Item>()
+        val items = mutableListOf<EmojiAdapter.Item>()
         categories.entries.forEach { (category, emojis) ->
-            emojiItems.add(EmojiAdapter.Item.Category(category))
-            emojis.forEach { emojiItems.add(EmojiAdapter.Item.Emoji(it)) }
+            items.add(EmojiAdapter.Item.Category(category))
+            emojis.forEach { items.add(EmojiAdapter.Item.Emoji(it)) }
         }
-        return emojiItems
+        return items
     }
 
     /**
-     * Populates the emoji category strip at the bottom of the palette.
-     * Tapping a category icon scrolls the emoji list to that category.
-     *
-     * @param categories The map of category names to their emojis.
-     * @param emojiItems The full flat list used to find category positions.
-     * @param layoutManager The AutoGridLayoutManager used to scroll to positions.
+     * Populates standard emoji category icons in the bottom strip.
      */
-    private fun setupEmojiCategoryStrip(
-        categories: Map<String, List<EmojiData>>,
+    private fun setupEmojiCategoryIconStrip(
+        categoryKeys: Set<String>,
         emojiItems: List<EmojiAdapter.Item>,
         layoutManager: AutoGridLayoutManager,
     ) {
@@ -952,7 +1055,7 @@ class KeyboardUIManager(
 
         var activeButton: android.widget.ImageButton? = null
 
-        categories.keys.forEachIndexed { index, category ->
+        categoryKeys.forEachIndexed { index, category ->
             val button =
                 android.widget.ImageButton(context).apply {
                     setImageResource(getCategoryIconRes(category))
@@ -983,6 +1086,60 @@ class KeyboardUIManager(
 
             if (index == 0) activeButton = button
             binding.emojiCategoriesStrip.addView(button)
+        }
+    }
+
+    /**
+     * Populates styled text chips with category names for Kaomojis mode in the bottom strip.
+     */
+    private fun setupKaomojiCategoryNameStrip(
+        categoryKeys: Set<String>,
+        kaomojiCategories: Map<String, List<KaomojiData>>,
+        categoryHeaders: Map<String, String>,
+    ) {
+        binding.emojiCategoriesStrip.removeAllViews()
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val inactiveTextColor = if (isDarkMode) Color.LTGRAY else Color.DKGRAY
+
+        var activeChip: TextView? = null
+
+        categoryKeys.forEachIndexed { index, categoryKey ->
+            val headerTitle = categoryHeaders[categoryKey] ?: categoryKey.removePrefix("kaomoji_").replaceFirstChar { it.uppercase() }
+            val chip =
+                TextView(context).apply {
+                    text = headerTitle
+                    textSize = 13f
+                    setPadding(28, 12, 28, 12)
+                    layoutParams =
+                        android.widget.LinearLayout.LayoutParams(
+                            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                        ).apply {
+                            setMargins(8, 0, 8, 0)
+                        }
+                    background = ContextCompat.getDrawable(context, R.drawable.kaomoji_chip_background)
+                    isSelected = (index == 0)
+                    setTextColor(if (isSelected) Color.WHITE else inactiveTextColor)
+                    setTypeface(null, if (isSelected) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
+
+                    setOnClickListener {
+                        if (activeChip != this) {
+                            activeChip?.isSelected = false
+                            activeChip?.setTextColor(inactiveTextColor)
+                            activeChip?.setTypeface(null, android.graphics.Typeface.NORMAL)
+
+                            isSelected = true
+                            setTextColor(Color.WHITE)
+                            setTypeface(null, android.graphics.Typeface.BOLD)
+                            activeChip = this
+
+                            updateKaomojiGrid(categoryKey, kaomojiCategories, categoryHeaders)
+                        }
+                    }
+                }
+
+            if (index == 0) activeChip = chip
+            binding.emojiCategoriesStrip.addView(chip)
         }
     }
 
