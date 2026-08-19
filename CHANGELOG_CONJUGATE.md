@@ -15,6 +15,26 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ## Conjugate-Android 1.0.0
 
+### MVP release of Scribe Conjugate on Android
+
+### 🚀 Deployment
+
+- Releasing for the Google Play Store
+
 ### ✨ New Features
 
 - Feature
+
+### 🗃️ Data
+
+### 🎨 Design
+
+### 🌐 Localization
+
+- The application has been localized into many languages using [Weblate](https://weblate.org/en/) and the [Scribe-i18n](https://github.com/scribe-org/Scribe-i18n) project as a central source of localizations ([#44](https://github.com/scribe-org/Scribe-Android/issues/44), [#214](https://github.com/scribe-org/Scribe-Android/issues/214)).
+
+### ✅ Tests
+
+### ⚖️ Legal
+
+- All code has been developed under the GNU General Public License (GPL-3.0).
