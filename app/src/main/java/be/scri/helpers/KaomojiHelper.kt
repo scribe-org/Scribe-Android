@@ -2,6 +2,8 @@
 package be.scri.helpers
 
 import android.content.Context
+import android.util.Log
+import java.io.IOException
 
 const val KAOMOJI_SPEC_FILE_PATH = "kaomoji_spec.txt"
 private const val PREF_RECENT_KAOMOJI_KEY = "recent_kaomojis_list"
@@ -56,8 +58,8 @@ fun parseRawKaomojiSpecsFile(
                 }
             }
         }
-    } catch (e: Exception) {
-        android.util.Log.e("KaomojiHelper", "Error parsing kaomoji spec file: ${e.message}", e)
+    } catch (e: IOException) {
+        Log.e("KaomojiHelper", "Error parsing kaomoji spec file: ${e.message}", e)
     }
 
     return kaomojis
@@ -66,7 +68,10 @@ fun parseRawKaomojiSpecsFile(
 /**
  * Saves a Kaomoji to the recent history list in SharedPreferences.
  */
-fun saveRecentKaomoji(context: Context, kaomoji: KaomojiData) {
+fun saveRecentKaomoji(
+    context: Context,
+    kaomoji: KaomojiData,
+) {
     try {
         val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         val currentRecents = getRecentKaomojis(context).map { it.kaomoji }.toMutableList()
@@ -77,8 +82,8 @@ fun saveRecentKaomoji(context: Context, kaomoji: KaomojiData) {
         }
         val joined = currentRecents.joinToString("\n")
         prefs.edit().putString(PREF_RECENT_KAOMOJI_KEY, joined).apply()
-    } catch (e: Exception) {
-        android.util.Log.e("KaomojiHelper", "Error saving recent kaomoji: ${e.message}", e)
+    } catch (e: ClassCastException) {
+        Log.e("KaomojiHelper", "Error saving recent kaomoji: ${e.message}", e)
     }
 }
 
@@ -98,8 +103,8 @@ fun getRecentKaomojis(context: Context): List<KaomojiData> {
                 }
             }
         }
-    } catch (e: Exception) {
-        android.util.Log.e("KaomojiHelper", "Error getting recent kaomojis: ${e.message}", e)
+    } catch (e: ClassCastException) {
+        Log.e("KaomojiHelper", "Error getting recent kaomojis: ${e.message}", e)
     }
     return result
 }

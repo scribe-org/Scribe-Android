@@ -1005,8 +1005,7 @@ class KeyboardUIManager(
 
         emojiLayoutManager.spanSizeLookup =
             object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int =
-                    (emojiLayoutManager.spanCount / 2).coerceAtLeast(2)
+                override fun getSpanSize(position: Int): Int = (emojiLayoutManager.spanCount / 2).coerceAtLeast(2)
             }
 
         binding.emojisList.layoutManager = emojiLayoutManager
@@ -1111,12 +1110,13 @@ class KeyboardUIManager(
                     textSize = 13f
                     setPadding(28, 12, 28, 12)
                     layoutParams =
-                        android.widget.LinearLayout.LayoutParams(
-                            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                        ).apply {
-                            setMargins(8, 0, 8, 0)
-                        }
+                        android.widget.LinearLayout
+                            .LayoutParams(
+                                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                            ).apply {
+                                setMargins(8, 0, 8, 0)
+                            }
                     background = ContextCompat.getDrawable(context, R.drawable.kaomoji_chip_background)
                     isSelected = (index == 0)
                     setTextColor(if (isSelected) Color.WHITE else inactiveTextColor)

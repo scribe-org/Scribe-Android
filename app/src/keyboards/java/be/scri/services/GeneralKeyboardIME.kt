@@ -755,9 +755,7 @@ abstract class GeneralKeyboardIME(
      * @param language The current keyboard language.
      * @param isSubsequentArea true if this is for a secondary view.
      */
-    internal fun saveConjugateModeType(
-        mode: String = "none",
-    ) {
+    internal fun saveConjugateModeType(mode: String = "none") {
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
         sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
