@@ -10,7 +10,6 @@ import org.junit.Before
 import org.junit.Test
 
 class KeyboardStateManagerTest {
-
     private lateinit var stateManager: KeyboardStateManager
 
     @Before

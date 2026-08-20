@@ -8,7 +8,6 @@ import be.scri.models.ScribeState
  * Manages the current state transitions and state flags for the Scribe keyboard command system.
  */
 class KeyboardStateManager {
-
     /**
      * The active state of the keyboard command system.
      */

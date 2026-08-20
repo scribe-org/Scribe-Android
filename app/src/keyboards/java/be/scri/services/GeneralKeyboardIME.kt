@@ -50,8 +50,8 @@ import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.FloatingKeyboardHandler
 import be.scri.helpers.KeyboardBase
-import be.scri.helpers.KeyboardStateManager
 import be.scri.helpers.KeyboardLanguageMappingConstants
+import be.scri.helpers.KeyboardStateManager
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
