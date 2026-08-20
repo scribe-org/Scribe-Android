@@ -50,6 +50,7 @@ import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.FloatingKeyboardHandler
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.KeyboardStateManager
 import be.scri.helpers.KeyboardLanguageMappingConstants
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
@@ -187,8 +188,19 @@ abstract class GeneralKeyboardIME(
     private var currentEnterKeyType: Int? = null
     private var isNumericKeyboardActive: Boolean = false
 
-    internal var currentState: ScribeState = ScribeState.IDLE
-    internal var invalidCommandSource: ScribeState = ScribeState.IDLE
+    internal val stateManager = KeyboardStateManager()
+
+    internal var currentState: ScribeState
+        get() = stateManager.currentState
+        set(value) {
+            stateManager.currentState = value
+        }
+
+    internal var invalidCommandSource: ScribeState
+        get() = stateManager.invalidCommandSource
+        set(value) {
+            stateManager.invalidCommandSource = value
+        }
 
     // Properties used by BackspaceHandler, delegated to UI Manager.
     internal var currentCommandBarHint: String
@@ -793,7 +805,7 @@ abstract class GeneralKeyboardIME(
      */
     internal fun moveToIdleState() {
         clearSuggestionData()
-        currentState = ScribeState.IDLE
+        stateManager.moveToIdle()
         saveConjugateModeType("none")
         currentVerbForConjugation = null
         selectedConjugationSubCategory = null
@@ -813,9 +825,9 @@ abstract class GeneralKeyboardIME(
     // MARK: KeyboardUIListener
 
     override fun onScribeKeyOptionsClicked() {
-        if (currentState == ScribeState.IDLE) {
+        if (stateManager.isIdle) {
             clearSuggestionData()
-            currentState = ScribeState.SELECT_COMMAND
+            stateManager.moveToState(ScribeState.SELECT_COMMAND)
             saveConjugateModeType("none")
             currentVerbForConjugation = null
         } else {
@@ -829,20 +841,20 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun onTranslateClicked() {
-        currentState = ScribeState.TRANSLATE
+        stateManager.moveToState(ScribeState.TRANSLATE)
         saveConjugateModeType("none")
         refreshUI()
     }
 
     override fun onConjugateClicked() {
-        if (currentState != ScribeState.SELECT_VERB_CONJUNCTION) {
-            currentState = ScribeState.CONJUGATE
+        if (stateManager.currentState != ScribeState.SELECT_VERB_CONJUNCTION) {
+            stateManager.moveToState(ScribeState.CONJUGATE)
         }
         refreshUI()
     }
 
     override fun onPluralClicked() {
-        currentState = ScribeState.PLURAL
+        stateManager.moveToState(ScribeState.PLURAL)
         saveConjugateModeType("none")
         if (isPluralCapitalized) keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         refreshUI()
@@ -992,8 +1004,7 @@ abstract class GeneralKeyboardIME(
             }
 
         if (commandModeOutput.isEmpty()) {
-            invalidCommandSource = currentState
-            currentState = ScribeState.INVALID
+            stateManager.setInvalidState(currentState)
             refreshUI()
         } else {
             applyCommandOutput(commandModeOutput, inputConnection)
@@ -1027,14 +1038,12 @@ abstract class GeneralKeyboardIME(
 
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, searchInput)
 
-        currentState =
-            if (conjugateOutput == null) {
-                invalidCommandSource = ScribeState.CONJUGATE
-                ScribeState.INVALID
-            } else {
-                saveConjugateModeType(language)
-                ScribeState.SELECT_VERB_CONJUNCTION
-            }
+        if (conjugateOutput == null) {
+            stateManager.setInvalidState(ScribeState.CONJUGATE)
+        } else {
+            saveConjugateModeType(language)
+            stateManager.moveToState(ScribeState.SELECT_VERB_CONJUNCTION)
+        }
         refreshUI()
     }
 
