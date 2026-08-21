@@ -58,7 +58,7 @@ object RatingHelper {
             INSTALLER_FDROID -> "Rate us on F-Droid"
             INSTALLER_AMAZON -> "Rate us on Amazon Appstore"
             INSTALLER_SAMSUNG -> "Rate us on Galaxy Store"
-            else -> "Rate us on your app store"
+            else -> "Rate us on Google Play Store"
         }
 
     /**
