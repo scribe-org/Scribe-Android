@@ -47,16 +47,6 @@ object RatingHelper {
         }
 
     /**
-     * Initiates the app rating process based on the installation source.
-     *
-     * If the app was installed from the Google Play Store, it attempts to launch the in-app review flow.
-     * If the app was installed from F-Droid, it opens the app's F-Droid page in a browser.
-     * For any other installation source, it displays a toast message indicating an unknown source.
-     *
-     * @param context The application context.
-     * @param activity The current activity, required for launching the in-app review flow.
-     */
-    /**
      * Gets the store description text (e.g. "Rate us on Google Play Store").
      *
      * @param context App context.
@@ -71,6 +61,16 @@ object RatingHelper {
             else -> "Rate us on your app store"
         }
 
+    /**
+     * Initiates the app rating process based on the installation source.
+     *
+     * If the app was installed from the Google Play Store, it attempts to launch the in-app review flow.
+     * If the app was installed from F-Droid, it opens the app's F-Droid page in a browser.
+     * For any other installation source, it displays a toast message indicating an unknown source.
+     *
+     * @param context The application context.
+     * @param activity The current activity, required for launching the in-app review flow.
+     */
     fun rateScribe(
         context: Context,
         activity: ComponentActivity,

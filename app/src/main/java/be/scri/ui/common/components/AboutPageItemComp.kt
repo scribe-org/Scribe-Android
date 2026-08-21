@@ -74,7 +74,7 @@ fun AboutPageItemComp(
             )
             Spacer(modifier = Modifier.width(8.dp))
             androidx.compose.foundation.layout.Column(
-                modifier = Modifier.weight(1f).padding(start = 4.dp)
+                modifier = Modifier.weight(1f).padding(start = 4.dp),
             ) {
                 Text(
                     text = title,
