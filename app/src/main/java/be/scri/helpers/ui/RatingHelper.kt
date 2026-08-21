@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers.ui
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -20,6 +22,8 @@ import com.google.android.play.core.review.ReviewManagerFactory
 object RatingHelper {
     private const val INSTALLER_PLAY_STORE = "com.android.vending"
     private const val INSTALLER_FDROID = "org.fdroid.fdroid"
+    private const val INSTALLER_AMAZON = "com.amazon.venezia"
+    private const val INSTALLER_SAMSUNG = "com.sec.android.app.samsungapps"
 
     /**
      * Gets the package name of the app that installed this app.
@@ -31,7 +35,12 @@ object RatingHelper {
      */
     private fun getInstallSource(context: Context): String? =
         try {
-            context.packageManager.getInstallerPackageName(context.packageName)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                context.packageManager.getInstallSourceInfo(context.packageName).installingPackageName
+            } else {
+                @Suppress("DEPRECATION")
+                context.packageManager.getInstallerPackageName(context.packageName)
+            }
         } catch (e: PackageManager.NameNotFoundException) {
             Log.e("RatingHelper", "Failed to get install source", e)
             null
@@ -47,11 +56,27 @@ object RatingHelper {
      * @param context The application context.
      * @param activity The current activity, required for launching the in-app review flow.
      */
+    /**
+     * Gets the store description text (e.g. "Rate us on Google Play Store").
+     *
+     * @param context App context.
+     * @return String for the description.
+     */
+    fun getStoreDesc(context: Context): String? =
+        when (getInstallSource(context)) {
+            INSTALLER_PLAY_STORE -> "Rate us on Google Play Store"
+            INSTALLER_FDROID -> "Rate us on F-Droid"
+            INSTALLER_AMAZON -> "Rate us on Amazon Appstore"
+            INSTALLER_SAMSUNG -> "Rate us on Galaxy Store"
+            else -> "Rate us on your app store"
+        }
+
     fun rateScribe(
         context: Context,
         activity: ComponentActivity,
     ) {
-        when (getInstallSource(context)) {
+        val installer = getInstallSource(context)
+        when (installer) {
             INSTALLER_PLAY_STORE -> {
                 val reviewManager = ReviewManagerFactory.create(context)
                 val request = reviewManager.requestReviewFlow()
@@ -73,14 +98,43 @@ object RatingHelper {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 try {
                     context.startActivity(intent)
-                } catch (e: PackageManager.NameNotFoundException) {
+                } catch (e: ActivityNotFoundException) {
                     Toast.makeText(context, "No browser found to open F-Droid page", Toast.LENGTH_SHORT).show()
                     Log.e("RatingHelper", "Unable to open F-Droid link", e)
                 }
             }
 
+            INSTALLER_AMAZON -> {
+                val url = "https://www.amazon.com/gp/mas/dl/android?p=${context.packageName}"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                try {
+                    context.startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(context, "No browser found to open Amazon page", Toast.LENGTH_SHORT).show()
+                    Log.e("RatingHelper", "Unable to open Amazon link", e)
+                }
+            }
+
+            INSTALLER_SAMSUNG -> {
+                val url = "https://galaxystore.samsung.com/detail/${context.packageName}"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                try {
+                    context.startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(context, "No browser found to open Galaxy Store page", Toast.LENGTH_SHORT).show()
+                    Log.e("RatingHelper", "Unable to open Galaxy Store link", e)
+                }
+            }
+
             else -> {
-                Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
+                val url = "https://play.google.com/store/apps/details?id=${context.packageName}"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                try {
+                    context.startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(context, "No browser found to open Play Store page", Toast.LENGTH_SHORT).show()
+                    Log.e("RatingHelper", "Unable to open Play Store link", e)
+                }
             }
         }
     }
