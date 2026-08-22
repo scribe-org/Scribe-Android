@@ -3,18 +3,11 @@
 package be.scri.services
 
 import DataContract
-import android.R.color.white
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.database.sqlite.SQLiteException
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
-import android.os.Build
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
@@ -31,14 +24,7 @@ import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.toColorInt
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.InputMethodViewBinding
@@ -56,7 +42,6 @@ import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getHoldKeyStyle
-import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
 import be.scri.helpers.PreferencesHelper.getIsSoundEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
@@ -68,6 +53,7 @@ import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.clipboard.ClipboardHandler
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.helpers.ui.KeyboardThemeManager
 import be.scri.helpers.ui.KeyboardUIManager
 import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
@@ -166,8 +152,6 @@ abstract class GeneralKeyboardIME(
 
     internal fun recreateKeyboardPublic() = recreateKeyboard()
 
-    internal fun applyNavBarColorPublic() = applyNavBarColor()
-
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
     private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
     private var conjugateLabels: Set<String> = emptySet()
@@ -189,6 +173,7 @@ abstract class GeneralKeyboardIME(
     private var isNumericKeyboardActive: Boolean = false
 
     internal val stateManager = KeyboardStateManager()
+    internal val themeManager = KeyboardThemeManager()
 
     internal var currentState: ScribeState
         get() = stateManager.currentState
@@ -450,42 +435,11 @@ abstract class GeneralKeyboardIME(
             if (hasData) View.GONE else View.VISIBLE
         binding.commandOptionsBar.visibility =
             if (hasData && !isNumericKeyboardActive) View.VISIBLE else View.GONE
-        val isDarkMode = getIsDarkModeOrNot(applicationContext)
-        val bannerColor =
-            if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
-        val bannerTextColor =
-            if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
-        banner.setTextColor(ContextCompat.getColor(applicationContext, bannerTextColor))
-        banner.post {
-            val iconColor = ContextCompat.getColor(applicationContext, bannerTextColor)
-            banner.compoundDrawables.forEach { drawable ->
-                drawable?.setTint(iconColor)
-            }
-        }
-        val border = GradientDrawable()
-        border.cornerRadius = 12f * resources.displayMetrics.density
-        border.setColor(ContextCompat.getColor(applicationContext, bannerColor))
-
-        if (isDarkMode) {
-            border.setStroke(
-                (1.5f * resources.displayMetrics.density).toInt(),
-                ContextCompat.getColor(applicationContext, bannerTextColor),
-            )
-        }
-
-        val rippleColor =
-            ColorUtils.setAlphaComponent(
-                ContextCompat.getColor(applicationContext, bannerTextColor),
-                51,
-            )
-        val rippleDrawable =
-            RippleDrawable(ColorStateList.valueOf(rippleColor), border, null)
-
-        bannerContainer.background = rippleDrawable
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            bannerContainer.outlineAmbientShadowColor = Color.TRANSPARENT
-            bannerContainer.outlineSpotShadowColor = Color.TRANSPARENT
-        }
+        themeManager.applyBannerTheme(
+            context = applicationContext,
+            banner = banner,
+            bannerContainer = bannerContainer,
+        )
 
         bannerContainer.setOnClickListener {
             val intent =
@@ -690,75 +644,13 @@ abstract class GeneralKeyboardIME(
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
     }
 
-    private fun isLightColor(color: Int): Boolean {
-        val darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
-        return darkness < 0.5
-    }
-
-    private fun applyNavBarColor() {
-        val window = window?.window ?: return
-        window.decorView.post {
-            val isDarkMode = getIsDarkModeOrNot(applicationContext)
-            val colorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
-            val color = ContextCompat.getColor(this, colorRes)
-
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-            if (Build.VERSION.SDK_INT < 35) {
-                window.navigationBarColor = Color.TRANSPARENT
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                window.isNavigationBarContrastEnforced = false
-            }
-
-            if (isFloatingMode) {
-                window.decorView.setBackgroundColor(Color.TRANSPARENT)
-            } else {
-                window.decorView.setBackgroundColor(color)
-            }
-            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-            insetsController.isAppearanceLightNavigationBars = isLightColor(color)
-
-            if (isFloatingMode) {
-                insetsController.hide(WindowInsetsCompat.Type.navigationBars())
-                insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                @Suppress("DEPRECATION")
-                window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                )
-            } else {
-                insetsController.show(WindowInsetsCompat.Type.navigationBars())
-                @Suppress("DEPRECATION")
-                window.decorView.systemUiVisibility = 0
-            }
-
-            if (this::uiManager.isInitialized) {
-                if (isFloatingMode) {
-                    uiManager.binding.root.setBackgroundColor(Color.TRANSPARENT)
-                    // Keep drag bar and pill color in sync with dark/light mode changes
-                    val kbBgColor = ContextCompat.getColor(this, if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color)
-                    uiManager.binding.floatingDragBar.setBackgroundColor(kbBgColor)
-                    // Pill: dark mode → 30% white, light mode → 25% black
-                    val pillColor = if (isDarkMode) 0x4DFFFFFF.toInt() else 0x40000000.toInt()
-                    uiManager.binding.floatingDragHandle.setColorFilter(pillColor)
-                } else {
-                    uiManager.binding.root.setBackgroundColor(color)
-                }
-
-                ViewCompat.setOnApplyWindowInsetsListener(uiManager.binding.root) { view, insets ->
-                    val insetTypes = WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-                    val navBarHeight = insets.getInsets(insetTypes).bottom
-                    val paddingBottom = if (isFloatingMode) 0 else navBarHeight
-                    view.setPadding(0, 0, 0, paddingBottom)
-                    insets
-                }
-
-                uiManager.binding.root.post {
-                    ViewCompat.requestApplyInsets(uiManager.binding.root)
-                }
-            }
-        }
+    internal fun applyNavBarColor() {
+        themeManager.applyNavBarColor(
+            service = this,
+            window = window?.window,
+            isFloatingMode = isFloatingMode,
+            uiManager = if (this::uiManager.isInitialized) uiManager else null,
+        )
     }
 
     /**
@@ -1584,16 +1476,13 @@ abstract class GeneralKeyboardIME(
         if (isPlural) {
             uiManager.genderSuggestionLeft?.visibility = View.INVISIBLE
             uiManager.genderSuggestionRight?.visibility = View.INVISIBLE
-            uiManager.binding.translateBtn.apply {
-                visibility = View.VISIBLE
-                text = "PL"
-                textSize = NOUN_TYPE_SIZE
-                background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.annotateOrange)
-                setTextColor(ContextCompat.getColor(context, white))
-                isClickable = false
-                setOnClickListener(null)
-            }
+            themeManager.applySingleSuggestionStyle(
+                context = applicationContext,
+                button = uiManager.binding.translateBtn,
+                colorRes = R.color.annotateOrange,
+                buttonText = "PL",
+                textSizeSp = NOUN_TYPE_SIZE,
+            )
             return true
         }
         return false
@@ -1699,25 +1588,14 @@ abstract class GeneralKeyboardIME(
 
         uiManager.genderSuggestionLeft?.visibility = View.INVISIBLE
         uiManager.genderSuggestionRight?.visibility = View.INVISIBLE
-        uiManager.binding.translateBtn.textSize = NOUN_TYPE_SIZE
 
-        uiManager.binding.translateBtn.apply {
-            visibility = View.VISIBLE
-            text = buttonText
-            isClickable = false
-            setOnClickListener(null)
-
-            if (colorRes != R.color.transparent) {
-                background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
-                backgroundTintList = ContextCompat.getColorStateList(context, colorRes)
-                setTextColor(ContextCompat.getColor(context, white))
-            } else {
-                background = null
-                val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.transparent)
-                setTextColor(ContextCompat.getColor(context, if (isUserDarkMode) white else android.R.color.black))
-            }
-        }
+        themeManager.applySingleSuggestionStyle(
+            context = applicationContext,
+            button = uiManager.binding.translateBtn,
+            colorRes = colorRes,
+            buttonText = buttonText,
+            textSizeSp = NOUN_TYPE_SIZE,
+        )
     }
 
     /**
@@ -1734,31 +1612,13 @@ abstract class GeneralKeyboardIME(
         text: String,
         backgroundRes: Int,
     ) {
-        button.text = text
-        button.setTextColor(ContextCompat.getColor(applicationContext, be.scri.R.color.white))
-        button.isClickable = false
-        button.setOnClickListener(null)
-
-        val background = ContextCompat.getDrawable(applicationContext, backgroundRes)?.mutate()
-
-        if (background is RippleDrawable) {
-            val contentDrawable = background.getDrawable(0)
-
-            if (contentDrawable is LayerDrawable) {
-                val shapeDrawable =
-                    contentDrawable.findDrawableByLayerId(
-                        be.scri.R.id.button_background_shape,
-                    ) as? GradientDrawable
-
-                shapeDrawable?.setColor(
-                    ContextCompat.getColor(
-                        applicationContext,
-                        colorRes,
-                    ),
-                )
-            }
-        }
-        button.background = background
+        themeManager.applyInformativeSuggestionStyle(
+            context = applicationContext,
+            button = button,
+            colorRes = colorRes,
+            text = text,
+            backgroundRes = backgroundRes,
+        )
     }
 
     /**
@@ -1909,8 +1769,6 @@ abstract class GeneralKeyboardIME(
         button: Button,
         text: String,
     ) {
-        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
         button.text = text
         button.isAllCaps = false
         button.visibility = View.VISIBLE
@@ -1918,7 +1776,7 @@ abstract class GeneralKeyboardIME(
         button.setOnClickListener(null)
         button.background = null
         button.foreground = null
-        button.setTextColor(textColor)
+        button.setTextColor(themeManager.getSuggestionTextColor(applicationContext))
         button.setOnClickListener {
             currentInputConnection?.commitText("$text ", 1)
             moveToIdleState()

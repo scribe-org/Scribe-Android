@@ -265,7 +265,7 @@ class FloatingKeyboardHandler(
                 root.requestLayout()
             }
         }
-        ime.applyNavBarColorPublic()
+        ime.applyNavBarColor()
     }
 
     private fun updateFloatingViewsPosition(
