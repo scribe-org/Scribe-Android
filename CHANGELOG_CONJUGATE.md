@@ -31,6 +31,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The Settings tab for the Scribe keyboard application was migrated to allow base settings for the app interface ([#562](https://github.com/scribe-org/Scribe-Android/issues/562)).
 - The About tab for the Scribe keyboard application was migrated to provide information on the application and community ([#561](https://github.com/scribe-org/Scribe-Android/issues/561)).
 - The application and community's relationship to the Wikimedia movement is explained in app ([#52](https://github.com/scribe-org/Scribe-Android/issues/52)).
+- The user is able to easily rate the application ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
 
 ### 🗃️ Data
 
