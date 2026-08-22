@@ -144,14 +144,14 @@
     <string name="i18n.app.keyboard.shift">Shift</string>
     <string name="i18n.app.keyboard.suggestion">Suggestion</string>
     <string name="i18n.app.keyboard.tutorial.chapters">Tutorial chapters</string>
-    <string name="i18n.app.keyboard.tutorial.description">This quick tutorial will show you how to use Scribe to support writing in your second language.\nMake sure you select the desired Scribe keyboard by pressing 🌐 when typing.</string>
+    <string name="i18n.app.keyboard.tutorial.description">This quick tutorial will show you how to use Scribe to support writing in your second language.\n\nMake sure you select the desired Scribe keyboard by pressing 🌐 when typing.</string>
     <string name="i18n.app.keyboard.tutorial.finish_tutorial">Finish tutorial</string>
     <string name="i18n.app.keyboard.tutorial.next">Next</string>
     <string name="i18n.app.keyboard.tutorial.non_scribe_keyboard">Non-Scribe Keyboard</string>
     <string name="i18n.app.keyboard.tutorial.not_quite">Not quite! Try writing {expected_word}.</string>
     <string name="i18n.app.keyboard.tutorial.noun_annotation">Noun annotation</string>
-    <string name="i18n.app.keyboard.tutorial.noun_annotation.instruction_1">Write the word "{mother_word}". Notice the word suggestions that appear on the keyboard\'s top bar.\n\nThen, press space. You will see the word\'s gender tag on the keyboard\'s top bar – in this case, "{mother_tag}" for {mother_gender}.</string>
-    <string name="i18n.app.keyboard.tutorial.noun_annotation.instruction_2">Now write the word "{father_word}" and then press space. The gender tag will be "{father_tag}", for {father_gender}.</string>
+    <string name="i18n.app.keyboard.tutorial.noun_annotation.instruction_1">Write the word "{mother_word}". Notice the word suggestions that appear on the keyboard\'s top bar.\n\nThen, press space. You will see the word\'s gender tag on the keyboard\'s top bar – in this case "{mother_tag}" for {mother_gender}.</string>
+    <string name="i18n.app.keyboard.tutorial.noun_annotation.instruction_2">Now write the word "{father_word}" and then press space. The gender tag will be "{father_tag}" for {father_gender}.</string>
     <string name="i18n.app.keyboard.tutorial.noun_annotation.invalid_language">Noun annotation is not available for {language} as nouns don\'t have genders. Please proceed to the next tutorial.</string>
     <string name="i18n.app.keyboard.tutorial.noun_plurals">Noun plurals</string>
     <string name="i18n.app.keyboard.tutorial.noun_plurals.instruction">Scribe can easily find the plural of any noun that Wikidata has. Tap the pencil-like Scribe key on the top-left corner of your keyboard, and select {plural}.\n\nThen write the noun you want the plural for, press ▶, and the plural will be returned to you.</string>
@@ -167,6 +167,8 @@
     <string name="i18n.app.settings.conjugate_app_hint_tooltip">Settings for the app\'s language and interface are found here.</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Annotate suggest/complete</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Underline suggestions and completions to show their genders as you type.</string>
+    <string name="i18n.app.settings.keyboard.functionality.auto_space_punctuation">Auto-space punctuation</string>
+    <string name="i18n.app.settings.keyboard.functionality.auto_space_punctuation_description">Automatically adjust spaces around punctuation marks.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">Autosuggest emojis</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji_description">Turn on emoji suggestions and completions for more expressive typing.</string>
     <string name="i18n.app.settings.keyboard.functionality.default_emoji_tone">Default emoji skin tone</string>
