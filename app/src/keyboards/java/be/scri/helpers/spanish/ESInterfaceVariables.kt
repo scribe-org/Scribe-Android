@@ -94,4 +94,6 @@ object ESInterfaceVariables {
     const val OBJECTS_EMOJI_HEADER = "Objetos"
     const val SYMBOLS_EMOJI_HEADER = "Símbolos"
     const val FLAGS_EMOJI_HEADER = "Banderas"
+
+    const val RECENTLY_USED_EMOJI_HEADER = "Recently Used"
 }

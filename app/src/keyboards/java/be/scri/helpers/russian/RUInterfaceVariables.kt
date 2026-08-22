@@ -73,4 +73,5 @@ object RUInterfaceVariables {
     const val OBJECTS_EMOJI_HEADER = "Предметы"
     const val SYMBOLS_EMOJI_HEADER = "Символы"
     const val FLAGS_EMOJI_HEADER = "Флаги"
+    const val RECENTLY_USED_EMOJI_HEADER = "Недавно использованные"
 }
