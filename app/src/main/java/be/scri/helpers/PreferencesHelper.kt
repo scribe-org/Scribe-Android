@@ -15,6 +15,7 @@ import androidx.core.content.edit
 object PreferencesHelper {
     const val SCRIBE_PREFS = "app_preferences"
     private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
+    private const val AUTO_SPACE_AFTER_PUNCTUATION = "auto_space_after_punctuation"
     private const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
     private const val SOUND_ON_KEYPRESS = "sound_on_keypress"
     private const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
@@ -92,6 +93,27 @@ object PreferencesHelper {
             putBoolean(
                 getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
                 shouldEnablePeriodOnSpaceBarDoubleTap,
+            )
+        }
+    }
+
+    /**
+     * Sets the preference for enabling or disabling auto spacing after punctuation.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldEnableAutoSpaceAfterPunctuation Whether to enable or disable the feature.
+     */
+    fun setAutoSpaceAfterPunctuationPreference(
+        context: Context,
+        language: String,
+        shouldEnableAutoSpaceAfterPunctuation: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(
+                getLanguageSpecificPreferenceKey(AUTO_SPACE_AFTER_PUNCTUATION, language),
+                shouldEnableAutoSpaceAfterPunctuation,
             )
         }
     }
@@ -348,7 +370,23 @@ object PreferencesHelper {
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
-        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), false)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), true)
+    }
+
+    /**
+     * Retrieves whether auto spacing after punctuation is enabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     *
+     * @return true if auto spacing after punctuation is enabled, false otherwise.
+     */
+    fun getAutoSpaceAfterPunctuationPreference(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(AUTO_SPACE_AFTER_PUNCTUATION, language), true)
     }
 
     /**

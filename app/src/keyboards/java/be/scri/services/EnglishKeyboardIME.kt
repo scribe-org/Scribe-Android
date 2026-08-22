@@ -6,23 +6,21 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
+import be.scri.models.ScribeLanguage
 
 /**
  * The EnglishKeyboardIME class provides the input method for the English language keyboard.
  */
-class EnglishKeyboardIME : GeneralKeyboardIME("English") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
+class EnglishKeyboardIME : GeneralKeyboardIME(ScribeLanguage.ENGLISH) {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_english_tablet
             isPeriodAndCommaEnabled() -> R.xml.keys_letters_english
             else -> R.xml.keys_letters_english_without_period_and_comma
         }
+
+    override val defaultConjugateModeType: String = "2x2"
+    override val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_2x2
 
     override val keyboardLetters: Int = 0
     override val keyboardSymbols: Int = 1

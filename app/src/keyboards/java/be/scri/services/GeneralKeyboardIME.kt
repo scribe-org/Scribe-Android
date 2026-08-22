@@ -10,7 +10,6 @@ import android.content.res.ColorStateList
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
@@ -23,10 +22,7 @@ import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.util.Log
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
@@ -52,8 +48,10 @@ import be.scri.helpers.AutocompletionHandler
 import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
+import be.scri.helpers.FloatingKeyboardHandler
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardLanguageMappingConstants
+import be.scri.helpers.KeyboardStateManager
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
@@ -67,13 +65,13 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
-import be.scri.helpers.clipboard.ClipboardMonitor
+import be.scri.helpers.clipboard.ClipboardHandler
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.ui.KeyboardUIManager
+import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.views.KeyboardView
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 private const val DATA_SIZE_2 = 2
@@ -81,11 +79,16 @@ private const val DATA_CONSTANT_3 = 3
 
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class GeneralKeyboardIME(
-    override var language: String,
+    val scribeLanguage: ScribeLanguage,
 ) : InputMethodService(),
     KeyboardView.OnKeyboardActionListener,
     KeyboardUIManager.KeyboardUIListener,
     KeyboardBase.KeyboardContextProvider {
+    constructor(languageName: String) : this(ScribeLanguage.fromDisplayName(languageName))
+
+    override val language: String
+        get() = scribeLanguage.displayName
+
     // Abstract members required by subclasses (like EnglishKeyboardIME).
     abstract override fun getKeyboardLayoutXML(): Int
 
@@ -104,6 +107,11 @@ abstract class GeneralKeyboardIME(
     abstract var inputTypeClass: Int
     abstract var enterKeyType: Int
     abstract var switchToLetters: Boolean
+
+    // Language-specific layout and behavior configurations (decoupled from base class).
+    open val defaultConjugateModeType: String = "3x2"
+    open val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_3x2
+    open val isPluralCapitalized: Boolean = false
 
     /**
      * Property used by EnglishKeyboardIME override.
@@ -126,9 +134,17 @@ abstract class GeneralKeyboardIME(
     internal val binding: InputMethodViewBinding
         get() = uiManager.binding
 
-    internal var hasNewClip: Boolean = false
-    internal var latestClipText: String? = null
-    private lateinit var clipboardMonitor: ClipboardMonitor
+    internal val clipboardHandler by lazy { ClipboardHandler(this) }
+    internal var hasNewClip: Boolean
+        get() = clipboardHandler.hasNewClip
+        set(value) {
+            clipboardHandler.hasNewClip = value
+        }
+    internal var latestClipText: String?
+        get() = clipboardHandler.latestClipText
+        set(value) {
+            clipboardHandler.latestClipText = value
+        }
 
     // MARK: State Variables
 
@@ -143,7 +159,14 @@ abstract class GeneralKeyboardIME(
     internal lateinit var suggestionHandler: SuggestionHandler
     internal lateinit var autocompletionHandler: AutocompletionHandler
     private lateinit var autocompletionManager: AutocompletionDataManager
+    internal val floatingKeyboardHandler by lazy { FloatingKeyboardHandler(this) }
     private var dataContract: DataContract? = null
+
+    internal val isUiManagerInitialized: Boolean get() = this::uiManager.isInitialized
+
+    internal fun recreateKeyboardPublic() = recreateKeyboard()
+
+    internal fun applyNavBarColorPublic() = applyNavBarColor()
 
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
     private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
@@ -165,8 +188,19 @@ abstract class GeneralKeyboardIME(
     private var currentEnterKeyType: Int? = null
     private var isNumericKeyboardActive: Boolean = false
 
-    internal var currentState: ScribeState = ScribeState.IDLE
-    internal var invalidCommandSource: ScribeState = ScribeState.IDLE
+    internal val stateManager = KeyboardStateManager()
+
+    internal var currentState: ScribeState
+        get() = stateManager.currentState
+        set(value) {
+            stateManager.currentState = value
+        }
+
+    internal var invalidCommandSource: ScribeState
+        get() = stateManager.invalidCommandSource
+        set(value) {
+            stateManager.invalidCommandSource = value
+        }
 
     // Properties used by BackspaceHandler, delegated to UI Manager.
     internal var currentCommandBarHint: String
@@ -186,7 +220,10 @@ abstract class GeneralKeyboardIME(
     private var currentVerbForConjugation: String? = null
     private var selectedConjugationSubCategory: String? = null
 
+    protected open fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
+
     internal companion object {
+        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
         const val NOUN_TYPE_SIZE = 20f
@@ -226,14 +263,7 @@ abstract class GeneralKeyboardIME(
         suggestionHandler = SuggestionHandler(this)
         autocompletionManager = dbManagers.autocompletionManager
         autocompletionHandler = AutocompletionHandler(this)
-        clipboardMonitor =
-            ClipboardMonitor(this) { text ->
-                latestClipText = text
-                hasNewClip = true
-                if (currentState == ScribeState.IDLE && this::uiManager.isInitialized) {
-                    uiManager.showClipboardSuggestionChip(text)
-                }
-            }
+        clipboardHandler.initClipboardMonitor()
     }
 
     override fun onDestroy() {
@@ -400,9 +430,7 @@ abstract class GeneralKeyboardIME(
         restarting: Boolean,
     ) {
         super.onStartInputView(editorInfo, restarting)
-        if (this::clipboardMonitor.isInitialized) {
-            clipboardMonitor.startMonitoring()
-        }
+        clipboardHandler.startMonitoring()
         emojiAutoSuggestionEnabled = getIsEmojiSuggestionsEnabled(applicationContext, language)
         autoSuggestEmojis = null
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
@@ -490,9 +518,7 @@ abstract class GeneralKeyboardIME(
      */
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
-        if (this::clipboardMonitor.isInitialized) {
-            clipboardMonitor.stopMonitoring()
-        }
+        clipboardHandler.stopMonitoring()
         moveToIdleState()
     }
 
@@ -504,22 +530,11 @@ abstract class GeneralKeyboardIME(
      */
     override fun hasTextBeforeCursor(): Boolean = hasTextBeforeCursor
 
-    /**
-     * Handles the "period on double tap" feature. If enabled, it replaces the two spaces with a period and a space.
-     */
     override fun commitPeriodAfterSpace() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            val isPeriodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(this, language)
-            if (isPeriodOnDoubleTapEnabled) {
-                currentInputConnection?.apply {
-                    deleteSurroundingText(1, 0)
-                    commitText(". ", 1)
-                }
-            } else {
-                currentInputConnection?.apply {
-                    deleteSurroundingText(1, 0)
-                    commitText("  ", 1)
-                }
+            currentInputConnection?.apply {
+                deleteSurroundingText(1, 0)
+                commitText(". ", 1)
             }
         }
     }
@@ -753,20 +768,11 @@ abstract class GeneralKeyboardIME(
      * @param isSubsequentArea true if this is for a secondary view.
      */
     internal fun saveConjugateModeType(
-        language: String,
+        language: String = this.language,
         isSubsequentArea: Boolean = false,
     ) {
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        val mode =
-            if (!isSubsequentArea) {
-                when (language) {
-                    "English", "Russian", "Swedish" -> "2x2"
-                    "German", "French", "Italian", "Portuguese", "Spanish" -> "3x2"
-                    else -> "none"
-                }
-            } else {
-                "none"
-            }
+        val mode = if (!isSubsequentArea) defaultConjugateModeType else "none"
         sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
 
@@ -799,7 +805,7 @@ abstract class GeneralKeyboardIME(
      */
     internal fun moveToIdleState() {
         clearSuggestionData()
-        currentState = ScribeState.IDLE
+        stateManager.moveToIdle()
         saveConjugateModeType("none")
         currentVerbForConjugation = null
         selectedConjugationSubCategory = null
@@ -819,9 +825,9 @@ abstract class GeneralKeyboardIME(
     // MARK: KeyboardUIListener
 
     override fun onScribeKeyOptionsClicked() {
-        if (currentState == ScribeState.IDLE) {
+        if (stateManager.isIdle) {
             clearSuggestionData()
-            currentState = ScribeState.SELECT_COMMAND
+            stateManager.moveToState(ScribeState.SELECT_COMMAND)
             saveConjugateModeType("none")
             currentVerbForConjugation = null
         } else {
@@ -835,22 +841,22 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun onTranslateClicked() {
-        currentState = ScribeState.TRANSLATE
+        stateManager.moveToState(ScribeState.TRANSLATE)
         saveConjugateModeType("none")
         refreshUI()
     }
 
     override fun onConjugateClicked() {
-        if (currentState != ScribeState.SELECT_VERB_CONJUNCTION) {
-            currentState = ScribeState.CONJUGATE
+        if (stateManager.currentState != ScribeState.SELECT_VERB_CONJUNCTION) {
+            stateManager.moveToState(ScribeState.CONJUGATE)
         }
         refreshUI()
     }
 
     override fun onPluralClicked() {
-        currentState = ScribeState.PLURAL
+        stateManager.moveToState(ScribeState.PLURAL)
         saveConjugateModeType("none")
-        if (language == "German") keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
+        if (isPluralCapitalized) keyboard?.mShiftState = SHIFT_ON_ONE_CHAR
         refreshUI()
     }
 
@@ -998,8 +1004,7 @@ abstract class GeneralKeyboardIME(
             }
 
         if (commandModeOutput.isEmpty()) {
-            invalidCommandSource = currentState
-            currentState = ScribeState.INVALID
+            stateManager.setInvalidState(currentState)
             refreshUI()
         } else {
             applyCommandOutput(commandModeOutput, inputConnection)
@@ -1033,14 +1038,12 @@ abstract class GeneralKeyboardIME(
 
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, searchInput)
 
-        currentState =
-            if (conjugateOutput == null) {
-                invalidCommandSource = ScribeState.CONJUGATE
-                ScribeState.INVALID
-            } else {
-                saveConjugateModeType(language)
-                ScribeState.SELECT_VERB_CONJUNCTION
-            }
+        if (conjugateOutput == null) {
+            stateManager.setInvalidState(ScribeState.CONJUGATE)
+        } else {
+            saveConjugateModeType(language)
+            stateManager.moveToState(ScribeState.SELECT_VERB_CONJUNCTION)
+        }
         refreshUI()
     }
 
@@ -2114,10 +2117,7 @@ abstract class GeneralKeyboardIME(
             ScribeState.SELECT_VERB_CONJUNCTION -> {
                 saveConjugateModeType(language)
                 if (!isSubsequentArea && dataSize == 0) {
-                    when (language) {
-                        "English", "Russian", "Swedish" -> R.xml.conjugate_view_2x2
-                        else -> R.xml.conjugate_view_3x2
-                    }
+                    defaultConjugateLayoutXML
                 } else {
                     when (dataSize) {
                         DATA_SIZE_2 -> R.xml.conjugate_view_2x1
@@ -2179,661 +2179,47 @@ abstract class GeneralKeyboardIME(
         keyboardView?.invalidateAllKeys()
     }
 
-    var isFloatingMode: Boolean = false
-        private set
-
-    private var isUpdatePending = false
-    private var lastAppliedFloatingMode: Boolean? = null
+    val isFloatingMode: Boolean
+        get() = floatingKeyboardHandler.isFloatingMode
 
     fun initFloatingMode() {
-        isFloatingMode = PreferencesHelper.getIsFloatingModeEnabled(this, language)
-        lastAppliedFloatingMode = null
-        applyFloatingModeState()
+        floatingKeyboardHandler.initFloatingMode()
     }
 
     fun toggleFloatingMode() {
-        isFloatingMode = !isFloatingMode
-        PreferencesHelper.setIsFloatingModeEnabled(this, language, isFloatingMode)
-        // Reset the cached mode so applyFloatingModeState always treats this as a change.
-        lastAppliedFloatingMode = null
-        applyFloatingModeState()
-        window?.window?.decorView?.requestLayout()
+        floatingKeyboardHandler.toggleFloatingMode()
     }
 
     fun disableFloatingMode() {
-        if (isFloatingMode) {
-            isFloatingMode = false
-            PreferencesHelper.setIsFloatingModeEnabled(this, language, isFloatingMode)
-            lastAppliedFloatingMode = null
-            applyFloatingModeState()
-            window?.window?.decorView?.requestLayout()
-        }
+        floatingKeyboardHandler.disableFloatingMode()
     }
 
-    private fun applyFloatingModeState() {
-        if (!this::uiManager.isInitialized) return
-        val card = binding.keyboardCard
-        val dragBar = binding.floatingDragBar
-        val density = resources.displayMetrics.density
-        val root = binding.root
-        val win = window?.window
-
-        // Only recreate the keyboard when the floating mode actually changes.
-        // Calling applyFloatingModeState from onWindowShown should not rebuild
-        // the keyboard every time a text field is focused.
-        val modeChanged = lastAppliedFloatingMode != isFloatingMode
-        lastAppliedFloatingMode = isFloatingMode
-
-        val rootWidth = ViewGroup.LayoutParams.MATCH_PARENT
-        val rootHeight = if (isFloatingMode) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
-        val rootParams = root.layoutParams ?: ViewGroup.LayoutParams(rootWidth, rootHeight)
-        rootParams.width = rootWidth
-        rootParams.height = rootHeight
-        root.layoutParams = rootParams
-        root.minimumHeight = 0
-
-        val parentViewGroup = root.parent as? ViewGroup
-        if (parentViewGroup != null) {
-            val pParams = parentViewGroup.layoutParams
-            if (pParams != null) {
-                pParams.width = rootWidth
-                pParams.height = rootHeight
-                parentViewGroup.layoutParams = pParams
-            }
-        }
-
-        if (isFloatingMode) {
-            setBackDisposition(BACK_DISPOSITION_ADJUST_NOTHING)
-            win?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            win?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        } else {
-            setBackDisposition(BACK_DISPOSITION_DEFAULT)
-            win?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            win?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        }
-
-        if (isFloatingMode) {
-            val params = card.layoutParams
-            if (params != null) {
-                params.width = getKeyboardWidth()
-                card.layoutParams = params
-            }
-
-            val scaleFactorX = PreferencesHelper.getFloatingScaleX(this, language)
-            val scaleFactorY = PreferencesHelper.getFloatingScaleY(this, language)
-            card.scaleX = scaleFactorX
-            card.scaleY = scaleFactorY
-            card.alpha = 1.0f
-
-            // Setup resize corner handlers.
-            binding.resizeHandleTopLeft.setOnTouchListener(resizeTouchListener)
-            binding.resizeHandleTopRight.setOnTouchListener(resizeTouchListener)
-            binding.resizeHandleBottomLeft.setOnTouchListener(resizeTouchListener)
-            binding.resizeHandleBottomRight.setOnTouchListener(resizeTouchListener)
-
-            // Hide initially on mode change.
-            if (modeChanged) {
-                binding.resizeHandleTopLeft.visibility = View.GONE
-                binding.resizeHandleTopRight.visibility = View.GONE
-                binding.resizeHandleBottomLeft.visibility = View.GONE
-                binding.resizeHandleBottomRight.visibility = View.GONE
-            }
-
-            val isDarkMode = getIsDarkModeOrNot(this)
-            val kbBgColorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
-            val kbBgColor = ContextCompat.getColor(this, kbBgColorRes)
-
-            // Build a floating card background that matches the keyboard's actual theme color.
-            val floatingBg =
-                GradientDrawable().apply {
-                    shape = GradientDrawable.RECTANGLE
-                    cornerRadius = 16f * density
-                    setColor(kbBgColor)
-                    setStroke((1f * density).toInt(), 0x40888888.toInt())
-                }
-            card.background = floatingBg
-            card.elevation = 8f * density
-            card.clipToOutline = true
-
-            // Drag bar must match the keyboard background — not the default (always-light) color.
-            binding.floatingDragBar.setBackgroundColor(kbBgColor)
-            // Pill color: visible on both dark and light keyboard backgrounds.
-            val pillColor = if (isDarkMode) 0x4DFFFFFF.toInt() else 0x40000000.toInt()
-            binding.floatingDragHandle.setColorFilter(pillColor)
-
-            dragBar.visibility = View.VISIBLE
-
-            if (modeChanged) recreateKeyboard()
-
-            card.post {
-                disableParentClipping(root)
-                var storedX = PreferencesHelper.getFloatingX(this, language)
-                var storedY = PreferencesHelper.getFloatingY(this, language)
-                val currentScaleX = PreferencesHelper.getFloatingScaleX(this, language)
-                val currentScaleY = PreferencesHelper.getFloatingScaleY(this, language)
-
-                // Default starting position: 100dp from the bottom of the screen.
-                if (storedY == 0f) storedY = 100f * density
-
-                val screenWidth = resources.displayMetrics.widthPixels
-                val screenHeight = resources.displayMetrics.heightPixels
-                val cardWidth = card.width.toFloat()
-                val cardHeight = card.height.toFloat()
-
-                if (cardWidth > 0f && cardHeight > 0f) {
-                    val maxTranslationX = (screenWidth - cardWidth * currentScaleX) / 2f
-                    val minTranslationX = -maxTranslationX
-
-                    val minTranslationY = 0f
-                    val maxTranslationY = screenHeight.toFloat() - cardHeight * currentScaleY
-
-                    val targetX = storedX.coerceInSafe(minTranslationX, maxTranslationX)
-                    val targetY = storedY.coerceInSafe(minTranslationY, maxTranslationY)
-
-                    updateFloatingViewsPosition(targetX, targetY, currentScaleX, currentScaleY)
-
-                    val attr = win?.attributes
-                    if (attr != null) {
-                        attr.gravity = android.view.Gravity.TOP or android.view.Gravity.START
-                        attr.x = 0
-                        attr.y = 0
-                        attr.width = ViewGroup.LayoutParams.MATCH_PARENT
-                        attr.height = ViewGroup.LayoutParams.MATCH_PARENT
-                        win.attributes = attr
-                    }
-                    root.requestLayout()
-                }
-            }
-        } else {
-            val params = card.layoutParams
-            if (params != null) {
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT
-                card.layoutParams = params
-            }
-
-            card.scaleX = 1.0f
-            card.scaleY = 1.0f
-            card.alpha = 1.0f
-
-            val isDarkMode = getIsDarkModeOrNot(this)
-            val kbBgColorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
-            card.background = ColorDrawable(ContextCompat.getColor(this, kbBgColorRes))
-            card.elevation = 0f
-            card.clipToOutline = false
-
-            dragBar.visibility = View.GONE
-
-            if (modeChanged) recreateKeyboard()
-
-            // Reset translations immediately so the card doesn't sit at a stale
-            // floating position while the window re-layouts to WRAP_CONTENT.
-            card.translationX = 0f
-            card.translationY = 0f
-
-            binding.resizeHandleTopLeft.translationX = 0f
-            binding.resizeHandleTopLeft.translationY = 0f
-            binding.resizeHandleTopRight.translationX = 0f
-            binding.resizeHandleTopRight.translationY = 0f
-            binding.resizeHandleBottomLeft.translationX = 0f
-            binding.resizeHandleBottomLeft.translationY = 0f
-            binding.resizeHandleBottomRight.translationX = 0f
-            binding.resizeHandleBottomRight.translationY = 0f
-
-            // Hide resize handles.
-            binding.resizeHandleTopLeft.visibility = View.GONE
-            binding.resizeHandleTopRight.visibility = View.GONE
-            binding.resizeHandleBottomLeft.visibility = View.GONE
-            binding.resizeHandleBottomRight.visibility = View.GONE
-
-            // Apply window attributes first, then force a layout pass to ensure
-            // the command options bar is fully visible after returning to docked mode.
-            val attr = win?.attributes
-            if (attr != null) {
-                attr.gravity = android.view.Gravity.BOTTOM
-                attr.x = 0
-                attr.y = 0
-                attr.width = ViewGroup.LayoutParams.MATCH_PARENT
-                attr.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                win.attributes = attr
-            }
-
-            // Post a second pass to guarantee translations are zero after the
-            // window has finished resizing — FLAG_LAYOUT_NO_LIMITS removal is
-            // async and can cause a stale layout frame where the bar is clipped.
-            card.post {
-                card.translationX = 0f
-                card.translationY = 0f
-                root.requestLayout()
-            }
-        }
-        applyNavBarColor()
+    fun applyFloatingModeState() {
+        floatingKeyboardHandler.applyFloatingModeState()
     }
 
-    private fun updateFloatingViewsPosition(
-        targetX: Float,
-        targetY: Float,
-        scaleX: Float,
-        scaleY: Float,
-    ) {
-        val card = binding.keyboardCard
-        val screenHeight = resources.displayMetrics.heightPixels.toFloat()
-
-        val cardWidth = card.width.toFloat()
-        val cardHeight = card.height.toFloat()
-        if (cardWidth == 0f || cardHeight == 0f) return
-
-        card.scaleX = scaleX
-        card.scaleY = scaleY
-
-        val transX = targetX
-        val transY = (screenHeight - cardHeight * scaleY) / 2f - targetY
-
-        card.translationX = transX
-        card.translationY = transY
-
-        val scaleOffsetX = scaleX - 1.0f
-        val scaleOffsetY = scaleY - 1.0f
-        val halfW = cardWidth / 2f
-        val halfH = cardHeight / 2f
-
-        binding.resizeHandleTopLeft.translationX = transX - halfW * scaleOffsetX
-        binding.resizeHandleTopLeft.translationY = transY - halfH * scaleOffsetY
-
-        binding.resizeHandleTopRight.translationX = transX + halfW * scaleOffsetX
-        binding.resizeHandleTopRight.translationY = transY - halfH * scaleOffsetY
-
-        binding.resizeHandleBottomLeft.translationX = transX - halfW * scaleOffsetX
-        binding.resizeHandleBottomLeft.translationY = transY + halfH * scaleOffsetY
-
-        binding.resizeHandleBottomRight.translationX = transX + halfW * scaleOffsetX
-        binding.resizeHandleBottomRight.translationY = transY + halfH * scaleOffsetY
-    }
-
-    private fun disableParentClipping(view: View) {
-        var p = view.parent
-        while (p is ViewGroup) {
-            p.clipChildren = false
-            p.clipToPadding = false
-            p = p.parent
-        }
-    }
-
-    private var initialX = 0f
-    private var initialY = 0f
-    private var initialTranslationX = 0f
-    private var initialTranslationY = 0f
-    private var maxTranslationX = 0f
-    private var minTranslationX = 0f
-    private var minTranslationY = 0f
-    private var maxTranslationY = 0f
-
-    private val cornerHideHandler = android.os.Handler(android.os.Looper.getMainLooper())
-    private val hideCornersRunnable =
-        Runnable {
-            animateHideCorners()
-        }
-
-    private var initialTouchX = 0f
-    private var initialTouchY = 0f
-    private var initialScaleX = 1.0f
-    private var initialScaleY = 1.0f
-    private var dragFactorX = 1f
-    private var dragFactorY = 1f
-    private var keyboardCenterX = 0f
-    private var keyboardCenterY = 0f
-    private var initialDistance = 0f
-    private var isResizing = false
-
-    private fun showCorners() {
-        cornerHideHandler.removeCallbacks(hideCornersRunnable)
-
-        val corners =
-            listOf(
-                binding.resizeHandleTopLeft,
-                binding.resizeHandleTopRight,
-                binding.resizeHandleBottomLeft,
-                binding.resizeHandleBottomRight,
-            )
-
-        for (corner in corners) {
-            corner.animate().cancel()
-            corner.alpha = 1f
-            corner.visibility = View.VISIBLE
-        }
-    }
-
-    private fun startHideCornersTimer() {
-        cornerHideHandler.removeCallbacks(hideCornersRunnable)
-        cornerHideHandler.postDelayed(hideCornersRunnable, 3000)
-    }
-
-    private fun animateHideCorners() {
-        val corners =
-            listOf(
-                binding.resizeHandleTopLeft,
-                binding.resizeHandleTopRight,
-                binding.resizeHandleBottomLeft,
-                binding.resizeHandleBottomRight,
-            )
-
-        for (corner in corners) {
-            corner
-                .animate()
-                .alpha(0f)
-                .setDuration(300)
-                .withEndAction {
-                    corner.visibility = View.GONE
-                }.start()
-        }
-    }
-
-    private fun applyScaleAndPosition(
-        scaleX: Float,
-        scaleY: Float,
-    ) {
-        val card = binding.keyboardCard
-        val screenHeight = resources.displayMetrics.heightPixels.toFloat()
-        val cardHeight = card.height.toFloat()
-
-        val liveX = card.translationX
-        val liveTransY = card.translationY
-        val prevScaleY = card.scaleY
-        val liveY = (screenHeight - cardHeight * prevScaleY) / 2f - liveTransY
-
-        updateFloatingViewsPosition(liveX, liveY, scaleX, scaleY)
-    }
-
-    private val resizeTouchListener =
-        View.OnTouchListener { view, event ->
-            if (!isFloatingMode) return@OnTouchListener false
-
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    isResizing = true
-                    showCorners()
-
-                    initialTouchX = event.rawX
-                    initialTouchY = event.rawY
-                    initialScaleX = PreferencesHelper.getFloatingScaleX(this, language)
-                    initialScaleY = PreferencesHelper.getFloatingScaleY(this, language)
-
-                    val viewId = view.id
-                    dragFactorX =
-                        when (viewId) {
-                            R.id.resize_handle_top_left -> -1f
-                            R.id.resize_handle_bottom_left -> -1f
-                            R.id.resize_handle_top_right -> 1f
-                            R.id.resize_handle_bottom_right -> 1f
-                            else -> 1f
-                        }
-                    dragFactorY =
-                        when (viewId) {
-                            R.id.resize_handle_top_left -> -1f
-                            R.id.resize_handle_top_right -> -1f
-                            R.id.resize_handle_bottom_left -> 1f
-                            R.id.resize_handle_bottom_right -> 1f
-                            else -> 1f
-                        }
-
-                    val card = binding.keyboardCard
-                    card.animate().cancel()
-                    card.alpha = 0.7f
-
-                    val density = resources.displayMetrics.density
-                    val activeColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
-                    (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
-
-                    val location = IntArray(2)
-                    card.getLocationOnScreen(location)
-
-                    keyboardCenterX = location[0] + card.width / 2f
-                    keyboardCenterY = location[1] + card.height / 2f
-
-                    initialDistance =
-                        Math
-                            .hypot(
-                                (event.rawX - keyboardCenterX).toDouble(),
-                                (event.rawY - keyboardCenterY).toDouble(),
-                            ).toFloat()
-
-                    true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    if (!isResizing) return@OnTouchListener false
-
-                    val dx = event.rawX - initialTouchX
-                    val dy = event.rawY - initialTouchY
-
-                    val card = binding.keyboardCard
-                    val cardWidth = card.width.toFloat()
-                    val cardHeight = card.height.toFloat()
-
-                    if (cardWidth > 0 && cardHeight > 0) {
-                        var targetScaleX = initialScaleX + (dragFactorX * dx) / cardWidth
-                        var targetScaleY = initialScaleY + (dragFactorY * dy) / cardHeight
-
-                        targetScaleX = targetScaleX.coerceIn(0.6f, 1.5f)
-                        targetScaleY = targetScaleY.coerceIn(0.6f, 1.5f)
-
-                        applyScaleAndPosition(targetScaleX, targetScaleY)
-                    }
-                    true
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    isResizing = false
-                    startHideCornersTimer()
-
-                    val card = binding.keyboardCard
-                    val finalScaleX = card.scaleX
-                    val finalScaleY = card.scaleY
-                    PreferencesHelper.setFloatingScaleX(this, language, finalScaleX)
-                    PreferencesHelper.setFloatingScaleY(this, language, finalScaleY)
-
-                    // Save live position so applyFloatingModeState restores it correctly.
-                    val screenHeight = resources.displayMetrics.heightPixels.toFloat()
-                    val cardHeight = card.height.toFloat()
-                    val liveY = (screenHeight - cardHeight * finalScaleY) / 2f - card.translationY
-                    PreferencesHelper.setFloatingX(this, language, card.translationX)
-                    PreferencesHelper.setFloatingY(this, language, liveY)
-
-                    applyFloatingModeState()
-                    card
-                        .animate()
-                        .alpha(1.0f)
-                        .setDuration(200)
-                        .start()
-                    true
-                }
-                else -> false
-            }
-        }
-
-    @android.annotation.SuppressLint("ClickableViewAccessibility")
     fun setupFloatingDragListener() {
-        if (!this::uiManager.isInitialized) return
+        floatingKeyboardHandler.setupFloatingDragListener()
+    }
 
-        binding.floatingDragHandle.setOnTouchListener { _, event ->
-            if (!isFloatingMode) return@setOnTouchListener false
-
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    initialX = event.rawX
-                    initialY = event.rawY
-
-                    val card = binding.keyboardCard
-                    card.animate().cancel()
-                    card.alpha = 0.7f
-
-                    val density = resources.displayMetrics.density
-                    val activeColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
-                    (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
-
-                    val displayMetrics = resources.displayMetrics
-                    val screenWidth = displayMetrics.widthPixels
-                    val screenHeight = displayMetrics.heightPixels
-                    val cardWidth = card.width.toFloat()
-                    val cardHeight = card.height.toFloat()
-                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(this@GeneralKeyboardIME, language)
-                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(this@GeneralKeyboardIME, language)
-
-                    maxTranslationX = (screenWidth - cardWidth * scaleFactorX) / 2f
-                    minTranslationX = -maxTranslationX
-
-                    minTranslationY = 0f
-                    maxTranslationY = screenHeight.toFloat() - cardHeight * scaleFactorY
-
-                    initialTranslationX = PreferencesHelper.getFloatingX(this@GeneralKeyboardIME, language).coerceInSafe(minTranslationX, maxTranslationX)
-                    initialTranslationY = PreferencesHelper.getFloatingY(this@GeneralKeyboardIME, language).coerceInSafe(minTranslationY, maxTranslationY)
-
-                    showCorners()
-                    true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val deltaX = event.rawX - initialX
-                    val deltaY = event.rawY - initialY
-
-                    var targetX = initialTranslationX + deltaX
-                    var targetY = initialTranslationY - deltaY
-
-                    targetX = targetX.coerceInSafe(minTranslationX, maxTranslationX)
-                    targetY = targetY.coerceInSafe(minTranslationY, maxTranslationY)
-
-                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(this@GeneralKeyboardIME, language)
-                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(this@GeneralKeyboardIME, language)
-                    updateFloatingViewsPosition(targetX, targetY, scaleFactorX, scaleFactorY)
-
-                    val card = binding.keyboardCard
-                    val density = resources.displayMetrics.density
-                    val isNearBottom = targetY < 60f * density
-                    if (isNearBottom) {
-                        // Highlight to indicate ready to dock.
-                        val dockColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
-                        (card.background as? GradientDrawable)?.setStroke((4.0f * density).toInt(), dockColor)
-                        card.alpha = 0.85f
-                    } else {
-                        // Normal dragging active outline.
-                        val activeColor = ContextCompat.getColor(this@GeneralKeyboardIME, R.color.theme_scribe_blue)
-                        (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
-                        card.alpha = 0.7f
-                    }
-
-                    true
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    val deltaX = event.rawX - initialX
-                    val deltaY = event.rawY - initialY
-                    var finalTargetX = initialTranslationX + deltaX
-                    var finalTargetY = initialTranslationY - deltaY
-                    finalTargetX = finalTargetX.coerceInSafe(minTranslationX, maxTranslationX)
-                    finalTargetY = finalTargetY.coerceInSafe(minTranslationY, maxTranslationY)
-
-                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(this@GeneralKeyboardIME, language)
-                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(this@GeneralKeyboardIME, language)
-                    val density = resources.displayMetrics.density
-                    val isNearBottom = finalTargetY < 60f * density
-
-                    val card = binding.keyboardCard
-
-                    if (isNearBottom) {
-                        disableFloatingMode()
-                    } else {
-                        updateFloatingViewsPosition(finalTargetX, finalTargetY, scaleFactorX, scaleFactorY)
-                        PreferencesHelper.setFloatingX(this@GeneralKeyboardIME, language, finalTargetX)
-                        PreferencesHelper.setFloatingY(this@GeneralKeyboardIME, language, finalTargetY)
-                        applyFloatingModeState()
-                    }
-
-                    card
-                        .animate()
-                        .alpha(1.0f)
-                        .setDuration(200)
-                        .start()
-                    binding.root.requestLayout()
-                    startHideCornersTimer()
-                    true
-                }
-                else -> false
-            }
-        }
+    fun disableParentClipping(view: View) {
+        floatingKeyboardHandler.disableParentClipping(view)
     }
 
     override fun onClipboardSuggestionClicked() {
-        latestClipText?.let { text ->
-            currentInputConnection?.commitText(text, 1)
-        }
-        hideClipboardSuggestionChip()
+        clipboardHandler.onClipboardSuggestionClicked()
     }
 
     fun hideClipboardSuggestionChip() {
-        hasNewClip = false
-        latestClipText = null
-        if (this::uiManager.isInitialized) {
-            uiManager.hideClipboardSuggestionChip()
-        }
-    }
-
-    private var clipboardAdapter: be.scri.helpers.clipboard.ClipboardAdapter? = null
-    private val clipboardRepository by lazy {
-        be.scri.helpers.clipboard
-            .ClipboardRepository(this)
+        clipboardHandler.hideClipboardSuggestionChip()
     }
 
     fun openClipboardPanel() {
-        if (!this::uiManager.isInitialized) return
-        uiManager.showClipboardPanel()
-
-        val recyclerView = binding.clipboardItemsList
-        val emptyText = binding.clipboardEmptyText
-
-        clipboardAdapter =
-            be.scri.helpers.clipboard.ClipboardAdapter(
-                items = emptyList(),
-                onItemClick = { item ->
-                    currentInputConnection?.commitText(item.text, 1)
-                    closeClipboardPanel()
-                },
-                onItemDelete = { item ->
-                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
-                        clipboardRepository.deleteItem(item.id)
-                        refreshClipboardPanel()
-                    }
-                },
-                onItemPinToggle = { item ->
-                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
-                        clipboardRepository.togglePin(item.id, item.isPinned)
-                        refreshClipboardPanel()
-                    }
-                },
-            )
-        recyclerView.adapter = clipboardAdapter
-        recyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 2)
-
-        binding.clipboardPanelClose.setOnClickListener { closeClipboardPanel() }
-        binding.clipboardClearAll.setOnClickListener {
-            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
-                clipboardRepository.clearAll()
-                refreshClipboardPanel()
-            }
-        }
-
-        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
-            val items = clipboardRepository.getAllItems()
-            clipboardAdapter?.updateItems(items)
-            emptyText.visibility = if (items.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
-            recyclerView.visibility = if (items.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
-        }
+        clipboardHandler.openClipboardPanel()
     }
 
     fun closeClipboardPanel() {
-        if (!this::uiManager.isInitialized) return
-        uiManager.hideClipboardPanel()
-    }
-
-    private suspend fun refreshClipboardPanel() {
-        val items = clipboardRepository.getAllItems()
-        clipboardAdapter?.updateItems(items)
-        binding.clipboardEmptyText.visibility = if (items.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
-        binding.clipboardItemsList.visibility = if (items.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE
+        clipboardHandler.closeClipboardPanel()
     }
 }
 

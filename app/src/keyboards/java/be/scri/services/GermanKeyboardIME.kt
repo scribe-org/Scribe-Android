@@ -7,17 +7,12 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
 import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
+import be.scri.models.ScribeLanguage
 
 /**
  * The GermanKeyboardIME class provides the input method for the German language keyboard.
  */
-class GermanKeyboardIME : GeneralKeyboardIME("German") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
+class GermanKeyboardIME : GeneralKeyboardIME(ScribeLanguage.GERMAN) {
     override fun getKeyboardLayoutXML(): Int =
         if (isTablet()) {
             R.xml.keys_letters_german_tablet
@@ -36,6 +31,8 @@ class GermanKeyboardIME : GeneralKeyboardIME("German") {
         } else {
             R.xml.keys_letter_german_without_period_and_comma
         }
+
+    override val isPluralCapitalized: Boolean = true
 
     // Fulfill the abstract contract from GeneralKeyboardIME.
     override val keyboardLetters: Int = 0

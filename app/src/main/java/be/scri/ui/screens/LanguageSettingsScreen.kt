@@ -30,6 +30,8 @@ import be.scri.ui.models.ScribeItemList
 private data class FunctionalitySettings(
     val periodOnDoubleTapState: Boolean,
     val onTogglePeriodOnDoubleTap: (Boolean) -> Unit,
+    val autoSpaceAfterPunctuationState: Boolean,
+    val onToggleAutoSpaceAfterPunctuation: (Boolean) -> Unit,
     val emojiSuggestionsState: Boolean,
     val onToggleEmojiSuggestions: (Boolean) -> Unit,
     val togglePopUpOnKeyPress: Boolean,
@@ -55,6 +57,7 @@ fun LanguageSettingsScreen(
     onTranslationLanguageSelect: () -> Unit,
     onCurrencySelect: () -> Unit,
     modifier: Modifier = Modifier,
+    onDefaultLayoutSelect: () -> Unit = {},
 ) {
     val context = LocalContext.current
 
@@ -64,6 +67,13 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context, language),
+            )
+        }
+
+    val autoSpaceAfterPunctuationState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getAutoSpaceAfterPunctuationPreference(context, language),
             )
         }
 
@@ -155,6 +165,7 @@ fun LanguageSettingsScreen(
                         )
                     },
                     onCurrencySelect = onCurrencySelect,
+                    onDefaultLayoutSelect = onDefaultLayoutSelect,
                 ),
         )
 
@@ -165,6 +176,15 @@ fun LanguageSettingsScreen(
             onTogglePeriodOnDoubleTap = { isEnabled ->
                 periodOnDoubleTapState.value = isEnabled
                 PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(
+                    context,
+                    language,
+                    isEnabled,
+                )
+            },
+            autoSpaceAfterPunctuationState = autoSpaceAfterPunctuationState.value,
+            onToggleAutoSpaceAfterPunctuation = { isEnabled ->
+                autoSpaceAfterPunctuationState.value = isEnabled
+                PreferencesHelper.setAutoSpaceAfterPunctuationPreference(
                     context,
                     language,
                     isEnabled,
@@ -231,8 +251,10 @@ fun LanguageSettingsScreen(
             items = getFunctionalityListData(functionalitySettings),
         )
 
+    val pageTitleText = "${stringResource(getLanguageStringFromi18n(language))} ${stringResource(R.string.i18n_app_settings_title).lowercase()}"
+
     ScribeBaseScreen(
-        pageTitle = stringResource(getLanguageStringFromi18n(language)),
+        pageTitle = pageTitleText,
         lastPage = stringResource(R.string.i18n_app_settings_title),
         onBackNavigation = onBackNavigation,
         modifier = modifier,
@@ -287,6 +309,12 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
                 desc = R.string.i18n_app_settings_keyboard_functionality_double_space_period_description,
                 state = settings.periodOnDoubleTapState,
                 onToggle = settings.onTogglePeriodOnDoubleTap,
+            ),
+            ScribeItem.SwitchItem(
+                title = R.string.i18n_app_settings_keyboard_functionality_auto_space_punctuation,
+                desc = R.string.i18n_app_settings_keyboard_functionality_auto_space_punctuation_description,
+                state = settings.autoSpaceAfterPunctuationState,
+                onToggle = settings.onToggleAutoSpaceAfterPunctuation,
             ),
             ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_functionality_auto_suggest_emoji,
@@ -350,28 +378,18 @@ private fun getLayoutListData(
     toggleDisableAccentCharacter: Boolean,
     onToggleDisableAccentCharacter: (Boolean) -> Unit,
     onCurrencySelect: () -> Unit,
+    onDefaultLayoutSelect: () -> Unit = {},
 ): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
 
-    when (language) {
-        "German", "Swedish", "Spanish" -> {
-            list.add(
-                ScribeItem.SwitchItem(
-                    title = R.string.i18n_app_settings_keyboard_layout_disable_accent_characters,
-                    desc = R.string.i18n_app_settings_keyboard_layout_disable_accent_characters_description,
-                    state = toggleDisableAccentCharacter,
-                    onToggle = onToggleDisableAccentCharacter,
-                ),
-            )
-        }
-    }
-
     list.add(
-        ScribeItem.SwitchItem(
-            title = R.string.i18n_app_settings_keyboard_layout_period_and_comma,
-            desc = R.string.i18n_app_settings_keyboard_layout_period_and_comma_description,
-            state = togglePeriodAndCommaState,
-            onToggle = onTogglePeriodAndComma,
+        ScribeItem.ClickableItem(
+            title = R.string.i18n_app_settings_keyboard_layout_default_layout,
+            desc = R.string.i18n_app_settings_keyboard_layout_default_layout_description,
+            action = {
+                Log.d("Navigation", "onDefaultLayoutSelect clicked")
+                onDefaultLayoutSelect()
+            },
         ),
     )
 
@@ -385,6 +403,28 @@ private fun getLayoutListData(
             },
         ),
     )
+
+    list.add(
+        ScribeItem.SwitchItem(
+            title = R.string.i18n_app_settings_keyboard_layout_period_and_comma,
+            desc = R.string.i18n_app_settings_keyboard_layout_period_and_comma_description,
+            state = togglePeriodAndCommaState,
+            onToggle = onTogglePeriodAndComma,
+        ),
+    )
+
+    when (language) {
+        "German", "Swedish", "Spanish" -> {
+            list.add(
+                ScribeItem.SwitchItem(
+                    title = R.string.i18n_app_settings_keyboard_layout_disable_accent_characters,
+                    desc = R.string.i18n_app_settings_keyboard_layout_disable_accent_characters_description,
+                    state = toggleDisableAccentCharacter,
+                    onToggle = onToggleDisableAccentCharacter,
+                ),
+            )
+        }
+    }
 
     return list
 }
