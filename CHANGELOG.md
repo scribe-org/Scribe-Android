@@ -78,6 +78,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Unit tests and code coverage were written for the project ([#181](https://github.com/scribe-org/Scribe-Android/issues/181), [#196](https://github.com/scribe-org/Scribe-Android/issues/196)).
 - GitHub Actions based CI was set up with unit and instrumentation tests ([#195](https://github.com/scribe-org/Scribe-Android/issues/195), [#212](https://github.com/scribe-org/Scribe-Android/issues/212), [#422](https://github.com/scribe-org/Scribe-Android/issues/422), [#580](https://github.com/scribe-org/Scribe-Android/issues/580)).
 - prek based pre-commit hooks were added to the repo to catch common mistakes on commit ([#215](https://github.com/scribe-org/Scribe-Android/issues/215)).
+- A CI workflow to enforces `CHANGELOG.md` or `CHANGELOG_CONJUGATE.md` updates on all PRs targeting `main`, with support for a `no-changelog` label to skip the check when appropriate.
 
 ### 📝 Documentation
 
