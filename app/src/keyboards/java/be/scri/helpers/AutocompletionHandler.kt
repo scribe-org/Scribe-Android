@@ -60,7 +60,7 @@ class AutocompletionHandler(
                 if (ime.currentState != ScribeState.IDLE) return@Runnable
 
                 val previousWord = ime.getPreviousWordBeforeCursor()
-                val completions = ime.getAutocompletions(currentWord, previousWord, limit = 5)
+                val completions = ime.getAutocompletions(currentWord, previousWord, limit = MAX_COMPLETIONS + 1)
 
                 ime.updateAutocompleteCompletions(buildCompletions(currentWord, completions))
             }
