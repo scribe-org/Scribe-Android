@@ -1208,16 +1208,17 @@ abstract class GeneralKeyboardIME(
      */
     fun getAutocompletions(
         prefix: String,
+        previousWord: String? = null,
         limit: Int = 3,
     ): List<String> {
         if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
+            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, previousWord, limit)
             if (nativeCompletions.isNotEmpty()) {
-                return nativeCompletions
+                return nativeCompletions.map { it.substringBefore("-") }
             }
         }
         return try {
-            dbManagers.autocompletionManager.getAutocompletions(prefix, limit)
+            dbManagers.autocompletionManager.getAutocompletions(prefix, limit).map { it.substringBefore("-") }
         } catch (e: SQLiteException) {
             Log.e("GeneralKeyboardIME", "Database error in autocompletion", e)
             emptyList()
@@ -1251,6 +1252,18 @@ abstract class GeneralKeyboardIME(
      * @return The last word as a [String], or null if no word is found.
      */
     fun getLastWordBeforeCursor(): String? = getText()?.trim()?.split("\\s+".toRegex())?.lastOrNull()
+
+    /**
+     * Extracts the word immediately before the one currently being composed, i.e. the last
+     * completed word preceding the in-progress word at the cursor. Used to give the autocomplete
+     * engine sentence context so it can bias completions instead of scoring the prefix in isolation.
+     *
+     * @return The previous completed word as a [String], or null if there isn't one.
+     */
+    fun getPreviousWordBeforeCursor(): String? {
+        val words = getText()?.trim()?.split("\\s+".toRegex()) ?: return null
+        return words.getOrNull(words.size - 2)
+    }
 
     /**
      * Retrieves the text immediately preceding the cursor.
@@ -1499,10 +1512,10 @@ abstract class GeneralKeyboardIME(
         if (this::nativeSuggestionEngine.isInitialized) {
             val nativeSuggestions = nativeSuggestionEngine.getNextWordSuggestions(language, lastWord)
             if (nativeSuggestions.isNotEmpty()) {
-                return nativeSuggestions
+                return nativeSuggestions.map { it.substringBefore("-") }
             }
         }
-        return wordSuggestions[lastWord.lowercase()]
+        return wordSuggestions[lastWord.lowercase()]?.map { it.substringBefore("-") }
     }
 
     /**
@@ -1928,29 +1941,56 @@ abstract class GeneralKeyboardIME(
     // MARK: Autocomplete
 
     /**
-     * Updates autocomplete UI with a new list of suggestions.
-     * Clears it if not idle or no completions.
+     * Pins the word currently being typed into the first (leftmost) suggestion
+     * slot, quoted like most mobile keyboards do to mark it as "what you typed"
+     * rather than a dictionary suggestion. Called immediately on every keystroke
+     * — unlike the completions, it needs no lookup, so it should never lag.
      */
-    fun updateAutocompleteSuggestions(completions: List<String>?) {
-        if (currentState != ScribeState.IDLE) {
-            uiManager.disableAutoSuggest(language)
-            return
-        }
-        if (completions.isNullOrEmpty()) {
+    fun updateTypedWordSuggestion(word: String?) {
+        if (currentState != ScribeState.IDLE || word.isNullOrEmpty()) {
             uiManager.disableAutoSuggest(language)
             return
         }
 
-        val completion1 = completions.getOrNull(0) ?: ""
-        val completion2 = completions.getOrNull(1) ?: ""
-        val completion3 = completions.getOrNull(2) ?: ""
-
-        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1)
-        setAutocompleteButton(uiManager.binding.translateBtn, completion2)
-        setAutocompleteButton(uiManager.pluralBtn!!, completion3)
+        setTypedWordButton(uiManager.binding.translateBtn, word)
+        setAutocompleteButton(uiManager.binding.conjugateBtn, "")
+        uiManager.pluralBtn?.let { setAutocompleteButton(it, "") }
 
         uiManager.binding.separator1.visibility = View.VISIBLE
         uiManager.binding.separator2.visibility = View.VISIBLE
+    }
+
+    /**
+     * Fills the remaining suggestion slots with dictionary/engine completions.
+     * Clears them (leaving the typed word alone) if not idle.
+     */
+    fun updateAutocompleteCompletions(completions: List<String>) {
+        if (currentState != ScribeState.IDLE) return
+
+        val completion1 = completions.getOrNull(0) ?: ""
+        val completion2 = completions.getOrNull(1) ?: ""
+
+        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1)
+        uiManager.pluralBtn?.let { setAutocompleteButton(it, completion2) }
+    }
+
+    /**
+     * Sets up the "what you typed" button: displayed quoted, but tapping it
+     * doesn't re-insert the word (it's already in the text field) — it just
+     * confirms the word with a space, the same as pressing the space bar
+     * would, and moves on to next-word suggestions based on it.
+     */
+    private fun setTypedWordButton(
+        button: Button,
+        word: String,
+    ) {
+        setSuggestionButton(button, "\"$word\"")
+        button.setOnClickListener {
+            currentInputConnection?.commitText(" ", 1)
+            suggestionHandler.processLinguisticSuggestions(word)
+            suggestionHandler.processWordSuggestions(word)
+            moveToIdleState()
+        }
     }
 
     /**
