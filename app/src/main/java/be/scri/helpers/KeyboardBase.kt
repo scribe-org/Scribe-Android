@@ -37,6 +37,8 @@ class KeyboardBase {
         val keyboardLetters: Int
 
         fun isSearchBar(): Boolean
+
+        fun isFloatingModeActive(): Boolean
     }
 
     /** Horizontal gap default for all rows  */
@@ -81,6 +83,7 @@ class KeyboardBase {
         private const val WIDTH_DIVIDER = 10
         const val KEYCODE_SHIFT = -1
         const val KEYCODE_MODE_CHANGE = -2
+        const val KEYCODE_FLOAT_TOGGLE = -10
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
@@ -413,8 +416,9 @@ class KeyboardBase {
         context: Context,
         @XmlRes xmlLayoutResId: Int,
         enterKeyType: Int,
+        customWidth: Int? = null,
     ) {
-        mDisplayWidth = context.resources.displayMetrics.widthPixels
+        mDisplayWidth = customWidth ?: context.resources.displayMetrics.widthPixels
         mDefaultHorizontalGap = 0
         mDefaultWidth = mDisplayWidth / WIDTH_DIVIDER
         mDefaultHeight = mDefaultWidth

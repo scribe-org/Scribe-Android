@@ -752,6 +752,17 @@ class KeyboardView
             }
         }
 
+        override fun onSizeChanged(
+            w: Int,
+            h: Int,
+            oldw: Int,
+            oldh: Int,
+        ) {
+            super.onSizeChanged(w, h, oldw, oldh)
+            mKeyboardChanged = true
+            invalidateAllKeys()
+        }
+
         /**
          * Compute the average distance between adjacent keys (horizontally and vertically)
          * and square it to get the proximity threshold.
@@ -791,7 +802,7 @@ class KeyboardView
         @SuppressLint("UseCompatLoadingForDrawables")
         private fun onBufferDraw() {
             val keyMargin = KEY_MARGIN
-            val vKeyMargin = V_KEY_MARGIN
+            val vKeyMargin = if (id == R.id.mini_keyboard_view) KEY_MARGIN else V_KEY_MARGIN
             val shadowOffset = SHADOW_OFFSET
             if (mBuffer == null || mKeyboardChanged) {
                 if (mBuffer?.let { buffer -> buffer.width != width || buffer.height != height } != false) {
@@ -1140,11 +1151,24 @@ class KeyboardView
                             key.icon = resources.getDrawable(drawableId)
                             key.icon!!.applyColorFilter(mTextColor)
                         } else {
+                            if (code == KeyboardBase.KEYCODE_FLOAT_TOGGLE) {
+                                val isFloating =
+                                    (context as? KeyboardBase.KeyboardContextProvider)?.isFloatingModeActive() == true ||
+                                        (mPopupParent?.context as? KeyboardBase.KeyboardContextProvider)?.isFloatingModeActive() == true
+                                val floatIconRes =
+                                    if (isFloating) {
+                                        R.drawable.ic_keyboard_dismiss
+                                    } else {
+                                        R.drawable.ic_float_keyboard
+                                    }
+                                key.icon = resources.getDrawable(floatIconRes, context.theme)
+                            }
                             val isIconOnlyKey =
                                 code == KEYCODE_DELETE ||
                                     code == KEYCODE_SHIFT ||
                                     code == KEYCODE_TAB ||
                                     code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                                    code == KeyboardBase.KEYCODE_FLOAT_TOGGLE ||
                                     code == KeyboardBase.KEYCODE_EMOJI
                             if (isIconOnlyKey) {
                                 key.icon!!.applyColorFilter(mTextColor)
@@ -1154,8 +1178,11 @@ class KeyboardView
                         // Controls where icons are located on their keys.
                         var iconWidth = key.icon!!.intrinsicWidth
                         var iconHeight = key.icon!!.intrinsicHeight
-                        val isEmojiOrClipboard = code == KeyboardBase.KEYCODE_EMOJI || code == KeyboardBase.KEYCODE_CLIPBOARD
-                        val scaleFactor = if (isEmojiOrClipboard) 0.45f else 0.6f
+                        val isEmojiOrClipboard =
+                            code == KeyboardBase.KEYCODE_EMOJI ||
+                                code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                                code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
+                        val scaleFactor = if (isEmojiOrClipboard) 0.5f else 0.6f
                         val maxIconWidth = (key.width * scaleFactor).toInt()
                         val maxIconHeight = (key.height * scaleFactor).toInt()
                         if (iconWidth > maxIconWidth || iconHeight > maxIconHeight) {
@@ -1175,7 +1202,7 @@ class KeyboardView
                         key.icon!!.draw(canvas)
                         canvas.translate(-drawableX.toFloat(), -drawableY.toFloat())
 
-                        if (code == KeyboardBase.KEYCODE_EMOJI) {
+                        if (code == KeyboardBase.KEYCODE_EMOJI && id != R.id.mini_keyboard_view) {
                             val settingsIcon = resources.getDrawable(R.drawable.ic_settings_cog_vector, context.theme)
                             settingsIcon.applyColorFilter(mTextColor)
                             val density = context.resources.displayMetrics.density
@@ -1575,7 +1602,12 @@ class KeyboardView
                 }
                 selectedKeyIndex = Math.max(0, Math.min(selectedKeyIndex, keysCnt - 1))
 
-                val isEmojiPopup = mMiniKeyboard!!.mKeys.any { it.code == KeyboardBase.KEYCODE_EMOJI || it.code == KeyboardBase.KEYCODE_CLIPBOARD }
+                val isEmojiPopup =
+                    mMiniKeyboard!!.mKeys.any {
+                        it.code == KeyboardBase.KEYCODE_EMOJI ||
+                            it.code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                            it.code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
+                    }
                 if (isEmojiPopup) {
                     // Emoji popup: start with no pre-selection; user slides to choose and lifts to confirm.
                     for (i in 0 until keysCnt) {
@@ -1629,7 +1661,12 @@ class KeyboardView
             }
 
             if (mPopupKeyboard.isShowing) {
-                val isEmojiPopup = mMiniKeyboard?.mKeys?.any { it.code == KeyboardBase.KEYCODE_EMOJI || it.code == KeyboardBase.KEYCODE_CLIPBOARD } == true
+                val isEmojiPopup =
+                    mMiniKeyboard?.mKeys?.any {
+                        it.code == KeyboardBase.KEYCODE_EMOJI ||
+                            it.code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                            it.code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
+                    } == true
                 when (action) {
                     MotionEvent.ACTION_MOVE -> {
                         val miniKeyboard = mMiniKeyboard
