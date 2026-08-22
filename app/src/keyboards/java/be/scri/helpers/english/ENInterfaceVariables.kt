@@ -90,4 +90,6 @@ object ENInterfaceVariables {
     const val OBJECTS_EMOJI_HEADER = "Objects"
     const val SYMBOLS_EMOJI_HEADER = "Symbols"
     const val FLAGS_EMOJI_HEADER = "Flags"
+
+    const val RECENTLY_USED_EMOJI_HEADER = "Recently Used"
 }
