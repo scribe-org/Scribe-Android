@@ -1,10 +1,13 @@
 <input-method xmlns:android="http://schemas.android.com/apk/res/android">
-    <subtype android:label="Italiano" android:imeSubtypeLocale="it" android:imeSubtypeMode="keyboard"/>
-    <subtype android:label="Русский" android:imeSubtypeLocale="ru" android:imeSubtypeMode="keyboard"/>
-    <subtype android:label="Deutsch" android:imeSubtypeLocale="de" android:imeSubtypeMode="keyboard"/>
-    <subtype android:label="Español" android:imeSubtypeLocale="es" android:imeSubtypeMode="keyboard"/>
-    <subtype android:label="Français" android:imeSubtypeLocale="fr" android:imeSubtypeMode="keyboard"/>
-    <subtype android:label="English" android:imeSubtypeLocale="en" android:imeSubtypeMode="keyboard"/>
-    <subtype android:label="Svenska" android:imeSubtypeLocale="sv" android:imeSubtypeMode="keyboard"/>
-    <subtype android:label="Português" android:imeSubtypeLocale="pt" android:imeSubtypeMode="keyboard"/>
+    <subtype android:label="Italiano" android:imeSubtypeLocale="it"
+        android:imeSubtypeMode="keyboard" />
+    <subtype android:label="Русский" android:imeSubtypeLocale="ru" android:imeSubtypeMode="keyboard" />
+    <subtype android:label="Deutsch" android:imeSubtypeLocale="de" android:imeSubtypeMode="keyboard" />
+    <subtype android:label="Español" android:imeSubtypeLocale="es" android:imeSubtypeMode="keyboard" />
+    <subtype android:label="Français" android:imeSubtypeLocale="fr"
+        android:imeSubtypeMode="keyboard" />
+    <subtype android:label="English" android:imeSubtypeLocale="en" android:imeSubtypeMode="keyboard" />
+    <subtype android:label="Svenska" android:imeSubtypeLocale="sv" android:imeSubtypeMode="keyboard" />
+    <subtype android:label="Português" android:imeSubtypeLocale="pt"
+        android:imeSubtypeMode="keyboard" />
 </input-method>

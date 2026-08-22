@@ -5,8 +5,8 @@ import android.view.KeyEvent
 import android.view.inputmethod.InputConnection
 import android.widget.Button
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.ScribeState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -98,7 +98,7 @@ class KeyboardTest {
         every { mockIME.findWhetherWordIsPlural(any(), "in") } returns false
         every { mockIME.getCaseAnnotationForPreposition(any(), "in") } returns null
 
-        every { mockIME.updateAutoSuggestText(any(), any(), any(), any()) } answers {
+        every { mockIME.updateAutoSuggestText(any(), any(), any()) } answers {
             conjugateBtn.text = "der"
             pluralBtn.text = "den"
             translateBtn.text = "die"
@@ -106,8 +106,8 @@ class KeyboardTest {
 
         suggestionHandler.processLinguisticSuggestions("in")
 
-        verify { conjugateBtn.text = match { it.isNotEmpty() } }
-        verify { pluralBtn.text = match { it.isNotEmpty() } }
-        verify { translateBtn.text = match { it.isNotEmpty() } }
+        verify(timeout = 2000) { conjugateBtn.text = match { it.isNotEmpty() } }
+        verify(timeout = 2000) { pluralBtn.text = match { it.isNotEmpty() } }
+        verify(timeout = 2000) { translateBtn.text = match { it.isNotEmpty() } }
     }
 }

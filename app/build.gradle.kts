@@ -95,18 +95,24 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     buildFeatures {
         viewBinding = true
         buildConfig = true
         compose = true
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/jni/CMakeLists.txt")
+        }
     }
 
     signingConfigs {
@@ -136,7 +142,7 @@ android {
     flavorDimensions.add("variants")
 
     sourceSets {
-        getByName("main").java.srcDirs("src/main/kotlin")
+        getByName("main").java.srcDirs("src/main/java", "src/main/kotlin")
         named("test") {
             java.srcDirs("src/test/java", "src/test/kotlin")
         }
@@ -161,6 +167,7 @@ android {
     }
 
     namespace = "be.scri"
+    ndkVersion = "27.1.12297006"
 
     applicationVariants.all {
         val variantName = this.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }

@@ -8,6 +8,7 @@
     <string name="i18n.app._global.german">독일어</string>
     <string name="i18n.app._global.italian">이탈리아어</string>
     <string name="i18n.app._global.portuguese">포르투갈어</string>
+    <string name="i18n.app._global.quick_tutorial">빠른 튜토리얼</string>
     <string name="i18n.app._global.russian">러시아어</string>
     <string name="i18n.app._global.spanish">스페인어</string>
     <string name="i18n.app._global.swedish">스웨덴어</string>
@@ -58,7 +59,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">새로운 데이터 확인하기</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">정기적으로 데이터 업데이트히기</string>
     <string name="i18n.app.installation.app_hint_tooltip">아래 지침에 따라 Scribe 키보드를 기기에 설치하세요.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">빠른 튜토리얼</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">키보드 설정 열기</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">키보드</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">Scribe 설정 열기</string>
@@ -68,7 +68,6 @@
     <string name="i18n.app.installation.keyboard.text_4">키보드를 선택할 수 있습니다.</string>
     <string name="i18n.app.installation.keyboard.title">키보드 설치</string>
     <string name="i18n.app.installation.title">설치</string>
-    <string name="i18n.app.settings.app_hint_tooltip">앱 설정과 설치된 언어 키보드는 여기서 찾을 수 있습니다.</string>
     <string name="i18n.app.settings.button_install_keyboards">키보드 설치하기</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">추천 및 완성 설명</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">입력 시 성별에 따라 다른 단어가 제안될 때, 해당 단어에 밑줄 쳐서 성별을 나타낸다.</string>
@@ -107,6 +106,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">번역 언어</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">번역할 언어를 변경하세요.</string>
     <string name="i18n.app.settings.keyboard.translation.title">번역할 언어</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">앱 설정과 설치된 언어 키보드는 여기서 찾을 수 있습니다.</string>
     <string name="i18n.app.settings.menu.app_color_mode">다크 모드</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">앱 디스플레이를 다크 모드로 변경합니다.</string>
     <string name="i18n.app.settings.menu.app_language">언어 설정</string>

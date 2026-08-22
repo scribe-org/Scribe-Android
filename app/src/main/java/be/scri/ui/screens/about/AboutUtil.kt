@@ -94,11 +94,13 @@ fun getLegalItemSpecs(): List<LegalItemSpec> =
         LegalItemSpec(
             icon = R.drawable.shield_lock,
             title = R.string.i18n__global_privacy_policy,
+            altText = R.string.i18n__global_privacy_policy,
             destination = Destination.PrivacyPolicy,
         ),
         LegalItemSpec(
             icon = R.drawable.license_icon,
             title = R.string.i18n_app_about_legal_third_party,
+            altText = R.string.i18n_app_about_legal_third_party,
             destination = Destination.ThirdPartyLicenses,
         ),
     )
@@ -118,9 +120,21 @@ fun feedbackAndSupportList(
     onRateScribeClick: () -> Unit,
     onMailClick: () -> Unit,
     onResetHintsClick: () -> Unit,
+    onTutorialClick: () -> Unit,
     isConjugateApp: Boolean = false,
 ): List<ScribeItem.ExternalLinkItem> =
-    listOf(
+    listOfNotNull(
+        if (!isConjugateApp) {
+            ScribeItem.ExternalLinkItem(
+                leadingIcon = R.drawable.tutorial,
+                title = R.string.i18n_app__global_quick_tutorial,
+                trailingIcon = R.drawable.right_arrow,
+                url = null,
+                onClick = { onTutorialClick() },
+            )
+        } else {
+            null
+        },
         ScribeItem.ExternalLinkItem(
             leadingIcon = R.drawable.star,
             title =
@@ -179,6 +193,7 @@ fun feedbackAndSupportList(
 data class LegalItemSpec(
     val icon: Int,
     val title: Int,
+    val altText: Int,
     val destination: Destination,
 )
 
@@ -276,6 +291,7 @@ object AboutUtil {
         onRateScribeClick: () -> Unit,
         onMailClick: () -> Unit,
         onResetHintsClick: () -> Unit,
+        onTutorialClick: () -> Unit,
         context: Context,
         isConjugateApp: Boolean = false,
     ): ScribeItemList =
@@ -287,6 +303,7 @@ object AboutUtil {
                         onRateScribeClick,
                         onMailClick,
                         onResetHintsClick,
+                        onTutorialClick,
                         isConjugateApp,
                     ),
             )
@@ -317,6 +334,7 @@ object AboutUtil {
                     ScribeItem.ExternalLinkItem(
                         leadingIcon = spec.icon,
                         title = spec.title,
+                        altText = spec.altText,
                         trailingIcon = R.drawable.right_arrow,
                         url = null,
                         onClick = clickHandler,

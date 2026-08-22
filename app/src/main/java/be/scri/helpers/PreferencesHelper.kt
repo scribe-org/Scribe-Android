@@ -2,12 +2,9 @@
 
 package be.scri.helpers
 
-import android.app.UiModeManager
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity.UI_MODE_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 
@@ -18,6 +15,7 @@ import androidx.core.content.edit
 object PreferencesHelper {
     const val SCRIBE_PREFS = "app_preferences"
     private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
+    private const val AUTO_SPACE_AFTER_PUNCTUATION = "auto_space_after_punctuation"
     private const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
     private const val SOUND_ON_KEYPRESS = "sound_on_keypress"
     private const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
@@ -97,13 +95,27 @@ object PreferencesHelper {
                 shouldEnablePeriodOnSpaceBarDoubleTap,
             )
         }
-        Toast
-            .makeText(
-                context,
-                "$language Period on Double Tap of Space Bar " +
-                    if (shouldEnablePeriodOnSpaceBarDoubleTap) "on" else "off",
-                Toast.LENGTH_SHORT,
-            ).show()
+    }
+
+    /**
+     * Sets the preference for enabling or disabling auto spacing after punctuation.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldEnableAutoSpaceAfterPunctuation Whether to enable or disable the feature.
+     */
+    fun setAutoSpaceAfterPunctuationPreference(
+        context: Context,
+        language: String,
+        shouldEnableAutoSpaceAfterPunctuation: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(
+                getLanguageSpecificPreferenceKey(AUTO_SPACE_AFTER_PUNCTUATION, language),
+                shouldEnableAutoSpaceAfterPunctuation,
+            )
+        }
     }
 
     /**
@@ -125,13 +137,6 @@ object PreferencesHelper {
                 shouldDisableAccentCharacter,
             )
         }
-        Toast
-            .makeText(
-                context,
-                "$language Accent Characters " +
-                    if (shouldDisableAccentCharacter) "off" else "on",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -150,13 +155,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(EMOJI_SUGGESTIONS, language), shouldShowEmojiSuggestions)
         }
-        Toast
-            .makeText(
-                context,
-                "$language Emoji Autosuggestions " +
-                    if (shouldShowEmojiSuggestions) "on" else "off",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -175,13 +173,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(PERIOD_AND_COMMA, language), shouldEnablePeriodAndComma)
         }
-        Toast
-            .makeText(
-                context,
-                "$language period and comma on ABC " +
-                    if (shouldEnablePeriodAndComma) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -200,13 +191,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(VIBRATE_ON_KEYPRESS, language), shouldVibrateOnKeypress)
         }
-        Toast
-            .makeText(
-                context,
-                "$language vibrate on key press " +
-                    if (shouldVibrateOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     fun setSoundOnKeypress(
@@ -218,13 +202,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(SOUND_ON_KEYPRESS, language), shouldSoundOnKeypress)
         }
-        Toast
-            .makeText(
-                context,
-                "$language sound on key press " +
-                    if (shouldSoundOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -243,13 +220,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(SHOW_POPUP_ON_KEYPRESS, language), shouldShowPopupOnKeypress)
         }
-        Toast
-            .makeText(
-                context,
-                "$language PopUp on Keypress " +
-                    if (shouldShowPopupOnKeypress) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -271,13 +241,6 @@ object PreferencesHelper {
                 shouldEnableWordByWordDeletion,
             )
         }
-        Toast
-            .makeText(
-                context,
-                "$language Word by Word Deletion " +
-                    if (shouldEnableWordByWordDeletion) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -304,13 +267,7 @@ object PreferencesHelper {
      * @return The dark mode setting as an integer value (AppCompatDelegate.MODE_NIGHT_YES or MODE_NIGHT_NO).
      */
     fun getUserDarkModePreference(context: Context): Int {
-        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
-        val uiModeManager = context.getSystemService(UI_MODE_SERVICE) as UiModeManager
-        val isSystemDarkTheme = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkTheme)
-        if (!sharedPref.contains("dark_mode")) {
-            setLightDarkModePreference(context, isUserDarkMode)
-        }
+        val isUserDarkMode = getIsDarkModeOrNot(context)
         return if (isUserDarkMode) {
             AppCompatDelegate.MODE_NIGHT_YES
         } else {
@@ -413,7 +370,23 @@ object PreferencesHelper {
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
-        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), false)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), true)
+    }
+
+    /**
+     * Retrieves whether auto spacing after punctuation is enabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     *
+     * @return true if auto spacing after punctuation is enabled, false otherwise.
+     */
+    fun getAutoSpaceAfterPunctuationPreference(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(AUTO_SPACE_AFTER_PUNCTUATION, language), true)
     }
 
     /**
@@ -427,7 +400,19 @@ object PreferencesHelper {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        val isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+
+        val lastSystemTheme = sharedPref.getBoolean("last_system_dark_mode", isSystemDarkMode)
+        var isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)
+
+        if (!sharedPref.contains("last_system_dark_mode") || lastSystemTheme != isSystemDarkMode) {
+            isUserDarkMode = isSystemDarkMode
+            sharedPref
+                .edit()
+                .putBoolean("dark_mode", isUserDarkMode)
+                .putBoolean("last_system_dark_mode", isSystemDarkMode)
+                .apply()
+        }
+
         return isUserDarkMode
     }
 
@@ -569,13 +554,6 @@ object PreferencesHelper {
         sharedPref.edit {
             putBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), holdForAltKeys)
         }
-        Toast
-            .makeText(
-                context,
-                "$language hold for alternate characters " +
-                    if (holdForAltKeys) "enabled" else "disabled",
-                Toast.LENGTH_SHORT,
-            ).show()
     }
 
     /**
@@ -595,7 +573,21 @@ object PreferencesHelper {
     }
 
     /**
-     * Saves the user's "Increase Text Size" preference.
+     * Resets the application hints, marking them as not shown in the shared preferences.
+     *
+     * @param context The context used to access shared preferences.
+     */
+    fun resetHints(context: Context) {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean("hint_shown_main", false)
+            putBoolean("hint_shown_settings", false)
+            putBoolean("hint_shown_about", false)
+            apply()
+        }
+    }
+
+    /** Saves the user's "Increase Text Size" preference.
      *
      * @param context The application context used to access SharedPreferences.
      * @param increaseTextSize `true` to enable larger text size, `false` to use default size.
@@ -617,5 +609,118 @@ object PreferencesHelper {
     fun getIncreaseTextSizePreference(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return sharedPref.getBoolean(INCREASE_TEXT_SIZE, false)
+    }
+
+    // MARK: Floating Keyboard Preferences
+
+    private const val FLOATING_MODE_ENABLED = "floating_mode_enabled"
+    private const val FLOATING_X = "floating_x"
+    private const val FLOATING_Y = "floating_y"
+    private const val FLOATING_SCALE = "floating_scale"
+    private const val FLOATING_SCALE_X = "floating_scale_x"
+    private const val FLOATING_SCALE_Y = "floating_scale_y"
+
+    fun setIsFloatingModeEnabled(
+        context: Context,
+        language: String,
+        enabled: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putBoolean(getLanguageSpecificPreferenceKey(FLOATING_MODE_ENABLED, language), enabled) }
+    }
+
+    fun getIsFloatingModeEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(FLOATING_MODE_ENABLED, language), false)
+    }
+
+    fun setFloatingX(
+        context: Context,
+        language: String,
+        x: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_X, language), x) }
+    }
+
+    fun getFloatingX(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_X, language), 0f)
+    }
+
+    fun setFloatingY(
+        context: Context,
+        language: String,
+        y: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_Y, language), y) }
+    }
+
+    fun getFloatingY(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_Y, language), 0f)
+    }
+
+    fun setFloatingScale(
+        context: Context,
+        language: String,
+        scale: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE, language), scale) }
+    }
+
+    fun getFloatingScale(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE, language), 1.0f)
+    }
+
+    fun setFloatingScaleX(
+        context: Context,
+        language: String,
+        scaleX: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_X, language), scaleX) }
+    }
+
+    fun getFloatingScaleX(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val defaultScale = getFloatingScale(context, language)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_X, language), defaultScale)
+    }
+
+    fun setFloatingScaleY(
+        context: Context,
+        language: String,
+        scaleY: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_Y, language), scaleY) }
+    }
+
+    fun getFloatingScaleY(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val defaultScale = getFloatingScale(context, language)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_Y, language), defaultScale)
     }
 }

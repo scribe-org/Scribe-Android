@@ -29,6 +29,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -49,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
+import be.scri.ui.screens.tutorial.TutorialNavigator
 
 /**
  * The installation page of the application with details for installing Scribe keyboards and downloading data.
@@ -59,8 +64,18 @@ fun InstallationScreen(
     isDark: Boolean,
     context: Context,
     onNavigateToDownloadData: () -> Unit,
+    onTutorialClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showTutorial by remember { mutableStateOf(false) }
+
+    if (showTutorial) {
+        TutorialNavigator(
+            onTutorialExit = { showTutorial = false },
+        )
+        return
+    }
+
     val layoutDirection = LocalLayoutDirection.current
     val localConfiguration = LocalConfiguration.current
     val resource: Int =
@@ -176,7 +191,7 @@ fun InstallationScreen(
                             )
                             Image(
                                 painter = painterResource(resource),
-                                contentDescription = "Select Keyboard",
+                                contentDescription = stringResource(R.string.i18n_app_installation_select_keyboard_icon_description),
                                 modifier =
                                     Modifier
                                         .size(30.dp)
@@ -274,7 +289,7 @@ fun InstallationScreen(
                         )
                         Image(
                             painter = painterResource(R.drawable.right_arrow),
-                            contentDescription = "Right Arrow",
+                            contentDescription = stringResource(R.string.i18n_app_accessibility_right_arrow),
                             modifier =
                                 Modifier
                                     .size(Dimensions.IconSize)
@@ -291,6 +306,7 @@ fun InstallationScreen(
 
             OutlinedButton(
                 onClick = {
+                    onTutorialClick()
                 },
                 modifier =
                     Modifier
@@ -304,7 +320,7 @@ fun InstallationScreen(
                     ),
             ) {
                 Text(
-                    text = stringResource(R.string.i18n_app_installation_button_quick_tutorial),
+                    text = stringResource(R.string.i18n_app__global_quick_tutorial),
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.padding(vertical = Dimensions.PaddingLarge),

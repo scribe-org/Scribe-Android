@@ -4,7 +4,6 @@
     android:height="24dp"
     android:viewportWidth="960"
     android:viewportHeight="960">
-
     <path
         android:fillColor="@color/icon_color"
         android:strokeColor="@color/icon_color"
@@ -12,12 +11,10 @@
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:pathData="M480,140 L180,440 L480,440 L780,440 L480,140Z" />
-
     <path
         android:strokeColor="@color/icon_color"
         android:strokeWidth="80"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
         android:pathData="M180,680 h600" />
-
 </vector>

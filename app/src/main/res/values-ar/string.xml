@@ -8,6 +8,7 @@
     <string name="i18n.app._global.german">الألمانية</string>
     <string name="i18n.app._global.italian">الإيطالية</string>
     <string name="i18n.app._global.portuguese">البرتغالية</string>
+    <string name="i18n.app._global.quick_tutorial">دليل سريع</string>
     <string name="i18n.app._global.russian">الروسية</string>
     <string name="i18n.app._global.spanish">الإسبانية</string>
     <string name="i18n.app._global.swedish">السويدية</string>
@@ -58,7 +59,6 @@
     <string name="i18n.app.download.menu_ui.update_data.check_new">تحقق من البيانات الجديدة</string>
     <string name="i18n.app.download.menu_ui.update_data.regular_update">تحديث البيانات بانتظام</string>
     <string name="i18n.app.installation.app_hint_tooltip">اتبع التعليمات أدناه لتثبيت لوحات مفاتيح Scribe على جهازك.</string>
-    <string name="i18n.app.installation.button_quick_tutorial">دليل سريع</string>
     <string name="i18n.app.installation.keyboard.keyboard_settings">افتح إعدادات لوحة المفاتيح</string>
     <string name="i18n.app.installation.keyboard.keyboards_bold">لوحات المفاتيح</string>
     <string name="i18n.app.installation.keyboard.scribe_settings">افتح إعدادات Scribe</string>
@@ -68,7 +68,6 @@
     <string name="i18n.app.installation.keyboard.text_4">لاختيار لوحات المفاتيح</string>
     <string name="i18n.app.installation.keyboard.title">تثبيت لوحة المفاتيح</string>
     <string name="i18n.app.installation.title">تثبيت</string>
-    <string name="i18n.app.settings.app_hint_tooltip">توجد إعدادات التطبيق ولوحات المفاتيح اللغوية المثبتة هنا.</string>
     <string name="i18n.app.settings.button_install_keyboards">تثبيت لوحات المفاتيح</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">توضيح الاقتراحات/الاكتمال</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">تسطير الاقتراحات والاكتملات لإظهار جنسها أثناء الكتابة.</string>
@@ -107,6 +106,7 @@
     <string name="i18n.app.settings.keyboard.translation.select_source.title">لغة الترجمة</string>
     <string name="i18n.app.settings.keyboard.translation.select_source_description">تغيير اللغة للترجمة منها.</string>
     <string name="i18n.app.settings.keyboard.translation.title">لغة مصدر الترجمة</string>
+    <string name="i18n.app.settings.keyboard_app_hint_tooltip">توجد إعدادات التطبيق ولوحات المفاتيح اللغوية المثبتة هنا.</string>
     <string name="i18n.app.settings.menu.app_color_mode">الوضع الداكن</string>
     <string name="i18n.app.settings.menu.app_color_mode_description">تغيير عرض التطبيق إلى الوضع الداكن.</string>
     <string name="i18n.app.settings.menu.app_language">لغة التطبيق</string>

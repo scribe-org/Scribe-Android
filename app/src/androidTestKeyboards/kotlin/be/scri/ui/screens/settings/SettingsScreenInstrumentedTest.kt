@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -255,6 +256,14 @@ class SettingsScreenInstrumentedTest {
             .performClick()
 
         composeTestRule.waitForIdle()
+
+        // Click OK on the warning dialog if it appeared (since it goes against system theme)
+        composeTestRule.onAllNodesWithText("OK").apply {
+            if (fetchSemanticsNodes().isNotEmpty()) {
+                get(0).performClick()
+                composeTestRule.waitForIdle()
+            }
+        }
 
         verify(timeout = 3000) { mockViewModelSpy.setLightDarkMode(true) }
         verify(timeout = 3000) { onDarkModeChangeMock(true) }

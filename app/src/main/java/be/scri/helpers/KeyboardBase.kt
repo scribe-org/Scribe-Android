@@ -16,7 +16,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import androidx.annotation.XmlRes
 import be.scri.R
-import be.scri.services.GeneralKeyboardIME
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import kotlin.math.roundToInt
@@ -28,6 +27,20 @@ import kotlin.math.roundToInt
  */
 @Suppress("LongMethod", "NestedBlockDepth", "CyclomaticComplexMethod")
 class KeyboardBase {
+    /**
+     * Interface for providing keyboard context to KeyboardBase without
+     * a direct dependency on GeneralKeyboardIME.
+     */
+    interface KeyboardContextProvider {
+        val language: String
+        val keyboardMode: Int
+        val keyboardLetters: Int
+
+        fun isSearchBar(): Boolean
+
+        fun isFloatingModeActive(): Boolean
+    }
+
     /** Horizontal gap default for all rows  */
     private var mDefaultHorizontalGap = 0
 
@@ -70,13 +83,16 @@ class KeyboardBase {
         private const val WIDTH_DIVIDER = 10
         const val KEYCODE_SHIFT = -1
         const val KEYCODE_MODE_CHANGE = -2
+        const val KEYCODE_FLOAT_TOGGLE = -10
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
+        const val KEYCODE_EMOJI = -6
         const val KEYCODE_TAB = -30
         const val KEYCODE_CAPS_LOCK = -50
         const val KEYCODE_LEFT_ARROW = -55
         const val KEYCODE_RIGHT_ARROW = -56
+        const val KEYCODE_CLIPBOARD = -60
         const val SHIFT_OFF = 0
         const val SHIFT_ON = 1
         const val SHIFT_ON_PERMANENT = 2
@@ -400,8 +416,9 @@ class KeyboardBase {
         context: Context,
         @XmlRes xmlLayoutResId: Int,
         enterKeyType: Int,
+        customWidth: Int? = null,
     ) {
-        mDisplayWidth = context.resources.displayMetrics.widthPixels
+        mDisplayWidth = customWidth ?: context.resources.displayMetrics.widthPixels
         mDefaultHorizontalGap = 0
         mDefaultWidth = mDisplayWidth / WIDTH_DIVIDER
         mDefaultHeight = mDefaultWidth
@@ -532,13 +549,13 @@ class KeyboardBase {
         var currentRow: Row? = null
         val res = context.resources
 
-        // Get the IME instance to check the current keyboard mode.
-        val imeInstance = context as? GeneralKeyboardIME
-        val language = imeInstance?.language
-        val currentKeyboardMode = imeInstance?.keyboardMode
-        val keyboardLettersMode = imeInstance?.keyboardLetters
+        // Get the keyboard context provider if available.
+        val provider = context as? KeyboardContextProvider
+        val language = provider?.language
+        val currentKeyboardMode = provider?.keyboardMode
+        val keyboardLettersMode = provider?.keyboardLetters
 
-        val isSearchBar = imeInstance?.isSearchBar() == true
+        val isSearchBar = provider?.isSearchBar() == true
         val periodAndCommaEnabled: Boolean =
             if (language != null) {
                 PreferencesHelper.getEnablePeriodAndCommaABC(context, language)

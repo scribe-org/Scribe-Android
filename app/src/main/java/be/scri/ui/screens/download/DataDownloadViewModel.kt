@@ -6,13 +6,15 @@ import android.app.Application
 import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import be.scri.R
 import be.scri.data.remote.DynamicDbHelper
 import be.scri.data.remote.RetrofitClient
 import be.scri.helpers.LanguageMappingConstants
+import be.scri.helpers.NetworkMonitor
+import be.scri.helpers.StringUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
@@ -27,6 +29,7 @@ import java.io.IOException
 import java.time.LocalDate
 
 /** ViewModel to manage data download states and actions. */
+@Suppress("TooManyFunctions")
 class DataDownloadViewModel(
     application: Application,
 ) : AndroidViewModel(application) {
@@ -36,6 +39,9 @@ class DataDownloadViewModel(
     private val prefs = getApplication<Application>().getSharedPreferences("scribe_prefs", Context.MODE_PRIVATE)
     private val _checkUpdateState = MutableStateFlow(CheckUpdateState.Idle)
     val checkUpdateState = _checkUpdateState.asStateFlow()
+
+    private val _toastMessage = MutableStateFlow<String?>(null)
+    val toastMessage = _toastMessage.asStateFlow()
 
     private var checkUpdateJob: Job? = null
 
@@ -96,6 +102,11 @@ class DataDownloadViewModel(
         key: String,
         forceDownload: Boolean = false,
     ) {
+        if (!NetworkMonitor.isOnline(getApplication())) {
+            showToast(getApplication<Application>().getString(R.string.i18n_app_download_error_no_network))
+            return
+        }
+
         val currentState = downloadStates[key] ?: DownloadState.Ready
         val displayLang = key.replaceFirstChar { it.uppercase() }
         if (forceDownload) {
@@ -106,7 +117,12 @@ class DataDownloadViewModel(
             }
 
             if (currentState == DownloadState.Completed) {
-                Toast.makeText(getApplication(), "$displayLang data is already up to date", Toast.LENGTH_SHORT).show()
+                val template =
+                    getApplication<Application>().getString(
+                        R.string.i18n_app_download_menu_ui_download_data_already_up_to_date,
+                    )
+                val msg = StringUtils.formatStringWithParams(template, displayLang)
+                showToast(msg)
                 return
             }
         }
@@ -129,7 +145,7 @@ class DataDownloadViewModel(
                 try {
                     // Fetch API.
                     val response =
-                        withTimeout(30_000) {
+                        withTimeout(300_000) {
                             RetrofitClient.apiService.getData(langCode)
                         }
                     val serverLastUpdate = response.contract.updatedAt
@@ -144,23 +160,51 @@ class DataDownloadViewModel(
 
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed
-                            Toast.makeText(getApplication(), "Download $displayLang data finished!", Toast.LENGTH_SHORT).show()
+                            val template =
+                                getApplication<Application>().getString(
+                                    R.string.i18n_app_download_menu_ui_download_data_download_success,
+                                )
+                            val msg = StringUtils.formatStringWithParams(template, displayLang)
+                            showToast(msg)
                         }
                     } else {
                         // Already up to date: Skip the DB work.
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed
-                            Toast.makeText(getApplication(), "Already up to date!", Toast.LENGTH_SHORT).show()
+                            val msg =
+                                getApplication<Application>().getString(
+                                    R.string.i18n_app_download_menu_ui_download_data_generic_already_up_to_date,
+                                )
+                            showToast(msg)
                         }
                     }
                 } catch (e: IOException) {
-                    updateErrorState(key, "Network Error: ${e.message}")
+                    val template =
+                        getApplication<Application>().getString(
+                            R.string.i18n_app_download_error_network,
+                        )
+                    val errorMsg = StringUtils.formatStringWithParams(template, e.message ?: "")
+                    updateErrorState(key, errorMsg)
                 } catch (e: SQLiteException) {
-                    updateErrorState(key, "Database Error: ${e.message}")
+                    val template =
+                        getApplication<Application>().getString(
+                            R.string.i18n_app_download_error_database,
+                        )
+                    val errorMsg = StringUtils.formatStringWithParams(template, e.message ?: "")
+                    updateErrorState(key, errorMsg)
                 } catch (e: HttpException) {
-                    updateErrorState(key, "Server Error: ${e.code()}")
+                    val template =
+                        getApplication<Application>().getString(
+                            R.string.i18n_app_download_error_server,
+                        )
+                    val errorMsg = StringUtils.formatStringWithParams(template, e.code().toString())
+                    updateErrorState(key, errorMsg)
                 } catch (e: TimeoutCancellationException) {
-                    updateErrorState(key, "Download timed out")
+                    val errorMsg =
+                        getApplication<Application>().getString(
+                            R.string.i18n_app_download_error_timeout,
+                        )
+                    updateErrorState(key, errorMsg)
                     throw e
                 } finally {
                     // Clean up the job reference when done.
@@ -174,6 +218,11 @@ class DataDownloadViewModel(
      * Handles the "All languages" download action by initiating downloads for all languages that are not already completed or downloading.
      */
     fun handleDownloadAllLanguages() {
+        if (!NetworkMonitor.isOnline(getApplication())) {
+            showToast(getApplication<Application>().getString(R.string.i18n_app_download_error_no_network))
+            return
+        }
+
         val toDownload =
             downloadStates.keys.filter { key ->
                 downloadStates[key] != DownloadState.Completed && downloadStates[key] != DownloadState.Downloading
@@ -237,6 +286,11 @@ class DataDownloadViewModel(
      * Checks for new data updates for all completed languages.
      */
     fun checkForNewData() {
+        if (!NetworkMonitor.isOnline(getApplication())) {
+            showToast(getApplication<Application>().getString(R.string.i18n_app_download_error_no_network))
+            return
+        }
+
         checkUpdateJob?.cancel()
 
         val keysToCheck = downloadStates.keys.filter { downloadStates[it] == DownloadState.Completed }
@@ -279,7 +333,7 @@ class DataDownloadViewModel(
         withContext(Dispatchers.Main) {
             // Reset status so user can retry.
             downloadStates[key] = DownloadState.Ready
-            Toast.makeText(getApplication(), message, Toast.LENGTH_LONG).show()
+            showToast(message)
         }
     }
 
@@ -290,6 +344,14 @@ class DataDownloadViewModel(
         super.onCleared()
         downloadJobs.values.forEach { it.cancel() }
         downloadJobs.clear()
+    }
+
+    private fun showToast(msg: String) {
+        viewModelScope.launch {
+            _toastMessage.value = msg
+            kotlinx.coroutines.delay(3000)
+            _toastMessage.value = null
+        }
     }
 }
 

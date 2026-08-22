@@ -64,6 +64,31 @@ class DatabaseFileManager(
     }
 
     /**
+     * Retrieves a read-only [SQLiteDatabase] instance for conjugate data (verbs only).
+     * This database is created specifically for the Conjugate app and contains only verb data.
+     *
+     * @param language The language code (e.g., "DE", "FR") used to determine the database filename.
+     *
+     * @return An open, read-only [SQLiteDatabase] instance, or `null` on failure.
+     */
+    fun getConjugateDatabase(language: String): SQLiteDatabase? {
+        val dbName = "${language}ConjugateData.sqlite"
+        val dbFile = context.getDatabasePath(dbName)
+
+        if (!dbFile.exists()) {
+            Log.w(TAG, "Conjugate database $dbName not found. User needs to download conjugate data first")
+            return null
+        }
+
+        return try {
+            SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY)
+        } catch (e: SQLiteException) {
+            Log.e(TAG, "Failed to open conjugate database $dbName", e)
+            null
+        }
+    }
+
+    /**
      * A generic function to get a database. It ensures the database file exists in the app's
      * private storage (copying it from assets if necessary) and then opens a read-only connection.
      *

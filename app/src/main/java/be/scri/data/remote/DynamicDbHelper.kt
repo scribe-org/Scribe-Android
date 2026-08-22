@@ -61,6 +61,7 @@ class DynamicDbHelper(
             db.setTransactionSuccessful()
         } catch (e: SQLiteException) {
             Log.e("SCRIBE_DB", "Error during insert: ${e.message}")
+            throw e
         } finally {
             db.endTransaction()
             db.close()

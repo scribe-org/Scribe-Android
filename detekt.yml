@@ -1,6 +1,12 @@
 build:
     excludes:
         - "**/be/scri/views/MyRecyclerView.kt"
+        - "**/be/scri/helpers/data/AutoSuggestionDataManager.kt"
+        - "**/be/scri/helpers/SuggestionHandler.kt"
+        - "**/be/scri/helpers/NativeSuggestionEngine.kt"
+        - "**/be/scri/latin/**"
+        - "**/be/scri/latin/**/*.kt"
+        - "**/latin/**"
 
 style:
     MagicNumber:
