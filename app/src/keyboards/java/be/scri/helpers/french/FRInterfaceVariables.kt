@@ -92,5 +92,5 @@ object FRInterfaceVariables {
     const val OBJECTS_EMOJI_HEADER = "Objets"
     const val SYMBOLS_EMOJI_HEADER = "Symboles"
     const val FLAGS_EMOJI_HEADER = "Drapeaux"
-    const val RECENTLY_USED_EMOJI_HEADER = "Récemment utilisés"
+    const val RECENTLY_USED_EMOJI_HEADER = "Récemment Utilisés"
 }

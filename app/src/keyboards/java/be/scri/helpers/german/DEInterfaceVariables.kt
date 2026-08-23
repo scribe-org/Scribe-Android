@@ -91,5 +91,5 @@ object DEInterfaceVariables {
     const val OBJECTS_EMOJI_HEADER = "Objekte"
     const val SYMBOLS_EMOJI_HEADER = "Symbole"
     const val FLAGS_EMOJI_HEADER = "Flaggen"
-    const val RECENTLY_USED_EMOJI_HEADER = "Zuletzt verwendet"
+    const val RECENTLY_USED_EMOJI_HEADER = "Zuletzt Verwendet"
 }

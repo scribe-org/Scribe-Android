@@ -73,5 +73,5 @@ object ITInterfaceVariables {
     const val OBJECTS_EMOJI_HEADER = "Oggetti"
     const val SYMBOLS_EMOJI_HEADER = "Simboli"
     const val FLAGS_EMOJI_HEADER = "Bandiere"
-    const val RECENTLY_USED_EMOJI_HEADER = "Usati di recente"
+    const val RECENTLY_USED_EMOJI_HEADER = "Usati di Recente"
 }
