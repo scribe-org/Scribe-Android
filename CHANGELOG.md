@@ -90,3 +90,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The legal policies of the application are displayed to the user in the About tab ([#58](https://github.com/scribe-org/Scribe-Android/issues/58)).
 - A privacy policy was provided to make clear that policies around user data and their security ([#59](https://github.com/scribe-org/Scribe-Android/issues/59)).
 - Third party licensed code used in the development of the project were detailed ([#60](https://github.com/scribe-org/Scribe-Android/issues/60)).
+
+### ♻️ Code Refactoring
+
+- Code quality improvements were continuously done to assure that the application is easy to maintain and meets Kotlin standards ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
