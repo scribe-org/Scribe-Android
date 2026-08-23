@@ -7,9 +7,19 @@ on:
       - opened
       - reopened
       - synchronize
+    paths:
+      - "**/*.kt"
+      - "**/*.kts"
+      - "**/*.xml"
+      - "app/src/main/**"
   push:
     branches:
       - main
+    paths:
+      - "**/*.kt"
+      - "**/*.kts"
+      - "**/*.xml"
+      - "app/src/main/**"
 
 permissions:
   pull-requests: write
