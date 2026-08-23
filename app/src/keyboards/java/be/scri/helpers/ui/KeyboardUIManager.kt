@@ -38,6 +38,7 @@ import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.getCategoryIconRes
+import be.scri.helpers.getRecentEmojis
 import be.scri.helpers.parseRawEmojiSpecsFile
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
@@ -878,8 +879,17 @@ class KeyboardUIManager(
         emojis: List<EmojiData>,
         language: String,
     ) {
+        val recentEmojiChars = getRecentEmojis(context)
+        val recentEmojiData = recentEmojiChars.mapNotNull { char -> emojis.find { it.emoji == char } }
+
         val emojiCategories = prepareEmojiCategories(emojis)
-        val emojiItems = prepareEmojiItems(emojiCategories)
+        val categoriesWithRecents =
+            if (recentEmojiData.isNotEmpty()) {
+                linkedMapOf("recently_used" to recentEmojiData) + emojiCategories
+            } else {
+                emojiCategories
+            }
+        val emojiItems = prepareEmojiItems(categoriesWithRecents)
         val categoryHeaders =
             (emojiCategoryHeaders["EN"] ?: emptyMap()) + (emojiCategoryHeaders[getLanguageAlias(language)] ?: emptyMap())
 
@@ -902,7 +912,7 @@ class KeyboardUIManager(
                 listener.onEmojiSelected(emojiData.emoji)
             }
 
-        setupEmojiCategoryStrip(emojiCategories, emojiItems, emojiLayoutManager)
+        setupEmojiCategoryStrip(categoriesWithRecents, emojiItems, emojiLayoutManager)
     }
 
     /**

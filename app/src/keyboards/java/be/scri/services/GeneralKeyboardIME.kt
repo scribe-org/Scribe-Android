@@ -67,6 +67,7 @@ import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.clipboard.ClipboardHandler
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.helpers.recordRecentEmoji
 import be.scri.helpers.ui.KeyboardUIManager
 import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
@@ -899,6 +900,7 @@ abstract class GeneralKeyboardIME(
 
     override fun onEmojiSelected(emoji: String) {
         if (emoji.isNotEmpty()) {
+            recordRecentEmoji(this, emoji)
             insertEmoji(emoji, currentInputConnection, emojiKeywords, emojiMaxKeywordLength)
         }
     }
