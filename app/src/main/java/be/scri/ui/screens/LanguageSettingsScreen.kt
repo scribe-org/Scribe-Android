@@ -24,6 +24,8 @@ import be.scri.ui.common.components.ItemCardContainerWithTitle
 import be.scri.ui.models.ScribeItem
 import be.scri.ui.models.ScribeItemList
 
+private const val TAG = "LanguageSettingsScreen"
+
 /**
  * Data class to hold functionality settings state and callbacks
  */
@@ -387,7 +389,7 @@ private fun getLayoutListData(
             title = R.string.i18n_app_settings_keyboard_layout_default_layout,
             desc = R.string.i18n_app_settings_keyboard_layout_default_layout_description,
             action = {
-                Log.d("Navigation", "onDefaultLayoutSelect clicked")
+                Log.d(TAG, "onDefaultLayoutSelect clicked")
                 onDefaultLayoutSelect()
             },
         ),
@@ -398,7 +400,7 @@ private fun getLayoutListData(
             title = R.string.i18n_app_settings_keyboard_layout_default_currency,
             desc = R.string.i18n_app_settings_keyboard_layout_default_currency_description,
             action = {
-                Log.d("Navigation", "onCurrencySelect clicked")
+                Log.d(TAG, "onCurrencySelect clicked")
                 onCurrencySelect()
             },
         ),
@@ -470,7 +472,7 @@ private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: ()
             title = R.string.i18n_app_settings_keyboard_translation_select_source,
             desc = R.string.i18n_app_settings_keyboard_translation_select_source_description,
             action = {
-                Log.d("Navigation", "onTranslationLanguageSelect clicked")
+                Log.d(TAG, "onTranslationLanguageSelect clicked")
                 onTranslationLanguageSelect()
             },
         ),

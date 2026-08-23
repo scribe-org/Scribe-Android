@@ -72,6 +72,8 @@ import be.scri.models.ScribeState
 import java.util.Arrays
 import java.util.Locale
 
+private const val TAG = "SoundCheck"
+
 /**
  * The base keyboard view for Scribe language keyboards application.
  */
@@ -685,7 +687,7 @@ class KeyboardView
         }
 
         fun soundIfNeeded() {
-            Log.d("Souncheck", "soundIfNeeded: $setSound")
+            Log.d(TAG, "soundIfNeeded: $setSound")
             if (setSound) {
                 performSoundFeedback()
             }

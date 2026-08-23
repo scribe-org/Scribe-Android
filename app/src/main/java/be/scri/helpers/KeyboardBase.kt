@@ -75,6 +75,7 @@ class KeyboardBase {
      * Constants for keyboard layouts and the function to retrieve them.
      */
     companion object {
+        private const val TAG = "KeyboardBase"
         private const val TAG_KEYBOARD = "Keyboard"
         private const val TAG_ROW = "Row"
         private const val TAG_KEY = "Key"
@@ -221,7 +222,7 @@ class KeyboardBase {
                         else -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
                     }
                 } else {
-                    Log.i("≠", "The current state is not conjugate view")
+                    Log.i(TAG, "The current state is not conjugate view")
                     when (resources.configuration.orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> {
                             res.getDimension(R.dimen.key_height_landscape).toInt()
