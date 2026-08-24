@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.ui.compose
 
 import android.os.Bundle
@@ -14,8 +15,10 @@ import androidx.savedstate.SavedStateRegistryOwner
  * A custom LifecycleOwner for InputMethodService to host Compose views.
  * InputMethodService does not provide these by default, but Compose needs them.
  */
-class IMSLifecycleOwner : LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner {
-
+class IMSLifecycleOwner :
+    LifecycleOwner,
+    ViewModelStoreOwner,
+    SavedStateRegistryOwner {
     private val lifecycleRegistry = LifecycleRegistry(this)
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
     private val store = ViewModelStore()

@@ -147,20 +147,32 @@ class SuggestionHandler(
                 }
 
                 val emojis =
-                    if (ime.emojiAutoSuggestionEnabled) {
-                        ime.findEmojisForLastWord(ime.emojiKeywords, currentWord)
-                    } else {
-                        null
+                    when {
+                        ime.emojiColonModeOn -> {
+                            val keyword = currentWord.removePrefix(":")
+                            if (keyword.isEmpty()) {
+                                EmojiUtils.COMMON_EMOJIS.toMutableList()
+                            } else {
+                                ime.findEmojisForPrefix(ime.emojiKeywords, keyword)
+                            }
+                        }
+                        ime.emojiAutoSuggestionEnabled -> ime.findEmojisForLastWord(ime.emojiKeywords, currentWord)
+                        else -> null
                     }
 
                 val hasEmojiSuggestion = !emojis.isNullOrEmpty()
 
-                if (hasEmojiSuggestion) {
-                    ime.autoSuggestEmojis = emojis
-                    ime.updateEmojiSuggestion(true, emojis)
-                    ime.updateButtonVisibility(true)
-                } else {
-                    ime.updateButtonVisibility(false)
+                when {
+                    hasEmojiSuggestion -> {
+                        ime.autoSuggestEmojis = emojis
+                        ime.updateEmojiSuggestion(true, emojis)
+                        ime.updateButtonVisibility(true)
+                    }
+                    ime.emojiColonModeOn -> {
+                        ime.autoSuggestEmojis = mutableListOf()
+                        ime.updateEmojiSuggestion(true, mutableListOf())
+                    }
+                    else -> ime.updateButtonVisibility(false)
                 }
             }
 
@@ -189,6 +201,7 @@ class SuggestionHandler(
     fun clearAllSuggestionsAndHideButtonUI() {
         emojiSuggestionRunnable?.let { handler.removeCallbacks(it) }
         linguisticSuggestionRunnable?.let { handler.removeCallbacks(it) }
+        wordSuggestionRunnable?.let { handler.removeCallbacks(it) }
 
         if (ime.currentState != ScribeState.SELECT_COMMAND) {
             ime.disableAutoSuggest()

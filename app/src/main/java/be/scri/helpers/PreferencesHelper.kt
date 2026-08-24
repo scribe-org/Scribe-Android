@@ -398,7 +398,7 @@ object PreferencesHelper {
      */
     fun getIsDarkModeOrNot(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
-        val systemNightMode = android.content.res.Resources.getSystem().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val systemNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isSystemDarkMode = systemNightMode == Configuration.UI_MODE_NIGHT_YES
 
         val lastSystemTheme = sharedPref.getBoolean("last_system_dark_mode", isSystemDarkMode)

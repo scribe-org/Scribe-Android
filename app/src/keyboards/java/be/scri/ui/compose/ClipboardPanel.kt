@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.ui.compose
 
 import androidx.compose.foundation.background
@@ -41,38 +42,47 @@ import be.scri.R
 import be.scri.helpers.clipboard.ClipboardItem
 
 @Composable
-fun ClipboardPanel(viewModel: KeyboardViewModel, actionListener: KeyboardActionListener) {
+fun ClipboardPanel(
+    viewModel: KeyboardViewModel,
+    actionListener: KeyboardActionListener,
+    modifier: Modifier = Modifier,
+) {
     val items by viewModel.clipboardItems.collectAsState()
     val keyboard by viewModel.keyboard.collectAsState()
 
     val density = androidx.compose.ui.platform.LocalDensity.current
     val contentHeightDp = keyboard?.let { with(density) { it.mHeight.toDp() } } ?: 250.dp
 
-    val isDarkMode = be.scri.ui.theme.isKeyboardDarkMode()
+    val isDarkMode =
+        be.scri.ui.theme
+            .isKeyboardDarkMode()
     val panelBg = if (isDarkMode) Color(0xFF1E1E1E) else Color(0xFFD3D6DD)
     val textColor = if (isDarkMode) Color.White else Color.Black
     val iconTint = if (isDarkMode) Color.White else Color.Black
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(panelBg)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(panelBg),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(46.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(46.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_left_vector),
                 contentDescription = "Close Clipboard",
                 tint = iconTint,
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .size(32.dp)
-                    .clickable { actionListener.onClipboardPanelClose() }
-                    .padding(4.dp)
+                modifier =
+                    Modifier
+                        .padding(start = 8.dp)
+                        .size(32.dp)
+                        .clickable { actionListener.onClipboardPanelClose() }
+                        .padding(4.dp),
             )
             Text(
                 text = "Clipboard",
@@ -81,43 +91,47 @@ fun ClipboardPanel(viewModel: KeyboardViewModel, actionListener: KeyboardActionL
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp),
             )
             Icon(
                 painter = painterResource(id = R.drawable.ic_delete_vector),
                 contentDescription = "Clear All",
                 tint = Color(0xFFE53935),
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .size(32.dp)
-                    .clickable { actionListener.onClipboardClearAll() }
-                    .padding(4.dp)
+                modifier =
+                    Modifier
+                        .padding(end = 8.dp)
+                        .size(32.dp)
+                        .clickable { actionListener.onClipboardClearAll() }
+                        .padding(4.dp),
             )
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(contentHeightDp)
-                .background(panelBg)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(contentHeightDp)
+                    .background(panelBg),
         ) {
             if (items.isEmpty()) {
                 Text(
                     text = "Clipboard is empty",
                     color = textColor,
                     fontSize = 16.sp,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
                 )
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(12.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(12.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(items, key = { it.id }) { item ->
                         ClipboardItemCard(
@@ -125,7 +139,7 @@ fun ClipboardPanel(viewModel: KeyboardViewModel, actionListener: KeyboardActionL
                             isDarkMode = isDarkMode,
                             onClick = { actionListener.onClipboardItemClicked(item) },
                             onPinToggle = { actionListener.onClipboardItemPinToggle(item) },
-                            onDelete = { actionListener.onClipboardItemDelete(item) }
+                            onDelete = { actionListener.onClipboardItemDelete(item) },
                         )
                     }
                 }
@@ -140,7 +154,7 @@ private fun ClipboardItemCard(
     isDarkMode: Boolean,
     onClick: () -> Unit,
     onPinToggle: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
 ) {
     val cardBg = if (isDarkMode) Color.Black else Color.White
     val textColor = if (isDarkMode) Color.White else Color.Black
@@ -149,40 +163,40 @@ private fun ClipboardItemCard(
     var menuExpanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(76.dp)
-            .background(cardBg, RoundedCornerShape(10.dp))
-            .border(1.dp, Color(0x20000000), RoundedCornerShape(10.dp))
-            .pointerInput(item.id) {
-                detectTapGestures(
-                    onTap = { onClick() },
-                    onLongPress = { menuExpanded = true }
-                )
-            }
-            .padding(8.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(76.dp)
+                .background(cardBg, RoundedCornerShape(10.dp))
+                .border(1.dp, Color(0x20000000), RoundedCornerShape(10.dp))
+                .pointerInput(item.id) {
+                    detectTapGestures(
+                        onTap = { onClick() },
+                        onLongPress = { menuExpanded = true },
+                    )
+                }.padding(8.dp),
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = if (item.isPinned) "Pinned" else "Copied text",
                     color = labelColor,
-                    fontSize = 11.sp
+                    fontSize = 11.sp,
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_copy_vector),
                     contentDescription = null,
                     tint = labelColor,
-                    modifier = Modifier.size(14.dp)
+                    modifier = Modifier.size(14.dp),
                 )
             }
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = item.text,
@@ -191,28 +205,28 @@ private fun ClipboardItemCard(
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
 
         DropdownMenu(
             expanded = menuExpanded,
-            onDismissRequest = { menuExpanded = false }
+            onDismissRequest = { menuExpanded = false },
         ) {
             DropdownMenuItem(
                 text = { Text(if (item.isPinned) "Unpin" else "Pin") },
                 onClick = {
                     menuExpanded = false
                     onPinToggle()
-                }
+                },
             )
             DropdownMenuItem(
                 text = { Text("Delete") },
                 onClick = {
                     menuExpanded = false
                     onDelete()
-                }
+                },
             )
         }
     }

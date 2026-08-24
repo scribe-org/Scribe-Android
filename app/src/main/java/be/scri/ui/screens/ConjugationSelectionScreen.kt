@@ -90,24 +90,26 @@ fun ConjugationSelectionScreen(
             if (contract != null) {
                 val fileManager = DatabaseFileManager(context)
                 val manager = ConjugateDataManager(fileManager)
-                val db = fileManager.getLanguageDatabase(languageAlias) ?: return@withContext
+                val db = fileManager.getConjugateDatabase(languageAlias) ?: return@withContext
 
                 val structuredData = mutableMapOf<String, MutableMap<String, List<Pair<String, String>>>>()
-                contract.conjugations.values.forEach { tenseGroup ->
-                    val categories = mutableMapOf<String, List<Pair<String, String>>>()
-                    tenseGroup.tenses.values.forEach { conjugationCategory ->
-                        val pairs =
-                            conjugationCategory.tenseForms.values
-                                .map { form ->
-                                    val resolvedForm = manager.getTheValueForTheConjugateWord(verb.lowercase(), form.value, languageAlias, db)
-                                    form.label to resolvedForm
-                                }.filter { it.second.isNotEmpty() }
-                        if (pairs.isNotEmpty()) {
-                            categories[conjugationCategory.tenseTitle] = pairs
+                db.use { database ->
+                    contract.conjugations.values.forEach { tenseGroup ->
+                        val categories = mutableMapOf<String, List<Pair<String, String>>>()
+                        tenseGroup.tenses.values.forEach { conjugationCategory ->
+                            val pairs =
+                                conjugationCategory.tenseForms.values
+                                    .map { form ->
+                                        val resolvedForm = manager.getTheValueForTheConjugateWord(verb.lowercase(), form.value, database)
+                                        form.label to resolvedForm
+                                    }.filter { it.second.isNotEmpty() }
+                            if (pairs.isNotEmpty()) {
+                                categories[conjugationCategory.tenseTitle] = pairs
+                            }
                         }
-                    }
-                    if (categories.isNotEmpty()) {
-                        structuredData[tenseGroup.sectionTitle] = categories
+                        if (categories.isNotEmpty()) {
+                            structuredData[tenseGroup.sectionTitle] = categories
+                        }
                     }
                 }
                 conjugationData = structuredData

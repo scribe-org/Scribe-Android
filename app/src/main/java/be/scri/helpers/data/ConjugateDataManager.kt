@@ -40,7 +40,7 @@ class ConjugateDataManager(
                 tenseGroup.tenses.values.forEach { conjugationCategory ->
                     val forms =
                         conjugationCategory.tenseForms.values.map { form ->
-                            getTheValueForTheConjugateWord(word.lowercase(), form.value, language, database)
+                            getTheValueForTheConjugateWord(word.lowercase(), form.value, database)
                         }
                     conjugateForms[conjugationCategory.tenseTitle] = forms
                 }
@@ -84,14 +84,12 @@ class ConjugateDataManager(
      *
      * @param word The base word (verb) to look up.
      * @param form The specific conjugation form identifier (e.g., "1ps", "past_participle").
-     * @param language The language code to select the correct database.
      *
      * @return The conjugated word as a [String], or an empty string if not found.
      */
     fun getTheValueForTheConjugateWord(
         word: String,
         form: String?,
-        language: String,
         db: SQLiteDatabase,
     ): String {
         if (form.isNullOrEmpty()) return ""
@@ -102,7 +100,7 @@ class ConjugateDataManager(
         val columnName = db.getInfinitiveColumnName() ?: return ""
 
         return getVerbCursor(db, word, columnName)?.use { cursor ->
-            getConjugatedValueFromCursor(cursor, form, language, db)
+            getConjugatedValueFromCursor(cursor, form, db)
         } ?: ""
     }
 
@@ -139,11 +137,10 @@ class ConjugateDataManager(
     private fun getConjugatedValueFromCursor(
         cursor: Cursor,
         form: String,
-        language: String,
         db: SQLiteDatabase,
     ): String =
         if (form.contains("[")) {
-            parseComplexForm(cursor, form, language, db)
+            parseComplexForm(cursor, form, db)
         } else {
             try {
                 cursor.getString(getColumnIndexWithFallback(cursor, form))
@@ -166,7 +163,6 @@ class ConjugateDataManager(
     private fun parseComplexForm(
         cursor: Cursor,
         form: String,
-        language: String,
         db: SQLiteDatabase,
     ): String {
         val bracketRegex = Regex("""\[(.*?)]""")
@@ -200,14 +196,15 @@ class ConjugateDataManager(
                         arrayOf(verbType),
                     )
 
-                val found = auxCursor.use { cursor ->
-                    if (cursor.moveToFirst()) {
-                        auxResult = cursor.getString(0)
-                        true
-                    } else {
-                        false
+                val found =
+                    auxCursor.use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            auxResult = cursor.getString(0)
+                            true
+                        } else {
+                            false
+                        }
                     }
-                }
 
                 if (!found) {
                     // Fallback case: Maybe it stores the infinitive.

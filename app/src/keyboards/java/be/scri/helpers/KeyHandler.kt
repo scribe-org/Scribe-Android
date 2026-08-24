@@ -55,7 +55,7 @@ class KeyHandler(
         }
 
         val previousWasLastKeySpace = wasLastKeySpace
-        if (code != KeyboardBase.KEYCODE_SPACE && code != KeyboardBase.KEYCODE_ENTER) {
+        if (code != KeyboardBase.KEYCODE_SPACE && code != KeyboardBase.KEYCODE_ENTER && !ime.emojiColonModeOn) {
             suggestionHandler.clearLinguisticSuggestions()
         }
 
@@ -157,7 +157,15 @@ class KeyHandler(
      */
     private fun handleSpaceKeyPress(previousWasLastKeySpace: Boolean): Boolean {
         wasLastKeySpace = spaceKeyProcessor.processKeycodeSpace(previousWasLastKeySpace)
+        if (ime.emojiColonModeOn) {
+            exitEmojiColonMode()
+        }
         return false
+    }
+
+    private fun exitEmojiColonMode() {
+        ime.emojiColonModeOn = false
+        ime.clearAutocomplete()
     }
 
     /**
@@ -215,11 +223,19 @@ class KeyHandler(
      */
 
     private fun handleDeleteKey() {
+        val charToDelete = ime.currentInputConnection?.getTextBeforeCursor(1, 0)
         ime.handleDelete(ime.isDeleteRepeating()) // pass the actual repeating status
 
         if (ime.currentState == ScribeState.IDLE) {
+            val deletedChar = charToDelete?.takeIf { it.isNotEmpty() }?.last()
+            if (deletedChar == ':' && ime.emojiColonModeOn) {
+                exitEmojiColonMode()
+            }
+
             val currentWord = ime.getLastWordBeforeCursor()
-            autocompletionHandler.processAutocomplete(currentWord)
+            if (!ime.emojiColonModeOn) {
+                autocompletionHandler.processAutocomplete(currentWord)
+            }
             suggestionHandler.processEmojiSuggestions(currentWord)
         }
     }
@@ -259,7 +275,11 @@ class KeyHandler(
      */
     private fun handleModeChangeKey() {
         ime.handleModeChange(ime.keyboardMode, ime)
-        suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+        if (ime.emojiColonModeOn) {
+            suggestionHandler.processEmojiSuggestions(ime.getLastWordBeforeCursor())
+        } else {
+            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
+        }
     }
 
     /**
@@ -325,7 +345,6 @@ class KeyHandler(
         editor.putInt("conjugate_index", currentValue)
         editor.apply()
 
-        ime.updateUI()
         Log.i(TAG, "New conjugate_index: $currentValue")
     }
 
@@ -404,8 +423,19 @@ class KeyHandler(
         }
 
         if (ime.currentState == ScribeState.IDLE) {
+            if (code == ':'.code && ime.getLastWordBeforeCursor() == ":") {
+                ime.emojiColonModeOn = true
+                ime.autoSuggestEmojis = EmojiUtils.COMMON_EMOJIS.toMutableList()
+                ime.updateEmojiSuggestion(true, ime.autoSuggestEmojis)
+            }
+
             val currentWord = ime.getLastWordBeforeCursor()
-            autocompletionHandler.processAutocomplete(currentWord)
+            if (ime.emojiColonModeOn && currentWord?.startsWith(":") != true) {
+                exitEmojiColonMode()
+            }
+            if (!ime.emojiColonModeOn) {
+                autocompletionHandler.processAutocomplete(currentWord)
+            }
             suggestionHandler.processEmojiSuggestions(currentWord)
         } else if (isCommandBarActive) {
             suggestionHandler.clearAllSuggestionsAndHideButtonUI()

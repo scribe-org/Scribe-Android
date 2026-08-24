@@ -46,10 +46,10 @@ class AutocompletionHandler(
                     return@Runnable
                 }
 
-                val completions = ime.getAutocompletions(currentWord, limit = 5)
+                val result = ime.getAutocompletions(currentWord, limit = 5)
 
-                if (completions.isNotEmpty()) {
-                    ime.updateAutocompleteSuggestions(completions)
+                if (result.completions.isNotEmpty()) {
+                    ime.updateAutocompleteSuggestions(result.completions, result.highlightedSuggestion)
                 } else {
                     ime.clearAutocomplete()
                 }

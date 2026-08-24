@@ -51,6 +51,9 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Vibrate on keypress and key click functionalities are included ([#405](https://github.com/scribe-org/Scribe-Android/issues/405), [#406](https://github.com/scribe-org/Scribe-Android/issues/406)).
 - An in-app tutorial is provided to detail functionalities of the application ([#602](https://github.com/scribe-org/Scribe-Android/issues/602), [#615](https://github.com/scribe-org/Scribe-Android/issues/615), [#616](https://github.com/scribe-org/Scribe-Android/issues/616)).
 - The user is able to easily rate the application ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
+- The keyboard UI has been rewritten in Jetpack Compose, replacing the legacy XML view hierarchy ([#657](https://github.com/scribe-org/Scribe-Android/issues/657)).
+- Emojis can be searched by keyword from a dedicated suggestion row after typing a standalone colon ([#590](https://github.com/scribe-org/Scribe-Android/issues/590)).
+- An autocompletion that unambiguously matches what the user has typed is highlighted and can be accepted with the space key ([#648](https://github.com/scribe-org/Scribe-Android/pull/648)).
 
 ### 🗃️ Data
 
@@ -67,6 +70,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The return key is colored Scribe blue when commands are being triggered to let the user know that that is what they need to press to finish the command ([#160](https://github.com/scribe-org/Scribe-Android/issues/160)).
 - Dark mode compatibility through a responsive color scheme ([#25](https://github.com/scribe-org/Scribe-Android/issues/25), [#51](https://github.com/scribe-org/Scribe-Android/issues/51), [#116](https://github.com/scribe-org/Scribe-Android/issues/116), [#121](https://github.com/scribe-org/Scribe-Android/issues/121), [#155](https://github.com/scribe-org/Scribe-Android/issues/155), [#161](https://github.com/scribe-org/Scribe-Android/issues/161), [#543](https://github.com/scribe-org/Scribe-Android/issues/543)).
 - The application menu follows modern Android styling ([#114](https://github.com/scribe-org/Scribe-Android/issues/114), [#150](https://github.com/scribe-org/Scribe-Android/issues/150), [#217](https://github.com/scribe-org/Scribe-Android/issues/217), [#246](https://github.com/scribe-org/Scribe-Android/issues/246), [#247](https://github.com/scribe-org/Scribe-Android/issues/247), [248](https://github.com/scribe-org/Scribe-Android/issues/248), [#256](https://github.com/scribe-org/Scribe-Android/issues/256)).
+- The floating keyboard can be dragged around the screen and resized from its corner handles ([#261](https://github.com/scribe-org/Scribe-Android/issues/261)).
 
 ### 🌐 Localization
 
