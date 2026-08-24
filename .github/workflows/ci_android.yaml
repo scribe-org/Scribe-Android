@@ -7,9 +7,21 @@ on:
       - opened
       - reopened
       - synchronize
+    paths:
+      - "**/*.kt"
+      - "**/*.kts"
+      - "**/*.xml"
+      - "app/src/**"
+      - ".github/workflows/ci_android.yaml"
   push:
     branches:
       - main
+    paths:
+      - "**/*.kt"
+      - "**/*.kts"
+      - "**/*.xml"
+      - "app/src/**"
+      - ".github/workflows/ci_android.yaml"
 
 permissions:
   pull-requests: write

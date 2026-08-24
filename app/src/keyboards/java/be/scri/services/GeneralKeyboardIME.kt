@@ -2,16 +2,10 @@
 package be.scri.services
 
 import DataContract
-import android.R.color.white
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.database.sqlite.SQLiteException
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
 import android.inputmethodservice.InputMethodService.BACK_DISPOSITION_ADJUST_NOTHING
 import android.inputmethodservice.InputMethodService.BACK_DISPOSITION_DEFAULT
@@ -21,7 +15,6 @@ import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -30,12 +23,8 @@ import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
 import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
-import android.widget.Button
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -49,6 +38,7 @@ import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.KeyboardDataHandler
 import be.scri.helpers.KeyboardLanguageMappingConstants
 import be.scri.helpers.KeyboardStateManager
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
@@ -69,6 +59,7 @@ import be.scri.helpers.clipboard.ClipboardRepository
 import be.scri.helpers.ui.HintUtils
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.helpers.recordRecentEmoji
 import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import kotlinx.coroutines.launch
@@ -162,26 +153,72 @@ abstract class GeneralKeyboardIME(
 
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
 
-    private lateinit var dbManagers: DatabaseManagers
+    internal val dataHandler = KeyboardDataHandler()
+
+    internal val dbManagers: DatabaseManagers
+        get() = dataHandler.dbManagers
+
+    internal val autocompletionManager: AutocompletionDataManager
+        get() = dataHandler.autocompletionManager
+
     private lateinit var nativeSuggestionEngine: NativeSuggestionEngine
     internal lateinit var suggestionHandler: SuggestionHandler
     internal lateinit var autocompletionHandler: AutocompletionHandler
-    private lateinit var autocompletionManager: AutocompletionDataManager
-    private var dataContract: DataContract? = null
+    internal var dataContract: DataContract?
+        get() = dataHandler.dataContract
+        set(value) {
+            dataHandler.dataContract = value
+        }
 
     internal fun recreateKeyboardPublic() = recreateKeyboard()
 
-    internal fun applyNavBarColorPublic() = applyNavBarColor()
+    var emojiKeywords: HashMap<String, MutableList<String>>?
+        get() = dataHandler.emojiKeywords
+        set(value) {
+            dataHandler.emojiKeywords = value
+        }
 
-    var emojiKeywords: HashMap<String, MutableList<String>>? = null
-    private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
-    private var conjugateLabels: Set<String> = emptySet()
+    private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
+        get() = dataHandler.conjugateOutput
+        set(value) {
+            dataHandler.conjugateOutput = value
+        }
 
-    private var emojiMaxKeywordLength: Int = 0
-    internal lateinit var nounKeywords: HashMap<String, List<String>>
-    internal lateinit var suggestionWords: HashMap<String, List<String>>
-    var pluralWords: Set<String>? = null
-    internal lateinit var caseAnnotation: HashMap<String, MutableList<String>>
+    private var conjugateLabels: Set<String>
+        get() = dataHandler.conjugateLabels
+        set(value) {
+            dataHandler.conjugateLabels = value
+        }
+
+    private var emojiMaxKeywordLength: Int
+        get() = dataHandler.emojiMaxKeywordLength
+        set(value) {
+            dataHandler.emojiMaxKeywordLength = value
+        }
+
+    internal var nounKeywords: HashMap<String, List<String>>
+        get() = dataHandler.nounKeywords
+        set(value) {
+            dataHandler.nounKeywords = value
+        }
+
+    internal var suggestionWords: HashMap<String, List<String>>
+        get() = dataHandler.suggestionWords
+        set(value) {
+            dataHandler.suggestionWords = value
+        }
+
+    var pluralWords: Set<String>?
+        get() = dataHandler.pluralWords
+        set(value) {
+            dataHandler.pluralWords = value
+        }
+
+    internal var caseAnnotation: HashMap<String, MutableList<String>>
+        get() = dataHandler.caseAnnotation
+        set(value) {
+            dataHandler.caseAnnotation = value
+        }
 
     var emojiAutoSuggestionEnabled: Boolean = false
     var lastWord: String? = null
@@ -262,10 +299,9 @@ abstract class GeneralKeyboardIME(
      */
     override fun onCreate() {
         super.onCreate()
-        dbManagers = DatabaseManagers(this)
+        dataHandler.initialize(this)
         nativeSuggestionEngine = NativeSuggestionEngine(this)
         suggestionHandler = SuggestionHandler(this)
-        autocompletionManager = dbManagers.autocompletionManager
         autocompletionHandler = AutocompletionHandler(this)
         clipboardMonitor =
             ClipboardMonitor(this) { text ->
@@ -651,27 +687,7 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun loadLanguageData() {
-        val languageAlias = getLanguageAlias(language)
-        dataContract = dbManagers.getLanguageContract(languageAlias)
-        emojiKeywords = dbManagers.emojiManager.getEmojiKeywords(languageAlias)
-        emojiMaxKeywordLength = dbManagers.emojiManager.maxKeywordLength
-        pluralWords =
-            dbManagers.pluralManager
-                .getAllPluralForms(languageAlias, dataContract)
-                ?.map { it.lowercase() }
-                ?.toSet()
-        nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
-        suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
-        val numbersColumns =
-            dataContract?.numbers?.let { map ->
-                (map.keys + map.values).distinct()
-            } ?: emptyList()
-        autocompletionManager.loadWords(languageAlias, numbersColumns)
-        caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
-
-        val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
-        conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
-        conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
+        dataHandler.loadLanguageData(language)
     }
 
     private fun isLightColor(color: Int): Boolean {
@@ -857,6 +873,7 @@ abstract class GeneralKeyboardIME(
 
     override fun onEmojiSelected(emoji: String) {
         if (emoji.isNotEmpty()) {
+            recordRecentEmoji(this, emoji)
             insertEmoji(emoji, currentInputConnection, emojiKeywords, emojiMaxKeywordLength)
         }
     }
@@ -1201,15 +1218,7 @@ abstract class GeneralKeyboardIME(
                 return nativeCompletions
             }
         }
-        return try {
-            dbManagers.autocompletionManager.getAutocompletions(prefix, limit)
-        } catch (e: SQLiteException) {
-            Log.e("GeneralKeyboardIME", "Database error in autocompletion", e)
-            emptyList()
-        } catch (e: IllegalStateException) {
-            Log.e("GeneralKeyboardIME", "Illegal state in autocompletion", e)
-            emptyList()
-        }
+        return dataHandler.getAutocompletions(prefix, limit)
     }
 
     /**
@@ -1264,16 +1273,7 @@ abstract class GeneralKeyboardIME(
      *
      * @return The plural form as a string, or null if not found.
      */
-    private fun getPluralRepresentation(word: String?): String? {
-        if (word.isNullOrEmpty()) return null
-        val langAlias = getLanguageAlias(language)
-        val lowercaseWord = word.lowercase()
-        if (pluralWords?.contains(lowercaseWord) == true) return ALREADY_PLURAL_MSG
-        return dbManagers.pluralManager
-            .getPluralRepresentation(langAlias, dataContract, word)
-            .values
-            .firstOrNull()
-    }
+    private fun getPluralRepresentation(word: String?): String? = dataHandler.getPluralRepresentation(language, word)
 
     /**
      * Retrieves the translation for a given word.
@@ -1286,10 +1286,7 @@ abstract class GeneralKeyboardIME(
     private fun getTranslation(
         language: String,
         commandBarInput: String,
-    ): String {
-        val sourceDest = dbManagers.translationDataManager.getSourceAndDestinationLanguage(language)
-        return dbManagers.translationDataManager.getTranslationDataForAWord(sourceDest, commandBarInput)
-    }
+    ): String = dataHandler.getTranslation(language, commandBarInput)
 
     /**
      * Applies capitalization to all conjugated forms in the output map.
@@ -1656,47 +1653,6 @@ abstract class GeneralKeyboardIME(
             }
 
         keyboardViewModel.setGenderSuggestions(buttonText, null)
-    }
-
-    /**
-     * Applies a specific style to a suggestion button, including text, color, and a custom background.
-     *
-     * @param button The Button to style.
-     * @param colorRes The color resource ID for the background.
-     * @param text The text to display on the button.
-     * @param backgroundRes The drawable resource ID for the button's background.
-     */
-    private fun applyInformativeSuggestionStyle(
-        button: Button,
-        colorRes: Int,
-        text: String,
-        backgroundRes: Int,
-    ) {
-        button.text = text
-        button.setTextColor(ContextCompat.getColor(applicationContext, be.scri.R.color.white))
-        button.isClickable = false
-        button.setOnClickListener(null)
-
-        val background = ContextCompat.getDrawable(applicationContext, backgroundRes)?.mutate()
-
-        if (background is RippleDrawable) {
-            val contentDrawable = background.getDrawable(0)
-
-            if (contentDrawable is LayerDrawable) {
-                val shapeDrawable =
-                    contentDrawable.findDrawableByLayerId(
-                        be.scri.R.id.button_background_shape,
-                    ) as? GradientDrawable
-
-                shapeDrawable?.setColor(
-                    ContextCompat.getColor(
-                        applicationContext,
-                        colorRes,
-                    ),
-                )
-            }
-        }
-        button.background = background
     }
 
     /**
