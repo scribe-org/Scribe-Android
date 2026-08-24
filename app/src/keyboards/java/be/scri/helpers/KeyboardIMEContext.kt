@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.inputmethod.InputConnection
 import be.scri.databinding.InputMethodViewBinding
+import be.scri.helpers.ui.KeyboardThemeManager
 import be.scri.helpers.ui.KeyboardUIManager
 import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
@@ -41,6 +42,7 @@ interface KeyboardIMEContext {
 
     val binding: InputMethodViewBinding
     val uiManager: KeyboardUIManager
+    val themeManager: KeyboardThemeManager
     val isUiManagerInitialized: Boolean
 
     val currentState: ScribeState
