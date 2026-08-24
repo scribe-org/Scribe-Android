@@ -62,10 +62,10 @@ fun TutorialHomeScreen(
     val headerColor = MaterialTheme.colorScheme.onBackground
     val chapters =
         listOf(
-            TutorialChapter("Noun annotation", 0),
-            TutorialChapter("Word translation", 1),
-            TutorialChapter("Verb conjugation", 2),
-            TutorialChapter("Noun plurals", 3),
+            TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_noun_annotation), 0),
+            TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_word_translation), 1),
+            TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_verb_conjugation), 2),
+            TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_noun_plurals), 3),
         )
 
     Column(
@@ -83,7 +83,7 @@ fun TutorialHomeScreen(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.i18n_app_accessibility_back),
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(24.dp),
             )
@@ -113,9 +113,7 @@ fun TutorialHomeScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text =
-                    "This quick tutorial will show you how to use Scribe to support writing in your second language. " +
-                        "\nMake sure you select the desired Scribe keyboard by pressing \uD83C\uDF10 when typing.",
+                text = stringResource(R.string.i18n_app_keyboard_tutorial_description),
                 color = textColor,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(16.dp),
@@ -127,7 +125,7 @@ fun TutorialHomeScreen(
         // MARK: Chapter List
 
         Text(
-            text = "Tutorial chapters",
+            text = stringResource(R.string.i18n_app_keyboard_tutorial_chapters),
             color = textColor,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
@@ -189,7 +187,7 @@ fun TutorialHomeScreen(
                     .height(52.dp),
         ) {
             Text(
-                text = "Start full tutorial",
+                text = stringResource(R.string.i18n_app_keyboard_tutorial_start_full_tutorial),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
             )

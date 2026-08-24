@@ -97,7 +97,7 @@ fun WrongKeyboardScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_back),
                     tint = headerColor,
                     modifier = Modifier.size(24.dp),
                 )
@@ -111,7 +111,7 @@ fun WrongKeyboardScreen(
 
         // Title
         Text(
-            text = "Non-Scribe keyboard",
+            text = stringResource(R.string.i18n_app_keyboard_tutorial_non_scribe_keyboard),
             color = headerColor,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
@@ -134,7 +134,7 @@ fun WrongKeyboardScreen(
             ) {
                 // Instruction text
                 Text(
-                    text = "Press the \uD83C\uDF10 button to select a Scribe keyboard.",
+                    text = stringResource(R.string.i18n_app_keyboard_tutorial_select_keyboard),
                     color = textColor,
                     fontSize = 15.sp,
                     lineHeight = 22.sp,

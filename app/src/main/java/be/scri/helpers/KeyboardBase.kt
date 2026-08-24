@@ -38,7 +38,7 @@ class KeyboardBase {
 
         fun isSearchBar(): Boolean
 
-        fun isClipboardKeyEnabled(): Boolean
+        fun isFloatingModeActive(): Boolean
     }
 
     /** Horizontal gap default for all rows  */
@@ -83,9 +83,11 @@ class KeyboardBase {
         private const val WIDTH_DIVIDER = 10
         const val KEYCODE_SHIFT = -1
         const val KEYCODE_MODE_CHANGE = -2
+        const val KEYCODE_FLOAT_TOGGLE = -10
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
+        const val KEYCODE_EMOJI = -6
         const val KEYCODE_TAB = -30
         const val KEYCODE_CAPS_LOCK = -50
         const val KEYCODE_LEFT_ARROW = -55
@@ -414,8 +416,9 @@ class KeyboardBase {
         context: Context,
         @XmlRes xmlLayoutResId: Int,
         enterKeyType: Int,
+        customWidth: Int? = null,
     ) {
-        mDisplayWidth = context.resources.displayMetrics.widthPixels
+        mDisplayWidth = customWidth ?: context.resources.displayMetrics.widthPixels
         mDefaultHorizontalGap = 0
         mDefaultWidth = mDisplayWidth / WIDTH_DIVIDER
         mDefaultHeight = mDefaultWidth
@@ -657,39 +660,6 @@ class KeyboardBase {
                         val currentKey = rowToAdjust.mKeys[i]
                         currentKey.x = prevKey.x + prevKey.width + prevKey.gap
                     }
-                }
-            }
-        }
-
-        if (currentKeyboardMode == keyboardLettersMode && mKeys != null && provider?.isClipboardKeyEnabled() == true) {
-            val spaceKey = mKeys!!.find { it?.code == 32 }
-            val commaKey = mKeys!!.find { it?.code == ','.code }
-            val row = mRows.lastOrNull()
-            if (spaceKey != null && commaKey != null && row != null) {
-                val clipWidth = (mDisplayWidth * 0.10).toInt()
-
-                val clipKey = Key(row)
-                clipKey.code = KEYCODE_CLIPBOARD
-                clipKey.width = clipWidth
-                clipKey.height = spaceKey.height
-                clipKey.gap = spaceKey.gap
-                clipKey.icon = context.resources.getDrawable(R.drawable.ic_clipboard_vector, context.theme)
-                clipKey.icon?.setBounds(0, 0, clipKey.icon!!.intrinsicWidth, clipKey.icon!!.intrinsicHeight)
-
-                spaceKey.width = spaceKey.width - clipWidth - clipKey.gap
-
-                val commaIdxInList = mKeys!!.indexOf(commaKey)
-                val commaIdxInRow = row.mKeys.indexOf(commaKey)
-
-                if (commaIdxInList != -1 && commaIdxInRow != -1) {
-                    clipKey.x = commaKey.x
-                    clipKey.y = commaKey.y
-
-                    commaKey.x = clipKey.x + clipKey.width + clipKey.gap
-                    spaceKey.x = commaKey.x + commaKey.width + commaKey.gap
-
-                    mKeys!!.add(commaIdxInList, clipKey)
-                    row.mKeys.add(commaIdxInRow, clipKey)
                 }
             }
         }

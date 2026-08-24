@@ -79,7 +79,7 @@ enum class InputValidationState {
 data class TutorialStep(
     val instruction: String,
     val expectedWord: String = "",
-    val hint: String = "If your second language is not German, change the language in your keyboard.",
+    val hint: String = "",
     val successMessage: String = "Great! Press Next to continue.",
     val errorMessage: String = "",
     val requiresValidation: Boolean = true,
@@ -173,7 +173,7 @@ fun TutorialStepScreen(
         when {
             !step.requiresValidation -> InputValidationState.CORRECT
             userInput.isEmpty() -> InputValidationState.EMPTY
-            userInput.trim().equals(step.expectedWord, ignoreCase = false) -> InputValidationState.CORRECT
+            userInput.trim().equals(step.expectedWord, ignoreCase = true) -> InputValidationState.CORRECT
             else -> InputValidationState.INCORRECT
         }
 
@@ -182,6 +182,7 @@ fun TutorialStepScreen(
             step.errorMessage
         } else {
             stringResource(R.string.i18n_app_keyboard_tutorial_not_quite)
+                .replace("{expected_word}", step.expectedWord)
         }
 
     Column(
@@ -205,7 +206,7 @@ fun TutorialStepScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_back),
                     tint = headerColor,
                     modifier = Modifier.size(24.dp),
                 )
@@ -256,19 +257,21 @@ fun TutorialStepScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Language hint
-                Row(
-                    verticalAlignment = Alignment.Top,
-                ) {
-                    Text(
-                        text = "\uD83C\uDF10 ",
-                        fontSize = 14.sp,
-                    )
-                    Text(
-                        text = step.hint,
-                        color = textSecondaryColor,
-                        fontSize = 13.sp,
-                        lineHeight = 18.sp,
-                    )
+                if (step.hint.isNotEmpty()) {
+                    Row(
+                        verticalAlignment = Alignment.Top,
+                    ) {
+                        Text(
+                            text = "\uD83C\uDF10 ",
+                            fontSize = 14.sp,
+                        )
+                        Text(
+                            text = step.hint,
+                            color = textSecondaryColor,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -327,7 +330,7 @@ fun TutorialStepScreen(
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Next / Finish button
         Button(

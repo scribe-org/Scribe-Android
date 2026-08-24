@@ -5,12 +5,16 @@ import DataContract
 import android.R.color.white
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.database.sqlite.SQLiteException
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
+import android.inputmethodservice.InputMethodService.BACK_DISPOSITION_ADJUST_NOTHING
+import android.inputmethodservice.InputMethodService.BACK_DISPOSITION_DEFAULT
 import android.os.Build
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
@@ -27,6 +31,7 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.ColorUtils
@@ -34,6 +39,7 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
@@ -44,6 +50,7 @@ import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardLanguageMappingConstants
+import be.scri.helpers.KeyboardStateManager
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
@@ -58,9 +65,11 @@ import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.clipboard.ClipboardMonitor
+import be.scri.helpers.clipboard.ClipboardRepository
 import be.scri.helpers.ui.HintUtils
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -81,10 +90,16 @@ private const val DATA_CONSTANT_3 = 3
 
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class GeneralKeyboardIME(
-    override var language: String,
+    val scribeLanguage: ScribeLanguage,
 ) : InputMethodService(),
     KeyboardActionListener,
     KeyboardBase.KeyboardContextProvider {
+    constructor(languageName: String) : this(ScribeLanguage.fromDisplayName(languageName))
+
+    override val language: String
+        get() = scribeLanguage.displayName
+
+    // Abstract members required by subclasses (like EnglishKeyboardIME).
     abstract fun getKeyboardLayoutXML(): Int
 
     abstract override val keyboardLetters: Int
@@ -97,8 +112,9 @@ abstract class GeneralKeyboardIME(
             keyboardViewModel.updateKeyboard(value)
         }
 
-    protected val keyboardViewModel = KeyboardViewModel()
+    internal val keyboardViewModel = KeyboardViewModel()
     private var imsLifecycleOwner: IMSLifecycleOwner? = null
+    private var composeInputView: View? = null
 
     internal fun setShifted(shiftState: Int) {
         keyboard?.setShifted(shiftState)
@@ -114,6 +130,11 @@ abstract class GeneralKeyboardIME(
     abstract var inputTypeClass: Int
     abstract var enterKeyType: Int
     abstract var switchToLetters: Boolean
+
+    // Language-specific layout and behavior configurations (decoupled from base class).
+    open val defaultConjugateModeType: String = "3x2"
+    open val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_3x2
+    open val isPluralCapitalized: Boolean = false
 
     /**
      * Property used by EnglishKeyboardIME override.
@@ -148,6 +169,10 @@ abstract class GeneralKeyboardIME(
     private lateinit var autocompletionManager: AutocompletionDataManager
     private var dataContract: DataContract? = null
 
+    internal fun recreateKeyboardPublic() = recreateKeyboard()
+
+    internal fun applyNavBarColorPublic() = applyNavBarColor()
+
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
     private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
     private var conjugateLabels: Set<String> = emptySet()
@@ -168,14 +193,19 @@ abstract class GeneralKeyboardIME(
     private var currentEnterKeyType: Int? = null
     private var isNumericKeyboardActive: Boolean = false
 
-    internal var currentState: ScribeState = ScribeState.IDLE
+    internal val stateManager = KeyboardStateManager()
+
+    internal var currentState: ScribeState
+        get() = stateManager.currentState
         set(value) {
-            field = value
+            stateManager.currentState = value
             keyboardViewModel.updateState(value)
         }
-    internal var invalidCommandSource: ScribeState = ScribeState.IDLE
+
+    internal var invalidCommandSource: ScribeState
+        get() = stateManager.invalidCommandSource
         set(value) {
-            field = value
+            stateManager.invalidCommandSource = value
             keyboardViewModel.setInvalidCommandSource(value)
         }
 
@@ -195,7 +225,10 @@ abstract class GeneralKeyboardIME(
     private var currentVerbForConjugation: String? = null
     private var selectedConjugationSubCategory: String? = null
 
+    protected open fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
+
     internal companion object {
+        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
         const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
         const val NOUN_TYPE_SIZE = 20f
@@ -266,10 +299,13 @@ abstract class GeneralKeyboardIME(
             KeyboardLanguageMappingConstants.pluralPlaceholder[langAlias] ?: "Plural",
         )
 
-        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
-        
+        // Initial keyboard setup.
+        keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType, getKeyboardWidth())
+
         currentState = ScribeState.IDLE
         saveConjugateModeType("none")
+        initFloatingMode()
+
         refreshUI()
 
         val lifecycleOwner = imsLifecycleOwner ?: IMSLifecycleOwner().also {
@@ -290,7 +326,7 @@ abstract class GeneralKeyboardIME(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
                 val navBarBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
-                keyboardViewModel.setBottomInset(navBarBottom)
+                keyboardViewModel.setBottomInset(if (isFloatingMode) 0 else navBarBottom)
                 insets
             }
             androidx.core.view.ViewCompat.requestApplyInsets(this)
@@ -300,7 +336,7 @@ abstract class GeneralKeyboardIME(
                     actionListener = this@GeneralKeyboardIME
                 )
             }
-        }
+        }.also { composeInputView = it }
     }
 
     /**
@@ -325,6 +361,52 @@ abstract class GeneralKeyboardIME(
      */
     override fun onComputeInsets(outInsets: Insets) {
         super.onComputeInsets(outInsets)
+        val inputView = composeInputView ?: return
+        if (inputView.visibility == View.VISIBLE && inputView.height > 0) {
+            val location = IntArray(2)
+            inputView.getLocationInWindow(location)
+
+            if (isFloatingMode) {
+                // In floating mode, report zero insets so Android doesn't
+                // push app content up or render IME chrome (∨ / 🌐 buttons)
+                // below the card. The touchable region is restricted to the
+                // card bounds so taps outside reach the underlying app.
+                outInsets.visibleTopInsets = inputView.height
+                outInsets.contentTopInsets = inputView.height
+                outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_REGION
+
+                val density = resources.displayMetrics.density
+                val cardWidth = keyboard?.mMinWidth?.toFloat() ?: 0f
+                val cardHeight = inputView.height.toFloat()
+                if (cardWidth > 0f && cardHeight > 0f) {
+                    val offsetX = keyboardViewModel.floatingOffsetX.value
+                    val offsetY = keyboardViewModel.floatingOffsetY.value
+                    val scaleX = keyboardViewModel.floatingScaleX.value
+                    val scaleY = keyboardViewModel.floatingScaleY.value
+
+                    val centerX = location[0] + cardWidth / 2f + offsetX
+                    val centerY = location[1] + cardHeight / 2f + offsetY
+                    val visualW = cardWidth * scaleX
+                    val visualH = cardHeight * scaleY
+                    val left = (centerX - visualW / 2f).toInt()
+                    val top = (centerY - visualH / 2f).toInt()
+                    val right = (centerX + visualW / 2f).toInt()
+                    val bottom = (centerY + visualH / 2f).toInt()
+
+                    val rect = Rect(left, top, right, bottom)
+                    // Expand touchable region slightly to allow resizing handles to be clickable
+                    val margin = (25 * density).toInt()
+                    rect.inset(-margin, -margin)
+                    outInsets.touchableRegion.set(rect)
+                } else {
+                    outInsets.touchableRegion.setEmpty()
+                }
+            } else {
+                outInsets.visibleTopInsets = location[1]
+                outInsets.contentTopInsets = location[1]
+                outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_VISIBLE
+            }
+        }
     }
 
     override fun onWindowShown() {
@@ -336,6 +418,7 @@ abstract class GeneralKeyboardIME(
                 decor.setViewTreeSavedStateRegistryOwner(lifecycleOwner)
             }
         }
+        applyFloatingModeState()
         applyNavBarColor()
     }
 
@@ -363,8 +446,7 @@ abstract class GeneralKeyboardIME(
 
         loadLanguageData()
 
-        keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
-
+        keyboard = KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
     }
 
     /**
@@ -427,22 +509,11 @@ abstract class GeneralKeyboardIME(
      */
     override fun hasTextBeforeCursor(): Boolean = hasTextBeforeCursor
 
-    /**
-     * Handles the "period on double tap" feature. If enabled, it replaces the two spaces with a period and a space.
-     */
     override fun commitPeriodAfterSpace() {
         if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            val isPeriodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(this, language)
-            if (isPeriodOnDoubleTapEnabled) {
-                currentInputConnection?.apply {
-                    deleteSurroundingText(1, 0)
-                    commitText(". ", 1)
-                }
-            } else {
-                currentInputConnection?.apply {
-                    deleteSurroundingText(1, 0)
-                    commitText("  ", 1)
-                }
+            currentInputConnection?.apply {
+                deleteSurroundingText(1, 0)
+                commitText(". ", 1)
             }
         }
     }
@@ -470,7 +541,7 @@ abstract class GeneralKeyboardIME(
     override fun onActionUp() {
         if (switchToLetters) {
             keyboardMode = keyboardLetters
-            keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType)
+            keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType, getKeyboardWidth())
             val editorInfo = currentInputEditorInfo
             if (editorInfo != null && editorInfo.inputType != InputType.TYPE_NULL && keyboard?.mShiftState != SHIFT_ON_PERMANENT) {
                 if (currentInputConnection.getCursorCapsMode(editorInfo.inputType) != 0) {
@@ -495,6 +566,20 @@ abstract class GeneralKeyboardIME(
      */
     override fun onKey(code: Int) {
         keyboardViewModel.showClipboardSuggestion(null)
+        when (code) {
+            KeyboardBase.KEYCODE_EMOJI -> {
+                openEmojiKeyboard()
+                return
+            }
+            KeyboardBase.KEYCODE_FLOAT_TOGGLE -> {
+                toggleFloatingMode()
+                return
+            }
+            KeyboardBase.KEYCODE_CLIPBOARD -> {
+                openClipboardPanel()
+                return
+            }
+        }
         val inputConnection = currentInputConnection
         if (inputConnection != null) {
             when (code) {
@@ -533,6 +618,10 @@ abstract class GeneralKeyboardIME(
     }
 
 
+    fun openEmojiKeyboard() {
+        keyboardViewModel.setEmojiKeyboardVisible(true)
+    }
+
     protected fun isPeriodAndCommaEnabled(): Boolean {
         val isPreferenceEnabled = PreferencesHelper.getEnablePeriodAndCommaABC(this, language)
         val isInSearchBar = isSearchBar()
@@ -560,8 +649,6 @@ abstract class GeneralKeyboardIME(
             } == true
         return isActionSearch || isUriType || hasSearchHint
     }
-
-    override fun isClipboardKeyEnabled(): Boolean = PreferencesHelper.getIsClipboardKeyEnabled(this, language)
 
     private fun loadLanguageData() {
         val languageAlias = getLanguageAlias(language)
@@ -594,24 +681,52 @@ abstract class GeneralKeyboardIME(
 
     private fun applyNavBarColor() {
         val window = window?.window ?: return
-        val isDarkMode = getIsDarkModeOrNot(applicationContext)
-        val colorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
-        val color = ContextCompat.getColor(this, colorRes)
+        window.decorView.post {
+            val isDarkMode = getIsDarkModeOrNot(applicationContext)
+            val colorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
+            val color = ContextCompat.getColor(this, colorRes)
 
-        if (Build.VERSION.SDK_INT >= 35) {
             WindowCompat.setDecorFitsSystemWindows(window, false)
-        } else {
-            window.navigationBarColor = Color.TRANSPARENT
+
+            if (Build.VERSION.SDK_INT < 35) {
+                window.navigationBarColor = Color.TRANSPARENT
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                window.isNavigationBarContrastEnforced = false
+            }
+
+            if (isFloatingMode) {
+                window.decorView.setBackgroundColor(Color.TRANSPARENT)
+            } else {
+                window.decorView.setBackgroundColor(color)
+            }
+            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+            insetsController.isAppearanceLightNavigationBars = isLightColor(color)
+
+            if (isFloatingMode) {
+                insetsController.hide(WindowInsetsCompat.Type.navigationBars())
+                insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                )
+            } else {
+                insetsController.show(WindowInsetsCompat.Type.navigationBars())
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = 0
+            }
+
+            composeInputView?.let { inputView ->
+                if (isFloatingMode) {
+                    inputView.setBackgroundColor(Color.TRANSPARENT)
+                } else {
+                    inputView.setBackgroundColor(color)
+                }
+                ViewCompat.requestApplyInsets(inputView)
+            }
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            window.isNavigationBarContrastEnforced = false
-        }
-
-        window.decorView.setBackgroundColor(color)
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.isAppearanceLightNavigationBars = isLightColor(color)
-
     }
 
     /**
@@ -621,20 +736,11 @@ abstract class GeneralKeyboardIME(
      * @param isSubsequentArea true if this is for a secondary view.
      */
     internal fun saveConjugateModeType(
-        language: String,
+        language: String = this.language,
         isSubsequentArea: Boolean = false,
     ) {
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        val mode =
-            if (!isSubsequentArea) {
-                when (language) {
-                    "English", "Russian", "Swedish" -> "2x2"
-                    "German", "French", "Italian", "Portuguese", "Spanish" -> "3x2"
-                    else -> "none"
-                }
-            } else {
-                "none"
-            }
+        val mode = if (!isSubsequentArea) defaultConjugateModeType else "none"
         sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
 
@@ -676,7 +782,7 @@ abstract class GeneralKeyboardIME(
 
     override fun onScribeKeyOptionsClicked() {
         keyboardViewModel.showClipboardSuggestion(null)
-        if (currentState == ScribeState.IDLE) {
+        if (stateManager.isIdle) {
             clearSuggestionData()
             currentState = ScribeState.SELECT_COMMAND
             saveConjugateModeType("none")
@@ -725,7 +831,7 @@ abstract class GeneralKeyboardIME(
         keyboardViewModel.setCommandBarHint(
             HintUtils.getCommandBarHint(ScribeState.PLURAL, language, null),
         )
-        if (language == "German") setShifted(SHIFT_ON_ONE_CHAR)
+        if (language == "German" || isPluralCapitalized) setShifted(SHIFT_ON_ONE_CHAR)
         refreshUI()
     }
 
@@ -733,7 +839,23 @@ abstract class GeneralKeyboardIME(
         moveToIdleState()
     }
 
-    fun onEmojiSelected(emoji: String) {
+    override fun onFloatClicked() {
+        toggleFloatingMode()
+    }
+
+    override fun isFloatingModeActive(): Boolean = isFloatingMode
+
+    override fun onDownloadDataBannerClicked() {
+        val intent =
+            Intent(applicationContext, MainActivity::class.java)
+                .apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    putExtra("navigate_to", "download_data")
+                }
+        startActivity(intent)
+    }
+
+    override fun onEmojiSelected(emoji: String) {
         if (emoji.isNotEmpty()) {
             insertEmoji(emoji, currentInputConnection, emojiKeywords, emojiMaxKeywordLength)
         }
@@ -869,8 +991,7 @@ abstract class GeneralKeyboardIME(
             }
 
         if (commandModeOutput.isEmpty()) {
-            invalidCommandSource = currentState
-            currentState = ScribeState.INVALID
+            stateManager.setInvalidState(currentState)
             refreshUI()
         } else {
             applyCommandOutput(commandModeOutput, inputConnection)
@@ -904,14 +1025,12 @@ abstract class GeneralKeyboardIME(
 
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, searchInput)
 
-        currentState =
-            if (conjugateOutput == null) {
-                invalidCommandSource = ScribeState.CONJUGATE
-                ScribeState.INVALID
-            } else {
-                saveConjugateModeType(language)
-                ScribeState.SELECT_VERB_CONJUNCTION
-            }
+        if (conjugateOutput == null) {
+            stateManager.setInvalidState(ScribeState.CONJUGATE)
+        } else {
+            saveConjugateModeType(language)
+            stateManager.moveToState(ScribeState.SELECT_VERB_CONJUNCTION)
+        }
         keyboardViewModel.updateConjugateData(conjugateOutput, selectedConjugationSubCategory, currentVerbForConjugation)
         refreshUI()
     }
@@ -1013,7 +1132,7 @@ abstract class GeneralKeyboardIME(
 
 
     /**
-     * Handles the logic for the Delete/Backspace key. It deletes characters from either
+     * Handles the logic for the Delete key. It deletes characters from either
      * the main input field or the command bar, depending on the context.
      * Delegated to BackspaceHandler.
      *
@@ -1021,7 +1140,35 @@ abstract class GeneralKeyboardIME(
      * @param isLongPress true` if this is a long press/repeat action, false for single tap.
      */
     fun handleDelete(isLongPress: Boolean = false) {
-        val effectiveIsCommandBar = currentState != ScribeState.IDLE && currentState != ScribeState.SELECT_COMMAND
+        val inputConnection = currentInputConnection ?: return
+        val effectiveIsCommandBar =
+            currentState != ScribeState.IDLE &&
+                currentState != ScribeState.SELECT_COMMAND
+
+        if (!effectiveIsCommandBar) {
+            val selectedText = inputConnection.getSelectedText(0)
+            if (selectedText.isNullOrEmpty()) {
+                // Use BreakIterator to delete full emoji characters.
+                val prevText = inputConnection.getTextBeforeCursor(8, 0)
+                if (!prevText.isNullOrEmpty()) {
+                    val breakIterator =
+                        android.icu.text.BreakIterator
+                            .getCharacterInstance()
+                    breakIterator.setText(prevText.toString())
+                    val end = breakIterator.last()
+                    val start = breakIterator.previous()
+                    val count =
+                        if (start == android.icu.text.BreakIterator.DONE) {
+                            1
+                        } else {
+                            (end - start).coerceAtLeast(1)
+                        }
+                    inputConnection.deleteSurroundingText(count, 0)
+                    return
+                }
+            }
+        }
+
         backspaceHandler.handleBackspace(effectiveIsCommandBar, isLongPress)
     }
 
@@ -1215,7 +1362,7 @@ abstract class GeneralKeyboardIME(
                     this.keyboardMode = keyboardSymbols
                     getPrimarySymbolKeyboardLayoutXML()
                 }
-            keyboard = KeyboardBase(this, keyboardXml, enterKeyType)
+            keyboard = KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
             if (keyboardXml == R.xml.keys_symbols) {
                 handleModeChange(keyboardMode, this)
             }
@@ -1240,7 +1387,7 @@ abstract class GeneralKeyboardIME(
                 this.keyboardMode = keyboardLetters
                 getKeyboardLayoutXML()
             }
-        keyboard = KeyboardBase(context, keyboardXml, enterKeyType)
+        keyboard = KeyboardBase(context, keyboardXml, enterKeyType, getKeyboardWidth())
         if (this.keyboardMode == keyboardLetters) {
             val wasShifted = keyboard?.mShiftState == SHIFT_ON_ONE_CHAR || keyboard?.mShiftState == SHIFT_ON_PERMANENT
             if (wasShifted) {
@@ -1675,7 +1822,6 @@ abstract class GeneralKeyboardIME(
         keyboardViewModel.setSuggestions(sTranslate, sConjugate, sPlural)
     }
 
-
     /**
      * Updates autocomplete UI with a new list of suggestions.
      * Clears it if not idle or no completions.
@@ -1779,10 +1925,7 @@ abstract class GeneralKeyboardIME(
             ScribeState.SELECT_VERB_CONJUNCTION -> {
                 saveConjugateModeType(language)
                 if (!isSubsequentArea && dataSize == 0) {
-                    when (language) {
-                        "English", "Russian", "Swedish" -> R.xml.conjugate_view_2x2
-                        else -> R.xml.conjugate_view_3x2
-                    }
+                    defaultConjugateLayoutXML
                 } else {
                     when (dataSize) {
                         DATA_SIZE_2 -> R.xml.conjugate_view_2x1
@@ -1900,4 +2043,98 @@ abstract class GeneralKeyboardIME(
     override fun onClipboardPanelClose() {
         closeClipboardPanel()
     }
+
+    // MARK: Floating Keyboard Integration
+
+    fun getKeyboardWidth(): Int =
+        if (isFloatingMode) {
+            val density = resources.displayMetrics.density
+            val screenWidth = resources.displayMetrics.widthPixels
+            val floatWidth = (320f * density).toInt()
+            minOf(floatWidth, (screenWidth * 0.85f).toInt())
+        } else {
+            resources.displayMetrics.widthPixels
+        }
+
+    private fun recreateKeyboard() {
+        val xmlId = getCurrentKeyboardLayoutXML()
+        val currentShiftState = keyboard?.mShiftState ?: SHIFT_OFF
+        keyboard = KeyboardBase(this, xmlId, enterKeyType, getKeyboardWidth())
+        keyboard?.setShifted(currentShiftState)
+
+        if (xmlId == R.xml.keys_symbols) {
+            keyboardViewModel.setCurrencySymbol(PreferencesHelper.getDefaultCurrencySymbol(this, language))
+        }
+    }
+
+    val isFloatingMode: Boolean
+        get() = keyboardViewModel.isFloatingMode.value
+
+    private fun loadFloatingTransform() {
+        keyboardViewModel.setFloatingTransform(
+            PreferencesHelper.getFloatingX(this, language),
+            PreferencesHelper.getFloatingY(this, language),
+            PreferencesHelper.getFloatingScaleX(this, language),
+            PreferencesHelper.getFloatingScaleY(this, language),
+        )
+    }
+
+    fun initFloatingMode() {
+        keyboardViewModel.setFloatingMode(PreferencesHelper.getIsFloatingModeEnabled(this, language))
+        loadFloatingTransform()
+        applyFloatingModeState()
+    }
+
+    fun toggleFloatingMode() {
+        val enabled = !isFloatingMode
+        PreferencesHelper.setIsFloatingModeEnabled(this, language, enabled)
+        keyboardViewModel.setFloatingMode(enabled)
+        loadFloatingTransform()
+        applyFloatingModeState()
+    }
+
+    fun disableFloatingMode() {
+        if (!isFloatingMode) return
+        PreferencesHelper.setIsFloatingModeEnabled(this, language, false)
+        keyboardViewModel.setFloatingMode(false)
+        applyFloatingModeState()
+    }
+
+    fun applyFloatingModeState() {
+        setBackDisposition(
+            if (isFloatingMode) {
+                BACK_DISPOSITION_ADJUST_NOTHING
+            } else {
+                BACK_DISPOSITION_DEFAULT
+            },
+        )
+        recreateKeyboard()
+        applyNavBarColor()
+    }
+
+    override fun onFloatingGestureEnded(
+        offsetX: Float,
+        offsetY: Float,
+        scaleX: Float,
+        scaleY: Float,
+        dockToBottom: Boolean,
+    ) {
+        if (dockToBottom) {
+            disableFloatingMode()
+            return
+        }
+        PreferencesHelper.setFloatingX(this, language, offsetX)
+        PreferencesHelper.setFloatingY(this, language, offsetY)
+        PreferencesHelper.setFloatingScaleX(this, language, scaleX)
+        PreferencesHelper.setFloatingScaleY(this, language, scaleY)
+    }
+}
+
+private fun Float.coerceInSafe(
+    bound1: Float,
+    bound2: Float,
+): Float {
+    val minVal = if (bound1 < bound2) bound1 else bound2
+    val maxVal = if (bound1 > bound2) bound1 else bound2
+    return this.coerceIn(minVal, maxVal)
 }

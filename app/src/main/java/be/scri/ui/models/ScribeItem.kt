@@ -8,6 +8,7 @@ import androidx.annotation.DrawableRes
 sealed class ScribeItem(
     open val title: Int,
     open val desc: Int?,
+    open val altText: Int? = null,
 ) {
     /**
      * Represents a clickable item in the Scribe UI, typically used for actions like navigation or
@@ -23,8 +24,9 @@ sealed class ScribeItem(
     data class ClickableItem(
         override val title: Int,
         override val desc: Int? = null,
+        override val altText: Int? = null,
         val action: () -> Unit,
-    ) : ScribeItem(title, desc)
+    ) : ScribeItem(title, desc, altText)
 
     /**
      * Represents a toggleable switch item in the Scribe UI.
@@ -41,9 +43,10 @@ sealed class ScribeItem(
     data class SwitchItem(
         override val title: Int,
         override val desc: Int,
+        override val altText: Int? = null,
         val state: Boolean,
         val onToggle: (Boolean) -> Unit,
-    ) : ScribeItem(title, desc)
+    ) : ScribeItem(title, desc, altText)
 
     /**
      * Represents an external link item in the Scribe UI.
@@ -61,11 +64,12 @@ sealed class ScribeItem(
     data class ExternalLinkItem(
         override val title: Int,
         override val desc: Int? = null,
+        override val altText: Int? = null,
         @DrawableRes val leadingIcon: Int,
         @DrawableRes val trailingIcon: Int,
         val url: String?,
         val onClick: () -> Unit,
-    ) : ScribeItem(title, desc)
+    ) : ScribeItem(title, desc, altText)
 
     /**
      * Represents a custom item in the Scribe UI.
@@ -79,6 +83,7 @@ sealed class ScribeItem(
     data class CustomItem(
         override val title: Int,
         override val desc: Int,
+        override val altText: Int? = null,
         val customAction: (Any?) -> Unit,
-    ) : ScribeItem(title, desc)
+    ) : ScribeItem(title, desc, altText)
 }

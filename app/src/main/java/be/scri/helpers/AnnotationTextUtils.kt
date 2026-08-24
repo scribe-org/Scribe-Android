@@ -37,7 +37,7 @@ object AnnotationTextUtils {
                 "Prepositional case" to Pair(color, processValuesForPreposition(language, "Pre")),
                 "Instrumental case" to Pair(color, processValuesForPreposition(language, "Ins")),
             )
-        return suggestionMap[nounType] ?: Pair(R.color.transparent, context.getString(R.string.suggestion))
+        return suggestionMap[nounType] ?: Pair(R.color.transparent, context.getString(R.string.i18n_app_keyboard_suggestion))
     }
 
     /**
@@ -61,7 +61,7 @@ object AnnotationTextUtils {
                 "masculine" to Pair(R.color.annotateBlue, processValueForNouns(language, "M")),
                 "feminine" to Pair(R.color.annotateRed, processValueForNouns(language, "F")),
             )
-        return suggestionMap[nounType] ?: Pair(R.color.transparent, context.getString(R.string.suggestion))
+        return suggestionMap[nounType] ?: Pair(R.color.transparent, context.getString(R.string.i18n_app_keyboard_suggestion))
     }
 
     /**

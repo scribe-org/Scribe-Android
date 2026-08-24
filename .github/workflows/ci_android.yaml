@@ -15,6 +15,9 @@ permissions:
   pull-requests: write
   contents: read
 
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -92,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        flavor: [ Conjugate, Keyboards ]
+        flavor: [Conjugate, Keyboards]
       fail-fast: false
     name: Run Android Instrumentation Tests (${{ matrix.flavor }})
     timeout-minutes: 45

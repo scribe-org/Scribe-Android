@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.scri.ui.screens.Alpha
 
@@ -34,11 +36,17 @@ fun SwitchableItemComp(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     desc: String? = null,
+    altText: String? = null,
 ) {
     val checkedThumbColor = MaterialTheme.colorScheme.primary
     val uncheckedThumbColor = MaterialTheme.colorScheme.tertiaryContainer
     val checkedTrackColor = MaterialTheme.colorScheme.tertiary
     val uncheckedTrackColor = MaterialTheme.colorScheme.outlineVariant
+
+    val semanticsModifier =
+        altText?.let { text ->
+            Modifier.semantics(mergeDescendants = true) { contentDescription = text }
+        } ?: Modifier
 
     Column(
         modifier =
@@ -47,7 +55,8 @@ fun SwitchableItemComp(
                     value = isChecked,
                     onValueChange = onCheckedChange,
                     role = Role.Switch,
-                ).padding(horizontal = 12.dp, vertical = 10.dp),
+                ).padding(horizontal = 12.dp, vertical = 10.dp)
+                .then(semanticsModifier),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

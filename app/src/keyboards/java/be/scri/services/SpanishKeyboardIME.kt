@@ -7,17 +7,12 @@ import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
 import be.scri.helpers.KeyHandler
 import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
+import be.scri.models.ScribeLanguage
 
 /**
  * The SpanishKeyboardIME class provides the input method for the Spanish language keyboard.
  */
-class SpanishKeyboardIME : GeneralKeyboardIME("Spanish") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
+class SpanishKeyboardIME : GeneralKeyboardIME(ScribeLanguage.SPANISH) {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_spanish_tablet
