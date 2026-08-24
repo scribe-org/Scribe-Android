@@ -22,14 +22,11 @@ import android.view.inputmethod.EditorInfo.IME_FLAG_NO_ENTER_ACTION
 import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
-import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.edit
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.InputMethodViewBinding
-import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
-import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
 import be.scri.helpers.AutocompletionHandler
 import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.DatabaseManagers
@@ -59,6 +56,7 @@ import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.recordRecentEmoji
 import be.scri.helpers.ui.KeyboardThemeManager
 import be.scri.helpers.ui.KeyboardUIManager
+import be.scri.helpers.ui.SuggestionUIHandler
 import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.views.KeyboardView
@@ -167,6 +165,7 @@ abstract class GeneralKeyboardIME(
     override lateinit var autocompletionHandler: AutocompletionHandler
     internal lateinit var keyHandler: KeyHandler
     internal val floatingKeyboardHandler by lazy { FloatingKeyboardHandler(this) }
+    internal val suggestionUIHandler by lazy { SuggestionUIHandler(this) }
 
     internal var dataContract: DataContract?
         get() = dataHandler.dataContract
@@ -1410,483 +1409,34 @@ abstract class GeneralKeyboardIME(
         lastWord: String?,
     ) = lastWord?.let { caseAnnotation[it.lowercase()] }
 
-    // Logic for updating auto-suggest text and buttons.
-    // Since KeyboardUIManager doesn't have linguistic logic, we manipulate views here.
+    // MARK: Suggestion UI Logic
 
     /**
      * The main dispatcher for displaying linguistic auto-suggestions (gender, case, plurality).
+     * Delegated to [SuggestionUIHandler].
      *
      * @param nounTypeSuggestion The detected gender(s) of the last word.
      * @param isPlural true if the last word is plural.
      * @param caseAnnotationSuggestion The detected case(s) required by the last word.
+     * @param wordSuggestions The list of predicted words to display.
      */
     override fun updateAutoSuggestText(
         nounTypeSuggestion: List<String>?,
         isPlural: Boolean,
         caseAnnotationSuggestion: MutableList<String>?,
         wordSuggestions: List<String>?,
-    ) {
-        this.nounTypeSuggestion = nounTypeSuggestion
-        this.checkIfPluralWord = isPlural
-        this.caseAnnotationSuggestion = caseAnnotationSuggestion
-        this.wordSuggestions = wordSuggestions
+    ) = suggestionUIHandler.updateAutoSuggestText(nounTypeSuggestion, isPlural, caseAnnotationSuggestion, wordSuggestions)
 
-        if (currentState != ScribeState.IDLE) {
-            if (currentState != ScribeState.SELECT_COMMAND) {
-                uiManager.disableAutoSuggest(language)
-            }
-            return
-        }
-        val hasLinguisticSuggestions = nounTypeSuggestion != null || isPlural || caseAnnotationSuggestion != null || isSingularAndPlural
+    override fun updateTypedWordSuggestion(word: String?) = suggestionUIHandler.updateTypedWordSuggestion(word)
 
-        val handled =
-            when {
-                (isPlural && nounTypeSuggestion != null) -> {
-                    handleMultipleNounFormats(nounTypeSuggestion, "noun")
-                    true
-                }
-
-                ((nounTypeSuggestion?.size ?: 0) > 1) -> {
-                    handleMultipleNounFormats(nounTypeSuggestion, "noun")
-                    true
-                }
-
-                handlePluralIfNeeded(isPlural) -> true
-                handleSingleNounSuggestion(nounTypeSuggestion) -> true
-                handleMultipleCases(caseAnnotationSuggestion) -> true
-                handleSingleCaseSuggestion(caseAnnotationSuggestion) -> true
-                handleFallbackSuggestions(nounTypeSuggestion, caseAnnotationSuggestion) -> true
-                else -> false
-            }
-
-        if (!handled) uiManager.disableAutoSuggest(language)
-        handleWordSuggestions(wordSuggestions, hasLinguisticSuggestions)
-    }
-
-    // MARK: Linguistic Logic
-
-    /**
-     * A helper function to specifically trigger the plural suggestion UI if needed.
-     *
-     * @param isPlural true if the word is plural.
-     *
-     * @return true if the plural suggestion was handled, false otherwise.
-     */
-    private fun handlePluralIfNeeded(isPlural: Boolean): Boolean {
-        if (isPlural) {
-            uiManager.genderSuggestionLeft?.visibility = View.INVISIBLE
-            uiManager.genderSuggestionRight?.visibility = View.INVISIBLE
-            themeManager.applySingleSuggestionStyle(
-                context = applicationContext,
-                button = uiManager.binding.translateBtn,
-                colorRes = R.color.annotateOrange,
-                buttonText = "PL",
-                textSizeSp = NOUN_TYPE_SIZE,
-            )
-            return true
-        }
-        return false
-    }
-
-    /**
-     * A helper function to handle displaying a single noun gender suggestion.
-     *
-     * @param nounTypeSuggestion A list containing a single gender string.
-     *
-     * @return true if a suggestion was displayed, false otherwise.
-     */
-    private fun handleSingleNounSuggestion(nounTypeSuggestion: List<String>?): Boolean {
-        if (nounTypeSuggestion?.size == 1 && !isSingularAndPlural) {
-            val (colorRes, text) = handleColorAndTextForNounType(nounTypeSuggestion[0], language, applicationContext)
-            if (text != "" || colorRes != R.color.transparent) {
-                handleSingleType(nounTypeSuggestion, "noun")
-                return true
-            }
-        }
-        return false
-    }
-
-    /**
-     * A helper function to handle displaying a single preposition case suggestion.
-     *
-     * @param caseAnnotationSuggestion A list containing a single case annotation string.
-     *
-     * @return true if a suggestion was displayed, false otherwise.
-     */
-    private fun handleSingleCaseSuggestion(caseAnnotationSuggestion: List<String>?): Boolean {
-        if (caseAnnotationSuggestion?.size == 1) {
-            val (colorRes, text) = handleTextForCaseAnnotation(caseAnnotationSuggestion[0], language, applicationContext)
-            if (text != "" || colorRes != R.color.transparent) {
-                handleSingleType(caseAnnotationSuggestion, "preposition")
-                return true
-            }
-        }
-        return false
-    }
-
-    /**
-     * A helper function to handle displaying multiple preposition case suggestions.
-     *
-     * @param caseAnnotationSuggestion A list containing multiple case annotation strings.
-     *
-     * @return true if suggestions were displayed, false otherwise.
-     */
-    private fun handleMultipleCases(caseAnnotationSuggestion: List<String>?): Boolean {
-        if ((caseAnnotationSuggestion?.size ?: 0) > 1) {
-            handleMultipleNounFormats(caseAnnotationSuggestion, "preposition")
-            return true
-        }
-        return false
-    }
-
-    /**
-     * Handles fallback logic when multiple suggestions are available but only one can be shown,
-     * or when the primary suggestion type isn't displayable.
-     *
-     * @param nounTypeSuggestion The list of noun suggestions.
-     * @param caseAnnotationSuggestion The list of case suggestions.
-     *
-     * @return true if a fallback suggestion was applied, false otherwise.
-     */
-    private fun handleFallbackSuggestions(
-        nounTypeSuggestion: List<String>?,
-        caseAnnotationSuggestion: List<String>?,
-    ): Boolean {
-        var appliedSomething = false
-        nounTypeSuggestion?.let {
-            handleSingleType(it, "noun")
-            val (_, text) = handleColorAndTextForNounType(it[0], language, applicationContext)
-            if (text != "") appliedSomething = true
-        }
-        if (!appliedSomething) {
-            caseAnnotationSuggestion?.let {
-                handleSingleType(it, "preposition")
-                val (_, text) = handleTextForCaseAnnotation(it[0], language, applicationContext)
-                if (text != "") appliedSomething = true
-            }
-        }
-        return appliedSomething
-    }
-
-    /**
-     * Configures a single suggestion button with the appropriate text and color based on the suggestion type.
-     *
-     * @param singleTypeSuggestion The list containing the single suggestion to display.
-     * @param type The type of suggestion, either "noun" or "preposition".
-     */
-    private fun handleSingleType(
-        singleTypeSuggestion: List<String>?,
-        type: String? = null,
-    ) {
-        val suggestionText = singleTypeSuggestion?.getOrNull(0).toString()
-        val (colorRes, buttonText) =
-            when (type) {
-                "noun" -> handleColorAndTextForNounType(suggestionText, language, applicationContext)
-                "preposition" -> handleTextForCaseAnnotation(suggestionText, language, applicationContext)
-                else -> Pair(R.color.transparent, "")
-            }
-
-        uiManager.genderSuggestionLeft?.visibility = View.INVISIBLE
-        uiManager.genderSuggestionRight?.visibility = View.INVISIBLE
-
-        themeManager.applySingleSuggestionStyle(
-            context = applicationContext,
-            button = uiManager.binding.translateBtn,
-            colorRes = colorRes,
-            buttonText = buttonText,
-            textSizeSp = NOUN_TYPE_SIZE,
-        )
-    }
-
-    /**
-     * Applies a specific style to a suggestion button, including text, color, and a custom background.
-     *
-     * @param button The Button to style.
-     * @param colorRes The color resource ID for the background.
-     * @param text The text to display on the button.
-     * @param backgroundRes The drawable resource ID for the button's background.
-     */
-    private fun applyInformativeSuggestionStyle(
-        button: Button,
-        colorRes: Int,
-        text: String,
-        backgroundRes: Int,
-    ) {
-        themeManager.applyInformativeSuggestionStyle(
-            context = applicationContext,
-            button = button,
-            colorRes = colorRes,
-            text = text,
-            backgroundRes = backgroundRes,
-        )
-    }
-
-    /**
-     * Handles the UI logic for displaying multiple suggestions simultaneously,
-     * typically for words with multiple genders.
-     *
-     * @param multipleTypeSuggestion The list of suggestions to display.
-     * @param type The type of suggestion, either "noun" or "preposition".
-     */
-    private fun handleMultipleNounFormats(
-        multipleTypeSuggestion: List<String>?,
-        type: String? = null,
-    ) {
-        val suggestionPairs = getSuggestionPairs(type, multipleTypeSuggestion) ?: return
-        val (leftSuggestion, rightSuggestion) = suggestionPairs
-        val suggestionText = ""
-        if (leftSuggestion.second == suggestionText || rightSuggestion.second == suggestionText) {
-            handleFallbackOrSingleSuggestion(multipleTypeSuggestion)
-            return
-        }
-
-        uiManager.genderSuggestionLeft?.visibility = View.VISIBLE
-        uiManager.genderSuggestionRight?.visibility = View.VISIBLE
-        uiManager.binding.translateBtn.visibility = View.INVISIBLE
-
-        uiManager.genderSuggestionLeft?.let {
-            applyInformativeSuggestionStyle(
-                it,
-                leftSuggestion.first,
-                leftSuggestion.second,
-                be.scri.R.drawable.gender_suggestion_button_left_background,
-            )
-        }
-
-        uiManager.genderSuggestionRight?.let {
-            applyInformativeSuggestionStyle(
-                it,
-                rightSuggestion.first,
-                rightSuggestion.second,
-                be.scri.R.drawable.gender_suggestion_button_right_background,
-            )
-        }
-    }
-
-    /**
-     * Creates pairs of (color, text) for dual suggestion buttons.
-     *
-     * @param type The suggestion type ("noun" or "preposition").
-     * @param suggestions The list of suggestion strings.
-     *
-     * @return A pair of pairs, each containing a color resource ID and a text string, or null on failure.
-     */
-    private fun getSuggestionPairs(
-        type: String?,
-        suggestions: List<String>?,
-    ): Pair<Pair<Int, String>, Pair<Int, String>>? {
-        val (leftType, rightType) =
-            if (type == "noun" && isSingularAndPlural) {
-                "PL" to (suggestions?.getOrNull(0) ?: "")
-            } else {
-                (suggestions?.getOrNull(0) ?: "") to (suggestions?.getOrNull(1) ?: "")
-            }
-
-        return when (type) {
-            "noun" ->
-                handleColorAndTextForNounType(leftType, language, applicationContext) to
-                    handleColorAndTextForNounType(rightType, language, applicationContext)
-
-            "preposition" ->
-                handleTextForCaseAnnotation(leftType, language, applicationContext) to
-                    handleTextForCaseAnnotation(rightType, language, applicationContext)
-
-            else -> null
-        }
-    }
-
-    /**
-     * Handles the logic when a word has multiple possible genders or
-     * cases but only one suggestion slot is available.
-     *
-     * It picks the first valid suggestion to display.
-     * @param multipleTypeSuggestion The list of noun suggestions.
-     */
-    private fun handleFallbackOrSingleSuggestion(multipleTypeSuggestion: List<String>?) {
-        val suggestionText = ""
-        val validNouns = multipleTypeSuggestion?.filter { handleColorAndTextForNounType(it, language, applicationContext).second != suggestionText }
-        val validCases = caseAnnotationSuggestion?.filter { handleTextForCaseAnnotation(it, language, applicationContext).second != suggestionText }
-        if (!validNouns.isNullOrEmpty()) {
-            handleSingleType(validNouns, "noun")
-        } else if (!validCases.isNullOrEmpty()) {
-            handleSingleType(validCases, "preposition")
-        } else {
-            uiManager.disableAutoSuggest(language)
-        }
-    }
-
-    /**
-     * Displays word prediction suggestions on the command buttons.
-     *
-     * @param wordSuggestions The list of predicted words to display.
-     * @param hasLinguisticSuggestions Whether linguistic suggestions are also present.
-     */
-    private fun handleWordSuggestions(
-        wordSuggestions: List<String>?,
-        hasLinguisticSuggestions: Boolean,
-    ) {
-        if (wordSuggestions.isNullOrEmpty()) {
-            if (hasLinguisticSuggestions) {
-                val baseSuggestions =
-                    be.scri.helpers.ui.HintUtils
-                        .getBaseAutoSuggestions(language)
-                val default1 = baseSuggestions.getOrNull(0) ?: ""
-                val default2 = baseSuggestions.getOrNull(1) ?: ""
-                setSuggestionButton(uiManager.binding.conjugateBtn, default1)
-                if (autoSuggestEmojis.isNullOrEmpty()) {
-                    uiManager.pluralBtn?.let { setSuggestionButton(it, default2) }
-                } else {
-                    uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
-                }
-            }
-            return
-        }
-
-        val suggestions = listOfNotNull(wordSuggestions.getOrNull(0), wordSuggestions.getOrNull(1), wordSuggestions.getOrNull(2))
-        val suggestion1 = suggestions.getOrNull(0) ?: ""
-        val suggestion2 = suggestions.getOrNull(1) ?: ""
-        val suggestion3 = suggestions.getOrNull(2) ?: ""
-
-        val emojiCount = autoSuggestEmojis?.size ?: 0
-        setSuggestionButton(uiManager.binding.conjugateBtn, suggestion1)
-
-        when {
-            hasLinguisticSuggestions && emojiCount != 0 -> {
-                uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
-            }
-
-            hasLinguisticSuggestions && emojiCount == 0 -> {
-                setSuggestionButton(uiManager.pluralBtn!!, suggestion2)
-            }
-            !hasLinguisticSuggestions && emojiCount != 0 -> {
-                setSuggestionButton(uiManager.binding.translateBtn, suggestion2)
-                uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
-            }
-            else -> {
-                setSuggestionButton(uiManager.binding.translateBtn, suggestion2)
-                setSuggestionButton(uiManager.pluralBtn!!, suggestion3)
-            }
-        }
-    }
-
-    private fun setSuggestionButton(
-        button: Button,
-        text: String,
-    ) {
-        button.text = text
-        button.isAllCaps = false
-        button.visibility = View.VISIBLE
-        button.textSize = SUGGESTION_SIZE
-        button.setOnClickListener(null)
-        button.background = null
-        button.foreground = null
-        button.setTextColor(themeManager.getSuggestionTextColor(applicationContext))
-        button.setOnClickListener {
-            currentInputConnection?.commitText("$text ", 1)
-            moveToIdleState()
-        }
-    }
-
-    // MARK: Autocomplete
-
-    /**
-     * Pins the word currently being typed into the first (leftmost) suggestion
-     * slot, quoted like most mobile keyboards do to mark it as "what you typed"
-     * rather than a dictionary suggestion. Called immediately on every keystroke
-     * — unlike the completions, it needs no lookup, so it should never lag.
-     */
-    override fun updateTypedWordSuggestion(word: String?) {
-        if (currentState != ScribeState.IDLE || word.isNullOrEmpty()) {
-            uiManager.disableAutoSuggest(language)
-            if (!autoSuggestEmojis.isNullOrEmpty() && emojiAutoSuggestionEnabled) {
-                updateEmojiSuggestion(true, autoSuggestEmojis)
-                updateButtonVisibility(true)
-            }
-            return
-        }
-
-        setTypedWordButton(uiManager.binding.translateBtn, word)
-        setAutocompleteButton(uiManager.binding.conjugateBtn, "")
-        if (autoSuggestEmojis.isNullOrEmpty()) {
-            uiManager.pluralBtn?.let { setAutocompleteButton(it, "") }
-        } else {
-            uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
-        }
-
-        uiManager.binding.separator1.visibility = View.VISIBLE
-        uiManager.binding.separator2.visibility = View.VISIBLE
-    }
-
-    /**
-     * Fills the remaining suggestion slots with dictionary/engine completions.
-     * Clears them (leaving the typed word alone) if not idle.
-     */
-    override fun updateAutocompleteCompletions(completions: List<String>) {
-        if (currentState != ScribeState.IDLE) return
-
-        val completion1 = completions.getOrNull(0) ?: ""
-        val completion2 = completions.getOrNull(1) ?: ""
-
-        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1)
-        if (autoSuggestEmojis.isNullOrEmpty()) {
-            uiManager.pluralBtn?.let { setAutocompleteButton(it, completion2) }
-        } else {
-            uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
-        }
-    }
-
-    /**
-     * Sets up the "what you typed" button: displayed quoted, but tapping it
-     * doesn't re-insert the word (it's already in the text field) — it just
-     * confirms the word with a space, the same as pressing the space bar
-     * would, and moves on to next-word suggestions based on it.
-     */
-    private fun setTypedWordButton(
-        button: Button,
-        word: String,
-    ) {
-        setSuggestionButton(button, "\"$word\"")
-        button.setOnClickListener {
-            currentInputConnection?.commitText(" ", 1)
-            suggestionHandler.processLinguisticSuggestions(word)
-            suggestionHandler.processWordSuggestions(word)
-            moveToIdleState()
-        }
-    }
-
-    /**
-     * Sets up an autocomplete button with the given suggestion text.
-     * When clicked, it replaces the current word with the suggestion.
-     */
-    private fun setAutocompleteButton(
-        button: Button,
-        text: String,
-    ) {
-        setSuggestionButton(button, text)
-        if (text.isBlank()) {
-            button.setOnClickListener(null)
-            return
-        }
-        button.setOnClickListener {
-            val ic = currentInputConnection ?: return@setOnClickListener
-            val beforeText = ic.getTextBeforeCursor(50, 0) ?: ""
-            val wordStartIndex = beforeText.lastIndexOfAny(charArrayOf(' ', '\n', '\t', '.', ',', '?', '!')) + 1
-            val currentWord = beforeText.substring(wordStartIndex)
-            ic.deleteSurroundingText(currentWord.length, 0)
-            ic.commitText(text, 1)
-            moveToIdleState()
-        }
-    }
+    override fun updateAutocompleteCompletions(completions: List<String>) = suggestionUIHandler.updateAutocompleteCompletions(completions)
 
     /**
      * Clears autocomplete suggestions by resetting the suggestion strip
      * to the default command buttons via the UI Manager.
+     * Delegated to [SuggestionUIHandler].
      */
-    override fun clearAutocomplete() {
-        if (this::uiManager.isInitialized) {
-            uiManager.disableAutoSuggest(language)
-        }
-    }
+    override fun clearAutocomplete() = suggestionUIHandler.clearAutocomplete()
 
     /**
      * Returns whether the current conjugation state requires a subsequent selection view.
@@ -2076,13 +1626,4 @@ abstract class GeneralKeyboardIME(
     fun closeClipboardPanel() {
         clipboardHandler.closeClipboardPanel()
     }
-}
-
-private fun Float.coerceInSafe(
-    bound1: Float,
-    bound2: Float,
-): Float {
-    val minVal = if (bound1 < bound2) bound1 else bound2
-    val maxVal = if (bound1 > bound2) bound1 else bound2
-    return this.coerceIn(minVal, maxVal)
 }
