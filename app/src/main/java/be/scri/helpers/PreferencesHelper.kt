@@ -398,8 +398,8 @@ object PreferencesHelper {
      */
     fun getIsDarkModeOrNot(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
-        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES
+        val systemNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val isSystemDarkMode = systemNightMode == Configuration.UI_MODE_NIGHT_YES
 
         val lastSystemTheme = sharedPref.getBoolean("last_system_dark_mode", isSystemDarkMode)
         var isUserDarkMode = sharedPref.getBoolean("dark_mode", isSystemDarkMode)

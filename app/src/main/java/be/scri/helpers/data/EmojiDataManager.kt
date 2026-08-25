@@ -68,7 +68,7 @@ class EmojiDataManager(
                     .toMutableList()
 
             if (emojis.isNotEmpty()) {
-                emojiMap[word] = emojis
+                emojiMap[word.lowercase()] = emojis
             }
         } while (cursor.moveToNext())
     }

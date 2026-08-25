@@ -20,17 +20,8 @@ import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import kotlin.math.roundToInt
 
-/**
- * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard consists of rows of keys.
- * @attr ref android.R.styleable#Keyboard_keyWidth
- * @attr ref android.R.styleable#Keyboard_horizontalGap
- */
 @Suppress("LongMethod", "NestedBlockDepth", "CyclomaticComplexMethod")
 class KeyboardBase {
-    /**
-     * Interface for providing keyboard context to KeyboardBase without
-     * a direct dependency on GeneralKeyboardIME.
-     */
     interface KeyboardContextProvider {
         val language: String
         val keyboardMode: Int
@@ -41,39 +32,28 @@ class KeyboardBase {
         fun isFloatingModeActive(): Boolean
     }
 
-    /** Horizontal gap default for all rows  */
     private var mDefaultHorizontalGap = 0
 
-    /** Default key width  */
     private var mDefaultWidth = 0
 
-    /** Default key height  */
     private var mDefaultHeight = 0
 
-    /** Is the keyboard in the shifted state  */
     var mShiftState = SHIFT_OFF
 
-    /** Total height of the keyboard, including the padding and keys  */
     var mHeight = 0
 
-    /** Total width of the keyboard, including left side gaps and keys, but not any gaps on the right side. */
     var mMinWidth = 0
 
-    /** List of keys in this keyboard  */
+    private var mIsConjugateLayout = false
+
     var mKeys: MutableList<Key?>? = null
 
-    /** Width of the screen available to fit the keyboard  */
     private var mDisplayWidth = 0
 
-    /** What icon should we show at Enter key  */
     var mEnterKeyType = IME_ACTION_NONE
 
-    /** Keyboard rows  */
     private val mRows = ArrayList<Row?>()
 
-    /**
-     * Constants for keyboard layouts and the function to retrieve them.
-     */
     companion object {
         private const val TAG_KEYBOARD = "Keyboard"
         private const val TAG_ROW = "Row"
@@ -118,7 +98,6 @@ class KeyboardBase {
         const val CODE_CURRENCY = 1050
         private const val MAX_KEYS_PER_MINI_ROW = 10
 
-        // Sets for grouping key codes to reduce complexity in KeyHandler.
         val NAVIGATION_KEYS =
             setOf(
                 KEYCODE_LEFT_ARROW,
@@ -147,16 +126,6 @@ class KeyboardBase {
                 CODE_2X1_BOTTOM,
             )
 
-        /**
-         * Retrieves the dimension or fraction value from the attributes, adjusting the base value if necessary.
-         *
-         * @param a The TypedArray containing the attributes.
-         * @param index The index of the desired attribute.
-         * @param base The base value for the fraction calculation.
-         * @param defValue The default value to return if no valid dimension is found.
-         *
-         * @return The calculated dimension or fraction value.
-         */
         fun getDimensionOrFraction(
             a: TypedArray,
             index: Int,
@@ -172,22 +141,11 @@ class KeyboardBase {
         }
     }
 
-    /**
-     * Container for keys in the keyboard.
-     * All keys in a row are at the same Y-coordinate.
-     * Some of the key size defaults can be overridden per row from
-     * what the [KeyboardBase] defines.
-     * @attr ref android.R.styleable#Keyboard_keyWidth
-     * @attr ref android.R.styleable#Keyboard_horizontalGap
-     */
     class Row {
-        /** Default width of a key in this row.  */
         var defaultWidth = 0
 
-        /** Default height of a key in this row.  */
         var defaultHeight = 0
 
-        /** Default horizontal gap between keys in this row.  */
         var defaultHorizontalGap = 0
 
         var mKeys = ArrayList<Key>()
@@ -213,7 +171,7 @@ class KeyboardBase {
             val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
             val conjugateMode = sharedPreferences.getString("conjugate_mode_type", "2x1")
             defaultHeight =
-                if (conjugateMode != "none") {
+                if (parent.mIsConjugateLayout && conjugateMode != "none") {
                     when (conjugateMode) {
                         "2x2" -> res.getDimension(R.dimen.conjugate_view_key_height_2x2).toInt()
                         "3x3" -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
@@ -248,82 +206,41 @@ class KeyboardBase {
         }
     }
 
-    /**
-     * Class for describing the position and characteristics of a single key in the keyboard.
-     *
-     * @attr ref android.R.styleable#Keyboard_keyWidth
-     * @attr ref android.R.styleable#Keyboard_keyHeight
-     * @attr ref android.R.styleable#Keyboard_horizontalGap
-     * @attr ref android.R.styleable#Keyboard_Key_codes
-     * @attr ref android.R.styleable#Keyboard_Key_keyIcon
-     * @attr ref android.R.styleable#Keyboard_Key_keyLabel
-     * @attr ref android.R.styleable#Keyboard_Key_isRepeatable
-     * @attr ref android.R.styleable#Keyboard_Key_popupKeyboard
-     * @attr ref android.R.styleable#Keyboard_Key_popupCharacters
-     * @attr ref android.R.styleable#Keyboard_Key_keyEdgeFlags
-     */
     class Key(
         parent: Row,
     ) {
-        /** Key code that this key generates.  */
         var code = 0
 
-        /** Label to display  */
         var label: CharSequence = ""
 
-        /** First row of letters can also be used for inserting numbers by long pressing them, show those numbers  */
         var topSmallNumber: String = ""
 
-        /** Icon to display instead of a label. Icon takes precedence over a label  */
         var icon: Drawable? = null
 
-        /** Width of the key, not including the gap  */
         var width: Int
 
-        /** Height of the key, not including the gap  */
         var height: Int
 
-        /** The horizontal gap before this key  */
         var gap: Int
 
-        /** X coordinate of the key in the keyboard layout  */
         var x = 0
 
-        /** Y coordinate of the key in the keyboard layout  */
         var y = 0
 
-        /** The current pressed state of this key  */
         var pressed = false
 
-        /** Focused state, used after long pressing a key and swiping to alternative keys  */
         var focused = false
 
-        /** Popup characters showing after long pressing the key  */
         var popupCharacters: CharSequence? = null
 
-        /**
-         * Flags that specify the anchoring to edges of the keyboard for detecting touch events,
-         * that are just out of the boundary of the key.
-         * This is a bit mask of [KeyboardBase.EDGE_LEFT], [KeyboardBase.EDGE_RIGHT].
-         */
         private var edgeFlags = 0
 
-        /** The keyboard that this key belongs to  */
         private val keyboard = parent.parent
 
-        /** If this key pops up a mini keyboard, this is the resource id for the XML layout for that keyboard.  */
         var popupResId = 0
 
-        /** Whether this key repeats itself when held down  */
         var repeatable = false
 
-        /** Create a key with the given top-left coordinate and extract its attributes from the XML parser.
-         * @param res Resources associated with the caller's context.
-         * @param parent The row that this key belongs to. The row must already be attached to a [KeyboardBase].
-         * @param x The x coordinate of the top-left.
-         * @param y The y coordinate of the top-left.
-         * @param parser The XML parser containing the attributes for this key.
-         */
         constructor(res: Resources, parent: Row, x: Int, y: Int, parser: XmlResourceParser?) : this(parent) {
             this.x = x
             this.y = y
@@ -379,15 +296,6 @@ class KeyboardBase {
             gap = parent.defaultHorizontalGap
         }
 
-        /**
-         * Detects if a point falls inside this key.
-         * @param x The x-coordinate of the point.
-         * @param y The y-coordinate of the point.
-         *
-         * @return whether or not the point falls inside the key.
-         * If the key is attached to an edge, it will assume that all points between the key and
-         * the edge are considered to be inside the key.
-         */
         fun isInside(
             x: Int,
             y: Int,
@@ -403,14 +311,6 @@ class KeyboardBase {
         }
     }
 
-    /**
-     * Creates a keyboard from the given xml key layout file.
-     * Removes rows that have a keyboard mode defined but don't match the specified mode.
-     *
-     * @param context The application or service context.
-     * @param xmlLayoutResId The resource file that contains the keyboard layout and keys.
-     * @param enterKeyType Determines what icon should we show on Enter key.
-     */
     @JvmOverloads
     constructor(
         context: Context,
@@ -424,20 +324,13 @@ class KeyboardBase {
         mDefaultHeight = mDefaultWidth
         mKeys = ArrayList()
         mEnterKeyType = enterKeyType
+        mIsConjugateLayout =
+            runCatching {
+                context.resources.getResourceEntryName(xmlLayoutResId).startsWith("conjugate_view")
+            }.getOrDefault(false)
         loadKeyboard(context, context.resources.getXml(xmlLayoutResId))
     }
 
-    /**
-     * Creates a blank keyboard from the given resource file and
-     * populates it with the specified characters in left-to-right, top-to-bottom fashion,
-     * using the specified number of columns. If the specified number of columns is -1,
-     * then the keyboard will fit as many keys as possible in each row.
-     *
-     * @param context The application or service context.
-     * @param layoutTemplateResId The layout template file, containing no keys.
-     * @param characters The list of characters to display on the keyboard. One key will be created for each character.
-     * @param keyWidth The width of the popup key, make sure it is the same as the key itself.
-     */
     constructor(context: Context, layoutTemplateResId: Int, characters: CharSequence, keyWidth: Int) :
         this(context, layoutTemplateResId, 0) {
         var x = 0
@@ -476,13 +369,6 @@ class KeyboardBase {
         mRows.add(row)
     }
 
-    /**
-     * Sets the keyboard shift state.
-     *
-     * @param shiftState The new shift state to apply.
-     *
-     * @return true if the shift state was changed, false otherwise.
-     */
     fun setShifted(shiftState: Int): Boolean {
         if (mShiftState != shiftState) {
             mShiftState =
@@ -495,31 +381,12 @@ class KeyboardBase {
         return false
     }
 
-    /**
-     * Creates a Row object from the XML resource parser.
-     *
-     * @param res The resources associated with the context.
-     * @param parser The XML resource parser.
-     *
-     * @return the created Row object.
-     */
     private fun createRowFromXml(
         res: Resources,
         parser: XmlResourceParser?,
         context: Context,
     ): Row = Row(res, this, parser, context = context)
 
-    /**
-     * Creates a Key object from the XML resource parser and the specified coordinates.
-     *
-     * @param res The resources associated with the context.
-     * @param parent The parent Row that this key belongs to.
-     * @param x The x-coordinate of the key.
-     * @param y The y-coordinate of the key.
-     * @param parser the XML resource parser.
-     *
-     * @return the created Key object.
-     */
     private fun createKeyFromXml(
         res: Resources,
         parent: Row,
@@ -528,13 +395,6 @@ class KeyboardBase {
         parser: XmlResourceParser?,
     ): Key = Key(res, parent, x, y, parser)
 
-    /**
-     * Loads the keyboard configuration from the provided XML parser, populating the rows and keys.
-     * This method also handles edge cases like custom icons for the Enter key based on its type.
-     *
-     * @param context The application context.
-     * @param parser The XML resource parser.
-     */
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun loadKeyboard(
         context: Context,
@@ -549,7 +409,6 @@ class KeyboardBase {
         var currentRow: Row? = null
         val res = context.resources
 
-        // Get the keyboard context provider if available.
         val provider = context as? KeyboardContextProvider
         val language = provider?.language
         val currentKeyboardMode = provider?.keyboardMode
@@ -563,7 +422,6 @@ class KeyboardBase {
                 true
             }
 
-        // Only hide the comma if we are on the main ABC keyboard in a search bar.
         val hideComma =
             isSearchBar &&
                 !periodAndCommaEnabled &&
@@ -651,8 +509,6 @@ class KeyboardBase {
             spaceKey?.let {
                 it.width += widthToRedistribute
 
-                // After resizing the spacebar, we MUST realign ONLY the keys that come AFTER it in THIS ROW.
-                // This prevents affecting any other row.
                 val spaceKeyIndex = rowToAdjust.mKeys.indexOf(it)
                 if (spaceKeyIndex != -1) {
                     for (i in (spaceKeyIndex + 1) until rowToAdjust.mKeys.size) {
@@ -667,12 +523,6 @@ class KeyboardBase {
         mHeight = y
     }
 
-    /**
-     * Parses the keyboard attributes such as key width, height, and horizontal gap from the XML resource.
-     *
-     * @param res The resources associated with the context.
-     * @param parser The XML resource parser.
-     */
     private fun parseKeyboardAttributes(
         res: Resources,
         parser: XmlResourceParser,
@@ -686,9 +536,6 @@ class KeyboardBase {
         a.recycle()
     }
 
-    /**
-     * Holds custom IME (Input Method Editor) action constants.
-     */
     object MyCustomActions {
         const val IME_ACTION_COMMAND = 0x00000008
     }

@@ -2,10 +2,43 @@
 
 package be.scri.ui.theme
 
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import be.scri.helpers.PreferencesHelper.SCRIBE_PREFS
+
+private const val DARK_MODE_PREF = "dark_mode"
+
+@Composable
+fun isKeyboardDarkMode(): Boolean {
+    val context = LocalContext.current
+    val isSystemDark = isSystemInDarkTheme()
+    val sharedPref = remember(context) { context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE) }
+    var isDarkMode by remember(sharedPref, isSystemDark) { mutableStateOf(sharedPref.getBoolean(DARK_MODE_PREF, isSystemDark)) }
+
+    DisposableEffect(sharedPref, isSystemDark) {
+        val listener =
+            SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
+                if (key == DARK_MODE_PREF) {
+                    isDarkMode = prefs.getBoolean(DARK_MODE_PREF, isSystemDark)
+                }
+            }
+        sharedPref.registerOnSharedPreferenceChangeListener(listener)
+        onDispose { sharedPref.unregisterOnSharedPreferenceChangeListener(listener) }
+    }
+
+    return isDarkMode
+}
 
 private val LightColors =
     lightColorScheme(

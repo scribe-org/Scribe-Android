@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 /** This files handles the state and business logic for the settings screen. */
 class SettingsViewModel(
-    context: Context,
+    applicationContext: Context,
 ) : ViewModel() {
     private val _languages = MutableStateFlow<List<String>>(emptyList())
     val languages: StateFlow<List<String>> = _languages
@@ -20,7 +20,7 @@ class SettingsViewModel(
     private val _isKeyboardInstalled = MutableStateFlow(false)
     val isKeyboardInstalled: StateFlow<Boolean> = _isKeyboardInstalled
 
-    private val sharedPrefs = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    private val sharedPrefs = applicationContext.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     private val _vibrateOnKeypress =
         MutableStateFlow(sharedPrefs.getBoolean("vibrate_on_keypress", false))
     val vibrateOnKeypress: StateFlow<Boolean> = _vibrateOnKeypress
@@ -32,7 +32,7 @@ class SettingsViewModel(
     private val _isUserDarkMode =
         MutableStateFlow(
             be.scri.helpers.PreferencesHelper
-                .getIsDarkModeOrNot(context),
+                .getIsDarkModeOrNot(applicationContext),
         )
     val isUserDarkMode: StateFlow<Boolean> = _isUserDarkMode
 
@@ -42,7 +42,7 @@ class SettingsViewModel(
     val isIncreaseTextSize: StateFlow<Boolean> = _isIncreaseTextSize
 
     init {
-        viewModelScope.launch { refreshSettings(context) }
+        viewModelScope.launch { refreshSettings(applicationContext) }
     }
 
     /**

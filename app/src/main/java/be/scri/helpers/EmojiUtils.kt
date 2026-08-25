@@ -9,6 +9,7 @@ import java.util.Locale
  */
 object EmojiUtils {
     private const val DATA_SIZE_2 = 2
+    val COMMON_EMOJIS = listOf("😀", "❤️", "👍", "😂", "🎉", "✨", "🔥", "👋", "😊")
 
     /**
      * Checks if the end of a string is likely an emoji.
@@ -48,11 +49,20 @@ object EmojiUtils {
         ic: InputConnection,
         emojiKeywords: HashMap<String, MutableList<String>>?,
         emojiMaxKeywordLength: Int,
+        emojiColonModeOn: Boolean = false,
     ) {
         val maxLookBack = emojiMaxKeywordLength.coerceAtLeast(1)
         ic.beginBatchEdit()
         try {
             val prevText = ic.getTextBeforeCursor(maxLookBack, 0)?.toString() ?: ""
+            if (emojiColonModeOn) {
+                val colonIndex = prevText.lastIndexOf(':')
+                if (colonIndex != -1) {
+                    ic.deleteSurroundingText(prevText.length - colonIndex, 0)
+                }
+                ic.commitText(emoji, 1)
+                return
+            }
             val lastSpace = prevText.lastIndexOf(' ')
             when {
                 prevText.isEmpty() ||
