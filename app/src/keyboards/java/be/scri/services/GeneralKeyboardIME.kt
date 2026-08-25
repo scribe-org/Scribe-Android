@@ -22,13 +22,13 @@ import android.view.inputmethod.EditorInfo.IME_MASK_ACTION
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.TextView
-import androidx.core.content.edit
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.AutocompletionHandler
 import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.CommandHandler
+import be.scri.helpers.ConjugationHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.FloatingKeyboardHandler
@@ -60,9 +60,6 @@ import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.views.KeyboardView
 import java.util.Locale
-
-private const val DATA_SIZE_2 = 2
-private const val DATA_CONSTANT_3 = 3
 
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class GeneralKeyboardIME(
@@ -107,7 +104,7 @@ abstract class GeneralKeyboardIME(
 
     // Language-specific layout and behavior configurations (decoupled from base class).
     open val defaultConjugateModeType: String = "3x2"
-    open val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_3x2
+    override val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_3x2
     open val isPluralCapitalized: Boolean = false
 
     /**
@@ -146,8 +143,7 @@ abstract class GeneralKeyboardIME(
     // MARK: State Variables
 
     override var isSingularAndPlural: Boolean = false
-    private var subsequentAreaRequired: Boolean = false
-    private var subsequentData: MutableList<List<String>> = mutableListOf()
+    internal val conjugationHandler by lazy { ConjugationHandler(this) }
 
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
 
@@ -181,7 +177,7 @@ abstract class GeneralKeyboardIME(
             dataHandler.emojiKeywords = value
         }
 
-    internal var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
+    override var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
         get() = dataHandler.conjugateOutput
         set(value) {
             dataHandler.conjugateOutput = value
@@ -655,20 +651,7 @@ abstract class GeneralKeyboardIME(
     override fun saveConjugateModeType(
         language: String,
         isSubsequentArea: Boolean,
-    ) {
-        val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        val mode =
-            if (!isSubsequentArea) {
-                when (language) {
-                    "English", "Russian", "Swedish" -> "2x2"
-                    "German", "French", "Italian", "Portuguese", "Spanish" -> "2x2"
-                    else -> "none"
-                }
-            } else {
-                "none"
-            }
-        sharedPref.edit { putString("conjugate_mode_type", mode) }
-    }
+    ) = conjugationHandler.saveConjugateModeType(language, isSubsequentArea)
 
     // MARK: UI Update Delegation
 
@@ -805,7 +788,7 @@ abstract class GeneralKeyboardIME(
     override fun commitText(text: String) {
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
             val label = text.trim()
-            val conjugateIndex = getValidatedConjugateIndex()
+            val conjugateIndex = conjugationHandler.getValidatedConjugateIndex()
             val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
             val languageOutput = title?.let { conjugateOutput!![it] }
 
@@ -1062,47 +1045,6 @@ abstract class GeneralKeyboardIME(
     ): String = dataHandler.getTranslation(language, commandBarInput)
 
     /**
-     * @return A new map with properly formatted conjugations.
-     */
-    internal fun applyCapitalizationToConjugations(
-        conjugations: MutableMap<String, MutableMap<String, Collection<String>>>,
-        isAllCaps: Boolean = false,
-    ): MutableMap<String, MutableMap<String, Collection<String>>> {
-        val formattedOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
-        conjugations.forEach { (tenseKey, conjugationMap) ->
-            val formattedConjugations: MutableMap<String, Collection<String>> = mutableMapOf()
-            conjugationMap.forEach { (categoryKey, forms) ->
-                val formattedForms =
-                    forms.map { form ->
-                        when {
-                            form.isEmpty() -> form
-                            isAllCaps -> form.uppercase()
-                            else -> form.replaceFirstChar { it.uppercase() }
-                        }
-                    }
-                formattedConjugations[categoryKey] = formattedForms
-            }
-            formattedOutput[tenseKey] = formattedConjugations
-        }
-        return formattedOutput
-    }
-
-    /**
-     * Retrieves and validates the stored index for the current conjugation view.
-     * Ensures the index is within the bounds of available conjugation types.
-     *
-     * @return A valid, zero-based index for the conjugation type.
-     */
-    private fun getValidatedConjugateIndex(): Int {
-        val prefs = getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        var index = prefs.getInt("conjugate_index", 0)
-        val maxIndex = conjugateOutput?.keys?.count()?.minus(1) ?: -1
-        index = if (maxIndex >= 0) index.coerceIn(0, maxIndex) else 0
-        prefs.edit { putInt("conjugate_index", index) }
-        return index
-    }
-
-    /**
      * Handles the logic for the Shift key. It cycles through shift states (off, on-for-one-char, caps lock)
      * on the letter keyboard, and toggles between symbol pages on the symbol keyboard.
      * @param keyboardMode The current keyboard mode.
@@ -1297,108 +1239,29 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Returns whether the current conjugation state requires a subsequent selection view.
-     * This is used, for example, when a conjugation form has multiple options (e.g., "am/is/are" in English).
-     *
-     * @return true if a subsequent selection screen is needed, false otherwise.
+     * Delegated to [ConjugationHandler].
      */
-    override fun returnIsSubsequentRequired(): Boolean = subsequentAreaRequired
+    override fun returnIsSubsequentRequired(): Boolean = conjugationHandler.subsequentAreaRequired
 
-    override fun returnSubsequentData(): List<List<String>> = subsequentData
+    override fun returnSubsequentData(): List<List<String>> = conjugationHandler.subsequentData
 
     /**
      * Handles a key press on one of the special conjugation keys.
-     * It either commits the text directly or prepares for a subsequent selection view.
-     *
-     * @param code The key code of the pressed key.
-     * @param isSubsequentRequired true if a sub-view is needed for more options.
-     *
-     * @return The label of the key that was pressed.
+     * Delegated to [ConjugationHandler].
      */
     override fun handleConjugateKeys(
         code: Int,
         isSubsequentRequired: Boolean,
-    ): String? {
-        val keyLabel = keyboardView?.getKeyLabel(code)
-        if (!isSubsequentRequired) {
-            if (!keyLabel.isNullOrEmpty()) {
-                currentInputConnection?.commitText("$keyLabel ", 1)
-                suggestionHandler.processLinguisticSuggestions(keyLabel)
-            }
-        }
-        return keyLabel
-    }
+    ): String? = conjugationHandler.handleConjugateKeys(code, isSubsequentRequired)
 
     /**
      * Sets up a secondary "sub-view" for conjugation when a single key has multiple options.
-     *
-     * @param data The full dataset of subsequent options.
-     * @param word The specific word selected from the primary view, used to filter the data.
+     * Delegated to [ConjugationHandler].
      */
     override fun setupConjugateSubView(
         data: List<List<String>>,
         word: String?,
-    ) {
-        val uniqueData = data.distinct()
-        val filteredData = uniqueData.filter { sublist -> sublist.contains(word) }
-        val flattenList = filteredData.flatten()
-        saveConjugateModeType(language = language, true)
-        val prefs = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
-        val keyboardXmlId = getKeyboardLayoutForState(currentState, true, flattenList.size)
-        // Re-initialize keyboard via UI manager helper which calls 'initializeKeyboard(xml)'.
-        uiManager.initializeKeyboard(keyboardXmlId)
-        prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
-        when (flattenList.size) {
-            DATA_SIZE_2 -> {
-                keyboardView?.setKeyLabel(flattenList[0], "HI", KeyboardBase.CODE_2X1_TOP)
-                keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_2X1_BOTTOM)
-                subsequentAreaRequired = false
-            }
-
-            DATA_CONSTANT_3 -> {
-                keyboardView?.setKeyLabel(flattenList[0], "HI", KeyboardBase.CODE_1X3_RIGHT)
-                keyboardView?.setKeyLabel(flattenList[1], "HI", KeyboardBase.CODE_1X3_CENTER)
-                keyboardView?.setKeyLabel(flattenList[DATA_SIZE_2], "HI", KeyboardBase.CODE_1X3_RIGHT)
-                subsequentAreaRequired = false
-            }
-        }
-        prefs.edit(commit = true) { putString("conjugate_mode_type", "2x1") }
-        // Binding access via uiManager.
-        uiManager.binding.ivInfo.visibility = View.GONE
-    }
-
-    /**
-     * Determines which keyboard layout XML to use based on the current [ScribeState].
-     *
-     * @param state The current state of the Scribe keyboard.
-     * @param isSubsequentArea true if this is for a secondary conjugation view.
-     * @param dataSize The number of items to display, used to select an appropriate layout.
-     *
-     * @return The resource ID of the keyboard layout XML.
-     */
-    private fun getKeyboardLayoutForState(
-        state: ScribeState,
-        isSubsequentArea: Boolean = false,
-        dataSize: Int = 0,
-    ): Int =
-        when (state) {
-            ScribeState.SELECT_VERB_CONJUNCTION -> {
-                saveConjugateModeType(language)
-                if (!isSubsequentArea && dataSize == 0) {
-                    defaultConjugateLayoutXML
-                } else {
-                    when (dataSize) {
-                        DATA_SIZE_2 -> R.xml.conjugate_view_2x1
-                        DATA_CONSTANT_3 -> R.xml.conjugate_view_1x3
-                        else -> R.xml.conjugate_view_2x2
-                    }
-                }
-            }
-
-            else -> {
-                getKeyboardLayoutXML()
-            }
-        }
+    ) = conjugationHandler.setupConjugateSubView(data, word)
 
     /**
      * Updates the visibility of the suggestion buttons based on device type (phone/tablet)
