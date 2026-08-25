@@ -88,7 +88,14 @@ object RatingHelper {
                             .launchReviewFlow(activity, reviewInfo)
                             .addOnCompleteListener { }
                     } else {
-                        Toast.makeText(context, "Failed to launch review flow", Toast.LENGTH_SHORT).show()
+                        val url = "https://play.google.com/store/apps/details?id=${context.packageName}"
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        try {
+                            context.startActivity(intent)
+                        } catch (e: ActivityNotFoundException) {
+                            Toast.makeText(context, "No browser found to open Play Store page", Toast.LENGTH_SHORT).show()
+                            Log.e("RatingHelper", "Unable to open Play Store link", e)
+                        }
                     }
                 }
             }
