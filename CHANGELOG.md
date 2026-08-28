@@ -94,4 +94,6 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 ### ♻️ Code Refactoring
 
 - Code quality improvements were continuously done to assure that the application is easy to maintain and meets Kotlin standards ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
+- `CommandHandler` was extracted from `GeneralKeyboardIME` to encapsulate command execution, Enter key dispatching, and lookup state machine logic ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
 - Introduced `KeyboardIMEContext` interface contract to decouple handler dependencies from the concrete `GeneralKeyboardIME` class ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
+

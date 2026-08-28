@@ -14,7 +14,6 @@ import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
-import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
@@ -32,6 +31,7 @@ import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
 import be.scri.helpers.AutocompletionHandler
 import be.scri.helpers.BackspaceHandler
+import be.scri.helpers.CommandHandler
 import be.scri.helpers.DatabaseManagers
 import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.FloatingKeyboardHandler
@@ -55,7 +55,6 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.clipboard.ClipboardHandler
 import be.scri.helpers.data.AutocompletionDataManager
-import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.recordRecentEmoji
 import be.scri.helpers.ui.KeyboardThemeManager
 import be.scri.helpers.ui.KeyboardUIManager
@@ -167,6 +166,7 @@ abstract class GeneralKeyboardIME(
     override lateinit var autocompletionHandler: AutocompletionHandler
     internal lateinit var keyHandler: KeyHandler
     internal val floatingKeyboardHandler by lazy { FloatingKeyboardHandler(this) }
+    internal val commandHandler by lazy { CommandHandler(this) }
 
     internal var dataContract: DataContract?
         get() = dataHandler.dataContract
@@ -182,13 +182,13 @@ abstract class GeneralKeyboardIME(
             dataHandler.emojiKeywords = value
         }
 
-    private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
+    internal var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
         get() = dataHandler.conjugateOutput
         set(value) {
             dataHandler.conjugateOutput = value
         }
 
-    private var conjugateLabels: Set<String>
+    internal var conjugateLabels: Set<String>
         get() = dataHandler.conjugateLabels
         set(value) {
             dataHandler.conjugateLabels = value
@@ -264,7 +264,7 @@ abstract class GeneralKeyboardIME(
 
     // MARK: Conjugation State
 
-    private var currentVerbForConjugation: String? = null
+    internal var currentVerbForConjugation: String? = null
     private var selectedConjugationSubCategory: String? = null
 
     protected open fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
@@ -680,7 +680,7 @@ abstract class GeneralKeyboardIME(
      */
     override fun updateUI() = refreshUI()
 
-    private fun refreshUI() {
+    internal fun refreshUI() {
         if (!this::uiManager.isInitialized) return
 
         uiManager.updateUI(
@@ -838,156 +838,19 @@ abstract class GeneralKeyboardIME(
     // MARK: Input Logic
 
     /**
-     * Handles the logic for the Enter key press. This can either perform an editor action,
-     * commit a newline, or execute a Scribe command depending on the current state.
+     * Handles the logic for the Enter key press.
+     * Delegated to [CommandHandler].
      */
-    override fun handleKeycodeEnter() {
-        val inputConnection = currentInputConnection ?: return
-
-        if (currentState == ScribeState.INVALID || currentState == ScribeState.ALREADY_PLURAL) {
-            moveToIdleState()
-            return
-        }
-
-        if (currentState == ScribeState.IDLE || currentState == ScribeState.SELECT_COMMAND) {
-            handleDefaultEnter(inputConnection)
-            return
-        }
-
-        val rawInput = uiManager.getCommandBarTextWithoutCursor().trim().takeIf { it.isNotEmpty() }
-
-        if (rawInput == null) {
-            moveToIdleState()
-        } else {
-            when (currentState) {
-                ScribeState.PLURAL, ScribeState.TRANSLATE -> handlePluralOrTranslateState(rawInput, inputConnection)
-                ScribeState.CONJUGATE -> handleConjugateState(rawInput)
-                else -> handleDefaultEnter(inputConnection)
-            }
-        }
-    }
-
-    /**
-     * Handles the Enter key press when in the plural or translate state.
-     *
-     * @param rawInput The text from the command bar.
-     * @param inputConnection The current input connection.
-     */
-    private fun handlePluralOrTranslateState(
-        rawInput: String,
-        inputConnection: InputConnection,
-    ) {
-        val isAllCaps = rawInput.isNotEmpty() && rawInput.all { !it.isLetter() || it.isUpperCase() }
-
-        val commandModeOutput =
-            when (currentState) {
-                ScribeState.PLURAL -> {
-                    when (val pluralResult = getPluralRepresentation(rawInput)) {
-                        ALREADY_PLURAL_MSG -> {
-                            currentState = ScribeState.ALREADY_PLURAL
-                            refreshUI()
-                            return
-                        }
-
-                        null -> ""
-                        else -> if (isAllCaps) pluralResult.uppercase() else pluralResult
-                    }
-                }
-
-                ScribeState.TRANSLATE -> {
-                    val translation = getTranslation(language, rawInput)
-                    if (isAllCaps) translation.uppercase() else translation
-                }
-
-                else -> ""
-            }
-
-        if (commandModeOutput.isEmpty()) {
-            stateManager.setInvalidState(currentState)
-            refreshUI()
-        } else {
-            applyCommandOutput(commandModeOutput, inputConnection)
-        }
-    }
-
-    /**
-     * Handles the Enter key press when in the `CONJUGATE` state. It fetches the
-     * conjugation data for the entered verb and transitions to the selection view.
-     *
-     * @param rawInput The verb entered in the command bar.
-     */
-    private fun handleConjugateState(rawInput: String) {
-        val searchInput = rawInput.lowercase()
-        currentVerbForConjugation = rawInput
-        val languageAlias = getLanguageAlias(language)
-
-        val tempOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, searchInput)
-
-        val isAllCaps = rawInput.isNotEmpty() && rawInput.all { !it.isLetter() || it.isUpperCase() }
-        val isCapitalized = !isAllCaps && rawInput.firstOrNull()?.isUpperCase() == true
-
-        conjugateOutput =
-            if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
-                null
-            } else if ((isAllCaps || isCapitalized) && tempOutput != null) {
-                applyCapitalizationToConjugations(tempOutput, isAllCaps)
-            } else {
-                tempOutput
-            }
-
-        conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, searchInput)
-
-        if (conjugateOutput == null) {
-            stateManager.setInvalidState(ScribeState.CONJUGATE)
-        } else {
-            saveConjugateModeType(language)
-            stateManager.moveToState(ScribeState.SELECT_VERB_CONJUNCTION)
-        }
-        refreshUI()
-    }
-
-    /**
-     * Handles the default behavior of the Enter key when not in a special Scribe command mode.
-     *
-     * It performs the editor action or sends a standard Enter key event.
-     *
-     * @param inputConnection The current input connection.
-     */
-    private fun handleDefaultEnter(inputConnection: InputConnection) {
-        val wordBeforeEnter = getLastWordBeforeCursor()
-        val imeOptionsActionId = getImeOptionsActionId()
-        if (imeOptionsActionId != IME_ACTION_NONE) {
-            inputConnection.performEditorAction(imeOptionsActionId)
-        } else {
-            inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
-            inputConnection.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
-        }
-        moveToIdleState()
-        if (!wordBeforeEnter.isNullOrEmpty()) {
-            suggestionHandler.processLinguisticSuggestions(wordBeforeEnter)
-        } else {
-            suggestionHandler.clearAllSuggestionsAndHideButtonUI()
-        }
-    }
+    override fun handleKeycodeEnter() = commandHandler.handleKeycodeEnter()
 
     /**
      * Commits the output of a Scribe command (like translation or pluralization) to the input field.
-     *
-     * @param commandModeOutput The string result of the command.
-     * @param inputConnection The current input connection.
+     * Delegated to [CommandHandler].
      */
-    private fun applyCommandOutput(
+    fun applyCommandOutput(
         commandModeOutput: String,
         inputConnection: InputConnection,
-    ) {
-        if (commandModeOutput.isNotEmpty()) {
-            val output = if (!commandModeOutput.endsWith(" ")) "$commandModeOutput " else commandModeOutput
-            inputConnection.commitText(output, COMMIT_TEXT_CURSOR_POSITION)
-            suggestionHandler.processLinguisticSuggestions(output.trim())
-        }
-        uiManager.binding.commandBar.setText("")
-        moveToIdleState()
-    }
+    ) = commandHandler.applyCommandOutput(commandModeOutput, inputConnection)
 
     /**
      * Handles the input of any non-special character key (e.g., letters, numbers, punctuation).
@@ -1170,7 +1033,8 @@ abstract class GeneralKeyboardIME(
      *
      * @return The IME action ID, or `IME_ACTION_NONE`.
      */
-    private fun getImeOptionsActionId(): Int =
+    internal fun getImeOptionsActionId(): Int =
+
         if (currentInputEditorInfo.imeOptions and IME_FLAG_NO_ENTER_ACTION != 0) {
             IME_ACTION_NONE
         } else {
@@ -1184,31 +1048,25 @@ abstract class GeneralKeyboardIME(
      *
      * @return The plural form as a string, or null if not found.
      */
-    private fun getPluralRepresentation(word: String?): String? = dataHandler.getPluralRepresentation(language, word)
+    internal fun getPluralRepresentation(word: String?): String? = dataHandler.getPluralRepresentation(language, word)
 
     /**
-     * Retrieves the translation for a given word.
+     * Retrieves the translation of a word or phrase from the database.
      *
-     * @param language The current keyboard language (destination language).
-     * @param commandBarInput The word to be translated (source word).
+     * @param language The target language code.
+     * @param commandBarInput The input text to translate.
      *
-     * @return The translated word as a string.
+     * @return The translated text.
      */
-    private fun getTranslation(
+    internal fun getTranslation(
         language: String,
         commandBarInput: String,
     ): String = dataHandler.getTranslation(language, commandBarInput)
 
     /**
-     * Applies capitalization to all conjugated forms in the output map.
-     * Supports both standard capitalization (first letter) and all capital letters formatting.
-     *
-     * @param conjugations The original map of conjugations from the database.
-     * @param isAllCaps If true, applies all capital letters; if false, capitalizes only first letter.
-     *
      * @return A new map with properly formatted conjugations.
      */
-    private fun applyCapitalizationToConjugations(
+    internal fun applyCapitalizationToConjugations(
         conjugations: MutableMap<String, MutableMap<String, Collection<String>>>,
         isAllCaps: Boolean = false,
     ): MutableMap<String, MutableMap<String, Collection<String>>> {
