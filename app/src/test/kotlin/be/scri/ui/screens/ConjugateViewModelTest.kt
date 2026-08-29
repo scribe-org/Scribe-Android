@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -97,5 +98,59 @@ class ConjugateViewModelTest {
         assertEquals(2, list.size)
         assertEquals(ConjugateSearchResult("essere", "IT"), list[0])
         assertEquals(ConjugateSearchResult("parler", "FR"), list[1])
+    }
+
+    @Test
+    fun getDownloadedLanguages_AllDatabasesExist_ReturnsAllEightAliasesInExpectedOrder() {
+        // Arrange
+        val expectedAliases = listOf("EN", "FR", "DE", "IT", "PT", "RU", "ES", "SV")
+        every { application.getDatabasePath(any()) } answers {
+            val file = mockk<File>()
+            every { file.exists() } returns true
+            file
+        }
+        val viewModel = ConjugateViewModel(application)
+
+        // Act
+        val actualLanguages = viewModel.getDownloadedLanguages()
+
+        // Assert
+        assertEquals(expectedAliases, actualLanguages)
+        assertEquals(8, actualLanguages.size)
+    }
+
+    @Test
+    fun getDownloadedLanguages_PartialDatabasesExist_ReturnsMatchingAliases() {
+        // Arrange
+        every { application.getDatabasePath(any()) } answers {
+            val dbName = firstArg<String>()
+            val file = mockk<File>()
+            every { file.exists() } returns (dbName == "ENConjugateData.sqlite" || dbName == "ESConjugateData.sqlite")
+            file
+        }
+        val viewModel = ConjugateViewModel(application)
+
+        // Act
+        val actualLanguages = viewModel.getDownloadedLanguages()
+
+        // Assert
+        assertEquals(listOf("EN", "ES"), actualLanguages)
+    }
+
+    @Test
+    fun getDownloadedLanguages_NoDatabasesExist_ReturnsEmptyList() {
+        // Arrange
+        every { application.getDatabasePath(any()) } answers {
+            val file = mockk<File>()
+            every { file.exists() } returns false
+            file
+        }
+        val viewModel = ConjugateViewModel(application)
+
+        // Act
+        val actualLanguages = viewModel.getDownloadedLanguages()
+
+        // Assert
+        assertTrue(actualLanguages.isEmpty())
     }
 }

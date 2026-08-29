@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import be.scri.helpers.DatabaseFileManager
 import be.scri.helpers.data.getInfinitiveColumnName
 import be.scri.helpers.data.tableExists
+import be.scri.models.ScribeLanguage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -68,7 +69,7 @@ class ConjugateViewModel(
      * Returns a list of language aliases that have been downloaded (i.e. conjugate database exists).
      */
     fun getDownloadedLanguages(): List<String> {
-        val aliases = listOf("EN", "FR", "DE", "IT", "PT", "RU", "ES", "SV")
+        val aliases = ScribeLanguage.entries.map { it.isoCode }
         return aliases.filter { alias ->
             val dbName = "${alias}ConjugateData.sqlite"
             getApplication<Application>().getDatabasePath(dbName).exists()
@@ -115,7 +116,7 @@ class ConjugateViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val results = mutableListOf<ConjugateSearchResult>()
             val fileManager = DatabaseFileManager(getApplication())
-            val aliases = listOf("EN", "FR", "DE", "IT", "PT", "RU", "ES", "SV")
+            val aliases = ScribeLanguage.entries.map { it.isoCode }
 
             for (alias in aliases) {
                 val db = fileManager.getConjugateDatabase(alias) ?: continue
