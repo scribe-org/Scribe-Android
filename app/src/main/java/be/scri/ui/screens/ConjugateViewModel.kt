@@ -36,6 +36,10 @@ data class ConjugateSearchResult(
 class ConjugateViewModel(
     application: Application,
 ) : AndroidViewModel(application) {
+    companion object {
+        private val SUPPORTED_ALIASES = ScribeLanguage.entries.map { it.isoCode }
+    }
+
     private val prefs = application.getSharedPreferences("scribe_conjugate_search_prefs", Context.MODE_PRIVATE)
 
     private val _searchQuery = MutableStateFlow("")
@@ -68,13 +72,11 @@ class ConjugateViewModel(
     /**
      * Returns a list of language aliases that have been downloaded (i.e. conjugate database exists).
      */
-    fun getDownloadedLanguages(): List<String> {
-        val aliases = ScribeLanguage.entries.map { it.isoCode }
-        return aliases.filter { alias ->
+    fun getDownloadedLanguages(): List<String> =
+        SUPPORTED_ALIASES.filter { alias ->
             val dbName = "${alias}ConjugateData.sqlite"
             getApplication<Application>().getDatabasePath(dbName).exists()
         }
-    }
 
     /**
      * Formats the list of downloaded languages into a user-friendly display string.
@@ -116,9 +118,8 @@ class ConjugateViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val results = mutableListOf<ConjugateSearchResult>()
             val fileManager = DatabaseFileManager(getApplication())
-            val aliases = ScribeLanguage.entries.map { it.isoCode }
 
-            for (alias in aliases) {
+            for (alias in SUPPORTED_ALIASES) {
                 val db = fileManager.getConjugateDatabase(alias) ?: continue
 
                 try {

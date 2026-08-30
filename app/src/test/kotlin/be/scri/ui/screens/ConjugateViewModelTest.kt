@@ -153,4 +153,83 @@ class ConjugateViewModelTest {
         // Assert
         assertTrue(actualLanguages.isEmpty())
     }
+
+    @Test
+    fun getDownloadedLanguages_UnrecognizedDatabasesPresent_OnlyReturnsSupportedAliases() {
+        // Arrange
+        every { application.getDatabasePath(any()) } answers {
+            val dbName = firstArg<String>()
+            val file = mockk<File>()
+            every { file.exists() } returns (
+                dbName == "ENConjugateData.sqlite" ||
+                    dbName == "XYZConjugateData.sqlite" ||
+                    dbName == "UNKNOWNConjugateData.sqlite"
+            )
+            file
+        }
+        val viewModel = ConjugateViewModel(application)
+
+        // Act
+        val actualLanguages = viewModel.getDownloadedLanguages()
+
+        // Assert
+        assertEquals(listOf("EN"), actualLanguages)
+    }
+
+    @Test
+    fun getDownloadedLanguagesFormatted_FormatsCorrectlyForVariousCounts() {
+        // Arrange
+        val viewModel = ConjugateViewModel(application)
+
+        // 0 languages
+        every { application.getDatabasePath(any()) } answers {
+            val file = mockk<File>()
+            every { file.exists() } returns false
+            file
+        }
+        assertEquals("", viewModel.getDownloadedLanguagesFormatted())
+
+        // 1 language
+        every { application.getDatabasePath(any()) } answers {
+            val dbName = firstArg<String>()
+            val file = mockk<File>()
+            every { file.exists() } returns (dbName == "ENConjugateData.sqlite")
+            file
+        }
+        assertEquals("English", viewModel.getDownloadedLanguagesFormatted())
+
+        // 2 languages
+        every { application.getDatabasePath(any()) } answers {
+            val dbName = firstArg<String>()
+            val file = mockk<File>()
+            every { file.exists() } returns (dbName == "ENConjugateData.sqlite" || dbName == "FRConjugateData.sqlite")
+            file
+        }
+        assertEquals("English and Français", viewModel.getDownloadedLanguagesFormatted())
+
+        // 3 languages
+        every { application.getDatabasePath(any()) } answers {
+            val dbName = firstArg<String>()
+            val file = mockk<File>()
+            every { file.exists() } returns (
+                dbName == "ENConjugateData.sqlite" ||
+                    dbName == "FRConjugateData.sqlite" ||
+                    dbName == "DEConjugateData.sqlite"
+            )
+            file
+        }
+        assertEquals("English, Français and Deutsch", viewModel.getDownloadedLanguagesFormatted())
+    }
+
+    @Test
+    fun testLoadRecentlyConjugatedWithUnrecognizedLanguageAlias() {
+        every { sharedPreferences.getString("recently_conjugated_list", null) } returns "parler,XYZ;mangiare,INVALID_ALIAS;speak,EN"
+
+        val testViewModel = ConjugateViewModel(application)
+        val list = testViewModel.recentlyConjugated.value
+        assertEquals(3, list.size)
+        assertEquals(ConjugateSearchResult("parler", "XYZ"), list[0])
+        assertEquals(ConjugateSearchResult("mangiare", "INVALID_ALIAS"), list[1])
+        assertEquals(ConjugateSearchResult("speak", "EN"), list[2])
+    }
 }
