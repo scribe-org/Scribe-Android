@@ -12,7 +12,6 @@ import be.scri.models.ScribeLanguage
  * The GreekKeyboardIME class provides the input method for the Greek language keyboard.
  */
 class GreekKeyboardIME : GeneralKeyboardIME(ScribeLanguage.GREEK) {
-
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_greek_tablet
