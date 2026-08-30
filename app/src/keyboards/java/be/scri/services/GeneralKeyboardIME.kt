@@ -3,24 +3,15 @@
 package be.scri.services
 
 import DataContract
-import android.R.color.white
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.database.sqlite.SQLiteException
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.RippleDrawable
 import android.inputmethodservice.InputMethodService
-import android.os.Build
 import android.text.InputType
 import android.text.InputType.TYPE_CLASS_DATETIME
 import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -31,14 +22,7 @@ import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.toColorInt
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.InputMethodViewBinding
@@ -51,13 +35,13 @@ import be.scri.helpers.EmojiUtils.insertEmoji
 import be.scri.helpers.FloatingKeyboardHandler
 import be.scri.helpers.KeyHandler
 import be.scri.helpers.KeyboardBase
+import be.scri.helpers.KeyboardDataHandler
 import be.scri.helpers.KeyboardLanguageMappingConstants
 import be.scri.helpers.KeyboardStateManager
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getHoldKeyStyle
-import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.PreferencesHelper.getIsEmojiSuggestionsEnabled
 import be.scri.helpers.PreferencesHelper.getIsSoundEnabled
 import be.scri.helpers.PreferencesHelper.getIsVibrateEnabled
@@ -69,6 +53,8 @@ import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.clipboard.ClipboardHandler
 import be.scri.helpers.data.AutocompletionDataManager
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.helpers.recordRecentEmoji
+import be.scri.helpers.ui.KeyboardThemeManager
 import be.scri.helpers.ui.KeyboardUIManager
 import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
@@ -155,30 +141,77 @@ abstract class GeneralKeyboardIME(
 
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
 
-    private lateinit var dbManagers: DatabaseManagers
+    internal val dataHandler = KeyboardDataHandler()
+
+    internal val dbManagers: DatabaseManagers
+        get() = dataHandler.dbManagers
+
+    internal val autocompletionManager: AutocompletionDataManager
+        get() = dataHandler.autocompletionManager
+
     private lateinit var nativeSuggestionEngine: NativeSuggestionEngine
     internal lateinit var suggestionHandler: SuggestionHandler
     internal lateinit var autocompletionHandler: AutocompletionHandler
-    private lateinit var autocompletionManager: AutocompletionDataManager
     internal lateinit var keyHandler: KeyHandler
     internal val floatingKeyboardHandler by lazy { FloatingKeyboardHandler(this) }
-    private var dataContract: DataContract? = null
+
+    internal var dataContract: DataContract?
+        get() = dataHandler.dataContract
+        set(value) {
+            dataHandler.dataContract = value
+        }
 
     internal val isUiManagerInitialized: Boolean get() = this::uiManager.isInitialized
 
     internal fun recreateKeyboardPublic() = recreateKeyboard()
 
-    internal fun applyNavBarColorPublic() = applyNavBarColor()
+    var emojiKeywords: HashMap<String, MutableList<String>>?
+        get() = dataHandler.emojiKeywords
+        set(value) {
+            dataHandler.emojiKeywords = value
+        }
 
-    var emojiKeywords: HashMap<String, MutableList<String>>? = null
-    private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
-    private var conjugateLabels: Set<String> = emptySet()
+    private var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
+        get() = dataHandler.conjugateOutput
+        set(value) {
+            dataHandler.conjugateOutput = value
+        }
 
-    private var emojiMaxKeywordLength: Int = 0
-    internal lateinit var nounKeywords: HashMap<String, List<String>>
-    internal lateinit var suggestionWords: HashMap<String, List<String>>
-    var pluralWords: Set<String>? = null
-    internal lateinit var caseAnnotation: HashMap<String, MutableList<String>>
+    private var conjugateLabels: Set<String>
+        get() = dataHandler.conjugateLabels
+        set(value) {
+            dataHandler.conjugateLabels = value
+        }
+
+    private var emojiMaxKeywordLength: Int
+        get() = dataHandler.emojiMaxKeywordLength
+        set(value) {
+            dataHandler.emojiMaxKeywordLength = value
+        }
+
+    internal var nounKeywords: HashMap<String, List<String>>
+        get() = dataHandler.nounKeywords
+        set(value) {
+            dataHandler.nounKeywords = value
+        }
+
+    internal var suggestionWords: HashMap<String, List<String>>
+        get() = dataHandler.suggestionWords
+        set(value) {
+            dataHandler.suggestionWords = value
+        }
+
+    var pluralWords: Set<String>?
+        get() = dataHandler.pluralWords
+        set(value) {
+            dataHandler.pluralWords = value
+        }
+
+    internal var caseAnnotation: HashMap<String, MutableList<String>>
+        get() = dataHandler.caseAnnotation
+        set(value) {
+            dataHandler.caseAnnotation = value
+        }
 
     var emojiAutoSuggestionEnabled: Boolean = false
     var lastWord: String? = null
@@ -191,6 +224,7 @@ abstract class GeneralKeyboardIME(
     private var isNumericKeyboardActive: Boolean = false
 
     internal val stateManager = KeyboardStateManager()
+    internal val themeManager = KeyboardThemeManager()
 
     internal var currentState: ScribeState
         get() = stateManager.currentState
@@ -260,10 +294,9 @@ abstract class GeneralKeyboardIME(
      */
     override fun onCreate() {
         super.onCreate()
-        dbManagers = DatabaseManagers(this)
+        dataHandler.initialize(this)
         nativeSuggestionEngine = NativeSuggestionEngine(this)
         suggestionHandler = SuggestionHandler(this)
-        autocompletionManager = dbManagers.autocompletionManager
         autocompletionHandler = AutocompletionHandler(this)
         keyHandler = KeyHandler(this)
         clipboardHandler.initClipboardMonitor()
@@ -453,42 +486,11 @@ abstract class GeneralKeyboardIME(
             if (hasData) View.GONE else View.VISIBLE
         binding.commandOptionsBar.visibility =
             if (hasData && !isNumericKeyboardActive) View.VISIBLE else View.GONE
-        val isDarkMode = getIsDarkModeOrNot(applicationContext)
-        val bannerColor =
-            if (isDarkMode) R.color.dark_tutorial_button_color else R.color.light_tutorial_button_color
-        val bannerTextColor =
-            if (isDarkMode) R.color.dark_button_outline_color else R.color.light_text_color
-        banner.setTextColor(ContextCompat.getColor(applicationContext, bannerTextColor))
-        banner.post {
-            val iconColor = ContextCompat.getColor(applicationContext, bannerTextColor)
-            banner.compoundDrawables.forEach { drawable ->
-                drawable?.setTint(iconColor)
-            }
-        }
-        val border = GradientDrawable()
-        border.cornerRadius = 12f * resources.displayMetrics.density
-        border.setColor(ContextCompat.getColor(applicationContext, bannerColor))
-
-        if (isDarkMode) {
-            border.setStroke(
-                (1.5f * resources.displayMetrics.density).toInt(),
-                ContextCompat.getColor(applicationContext, bannerTextColor),
-            )
-        }
-
-        val rippleColor =
-            ColorUtils.setAlphaComponent(
-                ContextCompat.getColor(applicationContext, bannerTextColor),
-                51,
-            )
-        val rippleDrawable =
-            RippleDrawable(ColorStateList.valueOf(rippleColor), border, null)
-
-        bannerContainer.background = rippleDrawable
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            bannerContainer.outlineAmbientShadowColor = Color.TRANSPARENT
-            bannerContainer.outlineSpotShadowColor = Color.TRANSPARENT
-        }
+        themeManager.applyBannerTheme(
+            context = applicationContext,
+            banner = banner,
+            bannerContainer = bannerContainer,
+        )
 
         bannerContainer.setOnClickListener {
             val intent =
@@ -622,98 +624,16 @@ abstract class GeneralKeyboardIME(
     }
 
     private fun loadLanguageData() {
-        val languageAlias = getLanguageAlias(language)
-        dataContract = dbManagers.getLanguageContract(languageAlias)
-        emojiKeywords = dbManagers.emojiManager.getEmojiKeywords(languageAlias)
-        emojiMaxKeywordLength = dbManagers.emojiManager.maxKeywordLength
-        pluralWords =
-            dbManagers.pluralManager
-                .getAllPluralForms(languageAlias, dataContract)
-                ?.map { it.lowercase() }
-                ?.toSet()
-        nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
-        suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
-        val numbersColumns =
-            dataContract?.numbers?.let { map ->
-                (map.keys + map.values).distinct()
-            } ?: emptyList()
-        autocompletionManager.loadWords(languageAlias, numbersColumns)
-        caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
-
-        val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
-        conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
-        conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
+        dataHandler.loadLanguageData(language)
     }
 
-    private fun isLightColor(color: Int): Boolean {
-        val darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255
-        return darkness < 0.5
-    }
-
-    private fun applyNavBarColor() {
-        val window = window?.window ?: return
-        window.decorView.post {
-            val isDarkMode = getIsDarkModeOrNot(applicationContext)
-            val colorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
-            val color = ContextCompat.getColor(this, colorRes)
-
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-            if (Build.VERSION.SDK_INT < 35) {
-                window.navigationBarColor = Color.TRANSPARENT
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                window.isNavigationBarContrastEnforced = false
-            }
-
-            if (isFloatingMode) {
-                window.decorView.setBackgroundColor(Color.TRANSPARENT)
-            } else {
-                window.decorView.setBackgroundColor(color)
-            }
-            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-            insetsController.isAppearanceLightNavigationBars = isLightColor(color)
-
-            if (isFloatingMode) {
-                insetsController.hide(WindowInsetsCompat.Type.navigationBars())
-                insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                @Suppress("DEPRECATION")
-                window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                )
-            } else {
-                insetsController.show(WindowInsetsCompat.Type.navigationBars())
-                @Suppress("DEPRECATION")
-                window.decorView.systemUiVisibility = 0
-            }
-
-            if (this::uiManager.isInitialized) {
-                if (isFloatingMode) {
-                    uiManager.binding.root.setBackgroundColor(Color.TRANSPARENT)
-                    // Keep drag bar and pill color in sync with dark/light mode changes
-                    val kbBgColor = ContextCompat.getColor(this, if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color)
-                    uiManager.binding.floatingDragBar.setBackgroundColor(kbBgColor)
-                    // Pill: dark mode → 30% white, light mode → 25% black
-                    val pillColor = if (isDarkMode) 0x4DFFFFFF.toInt() else 0x40000000.toInt()
-                    uiManager.binding.floatingDragHandle.setColorFilter(pillColor)
-                } else {
-                    uiManager.binding.root.setBackgroundColor(color)
-                }
-
-                ViewCompat.setOnApplyWindowInsetsListener(uiManager.binding.root) { view, insets ->
-                    val insetTypes = WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-                    val navBarHeight = insets.getInsets(insetTypes).bottom
-                    val paddingBottom = if (isFloatingMode) 0 else navBarHeight
-                    view.setPadding(0, 0, 0, paddingBottom)
-                    insets
-                }
-
-                uiManager.binding.root.post {
-                    ViewCompat.requestApplyInsets(uiManager.binding.root)
-                }
-            }
-        }
+    internal fun applyNavBarColor() {
+        themeManager.applyNavBarColor(
+            service = this,
+            window = window?.window,
+            isFloatingMode = isFloatingMode,
+            uiManager = if (this::uiManager.isInitialized) uiManager else null,
+        )
     }
 
     /**
@@ -827,6 +747,7 @@ abstract class GeneralKeyboardIME(
 
     override fun onEmojiSelected(emoji: String) {
         if (emoji.isNotEmpty()) {
+            recordRecentEmoji(this, emoji)
             insertEmoji(emoji, currentInputConnection, emojiKeywords, emojiMaxKeywordLength)
         }
     }
@@ -1163,23 +1084,16 @@ abstract class GeneralKeyboardIME(
      */
     fun getAutocompletions(
         prefix: String,
+        previousWord: String? = null,
         limit: Int = 3,
     ): List<String> {
         if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, limit)
+            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, prefix, previousWord, limit)
             if (nativeCompletions.isNotEmpty()) {
-                return nativeCompletions
+                return nativeCompletions.map { it.substringBefore("-") }
             }
         }
-        return try {
-            dbManagers.autocompletionManager.getAutocompletions(prefix, limit)
-        } catch (e: SQLiteException) {
-            Log.e("GeneralKeyboardIME", "Database error in autocompletion", e)
-            emptyList()
-        } catch (e: IllegalStateException) {
-            Log.e("GeneralKeyboardIME", "Illegal state in autocompletion", e)
-            emptyList()
-        }
+        return dataHandler.getAutocompletions(prefix, limit)
     }
 
     /**
@@ -1206,6 +1120,18 @@ abstract class GeneralKeyboardIME(
      * @return The last word as a [String], or null if no word is found.
      */
     fun getLastWordBeforeCursor(): String? = getText()?.trim()?.split("\\s+".toRegex())?.lastOrNull()
+
+    /**
+     * Extracts the word immediately before the one currently being composed, i.e. the last
+     * completed word preceding the in-progress word at the cursor. Used to give the autocomplete
+     * engine sentence context so it can bias completions instead of scoring the prefix in isolation.
+     *
+     * @return The previous completed word as a [String], or null if there isn't one.
+     */
+    fun getPreviousWordBeforeCursor(): String? {
+        val words = getText()?.trim()?.split("\\s+".toRegex()) ?: return null
+        return words.getOrNull(words.size - 2)
+    }
 
     /**
      * Retrieves the text immediately preceding the cursor.
@@ -1235,16 +1161,7 @@ abstract class GeneralKeyboardIME(
      *
      * @return The plural form as a string, or null if not found.
      */
-    private fun getPluralRepresentation(word: String?): String? {
-        if (word.isNullOrEmpty()) return null
-        val langAlias = getLanguageAlias(language)
-        val lowercaseWord = word.lowercase()
-        if (pluralWords?.contains(lowercaseWord) == true) return ALREADY_PLURAL_MSG
-        return dbManagers.pluralManager
-            .getPluralRepresentation(langAlias, dataContract, word)
-            .values
-            .firstOrNull()
-    }
+    private fun getPluralRepresentation(word: String?): String? = dataHandler.getPluralRepresentation(language, word)
 
     /**
      * Retrieves the translation for a given word.
@@ -1257,10 +1174,7 @@ abstract class GeneralKeyboardIME(
     private fun getTranslation(
         language: String,
         commandBarInput: String,
-    ): String {
-        val sourceDest = dbManagers.translationDataManager.getSourceAndDestinationLanguage(language)
-        return dbManagers.translationDataManager.getTranslationDataForAWord(sourceDest, commandBarInput)
-    }
+    ): String = dataHandler.getTranslation(language, commandBarInput)
 
     /**
      * Applies capitalization to all conjugated forms in the output map.
@@ -1454,10 +1368,10 @@ abstract class GeneralKeyboardIME(
         if (this::nativeSuggestionEngine.isInitialized) {
             val nativeSuggestions = nativeSuggestionEngine.getNextWordSuggestions(language, lastWord)
             if (nativeSuggestions.isNotEmpty()) {
-                return nativeSuggestions
+                return nativeSuggestions.map { it.substringBefore("-") }
             }
         }
-        return wordSuggestions[lastWord.lowercase()]
+        return wordSuggestions[lastWord.lowercase()]?.map { it.substringBefore("-") }
     }
 
     /**
@@ -1539,16 +1453,13 @@ abstract class GeneralKeyboardIME(
         if (isPlural) {
             uiManager.genderSuggestionLeft?.visibility = View.INVISIBLE
             uiManager.genderSuggestionRight?.visibility = View.INVISIBLE
-            uiManager.binding.translateBtn.apply {
-                visibility = View.VISIBLE
-                text = "PL"
-                textSize = NOUN_TYPE_SIZE
-                background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.annotateOrange)
-                setTextColor(ContextCompat.getColor(context, white))
-                isClickable = false
-                setOnClickListener(null)
-            }
+            themeManager.applySingleSuggestionStyle(
+                context = applicationContext,
+                button = uiManager.binding.translateBtn,
+                colorRes = R.color.annotateOrange,
+                buttonText = "PL",
+                textSizeSp = NOUN_TYPE_SIZE,
+            )
             return true
         }
         return false
@@ -1654,25 +1565,14 @@ abstract class GeneralKeyboardIME(
 
         uiManager.genderSuggestionLeft?.visibility = View.INVISIBLE
         uiManager.genderSuggestionRight?.visibility = View.INVISIBLE
-        uiManager.binding.translateBtn.textSize = NOUN_TYPE_SIZE
 
-        uiManager.binding.translateBtn.apply {
-            visibility = View.VISIBLE
-            text = buttonText
-            isClickable = false
-            setOnClickListener(null)
-
-            if (colorRes != R.color.transparent) {
-                background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
-                backgroundTintList = ContextCompat.getColorStateList(context, colorRes)
-                setTextColor(ContextCompat.getColor(context, white))
-            } else {
-                background = null
-                val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.transparent)
-                setTextColor(ContextCompat.getColor(context, if (isUserDarkMode) white else android.R.color.black))
-            }
-        }
+        themeManager.applySingleSuggestionStyle(
+            context = applicationContext,
+            button = uiManager.binding.translateBtn,
+            colorRes = colorRes,
+            buttonText = buttonText,
+            textSizeSp = NOUN_TYPE_SIZE,
+        )
     }
 
     /**
@@ -1689,31 +1589,13 @@ abstract class GeneralKeyboardIME(
         text: String,
         backgroundRes: Int,
     ) {
-        button.text = text
-        button.setTextColor(ContextCompat.getColor(applicationContext, be.scri.R.color.white))
-        button.isClickable = false
-        button.setOnClickListener(null)
-
-        val background = ContextCompat.getDrawable(applicationContext, backgroundRes)?.mutate()
-
-        if (background is RippleDrawable) {
-            val contentDrawable = background.getDrawable(0)
-
-            if (contentDrawable is LayerDrawable) {
-                val shapeDrawable =
-                    contentDrawable.findDrawableByLayerId(
-                        be.scri.R.id.button_background_shape,
-                    ) as? GradientDrawable
-
-                shapeDrawable?.setColor(
-                    ContextCompat.getColor(
-                        applicationContext,
-                        colorRes,
-                    ),
-                )
-            }
-        }
-        button.background = background
+        themeManager.applyInformativeSuggestionStyle(
+            context = applicationContext,
+            button = button,
+            colorRes = colorRes,
+            text = text,
+            backgroundRes = backgroundRes,
+        )
     }
 
     /**
@@ -1864,8 +1746,6 @@ abstract class GeneralKeyboardIME(
         button: Button,
         text: String,
     ) {
-        val isUserDarkMode = getIsDarkModeOrNot(applicationContext)
-        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
         button.text = text
         button.isAllCaps = false
         button.visibility = View.VISIBLE
@@ -1873,7 +1753,7 @@ abstract class GeneralKeyboardIME(
         button.setOnClickListener(null)
         button.background = null
         button.foreground = null
-        button.setTextColor(textColor)
+        button.setTextColor(themeManager.getSuggestionTextColor(applicationContext))
         button.setOnClickListener {
             currentInputConnection?.commitText("$text ", 1)
             moveToIdleState()
@@ -1883,15 +1763,13 @@ abstract class GeneralKeyboardIME(
     // MARK: Autocomplete
 
     /**
-     * Updates autocomplete UI with a new list of suggestions.
-     * Clears it if not idle or no completions.
+     * Pins the word currently being typed into the first (leftmost) suggestion
+     * slot, quoted like most mobile keyboards do to mark it as "what you typed"
+     * rather than a dictionary suggestion. Called immediately on every keystroke
+     * — unlike the completions, it needs no lookup, so it should never lag.
      */
-    fun updateAutocompleteSuggestions(completions: List<String>?) {
-        if (currentState != ScribeState.IDLE) {
-            uiManager.disableAutoSuggest(language)
-            return
-        }
-        if (completions.isNullOrEmpty()) {
+    fun updateTypedWordSuggestion(word: String?) {
+        if (currentState != ScribeState.IDLE || word.isNullOrEmpty()) {
             uiManager.disableAutoSuggest(language)
             if (!autoSuggestEmojis.isNullOrEmpty() && emojiAutoSuggestionEnabled) {
                 updateEmojiSuggestion(true, autoSuggestEmojis)
@@ -1900,16 +1778,45 @@ abstract class GeneralKeyboardIME(
             return
         }
 
-        val completion1 = completions.getOrNull(0) ?: ""
-        val completion2 = completions.getOrNull(1) ?: ""
-        val completion3 = completions.getOrNull(2) ?: ""
-
-        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1)
-        setAutocompleteButton(uiManager.binding.translateBtn, completion2)
-        setAutocompleteButton(uiManager.pluralBtn!!, completion3)
+        setTypedWordButton(uiManager.binding.translateBtn, word)
+        setAutocompleteButton(uiManager.binding.conjugateBtn, "")
+        uiManager.pluralBtn?.let { setAutocompleteButton(it, "") }
 
         uiManager.binding.separator1.visibility = View.VISIBLE
         uiManager.binding.separator2.visibility = View.VISIBLE
+    }
+
+    /**
+     * Fills the remaining suggestion slots with dictionary/engine completions.
+     * Clears them (leaving the typed word alone) if not idle.
+     */
+    fun updateAutocompleteCompletions(completions: List<String>) {
+        if (currentState != ScribeState.IDLE) return
+
+        val completion1 = completions.getOrNull(0) ?: ""
+        val completion2 = completions.getOrNull(1) ?: ""
+
+        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1)
+        uiManager.pluralBtn?.let { setAutocompleteButton(it, completion2) }
+    }
+
+    /**
+     * Sets up the "what you typed" button: displayed quoted, but tapping it
+     * doesn't re-insert the word (it's already in the text field) — it just
+     * confirms the word with a space, the same as pressing the space bar
+     * would, and moves on to next-word suggestions based on it.
+     */
+    private fun setTypedWordButton(
+        button: Button,
+        word: String,
+    ) {
+        setSuggestionButton(button, "\"$word\"")
+        button.setOnClickListener {
+            currentInputConnection?.commitText(" ", 1)
+            suggestionHandler.processLinguisticSuggestions(word)
+            suggestionHandler.processWordSuggestions(word)
+            moveToIdleState()
+        }
     }
 
     /**
