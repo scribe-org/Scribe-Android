@@ -38,7 +38,7 @@
     <string name="i18n.app.about.legal.third_party.caption">사용된 코드의 소유자</string>
     <string name="i18n.app.about.legal.third_party.entry_custom_keyboard">커스텀 키보드\n• 저자: EthanSK\n• 라이선스: MIT\n• 링크: https://github.com/EthanSK/CustomKeyboard/blob/master/LICENSE</string>
     <string name="i18n.app.about.legal.third_party.entry_simple_keyboard">기본 키보드\n• 저자: Simple Mobile Tools\n• 라이선스: GPL-3.0\n• 링크: https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE</string>
-    <string name="i18n.app.about.legal.third_party.text">Scribe 개발자(SCRIBE)는 제3자 코드를 사용하여 iOS 애플리케이션 "Scribe - 언어 키보드"(서비스)를 제작했습니다. 이 서비스 제작에 사용된 모든 소스 코드는 서비스에서 사용된 방식으로 완전하게 활용할 수 있는 소스에서 비롯되었습니다. 이 섹션에서는 서비스의 기반이 된 소스 코드와 각 코드에 해당하는 라이선스를 나열합니다.\n\n다음은 사용된 모든 소스 코드 목록, 코드의 주요 저자 또는 저자들, 사용 당시의 라이선스, 그리고 라이선스 링크입니다.</string>
+    <string name="i18n.app.about.legal.third_party.text_1">Scribe 개발자(SCRIBE)는 제3자 코드를 사용하여 iOS 애플리케이션 "Scribe - 언어 키보드"(서비스)를 제작했습니다. 이 서비스 제작에 사용된 모든 소스 코드는 서비스에서 사용된 방식으로 완전하게 활용할 수 있는 소스에서 비롯되었습니다. 이 섹션에서는 서비스의 기반이 된 소스 코드와 각 코드에 해당하는 라이선스를 나열합니다.\n\n다음은 사용된 모든 소스 코드 목록, 코드의 주요 저자 또는 저자들, 사용 당시의 라이선스, 그리고 라이선스 링크입니다.</string>
     <string name="i18n.app.about.title">정보</string>
     <string name="i18n.app.conjugate.choose_conjugation.select_tense">시제 선택</string>
     <string name="i18n.app.conjugate.choose_conjugation.title">아래에서 활용형을 선택하세요.</string>
