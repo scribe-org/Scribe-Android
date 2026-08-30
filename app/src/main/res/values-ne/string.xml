@@ -56,7 +56,7 @@
     <string name="i18n.app.about.legal.third_party.caption">हामीले कुन कोड प्रयोग गर्यौं</string>
     <string name="i18n.app.about.legal.third_party.entry_custom_keyboard">Custom Keyboard\n• लेखक: EthanSK\n• लाइसेन्स: MIT\n• लिङ्क: https://github.com/EthanSK/CustomKeyboard/blob/master/LICENSE</string>
     <string name="i18n.app.about.legal.third_party.entry_simple_keyboard">Simple Keyboard\n• लेखक: Simple Mobile Tools\n• लाइसेन्स: GPL-3.0\n• लिङ्क: https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE</string>
-    <string name="i18n.app.about.legal.third_party.text">स्क्राइब विकासकर्ताहरूले तृतीय-पक्ष कोड प्रयोग गरेर iOS एप्लिकेसन बनाएका छन्।</string>
+    <string name="i18n.app.about.legal.third_party.text_1">स्क्राइब विकासकर्ताहरूले तृतीय-पक्ष कोड प्रयोग गरेर iOS एप्लिकेसन बनाएका छन्।</string>
     <string name="i18n.app.about.title">बारेमा</string>
     <string name="i18n.app.conjugate.choose_conjugation.select_tense">काल चयन गर्नुहोस्</string>
     <string name="i18n.app.conjugate.choose_conjugation.title">तलको कन्जुगेसन चयन गर्नुहोस्</string>
