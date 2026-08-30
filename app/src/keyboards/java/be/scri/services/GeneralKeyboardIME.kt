@@ -647,7 +647,16 @@ abstract class GeneralKeyboardIME(
         isSubsequentArea: Boolean = false,
     ) {
         val sharedPref = applicationContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        val mode = if (!isSubsequentArea) defaultConjugateModeType else "none"
+        val mode =
+            if (!isSubsequentArea) {
+                when (language) {
+                    "English", "Russian", "Swedish" -> "2x2"
+                    "German", "French", "Italian", "Portuguese", "Spanish" -> "2x2"
+                    else -> "none"
+                }
+            } else {
+                "none"
+            }
         sharedPref.edit { putString("conjugate_mode_type", mode) }
     }
 
