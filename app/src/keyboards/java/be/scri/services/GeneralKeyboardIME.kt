@@ -10,9 +10,6 @@ import android.content.res.Resources
 import android.graphics.Rect
 import android.inputmethodservice.InputMethodService
 import android.text.InputType
-import android.text.InputType.TYPE_CLASS_DATETIME
-import android.text.InputType.TYPE_CLASS_NUMBER
-import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.view.KeyEvent
 import android.view.View
@@ -40,6 +37,7 @@ import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardDataHandler
 import be.scri.helpers.KeyboardIMEContext
 import be.scri.helpers.KeyboardLanguageMappingConstants
+import be.scri.helpers.KeyboardLayoutHandler
 import be.scri.helpers.KeyboardStateManager
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
@@ -167,6 +165,7 @@ abstract class GeneralKeyboardIME(
     override lateinit var autocompletionHandler: AutocompletionHandler
     internal lateinit var keyHandler: KeyHandler
     internal val floatingKeyboardHandler by lazy { FloatingKeyboardHandler(this) }
+    internal val layoutHandler by lazy { KeyboardLayoutHandler(this) }
 
     internal var dataContract: DataContract?
         get() = dataHandler.dataContract
@@ -232,7 +231,7 @@ abstract class GeneralKeyboardIME(
     override var wordSuggestions: List<String>? = null
     override var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
-    private var isNumericKeyboardActive: Boolean = false
+    internal var isNumericKeyboardActive: Boolean = false
 
     internal val stateManager = KeyboardStateManager()
     internal val themeManager = KeyboardThemeManager()
@@ -281,21 +280,12 @@ abstract class GeneralKeyboardIME(
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         internal const val CUSTOM_CURSOR = "│" // special tall cursor character
 
-        internal fun shouldUseNumericKeyboard(inputType: Int): Boolean =
-            when (inputType and TYPE_MASK_CLASS) {
-                TYPE_CLASS_NUMBER, TYPE_CLASS_DATETIME, TYPE_CLASS_PHONE -> true
-                else -> false
-            }
+        internal fun shouldUseNumericKeyboard(inputType: Int): Boolean = KeyboardLayoutHandler.shouldUseNumericKeyboard(inputType)
 
         internal fun getKeyboardLayoutXMLForInputType(
             inputType: Int,
             letterKeyboardLayoutXML: Int,
-        ): Int =
-            if (shouldUseNumericKeyboard(inputType)) {
-                R.xml.keys_numeric
-            } else {
-                letterKeyboardLayoutXML
-            }
+        ): Int = KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(inputType, letterKeyboardLayoutXML)
     }
 
     // MARK: Lifecycle Methods
@@ -784,19 +774,17 @@ abstract class GeneralKeyboardIME(
 
     override fun isNumericKeyboardActive(): Boolean = isNumericKeyboardActive
 
-    override fun getCurrentKeyboardLayoutXML(): Int =
-        when (keyboardMode) {
-            keyboardSymbols -> getPrimarySymbolKeyboardLayoutXML()
-            keyboardSymbolShift -> R.xml.keys_symbols_shift
-            else -> getKeyboardLayoutXML()
-        }
+    /**
+     * Resolves the XML resource ID for the active keyboard layout.
+     * Delegated to [KeyboardLayoutHandler].
+     */
+    override fun getCurrentKeyboardLayoutXML(): Int = layoutHandler.getCurrentKeyboardLayoutXML()
 
-    private fun getPrimarySymbolKeyboardLayoutXML(): Int =
-        if (isNumericKeyboardActive) {
-            R.xml.keys_numeric
-        } else {
-            R.xml.keys_symbols
-        }
+    /**
+     * Resolves the primary symbol or numeric layout XML resource ID.
+     * Delegated to [KeyboardLayoutHandler].
+     */
+    internal fun getPrimarySymbolKeyboardLayoutXML(): Int = layoutHandler.getPrimarySymbolKeyboardLayoutXML()
 
     override fun onKeyboardActionListener(): KeyboardView.OnKeyboardActionListener = this
 
@@ -1969,29 +1957,11 @@ abstract class GeneralKeyboardIME(
      *
      * @return The resource ID of the keyboard layout XML.
      */
-    private fun getKeyboardLayoutForState(
+    internal fun getKeyboardLayoutForState(
         state: ScribeState,
         isSubsequentArea: Boolean = false,
         dataSize: Int = 0,
-    ): Int =
-        when (state) {
-            ScribeState.SELECT_VERB_CONJUNCTION -> {
-                saveConjugateModeType(language)
-                if (!isSubsequentArea && dataSize == 0) {
-                    defaultConjugateLayoutXML
-                } else {
-                    when (dataSize) {
-                        DATA_SIZE_2 -> R.xml.conjugate_view_2x1
-                        DATA_CONSTANT_3 -> R.xml.conjugate_view_1x3
-                        else -> R.xml.conjugate_view_2x2
-                    }
-                }
-            }
-
-            else -> {
-                getKeyboardLayoutXML()
-            }
-        }
+    ): Int = layoutHandler.getKeyboardLayoutForState(state, isSubsequentArea, dataSize)
 
     /**
      * Updates the visibility of the suggestion buttons based on device type (phone/tablet)
@@ -2010,29 +1980,10 @@ abstract class GeneralKeyboardIME(
 
     // MARK: Floating Keyboard Integration
 
-    override fun getKeyboardWidth(): Int =
-        if (isFloatingMode) {
-            val density = resources.displayMetrics.density
-            val screenWidth = resources.displayMetrics.widthPixels
-            val floatWidth = (320f * density).toInt()
-            Math.min(floatWidth, (screenWidth * 0.85f).toInt())
-        } else {
-            resources.displayMetrics.widthPixels
-        }
+    override fun getKeyboardWidth(): Int = layoutHandler.getKeyboardWidth()
 
-    override fun recreateKeyboard() {
-        if (!this::uiManager.isInitialized) return
-        val xmlId = getCurrentKeyboardLayoutXML()
-        val currentShiftState = keyboard?.mShiftState ?: SHIFT_OFF
-        keyboard = KeyboardBase(this, xmlId, enterKeyType, getKeyboardWidth())
-        keyboard?.setShifted(currentShiftState)
-        keyboardView?.setKeyboard(keyboard!!)
+    override fun recreateKeyboard() = layoutHandler.recreateKeyboard()
 
-        if (xmlId == R.xml.keys_symbols) {
-            uiManager.setupCurrencySymbol(language)
-        }
-        keyboardView?.invalidateAllKeys()
-    }
 
     val isFloatingMode: Boolean
         get() = floatingKeyboardHandler.isFloatingMode
@@ -2076,13 +2027,4 @@ abstract class GeneralKeyboardIME(
     fun closeClipboardPanel() {
         clipboardHandler.closeClipboardPanel()
     }
-}
-
-private fun Float.coerceInSafe(
-    bound1: Float,
-    bound2: Float,
-): Float {
-    val minVal = if (bound1 < bound2) bound1 else bound2
-    val maxVal = if (bound1 > bound2) bound1 else bound2
-    return this.coerceIn(minVal, maxVal)
 }
