@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteDatabase
 
 fun SQLiteDatabase.tableExists(tableName: String): Boolean =
     rawQuery(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='$tableName'",
-        null,
+        "SELECT name FROM sqlite_master WHERE type='table' AND LOWER(name) = LOWER(?)",
+        arrayOf(tableName),
     ).use { it.moveToFirst() }
 
 fun SQLiteDatabase.columnExists(

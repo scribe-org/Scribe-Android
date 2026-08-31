@@ -160,6 +160,7 @@ class SuggestionHandler(
                     ime.updateEmojiSuggestion(true, emojis)
                     ime.updateButtonVisibility(true)
                 } else {
+                    ime.autoSuggestEmojis = null
                     ime.updateButtonVisibility(false)
                 }
             }
