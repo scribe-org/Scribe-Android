@@ -20,7 +20,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -71,8 +70,6 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.models.ScribeState
 import java.util.Arrays
 import java.util.Locale
-
-private const val TAG = "SoundCheck"
 
 /**
  * The base keyboard view for Scribe language keyboards application.
@@ -687,7 +684,6 @@ class KeyboardView
         }
 
         fun soundIfNeeded() {
-            Log.d(TAG, "soundIfNeeded: $setSound")
             if (setSound) {
                 performSoundFeedback()
             }

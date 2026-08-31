@@ -329,7 +329,7 @@ class KeyHandler(
         editor.apply()
 
         ime.updateUI()
-        Log.i(TAG, "New conjugate_index: $currentValue")
+        Log.d(TAG, "New conjugate_index: $currentValue")
     }
 
     /**
