@@ -1719,7 +1719,11 @@ abstract class GeneralKeyboardIME(
                 val default1 = baseSuggestions.getOrNull(0) ?: ""
                 val default2 = baseSuggestions.getOrNull(1) ?: ""
                 setSuggestionButton(uiManager.binding.conjugateBtn, default1)
-                uiManager.pluralBtn?.let { setSuggestionButton(it, default2) }
+                if (autoSuggestEmojis.isNullOrEmpty()) {
+                    uiManager.pluralBtn?.let { setSuggestionButton(it, default2) }
+                } else {
+                    uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
+                }
             }
             return
         }
@@ -1789,7 +1793,11 @@ abstract class GeneralKeyboardIME(
 
         setTypedWordButton(uiManager.binding.translateBtn, word)
         setAutocompleteButton(uiManager.binding.conjugateBtn, "")
-        uiManager.pluralBtn?.let { setAutocompleteButton(it, "") }
+        if (autoSuggestEmojis.isNullOrEmpty()) {
+            uiManager.pluralBtn?.let { setAutocompleteButton(it, "") }
+        } else {
+            uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
+        }
 
         uiManager.binding.separator1.visibility = View.VISIBLE
         uiManager.binding.separator2.visibility = View.VISIBLE
@@ -1806,7 +1814,11 @@ abstract class GeneralKeyboardIME(
         val completion2 = completions.getOrNull(1) ?: ""
 
         setAutocompleteButton(uiManager.binding.conjugateBtn, completion1)
-        uiManager.pluralBtn?.let { setAutocompleteButton(it, completion2) }
+        if (autoSuggestEmojis.isNullOrEmpty()) {
+            uiManager.pluralBtn?.let { setAutocompleteButton(it, completion2) }
+        } else {
+            uiManager.updateButtonVisibility(currentState, true, autoSuggestEmojis)
+        }
     }
 
     /**
