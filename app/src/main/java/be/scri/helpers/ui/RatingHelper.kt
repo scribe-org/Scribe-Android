@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.google.android.play.core.review.ReviewManagerFactory
+import be.scri.R
 
 /**
  * Helper object for managing app rating functionality.
@@ -59,11 +60,11 @@ object RatingHelper {
      */
     fun getStoreDesc(context: Context): String? =
         when (getInstallSource(context)) {
-            INSTALLER_PLAY_STORE -> "Rate us on Google Play Store"
-            INSTALLER_FDROID -> "Rate us on F-Droid"
-            INSTALLER_AMAZON -> "Rate us on Amazon Appstore"
-            INSTALLER_SAMSUNG -> "Rate us on Galaxy Store"
-            else -> "Rate us on Google Play Store"
+            INSTALLER_PLAY_STORE -> context.getString(R.string.i18n_app_about_feedback_rate_description_google_play)
+            INSTALLER_FDROID -> context.getString(R.string.i18n_app_about_feedback_rate_description_f_droid)
+            INSTALLER_AMAZON -> context.getString(R.string.i18n_app_about_feedback_rate_description_amazon)
+            INSTALLER_SAMSUNG -> context.getString(R.string.i18n_app_about_feedback_rate_description_galaxy)
+            else -> context.getString(R.string.i18n_app_about_feedback_rate_description_google_play)
         }
 
     /**
