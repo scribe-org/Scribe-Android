@@ -40,6 +40,7 @@ import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.getCategoryIconRes
 import be.scri.helpers.getRecentEmojis
 import be.scri.helpers.parseRawEmojiSpecsFile
+import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 import be.scri.views.KeyboardView
@@ -418,11 +419,12 @@ class KeyboardUIManager(
                     languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
                 }
 
+            val scribeLanguage = ScribeLanguage.fromDisplayName(language)
             val layoutResId =
                 when {
                     isSubSelection -> R.layout.conjugate_grid_2x1
-                    language == "English" && forms.size <= 4 -> R.layout.conjugate_grid_2x2
-                    language in listOf("Russian", "Swedish") && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                    scribeLanguage == ScribeLanguage.ENGLISH && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                    scribeLanguage in listOf(ScribeLanguage.RUSSIAN, ScribeLanguage.SWEDISH) && forms.size <= 4 -> R.layout.conjugate_grid_2x2
                     forms.size > 4 -> R.layout.conjugate_grid_3x2
                     else -> R.layout.conjugate_grid_2x2
                 }
