@@ -25,6 +25,11 @@ object RatingHelper {
     private const val INSTALLER_AMAZON = "com.amazon.venezia"
     private const val INSTALLER_SAMSUNG = "com.sec.android.app.samsungapps"
 
+    private const val URL_PLAY_STORE = "https://play.google.com/store/apps/details?id=%s"
+    private const val URL_FDROID = "https://f-droid.org/packages/%s"
+    private const val URL_AMAZON = "https://www.amazon.com/gp/mas/dl/android?p=%s"
+    private const val URL_SAMSUNG = "https://galaxystore.samsung.com/detail/%s"
+
     /**
      * Gets the package name of the app that installed this app.
      * For example, "com.android.vending" for Google Play Store.
@@ -62,6 +67,28 @@ object RatingHelper {
         }
 
     /**
+     * Opens store page in browser
+     *
+     * @param context App context.
+     * @param urlTemplate URL format string.
+     * @param storeName Store name.
+     */
+    private fun openStore(
+        context: Context,
+        urlTemplate: String,
+        storeName: String,
+    ) {
+        val url = urlTemplate.format(context.packageName)
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        try {
+            context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "No browser found to open $storeName page", Toast.LENGTH_SHORT).show()
+            Log.e("RatingHelper", "Unable to open $storeName link", e)
+        }
+    }
+
+    /**
      * Initiates the app rating process based on the installation source.
      *
      * If the app was installed from the Google Play Store, it attempts to launch the in-app review flow.
@@ -88,61 +115,18 @@ object RatingHelper {
                             .launchReviewFlow(activity, reviewInfo)
                             .addOnCompleteListener { }
                     } else {
-                        val url = "https://play.google.com/store/apps/details?id=${context.packageName}"
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                        try {
-                            context.startActivity(intent)
-                        } catch (e: ActivityNotFoundException) {
-                            Toast.makeText(context, "No browser found to open Play Store page", Toast.LENGTH_SHORT).show()
-                            Log.e("RatingHelper", "Unable to open Play Store link", e)
-                        }
+                        openStore(context, URL_PLAY_STORE, "Play Store")
                     }
                 }
             }
 
-            INSTALLER_FDROID -> {
-                val url = "https://f-droid.org/packages/${context.packageName}"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                try {
-                    context.startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    Toast.makeText(context, "No browser found to open F-Droid page", Toast.LENGTH_SHORT).show()
-                    Log.e("RatingHelper", "Unable to open F-Droid link", e)
-                }
-            }
+            INSTALLER_FDROID -> openStore(context, URL_FDROID, "F-Droid")
 
-            INSTALLER_AMAZON -> {
-                val url = "https://www.amazon.com/gp/mas/dl/android?p=${context.packageName}"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                try {
-                    context.startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    Toast.makeText(context, "No browser found to open Amazon page", Toast.LENGTH_SHORT).show()
-                    Log.e("RatingHelper", "Unable to open Amazon link", e)
-                }
-            }
+            INSTALLER_AMAZON -> openStore(context, URL_AMAZON, "Amazon")
 
-            INSTALLER_SAMSUNG -> {
-                val url = "https://galaxystore.samsung.com/detail/${context.packageName}"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                try {
-                    context.startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    Toast.makeText(context, "No browser found to open Galaxy Store page", Toast.LENGTH_SHORT).show()
-                    Log.e("RatingHelper", "Unable to open Galaxy Store link", e)
-                }
-            }
+            INSTALLER_SAMSUNG -> openStore(context, URL_SAMSUNG, "Galaxy Store")
 
-            else -> {
-                val url = "https://play.google.com/store/apps/details?id=${context.packageName}"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                try {
-                    context.startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    Toast.makeText(context, "No browser found to open Play Store page", Toast.LENGTH_SHORT).show()
-                    Log.e("RatingHelper", "Unable to open Play Store link", e)
-                }
-            }
+            else -> openStore(context, URL_PLAY_STORE, "Play Store")
         }
     }
 }
