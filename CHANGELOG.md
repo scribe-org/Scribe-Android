@@ -50,7 +50,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The application and community's relationship to the Wikimedia movement is explained in app ([#52](https://github.com/scribe-org/Scribe-Android/issues/52)).
 - Vibrate on keypress and key click functionalities are included ([#405](https://github.com/scribe-org/Scribe-Android/issues/405), [#406](https://github.com/scribe-org/Scribe-Android/issues/406)).
 - An in-app tutorial is provided to detail functionalities of the application ([#602](https://github.com/scribe-org/Scribe-Android/issues/602), [#615](https://github.com/scribe-org/Scribe-Android/issues/615), [#616](https://github.com/scribe-org/Scribe-Android/issues/616)).
-- The user is able to easily rate the application ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
+- The user is able to easily rate the application, with installer-aware routing to the appropriate store ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
 
 ### 🗃️ Data
 

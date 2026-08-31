@@ -51,6 +51,10 @@
     <string name="i18n.app.about.community.wikimedia.text_3">Wikipedia is a multilingual free online encyclopedia written and maintained by a community of volunteers through open collaboration and a wiki-based editing system. Scribe uses data from Wikipedia to produce autosuggestions by deriving the most common words in a language as well as the most common words that follow them.</string>
     <string name="i18n.app.about.feedback.bug_report">Report a bug</string>
     <string name="i18n.app.about.feedback.rate_conjugate">Rate Scribe Conjugate</string>
+    <string name="i18n.app.about.feedback.rate_description_amazon">Rate us on Amazon Appstore</string>
+    <string name="i18n.app.about.feedback.rate_description_f_droid">Rate us on F-Droid</string>
+    <string name="i18n.app.about.feedback.rate_description_galaxy">Rate us on Galaxy Store</string>
+    <string name="i18n.app.about.feedback.rate_description_google_play">Rate us on Google Play Store</string>
     <string name="i18n.app.about.feedback.rate_scribe">Rate Scribe</string>
     <string name="i18n.app.about.feedback.reset_app_hints">Reset app hints</string>
     <string name="i18n.app.about.feedback.send_email">Send us an email</string>

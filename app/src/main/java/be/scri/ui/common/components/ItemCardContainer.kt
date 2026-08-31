@@ -64,6 +64,7 @@ fun ItemsCardContainer(
                     is ScribeItem.ExternalLinkItem -> {
                         AboutPageItemComp(
                             title = stringResource(item.title),
+                            descText = item.descText,
                             altText = item.altText?.let { stringResource(it) },
                             leadingIcon = item.leadingIcon,
                             trailingIcon = item.trailingIcon,
