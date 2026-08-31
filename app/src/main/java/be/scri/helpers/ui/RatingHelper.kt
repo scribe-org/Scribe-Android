@@ -10,8 +10,8 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import com.google.android.play.core.review.ReviewManagerFactory
 import be.scri.R
+import com.google.android.play.core.review.ReviewManagerFactory
 
 /**
  * Helper object for managing app rating functionality.
