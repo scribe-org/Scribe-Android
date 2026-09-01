@@ -11,7 +11,7 @@ import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 
 private const val DATA_SIZE_2 = 2
-private const val DATA_CONSTANT_3 = 3
+private const val DATA_SIZE_3 = 3
 
 /**
  * Encapsulates keyboard XML layout resolution, symbol layout mapping,
@@ -65,7 +65,7 @@ class KeyboardLayoutHandler(
                 } else {
                     when (dataSize) {
                         DATA_SIZE_2 -> R.xml.conjugate_view_2x1
-                        DATA_CONSTANT_3 -> R.xml.conjugate_view_1x3
+                        DATA_SIZE_3 -> R.xml.conjugate_view_1x3
                         else -> R.xml.conjugate_view_2x2
                     }
                 }

@@ -279,13 +279,6 @@ abstract class GeneralKeyboardIME(
         internal const val MAX_TEXT_LENGTH = 1000
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         internal const val CUSTOM_CURSOR = "│" // special tall cursor character
-
-        internal fun shouldUseNumericKeyboard(inputType: Int): Boolean = KeyboardLayoutHandler.shouldUseNumericKeyboard(inputType)
-
-        internal fun getKeyboardLayoutXMLForInputType(
-            inputType: Int,
-            letterKeyboardLayoutXML: Int,
-        ): Int = KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(inputType, letterKeyboardLayoutXML)
     }
 
     // MARK: Lifecycle Methods
@@ -441,9 +434,9 @@ abstract class GeneralKeyboardIME(
         // This setter triggers the logic in the property override if not shadowed.
         hasTextBeforeCursor = currentInputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
 
-        isNumericKeyboardActive = shouldUseNumericKeyboard(attribute.inputType)
+        isNumericKeyboardActive = KeyboardLayoutHandler.shouldUseNumericKeyboard(attribute.inputType)
         keyboardMode = if (isNumericKeyboardActive) keyboardSymbols else keyboardLetters
-        val keyboardXml = getKeyboardLayoutXMLForInputType(attribute.inputType, getKeyboardLayoutXML())
+        val keyboardXml = KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(attribute.inputType, getKeyboardLayoutXML())
 
         loadLanguageData()
 
@@ -1983,7 +1976,6 @@ abstract class GeneralKeyboardIME(
     override fun getKeyboardWidth(): Int = layoutHandler.getKeyboardWidth()
 
     override fun recreateKeyboard() = layoutHandler.recreateKeyboard()
-
 
     val isFloatingMode: Boolean
         get() = floatingKeyboardHandler.isFloatingMode
