@@ -13,7 +13,7 @@ import be.scri.services.GeneralKeyboardIME
  * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
  */
 class AutocompletionHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     private val handler = Handler(Looper.getMainLooper())
     private var autocompleteRunnable: Runnable? = null

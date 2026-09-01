@@ -27,7 +27,7 @@ class SpaceKeyProcessorTest {
         every { PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(any(), any()) } returns true
         spaceKeyProcessor = SpaceKeyProcessor(ime, suggestionHandler)
         every { ime.language } returns "en"
-        every { ime.currentInputConnection } returns inputConnection
+        every { ime.getInputConnection() } returns inputConnection
     }
 
     @After

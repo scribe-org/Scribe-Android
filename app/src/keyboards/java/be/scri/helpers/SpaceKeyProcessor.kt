@@ -14,7 +14,7 @@ import be.scri.services.GeneralKeyboardIME
  * @property suggestionHandler The [SuggestionHandler] to manage suggestions.
  */
 class SpaceKeyProcessor(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
     private val suggestionHandler: SuggestionHandler,
 ) {
     /**
@@ -61,8 +61,8 @@ class SpaceKeyProcessor(
      * @param wasLastKeySpace true if the previous key pressed was a space.
      */
     private fun handleSpaceOutsideCommandBar(wasLastKeySpace: Boolean) {
-        val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
-        val ic = ime.currentInputConnection ?: return
+        val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime.imeContext, ime.language)
+        val ic = ime.getInputConnection() ?: return
         val wordBeforeSpace = ime.getLastWordBeforeCursor()
 
         val textBefore = ic.getTextBeforeCursor(2, 0)?.toString()

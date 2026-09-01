@@ -17,7 +17,7 @@ import be.scri.services.GeneralKeyboardIME.Companion.MAX_TEXT_LENGTH
  * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
  */
 class BackspaceHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     /**
      * Track if the delete key is currently being repeated (long press).
@@ -45,9 +45,9 @@ class BackspaceHandler(
         if (isCommandBar) {
             handleCommandBarDelete()
         } else {
-            val inputConnection = ime.currentInputConnection ?: return
+            val inputConnection = ime.getInputConnection() ?: return
             if (TextUtils.isEmpty(inputConnection.getSelectedText(0))) {
-                val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.applicationContext, ime.language)
+                val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.imeContext, ime.language)
                 // Only use word-by-word deletion on long press when the feature is enabled.
                 if (isWordByWordEnabled && isLongPress) {
                     deleteWordByWord(inputConnection)

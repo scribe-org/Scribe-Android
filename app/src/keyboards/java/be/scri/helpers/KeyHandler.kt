@@ -18,7 +18,7 @@ import be.scri.services.GeneralKeyboardIME
  */
 @Suppress("TooManyFunctions")
 class KeyHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     private val suggestionHandler = ime.suggestionHandler
     private val spaceKeyProcessor = SpaceKeyProcessor(ime, suggestionHandler)
@@ -42,7 +42,11 @@ class KeyHandler(
         code: Int,
         language: String,
     ) {
-        val inputConnection = ime.currentInputConnection
+        val inputConnection =
+            ime.getInputConnection() ?: run {
+                wasLastKeySpace = false
+                return
+            }
         if (!isValidState(inputConnection)) {
             wasLastKeySpace = false
             return
@@ -230,8 +234,8 @@ class KeyHandler(
      * Handles the currency symbol key press. It outputs the user's selected currency symbol for the current language.
      */
     private fun handleCurrencyKey(language: String) {
-        val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(ime.applicationContext, language)
-        ime.currentInputConnection?.commitText(currencySymbol, 1)
+        val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(ime.imeContext, language)
+        ime.getInputConnection()?.commitText(currencySymbol, 1)
 
         // Process emoji suggestions if in idle state.
         if (ime.currentState == ScribeState.IDLE) {
@@ -261,7 +265,7 @@ class KeyHandler(
      * It delegates the logic to the IME and clears any active suggestions.
      */
     private fun handleModeChangeKey() {
-        ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime)
+        ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime.imeContext)
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
     }
 
@@ -272,7 +276,7 @@ class KeyHandler(
      */
     private fun handleNavigationKey(code: Int) {
         val isRight = code == KeyboardBase.KEYCODE_RIGHT_ARROW
-        ime.currentInputConnection?.let { ic ->
+        ime.getInputConnection()?.let { ic ->
             val currentPos = ic.getTextBeforeCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.length ?: 0
             val newPos =
                 if (isRight) {
@@ -298,7 +302,7 @@ class KeyHandler(
     ) {
         when (code) {
             KeyboardBase.DISPLAY_LEFT, KeyboardBase.DISPLAY_RIGHT ->
-                handleConjugateCycleKeys(code, ime.applicationContext)
+                handleConjugateCycleKeys(code, ime.imeContext)
             else ->
                 handleConjugateSelectionKey(code, language)
         }
@@ -379,10 +383,10 @@ class KeyHandler(
         val isAutoSpaceEnabled =
             !isCommandBarActive &&
                 isPunctuation &&
-                PreferencesHelper.getAutoSpaceAfterPunctuationPreference(ime.applicationContext, language)
+                PreferencesHelper.getAutoSpaceAfterPunctuationPreference(ime.imeContext, language)
 
         if (isAutoSpaceEnabled) {
-            val ic = ime.currentInputConnection
+            val ic = ime.getInputConnection()
             val textBefore = ic?.getTextBeforeCursor(2, 0)?.toString()
             if (textBefore != null && textBefore.length == 2 && textBefore.endsWith(" ")) {
                 val charBeforeSpace = textBefore[0]
@@ -395,7 +399,7 @@ class KeyHandler(
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
 
         if (isAutoSpaceEnabled) {
-            val ic = ime.currentInputConnection
+            val ic = ime.getInputConnection()
             val textBefore = ic?.getTextBeforeCursor(2, 0)?.toString()
             if (textBefore != null && textBefore.length == 2) {
                 val prevChar = textBefore[0]

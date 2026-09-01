@@ -4,6 +4,7 @@ package be.scri.helpers.clipboard
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import be.scri.helpers.KeyboardIMEContext
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 import kotlinx.coroutines.CoroutineScope
@@ -14,10 +15,10 @@ import kotlinx.coroutines.launch
  * Manages in-keyboard clipboard monitoring, suggestion chips, and history panel operations
  * for [GeneralKeyboardIME].
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */
 class ClipboardHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     var latestClipText: String? = null
         internal set
@@ -26,11 +27,11 @@ class ClipboardHandler(
 
     private lateinit var clipboardMonitor: ClipboardMonitor
     private var clipboardAdapter: ClipboardAdapter? = null
-    private val clipboardRepository by lazy { ClipboardRepository(ime) }
+    private val clipboardRepository by lazy { ClipboardRepository(ime.imeContext) }
 
     fun initClipboardMonitor() {
         clipboardMonitor =
-            ClipboardMonitor(ime) { text ->
+            ClipboardMonitor(ime.imeContext) { text ->
                 latestClipText = text
                 hasNewClip = true
                 if (ime.currentState == ScribeState.IDLE && ime.isUiManagerInitialized) {
@@ -53,7 +54,7 @@ class ClipboardHandler(
 
     fun onClipboardSuggestionClicked() {
         latestClipText?.let { text ->
-            ime.currentInputConnection?.commitText(text, 1)
+            ime.getInputConnection()?.commitText(text, 1)
         }
         hideClipboardSuggestionChip()
     }
@@ -77,7 +78,7 @@ class ClipboardHandler(
             ClipboardAdapter(
                 items = emptyList(),
                 onItemClick = { item ->
-                    ime.currentInputConnection?.commitText(item.text, 1)
+                    ime.getInputConnection()?.commitText(item.text, 1)
                     closeClipboardPanel()
                 },
                 onItemDelete = { item ->
@@ -94,7 +95,7 @@ class ClipboardHandler(
                 },
             )
         recyclerView.adapter = clipboardAdapter
-        recyclerView.layoutManager = GridLayoutManager(ime, 2)
+        recyclerView.layoutManager = GridLayoutManager(ime.imeContext, 2)
 
         ime.binding.clipboardPanelClose.setOnClickListener { closeClipboardPanel() }
         ime.binding.clipboardClearAll.setOnClickListener {
