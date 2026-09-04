@@ -2,19 +2,17 @@
 
 package be.scri.helpers
 
-import android.text.TextUtils
 import android.view.inputmethod.InputConnection
+import be.scri.helpers.KeyboardIMEContext.Companion.MAX_TEXT_LENGTH
 import be.scri.helpers.PreferencesHelper.getIsWordByWordDeletionEnabled
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.Companion.MAX_TEXT_LENGTH
 
 /**
- * Handles backspace/delete events for the [GeneralKeyboardIME].
+ * Handles backspace/delete events for keyboard services implementing [KeyboardIMEContext].
  * Encapsulates logic for single character deletion, word-by-word deletion,
  * command bar deletion, and repeating delete state.
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */
 class BackspaceHandler(
     private val ime: KeyboardIMEContext,
@@ -46,7 +44,7 @@ class BackspaceHandler(
             handleCommandBarDelete()
         } else {
             val inputConnection = ime.getInputConnection() ?: return
-            if (TextUtils.isEmpty(inputConnection.getSelectedText(0))) {
+            if (inputConnection.getSelectedText(0).isNullOrEmpty()) {
                 val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.imeContext, ime.language)
                 // Only use word-by-word deletion on long press when the feature is enabled.
                 if (isWordByWordEnabled && isLongPress) {

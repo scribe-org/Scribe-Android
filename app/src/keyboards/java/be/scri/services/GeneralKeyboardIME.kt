@@ -78,11 +78,11 @@ abstract class GeneralKeyboardIME(
     constructor(languageName: String) : this(ScribeLanguage.fromDisplayName(languageName))
 
     override val imeContext: Context
-        get() = this
+        get() = applicationContext
 
     override fun getInputConnection(): InputConnection? = getCurrentInputConnection()
 
-    override fun getImeResources(): Resources = super.getResources()
+    override fun getImeResources(): Resources = resources
 
     override fun getImeWindow(): Dialog? = getWindow()
 
@@ -175,8 +175,6 @@ abstract class GeneralKeyboardIME(
         }
 
     override val isUiManagerInitialized: Boolean get() = this::uiManager.isInitialized
-
-    override fun recreateKeyboardPublic() = recreateKeyboard()
 
     override var emojiKeywords: HashMap<String, MutableList<String>>?
         get() = dataHandler.emojiKeywords
@@ -577,8 +575,9 @@ abstract class GeneralKeyboardIME(
             keyboardMode = keyboardLetters
             keyboard = KeyboardBase(this, getKeyboardLayoutXML(), enterKeyType, getKeyboardWidth())
             val editorInfo = currentInputEditorInfo
+            val inputConnection = currentInputConnection
             if (editorInfo != null && editorInfo.inputType != InputType.TYPE_NULL && keyboard?.mShiftState != SHIFT_ON_PERMANENT) {
-                if (currentInputConnection?.getCursorCapsMode(editorInfo.inputType) != 0) {
+                if (inputConnection != null && inputConnection.getCursorCapsMode(editorInfo.inputType) != 0) {
                     keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
                 }
             }
@@ -2021,7 +2020,7 @@ abstract class GeneralKeyboardIME(
             resources.displayMetrics.widthPixels
         }
 
-    private fun recreateKeyboard() {
+    override fun recreateKeyboard() {
         if (!this::uiManager.isInitialized) return
         val xmlId = getCurrentKeyboardLayoutXML()
         val currentShiftState = keyboard?.mShiftState ?: SHIFT_OFF

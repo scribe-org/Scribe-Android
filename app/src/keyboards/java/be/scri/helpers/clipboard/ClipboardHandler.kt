@@ -6,14 +6,13 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import be.scri.helpers.KeyboardIMEContext
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
  * Manages in-keyboard clipboard monitoring, suggestion chips, and history panel operations
- * for [GeneralKeyboardIME].
+ * for [KeyboardIMEContext].
  *
  * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */

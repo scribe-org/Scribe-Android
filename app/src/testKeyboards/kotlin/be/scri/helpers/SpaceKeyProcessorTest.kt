@@ -3,7 +3,6 @@
 package be.scri.helpers
 
 import android.view.inputmethod.InputConnection
-import be.scri.services.GeneralKeyboardIME
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -16,7 +15,7 @@ import org.junit.Before
 import org.junit.Test
 
 class SpaceKeyProcessorTest {
-    private val ime = mockk<GeneralKeyboardIME>(relaxed = true)
+    private val ime = mockk<KeyboardIMEContext>(relaxed = true)
     private val suggestionHandler = mockk<SuggestionHandler>(relaxed = true)
     private val inputConnection = mockk<InputConnection>(relaxed = true)
     private lateinit var spaceKeyProcessor: SpaceKeyProcessor

@@ -3,14 +3,13 @@
 package be.scri.helpers
 
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
 
 /**
  * Processes key events specifically related to the space key.
  * This includes handling "period on double tap" logic, committing spaces
  * in normal input mode or command bar mode, and interacting with suggestions.
  *
- * @property ime The [GeneralKeyboardIME] instance this processor is associated with.
+ * @property ime The [KeyboardIMEContext] instance this processor is associated with.
  * @property suggestionHandler The [SuggestionHandler] to manage suggestions.
  */
 class SpaceKeyProcessor(

@@ -21,6 +21,11 @@ import be.scri.views.KeyboardView
  */
 @Suppress("TooManyFunctions")
 interface KeyboardIMEContext {
+    companion object {
+        const val COMMIT_TEXT_CURSOR_POSITION = 1
+        const val MAX_TEXT_LENGTH = 1000
+    }
+
     val imeContext: Context
     val language: String
     val scribeLanguage: ScribeLanguage
@@ -67,7 +72,7 @@ interface KeyboardIMEContext {
     val suggestionWords: HashMap<String, List<String>>
     val emojiKeywords: HashMap<String, MutableList<String>>?
 
-    fun handleDelete(isRepeating: Boolean = false)
+    fun handleDelete(isLongPress: Boolean = false)
 
     fun isDeleteRepeating(): Boolean
 
@@ -89,7 +94,7 @@ interface KeyboardIMEContext {
         wordSuggestions: List<String>? = null,
     )
 
-    fun updateTypedWordSuggestion(currentWord: String?)
+    fun updateTypedWordSuggestion(word: String?)
 
     fun updateAutocompleteCompletions(completions: List<String>)
 
@@ -189,7 +194,7 @@ interface KeyboardIMEContext {
 
     fun getKeyboardWidth(): Int
 
-    fun recreateKeyboardPublic()
+    fun recreateKeyboard()
 
     fun setBackDisposition(disposition: Int)
 

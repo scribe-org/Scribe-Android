@@ -17,13 +17,12 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import be.scri.R
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
-import be.scri.services.GeneralKeyboardIME
 
 /**
  * Manages floating keyboard state, resize handles, touch listeners, and layout transitions
- * for [GeneralKeyboardIME].
+ * for keyboard services implementing [KeyboardIMEContext].
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */
 class FloatingKeyboardHandler(
     private val ime: KeyboardIMEContext,
@@ -173,7 +172,7 @@ class FloatingKeyboardHandler(
 
             dragBar.visibility = View.VISIBLE
 
-            if (modeChanged) ime.recreateKeyboardPublic()
+            if (modeChanged) ime.recreateKeyboard()
 
             card.post {
                 disableParentClipping(root)
@@ -232,7 +231,7 @@ class FloatingKeyboardHandler(
 
             dragBar.visibility = View.GONE
 
-            if (modeChanged) ime.recreateKeyboardPublic()
+            if (modeChanged) ime.recreateKeyboard()
 
             card.translationX = 0f
             card.translationY = 0f
