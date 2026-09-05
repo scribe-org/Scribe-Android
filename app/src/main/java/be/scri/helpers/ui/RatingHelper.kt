@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers.ui
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import be.scri.R
 import com.google.android.play.core.review.ReviewManagerFactory
 
 /**
@@ -20,6 +23,13 @@ import com.google.android.play.core.review.ReviewManagerFactory
 object RatingHelper {
     private const val INSTALLER_PLAY_STORE = "com.android.vending"
     private const val INSTALLER_FDROID = "org.fdroid.fdroid"
+    private const val INSTALLER_AMAZON = "com.amazon.venezia"
+    private const val INSTALLER_SAMSUNG = "com.sec.android.app.samsungapps"
+
+    private const val URL_PLAY_STORE = "https://play.google.com/store/apps/details?id=%s"
+    private const val URL_FDROID = "https://f-droid.org/packages/%s"
+    private const val URL_AMAZON = "https://www.amazon.com/gp/mas/dl/android?p=%s"
+    private const val URL_SAMSUNG = "https://galaxystore.samsung.com/detail/%s"
 
     /**
      * Gets the package name of the app that installed this app.
@@ -31,11 +41,53 @@ object RatingHelper {
      */
     private fun getInstallSource(context: Context): String? =
         try {
-            context.packageManager.getInstallerPackageName(context.packageName)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                context.packageManager.getInstallSourceInfo(context.packageName).installingPackageName
+            } else {
+                @Suppress("DEPRECATION")
+                context.packageManager.getInstallerPackageName(context.packageName)
+            }
         } catch (e: PackageManager.NameNotFoundException) {
             Log.e("RatingHelper", "Failed to get install source", e)
             null
         }
+
+    /**
+     * Gets the store description text (e.g. "Rate us on Google Play Store").
+     *
+     * @param context App context.
+     * @return String for the description.
+     */
+    fun getStoreDesc(context: Context): String? =
+        when (getInstallSource(context)) {
+            INSTALLER_PLAY_STORE -> context.getString(R.string.i18n_app_about_feedback_rate_description_google_play)
+            INSTALLER_FDROID -> context.getString(R.string.i18n_app_about_feedback_rate_description_f_droid)
+            INSTALLER_AMAZON -> context.getString(R.string.i18n_app_about_feedback_rate_description_amazon)
+            INSTALLER_SAMSUNG -> context.getString(R.string.i18n_app_about_feedback_rate_description_galaxy)
+            else -> context.getString(R.string.i18n_app_about_feedback_rate_description_google_play)
+        }
+
+    /**
+     * Opens store page in browser
+     *
+     * @param context App context.
+     * @param urlTemplate URL format string.
+     * @param storeName Store name.
+     */
+    private fun openStore(
+        context: Context,
+        urlTemplate: String,
+        storeName: String,
+    ) {
+        val url = urlTemplate.format(context.packageName)
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        try {
+            context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "No browser found to open $storeName page", Toast.LENGTH_SHORT).show()
+            Log.e("RatingHelper", "Unable to open $storeName link", e)
+        }
+    }
 
     /**
      * Initiates the app rating process based on the installation source.
@@ -51,7 +103,8 @@ object RatingHelper {
         context: Context,
         activity: ComponentActivity,
     ) {
-        when (getInstallSource(context)) {
+        val installer = getInstallSource(context)
+        when (installer) {
             INSTALLER_PLAY_STORE -> {
                 val reviewManager = ReviewManagerFactory.create(context)
                 val request = reviewManager.requestReviewFlow()
@@ -63,25 +116,18 @@ object RatingHelper {
                             .launchReviewFlow(activity, reviewInfo)
                             .addOnCompleteListener { }
                     } else {
-                        Toast.makeText(context, "Failed to launch review flow", Toast.LENGTH_SHORT).show()
+                        openStore(context, URL_PLAY_STORE, "Play Store")
                     }
                 }
             }
 
-            INSTALLER_FDROID -> {
-                val url = "https://f-droid.org/packages/${context.packageName}"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                try {
-                    context.startActivity(intent)
-                } catch (e: PackageManager.NameNotFoundException) {
-                    Toast.makeText(context, "No browser found to open F-Droid page", Toast.LENGTH_SHORT).show()
-                    Log.e("RatingHelper", "Unable to open F-Droid link", e)
-                }
-            }
+            INSTALLER_FDROID -> openStore(context, URL_FDROID, "F-Droid")
 
-            else -> {
-                Toast.makeText(context, "Unknown installation source", Toast.LENGTH_SHORT).show()
-            }
+            INSTALLER_AMAZON -> openStore(context, URL_AMAZON, "Amazon")
+
+            INSTALLER_SAMSUNG -> openStore(context, URL_SAMSUNG, "Galaxy Store")
+
+            else -> openStore(context, URL_PLAY_STORE, "Play Store")
         }
     }
 }

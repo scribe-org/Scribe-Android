@@ -73,4 +73,5 @@ object SVInterfaceVariables {
     const val OBJECTS_EMOJI_HEADER = "Objekt"
     const val SYMBOLS_EMOJI_HEADER = "Symboler"
     const val FLAGS_EMOJI_HEADER = "Flaggor"
+    const val RECENTLY_USED_EMOJI_HEADER = "Nyligen Använda"
 }

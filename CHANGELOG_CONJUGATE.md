@@ -31,7 +31,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The Settings tab for the Scribe keyboard application was migrated to allow base settings for the app interface ([#562](https://github.com/scribe-org/Scribe-Android/issues/562)).
 - The About tab for the Scribe keyboard application was migrated to provide information on the application and community ([#561](https://github.com/scribe-org/Scribe-Android/issues/561)).
 - The application and community's relationship to the Wikimedia movement is explained in app ([#52](https://github.com/scribe-org/Scribe-Android/issues/52)).
-- The user is able to easily rate the application ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
+- The user is able to easily rate the application, with installer-aware routing to the appropriate store ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
 
 ### 🗃️ Data
 
@@ -66,3 +66,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The legal policies of the application are displayed to the user in the About tab ([#58](https://github.com/scribe-org/Scribe-Android/issues/58), [#561](https://github.com/scribe-org/Scribe-Android/issues/561)).
 - A privacy policy was provided to make clear that policies around user data and their security ([#59](https://github.com/scribe-org/Scribe-Android/issues/59)).
 - Third party licensed code used in the development of the project were detailed ([#60](https://github.com/scribe-org/Scribe-Android/issues/60)).
+
+### ♻️ Code Refactoring
+
+- Code quality improvements were continuously done to assure that the application is easy to maintain and meets Kotlin standards ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).

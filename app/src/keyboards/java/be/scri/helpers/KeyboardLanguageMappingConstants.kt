@@ -84,6 +84,7 @@ object KeyboardLanguageMappingConstants {
         mapOf(
             "EN" to
                 mapOf(
+                    "recently_used" to ENInterfaceVariables.RECENTLY_USED_EMOJI_HEADER,
                     "smileys_emotion" to ENInterfaceVariables.SMILEYS_EMOTIONS_EMOJI_HEADER,
                     "people_body" to ENInterfaceVariables.PEOPLE_BODY_EMOJI_HEADER,
                     "animals_nature" to ENInterfaceVariables.ANIMALS_NATURE_EMOJI_HEADER,
@@ -96,6 +97,7 @@ object KeyboardLanguageMappingConstants {
                 ),
             "ES" to
                 mapOf(
+                    "recently_used" to ESInterfaceVariables.RECENTLY_USED_EMOJI_HEADER,
                     "smileys_emotion" to ESInterfaceVariables.SMILEYS_EMOTIONS_EMOJI_HEADER,
                     "people_body" to ESInterfaceVariables.PEOPLE_BODY_EMOJI_HEADER,
                     "animals_nature" to ESInterfaceVariables.ANIMALS_NATURE_EMOJI_HEADER,
@@ -108,6 +110,7 @@ object KeyboardLanguageMappingConstants {
                 ),
             "DE" to
                 mapOf(
+                    "recently_used" to DEInterfaceVariables.RECENTLY_USED_EMOJI_HEADER,
                     "smileys_emotion" to DEInterfaceVariables.SMILEYS_EMOTIONS_EMOJI_HEADER,
                     "people_body" to DEInterfaceVariables.PEOPLE_BODY_EMOJI_HEADER,
                     "animals_nature" to DEInterfaceVariables.ANIMALS_NATURE_EMOJI_HEADER,
@@ -120,6 +123,7 @@ object KeyboardLanguageMappingConstants {
                 ),
             "IT" to
                 mapOf(
+                    "recently_used" to ITInterfaceVariables.RECENTLY_USED_EMOJI_HEADER,
                     "smileys_emotion" to ITInterfaceVariables.SMILEYS_EMOTIONS_EMOJI_HEADER,
                     "people_body" to ITInterfaceVariables.PEOPLE_BODY_EMOJI_HEADER,
                     "animals_nature" to ITInterfaceVariables.ANIMALS_NATURE_EMOJI_HEADER,
@@ -132,6 +136,7 @@ object KeyboardLanguageMappingConstants {
                 ),
             "FR" to
                 mapOf(
+                    "recently_used" to FRInterfaceVariables.RECENTLY_USED_EMOJI_HEADER,
                     "smileys_emotion" to FRInterfaceVariables.SMILEYS_EMOTIONS_EMOJI_HEADER,
                     "people_body" to FRInterfaceVariables.PEOPLE_BODY_EMOJI_HEADER,
                     "animals_nature" to FRInterfaceVariables.ANIMALS_NATURE_EMOJI_HEADER,
@@ -144,6 +149,7 @@ object KeyboardLanguageMappingConstants {
                 ),
             "PT" to
                 mapOf(
+                    "recently_used" to PTInterfaceVariables.RECENTLY_USED_EMOJI_HEADER,
                     "smileys_emotion" to PTInterfaceVariables.SMILEYS_EMOTIONS_EMOJI_HEADER,
                     "people_body" to PTInterfaceVariables.PEOPLE_BODY_EMOJI_HEADER,
                     "animals_nature" to PTInterfaceVariables.ANIMALS_NATURE_EMOJI_HEADER,
@@ -156,6 +162,7 @@ object KeyboardLanguageMappingConstants {
                 ),
             "RU" to
                 mapOf(
+                    "recently_used" to RUInterfaceVariables.RECENTLY_USED_EMOJI_HEADER,
                     "smileys_emotion" to RUInterfaceVariables.SMILEYS_EMOTIONS_EMOJI_HEADER,
                     "people_body" to RUInterfaceVariables.PEOPLE_BODY_EMOJI_HEADER,
                     "animals_nature" to RUInterfaceVariables.ANIMALS_NATURE_EMOJI_HEADER,
@@ -168,6 +175,7 @@ object KeyboardLanguageMappingConstants {
                 ),
             "SV" to
                 mapOf(
+                    "recently_used" to SVInterfaceVariables.RECENTLY_USED_EMOJI_HEADER,
                     "smileys_emotion" to SVInterfaceVariables.SMILEYS_EMOTIONS_EMOJI_HEADER,
                     "people_body" to SVInterfaceVariables.PEOPLE_BODY_EMOJI_HEADER,
                     "animals_nature" to SVInterfaceVariables.ANIMALS_NATURE_EMOJI_HEADER,

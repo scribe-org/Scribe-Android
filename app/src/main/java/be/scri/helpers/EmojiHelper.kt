@@ -94,5 +94,6 @@ fun getCategoryIconRes(category: String): Int =
         "objects" -> R.drawable.ic_emoji_objects
         "symbols" -> R.drawable.ic_emoji_symbols
         "flags" -> R.drawable.ic_emoji_flags
+        "recently_used" -> R.drawable.counter_clockwise_icon
         else -> R.drawable.ic_emoji_vector
     }

@@ -38,7 +38,9 @@ import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.getCategoryIconRes
+import be.scri.helpers.getRecentEmojis
 import be.scri.helpers.parseRawEmojiSpecsFile
+import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 import be.scri.views.KeyboardView
@@ -417,11 +419,12 @@ class KeyboardUIManager(
                     languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
                 }
 
+            val scribeLanguage = ScribeLanguage.fromDisplayName(language)
             val layoutResId =
                 when {
                     isSubSelection -> R.layout.conjugate_grid_2x1
-                    language == "English" && forms.size <= 4 -> R.layout.conjugate_grid_2x2
-                    language in listOf("Russian", "Swedish") && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                    scribeLanguage == ScribeLanguage.ENGLISH && forms.size <= 4 -> R.layout.conjugate_grid_2x2
+                    scribeLanguage in listOf(ScribeLanguage.RUSSIAN, ScribeLanguage.SWEDISH) && forms.size <= 4 -> R.layout.conjugate_grid_2x2
                     forms.size > 4 -> R.layout.conjugate_grid_3x2
                     else -> R.layout.conjugate_grid_2x2
                 }
@@ -878,8 +881,17 @@ class KeyboardUIManager(
         emojis: List<EmojiData>,
         language: String,
     ) {
+        val recentEmojiChars = getRecentEmojis(context)
+        val recentEmojiData = recentEmojiChars.mapNotNull { char -> emojis.find { it.emoji == char } }
+
         val emojiCategories = prepareEmojiCategories(emojis)
-        val emojiItems = prepareEmojiItems(emojiCategories)
+        val categoriesWithRecents =
+            if (recentEmojiData.isNotEmpty()) {
+                linkedMapOf("recently_used" to recentEmojiData) + emojiCategories
+            } else {
+                emojiCategories
+            }
+        val emojiItems = prepareEmojiItems(categoriesWithRecents)
         val categoryHeaders =
             (emojiCategoryHeaders["EN"] ?: emptyMap()) + (emojiCategoryHeaders[getLanguageAlias(language)] ?: emptyMap())
 
@@ -902,7 +914,7 @@ class KeyboardUIManager(
                 listener.onEmojiSelected(emojiData.emoji)
             }
 
-        setupEmojiCategoryStrip(emojiCategories, emojiItems, emojiLayoutManager)
+        setupEmojiCategoryStrip(categoriesWithRecents, emojiItems, emojiLayoutManager)
     }
 
     /**
