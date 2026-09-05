@@ -17,16 +17,15 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import be.scri.R
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
-import be.scri.services.GeneralKeyboardIME
 
 /**
  * Manages floating keyboard state, resize handles, touch listeners, and layout transitions
- * for [GeneralKeyboardIME].
+ * for keyboard services implementing [KeyboardIMEContext].
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */
 class FloatingKeyboardHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     var isFloatingMode: Boolean = false
         private set
@@ -57,17 +56,18 @@ class FloatingKeyboardHandler(
     private var isResizing = false
 
     fun initFloatingMode() {
-        isFloatingMode = PreferencesHelper.getIsFloatingModeEnabled(ime, ime.language)
+        isFloatingMode = PreferencesHelper.getIsFloatingModeEnabled(ime.imeContext, ime.language)
         lastAppliedFloatingMode = null
         applyFloatingModeState()
     }
 
     fun toggleFloatingMode() {
         isFloatingMode = !isFloatingMode
-        PreferencesHelper.setIsFloatingModeEnabled(ime, ime.language, isFloatingMode)
+        PreferencesHelper.setIsFloatingModeEnabled(ime.imeContext, ime.language, isFloatingMode)
         lastAppliedFloatingMode = null
         applyFloatingModeState()
-        ime.window
+        ime
+            .getImeWindow()
             ?.window
             ?.decorView
             ?.requestLayout()
@@ -76,10 +76,11 @@ class FloatingKeyboardHandler(
     fun disableFloatingMode() {
         if (isFloatingMode) {
             isFloatingMode = false
-            PreferencesHelper.setIsFloatingModeEnabled(ime, ime.language, isFloatingMode)
+            PreferencesHelper.setIsFloatingModeEnabled(ime.imeContext, ime.language, isFloatingMode)
             lastAppliedFloatingMode = null
             applyFloatingModeState()
-            ime.window
+            ime
+                .getImeWindow()
                 ?.window
                 ?.decorView
                 ?.requestLayout()
@@ -90,9 +91,9 @@ class FloatingKeyboardHandler(
         if (!ime.isUiManagerInitialized) return
         val card = ime.binding.keyboardCard
         val dragBar = ime.binding.floatingDragBar
-        val density = ime.resources.displayMetrics.density
+        val density = ime.getImeResources().displayMetrics.density
         val root = ime.binding.root
-        val win = ime.window?.window
+        val win = ime.getImeWindow()?.window
 
         val modeChanged = lastAppliedFloatingMode != isFloatingMode
         lastAppliedFloatingMode = isFloatingMode
@@ -132,8 +133,8 @@ class FloatingKeyboardHandler(
                 card.layoutParams = params
             }
 
-            val scaleFactorX = PreferencesHelper.getFloatingScaleX(ime, ime.language)
-            val scaleFactorY = PreferencesHelper.getFloatingScaleY(ime, ime.language)
+            val scaleFactorX = PreferencesHelper.getFloatingScaleX(ime.imeContext, ime.language)
+            val scaleFactorY = PreferencesHelper.getFloatingScaleY(ime.imeContext, ime.language)
             card.scaleX = scaleFactorX
             card.scaleY = scaleFactorY
             card.alpha = 1.0f
@@ -150,9 +151,9 @@ class FloatingKeyboardHandler(
                 ime.binding.resizeHandleBottomRight.visibility = View.GONE
             }
 
-            val isDarkMode = getIsDarkModeOrNot(ime)
+            val isDarkMode = getIsDarkModeOrNot(ime.imeContext)
             val kbBgColorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
-            val kbBgColor = ContextCompat.getColor(ime, kbBgColorRes)
+            val kbBgColor = ContextCompat.getColor(ime.imeContext, kbBgColorRes)
 
             val floatingBg =
                 GradientDrawable().apply {
@@ -171,19 +172,19 @@ class FloatingKeyboardHandler(
 
             dragBar.visibility = View.VISIBLE
 
-            if (modeChanged) ime.recreateKeyboardPublic()
+            if (modeChanged) ime.recreateKeyboard()
 
             card.post {
                 disableParentClipping(root)
-                var storedX = PreferencesHelper.getFloatingX(ime, ime.language)
-                var storedY = PreferencesHelper.getFloatingY(ime, ime.language)
-                val currentScaleX = PreferencesHelper.getFloatingScaleX(ime, ime.language)
-                val currentScaleY = PreferencesHelper.getFloatingScaleY(ime, ime.language)
+                var storedX = PreferencesHelper.getFloatingX(ime.imeContext, ime.language)
+                var storedY = PreferencesHelper.getFloatingY(ime.imeContext, ime.language)
+                val currentScaleX = PreferencesHelper.getFloatingScaleX(ime.imeContext, ime.language)
+                val currentScaleY = PreferencesHelper.getFloatingScaleY(ime.imeContext, ime.language)
 
                 if (storedY == 0f) storedY = 100f * density
 
-                val screenWidth = ime.resources.displayMetrics.widthPixels
-                val screenHeight = ime.resources.displayMetrics.heightPixels
+                val screenWidth = ime.getImeResources().displayMetrics.widthPixels
+                val screenHeight = ime.getImeResources().displayMetrics.heightPixels
                 val cardWidth = card.width.toFloat()
                 val cardHeight = card.height.toFloat()
 
@@ -222,15 +223,15 @@ class FloatingKeyboardHandler(
             card.scaleY = 1.0f
             card.alpha = 1.0f
 
-            val isDarkMode = getIsDarkModeOrNot(ime)
+            val isDarkMode = getIsDarkModeOrNot(ime.imeContext)
             val kbBgColorRes = if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color
-            card.background = ColorDrawable(ContextCompat.getColor(ime, kbBgColorRes))
+            card.background = ColorDrawable(ContextCompat.getColor(ime.imeContext, kbBgColorRes))
             card.elevation = 0f
             card.clipToOutline = false
 
             dragBar.visibility = View.GONE
 
-            if (modeChanged) ime.recreateKeyboardPublic()
+            if (modeChanged) ime.recreateKeyboard()
 
             card.translationX = 0f
             card.translationY = 0f
@@ -276,7 +277,9 @@ class FloatingKeyboardHandler(
     ) {
         val card = ime.binding.keyboardCard
         val screenHeight =
-            ime.resources.displayMetrics.heightPixels
+            ime
+                .getImeResources()
+                .displayMetrics.heightPixels
                 .toFloat()
 
         val cardWidth = card.width.toFloat()
@@ -368,7 +371,9 @@ class FloatingKeyboardHandler(
     ) {
         val card = ime.binding.keyboardCard
         val screenHeight =
-            ime.resources.displayMetrics.heightPixels
+            ime
+                .getImeResources()
+                .displayMetrics.heightPixels
                 .toFloat()
         val cardHeight = card.height.toFloat()
 
@@ -391,8 +396,8 @@ class FloatingKeyboardHandler(
 
                     initialTouchX = event.rawX
                     initialTouchY = event.rawY
-                    initialScaleX = PreferencesHelper.getFloatingScaleX(ime, ime.language)
-                    initialScaleY = PreferencesHelper.getFloatingScaleY(ime, ime.language)
+                    initialScaleX = PreferencesHelper.getFloatingScaleX(ime.imeContext, ime.language)
+                    initialScaleY = PreferencesHelper.getFloatingScaleY(ime.imeContext, ime.language)
 
                     val viewId = view.id
                     dragFactorX =
@@ -416,8 +421,8 @@ class FloatingKeyboardHandler(
                     card.animate().cancel()
                     card.alpha = 0.7f
 
-                    val density = ime.resources.displayMetrics.density
-                    val activeColor = ContextCompat.getColor(ime, R.color.theme_scribe_blue)
+                    val density = ime.getImeResources().displayMetrics.density
+                    val activeColor = ContextCompat.getColor(ime.imeContext, R.color.theme_scribe_blue)
                     (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
 
                     val location = IntArray(2)
@@ -463,16 +468,18 @@ class FloatingKeyboardHandler(
                     val card = ime.binding.keyboardCard
                     val finalScaleX = card.scaleX
                     val finalScaleY = card.scaleY
-                    PreferencesHelper.setFloatingScaleX(ime, ime.language, finalScaleX)
-                    PreferencesHelper.setFloatingScaleY(ime, ime.language, finalScaleY)
+                    PreferencesHelper.setFloatingScaleX(ime.imeContext, ime.language, finalScaleX)
+                    PreferencesHelper.setFloatingScaleY(ime.imeContext, ime.language, finalScaleY)
 
                     val screenHeight =
-                        ime.resources.displayMetrics.heightPixels
+                        ime
+                            .getImeResources()
+                            .displayMetrics.heightPixels
                             .toFloat()
                     val cardHeight = card.height.toFloat()
                     val liveY = (screenHeight - cardHeight * finalScaleY) / 2f - card.translationY
-                    PreferencesHelper.setFloatingX(ime, ime.language, card.translationX)
-                    PreferencesHelper.setFloatingY(ime, ime.language, liveY)
+                    PreferencesHelper.setFloatingX(ime.imeContext, ime.language, card.translationX)
+                    PreferencesHelper.setFloatingY(ime.imeContext, ime.language, liveY)
 
                     applyFloatingModeState()
                     card
@@ -502,17 +509,17 @@ class FloatingKeyboardHandler(
                     card.animate().cancel()
                     card.alpha = 0.7f
 
-                    val density = ime.resources.displayMetrics.density
-                    val activeColor = ContextCompat.getColor(ime, R.color.theme_scribe_blue)
+                    val density = ime.getImeResources().displayMetrics.density
+                    val activeColor = ContextCompat.getColor(ime.imeContext, R.color.theme_scribe_blue)
                     (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
 
-                    val displayMetrics = ime.resources.displayMetrics
+                    val displayMetrics = ime.getImeResources().displayMetrics
                     val screenWidth = displayMetrics.widthPixels
                     val screenHeight = displayMetrics.heightPixels
                     val cardWidth = card.width.toFloat()
                     val cardHeight = card.height.toFloat()
-                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(ime, ime.language)
-                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(ime, ime.language)
+                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(ime.imeContext, ime.language)
+                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(ime.imeContext, ime.language)
 
                     maxTranslationX = (screenWidth - cardWidth * scaleFactorX) / 2f
                     minTranslationX = -maxTranslationX
@@ -520,8 +527,8 @@ class FloatingKeyboardHandler(
                     minTranslationY = 0f
                     maxTranslationY = screenHeight.toFloat() - cardHeight * scaleFactorY
 
-                    initialTranslationX = PreferencesHelper.getFloatingX(ime, ime.language).coerceInSafe(minTranslationX, maxTranslationX)
-                    initialTranslationY = PreferencesHelper.getFloatingY(ime, ime.language).coerceInSafe(minTranslationY, maxTranslationY)
+                    initialTranslationX = PreferencesHelper.getFloatingX(ime.imeContext, ime.language).coerceInSafe(minTranslationX, maxTranslationX)
+                    initialTranslationY = PreferencesHelper.getFloatingY(ime.imeContext, ime.language).coerceInSafe(minTranslationY, maxTranslationY)
 
                     showCorners()
                     true
@@ -536,19 +543,19 @@ class FloatingKeyboardHandler(
                     targetX = targetX.coerceInSafe(minTranslationX, maxTranslationX)
                     targetY = targetY.coerceInSafe(minTranslationY, maxTranslationY)
 
-                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(ime, ime.language)
-                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(ime, ime.language)
+                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(ime.imeContext, ime.language)
+                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(ime.imeContext, ime.language)
                     updateFloatingViewsPosition(targetX, targetY, scaleFactorX, scaleFactorY)
 
                     val card = ime.binding.keyboardCard
-                    val density = ime.resources.displayMetrics.density
+                    val density = ime.getImeResources().displayMetrics.density
                     val isNearBottom = targetY < 60f * density
                     if (isNearBottom) {
-                        val dockColor = ContextCompat.getColor(ime, R.color.theme_scribe_blue)
+                        val dockColor = ContextCompat.getColor(ime.imeContext, R.color.theme_scribe_blue)
                         (card.background as? GradientDrawable)?.setStroke((4.0f * density).toInt(), dockColor)
                         card.alpha = 0.85f
                     } else {
-                        val activeColor = ContextCompat.getColor(ime, R.color.theme_scribe_blue)
+                        val activeColor = ContextCompat.getColor(ime.imeContext, R.color.theme_scribe_blue)
                         (card.background as? GradientDrawable)?.setStroke((2.5f * density).toInt(), activeColor)
                         card.alpha = 0.7f
                     }
@@ -563,9 +570,9 @@ class FloatingKeyboardHandler(
                     finalTargetX = finalTargetX.coerceInSafe(minTranslationX, maxTranslationX)
                     finalTargetY = finalTargetY.coerceInSafe(minTranslationY, maxTranslationY)
 
-                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(ime, ime.language)
-                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(ime, ime.language)
-                    val density = ime.resources.displayMetrics.density
+                    val scaleFactorX = PreferencesHelper.getFloatingScaleX(ime.imeContext, ime.language)
+                    val scaleFactorY = PreferencesHelper.getFloatingScaleY(ime.imeContext, ime.language)
+                    val density = ime.getImeResources().displayMetrics.density
                     val isNearBottom = finalTargetY < 60f * density
 
                     val card = ime.binding.keyboardCard
@@ -574,8 +581,8 @@ class FloatingKeyboardHandler(
                         disableFloatingMode()
                     } else {
                         updateFloatingViewsPosition(finalTargetX, finalTargetY, scaleFactorX, scaleFactorY)
-                        PreferencesHelper.setFloatingX(ime, ime.language, finalTargetX)
-                        PreferencesHelper.setFloatingY(ime, ime.language, finalTargetY)
+                        PreferencesHelper.setFloatingX(ime.imeContext, ime.language, finalTargetX)
+                        PreferencesHelper.setFloatingY(ime.imeContext, ime.language, finalTargetY)
                         applyFloatingModeState()
                     }
 

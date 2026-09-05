@@ -6,15 +6,14 @@ package be.scri.helpers
 import android.os.Handler
 import android.os.Looper
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
 
 /**
  * Handles auto-suggestions such as noun gender, plurality, case, and emojis.
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */
 class SuggestionHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     private val handler = Handler(Looper.getMainLooper())
     private var emojiSuggestionRunnable: Runnable? = null

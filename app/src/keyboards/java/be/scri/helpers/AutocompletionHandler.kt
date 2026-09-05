@@ -5,15 +5,14 @@ package be.scri.helpers
 import android.os.Handler
 import android.os.Looper
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
 
 /**
  * Handles autocompletion when user is typing.
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */
 class AutocompletionHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     private val handler = Handler(Looper.getMainLooper())
     private var autocompleteRunnable: Runnable? = null
