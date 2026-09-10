@@ -197,7 +197,7 @@ fun HintDialogContent(
                         shape = RoundedCornerShape(8.dp),
                     ) {
                         Text(
-                            text = "OK",
+                            text = stringResource(R.string.i18n_app_settings_option_ok),
                             style = MaterialTheme.typography.headlineMedium,
                             modifier = Modifier,
                         )

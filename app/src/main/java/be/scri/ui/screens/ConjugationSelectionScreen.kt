@@ -199,7 +199,7 @@ fun ConjugationSelectionScreen(
                             modifier = Modifier.fillMaxWidth(0.9f),
                         ) {
                             DropdownMenuItem(
-                                text = { Text("All tenses") },
+                                text = { Text(stringResource(R.string.i18n_app_conjugate_choose_conjugation_all_tenses)) },
                                 onClick = {
                                     selectedTenseGroup = null
                                     expanded = false

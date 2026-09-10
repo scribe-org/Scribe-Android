@@ -84,7 +84,12 @@ object RatingHelper {
         try {
             context.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(context, "No browser found to open $storeName page", Toast.LENGTH_SHORT).show()
+            Toast
+                .makeText(
+                    context,
+                    context.getString(R.string.i18n_app_about_feedback_no_browser_found).replace("{store}", storeName),
+                    Toast.LENGTH_SHORT,
+                ).show()
             Log.e("RatingHelper", "Unable to open $storeName link", e)
         }
     }
