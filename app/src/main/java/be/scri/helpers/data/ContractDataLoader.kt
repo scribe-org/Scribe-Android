@@ -27,7 +27,7 @@ class ContractDataLoader(
      */
     fun loadContract(language: String): DataContract? {
         val contractName = "${language.lowercase()}.yaml"
-        Log.i("ContractDataLoader", "Attempting to load contract: $contractName")
+        Log.d("ContractDataLoader", "Attempting to load contract: $contractName")
 
         return try {
             context.assets.open("data-contracts/$contractName").use { contractFile ->

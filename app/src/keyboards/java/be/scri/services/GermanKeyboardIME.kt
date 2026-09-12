@@ -5,7 +5,6 @@ package be.scri.services
 import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
-import be.scri.helpers.KeyHandler
 import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
 import be.scri.models.ScribeLanguage
 
@@ -49,10 +48,4 @@ class GermanKeyboardIME : GeneralKeyboardIME(ScribeLanguage.GERMAN) {
     // so we must remove the overrides here. They are now inherited directly.
     // override lateinit var binding: KeyboardViewCommandOptionsBinding // REMOVED
     // override var keyboardView: KeyboardView? = null // REMOVED
-
-    private val keyHandler by lazy { KeyHandler(this) }
-
-    override fun onKey(code: Int) {
-        keyHandler.handleKey(code, language)
-    }
 }

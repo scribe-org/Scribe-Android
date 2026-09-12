@@ -50,7 +50,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The application and community's relationship to the Wikimedia movement is explained in app ([#52](https://github.com/scribe-org/Scribe-Android/issues/52)).
 - Vibrate on keypress and key click functionalities are included ([#405](https://github.com/scribe-org/Scribe-Android/issues/405), [#406](https://github.com/scribe-org/Scribe-Android/issues/406)).
 - An in-app tutorial is provided to detail functionalities of the application ([#602](https://github.com/scribe-org/Scribe-Android/issues/602), [#615](https://github.com/scribe-org/Scribe-Android/issues/615), [#616](https://github.com/scribe-org/Scribe-Android/issues/616)).
-- The user is able to easily rate the application ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
+- The user is able to easily rate the application, with installer-aware routing to the appropriate store ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
 
 ### 🗃️ Data
 
@@ -84,6 +84,10 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 - Functions in the application have been documented ([#18](https://github.com/scribe-org/Scribe-Android/issues/18), [#354](https://github.com/scribe-org/Scribe-Android/issues/354)).
 
+### 🔒 Security
+
+- Clipboard history is excluded from Android Auto Backup and device-to-device transfer so that copied text never leaves the device ([#695](https://github.com/scribe-org/Scribe-Android/issues/695)).
+
 ### ⚖️ Legal
 
 - All code has been developed under the GNU General Public License (GPL-3.0) ([#301](https://github.com/scribe-org/Scribe-Android/issues/301)).
@@ -94,3 +98,6 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 ### ♻️ Code Refactoring
 
 - Code quality improvements were continuously done to assure that the application is easy to maintain and meets Kotlin standards ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
+- `CommandHandler` was extracted from `GeneralKeyboardIME` to encapsulate command execution, Enter key dispatching, and lookup state machine logic ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
+- Introduced `KeyboardIMEContext` interface contract to decouple handler dependencies from the concrete `GeneralKeyboardIME` class ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
+

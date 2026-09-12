@@ -221,7 +221,6 @@ class KeyboardBase {
                         else -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
                     }
                 } else {
-                    Log.i("≠", "The current state is not conjugate view")
                     when (resources.configuration.orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> {
                             res.getDimension(R.dimen.key_height_landscape).toInt()

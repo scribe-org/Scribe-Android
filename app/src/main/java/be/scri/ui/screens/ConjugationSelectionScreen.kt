@@ -199,7 +199,7 @@ fun ConjugationSelectionScreen(
                             modifier = Modifier.fillMaxWidth(0.9f),
                         ) {
                             DropdownMenuItem(
-                                text = { Text("All tenses") },
+                                text = { Text(stringResource(R.string.i18n_app_conjugate_choose_conjugation_all_tenses)) },
                                 onClick = {
                                     selectedTenseGroup = null
                                     expanded = false
@@ -449,7 +449,7 @@ private fun ConjugationCell(
                 .clickable {
                     clipboardManager.setText(AnnotatedString(form))
                     Toast
-                        .makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT)
+                        .makeText(context, R.string.i18n_app_clipboard_copied_to_clipboard, Toast.LENGTH_SHORT)
                         .show()
                 }.padding(horizontal = 12.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.SpaceBetween,

@@ -142,7 +142,7 @@ private fun DownloadStateIcon(
         DownloadState.Ready -> {
             Icon(
                 painter = painterResource(id = R.drawable.clouddownload),
-                contentDescription = "Download",
+                contentDescription = stringResource(R.string.i18n_app__global_download),
                 modifier = Modifier.size(24.dp),
                 tint = iconColor,
             )
@@ -159,7 +159,7 @@ private fun DownloadStateIcon(
         DownloadState.Completed -> {
             Icon(
                 painter = painterResource(id = R.drawable.check),
-                contentDescription = "Check",
+                contentDescription = stringResource(R.string.i18n_app__global_check),
                 modifier = Modifier.size(24.dp),
                 tint = iconColor,
             )
@@ -168,7 +168,7 @@ private fun DownloadStateIcon(
         DownloadState.Update -> {
             Icon(
                 painter = painterResource(id = R.drawable.clouddownload),
-                contentDescription = "Update",
+                contentDescription = stringResource(R.string.i18n_app_download_menu_ui_download_data_update),
                 modifier = Modifier.size(24.dp),
                 tint = iconColor,
             )

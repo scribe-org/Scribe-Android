@@ -434,7 +434,7 @@ fun ConjugateScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = "Clear all ✕",
+                                text = stringResource(R.string.i18n_app__global_clear_all) + " ✕",
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onPrimary,
                                 style = MaterialTheme.typography.bodySmall,

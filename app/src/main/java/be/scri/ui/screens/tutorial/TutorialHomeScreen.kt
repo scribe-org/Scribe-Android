@@ -156,7 +156,7 @@ fun TutorialHomeScreen(
                         )
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = "Go to ${chapter.title}",
+                            contentDescription = stringResource(R.string.i18n_app_accessibility_go_to_chapter).replace("{title}", chapter.title),
                             tint = secondaryTextColor,
                         )
                     }

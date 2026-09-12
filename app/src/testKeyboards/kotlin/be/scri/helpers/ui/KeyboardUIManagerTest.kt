@@ -6,6 +6,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
+import be.scri.R
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.ui.KeyboardUIManager.KeyboardUIListener
 import be.scri.models.ScribeState
@@ -13,6 +14,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -260,5 +263,183 @@ class KeyboardUIManagerTest {
         verify { listener.onSuggestionClicked(any()) }
         assertEquals(View.VISIBLE, translateBtn.visibility)
         assertEquals(View.INVISIBLE, translateBtnLeft.visibility)
+    }
+
+    @Test
+    fun updateUI_EnglishWithSmallForms_Inflates2x2Grid() {
+        // Arrange
+        val mockConjugateOutput =
+            mapOf(
+                "Present" to
+                    mapOf(
+                        "Present" to listOf("am", "are", "is", "are"),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Present"),
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = "be",
+        )
+
+        // Assert
+        assertNotNull("Button 1 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNotNull("Button 4 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
+        assertNull("Button 5 should not be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
+        assertNull("Button 6 should not be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_6))
+    }
+
+    @Test
+    fun updateUI_RussianWithSmallForms_Inflates2x2Grid() {
+        // Arrange
+        val mockConjugateOutput =
+            mapOf(
+                "Настоящее" to
+                    mapOf(
+                        "Настоящее" to listOf("читаю", "читаешь", "читает"),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "Russian",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Настоящее"),
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = "читать",
+        )
+
+        // Assert
+        assertNotNull("Button 1 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNotNull("Button 4 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
+        assertNull("Button 5 should not be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
+    }
+
+    @Test
+    fun updateUI_SwedishWithSmallForms_Inflates2x2Grid() {
+        // Arrange
+        val mockConjugateOutput =
+            mapOf(
+                "Presens" to
+                    mapOf(
+                        "Presens" to listOf("är", "var", "varit"),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "Swedish",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Presens"),
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = "vara",
+        )
+
+        // Assert
+        assertNotNull("Button 1 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNotNull("Button 4 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
+        assertNull("Button 5 should not be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
+    }
+
+    @Test
+    fun updateUI_GermanWithLargeForms_Inflates3x2Grid() {
+        // Arrange
+        val mockConjugateOutput =
+            mapOf(
+                "Präsens" to
+                    mapOf(
+                        "Präsens" to listOf("habe", "hast", "hat", "haben", "habt", "haben"),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "German",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Präsens"),
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = "haben",
+        )
+
+        // Assert
+        assertNotNull("Button 1 should be present in 3x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNotNull("Button 5 should be present in 3x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
+        assertNotNull("Button 6 should be present in 3x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_6))
+    }
+
+    @Test
+    fun updateUI_SubSelectionActive_Prioritizes2x1Grid() {
+        // Arrange
+        val mockConjugateOutput =
+            mapOf(
+                "Present" to
+                    mapOf(
+                        "Singular" to listOf("I am", "You are"),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Present"),
+            selectedConjugationSubCategory = "Singular",
+            currentVerbForConjugation = "be",
+        )
+
+        // Assert
+        assertNotNull("Button 1 should be present in 2x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNotNull("Button 2 should be present in 2x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_2))
+        assertNull("Button 3 should not be present in 2x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_3))
+        assertNull("Button 4 should not be present in 2x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
+        assertNull("Button 5 should not be present in 2x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
+    }
+
+    @Test
+    fun updateUI_UnknownLanguageString_FallsBackSafelyWithoutCrashing() {
+        // Arrange
+        val mockConjugateOutput =
+            mapOf(
+                "Present" to
+                    mapOf(
+                        "Present" to listOf("form1", "form2"),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "UnknownLanguageXYZ",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Present"),
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = "verb",
+        )
+
+        // Assert
+        assertEquals("Toolbar bar should be visible", View.VISIBLE, toolbarBar.visibility)
+        assertEquals("Conjugate grid container should be visible", View.VISIBLE, conjugateGridContainer.visibility)
+        assertNotNull("Button 1 should be present in fallback grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNull("Button 5 should not be present in fallback 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
     }
 }

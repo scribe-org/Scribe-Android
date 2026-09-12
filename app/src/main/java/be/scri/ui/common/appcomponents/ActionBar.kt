@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import be.scri.R
@@ -44,7 +45,7 @@ fun ActionBar(
             Icon(
                 painter = painterResource(R.drawable.chevron),
                 tint = MaterialTheme.colorScheme.onBackground,
-                contentDescription = "Back button",
+                contentDescription = stringResource(R.string.i18n_app_accessibility_back),
             )
         }
         Text(

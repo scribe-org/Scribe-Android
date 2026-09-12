@@ -143,6 +143,7 @@ fun feedbackAndSupportList(
                 } else {
                     R.string.i18n_app_about_feedback_rate_scribe
                 },
+            descText = RatingHelper.getStoreDesc(context),
             trailingIcon = R.drawable.external_link,
             url = null,
             onClick = { onRateScribeClick() },

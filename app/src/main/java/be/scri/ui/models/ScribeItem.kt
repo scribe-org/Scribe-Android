@@ -64,6 +64,7 @@ sealed class ScribeItem(
     data class ExternalLinkItem(
         override val title: Int,
         override val desc: Int? = null,
+        val descText: String? = null,
         override val altText: Int? = null,
         @DrawableRes val leadingIcon: Int,
         @DrawableRes val trailingIcon: Int,

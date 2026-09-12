@@ -47,9 +47,20 @@ fun ThirdPartyScreen(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = stringResource(id = R.string.i18n_app_about_legal_third_party_text),
+                    text = stringResource(id = R.string.i18n_app_about_legal_third_party_text_1),
                     style = MaterialTheme.typography.bodyMedium,
                 )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(id = R.string.i18n_app_about_legal_third_party_text_2),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(id = R.string.i18n_app_about_legal_third_party_text_3),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = stringResource(id = R.string.i18n_app_about_legal_third_party_entry_simple_keyboard),
                     style = MaterialTheme.typography.bodyMedium,

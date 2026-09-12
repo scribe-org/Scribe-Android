@@ -23,6 +23,7 @@ If you have questions or would like to communicate with the team, please [join u
 - [Bug reports](#bug-reports)
 - [Feature requests](#feature-requests)
 - [Pull requests](#pull-requests)
+- [Adding keyboards](#adding-keyboards)
 - [Data edits](#data-edits)
 - [Localization](#localization)
 - [Documentation](#documentation)
@@ -353,6 +354,16 @@ When making a contribution, adhering to the [GitHub flow](https://guides.github.
 6. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/) with a clear title and description.
 
 Thank you in advance for your contributions!
+
+<sub><a href="#top">Back to top.</a></sub>
+
+## Adding keyboards
+
+Scribe has interest in adding keyboards for any language! Please let the community know if you'd like a Scribe keyboard in your second or native language.
+
+As of now the Scribe-Android keyboard application is leveraging AOSP based autosuggestions and autocompletions. This means that adding a new keyboard that has AOSP based dictionaries available is dramatically easier than adding other languages. Please see the following for a list of available dictionaries:
+
+- [Codeberg:Helium314/aosp-dictionaries](https://codeberg.org/Helium314/aosp-dictionaries)
 
 <sub><a href="#top">Back to top.</a></sub>
 

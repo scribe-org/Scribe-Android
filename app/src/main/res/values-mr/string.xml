@@ -38,7 +38,7 @@
     <string name="i18n.app.about.legal.third_party.caption">ज्यांचा कोड आम्ही वापरला आहे</string>
     <string name="i18n.app.about.legal.third_party.entry_custom_keyboard">कस्टम कीबोर्ड\n• लेखक: एथेन एस के\n• परवाना: एमआयटी\n• लिंक: https://github.com/EthanSK/CustomKeyboard/blob/master/LICENSE</string>
     <string name="i18n.app.about.legal.third_party.entry_simple_keyboard">सिंपल कीबोर्ड\n• लेखक: सिंपल मोबाईल टूल्स\n• परवाना: GPL-3.0\n• लिंक: https://github.com/SimpleMobileTools/Simple-Keyboard/blob/main/LICENSE</string>
-    <string name="i18n.app.about.legal.third_party.text">स्क्राइब डेव्हलपर्सनी आयओएस अ‍ॅप्लिकेशन \'स्क्राइब - भाषा कीबोर्ड्स\' तृतीय-पक्ष कोडचा वापर करून तयार केले आहे.</string>
+    <string name="i18n.app.about.legal.third_party.text_1">स्क्राइब डेव्हलपर्सनी आयओएस अ‍ॅप्लिकेशन \'स्क्राइब - भाषा कीबोर्ड्स\' तृतीय-पक्ष कोडचा वापर करून तयार केले आहे.</string>
     <string name="i18n.app.about.title">बद्दल</string>
     <string name="i18n.app.conjugate.choose_conjugation.select_tense">काल निवडा</string>
     <string name="i18n.app.conjugate.choose_conjugation.title">खालीलपैकी एक संयोजन निवडा</string>

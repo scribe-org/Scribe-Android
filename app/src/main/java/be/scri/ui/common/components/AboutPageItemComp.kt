@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ fun AboutPageItemComp(
     trailingIcon: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    descText: String? = null,
     altText: String? = null,
 ) {
     val semanticsModifier =
@@ -69,22 +71,33 @@ fun AboutPageItemComp(
                         .padding(start = 2.dp)
                         .size(22.dp),
                 tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = "Leading Icon",
+                contentDescription = stringResource(R.string.i18n_app_accessibility_leading_icon),
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = title,
+            androidx.compose.foundation.layout.Column(
                 modifier = Modifier.weight(1f).padding(start = 4.dp),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            ) {
+                Text(
+                    text = title,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                if (descText != null) {
+                    Text(
+                        text = descText,
+                        color = Color.Gray,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
+            }
             Icon(
                 painter = painterResource(trailingIcon),
                 modifier =
                     Modifier
                         .padding(start = 6.dp)
                         .size(24.dp),
-                contentDescription = "Trailing Icon",
+                contentDescription = stringResource(R.string.i18n_app_accessibility_trailing_icon),
                 tint = Color.Gray,
             )
         }

@@ -116,6 +116,7 @@ class NativeSuggestionEngine(private val context: Context) {
     fun getAutocompletions(
         language: String,
         prefix: String,
+        previousWord: String? = null,
         limit: Int = 3
     ): List<String> {
         val dict = getDictionary(language) ?: return emptyList()
@@ -123,18 +124,30 @@ class NativeSuggestionEngine(private val context: Context) {
 
         return try {
             val composedData = ComposedData.createForWord(prefix)
+            val ngramContext =
+                if (previousWord.isNullOrBlank()) {
+                    NgramContext.EMPTY_PREV_WORDS_INFO
+                } else {
+                    NgramContext(NgramContext.WordInfo(previousWord))
+                }
             val suggestions = dict.getSuggestions(
                 composedData,
-                NgramContext.EMPTY_PREV_WORDS_INFO,
+                ngramContext,
                 dummyProximityInfo.nativeProximityInfo, // proximityInfoHandle
-                SettingsValuesForSuggestion(false, false),
+                SettingsValuesForSuggestion(true, false), // blockPotentiallyOffensive, spaceAwareGesture
                 1, // sessionId
                 1.0f, // weightForLocale
                 null // inOutWeightOfLangModelVsSpatialModel
             )
 
+            val isCapitalized = StringUtils.isWordCapitalized(prefix)
             suggestions?.map { it.mWord }
-                ?.filter { it.isNotBlank() && it.lowercase(Locale.ROOT) != prefix.lowercase(Locale.ROOT) }
+                ?.filter {
+                    it.isNotBlank() &&
+                        it.startsWith(prefix, ignoreCase = true) &&
+                        it.lowercase(Locale.ROOT) != prefix.lowercase(Locale.ROOT)
+                }
+                ?.map { if (isCapitalized) it.replaceFirstChar { c -> c.uppercaseChar() } else it }
                 ?.take(limit)
                 ?: emptyList()
         } catch (e: Exception) {
@@ -162,14 +175,14 @@ class NativeSuggestionEngine(private val context: Context) {
                 composedData,
                 ngramContext,
                 dummyProximityInfo.nativeProximityInfo, // proximityInfoHandle
-                SettingsValuesForSuggestion(false, false),
+                SettingsValuesForSuggestion(true, false), // blockPotentiallyOffensive, spaceAwareGesture
                 1, // sessionId
                 1.0f, // weightForLocale
                 null // inOutWeightOfLangModelVsSpatialModel
             )
 
             suggestions?.map { it.mWord }
-                ?.filter { it.isNotBlank() }
+                ?.filter { it.isNotBlank() && it.lowercase(Locale.ROOT) != lastWord.lowercase(Locale.ROOT) }
                 ?.take(limit)
                 ?: emptyList()
         } catch (e: Exception) {

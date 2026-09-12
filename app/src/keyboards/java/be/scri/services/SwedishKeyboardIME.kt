@@ -5,7 +5,6 @@ package be.scri.services
 import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
-import be.scri.helpers.KeyHandler
 import be.scri.helpers.PreferencesHelper.getIsAccentCharacterDisabled
 import be.scri.models.ScribeLanguage
 
@@ -40,10 +39,4 @@ class SwedishKeyboardIME : GeneralKeyboardIME(ScribeLanguage.SWEDISH) {
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
-
-    private val keyHandler by lazy { KeyHandler(this) }
-
-    override fun onKey(code: Int) {
-        keyHandler.handleKey(code, language)
-    }
 }
