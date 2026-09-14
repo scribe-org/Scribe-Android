@@ -73,6 +73,10 @@ interface KeyboardIMEContext {
     val caseAnnotation: HashMap<String, MutableList<String>>
     val suggestionWords: HashMap<String, List<String>>
     val emojiKeywords: HashMap<String, MutableList<String>>?
+    var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
+    val defaultConjugateLayoutXML: Int
+
+    fun getKeyboardLayoutXML(): Int
 
     fun handleDelete(isLongPress: Boolean = false)
 
