@@ -84,6 +84,10 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 - Functions in the application have been documented ([#18](https://github.com/scribe-org/Scribe-Android/issues/18), [#354](https://github.com/scribe-org/Scribe-Android/issues/354)).
 
+### Bug Fixes
+
+- Downloading or checking for language data updates no longer crashes the app when the server returns a malformed timestamp ([#700](https://github.com/scribe-org/Scribe-Android/issues/700)).
+
 ### 🔒 Security
 
 - Clipboard history is excluded from Android Auto Backup and device-to-device transfer so that copied text never leaves the device ([#695](https://github.com/scribe-org/Scribe-Android/issues/695)).
