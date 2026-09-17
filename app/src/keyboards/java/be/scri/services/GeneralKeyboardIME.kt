@@ -442,16 +442,17 @@ abstract class GeneralKeyboardIME(
         restarting: Boolean,
     ) {
         super.onStartInput(attribute, restarting)
-        inputTypeClass = attribute!!.inputType and TYPE_MASK_CLASS
-        enterKeyType = attribute.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
+        val editorInfo = attribute ?: EditorInfo()
+        inputTypeClass = editorInfo.inputType and TYPE_MASK_CLASS
+        enterKeyType = editorInfo.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         currentEnterKeyType = enterKeyType
 
         // This setter triggers the logic in the property override if not shadowed.
         hasTextBeforeCursor = currentInputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
 
-        isNumericKeyboardActive = shouldUseNumericKeyboard(attribute.inputType)
+        isNumericKeyboardActive = shouldUseNumericKeyboard(editorInfo.inputType)
         keyboardMode = if (isNumericKeyboardActive) keyboardSymbols else keyboardLetters
-        val keyboardXml = getKeyboardLayoutXMLForInputType(attribute.inputType, getKeyboardLayoutXML())
+        val keyboardXml = getKeyboardLayoutXMLForInputType(editorInfo.inputType, getKeyboardLayoutXML())
 
         loadLanguageData()
 
