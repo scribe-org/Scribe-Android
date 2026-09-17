@@ -84,10 +84,11 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 - Functions in the application have been documented ([#18](https://github.com/scribe-org/Scribe-Android/issues/18), [#354](https://github.com/scribe-org/Scribe-Android/issues/354)).
 
-### Bug Fixes
+### 🐛 Bug Fixes
 
 - The keyboard service no longer crashes when an editor starts input with no `EditorInfo` ([#699](https://github.com/scribe-org/Scribe-Android/issues/699)).
 - Downloading or checking for language data updates no longer crashes the app when the server returns a malformed timestamp ([#700](https://github.com/scribe-org/Scribe-Android/issues/700)).
+- Native dictionaries are re-extracted after an app update so autosuggestions no longer use dictionaries from a previous install ([#701](https://github.com/scribe-org/Scribe-Android/issues/701)).
 
 ### 🔒 Security
 
