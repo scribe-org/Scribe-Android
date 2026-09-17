@@ -25,7 +25,7 @@ data class Contract(
     @SerializedName("version")
     val version: String,
     @SerializedName("updated_at")
-    val updatedAt: String,
+    val updatedAt: String?,
     @SerializedName("fields")
     val fields: Map<String, Map<String, String>>,
 )
