@@ -19,51 +19,36 @@ class ConjugationHandler(
     private val ime: KeyboardIMEContext,
 ) {
     var subsequentAreaRequired: Boolean = false
-    var subsequentData: MutableList<List<String>> = mutableListOf()
+        private set
 
     /**
      * Saves the type of conjugation layout being used (e.g., "2x2", "none") to shared preferences.
      *
-     * @param language The current keyboard language.
-     * @param isSubsequent true if saving for a sub-view, false for standard layout.
+     * For the **primary conjugation view** (isSubsequent = false):
+     * - If [language] is `"none"` (idle/reset sentinel), saves `"none"` directly.
+     * - Otherwise uses [KeyboardIMEContext.defaultConjugateModeType], so each IME subclass
+     *   controls its own mode without a hardcoded language list here.
+     *
+     * For a **sub-view** (isSubsequent = true), saves [subViewMode] (e.g. "2x1" or "1x3")
+     * so that [be.scri.helpers.KeyboardBase] picks the correct row height.
+     *
+     * @param language The current keyboard language, or "none" to reset to the idle mode.
+     * @param isSubsequent true if saving for a sub-view, false for the standard conjugation view.
+     * @param subViewMode The layout mode string for the sub-view. Only used when [isSubsequent] is true.
      */
     fun saveConjugateModeType(
         language: String,
         isSubsequent: Boolean = false,
+        subViewMode: String = "none",
     ) {
         val mode =
-            if (!isSubsequent) {
-                when (language) {
-                    "English", "Russian", "Swedish",
-                    "German", "French", "Italian", "Portuguese", "Spanish",
-                    "en", "ru", "sv", "de", "fr", "it", "pt", "es",
-                    -> "2x2"
-                    else -> "none"
-                }
-            } else {
-                "none"
+            when {
+                isSubsequent -> subViewMode
+                language == "none" -> "none"
+                else -> ime.defaultConjugateModeType
             }
         val sharedPref = ime.imeContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
         sharedPref.edit { putString("conjugate_mode_type", mode) }
-    }
-
-    /**
-     * Retrieves and validates the stored index for the current conjugation view.
-     * Ensures the index is within the bounds of available conjugation types.
-     *
-     * @return A valid, zero-based index for the conjugation type.
-     */
-    fun getValidatedConjugateIndex(): Int {
-        val prefs = ime.imeContext.getSharedPreferences("keyboard_preferences", MODE_PRIVATE)
-        var index = prefs.getInt("conjugate_index", 0)
-        val maxIndex =
-            ime.conjugateOutput
-                ?.keys
-                ?.count()
-                ?.minus(1) ?: -1
-        index = if (maxIndex >= 0) index.coerceIn(0, maxIndex) else 0
-        prefs.edit { putInt("conjugate_index", index) }
-        return index
     }
 
     /**
@@ -102,8 +87,14 @@ class ConjugationHandler(
         val uniqueData = data.distinct()
         val filteredData = uniqueData.filter { sublist -> sublist.contains(word) }
         val flattenList = filteredData.flatten()
-        saveConjugateModeType(language = ime.language, isSubsequent = true)
-        val keyboardXmlId = getKeyboardLayoutForState(ime.currentState, isSubsequentArea = true, dataSize = flattenList.size)
+        val keyboardXmlId = getKeyboardLayoutForState(ime.currentState, dataSize = flattenList.size)
+        val subViewMode =
+            when (flattenList.size) {
+                DATA_SIZE_2 -> "2x1"
+                DATA_SIZE_3 -> "1x3"
+                else -> return
+            }
+        saveConjugateModeType(language = ime.language, isSubsequent = true, subViewMode = subViewMode)
         ime.uiManager.initializeKeyboard(keyboardXmlId)
         when (flattenList.size) {
             DATA_SIZE_2 -> {
@@ -123,29 +114,25 @@ class ConjugationHandler(
     }
 
     /**
-     * Determines which keyboard layout XML to use based on the current [ScribeState].
+     * Determines which keyboard layout XML to use for a conjugation sub-view based on the number
+     * of items in the sub-view. Only called from [setupConjugateSubView] for sizes 2 and 3;
+     * other sizes trigger an early return before this is used.
      *
      * @param state The current state of the Scribe keyboard.
-     * @param isSubsequentArea true if this is for a secondary conjugation view.
      * @param dataSize The number of items to display, used to select an appropriate layout.
      *
      * @return The resource ID of the keyboard layout XML.
      */
     private fun getKeyboardLayoutForState(
         state: ScribeState,
-        isSubsequentArea: Boolean = false,
-        dataSize: Int = 0,
+        dataSize: Int,
     ): Int =
         when (state) {
             ScribeState.SELECT_VERB_CONJUNCTION -> {
-                if (!isSubsequentArea && dataSize == 0) {
-                    ime.defaultConjugateLayoutXML
-                } else {
-                    when (dataSize) {
-                        DATA_SIZE_2 -> R.xml.conjugate_view_2x1
-                        DATA_SIZE_3 -> R.xml.conjugate_view_1x3
-                        else -> R.xml.conjugate_view_2x2
-                    }
+                when (dataSize) {
+                    DATA_SIZE_2 -> R.xml.conjugate_view_2x1
+                    DATA_SIZE_3 -> R.xml.conjugate_view_1x3
+                    else -> ime.defaultConjugateLayoutXML
                 }
             }
 

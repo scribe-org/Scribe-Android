@@ -103,7 +103,7 @@ abstract class GeneralKeyboardIME(
     abstract var switchToLetters: Boolean
 
     // Language-specific layout and behavior configurations (decoupled from base class).
-    open val defaultConjugateModeType: String = "3x2"
+    open override val defaultConjugateModeType: String = "3x2"
     override val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_3x2
     open val isPluralCapitalized: Boolean = false
 
@@ -789,7 +789,7 @@ abstract class GeneralKeyboardIME(
     override fun commitText(text: String) {
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
             val label = text.trim()
-            val conjugateIndex = conjugationHandler.getValidatedConjugateIndex()
+            val conjugateIndex = uiManager.getValidatedConjugateIndex(conjugateOutput)
             val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
             val languageOutput = title?.let { conjugateOutput!![it] }
 
@@ -1244,7 +1244,6 @@ abstract class GeneralKeyboardIME(
      */
     override fun returnIsSubsequentRequired(): Boolean = conjugationHandler.subsequentAreaRequired
 
-    override fun returnSubsequentData(): List<List<String>> = conjugationHandler.subsequentData
 
     /**
      * Handles a key press on one of the special conjugation keys.

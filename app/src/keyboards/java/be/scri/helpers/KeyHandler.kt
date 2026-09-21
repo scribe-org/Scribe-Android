@@ -339,7 +339,7 @@ class KeyHandler(
             ime.saveConjugateModeType(language, isSubsequentArea = false)
         } else {
             val word = ime.handleConjugateKeys(code, true)
-            ime.setupConjugateSubView(ime.returnSubsequentData(), word)
+            ime.setupConjugateSubView(emptyList(), word)
         }
     }
 

@@ -31,8 +31,8 @@ import org.robolectric.annotation.Config
 class ConjugationHandlerTest {
     private lateinit var context: Context
     private lateinit var binding: InputMethodViewBinding
-    private lateinit var uiManager: KeyboardUIManager
     private val ime = mockk<KeyboardIMEContext>(relaxed = true)
+    private val uiManager = mockk<KeyboardUIManager>(relaxed = true)
     private val keyboardView = mockk<KeyboardView>(relaxed = true)
     private val inputConnection = mockk<InputConnection>(relaxed = true)
     private val suggestionHandler = mockk<SuggestionHandler>(relaxed = true)
@@ -43,15 +43,13 @@ class ConjugationHandlerTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         binding = InputMethodViewBinding.inflate(LayoutInflater.from(context))
-        val listener = mockk<KeyboardUIManager.KeyboardUIListener>(relaxed = true)
-        uiManager = KeyboardUIManager(binding, context, listener)
 
         every { ime.imeContext } returns context
         every { ime.keyboardView } returns keyboardView
         every { ime.getInputConnection() } returns inputConnection
         every { ime.suggestionHandler } returns suggestionHandler
         every { ime.uiManager } returns uiManager
-        every { ime.binding } returns binding
+        every { uiManager.binding } returns binding
 
         handler = ConjugationHandler(ime)
     }
@@ -85,39 +83,11 @@ class ConjugationHandlerTest {
         assertEquals(listOf("GO", "RUN", ""), result["Present"]?.get("I"))
     }
 
-    @Test
-    fun getValidatedConjugateIndex_clampsToValidRange() {
-        val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-        prefs.edit().putInt("conjugate_index", 5).commit()
-
-        every { ime.conjugateOutput } returns
-            mutableMapOf(
-                "Present" to mutableMapOf(),
-                "Past" to mutableMapOf(),
-            )
-
-        val index = handler.getValidatedConjugateIndex()
-
-        // Max index is 1 (size 2 - 1)
-        assertEquals(1, index)
-        assertEquals(1, prefs.getInt("conjugate_index", -1))
-    }
 
     @Test
-    fun getValidatedConjugateIndex_nullOrEmptyOutputDefaultsToZero() {
-        val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-        prefs.edit().putInt("conjugate_index", 3).commit()
+    fun saveConjugateModeType_usesDefaultConjugateModeTypeFromIme() {
+        every { ime.defaultConjugateModeType } returns "2x2"
 
-        every { ime.conjugateOutput } returns null
-
-        val index = handler.getValidatedConjugateIndex()
-
-        assertEquals(0, index)
-        assertEquals(0, prefs.getInt("conjugate_index", -1))
-    }
-
-    @Test
-    fun saveConjugateModeType_spanishReturns2x2() {
         handler.saveConjugateModeType("Spanish", isSubsequent = false)
 
         val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
@@ -125,24 +95,40 @@ class ConjugationHandlerTest {
     }
 
     @Test
-    fun saveConjugateModeType_englishReturns2x2() {
-        handler.saveConjugateModeType("English", isSubsequent = false)
+    fun saveConjugateModeType_3x2ImeReturns3x2() {
+        every { ime.defaultConjugateModeType } returns "3x2"
+
+        handler.saveConjugateModeType("French", isSubsequent = false)
 
         val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-        assertEquals("2x2", prefs.getString("conjugate_mode_type", null))
+        assertEquals("3x2", prefs.getString("conjugate_mode_type", null))
     }
 
     @Test
-    fun saveConjugateModeType_noneReturnsNone() {
-        handler.saveConjugateModeType("none", isSubsequent = false)
+    fun saveConjugateModeType_unsupportedLanguageReturnsNoneFromIme() {
+        // Hindi is not a supported conjugation language — the IME default covers this.
+        every { ime.defaultConjugateModeType } returns "none"
+
+        handler.saveConjugateModeType("Hindi", isSubsequent = false)
 
         val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         assertEquals("none", prefs.getString("conjugate_mode_type", null))
     }
 
     @Test
-    fun saveConjugateModeType_subsequentReturnsNone() {
-        handler.saveConjugateModeType("English", isSubsequent = true)
+    fun saveConjugateModeType_subsequentSavesSubViewMode() {
+        handler.saveConjugateModeType("English", isSubsequent = true, subViewMode = "2x1")
+
+        val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        assertEquals("2x1", prefs.getString("conjugate_mode_type", null))
+    }
+
+    @Test
+    fun saveConjugateModeType_noneSentinelSavesNoneRegardlessOfImeDefault() {
+        // IME default is "2x2" but passing "none" as language resets to idle mode.
+        every { ime.defaultConjugateModeType } returns "2x2"
+
+        handler.saveConjugateModeType("none", isSubsequent = false)
 
         val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         assertEquals("none", prefs.getString("conjugate_mode_type", null))
@@ -181,16 +167,41 @@ class ConjugationHandlerTest {
     }
 
     @Test
+    fun setupConjugateSubView_withDataSizeZero_earlyReturnsWithoutInflatingKeyboard() {
+        every { ime.currentState } returns ScribeState.SELECT_VERB_CONJUNCTION
+        every { ime.defaultConjugateLayoutXML } returns R.xml.conjugate_view_3x2
+
+        // Empty data — flattenList.size == 0 hits else -> return before initializeKeyboard
+        handler.setupConjugateSubView(emptyList(), word = null)
+
+        verify(exactly = 0) { uiManager.initializeKeyboard(any()) }
+    }
+
+    @Test
+    fun setupConjugateSubView_withUnsupportedDataSize_usesDefaultConjugateLayoutXML() {
+        every { ime.language } returns "Spanish"
+        every { ime.currentState } returns ScribeState.SELECT_VERB_CONJUNCTION
+        every { ime.defaultConjugateModeType } returns "2x2"
+        every { ime.defaultConjugateLayoutXML } returns R.xml.conjugate_view_3x2
+
+        // 4 items → not 2 or 3, so getKeyboardLayoutForState returns defaultConjugateLayoutXML
+        val data = listOf(listOf("hablo", "hablas", "habla", "hablamos"))
+        handler.setupConjugateSubView(data, word = "hablo")
+
+        verify { uiManager.initializeKeyboard(R.xml.conjugate_view_3x2) }
+    }
+
+    @Test
     fun setupConjugateSubView_withTwoItems_configures2x1Layout() {
         every { ime.language } returns "Spanish"
         every { ime.currentState } returns ScribeState.SELECT_VERB_CONJUNCTION
-        handler.subsequentAreaRequired = true
+        every { ime.defaultConjugateModeType } returns "2x2"
 
         val data = listOf(listOf("hablo", "hablas"))
         handler.setupConjugateSubView(data, word = "hablo")
 
         val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-        assertEquals("none", prefs.getString("conjugate_mode_type", null))
+        assertEquals("2x1", prefs.getString("conjugate_mode_type", null))
         verify { uiManager.initializeKeyboard(R.xml.conjugate_view_2x1) }
         verify { keyboardView.setKeyLabel("hablo", "HI", KeyboardBase.CODE_2X1_TOP) }
         verify { keyboardView.setKeyLabel("hablas", "HI", KeyboardBase.CODE_2X1_BOTTOM) }
@@ -202,13 +213,13 @@ class ConjugationHandlerTest {
     fun setupConjugateSubView_withThreeItems_configures1x3Layout() {
         every { ime.language } returns "Spanish"
         every { ime.currentState } returns ScribeState.SELECT_VERB_CONJUNCTION
-        handler.subsequentAreaRequired = true
+        every { ime.defaultConjugateModeType } returns "2x2"
 
         val data = listOf(listOf("hablo", "hablas", "habla"))
         handler.setupConjugateSubView(data, word = "hablo")
 
         val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-        assertEquals("none", prefs.getString("conjugate_mode_type", null))
+        assertEquals("1x3", prefs.getString("conjugate_mode_type", null))
         verify { uiManager.initializeKeyboard(R.xml.conjugate_view_1x3) }
         verify { keyboardView.setKeyLabel("hablo", "HI", KeyboardBase.CODE_1X3_LEFT) }
         verify { keyboardView.setKeyLabel("hablas", "HI", KeyboardBase.CODE_1X3_CENTER) }

@@ -75,6 +75,7 @@ interface KeyboardIMEContext {
     val emojiKeywords: HashMap<String, MutableList<String>>?
     var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
     val defaultConjugateLayoutXML: Int
+    val defaultConjugateModeType: String
 
     fun getKeyboardLayoutXML(): Int
 
@@ -195,8 +196,6 @@ interface KeyboardIMEContext {
         data: List<List<String>>,
         word: String?,
     )
-
-    fun returnSubsequentData(): List<List<String>>
 
     fun getKeyboardWidth(): Int
 
