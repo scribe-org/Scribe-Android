@@ -170,7 +170,7 @@ class ConjugationHandlerTest {
         every { ime.currentState } returns ScribeState.SELECT_VERB_CONJUNCTION
         every { ime.defaultConjugateLayoutXML } returns R.xml.conjugate_view_3x2
 
-        // Empty data — flattenList.size == 0 hits else -> return before initializeKeyboard
+        // Empty data — flattenList.size == 0 hits else -> return before initializeKeyboard.
         handler.setupConjugateSubView(emptyList(), word = null)
 
         verify(exactly = 0) { uiManager.initializeKeyboard(any()) }
@@ -178,7 +178,7 @@ class ConjugationHandlerTest {
 
     @Test
     fun setupConjugateSubView_withUnsupportedDataSize_earlyReturnsWithoutInflatingKeyboard() {
-        // 4 items → not 2 or 3, so setupConjugateSubView early-returns without inflating keyboard
+        // 4 items → not 2 or 3, so setupConjugateSubView early-returns without inflating keyboard.
         val data = listOf(listOf("hablo", "hablas", "habla", "hablamos"))
         handler.setupConjugateSubView(data, word = "hablo")
 
