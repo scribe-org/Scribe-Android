@@ -20,6 +20,7 @@ class ConjugationHandler(
 ) {
     var subsequentAreaRequired: Boolean = false
         private set
+    var subsequentData: MutableList<List<String>> = mutableListOf()
 
     /**
      * Saves the type of conjugation layout being used (e.g., "2x2", "none") to shared preferences.

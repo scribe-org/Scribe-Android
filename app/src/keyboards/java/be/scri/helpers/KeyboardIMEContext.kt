@@ -197,6 +197,8 @@ interface KeyboardIMEContext {
         word: String?,
     )
 
+    fun returnSubsequentData(): List<List<String>>
+
     fun getKeyboardWidth(): Int
 
     fun recreateKeyboard()

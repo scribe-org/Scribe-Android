@@ -103,7 +103,7 @@ abstract class GeneralKeyboardIME(
     abstract var switchToLetters: Boolean
 
     // Language-specific layout and behavior configurations (decoupled from base class).
-    open override val defaultConjugateModeType: String = "3x2"
+    open override val defaultConjugateModeType: String = "2x2"
     override val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_3x2
     open val isPluralCapitalized: Boolean = false
 
@@ -1261,6 +1261,12 @@ abstract class GeneralKeyboardIME(
         data: List<List<String>>,
         word: String?,
     ) = conjugationHandler.setupConjugateSubView(data, word)
+
+    /**
+     * Returns the subsequent dataset for conjugation sub-views.
+     * Delegated to [ConjugationHandler].
+     */
+    override fun returnSubsequentData(): List<List<String>> = conjugationHandler.subsequentData
 
     /**
      * Updates the visibility of the suggestion buttons based on device type (phone/tablet)
