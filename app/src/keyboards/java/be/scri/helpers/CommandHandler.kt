@@ -115,7 +115,7 @@ class CommandHandler(
             if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
                 null
             } else if ((isAllCaps || isCapitalized) && tempOutput != null) {
-                ime.applyCapitalizationToConjugations(tempOutput, isAllCaps)
+                ConjugationHandler.applyCapitalizationToConjugations(tempOutput, isAllCaps)
             } else {
                 tempOutput
             }
