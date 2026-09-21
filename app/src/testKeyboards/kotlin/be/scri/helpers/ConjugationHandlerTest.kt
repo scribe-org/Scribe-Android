@@ -83,7 +83,6 @@ class ConjugationHandlerTest {
         assertEquals(listOf("GO", "RUN", ""), result["Present"]?.get("I"))
     }
 
-
     @Test
     fun saveConjugateModeType_usesDefaultConjugateModeTypeFromIme() {
         every { ime.defaultConjugateModeType } returns "2x2"
@@ -178,17 +177,12 @@ class ConjugationHandlerTest {
     }
 
     @Test
-    fun setupConjugateSubView_withUnsupportedDataSize_usesDefaultConjugateLayoutXML() {
-        every { ime.language } returns "Spanish"
-        every { ime.currentState } returns ScribeState.SELECT_VERB_CONJUNCTION
-        every { ime.defaultConjugateModeType } returns "2x2"
-        every { ime.defaultConjugateLayoutXML } returns R.xml.conjugate_view_3x2
-
-        // 4 items → not 2 or 3, so getKeyboardLayoutForState returns defaultConjugateLayoutXML
+    fun setupConjugateSubView_withUnsupportedDataSize_earlyReturnsWithoutInflatingKeyboard() {
+        // 4 items → not 2 or 3, so setupConjugateSubView early-returns without inflating keyboard
         val data = listOf(listOf("hablo", "hablas", "habla", "hablamos"))
         handler.setupConjugateSubView(data, word = "hablo")
 
-        verify { uiManager.initializeKeyboard(R.xml.conjugate_view_3x2) }
+        verify(exactly = 0) { uiManager.initializeKeyboard(any()) }
     }
 
     @Test

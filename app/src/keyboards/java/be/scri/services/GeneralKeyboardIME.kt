@@ -1244,7 +1244,6 @@ abstract class GeneralKeyboardIME(
      */
     override fun returnIsSubsequentRequired(): Boolean = conjugationHandler.subsequentAreaRequired
 
-
     /**
      * Handles a key press on one of the special conjugation keys.
      * Delegated to [ConjugationHandler].
