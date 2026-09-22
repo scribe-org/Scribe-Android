@@ -13,8 +13,8 @@ import be.scri.models.ScribeState
  */
 class AutocompletionHandler(
     private val ime: KeyboardIMEContext,
+    private val handler: Handler = Handler(Looper.getMainLooper()),
 ) {
-    private val handler = Handler(Looper.getMainLooper())
     private var autocompleteRunnable: Runnable? = null
 
     companion object {
@@ -62,9 +62,7 @@ class AutocompletionHandler(
                 val completions = ime.getAutocompletions(currentWord, previousWord, limit = MAX_COMPLETIONS + 1)
 
                 ime.updateAutocompleteCompletions(buildCompletions(currentWord, completions))
-            }
-
-        handler.postDelayed(autocompleteRunnable!!, AUTOCOMPLETE_DELAY_MS)
+            }.also { handler.postDelayed(it, AUTOCOMPLETE_DELAY_MS) }
     }
 
     /**
