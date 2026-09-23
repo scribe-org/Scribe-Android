@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.inputmethod.InputConnection
 import be.scri.databinding.InputMethodViewBinding
+import be.scri.helpers.ui.KeyboardThemeManager
 import be.scri.helpers.ui.KeyboardUIManager
 import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
@@ -41,6 +42,7 @@ interface KeyboardIMEContext {
 
     val binding: InputMethodViewBinding
     val uiManager: KeyboardUIManager
+    val themeManager: KeyboardThemeManager
     val isUiManagerInitialized: Boolean
 
     val currentState: ScribeState
@@ -71,6 +73,11 @@ interface KeyboardIMEContext {
     val caseAnnotation: HashMap<String, MutableList<String>>
     val suggestionWords: HashMap<String, List<String>>
     val emojiKeywords: HashMap<String, MutableList<String>>?
+    var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
+    val defaultConjugateLayoutXML: Int
+    val defaultConjugateModeType: String
+
+    fun getKeyboardLayoutXML(): Int
 
     fun handleDelete(isLongPress: Boolean = false)
 

@@ -217,11 +217,10 @@ class KeyboardBase {
                     when (conjugateMode) {
                         "2x2" -> res.getDimension(R.dimen.conjugate_view_key_height_2x2).toInt()
                         "3x3" -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
-                        "2x1" -> res.getDimension(R.dimen.conjugate_view_key_height_2x1).toInt()
+                        "2x1", "1x3" -> res.getDimension(R.dimen.conjugate_view_key_height_2x1).toInt()
                         else -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
                     }
                 } else {
-                    Log.i("≠", "The current state is not conjugate view")
                     when (resources.configuration.orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> {
                             res.getDimension(R.dimen.key_height_landscape).toInt()

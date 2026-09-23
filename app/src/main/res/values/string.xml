@@ -50,6 +50,7 @@
     <string name="i18n.app.about.community.wikimedia.text_2">Wikidata is a collaboratively edited multilingual knowledge graph hosted by the Wikimedia Foundation. It provides freely available data that anyone can use under a Creative Commons Public Domain license (CC0). Scribe uses language data from Wikidata to provide users with verb conjugations, noun-form annotations, noun plurals, and many other features.</string>
     <string name="i18n.app.about.community.wikimedia.text_3">Wikipedia is a multilingual free online encyclopedia written and maintained by a community of volunteers through open collaboration and a wiki-based editing system. Scribe uses data from Wikipedia to produce autosuggestions by deriving the most common words in a language as well as the most common words that follow them.</string>
     <string name="i18n.app.about.feedback.bug_report">Report a bug</string>
+    <string name="i18n.app.about.feedback.no_browser_found">No browser found to open {store} page</string>
     <string name="i18n.app.about.feedback.rate_conjugate">Rate Scribe Conjugate</string>
     <string name="i18n.app.about.feedback.rate_description_amazon">Rate us on Amazon Appstore</string>
     <string name="i18n.app.about.feedback.rate_description_f_droid">Rate us on F-Droid</string>
@@ -75,6 +76,7 @@
     <string name="i18n.app.accessibility.clear">Clear</string>
     <string name="i18n.app.accessibility.copy_conjugation">Copy conjugation</string>
     <string name="i18n.app.accessibility.expand_tenses">Expand tenses</string>
+    <string name="i18n.app.accessibility.go_to_chapter">Go to {title}</string>
     <string name="i18n.app.accessibility.leading_icon">Leading icon</string>
     <string name="i18n.app.accessibility.play_button">Play button</string>
     <string name="i18n.app.accessibility.right_arrow">Right Arrow</string>
@@ -87,6 +89,7 @@
     <string name="i18n.app.clipboard.copy_to_clipboard">Copy to clipboard</string>
     <string name="i18n.app.clipboard.title">Clipboard</string>
     <string name="i18n.app.conjugate.app_hint_tooltip">Download verb data with the menu below to start conjugating verbs.</string>
+    <string name="i18n.app.conjugate.choose_conjugation.all_tenses">All tenses</string>
     <string name="i18n.app.conjugate.choose_conjugation.select_tense">Select tense</string>
     <string name="i18n.app.conjugate.choose_conjugation.title">Choose a conjugation below</string>
     <string name="i18n.app.conjugate.data_not_present_in_wikidata">Data not present in Wikidata</string>

@@ -3,6 +3,7 @@
 package be.scri.services
 
 import android.text.InputType
+import android.view.inputmethod.EditorInfo
 import be.scri.R
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -53,6 +54,17 @@ class GeneralKeyboardIMEInputTypeTest {
         assertEquals(
             R.xml.keys_letters_english,
             GeneralKeyboardIME.getKeyboardLayoutXMLForInputType(inputType, R.xml.keys_letters_english),
+        )
+    }
+
+    @Test
+    fun defaultEditorInfo_fallsBackToLetterLayout() {
+        val fallback = EditorInfo()
+
+        assertFalse(GeneralKeyboardIME.shouldUseNumericKeyboard(fallback.inputType))
+        assertEquals(
+            R.xml.keys_letters_english,
+            GeneralKeyboardIME.getKeyboardLayoutXMLForInputType(fallback.inputType, R.xml.keys_letters_english),
         )
     }
 }

@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import be.scri.R
 import be.scri.ui.screens.download.CheckUpdateState
@@ -101,7 +102,7 @@ fun CircleClickableItemComp(
                             )
                             Icon(
                                 imageVector = Icons.Default.Close,
-                                contentDescription = "Cancel",
+                                contentDescription = stringResource(R.string.i18n_app_settings_option_cancel),
                                 tint = if (isDarkTheme) colorResource(R.color.light_special_key_color) else colorResource(R.color.md_grey_600),
                                 modifier = Modifier.size(20.dp),
                             )
@@ -120,7 +121,7 @@ fun CircleClickableItemComp(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Check,
-                                    contentDescription = "Up to date",
+                                    contentDescription = stringResource(R.string.i18n_app_download_menu_ui_download_data_up_to_date),
                                     tint = if (isDarkTheme) Color.Black else Color.White,
                                     modifier = Modifier.size(20.dp),
                                 )

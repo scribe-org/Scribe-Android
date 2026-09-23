@@ -20,7 +20,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -685,7 +684,6 @@ class KeyboardView
         }
 
         fun soundIfNeeded() {
-            Log.d("Souncheck", "soundIfNeeded: $setSound")
             if (setSound) {
                 performSoundFeedback()
             }

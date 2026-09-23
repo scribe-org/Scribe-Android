@@ -56,9 +56,7 @@ import be.scri.ui.common.ScribeBaseScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-// ---------------------------------------------------------------------------
-// Screen
-// ---------------------------------------------------------------------------
+// MARK: Screen
 
 /**
  * Displays conjugation tables for a selected verb using a beautiful grid-based layout.
@@ -158,7 +156,7 @@ fun ConjugationSelectionScreen(
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Dropdown Tense Selector (padded on sides)
+                    // Dropdown Tense Selector (padded on sides).
                     Box(
                         modifier =
                             Modifier
@@ -199,7 +197,7 @@ fun ConjugationSelectionScreen(
                             modifier = Modifier.fillMaxWidth(0.9f),
                         ) {
                             DropdownMenuItem(
-                                text = { Text("All tenses") },
+                                text = { Text(stringResource(R.string.i18n_app_conjugate_choose_conjugation_all_tenses)) },
                                 onClick = {
                                     selectedTenseGroup = null
                                     expanded = false
@@ -217,7 +215,7 @@ fun ConjugationSelectionScreen(
                         }
                     }
 
-                    // Display Conjugation Tense Groups flush inside this single Card
+                    // Display Conjugation Tense Groups flush inside this single Card.
                     val dataToShow = conjugationData
                     Crossfade(
                         targetState = dataToShow,
@@ -283,9 +281,7 @@ fun ConjugationSelectionScreen(
     }
 }
 
-// ---------------------------------------------------------------------------
-// Sub-composables
-// ---------------------------------------------------------------------------
+// MARK: Sub-composables
 
 @Composable
 private fun TenseGroupGridSection(
@@ -301,7 +297,7 @@ private fun TenseGroupGridSection(
     ) {
         Spacer(modifier = Modifier.height(Dimensions.PaddingLarge))
 
-        // Single Card containing BOTH the gray header bar and the conjugation cell grid
+        // Single Card containing BOTH the gray header bar and the conjugation cell grid.
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
@@ -313,7 +309,7 @@ private fun TenseGroupGridSection(
             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                // 1. Header with gray background bar inside the Card (rounded top corners)
+                // Header with gray background bar inside the Card (rounded top corners).
                 Box(
                     modifier =
                         Modifier
@@ -329,7 +325,7 @@ private fun TenseGroupGridSection(
                     )
                 }
 
-                // Divider line between Header and the first row of cells
+                // Divider line between Header and the first row of cells.
                 Spacer(
                     modifier =
                         Modifier
@@ -338,7 +334,7 @@ private fun TenseGroupGridSection(
                             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
                 )
 
-                // 2. Grid Cells for categories
+                // Grid Cells for categories.
                 val showSubHeaders = categories.size > 1
                 categories.entries.forEachIndexed { catIndex, (categoryTitle, forms) ->
                     if (showSubHeaders) {
@@ -449,7 +445,7 @@ private fun ConjugationCell(
                 .clickable {
                     clipboardManager.setText(AnnotatedString(form))
                     Toast
-                        .makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT)
+                        .makeText(context, R.string.i18n_app_clipboard_copied_to_clipboard, Toast.LENGTH_SHORT)
                         .show()
                 }.padding(horizontal = 12.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.SpaceBetween,

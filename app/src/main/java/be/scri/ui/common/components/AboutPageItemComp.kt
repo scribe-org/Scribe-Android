@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -70,7 +71,7 @@ fun AboutPageItemComp(
                         .padding(start = 2.dp)
                         .size(22.dp),
                 tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = "Leading Icon",
+                contentDescription = stringResource(R.string.i18n_app_accessibility_leading_icon),
             )
             Spacer(modifier = Modifier.width(8.dp))
             androidx.compose.foundation.layout.Column(
@@ -96,7 +97,7 @@ fun AboutPageItemComp(
                     Modifier
                         .padding(start = 6.dp)
                         .size(24.dp),
-                contentDescription = "Trailing Icon",
+                contentDescription = stringResource(R.string.i18n_app_accessibility_trailing_icon),
                 tint = Color.Gray,
             )
         }
