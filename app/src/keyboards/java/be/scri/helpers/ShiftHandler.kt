@@ -15,8 +15,14 @@ private const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
  */
 class ShiftHandler(
     private val ime: GeneralKeyboardIME,
+    private val timeProvider: () -> Long = { System.currentTimeMillis() },
 ) {
-    var lastShiftPressTS: Long = 0L
+    var lastShiftPressTS: Long
+        get() = ime.lastShiftPressTS
+        set(value) {
+            ime.lastShiftPressTS = value
+        }
+
     private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
 
     /**
@@ -32,13 +38,14 @@ class ShiftHandler(
     ) {
         if (keyboardMode == ime.keyboardLetters) {
             val shiftState = keyboardView?.mKeyboard?.mShiftState ?: SHIFT_OFF
+            val currentTime = timeProvider()
             when {
                 shiftState == SHIFT_ON_PERMANENT -> keyboardView?.setShifted(SHIFT_OFF)
-                System.currentTimeMillis() - lastShiftPressTS < shiftPermToggleSpeed -> keyboardView?.setShifted(SHIFT_ON_PERMANENT)
+                currentTime - ime.lastShiftPressTS < shiftPermToggleSpeed -> keyboardView?.setShifted(SHIFT_ON_PERMANENT)
                 shiftState == SHIFT_ON_ONE_CHAR -> keyboardView?.setShifted(SHIFT_OFF)
                 shiftState == SHIFT_OFF -> keyboardView?.setShifted(SHIFT_ON_ONE_CHAR)
             }
-            lastShiftPressTS = System.currentTimeMillis()
+            ime.lastShiftPressTS = currentTime
         } else {
             val keyboardXml =
                 if (keyboardMode == ime.keyboardSymbols) {
