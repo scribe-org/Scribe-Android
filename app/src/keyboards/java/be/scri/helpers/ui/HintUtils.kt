@@ -12,6 +12,7 @@ import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
+import be.scri.latin.utils.Log
 import be.scri.models.ScribeState
 import kotlin.collections.get
 
@@ -320,7 +321,7 @@ object HintUtils {
             ScribeState.TRANSLATE -> getTranslationPrompt(language, context)
             ScribeState.CONJUGATE -> getConjugationPrompt(language)
             ScribeState.PLURAL -> getPluralPrompt(language)
-            ScribeState.SELECT_VERB_CONJUNCTION -> text!!
+            ScribeState.SELECT_VERB_CONJUNCTION -> text ?: ""
             else -> ""
         }
 
