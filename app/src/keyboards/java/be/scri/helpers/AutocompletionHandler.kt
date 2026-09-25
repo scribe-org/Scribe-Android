@@ -10,6 +10,7 @@ import be.scri.models.ScribeState
  * Handles autocompletion when user is typing.
  *
  * @property ime The [KeyboardIMEContext] instance this handler is associated with.
+ * @property handler The [Handler] used to schedule autocompletion tasks.
  */
 class AutocompletionHandler(
     private val ime: KeyboardIMEContext,
