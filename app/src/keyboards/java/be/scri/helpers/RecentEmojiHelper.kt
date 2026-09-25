@@ -16,9 +16,11 @@ fun recordRecentEmoji(
     val recentEmojisPrefs = prefs.getString(KEY_RECENT, "")
 
     recentEmojisPrefs?.let { recentEmojis ->
-        val current = recentEmojis.split(",")
-            .filter { it.isNotBlank() }
-            .toMutableList()
+        val current =
+            recentEmojis
+                .split(",")
+                .filter { it.isNotBlank() }
+                .toMutableList()
 
         current.remove(emoji)
         current.add(0, emoji)

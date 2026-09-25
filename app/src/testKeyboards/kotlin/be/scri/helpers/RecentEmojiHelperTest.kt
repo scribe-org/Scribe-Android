@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class RecentEmojiHelperTest {
-
     @Test
     fun getRecentEmojis_returnsCorrectList_whenRecentEmojiListExists() {
         val context = mockk<Context>()

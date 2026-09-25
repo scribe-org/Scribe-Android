@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class AutocompletionHandlerTest {
-
     private lateinit var looper: Looper
     private lateinit var handler: Handler
 

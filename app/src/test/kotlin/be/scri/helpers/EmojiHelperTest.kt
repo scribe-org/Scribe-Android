@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 
 class EmojiHelperTest {
-
     @Test
     fun parseRawEmojiSpecsFile_validFile_parsesCorrectly() {
         val context = mockk<Context>()
         val assetManager = mockk<AssetManager>()
-        val specContent = """
+        val specContent =
+            """
             # Comment line
             [smileys_emotion]
             😀;;
@@ -26,7 +26,7 @@ class EmojiHelperTest {
             👋;;
             	👋🏻;;
             	👋🏼;;
-        """.trimIndent()
+            """.trimIndent()
         val inputStream = ByteArrayInputStream(specContent.toByteArray())
 
         every { context.assets } returns assetManager
@@ -53,7 +53,8 @@ class EmojiHelperTest {
     fun parseRawEmojiSpecsFile_emptyAndInvalidLines_ignoresThem() {
         val context = mockk<Context>()
         val assetManager = mockk<AssetManager>()
-        val specContent = """
+        val specContent =
+            """
             [cat1]
             
             # comment
@@ -61,7 +62,7 @@ class EmojiHelperTest {
             
             invalid_line
             emoji2;;
-        """.trimIndent()
+            """.trimIndent()
         val inputStream = ByteArrayInputStream(specContent.toByteArray())
 
         every { context.assets } returns assetManager
@@ -78,9 +79,10 @@ class EmojiHelperTest {
     fun parseRawEmojiSpecsFile_noCategory_defaultsToNone() {
         val context = mockk<Context>()
         val assetManager = mockk<AssetManager>()
-        val specContent = """
+        val specContent =
+            """
             emoji1;;
-        """.trimIndent()
+            """.trimIndent()
         val inputStream = ByteArrayInputStream(specContent.toByteArray())
 
         every { context.assets } returns assetManager
