@@ -12,7 +12,6 @@ import be.scri.helpers.portuguese.PTInterfaceVariables
 import be.scri.helpers.russian.RUInterfaceVariables
 import be.scri.helpers.spanish.ESInterfaceVariables
 import be.scri.helpers.swedish.SVInterfaceVariables
-import be.scri.latin.utils.Log
 import be.scri.models.ScribeState
 import kotlin.collections.get
 

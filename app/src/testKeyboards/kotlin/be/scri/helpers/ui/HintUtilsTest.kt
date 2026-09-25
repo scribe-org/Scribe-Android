@@ -22,7 +22,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
 class HintUtilsTest {
-
     @MockK(relaxed = true)
     private lateinit var context: Context
 
@@ -45,7 +44,10 @@ class HintUtilsTest {
 
     @ParameterizedTest
     @MethodSource("provideLanguagesAndPluralPrompts")
-    fun getPromptText_selectPlural_expectPluralPrompt(language: String, expectedPrompt: String) {
+    fun getPromptText_selectPlural_expectPluralPrompt(
+        language: String,
+        expectedPrompt: String,
+    ) {
         val promptText = HintUtils.getPromptText(ScribeState.PLURAL, language, context, null)
         assertEquals(expectedPrompt, promptText)
     }
@@ -58,8 +60,8 @@ class HintUtilsTest {
 
     companion object {
         @JvmStatic
-        fun provideLanguagesAndPluralPrompts(): Stream<Arguments> {
-            return Stream.of(
+        fun provideLanguagesAndPluralPrompts(): Stream<Arguments> =
+            Stream.of(
                 Arguments.of("English", ENInterfaceVariables.PLURAL_PROMPT),
                 Arguments.of("French", FRInterfaceVariables.PLURAL_PROMPT),
                 Arguments.of("German", DEInterfaceVariables.PLURAL_PROMPT),
@@ -69,6 +71,5 @@ class HintUtilsTest {
                 Arguments.of("Spanish", ESInterfaceVariables.PLURAL_PROMPT),
                 Arguments.of("Swedish", SVInterfaceVariables.PLURAL_PROMPT),
             )
-        }
     }
 }
