@@ -49,6 +49,7 @@ import be.scri.helpers.PreferencesHelper.isShowPopupOnKeypressEnabled
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
+import be.scri.helpers.ShiftHandler
 import be.scri.helpers.SuggestionHandler
 import be.scri.helpers.clipboard.ClipboardHandler
 import be.scri.helpers.data.AutocompletionDataManager
@@ -145,8 +146,6 @@ abstract class GeneralKeyboardIME(
     override var isSingularAndPlural: Boolean = false
     internal val conjugationHandler by lazy { ConjugationHandler(this) }
 
-    private val shiftPermToggleSpeed: Int = DEFAULT_SHIFT_PERM_TOGGLE_SPEED
-
     internal val dataHandler = KeyboardDataHandler()
 
     internal val dbManagers: DatabaseManagers
@@ -161,6 +160,7 @@ abstract class GeneralKeyboardIME(
     internal lateinit var keyHandler: KeyHandler
     internal val floatingKeyboardHandler by lazy { FloatingKeyboardHandler(this) }
     internal val commandHandler by lazy { CommandHandler(this) }
+    internal val shiftHandler by lazy { ShiftHandler(this) }
     internal val suggestionUIHandler by lazy { SuggestionUIHandler(this) }
 
     internal var dataContract: DataContract?
@@ -266,7 +266,6 @@ abstract class GeneralKeyboardIME(
 
     internal companion object {
         const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-        const val DEFAULT_SHIFT_PERM_TOGGLE_SPEED = 500
         const val TEXT_LENGTH = 20
         const val SUGGESTION_SIZE = 15f
         const val DARK_THEME = "#aeb3be"
@@ -773,7 +772,8 @@ abstract class GeneralKeyboardIME(
             else -> getKeyboardLayoutXML()
         }
 
-    private fun getPrimarySymbolKeyboardLayoutXML(): Int =
+    internal fun getPrimarySymbolKeyboardLayoutXML(): Int =
+
         if (isNumericKeyboardActive) {
             R.xml.keys_numeric
         } else {
@@ -1046,74 +1046,23 @@ abstract class GeneralKeyboardIME(
     ): String = dataHandler.getTranslation(language, commandBarInput)
 
     /**
-     * Handles the logic for the Shift key. It cycles through shift states (off, on-for-one-char, caps lock)
-     * on the letter keyboard, and toggles between symbol pages on the symbol keyboard.
-     * @param keyboardMode The current keyboard mode.
-     * @param keyboardView The instance of the keyboard view.
+     * Handles the logic for the Shift key.
+     * Delegated to [ShiftHandler].
      */
     override fun handleKeyboardLetters(
         keyboardMode: Int,
         keyboardView: KeyboardView?,
-    ) {
-        if (keyboardMode == keyboardLetters) {
-            val shiftState = keyboardView?.mKeyboard?.mShiftState ?: SHIFT_OFF
-            when {
-                shiftState == SHIFT_ON_PERMANENT -> keyboardView?.setShifted(SHIFT_OFF)
-                System.currentTimeMillis() - lastShiftPressTS < shiftPermToggleSpeed -> keyboardView?.setShifted(SHIFT_ON_PERMANENT)
-                shiftState == SHIFT_ON_ONE_CHAR -> keyboardView?.setShifted(SHIFT_OFF)
-                shiftState == SHIFT_OFF -> keyboardView?.setShifted(SHIFT_ON_ONE_CHAR)
-            }
-            lastShiftPressTS = System.currentTimeMillis()
-        } else {
-            val keyboardXml =
-                if (keyboardMode == keyboardSymbols) {
-                    this.keyboardMode = keyboardSymbolShift
-                    R.xml.keys_symbols_shift
-                } else {
-                    this.keyboardMode = keyboardSymbols
-                    getPrimarySymbolKeyboardLayoutXML()
-                }
-            keyboard = KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
-            keyboardView!!.setKeyboard(keyboard!!)
-            if (keyboardXml == R.xml.keys_symbols) {
-                handleModeChange(keyboardMode, keyboardView, this)
-            }
-        }
-    }
+    ) = shiftHandler.handleKeyboardLetters(keyboardMode, keyboardView)
 
     /**
      * Handles switching between the letter and symbol keyboards.
-     *
-     * @param keyboardMode The current keyboard mode (letters or symbols).
-     * @param keyboardView The instance of the keyboard view.
-     * @param context The application context.
+     * Delegated to [ShiftHandler].
      */
     override fun handleModeChange(
         keyboardMode: Int,
         keyboardView: KeyboardView?,
         context: Context,
-    ) {
-        val keyboardXml =
-            if (keyboardMode == keyboardLetters) {
-                this.keyboardMode = keyboardSymbols
-                getPrimarySymbolKeyboardLayoutXML()
-            } else {
-                this.keyboardMode = keyboardLetters
-                getKeyboardLayoutXML()
-            }
-        keyboard = KeyboardBase(context, keyboardXml, enterKeyType, getKeyboardWidth())
-        if (this.keyboardMode == keyboardLetters) {
-            val wasShifted = keyboard?.mShiftState == SHIFT_ON_ONE_CHAR || keyboard?.mShiftState == SHIFT_ON_PERMANENT
-            if (wasShifted) {
-                keyboard?.setShifted(keyboard?.mShiftState ?: SHIFT_OFF)
-            }
-        }
-        keyboardView?.setKeyboard(keyboard!!)
-        keyboardView?.invalidateAllKeys()
-        if (keyboardXml == R.xml.keys_symbols) {
-            uiManager.setupCurrencySymbol(language)
-        }
-    }
+    ) = shiftHandler.handleModeChange(keyboardMode, keyboardView, context)
 
     /**
      * Moves the cursor in the input field.
