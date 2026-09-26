@@ -8,7 +8,6 @@ import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import be.scri.R
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
 
 private const val DATA_SIZE_2 = 2
 private const val DATA_SIZE_3 = 3
@@ -18,7 +17,7 @@ private const val DATA_SIZE_3 = 3
  * keyboard width calculations, state-based layout XML selection, and view re-creation.
  */
 class KeyboardLayoutHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     /**
      * Resolves the XML resource ID for the active keyboard layout.
@@ -38,7 +37,7 @@ class KeyboardLayoutHandler(
      * @return The XML layout resource ID.
      */
     fun getPrimarySymbolKeyboardLayoutXML(): Int =
-        if (ime.isNumericKeyboardActive) {
+        if (ime.isNumericKeyboardActive()) {
             R.xml.keys_numeric
         } else {
             R.xml.keys_symbols
@@ -83,12 +82,12 @@ class KeyboardLayoutHandler(
      */
     fun getKeyboardWidth(): Int =
         if (ime.isFloatingMode) {
-            val density = ime.resources.displayMetrics.density
-            val screenWidth = ime.resources.displayMetrics.widthPixels
+            val density = ime.getImeResources().displayMetrics.density
+            val screenWidth = ime.getImeResources().displayMetrics.widthPixels
             val floatWidth = (320f * density).toInt()
             Math.min(floatWidth, (screenWidth * 0.85f).toInt())
         } else {
-            ime.resources.displayMetrics.widthPixels
+            ime.getImeResources().displayMetrics.widthPixels
         }
 
     /**
@@ -99,7 +98,7 @@ class KeyboardLayoutHandler(
 
         val xmlId = getCurrentKeyboardLayoutXML()
         val currentShiftState = ime.keyboard?.mShiftState ?: SHIFT_OFF
-        ime.keyboard = KeyboardBase(ime, xmlId, ime.enterKeyType, getKeyboardWidth())
+        ime.keyboard = KeyboardBase(ime.imeContext, xmlId, ime.enterKeyType, getKeyboardWidth())
         ime.keyboard?.setShifted(currentShiftState)
         ime.keyboardView?.setKeyboard(ime.keyboard!!)
 

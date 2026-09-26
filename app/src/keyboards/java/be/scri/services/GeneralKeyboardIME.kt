@@ -98,7 +98,7 @@ abstract class GeneralKeyboardIME(
     abstract override var lastShiftPressTS: Long
     abstract override var keyboardMode: Int
     abstract var inputTypeClass: Int
-    abstract var enterKeyType: Int
+    abstract override var enterKeyType: Int
     abstract var switchToLetters: Boolean
 
     // Language-specific layout and behavior configurations (decoupled from base class).
@@ -226,7 +226,7 @@ abstract class GeneralKeyboardIME(
     override var wordSuggestions: List<String>? = null
     override var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
-    private var isNumericKeyboardActive: Boolean = false
+    internal var isNumericKeyboardActive: Boolean = false
 
     internal val stateManager = KeyboardStateManager()
     override val themeManager = KeyboardThemeManager()
@@ -1224,7 +1224,7 @@ abstract class GeneralKeyboardIME(
 
     override fun recreateKeyboard() = layoutHandler.recreateKeyboard()
 
-    val isFloatingMode: Boolean
+    override val isFloatingMode: Boolean
         get() = floatingKeyboardHandler.isFloatingMode
 
     fun initFloatingMode() {

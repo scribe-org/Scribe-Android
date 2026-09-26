@@ -6,7 +6,6 @@ import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.InputType.TYPE_CLASS_TEXT
 import be.scri.R
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -16,7 +15,7 @@ import org.junit.Before
 import org.junit.Test
 
 class KeyboardLayoutHandlerTest {
-    private lateinit var mockIme: GeneralKeyboardIME
+    private lateinit var mockIme: KeyboardIMEContext
     private lateinit var layoutHandler: KeyboardLayoutHandler
 
     @Before
@@ -27,35 +26,39 @@ class KeyboardLayoutHandlerTest {
 
     @Test
     fun testGetPrimarySymbolKeyboardLayoutXML_numericActive() {
-        every { mockIme.isNumericKeyboardActive } returns true
+        every { mockIme.isNumericKeyboardActive() } returns true
         val xmlResId = layoutHandler.getPrimarySymbolKeyboardLayoutXML()
         assertEquals(R.xml.keys_numeric, xmlResId)
     }
 
     @Test
     fun testGetPrimarySymbolKeyboardLayoutXML_symbolsActive() {
-        every { mockIme.isNumericKeyboardActive } returns false
+        every { mockIme.isNumericKeyboardActive() } returns false
         val xmlResId = layoutHandler.getPrimarySymbolKeyboardLayoutXML()
         assertEquals(R.xml.keys_symbols, xmlResId)
     }
 
     @Test
     fun testGetCurrentKeyboardLayoutXML_letterMode() {
+        // keyboardMode does not match keyboardSymbols or keyboardSymbolShift,
+        // so the else branch delegates to getKeyboardLayoutXML().
+        // Stub with a real letter layout to verify the correct branch is taken.
         every { mockIme.keyboardMode } returns 0
         every { mockIme.keyboardSymbols } returns 1
         every { mockIme.keyboardSymbolShift } returns 2
-        every { mockIme.getKeyboardLayoutXML() } returns R.xml.keys_symbols
+        every { mockIme.getKeyboardLayoutXML() } returns R.xml.keys_letters_english
 
         val xmlResId = layoutHandler.getCurrentKeyboardLayoutXML()
-        assertEquals(R.xml.keys_symbols, xmlResId)
+        assertEquals(R.xml.keys_letters_english, xmlResId)
     }
 
     @Test
     fun testGetCurrentKeyboardLayoutXML_symbolMode() {
+        // keyboardMode matches keyboardSymbols, so symbols layout is returned.
         every { mockIme.keyboardMode } returns 1
         every { mockIme.keyboardSymbols } returns 1
         every { mockIme.keyboardSymbolShift } returns 2
-        every { mockIme.isNumericKeyboardActive } returns false
+        every { mockIme.isNumericKeyboardActive() } returns false
 
         val xmlResId = layoutHandler.getCurrentKeyboardLayoutXML()
         assertEquals(R.xml.keys_symbols, xmlResId)
@@ -80,9 +83,9 @@ class KeyboardLayoutHandlerTest {
 
     @Test
     fun testGetKeyboardLayoutForState_defaultState() {
-        every { mockIme.getKeyboardLayoutXML() } returns R.xml.keys_symbols
+        every { mockIme.getKeyboardLayoutXML() } returns R.xml.keys_letters_english
         val xmlResId = layoutHandler.getKeyboardLayoutForState(ScribeState.IDLE)
-        assertEquals(R.xml.keys_symbols, xmlResId)
+        assertEquals(R.xml.keys_letters_english, xmlResId)
     }
 
     @Test
@@ -95,11 +98,11 @@ class KeyboardLayoutHandlerTest {
     fun testGetKeyboardLayoutXMLForInputType() {
         assertEquals(
             R.xml.keys_numeric,
-            KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(TYPE_CLASS_NUMBER, R.xml.keys_symbols),
+            KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(TYPE_CLASS_NUMBER, R.xml.keys_letters_english),
         )
         assertEquals(
-            R.xml.keys_symbols,
-            KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(TYPE_CLASS_TEXT, R.xml.keys_symbols),
+            R.xml.keys_letters_english,
+            KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(TYPE_CLASS_TEXT, R.xml.keys_letters_english),
         )
     }
 }

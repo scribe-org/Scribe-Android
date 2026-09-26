@@ -51,6 +51,9 @@ interface KeyboardIMEContext {
     val keyboardSymbols: Int
     val keyboardSymbolShift: Int
 
+    val isFloatingMode: Boolean
+    val enterKeyType: Int
+
     var lastShiftPressTS: Long
 
     val currentCommandBarHint: String
@@ -78,6 +81,8 @@ interface KeyboardIMEContext {
     val defaultConjugateModeType: String
 
     fun getKeyboardLayoutXML(): Int
+
+    fun isNumericKeyboardActive(): Boolean
 
     fun handleDelete(isLongPress: Boolean = false)
 

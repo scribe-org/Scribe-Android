@@ -39,8 +39,8 @@ class GeneralKeyboardIMEInputTypeTest {
     }
 
     @Test
-    fun getKeyboardLayoutXMLForInputType_numeric_returnsNumericLayout() {
-        val inputType = InputType.TYPE_CLASS_NUMBER
+    fun getKeyboardLayoutXMLForInputType_returnsNumericLayoutForNumberInputs() {
+        val inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
 
         assertEquals(
             R.xml.keys_numeric,
@@ -49,8 +49,8 @@ class GeneralKeyboardIMEInputTypeTest {
     }
 
     @Test
-    fun getKeyboardLayoutXMLForInputType_text_returnsFallbackLayout() {
-        val inputType = InputType.TYPE_CLASS_TEXT
+    fun getKeyboardLayoutXMLForInputType_returnsLetterLayoutForTextInputs() {
+        val inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
 
         assertEquals(
             R.xml.keys_letters_english,
