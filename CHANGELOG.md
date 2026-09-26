@@ -104,4 +104,5 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 ### ♻️ Code Refactoring
 
 - Code quality improvements were continuously done to assure that the application is easy to maintain and meets Kotlin standards ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
+- `KeyboardLayoutHandler` was extracted from `GeneralKeyboardIME` to encapsulate layout XML resolution, symbol keyboard mapping, and width calculations ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
 - `ShiftHandler` was extracted from `GeneralKeyboardIME` to encapsulate shift state machine toggling, double-tap caps lock lock timing, and keyboard layout mode switching ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
