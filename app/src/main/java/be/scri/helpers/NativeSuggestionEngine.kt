@@ -4,6 +4,8 @@
 package be.scri.helpers
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import be.scri.inputmethod.keyboard.ProximityInfo
 import be.scri.latin.NgramContext
@@ -24,6 +26,7 @@ class NativeSuggestionEngine(private val context: Context) {
     companion object {
         private const val TAG = "NativeSuggestionEngine"
         private const val DICT_DIR = "dicts"
+        private const val DICT_PREFS = "native_dict_prefs"
     }
 
     private val loadedDicts = HashMap<String, ReadOnlyBinaryDictionary>()
@@ -57,23 +60,48 @@ class NativeSuggestionEngine(private val context: Context) {
         }
 
         val targetFile = File(dictsFolder, assetName)
-        if (targetFile.exists() && targetFile.length() > 0) {
-            return targetFile
+        val existingFile = targetFile.takeIf { it.exists() && it.length() > 0 }
+        val prefs = context.getSharedPreferences(DICT_PREFS, Context.MODE_PRIVATE)
+        val appUpdateTime = getAppLastUpdateTime()
+        if (existingFile != null && prefs.getLong(assetName, -1L) == appUpdateTime) {
+            return existingFile
         }
 
+        val tempFile = File(dictsFolder, "$assetName.tmp")
         try {
             context.assets.open("dicts/$assetName").use { inputStream ->
-                FileOutputStream(targetFile).use { outputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
                     inputStream.copyTo(outputStream)
                 }
             }
+            if (!tempFile.renameTo(targetFile)) {
+                Log.e(TAG, "Failed to move extracted native dictionary into place: $assetName")
+                tempFile.delete()
+                return existingFile
+            }
+            prefs.edit().putLong(assetName, appUpdateTime).apply()
             Log.i(TAG, "Successfully extracted native dictionary: $assetName")
             return targetFile
         } catch (e: IOException) {
+            tempFile.delete()
             Log.e(TAG, "Error extracting native dictionary $assetName from assets", e)
-            return null
+            return existingFile
         }
     }
+
+    private fun getAppLastUpdateTime(): Long =
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.packageManager
+                    .getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
+                    .lastUpdateTime
+            } else {
+                @Suppress("DEPRECATION")
+                context.packageManager.getPackageInfo(context.packageName, 0).lastUpdateTime
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            0L
+        }
 
     /**
      * Retrieves or loads the BinaryDictionary for the given language.

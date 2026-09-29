@@ -27,6 +27,7 @@ import kotlinx.coroutines.withTimeout
 import retrofit2.HttpException
 import java.io.IOException
 import java.time.LocalDate
+import java.time.format.DateTimeParseException
 
 /** ViewModel to manage conjugate data download states and actions. */
 @Suppress("TooManyFunctions")
@@ -84,10 +85,10 @@ class ConjugateDataDownloadViewModel(
      */
     private fun isUpdateAvailable(
         localUpdatedAt: String,
-        serverUpdatedAt: String,
+        serverUpdatedAt: String?,
     ): Boolean {
         val localDate = LocalDate.parse(localUpdatedAt.take(10))
-        val serverDate = LocalDate.parse(serverUpdatedAt.take(10))
+        val serverDate = LocalDate.parse(serverUpdatedAt.orEmpty().take(10))
 
         return serverDate.isAfter(localDate)
     }
@@ -199,6 +200,12 @@ class ConjugateDataDownloadViewModel(
                         )
                     val errorMsg = StringUtils.formatStringWithParams(template, e.code().toString())
                     updateErrorState(key, errorMsg)
+                } catch (e: DateTimeParseException) {
+                    val errorMsg =
+                        getApplication<Application>().getString(
+                            R.string.i18n_app_download_error_invalid_response,
+                        )
+                    updateErrorState(key, errorMsg)
                 } catch (e: TimeoutCancellationException) {
                     val errorMsg =
                         getApplication<Application>().getString(
@@ -267,6 +274,8 @@ class ConjugateDataDownloadViewModel(
             Log.w("ConjugateDownloadVM", "Server error while checking updates for $key: ${e.code()}")
         } catch (e: SQLiteException) {
             Log.w("ConjugateDownloadVM", "Database error while checking updates for $key: ${e.message}")
+        } catch (e: DateTimeParseException) {
+            Log.w("ConjugateDownloadVM", "Invalid timestamp while checking updates for $key: ${e.parsedString}")
         }
     }
 

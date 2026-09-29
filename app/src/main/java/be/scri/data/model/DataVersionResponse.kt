@@ -11,5 +11,5 @@ data class DataVersionResponse(
     @SerializedName("language")
     val language: String,
     @SerializedName("versions")
-    val versions: Map<String, String>,
+    val versions: Map<String, String?>,
 )

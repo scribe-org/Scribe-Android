@@ -84,6 +84,12 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 - Functions in the application have been documented ([#18](https://github.com/scribe-org/Scribe-Android/issues/18), [#354](https://github.com/scribe-org/Scribe-Android/issues/354)).
 
+### 🐛 Bug Fixes
+
+- The keyboard service no longer crashes when an editor starts input with no `EditorInfo` ([#699](https://github.com/scribe-org/Scribe-Android/issues/699)).
+- Downloading or checking for language data updates no longer crashes the app when the server returns a malformed timestamp ([#700](https://github.com/scribe-org/Scribe-Android/issues/700)).
+- Native dictionaries are re-extracted after an app update so autosuggestions no longer use dictionaries from a previous install ([#701](https://github.com/scribe-org/Scribe-Android/issues/701)).
+
 ### 🔒 Security
 
 - Clipboard history is excluded from Android Auto Backup and device-to-device transfer so that copied text never leaves the device ([#695](https://github.com/scribe-org/Scribe-Android/issues/695)).
@@ -98,6 +104,4 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 ### ♻️ Code Refactoring
 
 - Code quality improvements were continuously done to assure that the application is easy to maintain and meets Kotlin standards ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
-- `CommandHandler` was extracted from `GeneralKeyboardIME` to encapsulate command execution, Enter key dispatching, and lookup state machine logic ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
-- Introduced `KeyboardIMEContext` interface contract to decouple handler dependencies from the concrete `GeneralKeyboardIME` class ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
-
+- `ShiftHandler` was extracted from `GeneralKeyboardIME` to encapsulate shift state machine toggling, double-tap caps lock lock timing, and keyboard layout mode switching ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).

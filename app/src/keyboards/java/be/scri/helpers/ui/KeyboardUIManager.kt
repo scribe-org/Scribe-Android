@@ -673,7 +673,7 @@ class KeyboardUIManager(
      * Retrieves and validates the stored index for the current conjugation view.
      * Ensures the index is within the bounds of available conjugation types.
      */
-    private fun getValidatedConjugateIndex(conjugateOutput: Map<String, Any>?): Int {
+    internal fun getValidatedConjugateIndex(conjugateOutput: Map<String, Any>?): Int {
         val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         var index = prefs.getInt("conjugate_index", 0)
         val maxIndex = conjugateOutput?.keys?.count()?.minus(1) ?: -1
