@@ -52,7 +52,6 @@ import be.scri.extensions.performSoundFeedback
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_CAPS_LOCK
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_DELETE
-import be.scri.helpers.KeyboardBase.Companion.KEYCODE_EMOJI
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_ENTER
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_LEFT_ARROW
 import be.scri.helpers.KeyboardBase.Companion.KEYCODE_MODE_CHANGE
@@ -63,7 +62,6 @@ import be.scri.helpers.KeyboardBase.Companion.KEYCODE_TAB
 import be.scri.helpers.KeyboardBase.Companion.SHIFT_LOCKED
 import be.scri.helpers.KeyboardBase.MyCustomActions
 import be.scri.helpers.MAX_KEYS_PER_MINI_ROW
-import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
@@ -493,10 +491,14 @@ class KeyboardView
         private var keyboardBindingInternal: KeyboardViewKeyboardBinding? = null
         val keyboardBinding: KeyboardViewKeyboardBinding
             get() {
-                if (keyboardBindingInternal == null) {
-                    keyboardBindingInternal = KeyboardViewKeyboardBinding.inflate(LayoutInflater.from(context))
+                val existing = keyboardBindingInternal
+                if (existing != null) {
+                    return existing
                 }
-                return keyboardBindingInternal!!
+
+                val binding = KeyboardViewKeyboardBinding.inflate(LayoutInflater.from(context))
+                keyboardBindingInternal = binding
+                return binding
             }
 
         init {
@@ -559,7 +561,10 @@ class KeyboardView
                     object : Handler() {
                         override fun handleMessage(msg: Message) {
                             when (msg.what) {
-                                MSG_REMOVE_PREVIEW -> mPreviewText!!.visibility = INVISIBLE
+                                MSG_REMOVE_PREVIEW -> {
+                                    val previewText = mPreviewText
+                                    previewText?.visibility = INVISIBLE
+                                }
                                 MSG_REPEAT ->
                                     if (repeatKey(false)) {
                                         val repeat = Message.obtain(this, MSG_REPEAT)
@@ -651,8 +656,8 @@ class KeyboardView
 
             removeMessages()
             mKeyboard = keyboard
-            val keys = mKeyboard!!.mKeys
-            mKeys = keys!!.toMutableList() as ArrayList<KeyboardBase.Key>
+            val keys = mKeyboard?.mKeys
+            mKeys = keys?.toMutableList() as ArrayList<KeyboardBase.Key>
             requestLayout()
             mKeyboardChanged = true
             invalidateAllKeys()
@@ -1296,6 +1301,7 @@ class KeyboardView
 
         private fun showKey(keyIndex: Int) {
             val previewPopup = mPreviewPopup
+            val previewText = mPreviewText ?: return
             val keys = mKeys
             if (keyIndex < 0 || keyIndex >= mKeys.size) {
                 return
@@ -1303,19 +1309,19 @@ class KeyboardView
 
             val key = keys[keyIndex]
             if (key.icon != null) {
-                mPreviewText!!.setCompoundDrawables(null, null, null, key.icon)
+                previewText.setCompoundDrawables(null, null, null, key.icon)
             } else {
                 if (key.label.length > 1) {
-                    mPreviewText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, mKeyTextSize.toFloat())
-                    mPreviewText!!.typeface = Typeface.DEFAULT_BOLD
+                    previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mKeyTextSize.toFloat())
+                    previewText.typeface = Typeface.DEFAULT_BOLD
                 } else {
-                    mPreviewText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSizeLarge.toFloat())
-                    mPreviewText!!.typeface = Typeface.DEFAULT
+                    previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSizeLarge.toFloat())
+                    previewText.typeface = Typeface.DEFAULT
                 }
 
-                mPreviewText!!.setCompoundDrawables(null, null, null, null)
+                previewText.setCompoundDrawables(null, null, null, null)
                 try {
-                    mPreviewText!!.text = adjustCase(key.label)
+                    previewText.text = adjustCase(key.label)
                 } catch (ignored: Exception) {
                 }
             }
@@ -1327,7 +1333,7 @@ class KeyboardView
                     mBackgroundColor
                 }
 
-            val previewBackground = mPreviewText!!.background as LayerDrawable
+            val previewBackground = previewText.background as LayerDrawable
             previewBackground
                 .findDrawableByLayerId(R.id.button_background_shape)
                 .applyColorFilter(previewBackgroundColor)
@@ -1336,16 +1342,16 @@ class KeyboardView
                 .findDrawableByLayerId(R.id.button_background_stroke)
                 .applyColorFilter(context.getStrokeColor())
 
-            mPreviewText!!.background = previewBackground
+            previewText.background = previewBackground
 
-            mPreviewText!!.setTextColor(mTextColor)
-            mPreviewText!!.measure(
+            previewText.setTextColor(mTextColor)
+            previewText.measure(
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
             )
-            val popupWidth = Math.max(mPreviewText!!.measuredWidth, key.width)
+            val popupWidth = Math.max(previewText.measuredWidth, key.width)
             val popupHeight = mPreviewHeight
-            val lp = mPreviewText!!.layoutParams
+            val lp = previewText.layoutParams
             lp?.width = popupWidth
             lp?.height = popupHeight
 
@@ -1358,7 +1364,7 @@ class KeyboardView
             mCoordinates[1] += mMiniKeyboardOffsetY // offset may be zero
 
             // Set the preview background state.
-            mPreviewText!!.background.state =
+            previewText.background.state =
                 if (key.popupResId != 0) {
                     LONG_PRESSABLE_STATE_SET
                 } else {
@@ -1387,7 +1393,7 @@ class KeyboardView
                 previewPopup.width = popupWidth
                 previewPopup.height = popupHeight
                 previewPopup.showAtLocation(mPopupParent, Gravity.NO_GRAVITY, mPopupPreviewX, mPopupPreviewY)
-                mPreviewText!!.visibility = VISIBLE
+                previewText.visibility = VISIBLE
             }
         }
 
