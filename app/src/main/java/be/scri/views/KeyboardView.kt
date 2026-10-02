@@ -68,6 +68,7 @@ import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.models.ScribeState
 import java.util.Arrays
 import java.util.Locale
+import kotlin.ranges.coerceIn
 
 /**
  * The base keyboard view for Scribe language keyboards application.
@@ -242,8 +243,6 @@ class KeyboardView
         var mCurrencySymbol: String = "$"
 
         private var mEnterKeyColor: Int = 0
-
-        private var mSpecialKeyColor: Int? = null
 
         private var mKeyBackground: Drawable? = null
 
@@ -744,14 +743,15 @@ class KeyboardView
             if (mKeyboard == null) {
                 setMeasuredDimension(0, 0)
             } else {
-                var width = mKeyboard!!.mMinWidth
+                var width = mKeyboard?.mMinWidth ?: 0
                 if (MeasureSpec.getSize(widthMeasureSpec) < width + MARGIN_ADJUSTMENT) {
                     width = MeasureSpec.getSize(widthMeasureSpec)
                 }
 
                 val extraBottomPaddingPx = (resources.displayMetrics.density * 10).toInt()
 
-                setMeasuredDimension(width, mKeyboard!!.mHeight + extraBottomPaddingPx)
+                val height = mKeyboard?.mHeight ?: 0
+                setMeasuredDimension(width, height + extraBottomPaddingPx)
             }
         }
 
@@ -799,7 +799,9 @@ class KeyboardView
             if (mDrawPending || mBuffer == null || mKeyboardChanged) {
                 onBufferDraw()
             }
-            canvas.drawBitmap(mBuffer!!, 0f, 0f, null)
+            mBuffer?.let {
+                canvas.drawBitmap(it, 0f, 0f, null)
+            }
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
@@ -812,8 +814,7 @@ class KeyboardView
                     // Make sure our bitmap is at least 1x1.
                     val width = 1.coerceAtLeast(width)
                     val height = 1.coerceAtLeast(height)
-                    mBuffer = createBitmap(width, height)
-                    mCanvas = Canvas(mBuffer!!)
+                    mBuffer = createBitmap(width, height).also { mCanvas = Canvas(it) }
                 }
                 invalidateAllKeys()
                 mKeyboardChanged = false
@@ -823,9 +824,10 @@ class KeyboardView
                 return
             }
 
-            mCanvas!!.withSave {
-                val canvas = mCanvas
-                canvas!!.clipRect(mDirtyRect)
+            val canvas = mCanvas ?: return
+
+            canvas.withSave {
+                clipRect(mDirtyRect)
                 val paint = mPaint
                 val keys = mKeys
                 val isUserDarkMode =
@@ -849,12 +851,6 @@ class KeyboardView
                     } else {
                         Color.WHITE
                     }
-                mSpecialKeyColor =
-                    if (isUserDarkMode) {
-                        R.color.special_key_dark
-                    } else {
-                        R.color.special_key_light
-                    }
                 val pressedColorResId =
                     if (isUserDarkMode) {
                         R.color.dark_key_press_color
@@ -862,7 +858,13 @@ class KeyboardView
                         R.color.light_key_press_color
                     }
                 val pressedColor = resources.getColor(pressedColorResId, context.theme)
-                val specialKeyColorValue = resources.getColor(mSpecialKeyColor!!, context.theme)
+                val specialKeyColorResource =
+                    if (isUserDarkMode) {
+                        R.color.special_key_dark
+                    } else {
+                        R.color.special_key_light
+                    }
+                val specialKeyColorValue = resources.getColor(specialKeyColorResource, context.theme)
                 val focusedColorResId =
                     if (isUserDarkMode) {
                         R.color.theme_scribe_blue
@@ -895,9 +897,9 @@ class KeyboardView
                         if (isUserDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
                         context.theme,
                     )
-                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
                 if (id != R.id.mini_keyboard_view) {
-                    canvas.drawColor(mKeyboardBackgroundColor)
+                    drawColor(mKeyboardBackgroundColor)
                 }
 
                 val keyCount = keys.size
@@ -957,21 +959,21 @@ class KeyboardView
                             (key.y + key.height - vKeyMargin + shadowOffset - padding).toFloat(),
                         )
                     if (code != EXTRA_PADDING && (mPopupParent.id != R.id.mini_keyboard_view)) {
-                        canvas.drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
+                        drawRoundRect(shadowRect, rectRadius, rectRadius, shadowPaint)
                     }
 
                     val backgroundColor =
                         when {
                             key.focused -> focusedColor
                             key.pressed -> pressedColor
-                            code == KEYCODE_SHIFT && mKeyboard!!.mShiftState == SHIFT_LOCKED -> pressedColor
+                            code == KEYCODE_SHIFT && mKeyboard?.mShiftState == SHIFT_LOCKED -> pressedColor
                             code in listOf(KEYCODE_DELETE, KEYCODE_SHIFT, KEYCODE_MODE_CHANGE) -> specialKeyColorValue
                             code == KEYCODE_ENTER -> mEnterKeyColor
                             else -> keyBackgroundColor
                         }
                     keyBackgroundPaint.color = backgroundColor
                     if (code != EXTRA_PADDING) {
-                        canvas.drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
+                        drawRoundRect(keyRect, rectRadius, rectRadius, keyBackgroundPaint)
                     }
                     var label = adjustCase(key.label)?.toString()
                     // Switch the character to uppercase if shift is pressed.
@@ -1061,7 +1063,7 @@ class KeyboardView
                         }
                     }
 
-                    canvas.translate(key.x.toFloat(), key.y.toFloat())
+                    translate(key.x.toFloat(), key.y.toFloat())
                     if (label?.isNotEmpty() == true) {
                         // For characters, use large font. For labels like "Done", use small font.
                         if (label.length > 1) {
@@ -1080,7 +1082,7 @@ class KeyboardView
                                 else -> mTextColor
                             }
 
-                        canvas.drawText(
+                        drawText(
                             label,
                             (key.width / 2).toFloat(),
                             key.height / 2 + (paint.textSize - paint.descent()) / 2,
@@ -1088,7 +1090,7 @@ class KeyboardView
                         )
 
                         if (key.topSmallNumber.isNotEmpty()) {
-                            canvas.drawText(
+                            drawText(
                                 key.topSmallNumber,
                                 key.width - mTopSmallNumberMarginWidth - leftShiftForLabel,
                                 mTopSmallNumberMarginHeight,
@@ -1101,7 +1103,7 @@ class KeyboardView
                     } else if (key.icon != null && mKeyboard != null) {
                         if (code == KEYCODE_SHIFT) {
                             val drawableId =
-                                when (mKeyboard!!.mShiftState) {
+                                when (mKeyboard?.mShiftState) {
                                     SHIFT_OFF -> R.drawable.ic_caps_outline_vector
                                     SHIFT_ON_ONE_CHAR -> R.drawable.ic_caps_vector
                                     SHIFT_LOCKED -> R.drawable.ic_caps_underlined_vector
@@ -1110,12 +1112,16 @@ class KeyboardView
                             key.icon = resources.getDrawable(drawableId, context.theme)
                         } else if (code == KEYCODE_CAPS_LOCK) {
                             val drawableId =
-                                when (mKeyboard!!.mShiftState) {
+                                when (mKeyboard?.mShiftState) {
                                     SHIFT_LOCKED -> R.drawable.ic_caps_lock_on
                                     else -> R.drawable.ic_caps_lock_off
                                 }
-                            key.icon = resources.getDrawable(drawableId, context.theme)
-                            key.icon!!.applyColorFilter(mTextColor)
+                            key.icon =
+                                resources
+                                    .getDrawable(drawableId, context.theme)
+                                    .also {
+                                        it.applyColorFilter(mTextColor)
+                                    }
                         }
 
                         if (code == KEYCODE_LEFT_ARROW || code == KEYCODE_RIGHT_ARROW) {
@@ -1126,14 +1132,18 @@ class KeyboardView
                                     else -> null
                                 }
                             drawableId?.let {
-                                key.icon = resources.getDrawable(it, context.theme)
-                                key.icon!!.applyColorFilter(mTextColor)
+                                key.icon =
+                                    resources
+                                        .getDrawable(it, context.theme)
+                                        .also { icon ->
+                                            icon.applyColorFilter(mTextColor)
+                                        }
                             }
                         }
 
                         if (code == KEYCODE_ENTER) {
                             val drawableId =
-                                when (mKeyboard!!.mEnterKeyType) {
+                                when (mKeyboard?.mEnterKeyType) {
                                     EditorInfo.IME_ACTION_SEARCH ->
                                         R.drawable.ic_search_vector
 
@@ -1151,8 +1161,12 @@ class KeyboardView
                                     else ->
                                         R.drawable.ic_enter_vector
                                 }
-                            key.icon = resources.getDrawable(drawableId)
-                            key.icon!!.applyColorFilter(mTextColor)
+                            key.icon =
+                                resources
+                                    .getDrawable(drawableId)
+                                    .also {
+                                        it.applyColorFilter(mTextColor)
+                                    }
                         } else {
                             if (code == KeyboardBase.KEYCODE_FLOAT_TOGGLE) {
                                 val isFloating =
@@ -1174,54 +1188,54 @@ class KeyboardView
                                     code == KeyboardBase.KEYCODE_FLOAT_TOGGLE ||
                                     code == KeyboardBase.KEYCODE_EMOJI
                             if (isIconOnlyKey) {
-                                key.icon!!.applyColorFilter(mTextColor)
+                                key.icon?.applyColorFilter(mTextColor)
                             }
                         }
 
                         // Controls where icons are located on their keys.
-                        var iconWidth = key.icon!!.intrinsicWidth
-                        var iconHeight = key.icon!!.intrinsicHeight
-                        val isEmojiOrClipboard =
-                            code == KeyboardBase.KEYCODE_EMOJI ||
-                                code == KeyboardBase.KEYCODE_CLIPBOARD ||
-                                code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
-                        val scaleFactor = if (isEmojiOrClipboard) 0.5f else 0.6f
-                        val maxIconWidth = (key.width * scaleFactor).toInt()
-                        val maxIconHeight = (key.height * scaleFactor).toInt()
-                        if (iconWidth > maxIconWidth || iconHeight > maxIconHeight) {
-                            val ratio = iconWidth.toFloat() / iconHeight.toFloat()
-                            if (ratio > 1) {
-                                iconWidth = maxIconWidth
-                                iconHeight = (maxIconWidth / ratio).toInt()
-                            } else {
-                                iconHeight = maxIconHeight
-                                iconWidth = (maxIconHeight * ratio).toInt()
+                        key.icon?.let { icon ->
+                            var iconWidth = icon.intrinsicWidth
+                            var iconHeight = icon.intrinsicHeight
+                            val isEmojiOrClipboard =
+                                code == KeyboardBase.KEYCODE_EMOJI ||
+                                    code == KeyboardBase.KEYCODE_CLIPBOARD ||
+                                    code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
+                            val scaleFactor = if (isEmojiOrClipboard) 0.5f else 0.6f
+                            val maxIconWidth = (key.width * scaleFactor).toInt()
+                            val maxIconHeight = (key.height * scaleFactor).toInt()
+                            if (iconWidth > maxIconWidth || iconHeight > maxIconHeight) {
+                                val ratio = iconWidth.toFloat() / iconHeight.toFloat()
+                                if (ratio > 1) {
+                                    iconWidth = maxIconWidth
+                                    iconHeight = (maxIconWidth / ratio).toInt()
+                                } else {
+                                    iconHeight = maxIconHeight
+                                    iconWidth = (maxIconHeight * ratio).toInt()
+                                }
+                            }
+                            val drawableX = (key.width - iconWidth) / 2
+                            val drawableY = (key.height - iconHeight) / 2
+                            translate(drawableX.toFloat(), drawableY.toFloat())
+                            icon.setBounds(0, 0, iconWidth, iconHeight)
+                            icon.draw(this)
+                            translate(-drawableX.toFloat(), -drawableY.toFloat())
+
+                            if (code == KeyboardBase.KEYCODE_EMOJI && id != R.id.mini_keyboard_view) {
+                                val settingsIcon = resources.getDrawable(R.drawable.ic_settings_cog_vector, context.theme)
+                                settingsIcon.applyColorFilter(mTextColor)
+                                val density = context.resources.displayMetrics.density
+                                val cogSize = (12 * density).toInt()
+                                val rightPadding = keyMargin - shadowOffset + padding + (2 * density).toInt()
+                                val topPadding = keyMargin - shadowOffset + padding + (2 * density).toInt()
+                                val cogX = key.width - cogSize - rightPadding
+                                val cogY = topPadding
+                                settingsIcon.setBounds(cogX, cogY, cogX + cogSize, cogY + cogSize)
+                                settingsIcon.draw(this)
                             }
                         }
-                        val drawableX = (key.width - iconWidth) / 2
-                        val drawableY = (key.height - iconHeight) / 2
-                        canvas.translate(drawableX.toFloat(), drawableY.toFloat())
-                        key.icon!!.setBounds(0, 0, iconWidth, iconHeight)
-                        key.icon!!.draw(canvas)
-                        canvas.translate(-drawableX.toFloat(), -drawableY.toFloat())
-
-                        if (code == KeyboardBase.KEYCODE_EMOJI && id != R.id.mini_keyboard_view) {
-                            val settingsIcon = resources.getDrawable(R.drawable.ic_settings_cog_vector, context.theme)
-                            settingsIcon.applyColorFilter(mTextColor)
-                            val density = context.resources.displayMetrics.density
-                            val cogSize = (12 * density).toInt()
-                            val rightPadding = keyMargin - shadowOffset + padding + (2 * density).toInt()
-                            val topPadding = keyMargin - shadowOffset + padding + (2 * density).toInt()
-                            val cogX = key.width - cogSize - rightPadding
-                            val cogY = topPadding
-                            settingsIcon.setBounds(cogX, cogY, cogX + cogSize, cogY + cogSize)
-                            settingsIcon.draw(canvas)
-                        }
                     }
-                    canvas.translate(-key.x.toFloat(), -key.y.toFloat())
+                    translate(-key.x.toFloat(), -key.y.toFloat())
                 }
-
-                mCanvas!!
             }
             mDrawPending = false
             mDirtyRect.setEmpty()
@@ -1244,7 +1258,7 @@ class KeyboardView
             if (index != NOT_A_KEY && index < mKeys.size) {
                 val key = mKeys[index]
                 getPressedKeyIndex(x, y)
-                mOnKeyboardActionListener!!.onKey(key.code)
+                mOnKeyboardActionListener?.onKey(key.code)
                 mLastTapTime = eventTime
             }
         }
@@ -1286,10 +1300,12 @@ class KeyboardView
             if (oldKeyIndex != mCurrentKeyIndex) {
                 if (previewPopup.isShowing) {
                     if (keyIndex == NOT_A_KEY) {
-                        mHandler!!.sendMessageDelayed(
-                            mHandler!!.obtainMessage(MSG_REMOVE_PREVIEW),
-                            DELAY_AFTER_PREVIEW.toLong(),
-                        )
+                        mHandler?.let {
+                            it.sendMessageDelayed(
+                                it.obtainMessage(MSG_REMOVE_PREVIEW),
+                                DELAY_AFTER_PREVIEW.toLong(),
+                            )
+                        }
                     }
                 }
 
@@ -1358,7 +1374,7 @@ class KeyboardView
             mPopupPreviewX = key.x
             mPopupPreviewY = key.y - popupHeight
 
-            mHandler!!.removeMessages(MSG_REMOVE_PREVIEW)
+            mHandler?.removeMessages(MSG_REMOVE_PREVIEW)
             getLocationInWindow(mCoordinates)
             mCoordinates[0] += mMiniKeyboardOffsetX // offset may be zero
             mCoordinates[1] += mMiniKeyboardOffsetY // offset may be zero
@@ -1496,64 +1512,63 @@ class KeyboardView
                     val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     mMiniKeyboardContainer = inflater.inflate(mPopupLayout, null)
                     mMiniKeyboard =
-                        mMiniKeyboardContainer!!
-                            .findViewById<View>(R.id.mini_keyboard_view)
-                            as KeyboardView
+                        (
+                            mMiniKeyboardContainer?.findViewById<View>(R.id.mini_keyboard_view)
+                                as KeyboardView
+                        ).also {
+                            it.mOnKeyboardActionListener =
+                                object : OnKeyboardActionListener {
+                                    override fun onKey(code: Int) {
+                                        mOnKeyboardActionListener?.onKey(code)
+                                        dismissPopupKeyboard()
+                                    }
 
-                    mMiniKeyboard!!.mOnKeyboardActionListener =
-                        object : OnKeyboardActionListener {
-                            override fun onKey(code: Int) {
-                                mOnKeyboardActionListener!!.onKey(code)
-                                dismissPopupKeyboard()
-                            }
+                                    override fun onPress(primaryCode: Int) {
+                                        mOnKeyboardActionListener?.onPress(primaryCode)
+                                    }
 
-                            override fun onPress(primaryCode: Int) {
-                                mOnKeyboardActionListener!!.onPress(primaryCode)
-                            }
+                                    override fun onActionUp() {
+                                        mOnKeyboardActionListener?.onActionUp()
+                                    }
 
-                            override fun onActionUp() {
-                                mOnKeyboardActionListener!!.onActionUp()
-                            }
+                                    override fun moveCursorLeft() {
+                                        mOnKeyboardActionListener?.moveCursorLeft()
+                                    }
 
-                            override fun moveCursorLeft() {
-                                mOnKeyboardActionListener!!.moveCursorLeft()
-                            }
+                                    override fun moveCursorRight() {
+                                        mOnKeyboardActionListener?.moveCursorRight()
+                                    }
 
-                            override fun moveCursorRight() {
-                                mOnKeyboardActionListener!!.moveCursorRight()
-                            }
+                                    override fun onText(text: String) {
+                                        mOnKeyboardActionListener?.onText(text)
+                                    }
 
-                            override fun onText(text: String) {
-                                mOnKeyboardActionListener!!.onText(text)
-                            }
+                                    override fun hasTextBeforeCursor(): Boolean = mOnKeyboardActionListener?.hasTextBeforeCursor() ?: false
 
-                            override fun hasTextBeforeCursor(): Boolean =
-                                mOnKeyboardActionListener!!
-                                    .hasTextBeforeCursor()
-
-                            override fun commitPeriodAfterSpace() {
-                                mOnKeyboardActionListener!!.commitPeriodAfterSpace()
-                            }
+                                    override fun commitPeriodAfterSpace() {
+                                        mOnKeyboardActionListener?.commitPeriodAfterSpace()
+                                    }
+                                }
                         }
 
+                    val popupCharacters = popupKey.popupCharacters
                     val keyboard =
-                        if (popupKey.popupCharacters != null) {
-                            KeyboardBase(context, popupKeyboardId, popupKey.popupCharacters!!, popupKey.width)
+                        if (popupCharacters != null) {
+                            KeyboardBase(context, popupKeyboardId, popupCharacters, popupKey.width)
                         } else {
                             KeyboardBase(context, popupKeyboardId, 0)
                         }
 
-                    mMiniKeyboard!!.setKeyboard(keyboard)
+                    mMiniKeyboard?.setKeyboard(keyboard)
                     mPopupParent = this
-                    mMiniKeyboardContainer!!.measure(
+                    mMiniKeyboardContainer?.measure(
                         MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST),
                         MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST),
                     )
                     mMiniKeyboardCache[popupKey] = mMiniKeyboardContainer
                 } else {
                     mMiniKeyboard =
-                        mMiniKeyboardContainer!!
-                            .findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
+                        mMiniKeyboardContainer?.findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
                 }
 
                 val isUserDarkMode =
@@ -1566,7 +1581,7 @@ class KeyboardView
                         context.theme,
                     )
 
-                mMiniKeyboard!!.background?.let { bg ->
+                mMiniKeyboard?.background?.let { bg ->
                     if (bg is LayerDrawable) {
                         bg
                             .findDrawableByLayerId(R.id.button_background_shape)
@@ -1717,8 +1732,9 @@ class KeyboardView
                                                 mMiniKeyboardSelectedKeyIndex = -1
                                                 hoverRunnable = null
                                                 dismissPopupKeyboard()
+                                            }.also {
+                                                hoverHandler?.postDelayed(it, hoverDelay)
                                             }
-                                        hoverHandler?.postDelayed(hoverRunnable!!, hoverDelay)
                                     } else {
                                         hoverRunnable =
                                             Runnable {
@@ -1730,8 +1746,9 @@ class KeyboardView
                                                 mMiniKeyboardSelectedKeyIndex = -1
                                                 hoverRunnable = null
                                                 dismissPopupKeyboard()
+                                            }.also {
+                                                hoverHandler?.postDelayed(it, 220L)
                                             }
-                                        hoverHandler?.postDelayed(hoverRunnable!!, 220L)
                                     }
                                 }
                                 // Emoji popup: no auto-fire on hover; wait for finger lift (ACTION_UP).
@@ -1744,10 +1761,12 @@ class KeyboardView
                             // Fire whichever key is currently highlighted when the finger lifts.
                             val idx = mMiniKeyboardSelectedKeyIndex
                             if (idx >= 0 && idx < (mMiniKeyboard?.mKeys?.size ?: 0)) {
-                                val key = mMiniKeyboard!!.mKeys[idx]
-                                key.focused = false
-                                mMiniKeyboard!!.invalidateAllKeys()
-                                mOnKeyboardActionListener?.onKey(key.code)
+                                val key = mMiniKeyboard?.mKeys[idx]
+                                if (key != null) {
+                                    key.focused = false
+                                    mMiniKeyboard?.invalidateAllKeys()
+                                    mOnKeyboardActionListener?.onKey(key.code)
+                                }
                             }
                             mMiniKeyboardSelectedKeyIndex = -1
                             dismissPopupKeyboard()
@@ -1765,9 +1784,11 @@ class KeyboardView
 
                         if (!isEmojiPopup && setHoldForAltCharacters) {
                             if (mMiniKeyboardSelectedKeyIndex >= 0) {
-                                val key = mMiniKeyboard!!.mKeys[mMiniKeyboardSelectedKeyIndex]
-                                mOnKeyboardActionListener?.onKey(key.code)
-                                mMiniKeyboardSelectedKeyIndex = -1
+                                val key = mMiniKeyboard?.mKeys[mMiniKeyboardSelectedKeyIndex]
+                                if (key != null) {
+                                    mOnKeyboardActionListener?.onKey(key.code)
+                                    mMiniKeyboardSelectedKeyIndex = -1
+                                }
                             }
                             mMiniKeyboardSelectedKeyIndex = -1
                             dismissPopupKeyboard()
@@ -1816,7 +1837,7 @@ class KeyboardView
                         // type in both chars and ignore the later gestures.
                         // Can happen at fast typing, easier to reproduce by increasing LONGPRESS_TIMEOUT.
                         ignoreTouches = true
-                        mHandler!!.removeMessages(MSG_LONGPRESS)
+                        mHandler?.removeMessages(MSG_LONGPRESS)
                         dismissPopupKeyboard()
                         detectAndSendKey(keyIndex, touchX, touchY, eventTime)
 
@@ -1827,7 +1848,7 @@ class KeyboardView
                         detectAndSendKey(secondKeyIndex, newPointerX, newPointerY, eventTime)
 
                         val secondKeyCode = mKeys.getOrNull(secondKeyIndex)?.code
-                        secondKeyCode?.let { mOnKeyboardActionListener!!.onPress(it) }
+                        secondKeyCode?.let { mOnKeyboardActionListener?.onPress(it) }
 
                         showPreview(NOT_A_KEY)
                         invalidateKey(mCurrentKey)
@@ -1845,12 +1866,15 @@ class KeyboardView
                         mLastMoveTime = eventTime
 
                         val onPressKey = if (keyIndex != NOT_A_KEY) mKeys[keyIndex].code else 0
-                        mOnKeyboardActionListener!!.onPress(onPressKey)
+                        mOnKeyboardActionListener?.onPress(onPressKey)
 
                         if (mCurrentKey >= 0 && mKeys[mCurrentKey].repeatable) {
                             mRepeatKeyIndex = mCurrentKey
-                            val msg = mHandler!!.obtainMessage(MSG_REPEAT)
-                            mHandler!!.sendMessageDelayed(msg, REPEAT_START_DELAY.toLong())
+                            val handler = mHandler
+                            if (handler != null) {
+                                val msg = handler.obtainMessage(MSG_REPEAT)
+                                handler.sendMessageDelayed(msg, REPEAT_START_DELAY.toLong())
+                            }
                             // If the user long presses Space, move the cursor after swipine left/right.
                             if (mKeys[mCurrentKey].code == KEYCODE_SPACE) {
                                 mLastSpaceMoveX = -1
@@ -1872,8 +1896,11 @@ class KeyboardView
                         }
 
                         if (!handled && mCurrentKey != NOT_A_KEY) {
-                            val msg = mHandler!!.obtainMessage(MSG_LONGPRESS, me)
-                            mHandler!!.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
+                            val handler = mHandler
+                            if (handler != null) {
+                                val msg = handler.obtainMessage(MSG_LONGPRESS, me)
+                                handler.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
+                            }
                         }
 
                         if (mPopupParent.id != R.id.mini_keyboard_view) {
@@ -1920,17 +1947,20 @@ class KeyboardView
                             }
                         } else if (!continueLongPress) {
                             // Cancel old longpress.
-                            mHandler!!.removeMessages(MSG_LONGPRESS)
-                            // Start new longpress if key has changed.
-                            if (keyIndex != NOT_A_KEY) {
-                                val msg = mHandler!!.obtainMessage(MSG_LONGPRESS, me)
-                                mHandler!!.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
-                            }
+                            val handler = mHandler
+                            if (handler != null) {
+                                handler.removeMessages(MSG_LONGPRESS)
+                                // Start new longpress if key has changed.
+                                if (keyIndex != NOT_A_KEY) {
+                                    val msg = handler.obtainMessage(MSG_LONGPRESS, me)
+                                    handler.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
+                                }
 
-                            if (mPopupParent.id != R.id.mini_keyboard_view) {
-                                showPreview(mCurrentKey)
+                                if (mPopupParent.id != R.id.mini_keyboard_view) {
+                                    showPreview(mCurrentKey)
+                                }
+                                mLastMoveTime = eventTime
                             }
-                            mLastMoveTime = eventTime
                         }
                     }
                     MotionEvent.ACTION_UP -> {
@@ -1965,9 +1995,9 @@ class KeyboardView
                         if (mKeys.getOrNull(mCurrentKey)?.code == KEYCODE_SPACE && !mIsLongPressingSpace) {
                             val currentTime = System.currentTimeMillis()
                             if (currentTime - lastSpaceBarTapTime < DOUBLE_TAP_DELAY + EXTRA_DELAY &&
-                                mOnKeyboardActionListener!!.hasTextBeforeCursor()
+                                mOnKeyboardActionListener?.hasTextBeforeCursor() == true
                             ) {
-                                mOnKeyboardActionListener!!.commitPeriodAfterSpace()
+                                mOnKeyboardActionListener?.commitPeriodAfterSpace()
                             } else {
                                 detectAndSendKey(mCurrentKey, touchX, touchY, eventTime)
                             }
@@ -1980,7 +2010,7 @@ class KeyboardView
                             mOnKeyboardActionListener?.setDeleteRepeating(false)
                         }
                         mRepeatKeyIndex = NOT_A_KEY
-                        mOnKeyboardActionListener!!.onActionUp()
+                        mOnKeyboardActionListener?.onActionUp()
                         mIsLongPressingSpace = false
                     }
                     MotionEvent.ACTION_CANCEL -> {

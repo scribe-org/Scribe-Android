@@ -436,7 +436,9 @@ abstract class GeneralKeyboardIME(
 
         keyboard =
             KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
-                .also { keyboardView?.setKeyboard(it) }
+                .also {
+                    keyboardView?.setKeyboard(it)
+                }
 
         if (this::uiManager.isInitialized && keyboardXml == R.xml.keys_symbols) {
             uiManager.setupCurrencySymbol(language)

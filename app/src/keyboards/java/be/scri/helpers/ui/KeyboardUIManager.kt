@@ -1216,11 +1216,11 @@ class KeyboardUIManager(
         binding.separator2.visibility = View.GONE
         binding.separator3.visibility = View.GONE
 
-        binding.emojiBtnPhone1?.visibility = View.GONE
-        binding.emojiBtnPhone2?.visibility = View.GONE
-        binding.emojiBtnTablet1?.visibility = View.GONE
-        binding.emojiBtnTablet2?.visibility = View.GONE
-        binding.emojiBtnTablet3?.visibility = View.GONE
+        binding.emojiBtnPhone1.visibility = View.GONE
+        binding.emojiBtnPhone2.visibility = View.GONE
+        binding.emojiBtnTablet1.visibility = View.GONE
+        binding.emojiBtnTablet2.visibility = View.GONE
+        binding.emojiBtnTablet3.visibility = View.GONE
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
