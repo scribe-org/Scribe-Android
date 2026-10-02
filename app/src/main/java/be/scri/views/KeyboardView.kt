@@ -1171,7 +1171,7 @@ class KeyboardView
                             if (code == KeyboardBase.KEYCODE_FLOAT_TOGGLE) {
                                 val isFloating =
                                     (context as? KeyboardBase.KeyboardContextProvider)?.isFloatingModeActive() == true ||
-                                        (mPopupParent?.context as? KeyboardBase.KeyboardContextProvider)?.isFloatingModeActive() == true
+                                        (mPopupParent.context as? KeyboardBase.KeyboardContextProvider)?.isFloatingModeActive() == true
                                 val floatIconRes =
                                     if (isFloating) {
                                         R.drawable.ic_keyboard_dismiss
@@ -1338,7 +1338,7 @@ class KeyboardView
                 previewText.setCompoundDrawables(null, null, null, null)
                 try {
                     previewText.text = adjustCase(key.label)
-                } catch (ignored: Exception) {
+                } catch (_: Exception) {
                 }
             }
 
@@ -1571,6 +1571,9 @@ class KeyboardView
                         mMiniKeyboardContainer?.findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
                 }
 
+                val miniKeyboardContainer = mMiniKeyboardContainer ?: return false
+                val miniKeyboard = mMiniKeyboard ?: return false
+
                 val isUserDarkMode =
                     be.scri.helpers.PreferencesHelper
                         .getIsDarkModeOrNot(context)
@@ -1581,7 +1584,7 @@ class KeyboardView
                         context.theme,
                     )
 
-                mMiniKeyboard?.background?.let { bg ->
+                miniKeyboard.background?.let { bg ->
                     if (bg is LayerDrawable) {
                         bg
                             .findDrawableByLayerId(R.id.button_background_shape)
@@ -1596,25 +1599,25 @@ class KeyboardView
                 mPopupX = popupKey.x
                 mPopupY = popupKey.y
 
-                var leftX = popupKey.x + (popupKey.width - mMiniKeyboardContainer!!.measuredWidth) / 2
-                leftX = leftX.coerceIn(0, (width - mMiniKeyboardContainer!!.measuredWidth).coerceAtLeast(0))
+                var leftX = popupKey.x + (popupKey.width - miniKeyboardContainer.measuredWidth) / 2
+                leftX = leftX.coerceIn(0, (width - miniKeyboardContainer.measuredWidth).coerceAtLeast(0))
                 mPopupX = leftX
-                mPopupY -= mMiniKeyboardContainer!!.measuredHeight
+                mPopupY -= miniKeyboardContainer.measuredHeight
                 val x = mPopupX + mCoordinates[0]
                 val y = mPopupY + mCoordinates[1]
                 val xOffset = Math.max(0, x)
-                mMiniKeyboard!!.setPopupOffset(xOffset, y)
+                miniKeyboard.setPopupOffset(xOffset, y)
 
                 // Make sure we highlight the proper key right after long pressing it,
                 // before any ACTION_MOVE event occurs.
                 val miniKeyboardX =
-                    if (xOffset + mMiniKeyboard!!.measuredWidth <= measuredWidth) {
+                    if (xOffset + miniKeyboard.measuredWidth <= measuredWidth) {
                         xOffset
                     } else {
-                        measuredWidth - mMiniKeyboard!!.measuredWidth
+                        measuredWidth - miniKeyboard.measuredWidth
                     }
 
-                val keysCnt = mMiniKeyboard!!.mKeys.size
+                val keysCnt = miniKeyboard.mKeys.size
                 var selectedKeyIndex = Math.floor((me.rawX - miniKeyboardX) / popupKey.width.toDouble()).toInt()
                 if (keysCnt > MAX_KEYS_PER_MINI_ROW) {
                     selectedKeyIndex += MAX_KEYS_PER_MINI_ROW
@@ -1622,7 +1625,7 @@ class KeyboardView
                 selectedKeyIndex = Math.max(0, Math.min(selectedKeyIndex, keysCnt - 1))
 
                 val isEmojiPopup =
-                    mMiniKeyboard!!.mKeys.any {
+                    miniKeyboard.mKeys.any {
                         it.code == KeyboardBase.KEYCODE_EMOJI ||
                             it.code == KeyboardBase.KEYCODE_CLIPBOARD ||
                             it.code == KeyboardBase.KEYCODE_FLOAT_TOGGLE
@@ -1630,27 +1633,27 @@ class KeyboardView
                 if (isEmojiPopup) {
                     // Emoji popup: start with no pre-selection; user slides to choose and lifts to confirm.
                     for (i in 0 until keysCnt) {
-                        mMiniKeyboard!!.mKeys[i].focused = false
+                        miniKeyboard.mKeys[i].focused = false
                     }
                     mMiniKeyboardSelectedKeyIndex = -1
                 } else if (setHoldForAltCharacters) {
                     for (i in 0 until keysCnt) {
-                        mMiniKeyboard!!.mKeys[i].focused = i == selectedKeyIndex
+                        miniKeyboard.mKeys[i].focused = i == selectedKeyIndex
                     }
                     mMiniKeyboardSelectedKeyIndex = selectedKeyIndex
                 } else {
                     for (i in 0 until keysCnt) {
-                        mMiniKeyboard!!.mKeys[i].focused = false
+                        miniKeyboard.mKeys[i].focused = false
                     }
                     mMiniKeyboardSelectedKeyIndex = -1
                 }
 
-                mMiniKeyboard!!.invalidateAllKeys()
+                miniKeyboard.invalidateAllKeys()
                 val miniShiftStatus = if (isShifted()) SHIFT_ON_PERMANENT else SHIFT_OFF
-                mMiniKeyboard!!.setShifted(miniShiftStatus)
-                mPopupKeyboard.contentView = mMiniKeyboardContainer
-                mPopupKeyboard.width = mMiniKeyboardContainer!!.measuredWidth
-                mPopupKeyboard.height = mMiniKeyboardContainer!!.measuredHeight
+                miniKeyboard.setShifted(miniShiftStatus)
+                mPopupKeyboard.contentView = miniKeyboardContainer
+                mPopupKeyboard.width = miniKeyboardContainer.measuredWidth
+                mPopupKeyboard.height = miniKeyboardContainer.measuredHeight
                 mPopupKeyboard.showAtLocation(this, Gravity.NO_GRAVITY, x, y)
                 mMiniKeyboardOnScreen = true
                 invalidateAllKeys()
