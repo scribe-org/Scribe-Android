@@ -55,8 +55,11 @@ class ShiftHandler(
                     ime.keyboardMode = ime.keyboardSymbols
                     ime.getPrimarySymbolKeyboardLayoutXML()
                 }
-            ime.keyboard = KeyboardBase(ime, keyboardXml, ime.enterKeyType, ime.getKeyboardWidth())
-            keyboardView?.setKeyboard(ime.keyboard!!)
+            ime.keyboard =
+                KeyboardBase(ime, keyboardXml, ime.enterKeyType, ime.getKeyboardWidth())
+                    .also {
+                        keyboardView?.setKeyboard(it)
+                    }
             if (keyboardXml == R.xml.keys_symbols) {
                 handleModeChange(keyboardMode, keyboardView, ime)
             }
@@ -83,14 +86,17 @@ class ShiftHandler(
                 ime.keyboardMode = ime.keyboardLetters
                 ime.getKeyboardLayoutXML()
             }
-        ime.keyboard = KeyboardBase(context, keyboardXml, ime.enterKeyType, ime.getKeyboardWidth())
-        if (ime.keyboardMode == ime.keyboardLetters) {
-            val wasShifted = ime.keyboard?.mShiftState == SHIFT_ON_ONE_CHAR || ime.keyboard?.mShiftState == SHIFT_ON_PERMANENT
-            if (wasShifted) {
-                ime.keyboard?.setShifted(ime.keyboard?.mShiftState ?: SHIFT_OFF)
-            }
-        }
-        keyboardView?.setKeyboard(ime.keyboard!!)
+        ime.keyboard =
+            KeyboardBase(context, keyboardXml, ime.enterKeyType, ime.getKeyboardWidth())
+                .also {
+                    if (ime.keyboardMode == ime.keyboardLetters) {
+                        val wasShifted = it.mShiftState == SHIFT_ON_ONE_CHAR || ime.keyboard?.mShiftState == SHIFT_ON_PERMANENT
+                        if (wasShifted) {
+                            it.setShifted(it.mShiftState)
+                        }
+                    }
+                    keyboardView?.setKeyboard(it)
+                }
         keyboardView?.invalidateAllKeys()
         if (keyboardXml == R.xml.keys_symbols) {
             ime.uiManager.setupCurrencySymbol(ime.language)
