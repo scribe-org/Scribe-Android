@@ -653,8 +653,11 @@ class KeyboardUIManager(
     fun initializeKeyboard(xmlId: Int) {
         val enterKeyType = listener.getCurrentEnterKeyType()
         val width = listener.getKeyboardWidth()
-        keyboard = KeyboardBase(context, xmlId, enterKeyType, width)
-        keyboardView.setKeyboard(keyboard!!)
+        keyboard =
+            KeyboardBase(context, xmlId, enterKeyType, width)
+                .also {
+                    keyboardView.setKeyboard(it)
+                }
         keyboardView.mOnKeyboardActionListener = listener.onKeyboardActionListener()
         keyboardView.requestLayout()
     }

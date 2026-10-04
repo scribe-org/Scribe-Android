@@ -314,7 +314,7 @@ abstract class GeneralKeyboardIME(
             setVibrate = getIsVibrateEnabled(applicationContext, language)
             setSound = getIsSoundEnabled(applicationContext, language)
             setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
-            setKeyboard(this@GeneralKeyboardIME.keyboard!!)
+            this@GeneralKeyboardIME.keyboard?.let { setKeyboard(it) }
             mOnKeyboardActionListener = this@GeneralKeyboardIME
         }
 
@@ -434,8 +434,9 @@ abstract class GeneralKeyboardIME(
 
         loadLanguageData()
 
-        keyboard = KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
-        keyboardView?.setKeyboard(keyboard!!)
+        keyboard =
+            KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
+                .also { keyboardView?.setKeyboard(it) }
 
         if (this::uiManager.isInitialized && keyboardXml == R.xml.keys_symbols) {
             uiManager.setupCurrencySymbol(language)
@@ -558,7 +559,9 @@ abstract class GeneralKeyboardIME(
                     keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
                 }
             }
-            keyboardView!!.setKeyboard(keyboard!!)
+            keyboard?.let {
+                keyboardView?.setKeyboard(it)
+            }
             switchToLetters = false
         }
     }
@@ -769,9 +772,10 @@ abstract class GeneralKeyboardIME(
     override fun commitText(text: String) {
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
             val label = text.trim()
-            val conjugateIndex = uiManager.getValidatedConjugateIndex(conjugateOutput)
-            val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
-            val languageOutput = title?.let { conjugateOutput!![it] }
+            val output = conjugateOutput
+            val conjugateIndex = uiManager.getValidatedConjugateIndex(output)
+            val title = output?.keys?.elementAtOrNull(conjugateIndex)
+            val languageOutput = title?.let { output[it] }
 
             val matchingEntry =
                 languageOutput?.entries?.find { (_, values) ->

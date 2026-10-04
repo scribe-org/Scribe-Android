@@ -359,8 +359,12 @@ class KeyboardBase {
             popupResId = a.getResourceId(R.styleable.KeyboardBase_Key_popupKeyboard, 0)
             repeatable = a.getBoolean(R.styleable.KeyboardBase_Key_isRepeatable, false)
             edgeFlags = a.getInt(R.styleable.KeyboardBase_Key_keyEdgeFlags, 0)
-            icon = a.getDrawable(R.styleable.KeyboardBase_Key_keyIcon)
-            icon?.setBounds(0, 0, icon!!.intrinsicWidth, icon!!.intrinsicHeight)
+            icon =
+                a
+                    .getDrawable(R.styleable.KeyboardBase_Key_keyIcon)
+                    .also {
+                        it?.setBounds(0, 0, it.intrinsicWidth, it.intrinsicHeight)
+                    }
 
             label = a.getText(R.styleable.KeyboardBase_Key_keyLabel) ?: ""
             topSmallNumber = a.getString(R.styleable.KeyboardBase_Key_topSmallNumber) ?: ""
@@ -448,7 +452,7 @@ class KeyboardBase {
         row.defaultWidth = keyWidth
         row.defaultHorizontalGap = mDefaultHorizontalGap
 
-        characters.forEachIndexed { index, character ->
+        characters.forEachIndexed { _, character ->
             val key = Key(row)
             if (column >= MAX_KEYS_PER_MINI_ROW) {
                 column = 0
@@ -464,7 +468,7 @@ class KeyboardBase {
             key.code = character.code
             column++
             x += key.width + key.gap
-            mKeys!!.add(key)
+            mKeys?.add(key)
             row.mKeys.add(key)
             if (x > mMinWidth) {
                 mMinWidth = x
@@ -585,7 +589,11 @@ class KeyboardBase {
 
                         TAG_KEY -> {
                             inKey = true
-                            key = createKeyFromXml(res, currentRow!!, x, y, parser)
+                            if (currentRow == null) {
+                                Log.e("KeyboardBase", "Key element found outside of a Row tag at line ${parser.lineNumber}")
+                                continue
+                            }
+                            key = createKeyFromXml(res, currentRow, x, y, parser)
 
                             if (hideComma && key.code == ','.code) {
                                 widthToRedistribute = key.width + key.gap
@@ -595,7 +603,7 @@ class KeyboardBase {
                                 key.gap = 0
                             }
 
-                            mKeys!!.add(key)
+                            mKeys?.add(key)
                             if (key.code == KEYCODE_ENTER) {
                                 val enterResourceId =
                                     when (mEnterKeyType) {
@@ -628,13 +636,17 @@ class KeyboardBase {
                 } else if (event == XmlResourceParser.END_TAG) {
                     if (inKey) {
                         inKey = false
-                        x += key!!.gap + key.width
+                        key?.run {
+                            x += gap + width
+                        }
                         if (x > mMinWidth) {
                             mMinWidth = x
                         }
                     } else if (inRow) {
                         inRow = false
-                        y += currentRow!!.defaultHeight
+                        currentRow?.run {
+                            y += defaultHeight
+                        }
                         row++
                     }
                 }

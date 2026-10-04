@@ -4,6 +4,7 @@ package be.scri.services
 
 import android.view.inputmethod.InputConnection
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import be.scri.models.ScribeState
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertFalse
@@ -61,5 +62,15 @@ class GeneralKeyboardIMETest {
     fun hasTextBeforeCursor_returnsFalse_whenInputConnectionIsNull() {
         every { ime.currentInputConnection } returns null
         assertFalse(ime.hasTextBeforeCursor)
+    }
+
+    @Test
+    fun commitText_inConjugationState_handlesNullConjugateOutput_withoutCrashing() {
+        // Arrange: state is SELECT_VERB_CONJUNCTION, but conjugateOutput is null
+        ime.currentState = ScribeState.SELECT_VERB_CONJUNCTION
+        ime.conjugateOutput = null
+
+        // Act & Assert: Should complete gracefully without NullPointerException
+        ime.commitText("test")
     }
 }
