@@ -15,8 +15,8 @@ class RecentEmojiHelperTest {
         val context = mockk<Context>()
         val mockPreferences = mockk<SharedPreferences>()
 
-        every { mockPreferences.getString("recent_emoji_list", "") } returns "emoji1,emoji2"
-        every { context.getSharedPreferences("recent_emojis", Context.MODE_PRIVATE) } returns mockPreferences
+        every { mockPreferences.getString(KEY_RECENT, "") } returns "emoji1,emoji2"
+        every { context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) } returns mockPreferences
 
         assertEquals(listOf("emoji1", "emoji2"), getRecentEmojis(context))
     }
@@ -26,8 +26,8 @@ class RecentEmojiHelperTest {
         val context = mockk<Context>()
         val mockPreferences = mockk<SharedPreferences>()
 
-        every { mockPreferences.getString("recent_emoji_list", "") } returns ""
-        every { context.getSharedPreferences("recent_emojis", Context.MODE_PRIVATE) } returns mockPreferences
+        every { mockPreferences.getString(KEY_RECENT, "") } returns ""
+        every { context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) } returns mockPreferences
 
         assertEquals(emptyList<String>(), getRecentEmojis(context))
     }
@@ -37,8 +37,8 @@ class RecentEmojiHelperTest {
         val context = mockk<Context>()
         val mockPreferences = mockk<SharedPreferences>()
 
-        every { mockPreferences.getString("recent_emoji_list", "") } returns null
-        every { context.getSharedPreferences("recent_emojis", Context.MODE_PRIVATE) } returns mockPreferences
+        every { mockPreferences.getString(KEY_RECENT, "") } returns null
+        every { context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) } returns mockPreferences
 
         assertEquals(emptyList<String>(), getRecentEmojis(context))
     }
@@ -49,13 +49,13 @@ class RecentEmojiHelperTest {
         val mockPreferences = mockk<SharedPreferences>()
         val mockEditor = mockk<SharedPreferences.Editor>(relaxed = true)
 
-        every { mockPreferences.getString("recent_emoji_list", "") } returns "emoji1,emoji2"
+        every { mockPreferences.getString(KEY_RECENT, "") } returns "emoji1,emoji2"
         every { mockPreferences.edit() } returns mockEditor
-        every { context.getSharedPreferences("recent_emojis", Context.MODE_PRIVATE) } returns mockPreferences
+        every { context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) } returns mockPreferences
 
         recordRecentEmoji(context, "emoji3")
 
-        verify { mockEditor.putString("recent_emoji_list", "emoji3,emoji1,emoji2") }
+        verify { mockEditor.putString(KEY_RECENT, "emoji3,emoji1,emoji2") }
     }
 
     @Test
@@ -64,32 +64,30 @@ class RecentEmojiHelperTest {
         val mockPreferences = mockk<SharedPreferences>()
         val mockEditor = mockk<SharedPreferences.Editor>(relaxed = true)
 
-        // Create a list of 30 emojis: "e1,e2,...,e30"
         val initialList = (1..30).joinToString(",") { "e$it" }
-        // Adding "new" should push "e30" out. Result: "new,e1,e2,...,e29"
         val expectedList = "new," + (1..29).joinToString(",") { "e$it" }
 
-        every { mockPreferences.getString("recent_emoji_list", "") } returns initialList
+        every { mockPreferences.getString(KEY_RECENT, "") } returns initialList
         every { mockPreferences.edit() } returns mockEditor
-        every { context.getSharedPreferences("recent_emojis", Context.MODE_PRIVATE) } returns mockPreferences
+        every { context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) } returns mockPreferences
 
         recordRecentEmoji(context, "new")
 
-        verify { mockEditor.putString("recent_emoji_list", expectedList) }
+        verify { mockEditor.putString(KEY_RECENT, expectedList) }
     }
 
     @Test
-    fun recordRecentEmojis_doesNotAddDuplicateEmoji_whenRecentEmojisNull() {
+    fun recordRecentEmojis_addEmojiToRecentList_whenExistingRecentEmojisNull() {
         val context = mockk<Context>()
         val mockPreferences = mockk<SharedPreferences>()
         val mockEditor = mockk<SharedPreferences.Editor>(relaxed = true)
 
-        every { mockPreferences.getString("recent_emoji_list", "") } returns null
+        every { mockPreferences.getString(KEY_RECENT, "") } returns null
         every { mockPreferences.edit() } returns mockEditor
-        every { context.getSharedPreferences("recent_emojis", Context.MODE_PRIVATE) } returns mockPreferences
+        every { context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) } returns mockPreferences
 
         recordRecentEmoji(context, "emoji1")
 
-        verify(exactly = 0) { mockEditor.putString(any(), any()) }
+        verify(exactly = 1) { mockEditor.putString(any(), any()) }
     }
 }
