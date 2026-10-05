@@ -88,6 +88,6 @@ class RecentEmojiHelperTest {
 
         recordRecentEmoji(context, "emoji1")
 
-        verify(exactly = 1) { mockEditor.putString(any(), any()) }
+        verify { mockEditor.putString(KEY_RECENT, "emoji1") }
     }
 }

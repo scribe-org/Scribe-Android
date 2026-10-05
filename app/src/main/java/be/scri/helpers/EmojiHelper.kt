@@ -25,13 +25,11 @@ fun parseRawEmojiSpecsFile(
 
     fun commitEmojiEditorList() {
         if (emojiEditorList.isNotEmpty()) {
-            emojiEditorList.let {
-                val base = it.first()
-                val variants = it.drop(1)
-                emojis.add(EmojiData(category ?: "none", base, variants))
-            }
+            val base = emojiEditorList.first()
+            val variants = emojiEditorList.drop(1)
+            emojis.add(EmojiData(category ?: "none", base, variants))
         }
-        emojiEditorList = emptyList<String>().toMutableList()
+        emojiEditorList = mutableListOf()
     }
 
     context.assets.open(path).bufferedReader().useLines { lines ->
@@ -50,11 +48,7 @@ fun parseRawEmojiSpecsFile(
                     val data = line.split(";")
                     if (data.size == 3) {
                         val emoji = data[0].trim()
-                        if (emojiEditorList.isNotEmpty()) {
-                            emojiEditorList.add(emoji)
-                        } else {
-                            emojiEditorList = mutableListOf(emoji)
-                        }
+                        emojiEditorList.add(emoji)
                     }
                 }
             }

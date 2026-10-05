@@ -2,7 +2,6 @@
 package be.scri.helpers
 
 import android.os.Handler
-import android.os.Looper
 import be.scri.models.ScribeState
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -10,11 +9,11 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class AutocompletionHandlerTest {
-    private lateinit var looper: Looper
     private lateinit var handler: Handler
 
     @MockK(relaxed = true)
@@ -24,7 +23,6 @@ class AutocompletionHandlerTest {
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
-        looper = mockk<Looper>(relaxed = true)
         handler = mockk<Handler>(relaxed = true)
         autocompletionHandler = AutocompletionHandler(ime, handler)
     }
@@ -36,7 +34,7 @@ class AutocompletionHandlerTest {
 
         val result = AutocompletionHandler.buildCompletions(typedWord, completions)
 
-        assert(result.isEmpty())
+        assertTrue(result.isEmpty())
     }
 
     @Test
@@ -46,8 +44,8 @@ class AutocompletionHandlerTest {
 
         val result = AutocompletionHandler.buildCompletions(typedWord, completions)
 
-        assert(result.size == 1)
-        assert(result[0] == "wordy")
+        assertTrue(result.size == 1)
+        assertTrue(result[0] == "wordy")
     }
 
     @Test
@@ -57,9 +55,9 @@ class AutocompletionHandlerTest {
 
         val result = AutocompletionHandler.buildCompletions(typedWord, completions)
 
-        assert(result.size == 2)
-        assert(result[0] == "word0")
-        assert(result[1] == "word1")
+        assertTrue(result.size == 2)
+        assertTrue(result[0] == "word0")
+        assertTrue(result[1] == "word1")
     }
 
     @Test
