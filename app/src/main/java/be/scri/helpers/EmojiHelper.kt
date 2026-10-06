@@ -20,16 +20,16 @@ fun parseRawEmojiSpecsFile(
     path: String,
 ): MutableList<EmojiData> {
     val emojis = mutableListOf<EmojiData>()
-    var emojiEditorList: MutableList<String>? = null
+    var emojiEditorList = mutableListOf<String>()
     var category: String? = null
 
     fun commitEmojiEditorList() {
-        emojiEditorList?.let {
-            val base = it.first()
-            val variants = it.drop(1)
+        if (emojiEditorList.isNotEmpty()) {
+            val base = emojiEditorList.first()
+            val variants = emojiEditorList.drop(1)
             emojis.add(EmojiData(category ?: "none", base, variants))
         }
-        emojiEditorList = null
+        emojiEditorList = mutableListOf()
     }
 
     context.assets.open(path).bufferedReader().useLines { lines ->
@@ -48,11 +48,7 @@ fun parseRawEmojiSpecsFile(
                     val data = line.split(";")
                     if (data.size == 3) {
                         val emoji = data[0].trim()
-                        if (emojiEditorList != null) {
-                            emojiEditorList!!.add(emoji)
-                        } else {
-                            emojiEditorList = mutableListOf(emoji)
-                        }
+                        emojiEditorList.add(emoji)
                     }
                 }
             }

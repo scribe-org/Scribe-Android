@@ -320,7 +320,7 @@ object HintUtils {
             ScribeState.TRANSLATE -> getTranslationPrompt(language, context)
             ScribeState.CONJUGATE -> getConjugationPrompt(language)
             ScribeState.PLURAL -> getPluralPrompt(language)
-            ScribeState.SELECT_VERB_CONJUNCTION -> text!!
+            ScribeState.SELECT_VERB_CONJUNCTION -> text ?: ""
             else -> ""
         }
 
