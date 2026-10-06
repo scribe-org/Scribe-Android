@@ -1,72 +1,78 @@
 # Database column mappings that are read by Scribe applications to structure how data is displayed to the user.
 # Includes interface titles and the order that values should be presented (chronological or alphabetical).
+# Contracts are also how Scribe-Data generates queries. All data type end values are query lexeme forms.
+# - If the nodes have "value" as a key, then all values for this key are used in query generation
+# - If the nodes don't have "value" as a key, then all end values are used in query generation
+# Note that {lexemeForm} values are included but [word] values are not.
 
-# MARK: Noun Gender
+# MARK: Nouns
 
-# A map of which columns in the nouns table contain gender information.
-genders:
-  canonical: [gender]
-  feminines: []
-  masculines: []
-  commons: []
-  neuters: []
+nouns:
+  # A map of which columns in the nouns table contain gender information.
+  genders:
+    canonical: [gender]
+    feminines: []
+    masculines: []
+    commons: []
+    neuters: []
 
-# MARK: Plural
+  # Key-value pairs that link the key of a noun singular to its plural for the Plural command.
+  numbers:
+    1:
+      singular: nominativeSingular
+      plural: nominativePlural
 
-# Key-value pairs that link the key of a noun singular to its plural for the Plural command.
-numbers:
-  nominativeSingular: nominativePlural
+# MARK: Verbs
 
-# MARK: Conjugate
+verbs:
+  # Map of verb tenses to their conjugations for the Conjugate command.
+  # Sections provide meta tense selections if there is more than one tense included.
+  conjugations:
+    1:
+      sectionTitle: Настоящее
+      tenses:
+        1:
+          tenseTitle: Indicative Present
+          tenseForms:
+            1:
+              label: я
+              value: indicativePresentFirstPersonSingular
+            2:
+              label: ты
+              value: indicativePresentSecondPersonSingular
+            3:
+              label: он/она/оно
+              value: indicativePresentThirdPersonSingular
+            4:
+              label: мы
+              value: indicativePresentFirstPersonPlural
+            5:
+              label: вы
+              value: indicativePresentSecondPersonPlural
+            6:
+              label: они
+              value: indicativePresentThirdPersonPlural
 
-# Map of verb tenses to their conjugations for the Conjugate command.
-# Sections provide meta tense selections if there is more than one tense included.
-conjugations:
-  1:
-    sectionTitle: Настоящее
-    tenses:
-      1:
-        tenseTitle: Indicative Present
-        tenseForms:
-          1:
-            label: я
-            value: indicativePresentFirstPersonSingular
-          2:
-            label: ты
-            value: indicativePresentSecondPersonSingular
-          3:
-            label: он/она/оно
-            value: indicativePresentThirdPersonSingular
-          4:
-            label: мы
-            value: indicativePresentFirstPersonPlural
-          5:
-            label: вы
-            value: indicativePresentSecondPersonPlural
-          6:
-            label: они
-            value: indicativePresentThirdPersonPlural
+    2:
+      sectionTitle: Прошедшее
+      tenses:
+        1:
+          tenseTitle: Indicative Past
+          tenseForms:
+            1:
+              label: я/ты/она
+              value: feminineIndicativePast
+            2:
+              label: я/ты/он
+              value: masculineIndicativePast
+            3:
+              label: оно
+              value: neuterIndicativePast
+            4:
+              label: мы/вы/они
+              value: indicativePastPlural
 
-  2:
-    sectionTitle: Прошедшее
-    tenses:
-      1:
-        tenseTitle: Indicative Past
-        tenseForms:
-          1:
-            label: я/ты/она
-            value: feminineIndicativePast
-          2:
-            label: я/ты/он
-            value: masculineIndicativePast
-          3:
-            label: оно
-            value: neuterIndicativePast
-          4:
-            label: мы/вы/они
-            value: indicativePastPlural
-
-# MARK: Translate
+# MARK: Translations
 
 # Map of interface titles to display for the Translate command.
 # Needed database columns are the same across languages (descriptions are labels for values).
@@ -115,7 +121,12 @@ translations:
       displayValue: глагол
       sectionTitle: Выберите инфинитив глагола
 
-# MARK: Decline
+# MARK: Prepositions
+
+prepositions:
+  case: grammaticalCase
+
+# MARK: Declensions
 
 # Map of pronoun declensions given cases.
 declensions:

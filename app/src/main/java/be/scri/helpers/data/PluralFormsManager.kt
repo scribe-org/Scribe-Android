@@ -26,7 +26,7 @@ class PluralFormsManager(
         language: String,
         yamlData: DataContract?,
     ): List<String>? =
-        yamlData?.numbers?.values?.toList()?.takeIf { it.isNotEmpty() }?.let { pluralForms ->
+        yamlData?.nouns?.numbers?.values?.map { it.plural }?.takeIf { it.isNotEmpty() }?.let { pluralForms ->
             fileManager.getLanguageDatabase(language)?.use { db ->
                 queryAllPluralForms(db, pluralForms)
             }
@@ -47,9 +47,10 @@ class PluralFormsManager(
         yamlData: DataContract?,
         noun: String,
     ): Map<String, String?> =
-        yamlData?.numbers?.let { numbers ->
-            val singularCol = numbers.keys.firstOrNull()
-            val pluralCol = numbers.values.firstOrNull()
+        yamlData?.nouns?.numbers?.let { numbers ->
+            val firstPair = numbers.values.firstOrNull()
+            val singularCol = firstPair?.singular
+            val pluralCol = firstPair?.plural
 
             if (singularCol != null && pluralCol != null) {
                 val wasCapitalized = isWordCapitalized(noun)

@@ -1,103 +1,109 @@
 # Database column mappings that are read by Scribe applications to structure how data is displayed to the user.
 # Includes interface titles and the order that values should be presented (chronological or alphabetical).
+# Contracts are also how Scribe-Data generates queries. All data type end values are query lexeme forms.
+# - If the nodes have "value" as a key, then all values for this key are used in query generation
+# - If the nodes don't have "value" as a key, then all end values are used in query generation
+# Note that {lexemeForm} values are included but [word] values are not.
 
-# MARK: Noun Gender
+# MARK: Nouns
 
-# A map of which columns in the nouns table contain gender information.
-genders:
-  canonical: [gender]
-  feminines: []
-  masculines: []
-  commons: []
-  neuters: []
+nouns:
+  # A map of which columns in the nouns table contain gender information.
+  genders:
+    canonical: [gender]
+    feminines: []
+    masculines: []
+    commons: []
+    neuters: []
 
-# MARK: Plural
+  # Key-value pairs that link the key of a noun singular to its plural for the Plural command.
+  numbers:
+    1:
+      singular: singular
+      plural: plural
 
-# Key-value pairs that link the key of a noun singular to its plural for the Plural command.
-numbers:
-  singular: plural
+# MARK: Verbs
 
-# MARK: Conjugate
+verbs:
+  # Map of verb tenses to their conjugations for the Conjugate command.
+  # Sections provide meta tense selections if there is more than one tense included.
+  conjugations:
+    1:
+      sectionTitle: Presente
+      tenses:
+        1:
+          tenseTitle: Presente
+          tenseForms:
+            1:
+              label: io
+              value: presentIndicativeFirstPersonSingular
+            2:
+              label: tu
+              value: presentIndicativeSecondPersonSingular
+            3:
+              label: lei/lui
+              value: presentIndicativeThirdPersonSingular
+            4:
+              label: noi
+              value: presentIndicativeFirstPersonPlural
+            5:
+              label: voi
+              value: presentIndicativeSecondPersonPlural
+            6:
+              label: loro
+              value: presentIndicativeThirdPersonPlural
 
-# Map of verb tenses to their conjugations for the Conjugate command.
-# Sections provide meta tense selections if there is more than one tense included.
-conjugations:
-  1:
-    sectionTitle: Presente
-    tenses:
-      1:
-        tenseTitle: Presente
-        tenseForms:
-          1:
-            label: io
-            value: presentIndicativeFirstPersonSingular
-          2:
-            label: tu
-            value: presentIndicativeSecondPersonSingular
-          3:
-            label: lei/lui
-            value: presentIndicativeThirdPersonSingular
-          4:
-            label: noi
-            value: presentIndicativeFirstPersonPlural
-          5:
-            label: voi
-            value: presentIndicativeSecondPersonPlural
-          6:
-            label: loro
-            value: presentIndicativeThirdPersonPlural
+    2:
+      sectionTitle: Preterito
+      tenses:
+        1:
+          tenseTitle: Preterito
+          tenseForms:
+            1:
+              label: io
+              value: indicativePreteriteFirstPersonSingular
+            2:
+              label: tu
+              value: indicativePreteriteSecondPersonSingular
+            3:
+              label: lei/lui
+              value: indicativePreteriteThirdPersonSingular
+            4:
+              label: noi
+              value: indicativePreteriteFirstPersonPlural
+            5:
+              label: voi
+              value: indicativePreteriteSecondPersonPlural
+            6:
+              label: loro
+              value: indicativePreteriteThirdPersonPlural
 
-  2:
-    sectionTitle: Preterito
-    tenses:
-      1:
-        tenseTitle: Preterito
-        tenseForms:
-          1:
-            label: io
-            value: preteriteFirstPersonSingular
-          2:
-            label: tu
-            value: preteriteSecondPersonSingular
-          3:
-            label: lei/lui
-            value: preteriteThirdPersonSingular
-          4:
-            label: noi
-            value: preteriteFirstPersonPlural
-          5:
-            label: voi
-            value: preteriteSecondPersonPlural
-          6:
-            label: loro
-            value: preteriteThirdPersonPlural
+    3:
+      sectionTitle: Imperfetto
+      tenses:
+        1:
+          tenseTitle: Imperfetto
+          tenseForms:
+            1:
+              label: io
+              value: indicativeImperfectFirstPersonSingular
+            2:
+              label: tu
+              value: indicativeImperfectSecondPersonSingular
+            3:
+              label: lei/lui
+              value: indicativeImperfectThirdPersonSingular
+            4:
+              label: noi
+              value: indicativeImperfectFirstPersonPlural
+            5:
+              label: voi
+              value: indicativeImperfectSecondPersonPlural
+            6:
+              label: loro
+              value: indicativeImperfectThirdPersonPlural
 
-  3:
-    sectionTitle: Imperfetto
-    tenses:
-      1:
-        tenseTitle: Imperfetto
-        tenseForms:
-          1:
-            label: io
-            value: pastImperfectFirstPersonSingular
-          2:
-            label: tu
-            value: pastImperfectSecondPersonSingular
-          3:
-            label: lei/lui
-            value: pastImperfectThirdPersonSingular
-          4:
-            label: noi
-            value: pastImperfectFirstPersonPlural
-          5:
-            label: voi
-            value: pastImperfectSecondPersonPlural
-          6:
-            label: loro
-            value: pastImperfectThirdPersonPlural
-
-# MARK: Translate
+# MARK: Translations
 
 # Map of interface titles to display for the Translate command.
 # Needed database columns are the same across languages (descriptions are labels for values).

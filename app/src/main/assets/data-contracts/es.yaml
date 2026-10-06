@@ -1,104 +1,137 @@
 # Database column mappings that are read by Scribe applications to structure how data is displayed to the user.
 # Includes interface titles and the order that values should be presented (chronological or alphabetical).
+# Contracts are also how Scribe-Data generates queries. All data type end values are query lexeme forms.
+# - If the nodes have "value" as a key, then all values for this key are used in query generation
+# - If the nodes don't have "value" as a key, then all end values are used in query generation
+# Note that {lexemeForm} values are included but [word] values are not.
 
-# MARK: Noun Gender
+# MARK: Nouns
 
-# A map of which columns in the nouns table contain gender information.
-genders:
-  canonical: []
-  feminines: [feminineSingular]
-  masculines: [masculineSingular]
-  commons: []
-  neuters: []
+nouns:
+  # A map of which columns in the nouns table contain gender information.
+  genders:
+    canonical: []
+    feminines: [feminineSingular]
+    masculines: [masculineSingular]
+    commons: []
+    neuters: []
 
-# MARK: Plural
+  # Key-value pairs that link the key of a noun singular to its plural for the Plural command.
+  numbers:
+    1:
+      singular: feminineSingular
+      plural: femininePlural
+    2:
+      singular: masculineSingular
+      plural: masculinePlural
 
-# Key-value pairs that link the key of a noun singular to its plural for the Plural command.
-numbers:
-  feminineSingular: femininePlural
-  masculineSingular: masculinePlural
+# MARK: Verbs
 
-# MARK: Conjugate
+verbs:
+  # Map of verb tenses to their conjugations for the Conjugate command.
+  # Sections provide meta tense selections if there is more than one tense included.
+  conjugations:
+    1:
+      sectionTitle: Presente
+      tenses:
+        1:
+          tenseTitle: Presente
+          tenseForms:
+            1:
+              label: yo
+              value: indicativePresentFirstPersonSingular
+            2:
+              label: tú
+              value: indicativePresentSecondPersonSingular
+            3:
+              label: él/ella/Ud.
+              value: indicativePresentThirdPersonSingular
+            4:
+              label: nosotros
+              value: indicativePresentFirstPersonPlural
+            5:
+              label: vosotros
+              value: indicativePresentSecondPersonPlural
+            6:
+              label: ellos/ellas/Uds.
+              value: indicativePresentThirdPersonPlural
 
-# Map of verb tenses to their conjugations for the Conjugate command.
-# Sections provide meta tense selections if there is more than one tense included.
-conjugations:
-  1:
-    sectionTitle: Presente
-    tenses:
-      1:
-        tenseTitle: Presente
-        tenseForms:
-          1:
-            label: yo
-            value: indicativePresentFirstPersonSingular
-          2:
-            label: tú
-            value: indicativePresentSecondPersonSingular
-          3:
-            label: él/ella/Ud.
-            value: indicativePresentThirdPersonSingular
-          4:
-            label: nosotros
-            value: indicativePresentFirstPersonPlural
-          5:
-            label: vosotros
-            value: indicativePresentSecondPersonPlural
-          6:
-            label: ellos/ellas/Uds.
-            value: indicativePresentThirdPersonPlural
+    2:
+      sectionTitle: Pretérito
+      tenses:
+        1:
+          tenseTitle: Pretérito
+          tenseForms:
+            1:
+              label: yo
+              value: preteriteFirstPersonSingular
+            2:
+              label: tú
+              value: preteriteSecondPersonSingular
+            3:
+              label: él/ella/Ud.
+              value: preteriteThirdPersonSingular
+            4:
+              label: nosotros
+              value: preteriteFirstPersonPlural
+            5:
+              label: vosotros
+              value: preteriteSecondPersonPlural
+            6:
+              label: ellos/ellas/Uds.
+              value: preteriteThirdPersonPlural
 
-  2:
-    sectionTitle: Pretérito
-    tenses:
-      1:
-        tenseTitle: Pretérito
-        tenseForms:
-          1:
-            label: yo
-            value: preteriteFirstPersonSingular
-          2:
-            label: tú
-            value: preteriteSecondPersonSingular
-          3:
-            label: él/ella/Ud.
-            value: preteriteThirdPersonSingular
-          4:
-            label: nosotros
-            value: preteriteFirstPersonPlural
-          5:
-            label: vosotros
-            value: preteriteSecondPersonPlural
-          6:
-            label: ellos/ellas/Uds.
-            value: preteriteThirdPersonPlural
+    3:
+      sectionTitle: Imperfecto
+      tenses:
+        1:
+          tenseTitle: Imperfecto
+          tenseForms:
+            1:
+              label: yo
+              value: imperfectFirstPersonSingular
+            2:
+              label: tú
+              value: imperfectSecondPersonSingular
+            3:
+              label: él/ella/Ud.
+              value: imperfectThirdPersonSingular
+            4:
+              label: nosotros
+              value: imperfectFirstPersonPlural
+            5:
+              label: vosotros
+              value: imperfectSecondPersonPlural
+            6:
+              label: ellos/ellas/Uds.
+              value: imperfectThirdPersonPlural
 
-  3:
-    sectionTitle: Imperfecto
-    tenses:
-      1:
-        tenseTitle: Imperfecto
-        tenseForms:
-          1:
-            label: yo
-            value: pastImperfectFirstPersonSingular
-          2:
-            label: tú
-            value: pastImperfectSecondPersonSingular
-          3:
-            label: él/ella/Ud.
-            value: pastImperfectThirdPersonSingular
-          4:
-            label: nosotros
-            value: pastImperfectFirstPersonPlural
-          5:
-            label: vosotros
-            value: pastImperfectSecondPersonPlural
-          6:
-            label: ellos/ellas/Uds.
-            value: pastImperfectThirdPersonPlural
+    4:
+      sectionTitle: Futuro
+      tenses:
+        1:
+          tenseTitle: Futuro
+          tenseForms:
+            1:
+              label: yo
+              value: indicativeFutureFirstPersonSingular
+            2:
+              label: tú
+              value: indicativeFutureSecondPersonSingular
+            3:
+              label: él/ella/Ud.
+              value: indicativeFutureThirdPersonSingular
+            4:
+              label: nosotros
+              value: indicativeFutureFirstPersonPlural
+            5:
+              label: vosotros
+              value: indicativeFutureSecondPersonPlural
+            6:
+              label: ellos/ellas/Uds.
+              value: indicativeFutureThirdPersonPlural
 
-# MARK: Translate
+# MARK: Translations
 
 # Map of interface titles to display for the Translate command.
 # Needed database columns are the same across languages (descriptions are labels for values).

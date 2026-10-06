@@ -1,103 +1,109 @@
 # Database column mappings that are read by Scribe applications to structure how data is displayed to the user.
 # Includes interface titles and the order that values should be presented (chronological or alphabetical).
+# Contracts are also how Scribe-Data generates queries. All data type end values are query lexeme forms.
+# - If the nodes have "value" as a key, then all values for this key are used in query generation
+# - If the nodes don't have "value" as a key, then all end values are used in query generation
+# Note that {lexemeForm} values are included but [word] values are not.
 
-# MARK: Noun Gender
+# MARK: Nouns
 
-# A map of which columns in the nouns table contain gender information.
-genders:
-  canonical: [gender]
-  feminines: []
-  masculines: []
-  commons: []
-  neuters: []
+nouns:
+  # A map of which columns in the nouns table contain gender information.
+  genders:
+    canonical: [gender]
+    feminines: []
+    masculines: []
+    commons: []
+    neuters: []
 
-# MARK: Plural
+  # Key-value pairs that link the key of a noun singular to its plural for the Plural command.
+  numbers:
+    1:
+      singular: nominativeSingular
+      plural: nominativePlural
 
-# Key-value pairs that link the key of a noun singular to its plural for the Plural command.
-numbers:
-  nominativeSingular: nominativePlural
+# MARK: Verbs
 
-# MARK: Conjugate
+verbs:
+  # Map of verb tenses to their conjugations for the Conjugate command.
+  # Sections provide meta tense selections if there is more than one tense included.
+  conjugations:
+    1:
+      sectionTitle: Präsens
+      tenses:
+        1:
+          tenseTitle: Präsens
+          tenseForms:
+            1:
+              label: ich
+              value: indicativePresentFirstPersonSingular
+            2:
+              label: du
+              value: indicativePresentSecondPersonSingular
+            3:
+              label: er/sie/es
+              value: indicativePresentThirdPersonSingular
+            4:
+              label: wir
+              value: indicativePresentFirstPersonPlural
+            5:
+              label: ihr
+              value: indicativePresentSecondPersonPlural
+            6:
+              label: sie/Sie
+              value: indicativePresentThirdPersonPlural
 
-# Map of verb tenses to their conjugations for the Conjugate command.
-# Sections provide meta tense selections if there is more than one tense included.
-conjugations:
-  1:
-    sectionTitle: Präsens
-    tenses:
-      1:
-        tenseTitle: Präsens
-        tenseForms:
-          1:
-            label: ich
-            value: indicativePresentFirstPersonSingular
-          2:
-            label: du
-            value: indicativePresentSecondPersonSingular
-          3:
-            label: er/sie/es
-            value: indicativePresentThirdPersonSingular
-          4:
-            label: wir
-            value: indicativePresentFirstPersonPlural
-          5:
-            label: ihr
-            value: indicativePresentSecondPersonPlural
-          6:
-            label: sie/Sie
-            value: indicativePresentThirdPersonPlural
+    2:
+      sectionTitle: Preterite
+      tenses:
+        1:
+          tenseTitle: Preterite
+          tenseForms:
+            1:
+              label: ich
+              value: indicativePreteriteFirstPersonSingular
+            2:
+              label: du
+              value: indicativePreteriteSecondPersonSingular
+            3:
+              label: er/sie/es
+              value: indicativePreteriteThirdPersonSingular
+            4:
+              label: wir
+              value: indicativePreteriteFirstPersonPlural
+            5:
+              label: ihr
+              value: indicativePreteriteSecondPersonPlural
+            6:
+              label: sie/Sie
+              value: indicativePreteriteThirdPersonPlural
 
-  2:
-    sectionTitle: Preterite
-    tenses:
-      1:
-        tenseTitle: Preterite
-        tenseForms:
-          1:
-            label: ich
-            value: indicativePreteriteFirstPersonSingular
-          2:
-            label: du
-            value: indicativePreteriteSecondPersonSingular
-          3:
-            label: er/sie/es
-            value: indicativePreteriteThirdPersonSingular
-          4:
-            label: wir
-            value: indicativePreteriteFirstPersonPlural
-          5:
-            label: ihr
-            value: indicativePreteriteSecondPersonPlural
-          6:
-            label: sie/Sie
-            value: indicativePreteriteThirdPersonPlural
+    3:
+      sectionTitle: Perfekt
+      tenses:
+        1:
+          tenseTitle: Perfekt
+          tenseForms:
+            1:
+              label: ich
+              value: "{indicativePresentFirstPersonSingular auxiliaryVerb} pastParticiple"
+            2:
+              label: du
+              value: "{indicativePresentSecondPersonSingular auxiliaryVerb} pastParticiple"
+            3:
+              label: er/sie/es
+              value: "{indicativePresentThirdPersonSingular auxiliaryVerb} pastParticiple"
+            4:
+              label: wir
+              value: "{indicativePresentFirstPersonPlural auxiliaryVerb} pastParticiple"
+            5:
+              label: ihr
+              value: "{indicativePresentSecondPersonPlural auxiliaryVerb} pastParticiple"
+            6:
+              label: sie/Sie
+              value: "{indicativePresentThirdPersonPlural auxiliaryVerb} pastParticiple"
 
-  3:
-    sectionTitle: Perfekt
-    tenses:
-      1:
-        tenseTitle: Perfekt
-        tenseForms:
-          1:
-            label: ich
-            value: "[indicativePresentFirstPersonSingular auxiliaryVerb] pastParticiple"
-          2:
-            label: du
-            value: "[indicativePresentSecondPersonSingular auxiliaryVerb] pastParticiple"
-          3:
-            label: er/sie/es
-            value: "[indicativePresentThirdPersonSingular auxiliaryVerb] pastParticiple"
-          4:
-            label: wir
-            value: "[indicativePresentFirstPersonPlural auxiliaryVerb] pastParticiple"
-          5:
-            label: ihr
-            value: "[indicativePresentSecondPersonPlural auxiliaryVerb] pastParticiple"
-          6:
-            label: sie/Sie
-            value: "[indicativePresentThirdPersonPlural auxiliaryVerb] pastParticiple"
-
-# MARK: Translate
+# MARK: Translations
 
 # Map of interface titles to display for the Translate command.
 # Needed database columns are the same across languages (descriptions are labels for values).
@@ -112,7 +118,7 @@ translations:
 
     adverb:
       displayValue: Adverb
-      sectionTitle: Adjektiv Übersetzung auswählen
+      sectionTitle: Adverb Übersetzung auswählen
 
     article:
       displayValue: Artikel
@@ -146,7 +152,12 @@ translations:
       displayValue: Verb
       sectionTitle: Verb Übersetzung auswählen
 
-# MARK: Decline
+# MARK: Prepositions
+
+prepositions:
+  case: grammaticalCase
+
+# MARK: Declensions
 
 # Map of pronoun declensions given cases.
 declensions:
