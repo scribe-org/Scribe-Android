@@ -107,17 +107,13 @@ abstract class GeneralKeyboardIME(
     open val isPluralCapitalized: Boolean = false
 
     /**
-     * Property used by EnglishKeyboardIME override.
-     * We define a custom getter here for the base logic, but subclasses can override the field.
+     * Whether the editor holds text before the cursor that does not end a sentence.
      */
-    open var hasTextBeforeCursor: Boolean = false
+    val hasTextBeforeCursor: Boolean
         get() {
             val ic = currentInputConnection ?: return false
             val text = ic.getTextBeforeCursor(Int.MAX_VALUE, 0)?.trim() ?: ""
             return text.isNotEmpty() && text.lastOrNull() != '.'
-        }
-        set(value) {
-            field = value
         }
 
     // Delegate backspace handling to a separate class.
@@ -425,9 +421,6 @@ abstract class GeneralKeyboardIME(
         enterKeyType = editorInfo.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         currentEnterKeyType = enterKeyType
 
-        // This setter triggers the logic in the property override if not shadowed.
-        hasTextBeforeCursor = currentInputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
-
         isNumericKeyboardActive = KeyboardLayoutHandler.shouldUseNumericKeyboard(editorInfo.inputType)
         keyboardMode = if (isNumericKeyboardActive) keyboardSymbols else keyboardLetters
         val keyboardXml = KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(editorInfo.inputType, getKeyboardLayoutXML())
@@ -519,7 +512,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Interface method called by KeyboardView.
-     * Delegates to the property 'hasTextBeforeCursor' which subclasses may override.
+     * Delegates to the property 'hasTextBeforeCursor'.
      */
     override fun hasTextBeforeCursor(): Boolean = hasTextBeforeCursor
 
