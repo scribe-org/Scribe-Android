@@ -293,6 +293,7 @@ abstract class GeneralKeyboardIME(
         if (this::nativeSuggestionEngine.isInitialized) {
             nativeSuggestionEngine.close()
         }
+        clipboardHandler.release()
         super.onDestroy()
     }
 
