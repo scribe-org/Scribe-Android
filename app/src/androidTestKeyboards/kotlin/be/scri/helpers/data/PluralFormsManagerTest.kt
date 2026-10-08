@@ -2,6 +2,8 @@
 package be.scri.helpers.data
 
 import DataContract
+import Nouns
+import NumberPair
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -23,10 +25,12 @@ class PluralFormsManagerTest {
         val mockDatabaseFileManager = mockk<DatabaseFileManager>()
         val mockDatabase = mockk<SQLiteDatabase>()
         val mockDataContract = mockk<DataContract>()
+        val mockNouns = mockk<Nouns>()
         val mockCursor = mockk<Cursor>(relaxed = true)
 
         every { mockDatabaseFileManager.getLanguageDatabase("EN") } returns mockDatabase
-        every { mockDataContract.numbers } returns mapOf("singular" to "plural")
+        every { mockDataContract.nouns } returns mockNouns
+        every { mockNouns.numbers } returns mapOf(1 to NumberPair("singular", "plural"))
         every {
             mockDatabase.rawQuery(
                 "SELECT `singular`, `plural` FROM nouns WHERE `singular` = ? COLLATE NOCASE",

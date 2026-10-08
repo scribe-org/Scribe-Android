@@ -90,7 +90,7 @@ fun ConjugationSelectionScreen(
                 val manager = ConjugateDataManager(fileManager)
 
                 val structuredData = mutableMapOf<String, MutableMap<String, List<Pair<String, String>>>>()
-                contract.conjugations.values.forEach { tenseGroup ->
+                contract.verbs.conjugations.values.forEach { tenseGroup ->
                     val categories = mutableMapOf<String, List<Pair<String, String>>>()
                     tenseGroup.tenses.values.forEach { conjugationCategory ->
                         val pairs =

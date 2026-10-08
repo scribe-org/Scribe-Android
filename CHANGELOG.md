@@ -59,6 +59,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The user is directed to download data in the keyboard UI if they access it with empty databases ([#581](https://github.com/scribe-org/Scribe-Android/issues/581), [#650](https://github.com/scribe-org/Scribe-Android/issues/650)).
 - The data download UI was created to download data for any keyboards that have been installed ([#437](https://github.com/scribe-org/Scribe-Android/issues/437), [#439](https://github.com/scribe-org/Scribe-Android/issues/439), [#513](https://github.com/scribe-org/Scribe-Android/issues/513), [#520](https://github.com/scribe-org/Scribe-Android/issues/520), [#554](https://github.com/scribe-org/Scribe-Android/issues/554)).
 - Network indicators for data request have been added to the application and are shown via toasts ([#651](https://github.com/scribe-org/Scribe-Android/issues/651)).
+- Language data contracts were updated to use nested nouns and verbs structures, and bundled contract assets were removed to support dynamic server-provided contracts ([#714](https://github.com/scribe-org/Scribe-Android/issues/714)).
 
 ### 🎨 Design
 

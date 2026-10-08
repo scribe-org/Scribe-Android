@@ -51,20 +51,29 @@ class GenderDataManager(
             hasCanonicalGender(contract) ->
                 processGenders(
                     db = db,
-                    nounColumn = contract.numbers.keys.firstOrNull(),
-                    genderColumn = contract.genders.canonical.firstOrNull(),
+                    nounColumn =
+                        contract.nouns.numbers.values
+                            .firstOrNull()
+                            ?.singular,
+                    genderColumn =
+                        contract.nouns.genders.canonical
+                            .firstOrNull(),
                     genderMap = genderMap,
                 )
             hasMasculineFeminine(contract) -> {
                 processGenders(
                     db = db,
-                    nounColumn = contract.genders.masculines.firstOrNull(),
+                    nounColumn =
+                        contract.nouns.genders.masculines
+                            .firstOrNull(),
                     genderMap = genderMap,
                     defaultGender = "masculine",
                 )
                 processGenders(
                     db = db,
-                    nounColumn = contract.genders.feminines.firstOrNull(),
+                    nounColumn =
+                        contract.nouns.genders.feminines
+                            .firstOrNull(),
                     genderMap = genderMap,
                     defaultGender = "feminine",
                 )
@@ -82,7 +91,7 @@ class GenderDataManager(
      * @return true if a canonical gender column is specified, false otherwise.
      */
     private fun hasCanonicalGender(contract: DataContract): Boolean =
-        contract.genders.canonical
+        contract.nouns.genders.canonical
             .firstOrNull()
             ?.isNotEmpty() == true
 
@@ -94,8 +103,8 @@ class GenderDataManager(
      * @return true if both masculine and feminine columns are specified, false otherwise.
      */
     private fun hasMasculineFeminine(contract: DataContract): Boolean {
-        val masculineList = contract.genders.masculines
-        val feminineList = contract.genders.feminines
+        val masculineList = contract.nouns.genders.masculines
+        val feminineList = contract.nouns.genders.feminines
 
         val hasMasculine = masculineList.isNotEmpty()
         val hasFeminine = feminineList.isNotEmpty()
