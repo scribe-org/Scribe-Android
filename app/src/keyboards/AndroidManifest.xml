@@ -42,6 +42,19 @@
                 android:resource="@xml/method_german" />
         </service>
         <service
+            android:name=".services.GreekKeyboardIME"
+            android:exported="true"
+            android:label="Scribe"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method_greek" />
+        </service>
+        <service
             android:name=".services.PortugueseKeyboardIME"
             android:exported="true"
             android:label="Scribe"

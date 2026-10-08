@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:horizontalGap="@dimen/tiny_margin">
+
+    <!-- Row 1 -->
+    <Row>
+        <Key
+            app:keyEdgeFlags="left"
+            app:code="-30"
+            app:keyIcon="@drawable/ic_tab_rounded"
+            app:keyWidth="9%p"
+            android:horizontalGap="@dimen/tiny_margin" />
+
+        <Key
+            app:keyLabel="ς"
+            app:popupCharacters="1"
+            app:popupKeyboard="@xml/keyboard_popup_template"
+            app:topSmallNumber="1"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="ε"
+            app:popupCharacters="έ2"
+            app:popupKeyboard="@xml/keyboard_popup_template"
+            app:topSmallNumber="2"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="ρ"
+            app:popupCharacters="3"
+            app:popupKeyboard="@xml/keyboard_popup_template"
+            app:topSmallNumber="3"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="τ"
+            app:popupCharacters="4"
+            app:popupKeyboard="@xml/keyboard_popup_template"
+            app:topSmallNumber="4"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="υ"
+            app:popupCharacters="ύϋΰ5"
+            app:popupKeyboard="@xml/keyboard_popup_template"
+            app:topSmallNumber="5"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="θ"
+            app:popupCharacters="6"
+            app:popupKeyboard="@xml/keyboard_popup_template"
+            app:topSmallNumber="6"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="ι"
+            app:popupCharacters="ίϊΐ7"
+            app:popupKeyboard="@xml/keyboard_popup_template"
+            app:topSmallNumber="7"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="ο"
+            app:popupCharacters="ό8"
+            app:popupKeyboard="@xml/keyboard_popup_template"
+            app:topSmallNumber="8"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="π"
+            app:popupCharacters="9"
+            app:popupKeyboard="@xml/keyboard_popup_template"
+            app:topSmallNumber="9"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:code="-5"
+            app:isRepeatable="true"
+            app:keyEdgeFlags="right"
+            app:keyIcon="@drawable/ic_clear_outline_vector"
+            app:keyWidth="9%p"
+            android:horizontalGap="@dimen/tiny_margin" />
+    </Row>
+
+    <!-- Row 2 -->
+    <Row android:verticalGap="@dimen/small_margin">
+
+        <Key
+            app:keyEdgeFlags="left"
+            app:code="-50"
+            app:keyIcon="@drawable/ic_caps_lock_selector"
+            app:keyWidth="9.02%p"
+            android:horizontalGap="@dimen/tiny_margin" />
+
+        <Key
+            app:keyLabel="α"
+            app:keyWidth="9.1%p"
+            app:popupCharacters="ά"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
+
+        <Key
+            app:keyLabel="σ"
+            app:keyWidth="9.1%p"
+            app:popupCharacters="ς"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
+
+        <Key
+            app:keyLabel="δ"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="φ"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="γ"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="η"
+            app:keyWidth="9.1%p"
+            app:popupCharacters="ή"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
+
+        <Key
+            app:keyLabel="ξ"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="κ"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:keyLabel="λ"
+            app:keyWidth="9.1%p" />
+
+        <Key
+            app:code="-4"
+            app:keyEdgeFlags="right"
+            app:keyIcon="@drawable/ic_enter_vector"
+            app:keyWidth="9.02%p"
+            android:horizontalGap="@dimen/tiny_margin" />
+
+    </Row>
+
+    <!-- Row 3 -->
+    <Row>
+
+        <Key
+            app:code="-1"
+            app:keyEdgeFlags="left"
+            app:keyIcon="@drawable/ic_caps_outline_vector"
+            app:keyWidth="15%p"
+            android:horizontalGap="@dimen/tiny_margin" />
+
+        <Key
+            app:keyLabel="ζ"
+            app:keyWidth="10%p" />
+
+        <Key
+            app:keyLabel="χ"
+            app:keyWidth="10%p" />
+
+        <Key
+            app:keyLabel="ψ"
+            app:keyWidth="10%p" />
+
+        <Key
+            app:keyLabel="ω"
+            app:keyWidth="10%p"
+            app:popupCharacters="ώ"
+            app:popupKeyboard="@xml/keyboard_popup_template" />
+
+        <Key
+            app:keyLabel="β"
+            app:keyWidth="10%p" />
+
+        <Key
+            app:keyLabel="ν"
+            app:keyWidth="10%p" />
+
+        <Key
+            app:keyLabel="μ"
+            app:keyWidth="10%p" />
+
+        <Key
+            app:code="-1"
+            app:keyEdgeFlags="right"
+            app:keyIcon="@drawable/ic_caps_outline_vector"
+            app:keyWidth="15%p"
+            android:horizontalGap="@dimen/tiny_margin" />
+
+    </Row>
+
+    <!-- Row 4 -->
+    <Row android:verticalGap="@dimen/small_margin">
+
+        <Key
+            app:code="-2"
+            app:keyEdgeFlags="left"
+            app:keyLabel="\?123"
+            app:keyWidth="21%p"
+            android:horizontalGap="@dimen/tiny_margin" />
+
+        <Key
+            app:code="32"
+            app:isRepeatable="true"
+            app:keyWidth="59%p" />
+
+        <Key
+            app:code="-55"
+            app:keyIcon="@drawable/ic_left_arrow"
+            app:keyWidth="10%p" />
+
+        <Key
+            app:code="-56"
+            app:keyIcon="@drawable/ic_right_arrow"
+            app:keyWidth="10%p"
+            app:keyEdgeFlags="right"
+            android:horizontalGap="@dimen/tiny_margin" />
+
+    </Row>
+
+</Keyboard>
