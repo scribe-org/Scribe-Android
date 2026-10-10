@@ -655,8 +655,12 @@ class KeyboardView
 
             removeMessages()
             mKeyboard = keyboard
-            val keys = mKeyboard?.mKeys
-            mKeys = keys?.toMutableList() as ArrayList<KeyboardBase.Key>
+            mKeys =
+                keyboard
+                    .mKeys
+                    .orEmpty()
+                    .filterNotNull()
+                    .toCollection(ArrayList())
             requestLayout()
             mKeyboardChanged = true
             invalidateAllKeys()
@@ -1568,7 +1572,7 @@ class KeyboardView
                     mMiniKeyboardCache[popupKey] = mMiniKeyboardContainer
                 } else {
                     mMiniKeyboard =
-                        mMiniKeyboardContainer?.findViewById<View>(R.id.mini_keyboard_view) as KeyboardView
+                        mMiniKeyboardContainer?.findViewById<View>(R.id.mini_keyboard_view) as? KeyboardView
                 }
 
                 val miniKeyboardContainer = mMiniKeyboardContainer ?: return false
@@ -1958,12 +1962,11 @@ class KeyboardView
                                     val msg = handler.obtainMessage(MSG_LONGPRESS, me)
                                     handler.sendMessageDelayed(msg, LONGPRESS_TIMEOUT.toLong())
                                 }
-
-                                if (mPopupParent.id != R.id.mini_keyboard_view) {
-                                    showPreview(mCurrentKey)
-                                }
-                                mLastMoveTime = eventTime
                             }
+                            if (mPopupParent.id != R.id.mini_keyboard_view) {
+                                showPreview(mCurrentKey)
+                            }
+                            mLastMoveTime = eventTime
                         }
                     }
                     MotionEvent.ACTION_UP -> {

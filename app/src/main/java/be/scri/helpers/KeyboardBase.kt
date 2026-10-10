@@ -362,8 +362,8 @@ class KeyboardBase {
             icon =
                 a
                     .getDrawable(R.styleable.KeyboardBase_Key_keyIcon)
-                    .also {
-                        it?.setBounds(0, 0, it.intrinsicWidth, it.intrinsicHeight)
+                    ?.apply {
+                        setBounds(0, 0, intrinsicWidth, intrinsicHeight)
                     }
 
             label = a.getText(R.styleable.KeyboardBase_Key_keyLabel) ?: ""
@@ -588,11 +588,11 @@ class KeyboardBase {
                         }
 
                         TAG_KEY -> {
-                            inKey = true
                             if (currentRow == null) {
                                 Log.e("KeyboardBase", "Key element found outside of a Row tag at line ${parser.lineNumber}")
                                 continue
                             }
+                            inKey = true
                             key = createKeyFromXml(res, currentRow, x, y, parser)
 
                             if (hideComma && key.code == ','.code) {

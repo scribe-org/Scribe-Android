@@ -90,7 +90,7 @@ class ShiftHandler(
             KeyboardBase(context, keyboardXml, ime.enterKeyType, ime.getKeyboardWidth())
                 .also {
                     if (ime.keyboardMode == ime.keyboardLetters) {
-                        val wasShifted = it.mShiftState == SHIFT_ON_ONE_CHAR || ime.keyboard?.mShiftState == SHIFT_ON_PERMANENT
+                        val wasShifted = it.mShiftState == SHIFT_ON_ONE_CHAR || it.mShiftState == SHIFT_ON_PERMANENT
                         if (wasShifted) {
                             it.setShifted(it.mShiftState)
                         }
