@@ -101,9 +101,9 @@ class ConjugateViewModelTest {
     }
 
     @Test
-    fun getDownloadedLanguages_AllDatabasesExist_ReturnsAllEightAliasesInExpectedOrder() {
+    fun getDownloadedLanguages_AllDatabasesExist_ReturnsAllNineAliasesInExpectedOrder() {
         // Arrange
-        val expectedAliases = listOf("EN", "FR", "DE", "IT", "PT", "RU", "ES", "SV")
+        val expectedAliases = listOf("EN", "FR", "DE", "EL", "IT", "PT", "RU", "ES", "SV")
         every { application.getDatabasePath(any()) } answers {
             val file = mockk<File>()
             every { file.exists() } returns true
@@ -116,7 +116,7 @@ class ConjugateViewModelTest {
 
         // Assert
         assertEquals(expectedAliases, actualLanguages)
-        assertEquals(8, actualLanguages.size)
+        assertEquals(9, actualLanguages.size)
     }
 
     @Test
