@@ -37,6 +37,7 @@ class GeneralKeyboardIMETest {
         }
 
         override fun getKeyboardLayoutXML(): Int = R.xml.keys_letters_english
+
         override val defaultConjugateModeType: String = "2x2"
         override val defaultConjugateLayoutXML: Int = R.xml.conjugate_view_2x2
         override val keyboardLetters: Int = 0
@@ -55,11 +56,13 @@ class GeneralKeyboardIMETest {
         uiManager = mockk(relaxed = true)
         suggestionHandler = mockk(relaxed = true)
 
-        ime = TestKeyboardIME().apply {
-            mockInputConnection = inputConnection
-            this.uiManager = this@GeneralKeyboardIMETest.uiManager
-            this.suggestionHandler = this@GeneralKeyboardIMETest.suggestionHandler
-        }
+        ime =
+            TestKeyboardIME()
+                .apply {
+                    mockInputConnection = inputConnection
+                    this.uiManager = this@GeneralKeyboardIMETest.uiManager
+                    this.suggestionHandler = this@GeneralKeyboardIMETest.suggestionHandler
+                }
     }
 
     @Test
