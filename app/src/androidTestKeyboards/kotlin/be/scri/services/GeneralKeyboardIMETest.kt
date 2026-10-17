@@ -26,13 +26,15 @@ class GeneralKeyboardIMETest {
         inputConnection = mockk(relaxed = true)
         uiManager = mockk(relaxed = true)
 
-        ime = spyk(EnglishKeyboardIME()).apply {
-            every { currentInputConnection } returns inputConnection
-            every { this@apply.uiManager } returns uiManager
-            every { suggestionHandler } returns mockk(relaxed = true)
-            every { imeContext } returns mockk(relaxed = true)
-            every { applicationContext } returns mockk(relaxed = true)
-        }
+        ime =
+            spyk(EnglishKeyboardIME())
+                .apply {
+                    every { currentInputConnection } returns inputConnection
+                    every { this@apply.uiManager } returns uiManager
+                    every { suggestionHandler } returns mockk(relaxed = true)
+                    every { imeContext } returns mockk(relaxed = true)
+                    every { applicationContext } returns mockk(relaxed = true)
+                }
     }
 
     @Test
