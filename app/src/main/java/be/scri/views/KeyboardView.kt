@@ -1518,9 +1518,9 @@ class KeyboardView
                     mMiniKeyboard =
                         (
                             mMiniKeyboardContainer?.findViewById<View>(R.id.mini_keyboard_view)
-                                as KeyboardView
+                                as? KeyboardView
                         ).also {
-                            it.mOnKeyboardActionListener =
+                            it?.mOnKeyboardActionListener =
                                 object : OnKeyboardActionListener {
                                     override fun onKey(code: Int) {
                                         mOnKeyboardActionListener?.onKey(code)
