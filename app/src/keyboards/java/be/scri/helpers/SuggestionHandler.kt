@@ -72,7 +72,9 @@ class SuggestionHandler(
                     ime.disableAutoSuggest()
                 }
             }
-        handler.postDelayed(linguisticSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+                .also {
+                    handler.postDelayed(it, SUGGESTION_DELAY_MS)
+                }
     }
 
     fun processWordSuggestions(completedWord: String?) {
@@ -118,8 +120,9 @@ class SuggestionHandler(
                     }
                 }
             }
-
-        handler.postDelayed(wordSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+                .also {
+                    handler.postDelayed(it, SUGGESTION_DELAY_MS)
+                }
     }
 
     /**
@@ -163,8 +166,9 @@ class SuggestionHandler(
                     ime.updateButtonVisibility(false)
                 }
             }
-
-        handler.postDelayed(emojiSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+                .also {
+                    handler.postDelayed(it, SUGGESTION_DELAY_MS)
+                }
     }
 
     /**
