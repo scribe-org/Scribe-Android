@@ -4,9 +4,11 @@ package be.scri.services
 
 import android.view.inputmethod.InputConnection
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import be.scri.helpers.ui.KeyboardUIManager
 import be.scri.models.ScribeState
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -17,23 +19,19 @@ import org.junit.runner.RunWith
 class GeneralKeyboardIMETest {
     private lateinit var ime: GeneralKeyboardIME
     private lateinit var inputConnection: InputConnection
+    private lateinit var uiManager: KeyboardUIManager
 
     @Before
     fun setUp() {
         inputConnection = mockk(relaxed = true)
+        uiManager = mockk(relaxed = true)
 
-        ime = mockk(relaxed = true)
-
-        every { ime.currentInputConnection } returns inputConnection
-
-        every { ime.hasTextBeforeCursor } answers {
-            val ic = ime.currentInputConnection
-            if (ic == null) {
-                false
-            } else {
-                val text = ic.getTextBeforeCursor(Int.MAX_VALUE, 0)?.toString() ?: ""
-                text.isNotEmpty() && text.trim() != "." && text.trim() != ""
-            }
+        ime = spyk(EnglishKeyboardIME()).apply {
+            every { currentInputConnection } returns inputConnection
+            every { this@apply.uiManager } returns uiManager
+            every { suggestionHandler } returns mockk(relaxed = true)
+            every { imeContext } returns mockk(relaxed = true)
+            every { applicationContext } returns mockk(relaxed = true)
         }
     }
 
@@ -66,11 +64,10 @@ class GeneralKeyboardIMETest {
 
     @Test
     fun commitText_inConjugationState_handlesNullConjugateOutput_withoutCrashing() {
-        // Arrange: state is SELECT_VERB_CONJUNCTION, but conjugateOutput is null
         ime.currentState = ScribeState.SELECT_VERB_CONJUNCTION
         ime.conjugateOutput = null
+        every { ime.moveToIdleState() } returns Unit
 
-        // Act & Assert: Should complete gracefully without NullPointerException
         ime.commitText("test")
     }
 }
