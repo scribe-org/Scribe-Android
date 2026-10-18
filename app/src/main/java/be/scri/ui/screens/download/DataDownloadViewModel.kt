@@ -93,6 +93,8 @@ class DataDownloadViewModel(
         return serverDate.isAfter(localDate)
     }
 
+    private fun isValidTimestamp(value: String?): Boolean = runCatching { LocalDate.parse(value.orEmpty().take(10)) }.isSuccess
+
     /**
      * Handles the download action based on the current state.
      *
@@ -157,7 +159,9 @@ class DataDownloadViewModel(
                         dbHelper.syncDatabase(response)
 
                         // Save timestamp.
-                        prefs.edit().putString("last_update_$langCode", serverLastUpdate).apply()
+                        if (isValidTimestamp(serverLastUpdate)) {
+                            prefs.edit().putString("last_update_$langCode", serverLastUpdate).apply()
+                        }
 
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed
