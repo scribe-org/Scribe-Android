@@ -39,6 +39,8 @@ class DynamicDbHelper(
         try {
             db.beginTransaction()
 
+            val createdTables = mutableSetOf<String>()
+
             response.contract.fields.forEach { (tableName, columns) ->
                 if (!SqlIdentifier.isValid(tableName) || columns.keys.any { !SqlIdentifier.isValid(it) }) {
                     Log.w("SCRIBE_DB", "Skipping table with an unsupported name: $tableName")
@@ -50,11 +52,12 @@ class DynamicDbHelper(
                     "CREATE TABLE ${SqlIdentifier.quote(tableName)} " +
                         "(id INTEGER PRIMARY KEY AUTOINCREMENT, $colDefinition)",
                 )
+                createdTables.add(tableName)
             }
 
             response.data.forEach { (tableName, rows) ->
-                if (!SqlIdentifier.isValid(tableName)) {
-                    Log.w("SCRIBE_DB", "Skipping data for a table with an unsupported name: $tableName")
+                if (tableName !in createdTables) {
+                    Log.w("SCRIBE_DB", "Skipping data for a table that was not created: $tableName")
                     return@forEach
                 }
                 val cv = ContentValues()
