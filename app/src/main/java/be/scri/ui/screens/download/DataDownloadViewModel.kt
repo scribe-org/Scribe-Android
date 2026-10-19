@@ -28,6 +28,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
+import java.util.concurrent.ConcurrentHashMap
 
 /** ViewModel to manage data download states and actions. */
 @Suppress("TooManyFunctions")
@@ -36,7 +37,7 @@ class DataDownloadViewModel(
 ) : AndroidViewModel(application) {
     val downloadStates = mutableStateMapOf<String, DownloadState>()
     private val downloadSemaphore = kotlinx.coroutines.sync.Semaphore(1)
-    private val downloadJobs = mutableMapOf<String, Job>()
+    private val downloadJobs = ConcurrentHashMap<String, Job>()
     private val prefs = getApplication<Application>().getSharedPreferences("scribe_prefs", Context.MODE_PRIVATE)
     private val _checkUpdateState = MutableStateFlow(CheckUpdateState.Idle)
     val checkUpdateState = _checkUpdateState.asStateFlow()
@@ -92,6 +93,8 @@ class DataDownloadViewModel(
 
         return serverDate.isAfter(localDate)
     }
+
+    private fun isValidTimestamp(value: String?): Boolean = runCatching { LocalDate.parse(value.orEmpty().take(10)) }.isSuccess
 
     /**
      * Handles the download action based on the current state.
@@ -157,7 +160,9 @@ class DataDownloadViewModel(
                         dbHelper.syncDatabase(response)
 
                         // Save timestamp.
-                        prefs.edit().putString("last_update_$langCode", serverLastUpdate).apply()
+                        if (isValidTimestamp(serverLastUpdate)) {
+                            prefs.edit().putString("last_update_$langCode", serverLastUpdate).apply()
+                        }
 
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed

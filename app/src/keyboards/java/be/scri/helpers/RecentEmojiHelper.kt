@@ -3,8 +3,8 @@ package be.scri.helpers
 
 import android.content.Context
 
-private const val PREFS_NAME = "recent_emojis"
-private const val KEY_RECENT = "recent_emoji_list"
+internal const val PREFS_NAME = "recent_emojis"
+internal const val KEY_RECENT = "recent_emoji_list"
 private const val MAX_RECENT = 30
 
 fun recordRecentEmoji(
@@ -12,12 +12,15 @@ fun recordRecentEmoji(
     emoji: String,
 ) {
     val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    val recentEmojis = prefs.getString(KEY_RECENT, "") ?: ""
+
     val current =
-        prefs
-            .getString(KEY_RECENT, "")!!
+        recentEmojis
             .split(",")
             .filter { it.isNotBlank() }
             .toMutableList()
+
     current.remove(emoji)
     current.add(0, emoji)
     while (current.size > MAX_RECENT) current.removeAt(current.lastIndex)
@@ -26,5 +29,6 @@ fun recordRecentEmoji(
 
 fun getRecentEmojis(context: Context): List<String> {
     val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    return prefs.getString(KEY_RECENT, "")!!.split(",").filter { it.isNotBlank() }
+    val recentEmojisPrefs = prefs.getString(KEY_RECENT, "") ?: ""
+    return recentEmojisPrefs.split(",").filter { it.isNotBlank() }
 }

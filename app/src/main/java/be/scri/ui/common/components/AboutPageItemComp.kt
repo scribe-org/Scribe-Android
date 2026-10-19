@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -85,7 +84,7 @@ fun AboutPageItemComp(
                 if (descText != null) {
                     Text(
                         text = descText,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(top = 4.dp),
                     )
@@ -98,7 +97,7 @@ fun AboutPageItemComp(
                         .padding(start = 6.dp)
                         .size(24.dp),
                 contentDescription = stringResource(R.string.i18n_app_accessibility_trailing_icon),
-                tint = Color.Gray,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

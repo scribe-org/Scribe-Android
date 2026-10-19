@@ -287,6 +287,7 @@ dependencies {
     // Unit Testing
     // ==========================
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5Version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:$junit5Version")
     testImplementation("io.mockk:mockk:$mockkVersion")
@@ -319,7 +320,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("io.mockk:mockk-android:1.14.2")
 
     // ==========================
     // Other

@@ -4,6 +4,7 @@ package be.scri.helpers
 
 import android.content.Context
 import android.util.Log
+import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import be.scri.helpers.KeyboardIMEContext.Companion.COMMIT_TEXT_CURSOR_POSITION
 import be.scri.helpers.KeyboardIMEContext.Companion.MAX_TEXT_LENGTH
@@ -262,7 +263,9 @@ class KeyHandler(
     private fun handleNavigationKey(code: Int) {
         val isRight = code == KeyboardBase.KEYCODE_RIGHT_ARROW
         ime.getInputConnection()?.let { ic ->
-            val currentPos = ic.getTextBeforeCursor(MAX_TEXT_LENGTH, 0)?.length ?: 0
+            val extracted = ic.getExtractedText(ExtractedTextRequest(), 0) ?: return@let
+            if (extracted.selectionStart < 0) return@let
+            val currentPos = extracted.startOffset + extracted.selectionStart
             val newPos =
                 if (isRight) {
                     val textAfter = ic.getTextAfterCursor(MAX_TEXT_LENGTH, 0)?.toString() ?: ""

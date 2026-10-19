@@ -5,6 +5,7 @@ package be.scri.services
 import android.text.InputType
 import android.view.inputmethod.EditorInfo
 import be.scri.R
+import be.scri.helpers.KeyboardLayoutHandler
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -15,26 +16,26 @@ class GeneralKeyboardIMEInputTypeTest {
     fun shouldUseNumericKeyboard_returnsTrueForNumberInputs() {
         val inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
 
-        assertTrue(GeneralKeyboardIME.shouldUseNumericKeyboard(inputType))
+        assertTrue(KeyboardLayoutHandler.shouldUseNumericKeyboard(inputType))
     }
 
     @Test
     fun shouldUseNumericKeyboard_returnsTrueForDateTimeInputs() {
         val inputType = InputType.TYPE_CLASS_DATETIME or InputType.TYPE_DATETIME_VARIATION_DATE
 
-        assertTrue(GeneralKeyboardIME.shouldUseNumericKeyboard(inputType))
+        assertTrue(KeyboardLayoutHandler.shouldUseNumericKeyboard(inputType))
     }
 
     @Test
     fun shouldUseNumericKeyboard_returnsTrueForPhoneInputs() {
-        assertTrue(GeneralKeyboardIME.shouldUseNumericKeyboard(InputType.TYPE_CLASS_PHONE))
+        assertTrue(KeyboardLayoutHandler.shouldUseNumericKeyboard(InputType.TYPE_CLASS_PHONE))
     }
 
     @Test
     fun shouldUseNumericKeyboard_returnsFalseForTextInputs() {
         val inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
 
-        assertFalse(GeneralKeyboardIME.shouldUseNumericKeyboard(inputType))
+        assertFalse(KeyboardLayoutHandler.shouldUseNumericKeyboard(inputType))
     }
 
     @Test
@@ -43,7 +44,7 @@ class GeneralKeyboardIMEInputTypeTest {
 
         assertEquals(
             R.xml.keys_numeric,
-            GeneralKeyboardIME.getKeyboardLayoutXMLForInputType(inputType, R.xml.keys_letters_english),
+            KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(inputType, R.xml.keys_letters_english),
         )
     }
 
@@ -53,7 +54,7 @@ class GeneralKeyboardIMEInputTypeTest {
 
         assertEquals(
             R.xml.keys_letters_english,
-            GeneralKeyboardIME.getKeyboardLayoutXMLForInputType(inputType, R.xml.keys_letters_english),
+            KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(inputType, R.xml.keys_letters_english),
         )
     }
 
@@ -61,10 +62,10 @@ class GeneralKeyboardIMEInputTypeTest {
     fun defaultEditorInfo_fallsBackToLetterLayout() {
         val fallback = EditorInfo()
 
-        assertFalse(GeneralKeyboardIME.shouldUseNumericKeyboard(fallback.inputType))
+        assertFalse(KeyboardLayoutHandler.shouldUseNumericKeyboard(fallback.inputType))
         assertEquals(
             R.xml.keys_letters_english,
-            GeneralKeyboardIME.getKeyboardLayoutXMLForInputType(fallback.inputType, R.xml.keys_letters_english),
+            KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(fallback.inputType, R.xml.keys_letters_english),
         )
     }
 }

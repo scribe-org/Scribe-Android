@@ -10,9 +10,6 @@ import android.content.res.Resources
 import android.graphics.Rect
 import android.inputmethodservice.InputMethodService
 import android.text.InputType
-import android.text.InputType.TYPE_CLASS_DATETIME
-import android.text.InputType.TYPE_CLASS_NUMBER
-import android.text.InputType.TYPE_CLASS_PHONE
 import android.text.InputType.TYPE_MASK_CLASS
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -37,6 +34,7 @@ import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardDataHandler
 import be.scri.helpers.KeyboardIMEContext
 import be.scri.helpers.KeyboardLanguageMappingConstants
+import be.scri.helpers.KeyboardLayoutHandler
 import be.scri.helpers.KeyboardStateManager
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.NativeSuggestionEngine
@@ -100,7 +98,7 @@ abstract class GeneralKeyboardIME(
     abstract override var lastShiftPressTS: Long
     abstract override var keyboardMode: Int
     abstract var inputTypeClass: Int
-    abstract var enterKeyType: Int
+    abstract override var enterKeyType: Int
     abstract var switchToLetters: Boolean
 
     // Language-specific layout and behavior configurations (decoupled from base class).
@@ -109,17 +107,13 @@ abstract class GeneralKeyboardIME(
     open val isPluralCapitalized: Boolean = false
 
     /**
-     * Property used by EnglishKeyboardIME override.
-     * We define a custom getter here for the base logic, but subclasses can override the field.
+     * Whether the editor holds text before the cursor that does not end a sentence.
      */
-    open var hasTextBeforeCursor: Boolean = false
+    val hasTextBeforeCursor: Boolean
         get() {
             val ic = currentInputConnection ?: return false
             val text = ic.getTextBeforeCursor(Int.MAX_VALUE, 0)?.trim() ?: ""
             return text.isNotEmpty() && text.lastOrNull() != '.'
-        }
-        set(value) {
-            field = value
         }
 
     // Delegate backspace handling to a separate class.
@@ -159,6 +153,7 @@ abstract class GeneralKeyboardIME(
     override lateinit var autocompletionHandler: AutocompletionHandler
     internal lateinit var keyHandler: KeyHandler
     internal val floatingKeyboardHandler by lazy { FloatingKeyboardHandler(this) }
+    internal val layoutHandler by lazy { KeyboardLayoutHandler(this) }
     internal val commandHandler by lazy { CommandHandler(this) }
     internal val shiftHandler by lazy { ShiftHandler(this) }
     internal val suggestionUIHandler by lazy { SuggestionUIHandler(this) }
@@ -227,7 +222,7 @@ abstract class GeneralKeyboardIME(
     override var wordSuggestions: List<String>? = null
     override var checkIfPluralWord: Boolean = false
     private var currentEnterKeyType: Int? = null
-    private var isNumericKeyboardActive: Boolean = false
+    internal var isNumericKeyboardActive: Boolean = false
 
     internal val stateManager = KeyboardStateManager()
     override val themeManager = KeyboardThemeManager()
@@ -273,22 +268,6 @@ abstract class GeneralKeyboardIME(
         internal const val MAX_TEXT_LENGTH = 1000
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         internal const val CUSTOM_CURSOR = "│" // special tall cursor character
-
-        internal fun shouldUseNumericKeyboard(inputType: Int): Boolean =
-            when (inputType and TYPE_MASK_CLASS) {
-                TYPE_CLASS_NUMBER, TYPE_CLASS_DATETIME, TYPE_CLASS_PHONE -> true
-                else -> false
-            }
-
-        internal fun getKeyboardLayoutXMLForInputType(
-            inputType: Int,
-            letterKeyboardLayoutXML: Int,
-        ): Int =
-            if (shouldUseNumericKeyboard(inputType)) {
-                R.xml.keys_numeric
-            } else {
-                letterKeyboardLayoutXML
-            }
     }
 
     // MARK: Lifecycle Methods
@@ -310,6 +289,7 @@ abstract class GeneralKeyboardIME(
         if (this::nativeSuggestionEngine.isInitialized) {
             nativeSuggestionEngine.close()
         }
+        clipboardHandler.release()
         super.onDestroy()
     }
 
@@ -331,7 +311,7 @@ abstract class GeneralKeyboardIME(
             setVibrate = getIsVibrateEnabled(applicationContext, language)
             setSound = getIsSoundEnabled(applicationContext, language)
             setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
-            setKeyboard(this@GeneralKeyboardIME.keyboard!!)
+            this@GeneralKeyboardIME.keyboard?.let { setKeyboard(it) }
             mOnKeyboardActionListener = this@GeneralKeyboardIME
         }
 
@@ -442,17 +422,17 @@ abstract class GeneralKeyboardIME(
         enterKeyType = editorInfo.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         currentEnterKeyType = enterKeyType
 
-        // This setter triggers the logic in the property override if not shadowed.
-        hasTextBeforeCursor = currentInputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
-
-        isNumericKeyboardActive = shouldUseNumericKeyboard(editorInfo.inputType)
+        isNumericKeyboardActive = KeyboardLayoutHandler.shouldUseNumericKeyboard(editorInfo.inputType)
         keyboardMode = if (isNumericKeyboardActive) keyboardSymbols else keyboardLetters
-        val keyboardXml = getKeyboardLayoutXMLForInputType(editorInfo.inputType, getKeyboardLayoutXML())
+        val keyboardXml = KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(editorInfo.inputType, getKeyboardLayoutXML())
 
         loadLanguageData()
 
-        keyboard = KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
-        keyboardView?.setKeyboard(keyboard!!)
+        keyboard =
+            KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
+                .also {
+                    keyboardView?.setKeyboard(it)
+                }
 
         if (this::uiManager.isInitialized && keyboardXml == R.xml.keys_symbols) {
             uiManager.setupCurrencySymbol(language)
@@ -536,7 +516,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Interface method called by KeyboardView.
-     * Delegates to the property 'hasTextBeforeCursor' which subclasses may override.
+     * Delegates to the property 'hasTextBeforeCursor'.
      */
     override fun hasTextBeforeCursor(): Boolean = hasTextBeforeCursor
 
@@ -575,7 +555,9 @@ abstract class GeneralKeyboardIME(
                     keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
                 }
             }
-            keyboardView!!.setKeyboard(keyboard!!)
+            keyboard?.let {
+                keyboardView?.setKeyboard(it)
+            }
             switchToLetters = false
         }
     }
@@ -765,20 +747,17 @@ abstract class GeneralKeyboardIME(
 
     override fun isNumericKeyboardActive(): Boolean = isNumericKeyboardActive
 
-    override fun getCurrentKeyboardLayoutXML(): Int =
-        when (keyboardMode) {
-            keyboardSymbols -> getPrimarySymbolKeyboardLayoutXML()
-            keyboardSymbolShift -> R.xml.keys_symbols_shift
-            else -> getKeyboardLayoutXML()
-        }
+    /**
+     * Resolves the XML resource ID for the active keyboard layout.
+     * Delegated to [KeyboardLayoutHandler].
+     */
+    override fun getCurrentKeyboardLayoutXML(): Int = layoutHandler.getCurrentKeyboardLayoutXML()
 
-    internal fun getPrimarySymbolKeyboardLayoutXML(): Int =
-
-        if (isNumericKeyboardActive) {
-            R.xml.keys_numeric
-        } else {
-            R.xml.keys_symbols
-        }
+    /**
+     * Resolves the primary symbol or numeric layout XML resource ID.
+     * Delegated to [KeyboardLayoutHandler].
+     */
+    internal fun getPrimarySymbolKeyboardLayoutXML(): Int = layoutHandler.getPrimarySymbolKeyboardLayoutXML()
 
     override fun onKeyboardActionListener(): KeyboardView.OnKeyboardActionListener = this
 
@@ -789,9 +768,10 @@ abstract class GeneralKeyboardIME(
     override fun commitText(text: String) {
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
             val label = text.trim()
-            val conjugateIndex = uiManager.getValidatedConjugateIndex(conjugateOutput)
-            val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
-            val languageOutput = title?.let { conjugateOutput!![it] }
+            val output = conjugateOutput
+            val conjugateIndex = uiManager.getValidatedConjugateIndex(output)
+            val title = output?.keys?.elementAtOrNull(conjugateIndex)
+            val languageOutput = title?.let { output[it] }
 
             val matchingEntry =
                 languageOutput?.entries?.find { (_, values) ->
@@ -1215,6 +1195,12 @@ abstract class GeneralKeyboardIME(
      * Returns the subsequent dataset for conjugation sub-views.
      * Delegated to [ConjugationHandler].
      */
+    internal fun getKeyboardLayoutForState(
+        state: ScribeState,
+        isSubsequentArea: Boolean = false,
+        dataSize: Int = 0,
+    ): Int = layoutHandler.getKeyboardLayoutForState(state, isSubsequentArea, dataSize)
+
     override fun returnSubsequentData(): List<List<String>> = conjugationHandler.subsequentData
 
     /**
@@ -1234,31 +1220,11 @@ abstract class GeneralKeyboardIME(
 
     // MARK: Floating Keyboard Integration
 
-    override fun getKeyboardWidth(): Int =
-        if (isFloatingMode) {
-            val density = resources.displayMetrics.density
-            val screenWidth = resources.displayMetrics.widthPixels
-            val floatWidth = (320f * density).toInt()
-            Math.min(floatWidth, (screenWidth * 0.85f).toInt())
-        } else {
-            resources.displayMetrics.widthPixels
-        }
+    override fun getKeyboardWidth(): Int = layoutHandler.getKeyboardWidth()
 
-    override fun recreateKeyboard() {
-        if (!this::uiManager.isInitialized) return
-        val xmlId = getCurrentKeyboardLayoutXML()
-        val currentShiftState = keyboard?.mShiftState ?: SHIFT_OFF
-        keyboard = KeyboardBase(this, xmlId, enterKeyType, getKeyboardWidth())
-        keyboard?.setShifted(currentShiftState)
-        keyboardView?.setKeyboard(keyboard!!)
+    override fun recreateKeyboard() = layoutHandler.recreateKeyboard()
 
-        if (xmlId == R.xml.keys_symbols) {
-            uiManager.setupCurrencySymbol(language)
-        }
-        keyboardView?.invalidateAllKeys()
-    }
-
-    val isFloatingMode: Boolean
+    override val isFloatingMode: Boolean
         get() = floatingKeyboardHandler.isFloatingMode
 
     fun initFloatingMode() {
