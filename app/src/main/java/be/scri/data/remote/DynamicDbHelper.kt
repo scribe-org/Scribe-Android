@@ -39,21 +39,34 @@ class DynamicDbHelper(
         try {
             db.beginTransaction()
 
+            val createdTables = mutableSetOf<String>()
+
             response.contract.fields.forEach { (tableName, columns) ->
-                val colDefinition = columns.keys.joinToString(", ") { "$it TEXT" }
-                db.execSQL("DROP TABLE IF EXISTS $tableName")
+                if (!SqlIdentifier.isValid(tableName) || columns.keys.any { !SqlIdentifier.isValid(it) }) {
+                    Log.w("SCRIBE_DB", "Skipping table with an unsupported name: $tableName")
+                    return@forEach
+                }
+                val colDefinition = columns.keys.joinToString(", ") { "${SqlIdentifier.quote(it)} TEXT" }
+                db.execSQL("DROP TABLE IF EXISTS ${SqlIdentifier.quote(tableName)}")
                 db.execSQL(
-                    "CREATE TABLE $tableName " +
+                    "CREATE TABLE ${SqlIdentifier.quote(tableName)} " +
                         "(id INTEGER PRIMARY KEY AUTOINCREMENT, $colDefinition)",
                 )
+                createdTables.add(tableName)
             }
 
             response.data.forEach { (tableName, rows) ->
+                if (tableName !in createdTables) {
+                    Log.w("SCRIBE_DB", "Skipping data for a table that was not created: $tableName")
+                    return@forEach
+                }
                 val cv = ContentValues()
                 rows.forEach { row ->
                     cv.clear()
                     row.forEach { (key, value) ->
-                        cv.put(key, value?.toString() ?: "")
+                        if (SqlIdentifier.isValid(key)) {
+                            cv.put(key, value?.toString() ?: "")
+                        }
                     }
                     db.insert(tableName, null, cv)
                 }
