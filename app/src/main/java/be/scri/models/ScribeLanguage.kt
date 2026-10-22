@@ -15,6 +15,7 @@ enum class ScribeLanguage(
     ENGLISH("English", "EN"),
     FRENCH("French", "FR"),
     GERMAN("German", "DE"),
+    GREEK("Greek", "EL"),
     ITALIAN("Italian", "IT"),
     PORTUGUESE("Portuguese", "PT"),
     RUSSIAN("Russian", "RU"),
