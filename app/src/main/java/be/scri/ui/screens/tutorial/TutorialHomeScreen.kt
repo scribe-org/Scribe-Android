@@ -2,6 +2,7 @@
 
 package be.scri.ui.screens.tutorial
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -177,6 +178,7 @@ fun TutorialHomeScreen(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             shape = RoundedCornerShape(12.dp),
             modifier =
                 Modifier
