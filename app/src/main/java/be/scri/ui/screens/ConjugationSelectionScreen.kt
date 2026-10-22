@@ -84,13 +84,17 @@ fun ConjugationSelectionScreen(
     LaunchedEffect(verb, languageAlias) {
         withContext(Dispatchers.IO) {
             val loader = ContractDataLoader(context)
-            val contract = loader.loadContract(languageAlias)
+            var contract = loader.loadContract(languageAlias)
+            if (contract == null) {
+                loader.downloadAndSaveContract(languageAlias)
+                contract = loader.loadContract(languageAlias)
+            }
             if (contract != null) {
                 val fileManager = DatabaseFileManager(context)
                 val manager = ConjugateDataManager(fileManager)
 
                 val structuredData = mutableMapOf<String, MutableMap<String, List<Pair<String, String>>>>()
-                contract.conjugations.values.forEach { tenseGroup ->
+                contract.verbs.conjugations.values.forEach { tenseGroup ->
                     val categories = mutableMapOf<String, List<Pair<String, String>>>()
                     tenseGroup.tenses.values.forEach { conjugationCategory ->
                         val pairs =

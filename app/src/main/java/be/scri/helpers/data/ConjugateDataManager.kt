@@ -33,7 +33,7 @@ class ConjugateDataManager(
         word: String,
     ): MutableMap<String, MutableMap<String, Collection<String>>>? {
         val finalOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
-        yamlData?.conjugations?.values?.forEach { tenseGroup ->
+        yamlData?.verbs?.conjugations?.values?.forEach { tenseGroup ->
             val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
             tenseGroup.tenses.values.forEach { conjugationCategory ->
                 val forms =
@@ -65,7 +65,7 @@ class ConjugateDataManager(
         word: String,
     ): Set<String> {
         val allFormKeys = mutableSetOf<String>()
-        yamlData?.conjugations?.values?.forEach { tenseGroup ->
+        yamlData?.verbs?.conjugations?.values?.forEach { tenseGroup ->
             tenseGroup.tenses.values.forEach { conjugationCategory ->
                 conjugationCategory.tenseForms.values.forEach { form ->
                     allFormKeys.add(form.label)

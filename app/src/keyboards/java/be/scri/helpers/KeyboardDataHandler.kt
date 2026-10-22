@@ -75,9 +75,12 @@ class KeyboardDataHandler {
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
         suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
         val numbersColumns =
-            dataContract?.numbers?.let { map ->
-                (map.keys + map.values).distinct()
-            } ?: emptyList()
+            dataContract
+                ?.nouns
+                ?.numbers
+                ?.values
+                ?.flatMap { listOf(it.singular, it.plural) }
+                ?.distinct() ?: emptyList()
         autocompletionManager.loadWords(languageAlias, numbersColumns)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
 
