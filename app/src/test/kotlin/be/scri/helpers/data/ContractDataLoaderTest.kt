@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -21,6 +22,60 @@ class ContractDataLoaderTest {
     private lateinit var assetManager: AssetManager
     private lateinit var tempFilesDir: File
     private lateinit var loader: ContractDataLoader
+
+    private val sampleJson =
+        """
+        {
+          "nouns": {
+            "genders": {
+              "canonical": ["gender"],
+              "feminines": [],
+              "masculines": [],
+              "commons": [],
+              "neuters": []
+            },
+            "numbers": {
+              "1": {
+                "singular": "nominativeSingular",
+                "plural": "nominativePlural"
+              }
+            }
+          },
+          "verbs": {
+            "conjugations": {
+              "1": {
+                "sectionTitle": "Present",
+                "tenses": {
+                  "1": {
+                    "tenseTitle": "Pr. Simple",
+                    "tenseForms": {
+                      "1": {
+                        "label": "I/you/plural",
+                        "value": "simplePresent"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "translations": {
+            "wordType": {
+              "sectionTitle": "Word Types",
+              "adjective": { "displayValue": "Adjective", "sectionTitle": "Adjectives" },
+              "adverb": { "displayValue": "Adverb", "sectionTitle": "Adverbs" },
+              "article": { "displayValue": "Article", "sectionTitle": "Articles" },
+              "conjunction": { "displayValue": "Conjunction", "sectionTitle": "Conjunctions" },
+              "noun": { "displayValue": "Noun", "sectionTitle": "Nouns" },
+              "postposition": { "displayValue": "Postposition", "sectionTitle": "Postpositions" },
+              "preposition": { "displayValue": "Preposition", "sectionTitle": "Prepositions" },
+              "proper_noun": { "displayValue": "Proper Noun", "sectionTitle": "Proper Nouns" },
+              "pronoun": { "displayValue": "Pronoun", "sectionTitle": "Pronouns" },
+              "verb": { "displayValue": "Verb", "sectionTitle": "Verbs" }
+            }
+          }
+        }
+        """.trimIndent()
 
     private val sampleYaml =
         """
@@ -191,8 +246,57 @@ class ContractDataLoaderTest {
     }
 
     @Test
+    fun parseContract_validJson_returnsDataContract() {
+        val contract = loader.parseContract(sampleJson)
+        assertNotNull(contract)
+        assertEquals(listOf("gender"), contract?.nouns?.genders?.canonical)
+    }
+
+    @Test
     fun parseContract_invalidYaml_returnsNull() {
         val contract = loader.parseContract("invalid: yaml: [")
         assertNull(contract)
     }
+
+    @Test
+    fun hasContract_returnsTrueWhenFileExists() {
+        assertFalse(loader.hasContract("EN"))
+
+        val contractsDir = File(tempFilesDir, "data-contracts")
+        contractsDir.mkdirs()
+        File(contractsDir, "en.json").writeText(sampleJson)
+
+        assertTrue(loader.hasContract("EN"))
+    }
+
+    @Test
+    fun loadContract_fromJsonFile_parsesSuccessfully() {
+        val contractsDir = File(tempFilesDir, "data-contracts")
+        contractsDir.mkdirs()
+        File(contractsDir, "en.json").writeText(sampleJson)
+
+        val contract = loader.loadContract("EN")
+        assertNotNull(contract)
+        assertEquals(listOf("gender"), contract?.nouns?.genders?.canonical)
+        assertEquals(
+            "nominativeSingular",
+            contract
+                ?.nouns
+                ?.numbers
+                ?.get(1)
+                ?.singular,
+        )
+    }
+
+    @Test
+    fun saveContract_withJsonContent_savesAsJson() {
+        val saved = loader.saveContract("ES", sampleJson)
+        assertTrue(saved)
+        assertTrue(File(tempFilesDir, "data-contracts/es.json").exists())
+
+        val contract = loader.loadContract("ES")
+        assertNotNull(contract)
+        assertEquals(listOf("gender"), contract?.nouns?.genders?.canonical)
+    }
 }
+

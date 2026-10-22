@@ -15,6 +15,7 @@ import be.scri.data.remote.RetrofitClient
 import be.scri.helpers.LanguageMappingConstants
 import be.scri.helpers.NetworkMonitor
 import be.scri.helpers.StringUtils
+import be.scri.helpers.data.ContractDataLoader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
@@ -156,6 +157,9 @@ class ConjugateDataDownloadViewModel(
                         val dbHelper = ConjugateDynamicDbHelper(getApplication(), langCode)
                         dbHelper.syncConjugateDatabase(response)
 
+                        val contractLoader = ContractDataLoader(getApplication())
+                        contractLoader.downloadAndSaveContract(langCode)
+
                         // Save timestamp.
                         prefs.edit().putString("last_conjugate_update_$langCode", serverLastUpdate).apply()
 
@@ -169,7 +173,12 @@ class ConjugateDataDownloadViewModel(
                             showToast(msg)
                         }
                     } else {
-                        // Already up to date: Skip the DB work.
+                        // Already up to date: Skip the DB work, but ensure contract is downloaded if missing.
+                        val contractLoader = ContractDataLoader(getApplication())
+                        if (!contractLoader.hasContract(langCode)) {
+                            contractLoader.downloadAndSaveContract(langCode)
+                        }
+
                         withContext(Dispatchers.Main) {
                             downloadStates[key] = DownloadState.Completed
                             val msg =
@@ -179,6 +188,7 @@ class ConjugateDataDownloadViewModel(
                             showToast(msg)
                         }
                     }
+
                 } catch (e: IOException) {
                     val template =
                         getApplication<Application>().getString(
