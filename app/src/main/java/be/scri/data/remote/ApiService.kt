@@ -28,4 +28,3 @@ interface ApiService {
         @Query("lang") language: String,
     ): ResponseBody
 }
-

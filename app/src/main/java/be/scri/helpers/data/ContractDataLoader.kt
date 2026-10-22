@@ -7,7 +7,10 @@ import android.util.Log
 import be.scri.data.remote.RetrofitClient
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
+import com.charleskorn.kaml.YamlException
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
 
@@ -98,13 +101,23 @@ class ContractDataLoader(
     fun parseContract(content: String): DataContract? =
         try {
             yaml.decodeFromString(DataContract.serializer(), content)
-        } catch (_: Exception) {
-            try {
-                json.decodeFromString(DataContract.serializer(), content)
-            } catch (e: Exception) {
-                Log.e(TAG, "Error parsing contract content", e)
-                null
-            }
+        } catch (_: YamlException) {
+            parseContractAsJson(content)
+        } catch (_: SerializationException) {
+            parseContractAsJson(content)
+        } catch (_: IllegalArgumentException) {
+            parseContractAsJson(content)
+        }
+
+    private fun parseContractAsJson(content: String): DataContract? =
+        try {
+            json.decodeFromString(DataContract.serializer(), content)
+        } catch (e: SerializationException) {
+            Log.e(TAG, "Error parsing contract content as JSON", e)
+            null
+        } catch (e: IllegalArgumentException) {
+            Log.e(TAG, "Error parsing contract content as JSON", e)
+            null
         }
 
     /**
@@ -148,10 +161,12 @@ class ContractDataLoader(
             val response = RetrofitClient.apiService.getContract(lang)
             val content = response.string()
             saveContract(lang, content)
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             Log.e(TAG, "Failed to download and save contract for $lang", e)
+            false
+        } catch (e: HttpException) {
+            Log.e(TAG, "Server returned error while fetching contract for $lang", e)
             false
         }
     }
 }
-

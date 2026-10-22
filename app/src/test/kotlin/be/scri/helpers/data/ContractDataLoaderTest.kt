@@ -299,4 +299,3 @@ class ContractDataLoaderTest {
         assertEquals(listOf("gender"), contract?.nouns?.genders?.canonical)
     }
 }
-

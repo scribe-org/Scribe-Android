@@ -188,7 +188,6 @@ class ConjugateDataDownloadViewModel(
                             showToast(msg)
                         }
                     }
-
                 } catch (e: IOException) {
                     val template =
                         getApplication<Application>().getString(
