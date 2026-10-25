@@ -72,8 +72,9 @@ class ConjugateDataDownloadViewModel(
             }
         }
 
-        // After initializing, check for updates on all Completed languages.
+        // After initializing, check for updates on all Completed languages and backfill missing contracts.
         checkAllForUpdates()
+        backfillMissingContracts()
         _checkUpdateState.value = CheckUpdateState.Idle
     }
 
@@ -158,9 +159,18 @@ class ConjugateDataDownloadViewModel(
                         dbHelper.syncConjugateDatabase(response)
 
                         val contractLoader = ContractDataLoader(getApplication())
-                        contractLoader.downloadAndSaveContract(langCode)
+                        val contractSaved = contractLoader.downloadAndSaveContract(langCode)
+                        if (!contractSaved) {
+                            val template =
+                                getApplication<Application>().getString(
+                                    R.string.i18n_app_download_error_server,
+                                )
+                            val errorMsg = StringUtils.formatStringWithParams(template, "Contract download failed")
+                            updateErrorState(key, errorMsg)
+                            return@launch
+                        }
 
-                        // Save timestamp.
+                        // Save timestamp only if both database and contract saved successfully.
                         prefs.edit().putString("last_conjugate_update_$langCode", serverLastUpdate).apply()
 
                         withContext(Dispatchers.Main) {
@@ -176,7 +186,16 @@ class ConjugateDataDownloadViewModel(
                         // Already up to date: Skip the DB work, but ensure contract is downloaded if missing.
                         val contractLoader = ContractDataLoader(getApplication())
                         if (!contractLoader.hasContract(langCode)) {
-                            contractLoader.downloadAndSaveContract(langCode)
+                            val contractSaved = contractLoader.downloadAndSaveContract(langCode)
+                            if (!contractSaved) {
+                                val template =
+                                    getApplication<Application>().getString(
+                                        R.string.i18n_app_download_error_server,
+                                    )
+                                val errorMsg = StringUtils.formatStringWithParams(template, "Contract download failed")
+                                updateErrorState(key, errorMsg)
+                                return@launch
+                            }
                         }
 
                         withContext(Dispatchers.Main) {
@@ -296,6 +315,30 @@ class ConjugateDataDownloadViewModel(
             // Only check languages that have been downloaded before.
             if (downloadStates[key] == DownloadState.Completed) {
                 viewModelScope.launch { checkForUpdates(key) }
+            }
+        }
+    }
+
+    /**
+     * Backfills missing data contracts for existing users who already downloaded
+     * databases but lack contract files in local storage.
+     */
+    private fun backfillMissingContracts() {
+        if (!NetworkMonitor.isOnline(getApplication())) return
+
+        val contractLoader = ContractDataLoader(getApplication())
+        val completedKeys = downloadStates.keys.filter { downloadStates[it] == DownloadState.Completed }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            completedKeys.forEach { key ->
+                val langCode =
+                    LanguageMappingConstants
+                        .getLanguageAlias(key.replaceFirstChar { it.uppercase() })
+                        .lowercase()
+
+                if (!contractLoader.hasContract(langCode)) {
+                    contractLoader.downloadAndSaveContract(langCode)
+                }
             }
         }
     }

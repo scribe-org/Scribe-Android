@@ -298,4 +298,52 @@ class ContractDataLoaderTest {
         assertNotNull(contract)
         assertEquals(listOf("gender"), contract?.nouns?.genders?.canonical)
     }
+
+    @Test
+    fun saveContract_invalidContent_returnsFalseAndDoesNotOverwriteExisting() {
+        // Save initial working contract
+        val initialSave = loader.saveContract("DE", sampleYaml)
+        assertTrue(initialSave)
+
+        // Try to overwrite with malformed content
+        val badSave = loader.saveContract("DE", "malformed: [yaml: {")
+        assertFalse(badSave)
+
+        // Verify the original contract is untouched and still loads
+        val contract = loader.loadContract("DE")
+        assertNotNull(contract)
+        assertEquals(listOf("gender"), contract?.nouns?.genders?.canonical)
+    }
+
+    @Test
+    fun saveContract_sqlInjectionInColumnName_returnsFalseAndDoesNotOverwriteExisting() {
+        // Save initial working contract
+        val initialSave = loader.saveContract("DE", sampleJson)
+        assertTrue(initialSave)
+
+        // Payload with SQL injection in column name
+        val injectionJson =
+            sampleJson.replace("nominativeSingular", "singular_col; DROP TABLE nouns;--")
+        val injectionSave = loader.saveContract("DE", injectionJson)
+        assertFalse(injectionSave)
+
+        // Verify original contract is preserved
+        val contract = loader.loadContract("DE")
+        assertNotNull(contract)
+        assertEquals(
+            "nominativeSingular",
+            contract
+                ?.nouns
+                ?.numbers
+                ?.get(1)
+                ?.singular,
+        )
+    }
+
+    @Test
+    fun validateContract_validContract_returnsTrue() {
+        val contract = loader.parseContract(sampleJson)
+        assertNotNull(contract)
+        assertTrue(loader.validateContract(contract!!))
+    }
 }

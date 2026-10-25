@@ -121,16 +121,69 @@ class ContractDataLoader(
         }
 
     /**
-     * Saves contract content (YAML or JSON) to local app storage.
+     * Validates that all database column names specified in [contract] are safe SQL identifiers.
+     * Prevents SQL injection vulnerabilities when dynamic queries are formed.
+     *
+     * @param contract The [DataContract] to inspect.
+     * @return True if all column names pass [SqlIdentifier.isValid], false otherwise.
+     */
+    fun validateContract(contract: DataContract): Boolean {
+        for ((_, pair) in contract.nouns.numbers) {
+            if (!SqlIdentifier.isValid(pair.singular) || !SqlIdentifier.isValid(pair.plural)) {
+                Log.e(TAG, "Invalid column name in contract numbers: '${pair.singular}', '${pair.plural}'")
+                return false
+            }
+        }
+        val genderColumns =
+            contract.nouns.genders.canonical +
+                contract.nouns.genders.feminines +
+                contract.nouns.genders.masculines +
+                contract.nouns.genders.commons +
+                contract.nouns.genders.neuters
+        for (col in genderColumns) {
+            if (!SqlIdentifier.isValid(col)) {
+                Log.e(TAG, "Invalid column name in contract genders: '$col'")
+                return false
+            }
+        }
+        for ((_, tenseGroup) in contract.verbs.conjugations) {
+            for ((_, category) in tenseGroup.tenses) {
+                for ((_, form) in category.tenseForms) {
+                    val rawCol = form.value.replace(Regex("""\[.*?\]"""), "").trim()
+                    if (rawCol.isNotEmpty() && !SqlIdentifier.isValid(rawCol)) {
+                        Log.e(TAG, "Invalid column name in contract verbs: '$rawCol'")
+                        return false
+                    }
+                }
+            }
+        }
+        return true
+    }
+
+    /**
+     * Validates and saves contract content (YAML or JSON) to local app storage.
+     * Content is parse-checked and SQL-identifier-validated before writing.
+     * Writing uses a temporary file and atomic rename so a failed or invalid response
+     * cannot corrupt or overwrite an existing working contract.
      *
      * @param language The language code (e.g., "DE", "EN").
      * @param yamlContent The contract string content to persist.
-     * @return True if saved successfully, false otherwise.
+     * @return True if validated and saved successfully, false otherwise.
      */
     fun saveContract(
         language: String,
         yamlContent: String,
     ): Boolean {
+        val parsedContract = parseContract(yamlContent)
+        if (parsedContract == null) {
+            Log.e(TAG, "Failed to parse contract content for $language before saving")
+            return false
+        }
+        if (!validateContract(parsedContract)) {
+            Log.e(TAG, "Contract content for $language contains invalid SQL identifiers")
+            return false
+        }
+
         val dir = File(context.filesDir, CONTRACTS_DIR)
         if (!dir.exists() && !dir.mkdirs()) {
             Log.e(TAG, "Failed to create directory: ${dir.path}")
@@ -139,12 +192,31 @@ class ContractDataLoader(
         val lang = language.lowercase()
         val isJson = yamlContent.trimStart().startsWith("{")
         val extension = if (isJson) "json" else "yaml"
-        val file = File(dir, "$lang.$extension")
+        val targetFile = File(dir, "$lang.$extension")
+        val tempFile = File(dir, "$lang.$extension.tmp")
+
         return try {
-            file.writeText(yamlContent)
-            true
+            tempFile.writeText(yamlContent)
+            if (tempFile.renameTo(targetFile)) {
+                true
+            } else {
+                try {
+                    java.nio.file.Files.move(
+                        tempFile.toPath(),
+                        targetFile.toPath(),
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING,
+                        java.nio.file.StandardCopyOption.ATOMIC_MOVE,
+                    )
+                    true
+                } catch (e: IOException) {
+                    Log.e(TAG, "Failed to move temp contract file to target file for $language", e)
+                    tempFile.delete()
+                    false
+                }
+            }
         } catch (e: IOException) {
-            Log.e(TAG, "Failed to write contract file for $language", e)
+            Log.e(TAG, "Failed to write contract to temp file for $language", e)
+            tempFile.delete()
             false
         }
     }
