@@ -51,6 +51,12 @@ class ClipboardHandler(
         }
     }
 
+    fun release() {
+        if (this::clipboardMonitor.isInitialized) {
+            clipboardMonitor.release()
+        }
+    }
+
     fun onClipboardSuggestionClicked() {
         latestClipText?.let { text ->
             ime.getInputConnection()?.commitText(text, 1)

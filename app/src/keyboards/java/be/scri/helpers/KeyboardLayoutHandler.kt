@@ -98,9 +98,12 @@ class KeyboardLayoutHandler(
 
         val xmlId = getCurrentKeyboardLayoutXML()
         val currentShiftState = ime.keyboard?.mShiftState ?: SHIFT_OFF
-        ime.keyboard = KeyboardBase(ime.imeContext, xmlId, ime.enterKeyType, getKeyboardWidth())
-        ime.keyboard?.setShifted(currentShiftState)
-        ime.keyboardView?.setKeyboard(ime.keyboard!!)
+        ime.keyboard =
+            KeyboardBase(ime.imeContext, xmlId, ime.enterKeyType, getKeyboardWidth())
+                .also {
+                    it.setShifted(currentShiftState)
+                    ime.keyboardView?.setKeyboard(it)
+                }
 
         if (xmlId == R.xml.keys_symbols) {
             ime.uiManager.setupCurrencySymbol(ime.language)

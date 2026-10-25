@@ -22,6 +22,7 @@ private val LightColors =
         outlineVariant = theme_light_unchecked_switch_selector_color,
         surfaceContainer = theme_light_corner_button_color,
         surfaceVariant = theme_light_success_color,
+        onSurfaceVariant = theme_light_caption_color,
     )
 
 private val DarkColors =

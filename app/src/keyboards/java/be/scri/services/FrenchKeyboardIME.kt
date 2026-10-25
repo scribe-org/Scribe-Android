@@ -26,7 +26,6 @@ class FrenchKeyboardIME : GeneralKeyboardIME(ScribeLanguage.FRENCH) {
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
-    override var hasTextBeforeCursor: Boolean = false
 
     // REFACTOR_FIX: The 'binding' and 'keyboardView' properties are no longer abstract in the parent class,
     // so we must remove the overrides here. They are now inherited directly.

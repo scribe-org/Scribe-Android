@@ -118,6 +118,11 @@ class ConjugateViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val results = mutableListOf<ConjugateSearchResult>()
             val fileManager = DatabaseFileManager(getApplication())
+            val escapedQuery =
+                query
+                    .replace("\\", "\\\\")
+                    .replace("%", "\\%")
+                    .replace("_", "\\_")
 
             for (alias in SUPPORTED_ALIASES) {
                 val db = fileManager.getConjugateDatabase(alias) ?: continue
@@ -127,8 +132,9 @@ class ConjugateViewModel(
                     if (columnName != null && db.tableExists("verbs")) {
                         db
                             .rawQuery(
-                                "SELECT DISTINCT $columnName FROM verbs WHERE $columnName LIKE ? LIMIT 10",
-                                arrayOf("$query%"),
+                                "SELECT DISTINCT $columnName FROM verbs " +
+                                    "WHERE $columnName LIKE ? ESCAPE '\\' LIMIT 10",
+                                arrayOf("$escapedQuery%"),
                             ).use { cursor ->
                                 val colIndex = cursor.getColumnIndex(columnName)
                                 if (colIndex != -1) {

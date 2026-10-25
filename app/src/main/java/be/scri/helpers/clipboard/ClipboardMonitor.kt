@@ -7,6 +7,7 @@ import android.os.Build
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class ClipboardMonitor(
@@ -41,6 +42,11 @@ class ClipboardMonitor(
         } catch (e: SecurityException) {
             Log.e("ClipboardMonitor", "Failed to remove primary clip changed listener", e)
         }
+    }
+
+    fun release() {
+        stopMonitoring()
+        scope.cancel()
     }
 
     private fun processCurrentClip() {

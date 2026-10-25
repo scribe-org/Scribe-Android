@@ -41,10 +41,10 @@ class ConjugateDynamicDbHelper(
             db.beginTransaction()
 
             // Check if verbs table exists in the contract
-            val verbsColumns = response.contract.fields["verbs"]
-            if (verbsColumns != null) {
+            val verbsColumns = response.contract.fields["verbs"]?.filterKeys { SqlIdentifier.isValid(it) }
+            if (!verbsColumns.isNullOrEmpty()) {
                 // Create verbs table
-                val colDefinition = verbsColumns.keys.joinToString(", ") { "$it TEXT" }
+                val colDefinition = verbsColumns.keys.joinToString(", ") { "${SqlIdentifier.quote(it)} TEXT" }
                 db.execSQL("DROP TABLE IF EXISTS verbs")
                 db.execSQL(
                     "CREATE TABLE verbs " +
@@ -58,7 +58,9 @@ class ConjugateDynamicDbHelper(
                     verbsData.forEach { row ->
                         cv.clear()
                         row.forEach { (key, value) ->
-                            cv.put(key, value?.toString() ?: "")
+                            if (SqlIdentifier.isValid(key)) {
+                                cv.put(key, value?.toString() ?: "")
+                            }
                         }
                         db.insert("verbs", null, cv)
                     }

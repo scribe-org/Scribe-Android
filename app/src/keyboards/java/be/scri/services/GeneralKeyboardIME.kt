@@ -107,17 +107,13 @@ abstract class GeneralKeyboardIME(
     open val isPluralCapitalized: Boolean = false
 
     /**
-     * Property used by EnglishKeyboardIME override.
-     * We define a custom getter here for the base logic, but subclasses can override the field.
+     * Whether the editor holds text before the cursor that does not end a sentence.
      */
-    open var hasTextBeforeCursor: Boolean = false
+    val hasTextBeforeCursor: Boolean
         get() {
             val ic = currentInputConnection ?: return false
             val text = ic.getTextBeforeCursor(Int.MAX_VALUE, 0)?.trim() ?: ""
             return text.isNotEmpty() && text.lastOrNull() != '.'
-        }
-        set(value) {
-            field = value
         }
 
     // Delegate backspace handling to a separate class.
@@ -293,6 +289,7 @@ abstract class GeneralKeyboardIME(
         if (this::nativeSuggestionEngine.isInitialized) {
             nativeSuggestionEngine.close()
         }
+        clipboardHandler.release()
         super.onDestroy()
     }
 
@@ -314,7 +311,7 @@ abstract class GeneralKeyboardIME(
             setVibrate = getIsVibrateEnabled(applicationContext, language)
             setSound = getIsSoundEnabled(applicationContext, language)
             setHoldForAltCharacters = getHoldKeyStyle(applicationContext, language)
-            setKeyboard(this@GeneralKeyboardIME.keyboard!!)
+            this@GeneralKeyboardIME.keyboard?.let { setKeyboard(it) }
             mOnKeyboardActionListener = this@GeneralKeyboardIME
         }
 
@@ -425,17 +422,17 @@ abstract class GeneralKeyboardIME(
         enterKeyType = editorInfo.imeOptions and (IME_MASK_ACTION or IME_FLAG_NO_ENTER_ACTION)
         currentEnterKeyType = enterKeyType
 
-        // This setter triggers the logic in the property override if not shadowed.
-        hasTextBeforeCursor = currentInputConnection?.getTextBeforeCursor(1, 0)?.isNotEmpty() == true
-
         isNumericKeyboardActive = KeyboardLayoutHandler.shouldUseNumericKeyboard(editorInfo.inputType)
         keyboardMode = if (isNumericKeyboardActive) keyboardSymbols else keyboardLetters
         val keyboardXml = KeyboardLayoutHandler.getKeyboardLayoutXMLForInputType(editorInfo.inputType, getKeyboardLayoutXML())
 
         loadLanguageData()
 
-        keyboard = KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
-        keyboardView?.setKeyboard(keyboard!!)
+        keyboard =
+            KeyboardBase(this, keyboardXml, enterKeyType, getKeyboardWidth())
+                .also {
+                    keyboardView?.setKeyboard(it)
+                }
 
         if (this::uiManager.isInitialized && keyboardXml == R.xml.keys_symbols) {
             uiManager.setupCurrencySymbol(language)
@@ -519,7 +516,7 @@ abstract class GeneralKeyboardIME(
 
     /**
      * Interface method called by KeyboardView.
-     * Delegates to the property 'hasTextBeforeCursor' which subclasses may override.
+     * Delegates to the property 'hasTextBeforeCursor'.
      */
     override fun hasTextBeforeCursor(): Boolean = hasTextBeforeCursor
 
@@ -558,7 +555,9 @@ abstract class GeneralKeyboardIME(
                     keyboard?.setShifted(SHIFT_ON_ONE_CHAR)
                 }
             }
-            keyboardView!!.setKeyboard(keyboard!!)
+            keyboard?.let {
+                keyboardView?.setKeyboard(it)
+            }
             switchToLetters = false
         }
     }
@@ -769,9 +768,10 @@ abstract class GeneralKeyboardIME(
     override fun commitText(text: String) {
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
             val label = text.trim()
-            val conjugateIndex = uiManager.getValidatedConjugateIndex(conjugateOutput)
-            val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
-            val languageOutput = title?.let { conjugateOutput!![it] }
+            val output = conjugateOutput
+            val conjugateIndex = uiManager.getValidatedConjugateIndex(output)
+            val title = output?.keys?.elementAtOrNull(conjugateIndex)
+            val languageOutput = title?.let { output[it] }
 
             val matchingEntry =
                 languageOutput?.entries?.find { (_, values) ->

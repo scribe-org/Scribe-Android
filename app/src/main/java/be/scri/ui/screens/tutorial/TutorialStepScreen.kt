@@ -35,6 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -167,7 +168,7 @@ fun TutorialStepScreen(
     val successColor = if (isDarkTheme) Color(0xFF08A045) else Color(0xFF9BC53D)
     val errorColor = Color(0xFFE53935)
 
-    var userInput by remember(step) { mutableStateOf("") }
+    var userInput by rememberSaveable(step) { mutableStateOf("") }
 
     val validationState =
         when {

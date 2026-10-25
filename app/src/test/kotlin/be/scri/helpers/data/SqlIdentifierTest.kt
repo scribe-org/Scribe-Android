@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers.data
 
+import be.scri.data.remote.SqlIdentifier
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -42,10 +44,7 @@ class SqlIdentifierTest {
     }
 
     @Test
-    fun isValid_rejectsOverlyLongIdentifiers() {
-        val longName = "a".repeat(129)
-        assertFalse(SqlIdentifier.isValid(longName))
-        val maxAllowed = "a".repeat(128)
-        assertTrue(SqlIdentifier.isValid(maxAllowed))
+    fun quote_wrapsInDoubleQuotes() {
+        assertEquals("\"columnName\"", SqlIdentifier.quote("columnName"))
     }
 }

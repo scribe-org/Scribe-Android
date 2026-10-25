@@ -25,7 +25,6 @@ import androidx.navigation.compose.rememberNavController
 import be.scri.ScribeApp
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.setLightDarkModePreference
-import be.scri.services.EnglishKeyboardIME
 import be.scri.ui.common.bottombar.BottomBarScreen
 import be.scri.ui.theme.ScribeTheme
 
@@ -34,8 +33,6 @@ import be.scri.ui.theme.ScribeTheme
  * Initializes theme settings, navigation, and sets up the main UI using Jetpack Compose.
  */
 class MainActivity : ComponentActivity() {
-    private var englishKeyboardIME: EnglishKeyboardIME? = null
-
     /**
      * Initializes the app on launch. Sets the theme based on user preferences, sets up edge-to-edge
      * layout, and builds the UI using Compose.
@@ -47,8 +44,6 @@ class MainActivity : ComponentActivity() {
         val isDark = PreferencesHelper.getUserDarkModePreference(this) == AppCompatDelegate.MODE_NIGHT_YES
 
         applyNavigationBarStyle(isDark)
-
-        englishKeyboardIME = EnglishKeyboardIME()
 
         setContent {
             val context = LocalContext.current

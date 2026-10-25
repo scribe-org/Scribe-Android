@@ -653,8 +653,11 @@ class KeyboardUIManager(
     fun initializeKeyboard(xmlId: Int) {
         val enterKeyType = listener.getCurrentEnterKeyType()
         val width = listener.getKeyboardWidth()
-        keyboard = KeyboardBase(context, xmlId, enterKeyType, width)
-        keyboardView.setKeyboard(keyboard!!)
+        keyboard =
+            KeyboardBase(context, xmlId, enterKeyType, width)
+                .also {
+                    keyboardView.setKeyboard(it)
+                }
         keyboardView.mOnKeyboardActionListener = listener.onKeyboardActionListener()
         keyboardView.requestLayout()
     }
@@ -1213,11 +1216,11 @@ class KeyboardUIManager(
         binding.separator2.visibility = View.GONE
         binding.separator3.visibility = View.GONE
 
-        binding.emojiBtnPhone1?.visibility = View.GONE
-        binding.emojiBtnPhone2?.visibility = View.GONE
-        binding.emojiBtnTablet1?.visibility = View.GONE
-        binding.emojiBtnTablet2?.visibility = View.GONE
-        binding.emojiBtnTablet3?.visibility = View.GONE
+        binding.emojiBtnPhone1.visibility = View.GONE
+        binding.emojiBtnPhone2.visibility = View.GONE
+        binding.emojiBtnTablet1.visibility = View.GONE
+        binding.emojiBtnTablet2.visibility = View.GONE
+        binding.emojiBtnTablet3.visibility = View.GONE
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
