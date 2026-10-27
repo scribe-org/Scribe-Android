@@ -8,15 +8,18 @@ import be.scri.data.remote.RetrofitClient
 import be.scri.data.remote.SqlIdentifier
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
-import com.charleskorn.kaml.YamlException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
+import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Loads, deserializes, downloads, and saves contract data from local storage, assets, or network.
+ * Loads, deserializes, downloads, and saves contract data from local storage or network.
+ * Contracts are stored as `<lang>.yaml`; JSON responses are stored as-is since JSON is valid YAML.
  * @param context The application context.
  */
 class ContractDataLoader(
@@ -25,72 +28,38 @@ class ContractDataLoader(
     companion object {
         private const val TAG = "ContractDataLoader"
         private const val CONTRACTS_DIR = "data-contracts"
-        private val json =
-            Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-            }
         private val yaml =
             Yaml(
                 configuration = YamlConfiguration(strictMode = false),
             )
+
+        // Languages with a background download in flight, so repeated keyboard loads don't stack requests.
+        private val pendingDownloads = ConcurrentHashMap.newKeySet<String>()
     }
 
-    /**
-     * Checks if a contract file exists in local app storage for the specified language.
-     *
-     * @param language The language code (e.g., "DE", "EN").
-     * @return True if a local .yaml or .json contract file exists, false otherwise.
-     */
-    fun hasContract(language: String): Boolean {
-        val lang = language.lowercase()
-        val dir = File(context.filesDir, CONTRACTS_DIR)
-        return File(dir, "$lang.yaml").exists() || File(dir, "$lang.json").exists()
-    }
+    private fun contractFile(language: String) = File(File(context.filesDir, CONTRACTS_DIR), "${language.lowercase()}.yaml")
 
     /**
-     * Loads and deserializes a data contract for the specified language.
-     * Checks internal app storage first, falling back to assets.
+     * Loads and deserializes the locally saved data contract for the specified language.
      * Gracefully handles file-not-found and parsing errors by returning null.
      *
-     * @param language The language code (e.g., "DE", "EN") used to determine the filename (e.g., "de.yaml" or "de.json").
+     * @param language The language code (e.g., "DE", "EN") used to determine the filename (e.g., "de.yaml").
      *
      * @return The decoded [DataContract] object if successful, or `null`
      * if the file does not exist or cannot be parsed.
      */
     fun loadContract(language: String): DataContract? {
-        val lang = language.lowercase()
-        Log.d(TAG, "Attempting to load contract for language: $lang")
-
-        val dir = File(context.filesDir, CONTRACTS_DIR)
-        val localFiles = listOf(File(dir, "$lang.yaml"), File(dir, "$lang.json"))
-        for (localFile in localFiles) {
-            if (localFile.exists() && localFile.isFile) {
-                try {
-                    val parsed = parseContract(localFile.readText())
-                    if (parsed != null) return parsed
-                } catch (e: IOException) {
-                    Log.e(TAG, "Error reading local contract file: ${localFile.path}", e)
-                }
-            }
+        val file = contractFile(language)
+        if (!file.isFile) {
+            Log.e(TAG, "No local contract file for: ${language.lowercase()}")
+            return null
         }
-
-        val assetExtensions = listOf("yaml", "json")
-        for (ext in assetExtensions) {
-            val assetPath = "$CONTRACTS_DIR/$lang.$ext"
-            try {
-                context.assets.open(assetPath).use { contractFile ->
-                    val content = contractFile.bufferedReader().readText()
-                    val parsed = parseContract(content)
-                    if (parsed != null) return parsed
-                }
-            } catch (_: IOException) {
-                // Asset not found, try next extension.
-            }
+        return try {
+            parseContract(file.readText())
+        } catch (e: IOException) {
+            Log.e(TAG, "Error reading local contract file: ${file.path}", e)
+            null
         }
-
-        Log.e(TAG, "Error loading contract file for: $lang. It may not exist.")
-        return null
     }
 
     /**
@@ -102,22 +71,11 @@ class ContractDataLoader(
     fun parseContract(content: String): DataContract? =
         try {
             yaml.decodeFromString(DataContract.serializer(), content)
-        } catch (_: YamlException) {
-            parseContractAsJson(content)
-        } catch (_: SerializationException) {
-            parseContractAsJson(content)
-        } catch (_: IllegalArgumentException) {
-            parseContractAsJson(content)
-        }
-
-    private fun parseContractAsJson(content: String): DataContract? =
-        try {
-            json.decodeFromString(DataContract.serializer(), content)
         } catch (e: SerializationException) {
-            Log.e(TAG, "Error parsing contract content as JSON", e)
+            Log.e(TAG, "Error parsing contract content", e)
             null
         } catch (e: IllegalArgumentException) {
-            Log.e(TAG, "Error parsing contract content as JSON", e)
+            Log.e(TAG, "Error parsing contract content", e)
             null
         }
 
@@ -150,6 +108,7 @@ class ContractDataLoader(
         for ((_, tenseGroup) in contract.verbs.conjugations) {
             for ((_, category) in tenseGroup.tenses) {
                 for ((_, form) in category.tenseForms) {
+                    // Bracketed words are checked where they are used in ConjugateDataManager.parseComplexForm.
                     val rawCol = form.value.replace(Regex("""\[.*?\]"""), "").trim()
                     if (rawCol.isNotEmpty() && !SqlIdentifier.isValid(rawCol)) {
                         Log.e(TAG, "Invalid column name in contract verbs: '$rawCol'")
@@ -164,18 +123,18 @@ class ContractDataLoader(
     /**
      * Validates and saves contract content (YAML or JSON) to local app storage.
      * Content is parse-checked and SQL-identifier-validated before writing.
-     * Writing uses a temporary file and atomic rename so a failed or invalid response
-     * cannot corrupt or overwrite an existing working contract.
+     * Writing uses a uniquely named temporary file and atomic rename so a failed, invalid
+     * or concurrent write cannot corrupt or overwrite an existing working contract.
      *
      * @param language The language code (e.g., "DE", "EN").
-     * @param yamlContent The contract string content to persist.
+     * @param content The contract string content to persist.
      * @return True if validated and saved successfully, false otherwise.
      */
     fun saveContract(
         language: String,
-        yamlContent: String,
+        content: String,
     ): Boolean {
-        val parsedContract = parseContract(yamlContent)
+        val parsedContract = parseContract(content)
         if (parsedContract == null) {
             Log.e(TAG, "Failed to parse contract content for $language before saving")
             return false
@@ -186,38 +145,24 @@ class ContractDataLoader(
         }
 
         val dir = File(context.filesDir, CONTRACTS_DIR)
-        if (!dir.exists() && !dir.mkdirs()) {
+        if (!dir.mkdirs() && !dir.isDirectory) {
             Log.e(TAG, "Failed to create directory: ${dir.path}")
             return false
         }
-        val lang = language.lowercase()
-        val isJson = yamlContent.trimStart().startsWith("{")
-        val extension = if (isJson) "json" else "yaml"
-        val targetFile = File(dir, "$lang.$extension")
-        val tempFile = File(dir, "$lang.$extension.tmp")
+        val targetFile = contractFile(language)
 
         return try {
-            tempFile.writeText(yamlContent)
-            if (tempFile.renameTo(targetFile)) {
-                true
-            } else {
-                try {
-                    java.nio.file.Files.move(
-                        tempFile.toPath(),
-                        targetFile.toPath(),
-                        java.nio.file.StandardCopyOption.REPLACE_EXISTING,
-                        java.nio.file.StandardCopyOption.ATOMIC_MOVE,
-                    )
-                    true
-                } catch (e: IOException) {
-                    Log.e(TAG, "Failed to move temp contract file to target file for $language", e)
-                    tempFile.delete()
-                    false
+            val tempFile = File.createTempFile(targetFile.name, ".tmp", dir)
+            try {
+                tempFile.writeText(content)
+                tempFile.renameTo(targetFile).also { renamed ->
+                    if (!renamed) Log.e(TAG, "Failed to move temp contract file to target file for $language")
                 }
+            } finally {
+                tempFile.delete()
             }
         } catch (e: IOException) {
             Log.e(TAG, "Failed to write contract to temp file for $language", e)
-            tempFile.delete()
             false
         }
     }
@@ -240,6 +185,34 @@ class ContractDataLoader(
         } catch (e: HttpException) {
             Log.e(TAG, "Server returned error while fetching contract for $lang", e)
             false
+        }
+    }
+
+    /**
+     * Loads the local contract for [language], downloading it first if it is missing or unreadable.
+     *
+     * @param language The language code (e.g., "DE", "EN").
+     * @return The decoded [DataContract], or `null` if it could not be loaded or downloaded.
+     */
+    suspend fun loadOrDownloadContract(language: String): DataContract? =
+        loadContract(language) ?: if (downloadAndSaveContract(language)) loadContract(language) else null
+
+    /**
+     * Downloads the contract for [language] in the background if its language database is already
+     * downloaded, so users who downloaded data before contracts existed get one on their next load.
+     *
+     * @param language The language code (e.g., "DE", "EN").
+     */
+    fun downloadMissingContractInBackground(language: String) {
+        val lang = language.lowercase()
+        val hasDatabase = context.getDatabasePath("${lang.uppercase()}LanguageData.sqlite").exists()
+        if (!hasDatabase || !pendingDownloads.add(lang)) return
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                loadOrDownloadContract(lang)
+            } finally {
+                pendingDownloads.remove(lang)
+            }
         }
     }
 }

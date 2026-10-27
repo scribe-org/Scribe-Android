@@ -83,12 +83,7 @@ fun ConjugationSelectionScreen(
 
     LaunchedEffect(verb, languageAlias) {
         withContext(Dispatchers.IO) {
-            val loader = ContractDataLoader(context)
-            var contract = loader.loadContract(languageAlias)
-            if (contract == null) {
-                loader.downloadAndSaveContract(languageAlias)
-                contract = loader.loadContract(languageAlias)
-            }
+            val contract = ContractDataLoader(context).loadOrDownloadContract(languageAlias)
             if (contract != null) {
                 val fileManager = DatabaseFileManager(context)
                 val manager = ConjugateDataManager(fileManager)

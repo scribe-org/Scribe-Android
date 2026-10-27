@@ -2,7 +2,6 @@
 package be.scri.helpers.data
 
 import android.content.Context
-import android.content.res.AssetManager
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.AfterEach
@@ -13,13 +12,10 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayInputStream
 import java.io.File
-import java.io.IOException
 
 class ContractDataLoaderTest {
     private lateinit var context: Context
-    private lateinit var assetManager: AssetManager
     private lateinit var tempFilesDir: File
     private lateinit var loader: ContractDataLoader
 
@@ -139,13 +135,11 @@ class ContractDataLoaderTest {
     @BeforeEach
     fun setup() {
         context = mockk(relaxed = true)
-        assetManager = mockk(relaxed = true)
         tempFilesDir =
             java.nio.file.Files
                 .createTempDirectory("scribe_test_contracts")
                 .toFile()
         every { context.filesDir } returns tempFilesDir
-        every { context.assets } returns assetManager
         loader = ContractDataLoader(context)
     }
 
@@ -192,24 +186,6 @@ class ContractDataLoaderTest {
     }
 
     @Test
-    fun loadContract_fallbackToAssets_parsesSuccessfully() {
-        every { assetManager.open("data-contracts/en.yaml") } returns ByteArrayInputStream(sampleYaml.toByteArray())
-
-        val contract = loader.loadContract("EN")
-
-        assertNotNull(contract)
-        assertEquals(listOf("gender"), contract?.nouns?.genders?.canonical)
-        assertEquals(
-            "nominativeSingular",
-            contract
-                ?.nouns
-                ?.numbers
-                ?.get(1)
-                ?.singular,
-        )
-    }
-
-    @Test
     fun saveContract_writesFileAndCanBeLoaded() {
         val saved = loader.saveContract("DE", sampleYaml)
         assertTrue(saved)
@@ -221,8 +197,6 @@ class ContractDataLoaderTest {
 
     @Test
     fun loadContract_fileNotFound_returnsNull() {
-        every { assetManager.open(any()) } throws IOException("File not found")
-
         val contract = loader.loadContract("NON_EXISTENT")
 
         assertNull(contract)
@@ -230,8 +204,9 @@ class ContractDataLoaderTest {
 
     @Test
     fun loadContract_malformedYaml_returnsNull() {
-        val invalidYaml = "nouns: [invalid: yaml: :"
-        every { assetManager.open(any()) } returns ByteArrayInputStream(invalidYaml.toByteArray())
+        val contractsDir = File(tempFilesDir, "data-contracts")
+        contractsDir.mkdirs()
+        File(contractsDir, "en.yaml").writeText("nouns: [invalid: yaml: :")
 
         val contract = loader.loadContract("EN")
 
@@ -259,21 +234,10 @@ class ContractDataLoaderTest {
     }
 
     @Test
-    fun hasContract_returnsTrueWhenFileExists() {
-        assertFalse(loader.hasContract("EN"))
-
+    fun loadContract_jsonContent_parsesSuccessfully() {
         val contractsDir = File(tempFilesDir, "data-contracts")
         contractsDir.mkdirs()
-        File(contractsDir, "en.json").writeText(sampleJson)
-
-        assertTrue(loader.hasContract("EN"))
-    }
-
-    @Test
-    fun loadContract_fromJsonFile_parsesSuccessfully() {
-        val contractsDir = File(tempFilesDir, "data-contracts")
-        contractsDir.mkdirs()
-        File(contractsDir, "en.json").writeText(sampleJson)
+        File(contractsDir, "en.yaml").writeText(sampleJson)
 
         val contract = loader.loadContract("EN")
         assertNotNull(contract)
@@ -289,10 +253,10 @@ class ContractDataLoaderTest {
     }
 
     @Test
-    fun saveContract_withJsonContent_savesAsJson() {
+    fun saveContract_withJsonContent_savesAsSingleContractFile() {
         val saved = loader.saveContract("ES", sampleJson)
         assertTrue(saved)
-        assertTrue(File(tempFilesDir, "data-contracts/es.json").exists())
+        assertEquals(listOf("es.yaml"), File(tempFilesDir, "data-contracts").list()?.toList())
 
         val contract = loader.loadContract("ES")
         assertNotNull(contract)

@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.util.Log
+import be.scri.data.remote.SqlIdentifier
 import be.scri.helpers.DatabaseFileManager
 
 /**
@@ -187,6 +188,8 @@ class ConjugateDataManager(
                 val verbType = cursor.getString(auxVerbIndex)
 
                 val targetForm = words.first()
+
+                require(SqlIdentifier.isValid(targetForm)) { "Invalid column name: $targetForm" }
 
                 val db = fileManager.getConjugateDatabase(language = language)
                 var auxResult = ""
