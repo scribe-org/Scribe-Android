@@ -109,7 +109,7 @@ class ContractDataLoader(
             for ((_, category) in tenseGroup.tenses) {
                 for ((_, form) in category.tenseForms) {
                     // Bracketed words are checked where they are used in ConjugateDataManager.parseComplexForm.
-                    val rawCol = form.value.replace(Regex("""\[.*?\]"""), "").trim()
+                    val rawCol = form.value.replace(Regex("""[\[{].*?[]}]"""), "").trim()
                     if (rawCol.isNotEmpty() && !SqlIdentifier.isValid(rawCol)) {
                         Log.e(TAG, "Invalid column name in contract verbs: '$rawCol'")
                         return false

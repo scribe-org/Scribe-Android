@@ -310,4 +310,17 @@ class ContractDataLoaderTest {
         assertNotNull(contract)
         assertTrue(loader.validateContract(contract!!))
     }
+
+    @Test
+    fun validateContract_bracketedAuxiliaryForms_returnsTrue() {
+        val germanStyle =
+            sampleJson.replace(
+                "\"value\": \"simplePresent\"",
+                "\"value\": \"{indicativePresentFirstPersonSingular auxiliaryVerb} pastParticiple\"",
+            )
+        val englishStyle = sampleJson.replace("\"value\": \"simplePresent\"", "\"value\": \"[had been] presentParticiple\"")
+
+        assertTrue(loader.validateContract(loader.parseContract(germanStyle)!!))
+        assertTrue(loader.validateContract(loader.parseContract(englishStyle)!!))
+    }
 }

@@ -140,7 +140,7 @@ class ConjugateDataManager(
         form: String,
         language: String,
     ): String =
-        if (form.contains("[")) {
+        if (form.contains("[") || form.contains("{")) {
             parseComplexForm(cursor, form, language)
         } else {
             try {
@@ -153,8 +153,9 @@ class ConjugateDataManager(
 
     /**
      * Parses a complex conjugation form that includes an auxiliary part in brackets,
-     * such as "[have] past_participle". It combines the auxiliary word with the value
-     * from the specified database column.
+     * such as "[have] past_participle" (literal words) or
+     * "{indicativePresentFirstPersonSingular auxiliaryVerb} pastParticiple" (column lookup).
+     * It combines the auxiliary word with the value from the specified database column.
      *
      * @param cursor The database cursor positioned at the correct row.
      * @param form The complex form string to parse.
@@ -166,7 +167,7 @@ class ConjugateDataManager(
         form: String,
         language: String,
     ): String {
-        val bracketRegex = Regex("""\[(.*?)]""")
+        val bracketRegex = Regex("""[\[{](.*?)[]}]""")
         val match = bracketRegex.find(form) ?: return ""
 
         val auxiliaryWords = match.groupValues[1]
