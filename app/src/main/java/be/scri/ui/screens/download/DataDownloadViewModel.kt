@@ -15,6 +15,7 @@ import be.scri.data.remote.RetrofitClient
 import be.scri.helpers.LanguageMappingConstants
 import be.scri.helpers.NetworkMonitor
 import be.scri.helpers.StringUtils
+import be.scri.helpers.data.ContractDataLoader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
@@ -155,34 +156,50 @@ class DataDownloadViewModel(
                     val serverLastUpdate = response.contract.updatedAt
 
                     // Always download when forcing, or when update is available.
-                    if (forceDownload || isUpdateAvailable(localLastUpdate, serverLastUpdate)) {
+                    val updateNeeded = forceDownload || isUpdateAvailable(localLastUpdate, serverLastUpdate)
+                    if (updateNeeded) {
                         val dbHelper = DynamicDbHelper(getApplication(), langCode)
                         dbHelper.syncDatabase(response)
+                    }
 
-                        // Save timestamp.
-                        if (isValidTimestamp(serverLastUpdate)) {
-                            prefs.edit().putString("last_update_$langCode", serverLastUpdate).apply()
+                    // Refresh the contract along with new data; otherwise download it only if missing or unreadable.
+                    val contractLoader = ContractDataLoader(getApplication())
+                    val contractReady =
+                        if (updateNeeded) {
+                            contractLoader.downloadAndSaveContract(langCode)
+                        } else {
+                            contractLoader.loadOrDownloadContract(langCode) != null
                         }
+                    if (!contractReady) {
+                        val template =
+                            getApplication<Application>().getString(
+                                R.string.i18n_app_download_error_server,
+                            )
+                        val errorMsg = StringUtils.formatStringWithParams(template, "Contract download failed")
+                        updateErrorState(key, errorMsg)
+                        return@launch
+                    }
 
-                        withContext(Dispatchers.Main) {
-                            downloadStates[key] = DownloadState.Completed
-                            val template =
-                                getApplication<Application>().getString(
-                                    R.string.i18n_app_download_menu_ui_download_data_download_success,
-                                )
-                            val msg = StringUtils.formatStringWithParams(template, displayLang)
-                            showToast(msg)
-                        }
-                    } else {
-                        // Already up to date: Skip the DB work.
-                        withContext(Dispatchers.Main) {
-                            downloadStates[key] = DownloadState.Completed
-                            val msg =
+                    // Save timestamp only if both database and contract saved successfully.
+                    if (updateNeeded && isValidTimestamp(serverLastUpdate)) {
+                        prefs.edit().putString("last_update_$langCode", serverLastUpdate).apply()
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        downloadStates[key] = DownloadState.Completed
+                        val msg =
+                            if (updateNeeded) {
+                                val template =
+                                    getApplication<Application>().getString(
+                                        R.string.i18n_app_download_menu_ui_download_data_download_success,
+                                    )
+                                StringUtils.formatStringWithParams(template, displayLang)
+                            } else {
                                 getApplication<Application>().getString(
                                     R.string.i18n_app_download_menu_ui_download_data_generic_already_up_to_date,
                                 )
-                            showToast(msg)
-                        }
+                            }
+                        showToast(msg)
                     }
                 } catch (e: IOException) {
                     val template =

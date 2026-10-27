@@ -39,11 +39,16 @@ class DatabaseManagers(
     /**
      * A facade method to load the data contract for a given language.
      * It delegates the loading and parsing logic to the [ContractDataLoader].
+     * If the contract is missing, it is downloaded in the background for the next load.
      *
      * @param language The language code (e.g., "DE", "FR") for which to load the contract.
      *
      * @return A [DataContract] object containing the language's structural metadata, or `null`
      * if not found or on error.
      */
-    fun getLanguageContract(language: String): DataContract? = contractLoader.loadContract(language)
+    fun getLanguageContract(language: String): DataContract? {
+        val contract = contractLoader.loadContract(language)
+        if (contract == null) contractLoader.downloadMissingContractInBackground(language)
+        return contract
+    }
 }

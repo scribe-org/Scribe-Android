@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.util.Log
+import be.scri.data.remote.SqlIdentifier
 import be.scri.helpers.DatabaseFileManager
 
 /**
@@ -33,7 +34,7 @@ class ConjugateDataManager(
         word: String,
     ): MutableMap<String, MutableMap<String, Collection<String>>>? {
         val finalOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
-        yamlData?.conjugations?.values?.forEach { tenseGroup ->
+        yamlData?.verbs?.conjugations?.values?.forEach { tenseGroup ->
             val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
             tenseGroup.tenses.values.forEach { conjugationCategory ->
                 val forms =
@@ -65,7 +66,7 @@ class ConjugateDataManager(
         word: String,
     ): Set<String> {
         val allFormKeys = mutableSetOf<String>()
-        yamlData?.conjugations?.values?.forEach { tenseGroup ->
+        yamlData?.verbs?.conjugations?.values?.forEach { tenseGroup ->
             tenseGroup.tenses.values.forEach { conjugationCategory ->
                 conjugationCategory.tenseForms.values.forEach { form ->
                     allFormKeys.add(form.label)
@@ -139,7 +140,7 @@ class ConjugateDataManager(
         form: String,
         language: String,
     ): String =
-        if (form.contains("[")) {
+        if (form.contains("[") || form.contains("{")) {
             parseComplexForm(cursor, form, language)
         } else {
             try {
@@ -152,8 +153,9 @@ class ConjugateDataManager(
 
     /**
      * Parses a complex conjugation form that includes an auxiliary part in brackets,
-     * such as "[have] past_participle". It combines the auxiliary word with the value
-     * from the specified database column.
+     * such as "[have] past_participle" (literal words) or
+     * "{indicativePresentFirstPersonSingular auxiliaryVerb} pastParticiple" (column lookup).
+     * It combines the auxiliary word with the value from the specified database column.
      *
      * @param cursor The database cursor positioned at the correct row.
      * @param form The complex form string to parse.
@@ -165,7 +167,7 @@ class ConjugateDataManager(
         form: String,
         language: String,
     ): String {
-        val bracketRegex = Regex("""\[(.*?)]""")
+        val bracketRegex = Regex("""[\[{](.*?)[]}]""")
         val match = bracketRegex.find(form) ?: return ""
 
         val auxiliaryWords = match.groupValues[1]
@@ -187,6 +189,8 @@ class ConjugateDataManager(
                 val verbType = cursor.getString(auxVerbIndex)
 
                 val targetForm = words.first()
+
+                require(SqlIdentifier.isValid(targetForm)) { "Invalid column name: $targetForm" }
 
                 val db = fileManager.getConjugateDatabase(language = language)
                 var auxResult = ""
