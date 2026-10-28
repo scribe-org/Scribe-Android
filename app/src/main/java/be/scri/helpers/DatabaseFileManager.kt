@@ -36,7 +36,8 @@ class DatabaseFileManager(
      * @return An open, read-only [SQLiteDatabase] instance, or `null` on failure.
      */
     fun getLanguageDatabase(language: String): SQLiteDatabase? {
-        val dbName = "${language}LanguageData.sqlite"
+        val normalizedLang = language.uppercase()
+        val dbName = "${normalizedLang}LanguageData.sqlite"
         val dbFile = context.getDatabasePath(dbName)
 
         if (!dbFile.exists()) {
@@ -72,10 +73,15 @@ class DatabaseFileManager(
      * @return An open, read-only [SQLiteDatabase] instance, or `null` on failure.
      */
     fun getConjugateDatabase(language: String): SQLiteDatabase? {
-        val dbName = "${language}ConjugateData.sqlite"
+        val normalizedLang = language.uppercase()
+        val dbName = "${normalizedLang}ConjugateData.sqlite"
         val dbFile = context.getDatabasePath(dbName)
 
         if (!dbFile.exists()) {
+            val languageDb = getLanguageDatabase(normalizedLang)
+            if (languageDb != null) {
+                return languageDb
+            }
             Log.w(TAG, "Conjugate database $dbName not found. User needs to download conjugate data first")
             return null
         }
