@@ -296,6 +296,9 @@ class ConjugateDataManager(
         val dbColumnName = form.replace(bracketRegex, "").trim()
 
         val verbPart = getValueWithFallback(rowData, dbColumnName)
+        if (verbPart.isEmpty()) {
+            return ""
+        }
 
         // Try dynamic auxiliary lookup (e.g. German style: [form auxiliary_column])
         return try {

@@ -78,10 +78,6 @@ class DatabaseFileManager(
         val dbFile = context.getDatabasePath(dbName)
 
         if (!dbFile.exists()) {
-            val languageDb = getLanguageDatabase(normalizedLang)
-            if (languageDb != null) {
-                return languageDb
-            }
             Log.w(TAG, "Conjugate database $dbName not found. User needs to download conjugate data first")
             return null
         }
