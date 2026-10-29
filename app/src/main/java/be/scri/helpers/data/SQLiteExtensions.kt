@@ -3,6 +3,7 @@
 package be.scri.helpers.data
 
 import android.database.sqlite.SQLiteDatabase
+import be.scri.data.remote.SqlIdentifier
 
 fun SQLiteDatabase.tableExists(tableName: String): Boolean =
     rawQuery(
@@ -25,6 +26,22 @@ fun SQLiteDatabase.columnExists(
         }
         false
     }
+
+fun SQLiteDatabase.getTableColumns(tableName: String): List<String> {
+    if (!SqlIdentifier.isValid(tableName)) return emptyList()
+    return rawQuery("PRAGMA table_info(${SqlIdentifier.quote(tableName)})", null).use { cursor ->
+        val columns = mutableListOf<String>()
+        if (cursor.moveToFirst()) {
+            val nameIndex = cursor.getColumnIndex("name")
+            if (nameIndex != -1) {
+                do {
+                    cursor.getString(nameIndex)?.let { columns.add(it) }
+                } while (cursor.moveToNext())
+            }
+        }
+        columns
+    }
+}
 
 fun SQLiteDatabase.getInfinitiveColumnName(): String? {
     val candidates = listOf("infinitive", "verb", "activeInfinitive", "simplePresent")
