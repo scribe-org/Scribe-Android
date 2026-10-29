@@ -294,9 +294,37 @@ class ConjugateDataManagerTest {
     }
 
     @Test
-    fun missingVerbsTableReturnsNull() {
-        val emptyDb = SQLiteDatabase.create(null)
-        every { fileManager.getConjugateDatabase(any()) } answers { emptyDb }
+    fun fallbackToLanguageDatabaseWhenConjugateDatabaseIsNull() {
+        every { fileManager.getConjugateDatabase(any()) } returns null
+        every { fileManager.getLanguageDatabase(any()) } answers { createRealDatabase() }
+
+        val result = manager.getStructuredConjugations("EN", sampleContract, "walk")
+        assertNotNull(result)
+        val present = result!!["Indicative"]!!["Present"]!!
+        assertEquals(listOf("1ps" to "walks", "past" to "walked"), present)
+
+        val labels = manager.getTheConjugateLabels("EN", sampleContract, "walk")
+        assertNotNull(labels)
+        assertEquals(listOf("walks", "walked"), labels!!["Indicative"]!!["Present"]!!.toList())
+    }
+
+    @Test
+    fun fallbackToLanguageDatabaseWhenConjugateDatabaseHasNoVerbsTable() {
+        every { fileManager.getConjugateDatabase(any()) } answers { SQLiteDatabase.create(null) }
+        every { fileManager.getLanguageDatabase(any()) } answers { createRealDatabase() }
+
+        val result = manager.getStructuredConjugations("EN", sampleContract, "walk")
+        assertNotNull(result)
+        val present = result!!["Indicative"]!!["Present"]!!
+        assertEquals("walks", present.first { it.first == "1ps" }.second)
+    }
+
+    @Test
+    fun missingVerbsTableInBothDatabasesReturnsNull() {
+        val emptyDb1 = SQLiteDatabase.create(null)
+        val emptyDb2 = SQLiteDatabase.create(null)
+        every { fileManager.getConjugateDatabase(any()) } answers { emptyDb1 }
+        every { fileManager.getLanguageDatabase(any()) } answers { emptyDb2 }
 
         val result = manager.getStructuredConjugations("EN", sampleContract, "walk")
         assertNull(result)

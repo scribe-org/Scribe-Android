@@ -85,12 +85,14 @@ fun ConjugationSelectionScreen(
     LaunchedEffect(verb, languageAlias) {
         withContext(Dispatchers.IO) {
             val contract = ContractDataLoader(context).loadOrDownloadContract(languageAlias)
-            if (contract != null) {
-                val fileManager = DatabaseFileManager(context)
-                val manager = ConjugateDataManager(fileManager)
-
-                conjugationData = manager.getStructuredConjugations(languageAlias, contract, verb)
-            }
+            conjugationData =
+                if (contract != null) {
+                    val fileManager = DatabaseFileManager(context)
+                    val manager = ConjugateDataManager(fileManager)
+                    manager.getStructuredConjugations(languageAlias, contract, verb) ?: emptyMap()
+                } else {
+                    emptyMap()
+                }
         }
     }
 

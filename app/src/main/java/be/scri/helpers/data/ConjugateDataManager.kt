@@ -13,6 +13,7 @@ import be.scri.helpers.DatabaseFileManager
  * Manages verb conjugation data by interfacing with SQLite databases.
  * @param fileManager The central manager for database file access.
  */
+@Suppress("TooManyFunctions")
 class ConjugateDataManager(
     private val fileManager: DatabaseFileManager,
 ) {
@@ -33,7 +34,7 @@ class ConjugateDataManager(
         yamlData: DataContract?,
         word: String,
     ): MutableMap<String, MutableMap<String, Collection<String>>>? {
-        val db = fileManager.getConjugateDatabase(language) ?: return null
+        val db = getConjugationDatabase(language) ?: return null
         return db.use { database ->
             if (!database.tableExists("verbs")) {
                 return@use null
@@ -75,7 +76,7 @@ class ConjugateDataManager(
         yamlData: DataContract?,
         word: String,
     ): Map<String, Map<String, List<Pair<String, String>>>>? {
-        val db = fileManager.getConjugateDatabase(language) ?: return null
+        val db = getConjugationDatabase(language) ?: return null
         return db.use { database ->
             if (!database.tableExists("verbs")) {
                 return@use null
@@ -145,7 +146,7 @@ class ConjugateDataManager(
         language: String,
     ): String {
         if (form.isNullOrEmpty()) return ""
-        return fileManager.getConjugateDatabase(language)?.use { db ->
+        return getConjugationDatabase(language)?.use { db ->
             if (!db.tableExists("verbs")) {
                 return ""
             }
@@ -153,6 +154,27 @@ class ConjugateDataManager(
             val rowData = getVerbRowData(db, word) ?: return ""
             resolveConjugatedValue(rowData, form, db)
         } ?: ""
+    }
+
+    /**
+     * Retrieves the SQLite database for verb conjugation.
+     * Prefers the dedicated ConjugateData database, and falls back to LanguageData database
+     * so keyboard users whose verb data is stored in LanguageData.sqlite can conjugate verbs.
+     */
+    private fun getConjugationDatabase(language: String): SQLiteDatabase? {
+        val conjugateDb = fileManager.getConjugateDatabase(language)
+        if (conjugateDb != null && conjugateDb.tableExists("verbs")) {
+            return conjugateDb
+        }
+        conjugateDb?.close()
+
+        val languageDb = fileManager.getLanguageDatabase(language)
+        if (languageDb != null && languageDb.tableExists("verbs")) {
+            return languageDb
+        }
+        languageDb?.close()
+
+        return null
     }
 
     /**
