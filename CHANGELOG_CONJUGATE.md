@@ -26,6 +26,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - A verb Conjugation tab was added to the application ([#563](https://github.com/scribe-org/Scribe-Android/issues/563)).
 - Users can search for verbs across languages ([#566](https://github.com/scribe-org/Scribe-Android/issues/566)).
 - A reactive conjugation selection UI was developed to easily copy desired conjugations ([#567](https://github.com/scribe-org/Scribe-Android/issues/567), [#570](https://github.com/scribe-org/Scribe-Android/issues/570)).
+- Verb data populates generated conjugation tables from the database based on language data contracts ([#571](https://github.com/scribe-org/Scribe-Android/issues/571)).
 - Users are able to filter verb conjugations by tense ([#572](https://github.com/scribe-org/Scribe-Android/issues/572)).
 - Recently conjugated verbs are displayed to the user in the Conjugation tab ([#568](https://github.com/scribe-org/Scribe-Android/issues/568), [#569](https://github.com/scribe-org/Scribe-Android/issues/569)).
 - The Settings tab for the Scribe keyboard application was migrated to allow base settings for the app interface ([#562](https://github.com/scribe-org/Scribe-Android/issues/562)).

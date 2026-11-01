@@ -11,10 +11,14 @@ import Translations
 import Verbs
 import WordType
 import WordTypeEntry
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import be.scri.helpers.DatabaseFileManager
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -27,6 +31,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
+@Suppress("LargeClass")
 class ConjugateDataManagerTest {
     private lateinit var fileManager: DatabaseFileManager
     private lateinit var manager: ConjugateDataManager
@@ -108,7 +113,87 @@ class ConjugateDataManagerTest {
     @Before
     fun setup() {
         fileManager = mockk(relaxed = true)
+        every { fileManager.getConjugateDatabase("DE") } answers { createDatabase() }
         manager = ConjugateDataManager(fileManager)
+    }
+
+    private val dummyTranslations =
+        Translations(
+            wordType =
+                WordType(
+                    sectionTitle = "",
+                    adjective = WordTypeEntry("", ""),
+                    adverb = WordTypeEntry("", ""),
+                    article = WordTypeEntry("", ""),
+                    conjunction = WordTypeEntry("", ""),
+                    noun = WordTypeEntry("", ""),
+                    postposition = WordTypeEntry("", ""),
+                    preposition = WordTypeEntry("", ""),
+                    properNoun = WordTypeEntry("", ""),
+                    pronoun = WordTypeEntry("", ""),
+                    verb = WordTypeEntry("", ""),
+                ),
+        )
+
+    private val dummyNouns =
+        Nouns(
+            genders = Genders(emptyList(), emptyList(), emptyList(), emptyList(), emptyList()),
+            numbers = emptyMap(),
+        )
+
+    private val createdDatabases = mutableListOf<SQLiteDatabase>()
+
+    private fun createDatabase(): SQLiteDatabase {
+        val database = SQLiteDatabase.create(null)
+        database.execSQL(
+            """
+            CREATE TABLE verbs (
+                infinitive TEXT,
+                simplePresent TEXT,
+                pastParticiple TEXT,
+                auxiliaryVerb TEXT,
+                indicativePresentFirstPersonSingular TEXT,
+                wdLexemeId TEXT,
+                emptyColumn TEXT
+            )
+            """.trimIndent(),
+        )
+
+        database.execSQL(
+            """
+            INSERT INTO verbs (
+                infinitive, simplePresent, pastParticiple, auxiliaryVerb,
+                indicativePresentFirstPersonSingular, wdLexemeId, emptyColumn
+            ) VALUES (
+                'haben', 'habe', 'gehabt', 'haben', 'habe', 'L1', ''
+            )
+            """.trimIndent(),
+        )
+
+        database.execSQL(
+            """
+            INSERT INTO verbs (
+                infinitive, simplePresent, pastParticiple, auxiliaryVerb,
+                indicativePresentFirstPersonSingular, wdLexemeId, emptyColumn
+            ) VALUES (
+                'essen', 'esse', 'gegessen', 'haben', 'esse', 'L2', ''
+            )
+            """.trimIndent(),
+        )
+
+        database.execSQL(
+            """
+            INSERT INTO verbs (
+                infinitive, simplePresent, pastParticiple, auxiliaryVerb,
+                indicativePresentFirstPersonSingular, wdLexemeId, emptyColumn
+            ) VALUES (
+                'noparticiple', 'test', NULL, 'haben', 'test', 'L3', ''
+            )
+            """.trimIndent(),
+        )
+
+        createdDatabases.add(database)
+        return database
     }
 
     @Test
@@ -336,5 +421,336 @@ class ConjugateDataManagerTest {
         assertTrue(headings.contains("1ps"))
         assertTrue(headings.contains("past"))
         assertTrue(headings.contains("run"))
+    }
+
+    @After
+    fun tearDown() {
+        for (database in createdDatabases) {
+            if (database.isOpen) {
+                database.close()
+            }
+        }
+        createdDatabases.clear()
+    }
+
+    @Test
+    fun getConjugationsForVerb_preservesOutOfNumericOrderContractOrder() {
+        val contract =
+            DataContract(
+                nouns = dummyNouns,
+                translations = dummyTranslations,
+                verbs =
+                    Verbs(
+                        conjugations =
+                            linkedMapOf(
+                                2 to
+                                    TenseGroup(
+                                        sectionTitle = "Group Two",
+                                        tenses =
+                                            linkedMapOf(
+                                                5 to
+                                                    ConjugationCategory(
+                                                        tenseTitle = "Tense B",
+                                                        tenseForms =
+                                                            linkedMapOf(
+                                                                20 to TenseForm(label = "form20", value = "simplePresent"),
+                                                                10 to TenseForm(label = "form10", value = "infinitive"),
+                                                            ),
+                                                    ),
+                                            ),
+                                    ),
+                                1 to
+                                    TenseGroup(
+                                        sectionTitle = "Group One",
+                                        tenses =
+                                            linkedMapOf(
+                                                1 to
+                                                    ConjugationCategory(
+                                                        tenseTitle = "Tense A",
+                                                        tenseForms =
+                                                            linkedMapOf(
+                                                                1 to TenseForm(label = "form1", value = "simplePresent"),
+                                                            ),
+                                                    ),
+                                            ),
+                                    ),
+                            ),
+                    ),
+            )
+
+        val result = manager.getConjugationsForVerb("essen", "DE", contract)
+        assertNotNull(result)
+
+        val groupKeys = result!!.keys.toList()
+        assertEquals(listOf("Group Two", "Group One"), groupKeys)
+
+        val groupTwoForms = result["Group Two"]!!["Tense B"]!!
+        assertEquals(listOf("form20" to "esse", "form10" to "essen"), groupTwoForms)
+    }
+
+    @Test
+    fun getConjugationsForVerb_filtersEmptyForms() {
+        val contract =
+            DataContract(
+                nouns = dummyNouns,
+                translations = dummyTranslations,
+                verbs =
+                    Verbs(
+                        conjugations =
+                            linkedMapOf(
+                                1 to
+                                    TenseGroup(
+                                        sectionTitle = "Present",
+                                        tenses =
+                                            linkedMapOf(
+                                                1 to
+                                                    ConjugationCategory(
+                                                        tenseTitle = "Simple",
+                                                        tenseForms =
+                                                            linkedMapOf(
+                                                                1 to TenseForm(label = "valid", value = "simplePresent"),
+                                                                2 to TenseForm(label = "empty", value = "emptyColumn"),
+                                                                3 to TenseForm(label = "nonexistent", value = "doesNotExist"),
+                                                            ),
+                                                    ),
+                                            ),
+                                    ),
+                            ),
+                    ),
+            )
+
+        val result = manager.getConjugationsForVerb("essen", "DE", contract)
+        assertNotNull(result)
+
+        val forms = result!!["Present"]!!["Simple"]!!
+        assertEquals(1, forms.size)
+        assertEquals("valid" to "esse", forms[0])
+    }
+
+    @Test
+    fun getConjugationsForVerb_resolvesComplexFormsCorrectly() {
+        val contract =
+            DataContract(
+                nouns = dummyNouns,
+                translations = dummyTranslations,
+                verbs =
+                    Verbs(
+                        conjugations =
+                            linkedMapOf(
+                                1 to
+                                    TenseGroup(
+                                        sectionTitle = "Compound",
+                                        tenses =
+                                            linkedMapOf(
+                                                1 to
+                                                    ConjugationCategory(
+                                                        tenseTitle = "Tense Forms",
+                                                        tenseForms =
+                                                            linkedMapOf(
+                                                                1 to
+                                                                    TenseForm(
+                                                                        label = "literal",
+                                                                        value = "[have] pastParticiple",
+                                                                    ),
+                                                                2 to
+                                                                    TenseForm(
+                                                                        label = "dynamicCurly",
+                                                                        value = "{indicativePresentFirstPersonSingular auxiliaryVerb} pastParticiple",
+                                                                    ),
+                                                                3 to
+                                                                    TenseForm(
+                                                                        label = "dynamicSquare",
+                                                                        value = "[indicativePresentFirstPersonSingular auxiliaryVerb] pastParticiple",
+                                                                    ),
+                                                                4 to
+                                                                    TenseForm(
+                                                                        label = "missingParticiple",
+                                                                        value = "{indicativePresentFirstPersonSingular auxiliaryVerb} emptyColumn",
+                                                                    ),
+                                                                5 to
+                                                                    TenseForm(
+                                                                        label = "unknownAuxColumn",
+                                                                        value = "{indicativePresentFirstPersonSingular noSuchAux} pastParticiple",
+                                                                    ),
+                                                            ),
+                                                    ),
+                                            ),
+                                    ),
+                            ),
+                    ),
+            )
+
+        val result = manager.getConjugationsForVerb("essen", "DE", contract)
+        assertNotNull(result)
+
+        val forms = result!!["Compound"]!!["Tense Forms"]!!
+        assertEquals(3, forms.size)
+        assertEquals("literal" to "have gegessen", forms[0])
+        assertEquals("dynamicCurly" to "habe gegessen", forms[1])
+        assertEquals("dynamicSquare" to "habe gegessen", forms[2])
+        verify(exactly = 1) { fileManager.getConjugateDatabase("DE") }
+    }
+
+    @Test
+    fun getConjugationsForVerb_doesNotLeakConnection() {
+        val realDb = SQLiteDatabase.create(null)
+        realDb.execSQL("CREATE TABLE verbs (infinitive TEXT, simplePresent TEXT)")
+        realDb.execSQL("INSERT INTO verbs VALUES ('essen', 'esse')")
+        val spyDb = spyk(realDb)
+
+        val localFileManager = mockk<DatabaseFileManager>()
+        every { localFileManager.getConjugateDatabase("DE") } returns spyDb
+
+        val localManager = ConjugateDataManager(localFileManager)
+        val contract =
+            DataContract(
+                nouns = dummyNouns,
+                translations = dummyTranslations,
+                verbs =
+                    Verbs(
+                        conjugations =
+                            linkedMapOf(
+                                1 to
+                                    TenseGroup(
+                                        sectionTitle = "Present",
+                                        tenses =
+                                            linkedMapOf(
+                                                1 to
+                                                    ConjugationCategory(
+                                                        tenseTitle = "Simple",
+                                                        tenseForms =
+                                                            linkedMapOf(
+                                                                1 to TenseForm(label = "1ps", value = "simplePresent"),
+                                                            ),
+                                                    ),
+                                            ),
+                                    ),
+                            ),
+                    ),
+            )
+
+        val result = localManager.getConjugationsForVerb("essen", "DE", contract)
+        assertNotNull(result)
+        verify { spyDb.close() }
+    }
+
+    @Test
+    fun getConjugationsForVerb_returnsNullWhenVerbNotFound() {
+        val contract =
+            DataContract(
+                nouns = dummyNouns,
+                translations = dummyTranslations,
+                verbs =
+                    Verbs(
+                        conjugations =
+                            linkedMapOf(
+                                1 to
+                                    TenseGroup(
+                                        sectionTitle = "Present",
+                                        tenses =
+                                            linkedMapOf(
+                                                1 to
+                                                    ConjugationCategory(
+                                                        tenseTitle = "Simple",
+                                                        tenseForms =
+                                                            linkedMapOf(
+                                                                1 to TenseForm(label = "form", value = "simplePresent"),
+                                                            ),
+                                                    ),
+                                            ),
+                                    ),
+                            ),
+                    ),
+            )
+
+        val result = manager.getConjugationsForVerb("unknownverb", "DE", contract)
+        assertNull(result)
+    }
+
+    @Test
+    fun parseComplexForm_closesAuxiliaryDatabaseWhenStandalone() {
+        var auxDbClosed = false
+        val auxDb = mockk<SQLiteDatabase>(relaxed = true)
+        every { auxDb.rawQuery(any(), any()) } returns
+            mockk(relaxed = true) {
+                every { moveToFirst() } returns true
+                every { getString(0) } returns "habe"
+            }
+        every { auxDb.close() } answers { auxDbClosed = true }
+
+        val cursor =
+            mockk<Cursor>(relaxed = true) {
+                every { moveToFirst() } returns true
+                every { getColumnIndex("pastParticiple") } returns 0
+                every { getColumnIndex("auxiliaryVerb") } returns 1
+                every { getString(0) } returns "gegessen"
+                every { getString(1) } returns "haben"
+            }
+
+        val localFileManager = mockk<DatabaseFileManager>()
+        every { localFileManager.getConjugateDatabase("DE") } returns auxDb
+
+        val localManager = ConjugateDataManager(localFileManager)
+        val result =
+            localManager.parseComplexForm(
+                cursor,
+                "{indicativePresentFirstPersonSingular auxiliaryVerb} pastParticiple",
+                "DE",
+                existingDb = null,
+            )
+
+        assertEquals("habe gegessen", result)
+        assertTrue(auxDbClosed)
+    }
+
+    @Test
+    fun parseComplexForm_returnsEmptyOnSqlNullParticiple() {
+        val cursor =
+            mockk<Cursor>(relaxed = true) {
+                every { getColumnIndex("pastParticiple") } returns 0
+                every { getColumnIndex("auxiliaryVerb") } returns 1
+                every { getString(0) } returns null
+                every { getString(1) } returns "haben"
+            }
+        val result =
+            manager.parseComplexForm(
+                cursor,
+                "{indicativePresentFirstPersonSingular auxiliaryVerb} pastParticiple",
+                "DE",
+            )
+        assertEquals("", result)
+    }
+
+    @Test
+    fun parseComplexForm_returnsEmptyOnBlankParticiple() {
+        val cursor =
+            mockk<Cursor>(relaxed = true) {
+                every { getColumnIndex("emptyColumn") } returns 0
+                every { getString(0) } returns "   "
+            }
+        val result =
+            manager.parseComplexForm(
+                cursor,
+                "[have] emptyColumn",
+                "DE",
+            )
+        assertEquals("", result)
+    }
+
+    @Test
+    fun parseComplexForm_multiWordLiteralBracketYieldsCombinedForm() {
+        val cursor =
+            mockk<Cursor>(relaxed = true) {
+                every { getColumnIndex("pastParticiple") } returns 0
+                every { getColumnIndex("have") } returns -1
+                every { getString(0) } returns "walked"
+            }
+        val result =
+            manager.parseComplexForm(
+                cursor,
+                "[will have] pastParticiple",
+                "EN",
+            )
+        assertEquals("will have walked", result)
     }
 }
