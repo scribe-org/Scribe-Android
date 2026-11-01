@@ -35,6 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -84,35 +85,19 @@ fun ConjugationSelectionScreen(
     LaunchedEffect(verb, languageAlias) {
         withContext(Dispatchers.IO) {
             val contract = ContractDataLoader(context).loadOrDownloadContract(languageAlias)
-            if (contract != null) {
-                val fileManager = DatabaseFileManager(context)
-                val manager = ConjugateDataManager(fileManager)
-
-                val structuredData = mutableMapOf<String, MutableMap<String, List<Pair<String, String>>>>()
-                contract.verbs.conjugations.values.forEach { tenseGroup ->
-                    val categories = mutableMapOf<String, List<Pair<String, String>>>()
-                    tenseGroup.tenses.values.forEach { conjugationCategory ->
-                        val pairs =
-                            conjugationCategory.tenseForms.values
-                                .map { form ->
-                                    val resolvedForm = manager.getTheValueForTheConjugateWord(verb.lowercase(), form.value, languageAlias)
-                                    form.label to resolvedForm
-                                }.filter { it.second.isNotEmpty() }
-                        if (pairs.isNotEmpty()) {
-                            categories[conjugationCategory.tenseTitle] = pairs
-                        }
-                    }
-                    if (categories.isNotEmpty()) {
-                        structuredData[tenseGroup.sectionTitle] = categories
-                    }
+            conjugationData =
+                if (contract != null) {
+                    val fileManager = DatabaseFileManager(context)
+                    val manager = ConjugateDataManager(fileManager)
+                    manager.getStructuredConjugations(languageAlias, contract, verb) ?: emptyMap()
+                } else {
+                    emptyMap()
                 }
-                conjugationData = structuredData
-            }
         }
     }
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedTenseGroup by remember { mutableStateOf<String?>(null) }
+    var selectedTenseGroup by rememberSaveable { mutableStateOf<String?>(null) }
     val tenseGroupsList = conjugationData?.keys?.toList() ?: emptyList()
 
     ScribeBaseScreen(

@@ -13,6 +13,7 @@ import be.scri.helpers.DatabaseFileManager
  * Manages verb conjugation data by interfacing with SQLite databases.
  * @param fileManager The central manager for database file access.
  */
+@Suppress("TooManyFunctions")
 class ConjugateDataManager(
     private val fileManager: DatabaseFileManager,
 ) {
@@ -33,22 +34,75 @@ class ConjugateDataManager(
         yamlData: DataContract?,
         word: String,
     ): MutableMap<String, MutableMap<String, Collection<String>>>? {
-        val finalOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
-        yamlData?.verbs?.conjugations?.values?.forEach { tenseGroup ->
-            val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
-            tenseGroup.tenses.values.forEach { conjugationCategory ->
-                val forms =
-                    conjugationCategory.tenseForms.values.map { form ->
-                        getTheValueForTheConjugateWord(word.lowercase(), form.value, language)
-                    }
-                conjugateForms[conjugationCategory.tenseTitle] = forms
+        val db = getConjugationDatabase(language) ?: return null
+        return db.use { database ->
+            if (!database.tableExists("verbs")) {
+                return@use null
             }
-            finalOutput[tenseGroup.sectionTitle] = conjugateForms
+
+            val rowData = getVerbRowData(database, word) ?: return@use null
+
+            val finalOutput: MutableMap<String, MutableMap<String, Collection<String>>> = mutableMapOf()
+            yamlData?.verbs?.conjugations?.values?.forEach { tenseGroup ->
+                val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
+                tenseGroup.tenses.values.forEach { conjugationCategory ->
+                    val forms =
+                        conjugationCategory.tenseForms.values.map { form ->
+                            resolveConjugatedValue(rowData, form.value, database)
+                        }
+                    conjugateForms[conjugationCategory.tenseTitle] = forms
+                }
+                finalOutput[tenseGroup.sectionTitle] = conjugateForms
+            }
+            if (finalOutput.isEmpty() || finalOutput.values.all { it.isEmpty() || it.values.all { forms -> forms.all { it.isEmpty() } } }) {
+                null
+            } else {
+                finalOutput
+            }
         }
-        return if (finalOutput.isEmpty() || finalOutput.values.all { it.isEmpty() || it.values.all { forms -> forms.all { it.isEmpty() } } }) {
-            null
-        } else {
-            finalOutput
+    }
+
+    /**
+     * Retrieves structured conjugation data mapped to form labels for UI display.
+     *
+     * @param language The language code (e.g., "EN", "DE").
+     * @param yamlData The data contract defining the conjugation structure.
+     * @param word The verb to conjugate.
+     *
+     * @return A structured map of tense groups to categories and (label, form) pairs, or null if not found.
+     */
+    fun getStructuredConjugations(
+        language: String,
+        yamlData: DataContract?,
+        word: String,
+    ): Map<String, Map<String, List<Pair<String, String>>>>? {
+        val db = getConjugationDatabase(language) ?: return null
+        return db.use { database ->
+            if (!database.tableExists("verbs")) {
+                return@use null
+            }
+
+            val rowData = getVerbRowData(database, word) ?: return@use null
+
+            val structuredData = mutableMapOf<String, MutableMap<String, List<Pair<String, String>>>>()
+            yamlData?.verbs?.conjugations?.values?.forEach { tenseGroup ->
+                val categories = mutableMapOf<String, List<Pair<String, String>>>()
+                tenseGroup.tenses.values.forEach { conjugationCategory ->
+                    val pairs =
+                        conjugationCategory.tenseForms.values
+                            .map { form ->
+                                val resolvedForm = resolveConjugatedValue(rowData, form.value, database)
+                                form.label to resolvedForm
+                            }.filter { it.second.isNotEmpty() }
+                    if (pairs.isNotEmpty()) {
+                        categories[conjugationCategory.tenseTitle] = pairs
+                    }
+                }
+                if (categories.isNotEmpty()) {
+                    structuredData[tenseGroup.sectionTitle] = categories
+                }
+            }
+            if (structuredData.isEmpty()) null else structuredData
         }
     }
 
@@ -92,80 +146,170 @@ class ConjugateDataManager(
         language: String,
     ): String {
         if (form.isNullOrEmpty()) return ""
-        return fileManager.getConjugateDatabase(language)?.use { db ->
+        return getConjugationDatabase(language)?.use { db ->
             if (!db.tableExists("verbs")) {
                 return ""
             }
 
-            val columnName = db.getInfinitiveColumnName() ?: return ""
-
-            getVerbCursor(db, word, columnName)?.use { cursor ->
-                getConjugatedValueFromCursor(cursor, form, language)
-            }
+            val rowData = getVerbRowData(db, word) ?: return ""
+            resolveConjugatedValue(rowData, form, db)
         } ?: ""
     }
 
-    private fun getColumnIndexWithFallback(
-        cursor: Cursor,
-        columnName: String,
-    ): Int {
-        var idx = cursor.getColumnIndex(columnName)
-        if (idx != -1) return idx
-
-        val fallbacks =
-            listOf(
-                "combined" + columnName.replaceFirstChar { it.uppercase() },
-                columnName.replace("presentParticiple", "combinedPresentParticiple"),
-                columnName.replace("pastParticiple", "combinedPastParticiple"),
-            )
-        for (fallback in fallbacks) {
-            idx = cursor.getColumnIndex(fallback)
-            if (idx != -1) return idx
+    /**
+     * Retrieves the SQLite database for verb conjugation.
+     * Prefers the dedicated ConjugateData database, and falls back to LanguageData database
+     * so keyboard users whose verb data is stored in LanguageData.sqlite can conjugate verbs.
+     */
+    private fun getConjugationDatabase(language: String): SQLiteDatabase? {
+        val conjugateDb = fileManager.getConjugateDatabase(language)
+        if (conjugateDb != null && conjugateDb.tableExists("verbs")) {
+            return conjugateDb
         }
+        conjugateDb?.close()
 
-        throw IllegalArgumentException("column '$columnName' does not exist. Available columns: " + cursor.columnNames.joinToString(", "))
+        val languageDb = fileManager.getLanguageDatabase(language)
+        if (languageDb != null && languageDb.tableExists("verbs")) {
+            return languageDb
+        }
+        languageDb?.close()
+
+        return null
     }
 
     /**
-     * Extracts a conjugated value from a database cursor for a given form.
-     * It handles both simple column lookups and complex forms that require parsing.
-     *
-     * @param cursor The database cursor positioned at the correct row for the verb.
-     * @param form The form identifier, which can be a simple column name or a complex string.
-     *
-     * @return The conjugated value, or an empty string on failure.
+     * Retrieves the verb row from the database using case-insensitive matching,
+     * prefix-stripping fallback, and inflected form fallback.
      */
-    private fun getConjugatedValueFromCursor(
-        cursor: Cursor,
-        form: String,
-        language: String,
-    ): String =
-        if (form.contains("[") || form.contains("{")) {
-            parseComplexForm(cursor, form, language)
-        } else {
-            try {
-                cursor.getString(getColumnIndexWithFallback(cursor, form))
-            } catch (e: IllegalArgumentException) {
-                Log.e("ConjugateDataManager", "Simple form column not found: '$form'", e)
-                ""
+    private fun getVerbRowData(
+        db: SQLiteDatabase,
+        word: String,
+    ): Map<String, String>? {
+        val cleanWord = word.trim()
+        if (cleanWord.isEmpty()) return null
+
+        val candidateColumns =
+            listOf("infinitive", "verb", "activeInfinitive", "simplePresent")
+                .filter { db.columnExists("verbs", it) }
+
+        // 1. Primary case-insensitive search across candidate infinitive columns
+        for (col in candidateColumns) {
+            val cursor =
+                db.rawQuery(
+                    "SELECT * FROM verbs WHERE LOWER(${SqlIdentifier.quote(col)}) = LOWER(?) LIMIT 1",
+                    arrayOf(cleanWord),
+                )
+            val row = cursorToMap(cursor)
+            if (row != null) return row
+        }
+
+        // 2. Fallback: try prefix-stripped form if user typed e.g. "to go", "se laver", "sich freuen"
+        val stripped =
+            when {
+                cleanWord.startsWith("to ", ignoreCase = true) -> cleanWord.substring(3).trim()
+                cleanWord.startsWith("se ", ignoreCase = true) -> cleanWord.substring(3).trim()
+                cleanWord.startsWith("sich ", ignoreCase = true) -> cleanWord.substring(5).trim()
+                cleanWord.startsWith("s'", ignoreCase = true) -> cleanWord.substring(2).trim()
+                else -> null
+            }
+        if (!stripped.isNullOrEmpty()) {
+            for (col in candidateColumns) {
+                val cursor =
+                    db.rawQuery(
+                        "SELECT * FROM verbs WHERE LOWER(${SqlIdentifier.quote(col)}) = LOWER(?) LIMIT 1",
+                        arrayOf(stripped),
+                    )
+                val row = cursorToMap(cursor)
+                if (row != null) return row
             }
         }
 
+        // 3. Fallback: search if user entered an inflected form in any verb column
+        return findRowByInflectedForm(db, cleanWord)
+    }
+
+    /**
+     * Searches across all columns of the `verbs` table to find the matching verb row for an inflected form.
+     */
+    private fun findRowByInflectedForm(
+        db: SQLiteDatabase,
+        word: String,
+    ): Map<String, String>? {
+        val allColumns = db.getTableColumns("verbs")
+        val validColumns =
+            allColumns.filter {
+                it != "id" && it != "wdLexemeId" && it != "auxiliaryVerb" && SqlIdentifier.isValid(it)
+            }
+        if (validColumns.isEmpty()) return null
+
+        val conditions =
+            validColumns.joinToString(" OR ") {
+                "LOWER(${SqlIdentifier.quote(it)}) = LOWER(?)"
+            }
+        val args = Array(validColumns.size) { word }
+        return try {
+            val cursor = db.rawQuery("SELECT * FROM verbs WHERE $conditions LIMIT 1", args)
+            cursorToMap(cursor)
+        } catch (e: SQLiteException) {
+            Log.w("ConjugateDataManager", "Fallback inflected search failed: ${e.message}")
+            null
+        }
+    }
+
+    private fun cursorToMap(cursor: Cursor): Map<String, String>? =
+        cursor.use {
+            if (!it.moveToFirst()) return@use null
+            val map = mutableMapOf<String, String>()
+            val columnNames = it.columnNames
+            for (i in columnNames.indices) {
+                map[columnNames[i]] = it.getString(i) ?: ""
+            }
+            map
+        }
+
+    /**
+     * Resolves a conjugated form value from the cached row data, supporting complex auxiliary parsing.
+     */
+    private fun resolveConjugatedValue(
+        rowData: Map<String, String>,
+        form: String?,
+        db: SQLiteDatabase,
+    ): String {
+        if (form.isNullOrEmpty()) return ""
+        return if (form.contains("[") || form.contains("{")) {
+            parseComplexFormFromRow(rowData, form, db)
+        } else {
+            getValueWithFallback(rowData, form)
+        }
+    }
+
+    private fun getValueWithFallback(
+        rowData: Map<String, String>,
+        form: String,
+    ): String {
+        rowData[form]?.let { if (it.isNotEmpty()) return it }
+
+        val fallbacks =
+            listOf(
+                "combined" + form.replaceFirstChar { it.uppercase() },
+                form.replace("presentParticiple", "combinedPresentParticiple"),
+                form.replace("pastParticiple", "combinedPastParticiple"),
+            )
+        for (fallback in fallbacks) {
+            val value = rowData[fallback]
+            if (!value.isNullOrEmpty()) return value
+        }
+        return rowData[form] ?: ""
+    }
+
     /**
      * Parses a complex conjugation form that includes an auxiliary part in brackets,
-     * such as "[have] past_participle" (literal words) or
-     * "{indicativePresentFirstPersonSingular auxiliaryVerb} pastParticiple" (column lookup).
-     * It combines the auxiliary word with the value from the specified database column.
-     *
-     * @param cursor The database cursor positioned at the correct row.
-     * @param form The complex form string to parse.
-     *
-     * @return The combined string (e.g., "have walked"), or an empty string on failure.
+     * reusing the existing open database connection.
      */
-    private fun parseComplexForm(
-        cursor: Cursor,
+    private fun parseComplexFormFromRow(
+        rowData: Map<String, String>,
         form: String,
-        language: String,
+        db: SQLiteDatabase,
     ): String {
         val bracketRegex = Regex("""[\[{](.*?)[]}]""")
         val match = bracketRegex.find(form) ?: return ""
@@ -173,94 +317,73 @@ class ConjugateDataManager(
         val auxiliaryWords = match.groupValues[1]
         val dbColumnName = form.replace(bracketRegex, "").trim()
 
+        val verbPart = getValueWithFallback(rowData, dbColumnName)
+        if (verbPart.isEmpty()) {
+            return ""
+        }
+
+        // Try dynamic auxiliary lookup (e.g. German style: [form auxiliary_column])
         return try {
-            val verbPart = cursor.getString(getColumnIndexWithFallback(cursor, dbColumnName))
+            val words = auxiliaryWords.split(Regex("\\s+"))
+            val auxColumn = words.last()
 
-            // Try to handle it as a dynamic lookup (German style: [form auxiliary_column]).
+            val verbType = rowData[auxColumn]
+            if (verbType.isNullOrEmpty()) {
+                return "$auxiliaryWords $verbPart".trim()
+            }
+
+            val targetForm = words.first()
+            if (!SqlIdentifier.isValid(targetForm)) {
+                return "$auxiliaryWords $verbPart".trim()
+            }
+
+            val quotedTarget = SqlIdentifier.quote(targetForm)
+            var auxResult = ""
+
             try {
-                val words = auxiliaryWords.split(Regex("\\s+"))
-                // If it's a single word and not a column, this might throw, which is fine (English case).
-                // If it's multiple words, the last one is the auxiliary verb column (e.g. "auxiliaryVerb").
-                val auxColumn = words.last()
-
-                // Check if this column exists and get the auxiliary verb (e.g. "haben").
-                val auxVerbIndex = cursor.getColumnIndex(auxColumn)
-                require(auxVerbIndex != -1) { "Column $auxColumn not found" }
-                val verbType = cursor.getString(auxVerbIndex)
-
-                val targetForm = words.first()
-
-                require(SqlIdentifier.isValid(targetForm)) { "Invalid column name: $targetForm" }
-
-                val db = fileManager.getConjugateDatabase(language = language)
-                var auxResult = ""
-
-                val auxCursor =
-                    db?.rawQuery(
-                        "SELECT $targetForm FROM verbs WHERE wdLexemeId = ?",
+                db
+                    .rawQuery(
+                        "SELECT $quotedTarget FROM verbs WHERE wdLexemeId = ? LIMIT 1",
                         arrayOf(verbType),
-                    )
-
-                if (auxCursor?.moveToFirst() == true) {
-                    auxResult = auxCursor.getString(0)
-                } else {
-                    // Fallback case: Maybe it stores the infinitive.
-                    auxCursor?.close()
-                    val auxCursor2 =
-                        db?.rawQuery(
-                            "SELECT $targetForm FROM verbs WHERE infinitive = ?",
-                            arrayOf(verbType),
-                        )
-                    if (auxCursor2?.moveToFirst() == true) {
-                        auxResult = auxCursor2.getString(0)
+                    ).use { auxCursor ->
+                        if (auxCursor.moveToFirst()) {
+                            auxResult = auxCursor.getString(0) ?: ""
+                        }
                     }
-                    auxCursor2?.close()
-                }
-                auxCursor?.close()
-
-                if (auxResult.isNotEmpty()) {
-                    "$auxResult $verbPart".trim()
-                } else {
-                    "$auxiliaryWords $verbPart".trim()
-                }
-            } catch (e: IllegalArgumentException) {
-                Log.w("ConjugateDataManager", "Dynamic lookup failed: ${e.message}")
-                "$auxiliaryWords $verbPart".trim()
-            } catch (e: NoSuchElementException) {
-                Log.w("ConjugateDataManager", "Dynamic lookup failed: ${e.message}")
-                "$auxiliaryWords $verbPart".trim()
             } catch (e: SQLiteException) {
-                Log.e("ConjugateDataManager", "Database error in dynamic lookup", e)
+                Log.w("ConjugateDataManager", "Auxiliary query by wdLexemeId failed: ${e.message}")
+            }
+
+            if (auxResult.isEmpty()) {
+                try {
+                    db
+                        .rawQuery(
+                            "SELECT $quotedTarget FROM verbs WHERE infinitive = ? LIMIT 1",
+                            arrayOf(verbType),
+                        ).use { auxCursor2 ->
+                            if (auxCursor2.moveToFirst()) {
+                                auxResult = auxCursor2.getString(0) ?: ""
+                            }
+                        }
+                } catch (e: SQLiteException) {
+                    Log.w("ConjugateDataManager", "Auxiliary query by infinitive failed: ${e.message}")
+                }
+            }
+
+            if (auxResult.isNotEmpty()) {
+                "$auxResult $verbPart".trim()
+            } else {
                 "$auxiliaryWords $verbPart".trim()
             }
         } catch (e: IllegalArgumentException) {
-            Log.e("ConjugateDataManager", "Column '$dbColumnName' not found", e)
-            ""
-        }
-    }
-
-    /**
-     * Creates and returns a database cursor pointing to the requested verb's data row.
-     *
-     * @param db The SQLite database instance to query.
-     * @param word The verb to search for.
-     * @param columnName The name of the infinitive/verb column.
-     *
-     * @return A [Cursor] positioned at the verb's row, or null if the verb is not found.
-     * The caller is responsible for closing the cursor.
-     */
-    private fun getVerbCursor(
-        db: SQLiteDatabase,
-        word: String,
-        columnName: String,
-    ): Cursor? {
-        val query = "SELECT * FROM verbs WHERE $columnName = ?"
-        val cursor = db.rawQuery(query, arrayOf(word))
-        return if (cursor.moveToFirst()) {
-            cursor
-        } else {
-            cursor.close()
-            null
+            Log.w("ConjugateDataManager", "Dynamic lookup failed: ${e.message}")
+            "$auxiliaryWords $verbPart".trim()
+        } catch (e: NoSuchElementException) {
+            Log.w("ConjugateDataManager", "Dynamic lookup failed: ${e.message}")
+            "$auxiliaryWords $verbPart".trim()
+        } catch (e: SQLiteException) {
+            Log.e("ConjugateDataManager", "Database error in dynamic lookup", e)
+            "$auxiliaryWords $verbPart".trim()
         }
     }
 }
