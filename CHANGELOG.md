@@ -23,7 +23,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ### ⌨️ Keyboards
 
-- Keyboards for English, French, German, Italian, Portuguese, Russian, Spanish and Swedish.
+- Keyboards for English, French, German, Greek, Italian, Portuguese, Russian, Spanish and Swedish.
 - Keyboards can easily be individually installed based on the language the user speaks ([#15](https://github.com/scribe-org/Scribe-Android/issues/15)).
 
 ### ✨ New Features
