@@ -24,6 +24,10 @@ class KeyboardDataHandler {
     var dataContract: DataContract? = null
         internal set
 
+    @Volatile
+    var profanity: Set<String> = emptySet()
+        internal set
+
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
         internal set
 
@@ -65,6 +69,7 @@ class KeyboardDataHandler {
     fun loadLanguageData(language: String) {
         val languageAlias = getLanguageAlias(language)
         dataContract = dbManagers.getLanguageContract(languageAlias)
+        profanity = dbManagers.getProfanity(languageAlias)
         emojiKeywords = dbManagers.emojiManager.getEmojiKeywords(languageAlias)
         emojiMaxKeywordLength = dbManagers.emojiManager.maxKeywordLength
         pluralWords =
@@ -73,7 +78,7 @@ class KeyboardDataHandler {
                 ?.map { it.lowercase() }
                 ?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
-        suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
+        suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias, profanity)
         val numbersColumns =
             dataContract
                 ?.nouns
@@ -81,7 +86,7 @@ class KeyboardDataHandler {
                 ?.values
                 ?.flatMap { listOf(it.singular, it.plural) }
                 ?.distinct() ?: emptyList()
-        autocompletionManager.loadWords(languageAlias, numbersColumns)
+        autocompletionManager.loadWords(languageAlias, numbersColumns, profanity)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
 
         val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")

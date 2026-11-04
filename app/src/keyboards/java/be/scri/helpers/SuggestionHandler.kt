@@ -27,6 +27,8 @@ class SuggestionHandler(
         private const val SUGGESTION_DELAY_MS = 50L
     }
 
+    private fun isProfane(word: String) = StringUtils.containsProfanity(word, ime.profanity)
+
     /**
      * Processes the given word to find and display relevant LINGUISTIC suggestions.
      * This includes noun gender, plurality, and case annotations.
@@ -44,7 +46,7 @@ class SuggestionHandler(
                     return@Runnable
                 }
 
-                if (completedWord.isNullOrEmpty()) {
+                if (completedWord.isNullOrEmpty() || isProfane(completedWord)) {
                     clearLinguisticSuggestions()
                     return@Runnable
                 }
@@ -87,7 +89,7 @@ class SuggestionHandler(
                     return@Runnable
                 }
 
-                if (completedWord.isNullOrEmpty()) {
+                if (completedWord.isNullOrEmpty() || isProfane(completedWord)) {
                     clearLinguisticSuggestions()
                     return@Runnable
                 }
@@ -143,7 +145,8 @@ class SuggestionHandler(
 
                 ime.lastWord = currentWord
 
-                if (currentWord.isNullOrEmpty()) {
+                if (currentWord.isNullOrEmpty() || isProfane(currentWord)) {
+                    ime.autoSuggestEmojis = null
                     ime.updateButtonVisibility(false)
                     return@Runnable
                 }
