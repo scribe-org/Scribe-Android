@@ -12,18 +12,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -32,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,13 +53,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
-import be.scri.helpers.DatabaseFileManager
-import be.scri.helpers.data.ConjugateDataManager
-import be.scri.helpers.data.ContractDataLoader
 import be.scri.ui.common.ScribeBaseScreen
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 // MARK: Screen
 
@@ -73,31 +73,20 @@ fun ConjugationSelectionScreen(
     languageAlias: String,
     onBackNavigation: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: ConjugationSelectionViewModel = viewModel(),
 ) {
-    val context = LocalContext.current
     val pageTitle = "$verb (${getLanguageDisplayName(languageAlias)})"
     val backLabel = stringResource(R.string.i18n_app_conjugate_title)
 
-    var conjugationData by remember(verb, languageAlias) {
-        mutableStateOf<Map<String, Map<String, List<Pair<String, String>>>>?>(null)
-    }
+    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(verb, languageAlias) {
-        withContext(Dispatchers.IO) {
-            val contract = ContractDataLoader(context).loadOrDownloadContract(languageAlias)
-            conjugationData =
-                if (contract != null) {
-                    val fileManager = DatabaseFileManager(context)
-                    val manager = ConjugateDataManager(fileManager)
-                    manager.getStructuredConjugations(languageAlias, contract, verb) ?: emptyMap()
-                } else {
-                    emptyMap()
-                }
-        }
+        viewModel.loadConjugations(verb, languageAlias)
     }
 
+    val conjugationData = (uiState as? ConjugationSelectionUiState.Data)?.conjugationData
     var expanded by remember { mutableStateOf(false) }
-    var selectedTenseGroup by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedTenseGroup by rememberSaveable(verb, languageAlias) { mutableStateOf<String?>(null) }
     val tenseGroupsList = conjugationData?.keys?.toList() ?: emptyList()
 
     ScribeBaseScreen(
@@ -199,15 +188,12 @@ fun ConjugationSelectionScreen(
                         }
                     }
 
-                    // Display Conjugation Tense Groups flush inside this single Card.
-                    val dataToShow = conjugationData
                     Crossfade(
-                        targetState = dataToShow,
+                        targetState = uiState,
                         label = "loadingTransition",
-                    ) { currentData ->
-                        if (currentData != null) {
-                            if (currentData.isEmpty()) {
-                                // Empty State
+                    ) { state ->
+                        when (state) {
+                            is ConjugationSelectionUiState.Empty -> {
                                 Box(
                                     modifier =
                                         Modifier
@@ -221,7 +207,63 @@ fun ConjugationSelectionScreen(
                                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                                     )
                                 }
-                            } else {
+                            }
+                            is ConjugationSelectionUiState.NoData -> {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 40.dp, horizontal = Dimensions.PaddingMedium),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.i18n_app_download_menu_option_conjugate_download_data_start),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                            }
+                            is ConjugationSelectionUiState.Error -> {
+                                Column(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 40.dp, horizontal = Dimensions.PaddingMedium),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.i18n_app_download_error_no_network),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                        textAlign = TextAlign.Center,
+                                    )
+                                    Spacer(modifier = Modifier.height(Dimensions.PaddingMedium))
+                                    Button(
+                                        onClick = { viewModel.loadConjugations(verb, languageAlias) },
+                                    ) {
+                                        Text(text = stringResource(R.string.i18n_app__global_check))
+                                    }
+                                }
+                            }
+                            is ConjugationSelectionUiState.Loading -> {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 40.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.i18n_app_conjugate_loading_tables),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                                    )
+                                }
+                            }
+                            is ConjugationSelectionUiState.Data -> {
+                                val currentData = state.conjugationData
                                 Crossfade(
                                     targetState = selectedTenseGroup,
                                     label = "tenseGroupTransition",
@@ -240,21 +282,6 @@ fun ConjugationSelectionScreen(
                                         Spacer(modifier = Modifier.height(Dimensions.PaddingLarge))
                                     }
                                 }
-                            }
-                        } else {
-                            // Loading Placeholder
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 40.dp),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.i18n_app_conjugate_loading_tables),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                                )
                             }
                         }
                     }
@@ -337,7 +364,8 @@ private fun TenseGroupGridSection(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .height(100.dp),
+                                    .heightIn(min = 100.dp)
+                                    .height(IntrinsicSize.Min),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             if (pair.size > 1) {
@@ -468,7 +496,7 @@ private fun ConjugationCell(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
-                maxLines = 1,
+                maxLines = 2,
             )
         }
     }
