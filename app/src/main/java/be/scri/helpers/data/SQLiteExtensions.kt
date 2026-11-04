@@ -3,6 +3,7 @@
 package be.scri.helpers.data
 
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import be.scri.data.remote.SqlIdentifier
 
 fun SQLiteDatabase.tableExists(tableName: String): Boolean =
@@ -51,4 +52,28 @@ fun SQLiteDatabase.getInfinitiveColumnName(): String? {
         }
     }
     return null
+}
+
+/**
+ * Reads the lowercase profane words from the `profanity` table, splitting alternative spellings ("a | b").
+ *
+ * @return The set of profane words, or an empty set if the table does not exist.
+ */
+fun SQLiteDatabase.getProfanity(): Set<String> {
+    if (!tableExists("profanity") || !columnExists("profanity", "profanity")) return emptySet()
+    val profanity = mutableSetOf<String>()
+    try {
+        rawQuery("SELECT profanity FROM profanity", null).use { cursor ->
+            while (cursor.moveToNext()) {
+                cursor
+                    .getString(0)
+                    ?.split("|")
+                    ?.map { it.trim().lowercase() }
+                    ?.filterTo(profanity) { it.isNotEmpty() }
+            }
+        }
+    } catch (e: SQLiteException) {
+        return emptySet()
+    }
+    return profanity
 }
