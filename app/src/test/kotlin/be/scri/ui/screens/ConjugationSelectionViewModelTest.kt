@@ -78,7 +78,7 @@ class ConjugationSelectionViewModelTest {
             )
 
         coEvery { contractDataLoader.loadOrDownloadContract("DE") } returns contract
-        every { conjugateDataManager.getConjugationsForVerb("essen", "DE", contract) } returns mockData
+        every { conjugateDataManager.getStructuredConjugations("DE", contract, "essen") } returns mockData
 
         val viewModel =
             ConjugationSelectionViewModel(
@@ -101,7 +101,7 @@ class ConjugationSelectionViewModelTest {
     fun loadConjugations_transitionsToEmptyState_whenVerbHasNoRows() {
         val contract = mockk<DataContract>()
         coEvery { contractDataLoader.loadOrDownloadContract("DE") } returns contract
-        every { conjugateDataManager.getConjugationsForVerb("nonexistent", "DE", contract) } returns null
+        every { conjugateDataManager.getStructuredConjugations("DE", contract, "nonexistent") } returns null
 
         val viewModel =
             ConjugationSelectionViewModel(
@@ -160,11 +160,11 @@ class ConjugationSelectionViewModelTest {
     fun loadConjugations_cancelsPreviousJob_whenNewLoadStarts() {
         val contract = mockk<DataContract>()
         coEvery { contractDataLoader.loadOrDownloadContract(any()) } returns contract
-        every { conjugateDataManager.getConjugationsForVerb("slowVerb", "DE", contract) } answers {
+        every { conjugateDataManager.getStructuredConjugations("DE", contract, "slowVerb") } answers {
             Thread.sleep(100)
             mapOf("Slow" to emptyMap())
         }
-        every { conjugateDataManager.getConjugationsForVerb("fastVerb", "DE", contract) } returns
+        every { conjugateDataManager.getStructuredConjugations("DE", contract, "fastVerb") } returns
             mapOf("Fast" to emptyMap())
 
         val viewModel =

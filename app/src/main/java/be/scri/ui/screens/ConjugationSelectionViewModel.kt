@@ -38,7 +38,7 @@ class ConjugationSelectionViewModel
         private val conjugateDataManager: ConjugateDataManager = ConjugateDataManager(DatabaseFileManager(application)),
         private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
         private val databaseExists: (String) -> Boolean = { alias ->
-            application.getDatabasePath("${alias}ConjugateData.sqlite").exists()
+            application.getDatabasePath("${alias.uppercase()}ConjugateData.sqlite").exists()
         },
     ) : AndroidViewModel(application) {
         private val _uiState = MutableStateFlow<ConjugationSelectionUiState>(ConjugationSelectionUiState.Loading)
@@ -55,16 +55,16 @@ class ConjugationSelectionViewModel
             _uiState.value = ConjugationSelectionUiState.Loading
             loadJob =
                 viewModelScope.launch(ioDispatcher) {
+                    if (!databaseExists(languageAlias)) {
+                        _uiState.value = ConjugationSelectionUiState.NoData
+                        return@launch
+                    }
                     val contract = contractDataLoader.loadOrDownloadContract(languageAlias)
                     if (contract == null) {
                         _uiState.value = ConjugationSelectionUiState.Error
                         return@launch
                     }
-                    if (!databaseExists(languageAlias)) {
-                        _uiState.value = ConjugationSelectionUiState.NoData
-                        return@launch
-                    }
-                    val data = conjugateDataManager.getConjugationsForVerb(verb, languageAlias, contract)
+                    val data = conjugateDataManager.getStructuredConjugations(languageAlias, contract, verb)
                     _uiState.value =
                         if (data == null) {
                             ConjugationSelectionUiState.Empty

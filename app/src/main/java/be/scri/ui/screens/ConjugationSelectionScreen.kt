@@ -86,7 +86,7 @@ fun ConjugationSelectionScreen(
 
     val conjugationData = (uiState as? ConjugationSelectionUiState.Data)?.conjugationData
     var expanded by remember { mutableStateOf(false) }
-    var selectedTenseGroup by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedTenseGroup by rememberSaveable(verb, languageAlias) { mutableStateOf<String?>(null) }
     val tenseGroupsList = conjugationData?.keys?.toList() ?: emptyList()
 
     ScribeBaseScreen(
