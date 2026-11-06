@@ -76,7 +76,7 @@ interface KeyboardIMEContext {
     val caseAnnotation: HashMap<String, MutableList<String>>
     val suggestionWords: HashMap<String, List<String>>
     val emojiKeywords: HashMap<String, MutableList<String>>?
-    var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
+    var conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>?
     val defaultConjugateLayoutXML: Int
     val defaultConjugateModeType: String
 

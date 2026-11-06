@@ -172,7 +172,7 @@ abstract class GeneralKeyboardIME(
             dataHandler.emojiKeywords = value
         }
 
-    override var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
+    override var conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>?
         get() = dataHandler.conjugateOutput
         set(value) {
             dataHandler.conjugateOutput = value
@@ -765,29 +765,17 @@ abstract class GeneralKeyboardIME(
         suggestionHandler.processLinguisticSuggestions(word)
     }
 
+    override fun onConjugationSubCategorySelected(category: String) {
+        selectedConjugationSubCategory = category
+        refreshUI()
+    }
+
+    override fun onConjugationSubCategoryDismissed() {
+        selectedConjugationSubCategory = null
+        refreshUI()
+    }
+
     override fun commitText(text: String) {
-        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
-            val label = text.trim()
-            val output = conjugateOutput
-            val conjugateIndex = uiManager.getValidatedConjugateIndex(output)
-            val title = output?.keys?.elementAtOrNull(conjugateIndex)
-            val languageOutput = title?.let { output[it] }
-
-            val matchingEntry =
-                languageOutput?.entries?.find { (_, values) ->
-                    if (values.size == 1) values.first() == label else values.joinToString(" / ") == label
-                }
-
-            if (matchingEntry != null) {
-                val (key, values) = matchingEntry
-                if (values.size > 1) {
-                    selectedConjugationSubCategory = key
-                    refreshUI()
-                    return
-                }
-            }
-        }
-
         currentInputConnection?.commitText(text, 1)
         suggestionHandler.processLinguisticSuggestions(text.trim())
 
