@@ -60,6 +60,56 @@ class ConjugationHandlerTest {
     }
 
     @Test
+    fun applyCapitalizationToStructuredConjugations_firstLetterCapitalization() {
+        val input: Map<String, Map<String, List<Pair<String, String>>>> =
+            mapOf(
+                "Past" to
+                    mapOf(
+                        "Past Continuous" to
+                            listOf(
+                                "I/he/she/it" to "was being",
+                                "you/plural" to "were being",
+                                "empty" to "",
+                            ),
+                    ),
+            )
+
+        val result = ConjugationHandler.applyCapitalizationToStructuredConjugations(input, isAllCaps = false)
+
+        val expected =
+            listOf(
+                "I/he/she/it" to "Was being",
+                "you/plural" to "Were being",
+                "empty" to "",
+            )
+        assertEquals(expected, result["Past"]?.get("Past Continuous"))
+    }
+
+    @Test
+    fun applyCapitalizationToStructuredConjugations_allCapsFormat() {
+        val input: Map<String, Map<String, List<Pair<String, String>>>> =
+            mapOf(
+                "Past" to
+                    mapOf(
+                        "Past Continuous" to
+                            listOf(
+                                "I/he/she/it" to "was being",
+                                "you/plural" to "were being",
+                            ),
+                    ),
+            )
+
+        val result = ConjugationHandler.applyCapitalizationToStructuredConjugations(input, isAllCaps = true)
+
+        val expected =
+            listOf(
+                "I/he/she/it" to "WAS BEING",
+                "you/plural" to "WERE BEING",
+            )
+        assertEquals(expected, result["Past"]?.get("Past Continuous"))
+    }
+
+    @Test
     fun applyCapitalizationToConjugations_firstLetterCapitalization() {
         val input: MutableMap<String, MutableMap<String, Collection<String>>> =
             mutableMapOf(

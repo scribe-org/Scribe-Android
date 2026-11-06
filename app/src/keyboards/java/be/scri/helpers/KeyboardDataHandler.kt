@@ -42,7 +42,7 @@ class KeyboardDataHandler {
     lateinit var caseAnnotation: HashMap<String, MutableList<String>>
         internal set
 
-    var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
+    var conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>? = null
         internal set
 
     var conjugateLabels: Set<String> = emptySet()
@@ -84,7 +84,7 @@ class KeyboardDataHandler {
         autocompletionManager.loadWords(languageAlias, numbersColumns)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
 
-        val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
+        val tempConjugateOutput = dbManagers.conjugateDataManager.getStructuredConjugations(languageAlias, dataContract, "describe")
         conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
     }
@@ -140,9 +140,9 @@ class KeyboardDataHandler {
     fun queryConjugateData(
         language: String,
         searchInput: String,
-    ): Pair<MutableMap<String, MutableMap<String, Collection<String>>>?, Set<String>> {
+    ): Pair<Map<String, Map<String, List<Pair<String, String>>>>?, Set<String>> {
         val languageAlias = getLanguageAlias(language)
-        val tempOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, searchInput)
+        val tempOutput = dbManagers.conjugateDataManager.getStructuredConjugations(languageAlias, dataContract, searchInput)
         val output =
             if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
                 null

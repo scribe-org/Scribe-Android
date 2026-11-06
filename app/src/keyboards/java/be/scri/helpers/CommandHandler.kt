@@ -106,16 +106,16 @@ class CommandHandler(
         ime.currentVerbForConjugation = rawInput
         val languageAlias = getLanguageAlias(ime.language)
 
-        val tempOutput = ime.dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, ime.dataContract, searchInput)
+        val tempOutput = ime.dbManagers.conjugateDataManager.getStructuredConjugations(languageAlias, ime.dataContract, searchInput)
 
         val isAllCaps = rawInput.isNotEmpty() && rawInput.all { !it.isLetter() || it.isUpperCase() }
         val isCapitalized = !isAllCaps && rawInput.firstOrNull()?.isUpperCase() == true
 
         ime.conjugateOutput =
-            if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
+            if (tempOutput.isNullOrEmpty() || tempOutput.values.all { it.isEmpty() }) {
                 null
-            } else if ((isAllCaps || isCapitalized) && tempOutput != null) {
-                ConjugationHandler.applyCapitalizationToConjugations(tempOutput, isAllCaps)
+            } else if (isAllCaps || isCapitalized) {
+                ConjugationHandler.applyCapitalizationToStructuredConjugations(tempOutput, isAllCaps)
             } else {
                 tempOutput
             }

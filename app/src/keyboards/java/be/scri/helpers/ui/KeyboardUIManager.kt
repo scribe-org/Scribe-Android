@@ -7,9 +7,14 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -44,6 +49,10 @@ import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 import be.scri.views.KeyboardView
+
+private const val SUB_SELECTION_LABEL_TEXT_SIZE_RATIO = 0.8f
+private const val MAX_FORM_COUNT_2X1 = 2
+private const val MAX_FORM_COUNT_2X2 = 4
 
 /**
  * Manages the UI elements and state transitions for the GeneralKeyboardIME.
@@ -87,6 +96,10 @@ class KeyboardUIManager(
         fun onKeyboardActionListener(): KeyboardView.OnKeyboardActionListener
 
         fun processLinguisticSuggestions(word: String)
+
+        fun onConjugationSubCategorySelected(category: String)
+
+        fun onConjugationSubCategoryDismissed()
 
         fun isNumericKeyboardActive(): Boolean
 
@@ -184,7 +197,7 @@ class KeyboardUIManager(
         language: String,
         emojiAutoSuggestionEnabled: Boolean,
         autoSuggestEmojis: MutableList<String>?,
-        conjugateOutput: Map<String, Map<String, Collection<String>>>?,
+        conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>?,
         conjugateLabels: Set<String>?,
         selectedConjugationSubCategory: String?,
         currentVerbForConjugation: String?,
@@ -366,7 +379,7 @@ class KeyboardUIManager(
     private fun setupToolbarView(
         currentState: ScribeState,
         language: String,
-        conjugateOutput: Map<String, Map<String, Collection<String>>>?,
+        conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>?,
         conjugateLabels: Set<String>?,
         selectedConjugationSubCategory: String?,
         currentVerbForConjugation: String?,
@@ -408,79 +421,56 @@ class KeyboardUIManager(
             val isSubSelection = selectedConjugationSubCategory != null
             val showCategories = !isSubSelection && (languageOutput?.containsKey(title) != true)
 
-            val forms =
-                if (isSubSelection) {
-                    languageOutput?.get(selectedConjugationSubCategory)?.toList() ?: listOf("", "", "", "")
-                } else if (showCategories) {
-                    languageOutput?.map { (_, values) ->
-                        if (values.size == 1) values.first() else values.joinToString(" / ")
-                    } ?: listOf("", "", "", "")
-                } else {
-                    languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
-                }
-
             val scribeLanguage = ScribeLanguage.fromDisplayName(language)
             val layoutResId =
                 when {
-                    isSubSelection -> R.layout.conjugate_grid_2x1
-                    scribeLanguage == ScribeLanguage.ENGLISH && forms.size <= 4 -> R.layout.conjugate_grid_2x2
-                    scribeLanguage in listOf(ScribeLanguage.RUSSIAN, ScribeLanguage.SWEDISH) && forms.size <= 4 -> R.layout.conjugate_grid_2x2
-                    forms.size > 4 -> R.layout.conjugate_grid_3x2
-                    else -> R.layout.conjugate_grid_2x2
+                    isSubSelection -> {
+                        val subPairs = languageOutput?.get(selectedConjugationSubCategory) ?: emptyList()
+                        when {
+                            subPairs.size <= MAX_FORM_COUNT_2X1 -> R.layout.conjugate_grid_2x1
+                            subPairs.size <= MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_2x2
+                            else -> R.layout.conjugate_grid_3x2
+                        }
+                    }
+                    else -> {
+                        val formsCount =
+                            if (showCategories) {
+                                languageOutput?.size ?: 0
+                            } else {
+                                languageOutput?.get(title)?.size ?: 0
+                            }
+                        val isSmallFormLanguage =
+                            scribeLanguage == ScribeLanguage.ENGLISH ||
+                                scribeLanguage == ScribeLanguage.RUSSIAN ||
+                                scribeLanguage == ScribeLanguage.SWEDISH
+                        when {
+                            isSmallFormLanguage && formsCount <= MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_2x2
+                            formsCount > MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_3x2
+                            else -> R.layout.conjugate_grid_2x2
+                        }
+                    }
                 }
 
             val layoutInflater = LayoutInflater.from(context)
             val gridContent = layoutInflater.inflate(layoutResId, grid, false) as LinearLayout
             grid.addView(gridContent)
 
-            val buttonIds =
-                listOf(
-                    R.id.conjugate_btn_1,
-                    R.id.conjugate_btn_2,
-                    R.id.conjugate_btn_3,
-                    R.id.conjugate_btn_4,
-                    R.id.conjugate_btn_5,
-                    R.id.conjugate_btn_6,
-                )
-
-            buttonIds.forEachIndexed { i, btnId ->
-                val btn = gridContent.findViewById<Button?>(btnId)
-                if (btn != null) {
-                    btn.text = forms.getOrNull(i) ?: ""
-                    btn.backgroundTintList =
-                        ContextCompat.getColorStateList(
-                            context,
-                            if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
-                        )
-                    btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
-                    btn.setOnClickListener {
-                        val label = btn.text.toString()
-                        if (label.isNotEmpty()) {
-                            var handledAsCategory = false
-                            if (showCategories) {
-                                val matchingEntry =
-                                    languageOutput?.entries?.find { (_, values) ->
-                                        if (values.size == 1) values.first() == label else values.joinToString(" / ") == label
-                                    }
-
-                                if (matchingEntry != null) {
-                                    val (key, values) = matchingEntry
-                                    if (values.size > 1) {
-                                        // Category logic is handled in IME's commitText.
-                                    }
-                                }
-                            }
-
-                            if (!handledAsCategory) {
-                                listener.commitText("$label ")
-                                listener.processLinguisticSuggestions(label)
-                            }
-                        }
-                    }
+            when {
+                isSubSelection -> {
+                    val subPairs = languageOutput?.get(selectedConjugationSubCategory) ?: emptyList()
+                    populateSubSelectionButtons(gridContent, subPairs, isDarkMode)
+                }
+                showCategories -> {
+                    val categoryEntries = languageOutput?.entries?.toList() ?: emptyList()
+                    populateCategoryButtons(gridContent, categoryEntries, isDarkMode)
+                }
+                else -> {
+                    val directPairs = languageOutput?.get(title) ?: emptyList()
+                    populateDirectButtons(gridContent, directPairs, isDarkMode)
                 }
             }
 
-            setupConjugateArrows(gridContent, context)
+            setupConjugateArrows(gridContent, context, isSubSelection)
 
             promptText = if (isSubSelection) selectedConjugationSubCategory else (title ?: "___")
             hintWord = conjugateLabels?.lastOrNull()
@@ -492,12 +482,136 @@ class KeyboardUIManager(
         updateCommandBarHintAndPrompt(currentState, language, promptText, isDarkMode, hintWord, currentVerbForConjugation)
     }
 
+    private val buttonIds =
+        listOf(
+            R.id.conjugate_btn_1,
+            R.id.conjugate_btn_2,
+            R.id.conjugate_btn_3,
+            R.id.conjugate_btn_4,
+            R.id.conjugate_btn_5,
+            R.id.conjugate_btn_6,
+        )
+
+    private fun populateSubSelectionButtons(
+        gridContent: View,
+        subPairs: List<Pair<String, String>>,
+        isDarkMode: Boolean,
+    ) {
+        buttonIds.forEachIndexed { i, btnId ->
+            val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
+            if (i < subPairs.size) {
+                val (label, form) = subPairs[i]
+                btn.visibility = View.VISIBLE
+                btn.backgroundTintList =
+                    ContextCompat.getColorStateList(
+                        context,
+                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                    )
+                btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                if (label.isNotEmpty() && label != "all") {
+                    val spannable = SpannableStringBuilder()
+                    spannable.append(label)
+                    spannable.setSpan(
+                        RelativeSizeSpan(SUB_SELECTION_LABEL_TEXT_SIZE_RATIO),
+                        0,
+                        label.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+                    )
+                    spannable.append("\n")
+                    val formStart = spannable.length
+                    spannable.append(form)
+                    spannable.setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        formStart,
+                        spannable.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+                    )
+                    btn.text = spannable
+                } else {
+                    btn.text = form
+                }
+                btn.setOnClickListener {
+                    listener.commitText("$form ")
+                    listener.processLinguisticSuggestions(form)
+                }
+            } else {
+                btn.visibility = View.INVISIBLE
+                btn.setOnClickListener(null)
+            }
+        }
+    }
+
+    private fun populateCategoryButtons(
+        gridContent: View,
+        categoryEntries: List<Map.Entry<String, List<Pair<String, String>>>>,
+        isDarkMode: Boolean,
+    ) {
+        buttonIds.forEachIndexed { i, btnId ->
+            val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
+            if (i < categoryEntries.size) {
+                val (categoryTitle, pairs) = categoryEntries[i]
+                btn.visibility = View.VISIBLE
+                btn.backgroundTintList =
+                    ContextCompat.getColorStateList(
+                        context,
+                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                    )
+                btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                if (pairs.size == 1) {
+                    val form = pairs.first().second
+                    btn.text = form
+                    btn.setOnClickListener {
+                        listener.commitText("$form ")
+                        listener.processLinguisticSuggestions(form)
+                    }
+                } else {
+                    btn.text = pairs.joinToString(" / ") { it.second }
+                    btn.setOnClickListener {
+                        listener.onConjugationSubCategorySelected(categoryTitle)
+                    }
+                }
+            } else {
+                btn.visibility = View.INVISIBLE
+                btn.setOnClickListener(null)
+            }
+        }
+    }
+
+    private fun populateDirectButtons(
+        gridContent: View,
+        directPairs: List<Pair<String, String>>,
+        isDarkMode: Boolean,
+    ) {
+        buttonIds.forEachIndexed { i, btnId ->
+            val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
+            if (i < directPairs.size) {
+                val (_, form) = directPairs[i]
+                btn.visibility = View.VISIBLE
+                btn.backgroundTintList =
+                    ContextCompat.getColorStateList(
+                        context,
+                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                    )
+                btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                btn.text = form
+                btn.setOnClickListener {
+                    listener.commitText("$form ")
+                    listener.processLinguisticSuggestions(form)
+                }
+            } else {
+                btn.visibility = View.INVISIBLE
+                btn.setOnClickListener(null)
+            }
+        }
+    }
+
     /**
      * Sets up the navigation arrow buttons for the conjugation grid view.
      */
     private fun setupConjugateArrows(
         gridContent: View,
         context: Context,
+        isSubSelection: Boolean,
     ) {
         val isDarkMode = getIsDarkModeOrNot(context)
         val arrowButtonIds =
@@ -527,13 +641,17 @@ class KeyboardUIManager(
                     arrowBtn.compoundDrawableTintList = ContextCompat.getColorStateList(context, iconTint)
                     arrowBtn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                     arrowBtn.setOnClickListener {
-                        val isLeft = arrowBtnName.contains("left")
-                        val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-                        val current = prefs.getInt("conjugate_index", 0)
-                        val newValue = if (isLeft) current - 1 else current + 1
-                        prefs.edit { putInt("conjugate_index", newValue) }
+                        if (isSubSelection) {
+                            listener.onConjugationSubCategoryDismissed()
+                        } else {
+                            val isLeft = arrowBtnName.contains("left")
+                            val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+                            val current = prefs.getInt("conjugate_index", 0)
+                            val newValue = if (isLeft) current - 1 else current + 1
+                            prefs.edit { putInt("conjugate_index", newValue) }
 
-                        listener.onConjugateClicked()
+                            listener.onConjugateClicked()
+                        }
                     }
                 }
             }
