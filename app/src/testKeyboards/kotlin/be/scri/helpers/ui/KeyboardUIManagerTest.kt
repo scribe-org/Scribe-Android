@@ -47,6 +47,8 @@ class KeyboardUIManagerTest {
     private val emojiBtnTablet1 get() = binding.emojiBtnTablet1
     private val emojiBtnTablet2 get() = binding.emojiBtnTablet2
     private val emojiBtnTablet3 get() = binding.emojiBtnTablet3
+    private val clipboardPanelHolder get() = binding.clipboardPanelHolder
+    private val emojiPaletteHolder get() = binding.emojiPaletteHolder
 
     @Before
     fun setUp() {
@@ -441,5 +443,81 @@ class KeyboardUIManagerTest {
         assertEquals("Conjugate grid container should be visible", View.VISIBLE, conjugateGridContainer.visibility)
         assertNotNull("Button 1 should be present in fallback grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
         assertNull("Button 5 should not be present in fallback 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
+    }
+
+    @Test
+    fun `showClipboardPanel hides toolbarBar and shows clipboardPanelHolder`() {
+        uiManager.updateUI(
+            currentState = ScribeState.TRANSLATE,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = null,
+            conjugateLabels = null,
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = null,
+        )
+        assertEquals(View.VISIBLE, toolbarBar.visibility)
+
+        uiManager.showClipboardPanel()
+
+        assertEquals(View.VISIBLE, clipboardPanelHolder.visibility)
+        assertEquals(View.INVISIBLE, keyboardView.visibility)
+        assertEquals(View.INVISIBLE, commandOptionsBar.visibility)
+        assertEquals(View.GONE, toolbarBar.visibility)
+        assertEquals(View.GONE, invalidInfoBar.visibility)
+    }
+
+    @Test
+    fun `hideClipboardPanel restores keyboardView and commandOptionsBar while hiding toolbarBar`() {
+        uiManager.showClipboardPanel()
+        uiManager.hideClipboardPanel()
+
+        assertEquals(View.GONE, clipboardPanelHolder.visibility)
+        assertEquals(View.VISIBLE, keyboardView.visibility)
+        assertEquals(View.VISIBLE, commandOptionsBar.visibility)
+        assertEquals(View.GONE, toolbarBar.visibility)
+        assertEquals(View.GONE, invalidInfoBar.visibility)
+    }
+
+    @Test
+    fun `showInvalidInfo hides toolbarBar and keyboardView and shows invalidInfoBar`() {
+        uiManager.updateUI(
+            currentState = ScribeState.INVALID,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = null,
+            conjugateLabels = null,
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = null,
+            invalidCommandSource = ScribeState.CONJUGATE,
+        )
+        assertEquals(View.VISIBLE, toolbarBar.visibility)
+        assertEquals(View.GONE, invalidInfoBar.visibility)
+
+        ivInfo.performClick()
+
+        assertEquals(View.GONE, toolbarBar.visibility)
+        assertEquals(View.GONE, keyboardView.visibility)
+        assertEquals(View.VISIBLE, invalidInfoBar.visibility)
+        assertEquals("Not in Wikidata", binding.invalidText.text.toString())
+    }
+
+    @Test
+    fun `showEmojiPalette and hideEmojiPalette keep toolbarBar hidden`() {
+        uiManager.showEmojiPalette("English")
+
+        assertEquals(View.VISIBLE, emojiPaletteHolder.visibility)
+        assertEquals(View.GONE, toolbarBar.visibility)
+        assertEquals(View.GONE, keyboardView.visibility)
+        assertEquals(View.GONE, commandOptionsBar.visibility)
+
+        uiManager.hideEmojiPalette()
+
+        assertEquals(View.GONE, emojiPaletteHolder.visibility)
+        assertEquals(View.VISIBLE, keyboardView.visibility)
+        assertEquals(View.VISIBLE, commandOptionsBar.visibility)
+        assertEquals(View.GONE, toolbarBar.visibility)
     }
 }
