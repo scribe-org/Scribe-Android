@@ -19,12 +19,15 @@ sealed class ScribeItem(
      *
      * @property title The string resource ID for the item's title.
      * @property desc (Optional) The string resource ID for the item's description.
+     * @property altText (Optional) The string resource ID for accessibility description.
+     * @property value (Optional) The current value to display next to the chevron.
      * @property action The callback function to invoke when the item is clicked.
      */
     data class ClickableItem(
         override val title: Int,
         override val desc: Int? = null,
         override val altText: Int? = null,
+        val value: String? = null,
         val action: () -> Unit,
     ) : ScribeItem(title, desc, altText)
 
