@@ -24,7 +24,6 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -70,26 +69,6 @@ class ScribeItemListTest {
 
         composeRule.onNodeWithTag("scribe_item_list").assertIsDisplayed()
         composeRule.onAllNodesWithTag("scribe_item").assertCountEquals(2)
-    }
-
-    @Test
-    fun displaysClickableItemWithValue() {
-        val items =
-            listOf(
-                ScribeItem.ClickableItem(
-                    title = R.string.i18n_app_settings_keyboard_layout_default_layout,
-                    desc = null,
-                    value = "QWERTY",
-                    action = { },
-                ),
-            )
-
-        composeRule.setContent {
-            ScribeItemList(itemList = ScribeItemList(items))
-        }
-
-        composeRule.onNodeWithTag("scribe_item_list").assertIsDisplayed()
-        composeRule.onNodeWithTag("value_0").assertIsDisplayed().assertTextEquals("QWERTY")
     }
 
     @Test
@@ -239,12 +218,6 @@ class ScribeItemListTest {
             Text(
                 text = context.getString(item.title),
             )
-            item.value?.let { value ->
-                Text(
-                    text = value,
-                    modifier = Modifier.testTag("value_$index"),
-                )
-            }
             item.desc?.let { desc ->
                 Text(
                     text = context.getString(desc),

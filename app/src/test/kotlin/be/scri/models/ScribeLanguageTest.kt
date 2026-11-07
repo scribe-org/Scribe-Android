@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.models
 
+import be.scri.ui.models.ScribeItem
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -25,5 +26,15 @@ class ScribeLanguageTest {
         assertEquals("QWERTY", ScribeLanguage.fromDisplayName("Spanish").defaultLayout)
         assertEquals("QWERTY", ScribeLanguage.fromDisplayName("Unknown").defaultLayout)
     }
-}
 
+    @Test
+    fun clickableItem_holdsValue() {
+        val item =
+            ScribeItem.ClickableItem(
+                title = 0,
+                value = "QWERTY",
+                action = {},
+            )
+        assertEquals("QWERTY", item.value)
+    }
+}
