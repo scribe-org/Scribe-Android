@@ -564,6 +564,48 @@ class KeyboardUIManagerTest {
     }
 
     @Test
+    fun updateUI_DirectButtons_DisplaysLabelsAndClickingCommitsOnlyForm() {
+        // Arrange (Spanish direct buttons as shown in issue #750)
+        val mockConjugateOutput =
+            mapOf(
+                "Presente" to
+                    mapOf(
+                        "Presente" to
+                            listOf(
+                                "1ps" to "estoy",
+                                "2ps" to "estás",
+                                "3ps" to "está",
+                                "1pp" to "estamos",
+                                "2pp" to "estáis",
+                                "3pp" to "están",
+                            ),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "Spanish",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Presente"),
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = "estar",
+        )
+
+        val btn1 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_1)
+        assertNotNull(btn1)
+        assertTrue(btn1.text.toString().contains("1ps"))
+        assertTrue(btn1.text.toString().contains("estoy"))
+
+        btn1.performClick()
+
+        verify(exactly = 1) { listener.commitText("estoy ") }
+        verify(exactly = 1) { listener.processLinguisticSuggestions("estoy") }
+    }
+
+    @Test
     fun updateUI_ThreeCategories_Inflates3x1Grid() {
         // Arrange: 3 categories for English (e.g. Past without simplePast for "be")
         val mockConjugateOutput =

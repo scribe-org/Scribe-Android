@@ -51,6 +51,8 @@ import be.scri.services.GeneralKeyboardIME
 import be.scri.views.KeyboardView
 
 private const val SUB_SELECTION_LABEL_TEXT_SIZE_RATIO = 0.8f
+private const val CONJUGATION_LABEL_COLOR_LIGHT = "#E558564B"
+private const val CONJUGATION_LABEL_COLOR_DARK = "#CAC4D0"
 private const val MAX_FORM_COUNT_2X1 = 2
 private const val FORM_COUNT_3X1 = 3
 private const val MAX_FORM_COUNT_2X2 = 4
@@ -496,6 +498,40 @@ class KeyboardUIManager(
             R.id.conjugate_btn_6,
         )
 
+    private fun formatButtonText(
+        label: String,
+        form: String,
+        isDarkMode: Boolean,
+    ): CharSequence {
+        if (label.isEmpty() || label == "all") return form
+        val spannable = SpannableStringBuilder()
+        spannable.append(label)
+        spannable.setSpan(
+            RelativeSizeSpan(SUB_SELECTION_LABEL_TEXT_SIZE_RATIO),
+            0,
+            label.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+        val labelColor =
+            (if (isDarkMode) CONJUGATION_LABEL_COLOR_DARK else CONJUGATION_LABEL_COLOR_LIGHT).toColorInt()
+        spannable.setSpan(
+            ForegroundColorSpan(labelColor),
+            0,
+            label.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+        spannable.append("\n")
+        val formStart = spannable.length
+        spannable.append(form)
+        spannable.setSpan(
+            StyleSpan(Typeface.BOLD),
+            formStart,
+            spannable.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+        return spannable
+    }
+
     private fun populateSubSelectionButtons(
         gridContent: View,
         subPairs: List<Pair<String, String>>,
@@ -512,28 +548,7 @@ class KeyboardUIManager(
                         if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
                     )
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
-                if (label.isNotEmpty() && label != "all") {
-                    val spannable = SpannableStringBuilder()
-                    spannable.append(label)
-                    spannable.setSpan(
-                        RelativeSizeSpan(SUB_SELECTION_LABEL_TEXT_SIZE_RATIO),
-                        0,
-                        label.length,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
-                    )
-                    spannable.append("\n")
-                    val formStart = spannable.length
-                    spannable.append(form)
-                    spannable.setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        formStart,
-                        spannable.length,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
-                    )
-                    btn.text = spannable
-                } else {
-                    btn.text = form
-                }
+                btn.text = formatButtonText(label, form, isDarkMode)
                 btn.setOnClickListener {
                     listener.commitText("$form ")
                     listener.processLinguisticSuggestions(form)
@@ -562,8 +577,8 @@ class KeyboardUIManager(
                     )
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                 if (pairs.size == 1) {
-                    val form = pairs.first().second
-                    btn.text = form
+                    val (label, form) = pairs.first()
+                    btn.text = formatButtonText(label, form, isDarkMode)
                     btn.setOnClickListener {
                         listener.commitText("$form ")
                         listener.processLinguisticSuggestions(form)
@@ -589,7 +604,7 @@ class KeyboardUIManager(
         buttonIds.forEachIndexed { i, btnId ->
             val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
             if (i < directPairs.size) {
-                val (_, form) = directPairs[i]
+                val (label, form) = directPairs[i]
                 btn.visibility = View.VISIBLE
                 btn.backgroundTintList =
                     ContextCompat.getColorStateList(
@@ -597,7 +612,7 @@ class KeyboardUIManager(
                         if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
                     )
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
-                btn.text = form
+                btn.text = formatButtonText(label, form, isDarkMode)
                 btn.setOnClickListener {
                     listener.commitText("$form ")
                     listener.processLinguisticSuggestions(form)
