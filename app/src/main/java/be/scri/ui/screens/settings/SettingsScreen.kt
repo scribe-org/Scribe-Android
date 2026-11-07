@@ -3,19 +3,26 @@
 package be.scri.ui.screens.settings
 
 import android.content.Context
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -145,10 +152,9 @@ fun SettingsScreen(
                             modifier = Modifier.padding(top = 8.dp),
                         )
                     } else {
-                        InstallKeyboardButton(
-                            onClick = {
-                                SettingsUtil.navigateToKeyboardSettings(context)
-                            },
+                        EmptyKeyboardSettingsSection(
+                            context = context,
+                            modifier = Modifier.padding(top = 8.dp),
                         )
                     }
                 }
@@ -182,5 +188,53 @@ fun SettingsScreen(
                 },
             )
         }
+    }
+}
+
+/**
+ * Section displayed in the keyboard settings sub menu when no keyboard is installed.
+ */
+@Composable
+private fun EmptyKeyboardSettingsSection(
+    context: Context,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(R.string.i18n_app_settings_keyboard_title),
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleLarge,
+            modifier =
+                Modifier.padding(
+                    start = 16.dp,
+                    top = 16.dp,
+                    bottom = 10.dp,
+                ),
+        )
+        Surface(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surface,
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = stringResource(R.string.i18n_app_download_menu_ui_no_keyboards_installed),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+        InstallKeyboardButton(
+            onClick = {
+                SettingsUtil.navigateToKeyboardSettings(context)
+            },
+        )
     }
 }
