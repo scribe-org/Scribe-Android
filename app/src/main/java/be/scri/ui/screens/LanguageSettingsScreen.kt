@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.scri.R
 import be.scri.helpers.PreferencesHelper
 import be.scri.ui.common.ScribeBaseScreen
@@ -132,10 +136,53 @@ fun LanguageSettingsScreen(
             )
         }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val translationSourceLanguageState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getTranslationSourceLanguage(context, language),
+            )
+        }
+
+    val defaultLayoutState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getDefaultKeyboardLayout(context, language),
+            )
+        }
+
+    val defaultCurrencySymbolState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getDefaultCurrencySymbol(context, language),
+            )
+        }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    translationSourceLanguageState.value =
+                        PreferencesHelper.getTranslationSourceLanguage(context, language)
+                    defaultLayoutState.value =
+                        PreferencesHelper.getDefaultKeyboardLayout(context, language)
+                    defaultCurrencySymbolState.value =
+                        PreferencesHelper.getDefaultCurrencySymbol(context, language)
+                }
+            }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     val translationSourceLanguageList =
         ScribeItemList(
             items =
-                getTranslationSourceLanguageListData {
+                getTranslationSourceLanguageListData(
+                    translationSourceLanguage = translationSourceLanguageState.value,
+                ) {
                     onTranslationLanguageSelect()
                 },
         )
@@ -165,6 +212,8 @@ fun LanguageSettingsScreen(
                     },
                     onCurrencySelect = onCurrencySelect,
                     onDefaultLayoutSelect = onDefaultLayoutSelect,
+                    defaultLayout = defaultLayoutState.value,
+                    defaultCurrencySymbol = defaultCurrencySymbolState.value,
                 ),
         )
 
@@ -378,6 +427,8 @@ private fun getLayoutListData(
     onToggleDisableAccentCharacter: (Boolean) -> Unit,
     onCurrencySelect: () -> Unit,
     onDefaultLayoutSelect: () -> Unit = {},
+    defaultLayout: String? = null,
+    defaultCurrencySymbol: String? = null,
 ): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
 
@@ -385,6 +436,7 @@ private fun getLayoutListData(
         ScribeItem.ClickableItem(
             title = R.string.i18n_app_settings_keyboard_layout_default_layout,
             desc = R.string.i18n_app_settings_keyboard_layout_default_layout_description,
+            value = defaultLayout,
             action = {
                 onDefaultLayoutSelect()
             },
@@ -395,6 +447,7 @@ private fun getLayoutListData(
         ScribeItem.ClickableItem(
             title = R.string.i18n_app_settings_keyboard_layout_default_currency,
             desc = R.string.i18n_app_settings_keyboard_layout_default_currency_description,
+            value = defaultCurrencySymbol,
             action = {
                 onCurrencySelect()
             },
@@ -460,12 +513,16 @@ fun getLanguageStringFromi18n(language: String): Int {
  * @return A list of [ScribeItem]s to be displayed in the UI.
  */
 @Composable
-private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: () -> Unit): List<ScribeItem> {
+private fun getTranslationSourceLanguageListData(
+    translationSourceLanguage: String? = null,
+    onTranslationLanguageSelect: () -> Unit,
+): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
     list.add(
         ScribeItem.ClickableItem(
             title = R.string.i18n_app_settings_keyboard_translation_select_source,
             desc = R.string.i18n_app_settings_keyboard_translation_select_source_description,
+            value = translationSourceLanguage,
             action = {
                 onTranslationLanguageSelect()
             },

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import be.scri.R
 
 /**
- *  A composable component that displays a clickable item with a title, optional description and an arrow icon.
+ *  A composable component that displays a clickable item with a title, optional description, optional current value and an arrow icon.
  */
 @Composable
 fun ClickableItemComp(
@@ -34,6 +34,7 @@ fun ClickableItemComp(
     modifier: Modifier = Modifier,
     desc: String? = null,
     altText: String? = null,
+    value: String? = null,
 ) {
     val semanticsModifier =
         altText?.let { text ->
@@ -66,6 +67,14 @@ fun ClickableItemComp(
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                 )
+                if (!value.isNullOrEmpty()) {
+                    Text(
+                        text = value,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
+                }
                 Icon(
                     painter = painterResource(R.drawable.right_arrow),
                     modifier =
