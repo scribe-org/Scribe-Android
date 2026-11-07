@@ -52,6 +52,7 @@ import be.scri.views.KeyboardView
 
 private const val SUB_SELECTION_LABEL_TEXT_SIZE_RATIO = 0.8f
 private const val MAX_FORM_COUNT_2X1 = 2
+private const val FORM_COUNT_3X1 = 3
 private const val MAX_FORM_COUNT_2X2 = 4
 
 /**
@@ -428,6 +429,7 @@ class KeyboardUIManager(
                         val subPairs = languageOutput?.get(selectedConjugationSubCategory) ?: emptyList()
                         when {
                             subPairs.size <= MAX_FORM_COUNT_2X1 -> R.layout.conjugate_grid_2x1
+                            subPairs.size == FORM_COUNT_3X1 -> R.layout.conjugate_grid_3x1
                             subPairs.size <= MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_2x2
                             else -> R.layout.conjugate_grid_3x2
                         }
@@ -444,6 +446,8 @@ class KeyboardUIManager(
                                 scribeLanguage == ScribeLanguage.RUSSIAN ||
                                 scribeLanguage == ScribeLanguage.SWEDISH
                         when {
+                            formsCount <= MAX_FORM_COUNT_2X1 -> R.layout.conjugate_grid_2x1
+                            formsCount == FORM_COUNT_3X1 -> R.layout.conjugate_grid_3x1
                             isSmallFormLanguage && formsCount <= MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_2x2
                             formsCount > MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_3x2
                             else -> R.layout.conjugate_grid_2x2

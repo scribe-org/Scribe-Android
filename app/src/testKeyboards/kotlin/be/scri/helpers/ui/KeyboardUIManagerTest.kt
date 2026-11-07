@@ -301,9 +301,9 @@ class KeyboardUIManagerTest {
         // Arrange
         val mockConjugateOutput =
             mapOf(
-                "Настоящее" to
+                "Прошедшее" to
                     mapOf(
-                        "Настоящее" to listOf("1ps" to "читаю", "2ps" to "читаешь", "3ps" to "читает"),
+                        "Прошедшее" to listOf("m" to "читал", "f" to "читала", "n" to "читало", "pl" to "читали"),
                     ),
             )
 
@@ -314,7 +314,7 @@ class KeyboardUIManagerTest {
             emojiAutoSuggestionEnabled = false,
             autoSuggestEmojis = null,
             conjugateOutput = mockConjugateOutput,
-            conjugateLabels = setOf("Настоящее"),
+            conjugateLabels = setOf("Прошедшее"),
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = "читать",
         )
@@ -326,7 +326,7 @@ class KeyboardUIManagerTest {
     }
 
     @Test
-    fun updateUI_SwedishWithSmallForms_Inflates2x2Grid() {
+    fun updateUI_ThreeForms_Inflates3x1Grid() {
         // Arrange
         val mockConjugateOutput =
             mapOf(
@@ -349,9 +349,10 @@ class KeyboardUIManagerTest {
         )
 
         // Assert
-        assertNotNull("Button 1 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
-        assertNotNull("Button 4 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
-        assertNull("Button 5 should not be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
+        assertNotNull("Button 1 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNotNull("Button 2 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_2))
+        assertNotNull("Button 3 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_3))
+        assertNull("Button 4 should not be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
     }
 
     @Test
@@ -563,8 +564,8 @@ class KeyboardUIManagerTest {
     }
 
     @Test
-    fun updateUI_UnusedButtonsInGrid_AreMarkedInvisible() {
-        // Arrange: 3 categories for English 2x2 grid (e.g. Past without simplePast for "be")
+    fun updateUI_ThreeCategories_Inflates3x1Grid() {
+        // Arrange: 3 categories for English (e.g. Past without simplePast for "be")
         val mockConjugateOutput =
             mapOf(
                 "Past" to
@@ -587,14 +588,9 @@ class KeyboardUIManagerTest {
             currentVerbForConjugation = "be",
         )
 
-        val btn1 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_1)
-        val btn2 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_2)
-        val btn3 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_3)
-        val btn4 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_4)
-
-        assertEquals(View.VISIBLE, btn1.visibility)
-        assertEquals(View.VISIBLE, btn2.visibility)
-        assertEquals(View.VISIBLE, btn3.visibility)
-        assertEquals("Unused cell should be INVISIBLE to avoid blank cards", View.INVISIBLE, btn4.visibility)
+        assertNotNull("Button 1 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNotNull("Button 2 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_2))
+        assertNotNull("Button 3 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_3))
+        assertNull("Button 4 should not be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
     }
 }
