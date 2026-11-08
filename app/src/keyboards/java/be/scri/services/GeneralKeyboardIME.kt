@@ -387,6 +387,9 @@ abstract class GeneralKeyboardIME(
                         outInsets.touchableRegion.setEmpty()
                     }
                 } else {
+                    val card = uiManager.binding.keyboardCard
+                    val targetView = if (card.visibility == View.VISIBLE && card.height > 0) card else inputView
+                    targetView.getLocationInWindow(location)
                     outInsets.visibleTopInsets = location[1]
                     outInsets.contentTopInsets = location[1]
                     outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_VISIBLE

@@ -715,17 +715,13 @@ GeneralKeyboardIME.kt
 
     <FrameLayout
         android:id="@+id/empty_state_banner_container"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/empty_state_banner"

@@ -5,6 +5,7 @@ package be.scri.helpers.ui
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
@@ -50,6 +51,7 @@ class KeyboardThemeManager {
         uiManager: KeyboardUIManager?,
     ) {
         val targetWindow = window ?: return
+        targetWindow.decorView.setBackgroundColor(Color.TRANSPARENT)
         targetWindow.decorView.post {
             val context = service.applicationContext
             val isDarkMode = getIsDarkModeOrNot(context)
@@ -66,11 +68,7 @@ class KeyboardThemeManager {
                 targetWindow.isNavigationBarContrastEnforced = false
             }
 
-            if (isFloatingMode) {
-                targetWindow.decorView.setBackgroundColor(Color.TRANSPARENT)
-            } else {
-                targetWindow.decorView.setBackgroundColor(color)
-            }
+            targetWindow.decorView.setBackgroundColor(Color.TRANSPARENT)
             val insetsController = WindowCompat.getInsetsController(targetWindow, targetWindow.decorView)
             insetsController.isAppearanceLightNavigationBars = isLightColor(color)
 
@@ -89,25 +87,49 @@ class KeyboardThemeManager {
             }
 
             if (uiManager != null) {
+                uiManager.binding.root.setBackgroundColor(Color.TRANSPARENT)
                 if (isFloatingMode) {
-                    uiManager.binding.root.setBackgroundColor(Color.TRANSPARENT)
-                    val kbBgColor = ContextCompat.getColor(service, if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color)
+                    val kbBgColor =
+                        ContextCompat.getColor(
+                            service,
+                            if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+                        )
                     uiManager.binding.floatingDragBar.setBackgroundColor(kbBgColor)
                     val pillColor = if (isDarkMode) 0x4DFFFFFF.toInt() else 0x40000000.toInt()
                     uiManager.binding.floatingDragHandle.setColorFilter(pillColor)
                 } else {
-                    uiManager.binding.root.setBackgroundColor(color)
+                    uiManager.binding.keyboardCard.background = ColorDrawable(color)
                 }
 
-                ViewCompat.setOnApplyWindowInsetsListener(uiManager.binding.root) { view, insets ->
-                    val insetTypes = WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-                    val navBarHeight = insets.getInsets(insetTypes).bottom
-                    val paddingBottom = if (isFloatingMode) 0 else navBarHeight
-                    view.setPadding(0, 0, 0, paddingBottom)
+                val applyBottomPadding: (WindowInsetsCompat?) -> Unit = { windowInsets ->
+                    val insets = windowInsets ?: ViewCompat.getRootWindowInsets(targetWindow.decorView)
+                    val insetTypes = WindowInsetsCompat.Type.navigationBars() or WindowInsetsCompat.Type.displayCutout()
+                    val navBarHeight = insets?.getInsets(insetTypes)?.bottom ?: 0
+                    val extraBottomPadding = (16 * service.resources.displayMetrics.density).toInt()
+                    val paddingBottom = if (isFloatingMode) 0 else (navBarHeight + extraBottomPadding)
+                    val card = uiManager.binding.keyboardCard
+                    if (card.paddingBottom != paddingBottom) {
+                        card.setPadding(0, 0, 0, paddingBottom)
+                    }
+                    if (uiManager.binding.root.paddingBottom != 0) {
+                        uiManager.binding.root.setPadding(0, 0, 0, 0)
+                    }
+                }
+
+                ViewCompat.setOnApplyWindowInsetsListener(targetWindow.decorView) { _, insets ->
+                    applyBottomPadding(insets)
                     insets
                 }
 
+                ViewCompat.setOnApplyWindowInsetsListener(uiManager.binding.root) { _, insets ->
+                    applyBottomPadding(insets)
+                    insets
+                }
+
+                applyBottomPadding(null)
+
                 uiManager.binding.root.post {
+                    ViewCompat.requestApplyInsets(targetWindow.decorView)
                     ViewCompat.requestApplyInsets(uiManager.binding.root)
                 }
             }
