@@ -105,7 +105,7 @@ class KeyboardThemeManager {
                     val insets = windowInsets ?: ViewCompat.getRootWindowInsets(targetWindow.decorView)
                     val insetTypes = WindowInsetsCompat.Type.navigationBars() or WindowInsetsCompat.Type.displayCutout()
                     val navBarHeight = insets?.getInsets(insetTypes)?.bottom ?: 0
-                    val extraBottomPadding = (16 * service.resources.displayMetrics.density).toInt()
+                    val extraBottomPadding = (10 * service.resources.displayMetrics.density).toInt()
                     val paddingBottom = if (isFloatingMode) 0 else (navBarHeight + extraBottomPadding)
                     val card = uiManager.binding.keyboardCard
                     if (card.paddingBottom != paddingBottom) {
