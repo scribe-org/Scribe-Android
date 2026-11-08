@@ -524,7 +524,7 @@ GeneralKeyboardIME.kt
                 android:backgroundTint="@null"
                 android:contentDescription="@string/i18n.app.keyboard.command_bar"
                 android:cursorVisible="false"
-                android:inputType="text"
+                android:inputType="text|textNoSuggestions"
                 android:paddingTop="4dp"
                 android:paddingEnd="8dp"
                 android:paddingStart="0dp"

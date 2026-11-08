@@ -3,6 +3,7 @@
 package be.scri.helpers.ui
 
 import android.content.Context
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
@@ -117,6 +118,15 @@ class KeyboardUIManagerTest {
         assertEquals("Keyboard view should be GONE", View.GONE, keyboardView.visibility)
 
         assertTrue(commandBarEditText.text.toString().contains("be"))
+    }
+
+    @Test
+    fun commandBar_HasNoSuggestionsInputTypeFlag() {
+        val inputType = binding.commandBar.inputType
+        assertTrue(
+            "commandBar should have TYPE_TEXT_FLAG_NO_SUGGESTIONS to prevent spell check underlines",
+            (inputType and InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0,
+        )
     }
 
     @Test

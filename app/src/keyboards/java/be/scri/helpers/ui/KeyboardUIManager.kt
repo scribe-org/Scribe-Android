@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -125,6 +126,7 @@ class KeyboardUIManager(
 
     init {
         setupClickListeners()
+        binding.commandBar.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
     }
 
     private fun setupClickListeners() {
