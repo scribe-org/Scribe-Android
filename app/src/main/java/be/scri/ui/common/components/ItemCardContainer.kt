@@ -44,6 +44,7 @@ fun ItemsCardContainer(
                             title = stringResource(item.title),
                             desc = item.desc?.let { stringResource(it) },
                             altText = item.altText?.let { stringResource(it) },
+                            value = item.value,
                             onClick = item.action,
                         )
                     }
