@@ -68,6 +68,8 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The return key is colored Scribe blue when commands are being triggered to let the user know that that is what they need to press to finish the command ([#160](https://github.com/scribe-org/Scribe-Android/issues/160)).
 - Dark mode compatibility through a responsive color scheme ([#25](https://github.com/scribe-org/Scribe-Android/issues/25), [#51](https://github.com/scribe-org/Scribe-Android/issues/51), [#116](https://github.com/scribe-org/Scribe-Android/issues/116), [#121](https://github.com/scribe-org/Scribe-Android/issues/121), [#155](https://github.com/scribe-org/Scribe-Android/issues/155), [#161](https://github.com/scribe-org/Scribe-Android/issues/161), [#543](https://github.com/scribe-org/Scribe-Android/issues/543)).
 - The application menu follows modern Android styling ([#114](https://github.com/scribe-org/Scribe-Android/issues/114), [#150](https://github.com/scribe-org/Scribe-Android/issues/150), [#217](https://github.com/scribe-org/Scribe-Android/issues/217), [#246](https://github.com/scribe-org/Scribe-Android/issues/246), [#247](https://github.com/scribe-org/Scribe-Android/issues/247), [248](https://github.com/scribe-org/Scribe-Android/issues/248), [#256](https://github.com/scribe-org/Scribe-Android/issues/256)).
+- Clear directions and an install button are displayed in the keyboard settings sub menu when no keyboard is installed ([#753](https://github.com/scribe-org/Scribe-Android/issues/753)).
+- Sub-menu settings options for translation source language, default keyboard layout, and default currency symbol now display their current values next to the navigation chevron ([#751](https://github.com/scribe-org/Scribe-Android/issues/751)).
 
 ### 🌐 Localization
 
@@ -92,6 +94,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Native dictionaries are re-extracted after an app update so autosuggestions no longer use dictionaries from a previous install ([#701](https://github.com/scribe-org/Scribe-Android/issues/701)).
 - Tutorial practice text is now preserved across configuration changes such as device rotation ([#736](https://github.com/scribe-org/Scribe-Android/issues/736)).
 - Verb conjugation lookups in the keyboard now support case-insensitive matching, inflected forms, and fallback to downloaded language databases, resolving "Not in Wikidata" errors ([#598](https://github.com/scribe-org/Scribe-Android/issues/598), [#738](https://github.com/scribe-org/Scribe-Android/issues/738)).
+- Spell check error underlines no longer appear on command bar placeholder text and foreign language words ([#748](https://github.com/scribe-org/Scribe-Android/issues/748)).
 
 ### 🔒 Security
 
