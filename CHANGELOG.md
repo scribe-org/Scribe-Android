@@ -94,6 +94,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Native dictionaries are re-extracted after an app update so autosuggestions no longer use dictionaries from a previous install ([#701](https://github.com/scribe-org/Scribe-Android/issues/701)).
 - Tutorial practice text is now preserved across configuration changes such as device rotation ([#736](https://github.com/scribe-org/Scribe-Android/issues/736)).
 - Verb conjugation lookups in the keyboard now support case-insensitive matching, inflected forms, and fallback to downloaded language databases, resolving "Not in Wikidata" errors ([#598](https://github.com/scribe-org/Scribe-Android/issues/598), [#738](https://github.com/scribe-org/Scribe-Android/issues/738)).
+- Spell check error underlines no longer appear on command bar placeholder text and foreign language words ([#748](https://github.com/scribe-org/Scribe-Android/issues/748)).
 
 ### 🔒 Security
 
