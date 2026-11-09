@@ -51,7 +51,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Vibrate on keypress and key click functionalities are included ([#405](https://github.com/scribe-org/Scribe-Android/issues/405), [#406](https://github.com/scribe-org/Scribe-Android/issues/406)).
 - An in-app tutorial is provided to detail functionalities of the application ([#602](https://github.com/scribe-org/Scribe-Android/issues/602), [#615](https://github.com/scribe-org/Scribe-Android/issues/615), [#616](https://github.com/scribe-org/Scribe-Android/issues/616)).
 - The user is able to easily rate the application, with installer-aware routing to the appropriate store ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
-
+- If the user does not have any keyboards installed, the tutorial screen will not show tutorial content, but will instead give the user access to an install keyboard-button.
 ### 🗃️ Data
 
 - SQLite databases have been set up for all data needed for the keyboards ([#87](https://github.com/scribe-org/Scribe-Android/issues/87)).
