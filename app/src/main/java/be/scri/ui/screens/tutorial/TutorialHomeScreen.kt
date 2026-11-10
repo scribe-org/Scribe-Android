@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,6 +37,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.scri.R
 import be.scri.ui.common.appcomponents.InstallKeyboardButton
@@ -79,6 +83,23 @@ fun TutorialHomeScreen(
             TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_verb_conjugation), 2),
             TutorialChapter(stringResource(R.string.i18n_app_keyboard_tutorial_noun_plurals), 3),
         )
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    // Observe lifecycle events.
+    DisposableEffect(lifecycleOwner) {
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    // Refresh settings when coming back to the app.
+                    viewModel.refreshSettings(context)
+                }
+            }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Column(
         modifier =
