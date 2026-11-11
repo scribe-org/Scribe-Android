@@ -74,6 +74,7 @@ class ClipboardHandler(
 
     fun openClipboardPanel() {
         if (!ime.isUiManagerInitialized) return
+        ime.moveToIdleState()
         ime.uiManager.showClipboardPanel()
 
         val recyclerView = ime.binding.clipboardItemsList
