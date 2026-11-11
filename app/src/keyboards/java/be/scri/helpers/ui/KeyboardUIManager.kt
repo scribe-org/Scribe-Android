@@ -1176,6 +1176,8 @@ class KeyboardUIManager(
             binding.invalidText.text = invalidText
         }
         val isDarkMode = getIsDarkModeOrNot(context)
+        val backgroundColor = if (isDarkMode) R.color.command_bar_color_dark else white
+        binding.invalidText.backgroundTintList = ContextCompat.getColorStateList(context, backgroundColor)
         binding.invalidText.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
         binding.invalidInfoBar.setBackgroundColor(
             if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),

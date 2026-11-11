@@ -512,6 +512,7 @@ class KeyboardUIManagerTest {
         assertEquals(View.GONE, keyboardView.visibility)
         assertEquals(View.VISIBLE, invalidInfoBar.visibility)
         assertEquals("Not in Wikidata", binding.invalidText.text.toString())
+        assertNotNull(binding.invalidText.backgroundTintList)
     }
 
     @Test
