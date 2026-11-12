@@ -226,17 +226,24 @@ fun TutorialHomeScreen(
                 )
             }
         } else {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = cardBackground),
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(
-                    text = stringResource(R.string.i18n_app_download_menu_ui_no_keyboards_installed),
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = stringResource(R.string.i18n_app_download_menu_ui_no_keyboards_installed),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
             }
             // Install keyboards
+            Spacer(modifier = Modifier.weight(1f))
             InstallKeyboardButton(
                 onClick = { SettingsUtil.navigateToKeyboardSettings(context) },
             )
