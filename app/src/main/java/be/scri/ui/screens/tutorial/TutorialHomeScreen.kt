@@ -227,9 +227,9 @@ fun TutorialHomeScreen(
             }
         } else {
             Card(
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = cardBackground),
-                modifier = Modifier.fillMaxWidth(),
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -242,8 +242,6 @@ fun TutorialHomeScreen(
                     )
                 }
             }
-            // Install keyboards
-            Spacer(modifier = Modifier.weight(1f))
             InstallKeyboardButton(
                 onClick = { SettingsUtil.navigateToKeyboardSettings(context) },
             )
