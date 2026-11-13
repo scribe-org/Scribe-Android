@@ -48,7 +48,9 @@ class AutocompletionHandler(
     fun processAutocomplete(currentWord: String?) {
         autocompleteRunnable?.let { handler.removeCallbacks(it) }
 
-        if (ime.currentState != ScribeState.IDLE || currentWord.isNullOrEmpty()) {
+        if (ime.currentState != ScribeState.IDLE || currentWord.isNullOrEmpty() ||
+            StringUtils.containsProfanity(currentWord, ime.profanity)
+        ) {
             ime.clearAutocomplete()
             return
         }
