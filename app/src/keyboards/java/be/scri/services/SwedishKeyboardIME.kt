@@ -14,18 +14,28 @@ import be.scri.models.ScribeLanguage
 class SwedishKeyboardIME : GeneralKeyboardIME(ScribeLanguage.SWEDISH) {
     override fun getKeyboardLayoutXML(): Int =
         when {
-            isTablet() -> R.xml.keys_letters_swedish_tablet
+            isTablet() -> {
+                R.xml.keys_letters_swedish_tablet
+            }
+
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                !isPeriodAndCommaEnabled() ->
+                !isPeriodAndCommaEnabled() -> {
                 R.xml.keys_letter_swedish_without_accent_characters_and_without_period_and_comma
+            }
+
             !getIsAccentCharacterDisabled(applicationContext, language) &&
-                isPeriodAndCommaEnabled() ->
+                isPeriodAndCommaEnabled() -> {
                 R.xml.keys_letters_swedish
+            }
+
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                isPeriodAndCommaEnabled() ->
+                isPeriodAndCommaEnabled() -> {
                 R.xml.keys_letter_swedish_without_accent_characters
-            else ->
+            }
+
+            else -> {
                 R.xml.keys_letter_swedish_without_period_and_comma
+            }
         }
 
     override val defaultConjugateModeType: String = "2x2"

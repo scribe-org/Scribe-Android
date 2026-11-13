@@ -175,54 +175,69 @@ object HintUtils {
     fun getInvalidTextsWikidata(language: String): Array<String> {
         val (t1, t2, t3) =
             when (language) {
-                "French" ->
+                "French" -> {
                     Triple(
                         FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
                         FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
                         FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
                     )
-                "German" ->
+                }
+
+                "German" -> {
                     Triple(
                         DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
                         DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
                         DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
                     )
-                "Italian" ->
+                }
+
+                "Italian" -> {
                     Triple(
                         ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
                         ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
                         ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
                     )
-                "Portuguese" ->
+                }
+
+                "Portuguese" -> {
                     Triple(
                         PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
                         PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
                         PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
                     )
-                "Russian" ->
+                }
+
+                "Russian" -> {
                     Triple(
                         RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
                         RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
                         RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
                     )
-                "Spanish" ->
+                }
+
+                "Spanish" -> {
                     Triple(
                         ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
                         ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
                         ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
                     )
-                "Swedish" ->
+                }
+
+                "Swedish" -> {
                     Triple(
                         SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
                         SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
                         SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
                     )
-                else ->
+                }
+
+                else -> {
                     Triple(
                         ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_1,
                         ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_2,
                         ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKIDATA_3,
                     )
+                }
             }
         return arrayOf(t1, t2, t3)
     }
@@ -236,54 +251,69 @@ object HintUtils {
     fun getInvalidTextsWiktionary(language: String): Array<String> {
         val (t1, t2, t3) =
             when (language) {
-                "French" ->
+                "French" -> {
                     Triple(
                         FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
                         FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
                         FRInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
                     )
-                "German" ->
+                }
+
+                "German" -> {
                     Triple(
                         DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
                         DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
                         DEInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
                     )
-                "Italian" ->
+                }
+
+                "Italian" -> {
                     Triple(
                         ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
                         ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
                         ITInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
                     )
-                "Portuguese" ->
+                }
+
+                "Portuguese" -> {
                     Triple(
                         PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
                         PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
                         PTInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
                     )
-                "Russian" ->
+                }
+
+                "Russian" -> {
                     Triple(
                         RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
                         RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
                         RUInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
                     )
-                "Spanish" ->
+                }
+
+                "Spanish" -> {
                     Triple(
                         ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
                         ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
                         ESInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
                     )
-                "Swedish" ->
+                }
+
+                "Swedish" -> {
                     Triple(
                         SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
                         SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
                         SVInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
                     )
-                else ->
+                }
+
+                else -> {
                     Triple(
                         ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_1,
                         ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_2,
                         ENInterfaceVariables.INVALID_COMMAND_TEXT_WIKTIONARY_3,
                     )
+                }
             }
         return arrayOf(t1, t2, t3)
     }

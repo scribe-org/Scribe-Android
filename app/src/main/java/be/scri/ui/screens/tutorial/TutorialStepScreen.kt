@@ -315,6 +315,7 @@ fun TutorialStepScreen(
                             )
                         }
                     }
+
                     InputValidationState.INCORRECT -> {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -324,6 +325,7 @@ fun TutorialStepScreen(
                             fontWeight = FontWeight.Medium,
                         )
                     }
+
                     InputValidationState.EMPTY -> {
                         // No feedback when empty.
                     }

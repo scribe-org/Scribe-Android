@@ -167,6 +167,7 @@ class KeyboardUIManager(
                 keyboardView.setEnterKeyIcon(ScribeState.IDLE, earlierValue)
                 keyboardView.setEnterKeyColor(null, isDarkMode = resolvedIsDarkMode)
             }
+
             else -> {
                 keyboardView.setEnterKeyColor(context.getColor(R.color.color_primary))
                 keyboardView.setEnterKeyIcon(ScribeState.PLURAL, earlierValue)
@@ -195,23 +196,35 @@ class KeyboardUIManager(
         val isUserDarkMode = getIsDarkModeOrNot(context)
 
         when (currentState) {
-            ScribeState.IDLE ->
+            ScribeState.IDLE -> {
                 setupIdleView(
                     language,
                     emojiAutoSuggestionEnabled,
                     autoSuggestEmojis,
                 )
-            ScribeState.SELECT_COMMAND -> setupSelectCommandView(language)
-            ScribeState.INVALID -> setupInvalidView(language, invalidCommandSource)
+            }
+
+            ScribeState.SELECT_COMMAND -> {
+                setupSelectCommandView(language)
+            }
+
+            ScribeState.INVALID -> {
+                setupInvalidView(language, invalidCommandSource)
+            }
+
             ScribeState.TRANSLATE -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
                 binding.translateBtn.visibility = View.VISIBLE
             }
+
             ScribeState.CONJUGATE, ScribeState.SELECT_VERB_CONJUNCTION, ScribeState.PLURAL -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
             }
-            ScribeState.ALREADY_PLURAL -> setupAlreadyPluralView()
+
+            ScribeState.ALREADY_PLURAL -> {
+                setupAlreadyPluralView()
+            }
         }
 
         updateEnterKeyColor(isUserDarkMode, currentState)
@@ -749,6 +762,7 @@ class KeyboardUIManager(
                 emojiSpaceTablet2?.visibility = View.GONE
                 emojiBtnTablet3?.visibility = View.GONE
             }
+
             1 -> {
                 emojiBtnTablet1?.visibility = View.VISIBLE
                 emojiSpaceTablet1?.visibility = View.GONE
@@ -756,6 +770,7 @@ class KeyboardUIManager(
                 emojiSpaceTablet2?.visibility = View.GONE
                 emojiBtnTablet3?.visibility = View.GONE
             }
+
             2 -> {
                 emojiBtnTablet1?.visibility = View.VISIBLE
                 emojiSpaceTablet1?.visibility = View.VISIBLE
@@ -763,6 +778,7 @@ class KeyboardUIManager(
                 emojiSpaceTablet2?.visibility = View.GONE
                 emojiBtnTablet3?.visibility = View.GONE
             }
+
             else -> {
                 emojiBtnTablet1?.visibility = View.VISIBLE
                 emojiSpaceTablet1?.visibility = View.VISIBLE
@@ -794,11 +810,13 @@ class KeyboardUIManager(
                 emojiSpacePhone?.visibility = View.GONE
                 emojiBtnPhone2?.visibility = View.GONE
             }
+
             emojiCount >= 2 -> {
                 emojiBtnPhone1?.visibility = View.VISIBLE
                 emojiSpacePhone?.visibility = View.VISIBLE
                 emojiBtnPhone2?.visibility = View.VISIBLE
             }
+
             else -> {
                 emojiBtnPhone1?.visibility = View.GONE
                 emojiSpacePhone?.visibility = View.GONE

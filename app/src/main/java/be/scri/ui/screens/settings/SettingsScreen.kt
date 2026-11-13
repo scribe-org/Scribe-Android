@@ -232,9 +232,8 @@ private fun EmptyKeyboardSettingsSection(
             }
         }
         InstallKeyboardButton(
-            onClick = {
-                SettingsUtil.navigateToKeyboardSettings(context)
-            },
+            onClick = { SettingsUtil.navigateToKeyboardSettings(context) },
+            modifier = Modifier.padding(12.dp),
         )
     }
 }

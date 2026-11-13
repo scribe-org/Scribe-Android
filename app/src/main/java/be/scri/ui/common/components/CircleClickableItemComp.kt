@@ -49,8 +49,14 @@ fun CircleClickableItemComp(
         modifier =
             modifier.clickable {
                 when (checkState) {
-                    CheckUpdateState.Idle -> onStartCheck()
-                    CheckUpdateState.Checking -> onCancel()
+                    CheckUpdateState.Idle -> {
+                        onStartCheck()
+                    }
+
+                    CheckUpdateState.Checking -> {
+                        onCancel()
+                    }
+
                     CheckUpdateState.Done -> { }
                 }
             },
@@ -87,7 +93,7 @@ fun CircleClickableItemComp(
                                         .size(28.dp)
                                         .border(
                                             width = 2.dp,
-                                            color = if (isDarkTheme)colorResource(R.color.light_special_key_color) else colorResource(R.color.md_grey_600),
+                                            color = if (isDarkTheme) colorResource(R.color.light_special_key_color) else colorResource(R.color.md_grey_600),
                                             shape = CircleShape,
                                         ),
                             )
