@@ -29,15 +29,21 @@ class EmojiAdapter(
         viewType: Int,
     ): RecyclerView.ViewHolder =
         when (viewType) {
-            ITEM_TYPE_EMOJI ->
+            ITEM_TYPE_EMOJI -> {
                 EmojiViewHolder(
                     layoutInflater.inflate(R.layout.item_emoji, parent, false),
                 )
-            ITEM_TYPE_CATEGORY ->
+            }
+
+            ITEM_TYPE_CATEGORY -> {
                 EmojiCategoryViewHolder(
                     layoutInflater.inflate(R.layout.item_emoji_category_title, parent, false),
                 )
-            else -> throw IllegalArgumentException("Unsupported view type: $viewType")
+            }
+
+            else -> {
+                throw IllegalArgumentException("Unsupported view type: $viewType")
+            }
         }
 
     override fun onBindViewHolder(

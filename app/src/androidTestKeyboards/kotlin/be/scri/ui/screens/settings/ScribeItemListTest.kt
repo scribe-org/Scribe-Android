@@ -280,6 +280,7 @@ class ScribeItemListTest {
                                 index = itemList.items.indexOf(item),
                             )
                         }
+
                         is ScribeItem.SwitchItem -> {
                             Text(
                                 text = "",
@@ -290,6 +291,7 @@ class ScribeItemListTest {
                                 index = itemList.items.indexOf(item),
                             )
                         }
+
                         else -> {
                             Text(
                                 text = "Unknown item type",

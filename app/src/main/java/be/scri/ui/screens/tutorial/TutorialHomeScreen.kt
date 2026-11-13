@@ -139,6 +139,7 @@ fun TutorialHomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // MARK: Intro Text
+
         Card(
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(containerColor = cardBackground),
@@ -204,7 +205,7 @@ fun TutorialHomeScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Start full tutorial button
+            // Start full tutorial button.
             Button(
                 onClick = onStartFullTutorial,
                 colors =
@@ -244,6 +245,7 @@ fun TutorialHomeScreen(
             }
             InstallKeyboardButton(
                 onClick = { SettingsUtil.navigateToKeyboardSettings(context) },
+                modifier = Modifier.padding(vertical = 12.dp),
             )
         }
         Spacer(modifier = Modifier.height(16.dp))

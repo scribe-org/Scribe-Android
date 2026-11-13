@@ -210,6 +210,7 @@ fun ScribeApp(
                                     }
                                     HandleBackPress(pagerState, coroutineScope)
                                 }
+
                                 is BottomBarScreen.Conjugate -> {
                                     Box(
                                         modifier = Modifier.fillMaxSize(),
@@ -239,6 +240,7 @@ fun ScribeApp(
                                     }
                                     HandleBackPress(pagerState, coroutineScope)
                                 }
+
                                 is BottomBarScreen.Settings -> {
                                     Box(
                                         modifier = Modifier.fillMaxSize(),
@@ -274,6 +276,7 @@ fun ScribeApp(
                                     }
                                     HandleBackPress(pagerState, coroutineScope)
                                 }
+
                                 is BottomBarScreen.About -> {
                                     Box(
                                         modifier = Modifier.fillMaxSize(),

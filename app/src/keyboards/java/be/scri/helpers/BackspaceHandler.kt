@@ -163,15 +163,33 @@ class BackspaceHandler(
         // Check if special characters are considered word.
         return when (Character.getType(char).toByte()) {
             // Connector punctuation.
-            Character.CONNECTOR_PUNCTUATION -> true
-            Character.DASH_PUNCTUATION -> true
+            Character.CONNECTOR_PUNCTUATION -> {
+                true
+            }
+
+            Character.DASH_PUNCTUATION -> {
+                true
+            }
+
             Character.OTHER_PUNCTUATION -> {
                 char in "'\".,@#$%&*+=~`|\\/:;?!^"
             }
-            Character.CURRENCY_SYMBOL -> true
-            Character.MATH_SYMBOL -> char in "+=<>~^"
-            Character.OTHER_SYMBOL -> char in "@#$%&*+=~`|\\/:;?!^"
-            else -> false
+
+            Character.CURRENCY_SYMBOL -> {
+                true
+            }
+
+            Character.MATH_SYMBOL -> {
+                char in "+=<>~^"
+            }
+
+            Character.OTHER_SYMBOL -> {
+                char in "@#$%&*+=~`|\\/:;?!^"
+            }
+
+            else -> {
+                false
+            }
         }
     }
 }

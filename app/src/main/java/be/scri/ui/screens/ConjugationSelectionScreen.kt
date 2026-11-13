@@ -208,6 +208,7 @@ fun ConjugationSelectionScreen(
                                     )
                                 }
                             }
+
                             is ConjugationSelectionUiState.NoData -> {
                                 Box(
                                     modifier =
@@ -224,6 +225,7 @@ fun ConjugationSelectionScreen(
                                     )
                                 }
                             }
+
                             is ConjugationSelectionUiState.Error -> {
                                 Column(
                                     modifier =
@@ -247,6 +249,7 @@ fun ConjugationSelectionScreen(
                                     }
                                 }
                             }
+
                             is ConjugationSelectionUiState.Loading -> {
                                 Box(
                                     modifier =
@@ -262,6 +265,7 @@ fun ConjugationSelectionScreen(
                                     )
                                 }
                             }
+
                             is ConjugationSelectionUiState.Data -> {
                                 val currentData = state.conjugationData
                                 Crossfade(
