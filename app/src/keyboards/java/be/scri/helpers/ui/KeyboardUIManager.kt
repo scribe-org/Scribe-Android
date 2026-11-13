@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.text.InputType
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -125,6 +126,7 @@ class KeyboardUIManager(
 
     init {
         setupClickListeners()
+        binding.commandBar.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
     }
 
     private fun setupClickListeners() {
@@ -836,6 +838,9 @@ class KeyboardUIManager(
 
         binding.keyboardView.visibility = View.GONE
         binding.commandOptionsBar.visibility = View.GONE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
 
         val isDarkMode = getIsDarkModeOrNot(context)
 
@@ -1009,6 +1014,9 @@ class KeyboardUIManager(
         binding.emojiPaletteHolder.visibility = View.GONE
         binding.keyboardView.visibility = View.VISIBLE
         binding.commandOptionsBar.visibility = View.VISIBLE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
         binding.emojisList.scrollToPosition(0)
         binding.emojiCategoriesStrip.removeAllViews()
     }
@@ -1153,11 +1161,27 @@ class KeyboardUIManager(
     /**
      * Show information about Wikidata when the user clicks the information icon.
      */
-    private fun showInvalidInfo() {
+    internal fun showInvalidInfo() {
         binding.ivInfo.isClickable = true
         binding.ivInfo.isFocusable = true
         keyboardView.visibility = View.GONE
+        binding.toolbarBar.visibility = View.GONE
         binding.invalidInfoBar.visibility = View.VISIBLE
+        val invalidText =
+            binding.promptText.text
+                .toString()
+                .removeSuffix(": ")
+                .trim()
+        if (invalidText.isNotEmpty()) {
+            binding.invalidText.text = invalidText
+        }
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val backgroundColor = if (isDarkMode) R.color.command_bar_color_dark else white
+        binding.invalidText.backgroundTintList = ContextCompat.getColorStateList(context, backgroundColor)
+        binding.invalidText.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+        binding.invalidInfoBar.setBackgroundColor(
+            if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
+        )
         setupWikidataButtons()
         updateWikidataPage()
     }
@@ -1241,11 +1265,17 @@ class KeyboardUIManager(
         binding.clipboardPanelHolder.visibility = View.VISIBLE
         keyboardView.visibility = View.INVISIBLE
         binding.commandOptionsBar.visibility = View.INVISIBLE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
     }
 
     fun hideClipboardPanel() {
         binding.clipboardPanelHolder.visibility = View.GONE
         keyboardView.visibility = View.VISIBLE
         binding.commandOptionsBar.visibility = View.VISIBLE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
     }
 }

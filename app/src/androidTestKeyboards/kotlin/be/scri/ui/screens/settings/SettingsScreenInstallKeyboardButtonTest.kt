@@ -231,4 +231,76 @@ class SettingsScreenInstallKeyboardButtonTest {
             .assertIsDisplayed()
             .assertHasClickAction()
     }
+
+    @Test
+    fun keyboardTitle_isDisplayed_whenKeyboardNotInstalled() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val expectedText = context.getString(R.string.i18n_app_settings_keyboard_title)
+        val mockViewModel = createMockViewModel(isKeyboardInstalled = false)
+
+        composeTestRule.setContent {
+            ScribeTheme(useDarkTheme = false) {
+                SettingsScreen(
+                    onDarkModeChange = {},
+                    onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
+                    context = context,
+                    viewModel = mockViewModel,
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithText(expectedText)
+            .assertExists()
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun noKeyboardsMessage_isDisplayed_whenKeyboardNotInstalled() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val expectedText = context.getString(R.string.i18n_app_download_menu_ui_no_keyboards_installed)
+        val mockViewModel = createMockViewModel(isKeyboardInstalled = false)
+
+        composeTestRule.setContent {
+            ScribeTheme(useDarkTheme = false) {
+                SettingsScreen(
+                    onDarkModeChange = {},
+                    onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
+                    context = context,
+                    viewModel = mockViewModel,
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithText(expectedText)
+            .assertExists()
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun noKeyboardsMessage_isNotDisplayed_whenKeyboardInstalled() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val expectedText = context.getString(R.string.i18n_app_download_menu_ui_no_keyboards_installed)
+        val mockViewModel = createMockViewModel(isKeyboardInstalled = true)
+        every { mockViewModel.languages } returns MutableStateFlow(listOf("English"))
+
+        composeTestRule.setContent {
+            ScribeTheme(useDarkTheme = false) {
+                SettingsScreen(
+                    onDarkModeChange = {},
+                    onLanguageSettingsClick = {},
+                    onIncreaseTextSizeChange = {},
+                    context = context,
+                    viewModel = mockViewModel,
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithText(expectedText)
+            .assertDoesNotExist()
+    }
 }

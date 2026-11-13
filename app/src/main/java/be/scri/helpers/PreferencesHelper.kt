@@ -7,6 +7,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import be.scri.models.ScribeLanguage
 
 /**
  * A helper to facilitate setting preferences for individual language keyboards.
@@ -25,6 +26,7 @@ object PreferencesHelper {
     private const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"
     private const val WORD_BY_WORD_DELETION = "word_by_word_deletion"
     private const val DEFAULT_CURRENCY = "default_currency"
+    private const val DEFAULT_KEYBOARD_LAYOUT = "default_keyboard_layout"
     private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
     private const val INCREASE_TEXT_SIZE = "increase_text_size"
 
@@ -536,6 +538,44 @@ object PreferencesHelper {
     ): String {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getString(getLanguageSpecificPreferenceKey(DEFAULT_CURRENCY, language), "Dollar") ?: "Dollar"
+    }
+
+    /**
+     * Retrieves the default keyboard layout preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the keyboard layout preference.
+     *
+     * @return The default keyboard layout (e.g., "QWERTY", "AZERTY", "QWERTZ", "ЙЦУКЕН").
+     */
+    fun getDefaultKeyboardLayout(
+        context: Context,
+        language: String,
+    ): String {
+        val defaultLayout = ScribeLanguage.fromDisplayName(language).defaultLayout
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getString(
+            getLanguageSpecificPreferenceKey(DEFAULT_KEYBOARD_LAYOUT, language),
+            defaultLayout,
+        ) ?: defaultLayout
+    }
+
+    /**
+     * Sets the default keyboard layout preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the keyboard layout preference.
+     * @param layout The layout name (e.g., "QWERTY", "AZERTY").
+     */
+    fun setDefaultKeyboardLayout(
+        context: Context,
+        language: String,
+        layout: String,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putString(getLanguageSpecificPreferenceKey(DEFAULT_KEYBOARD_LAYOUT, language), layout)
+        }
     }
 
     /**
