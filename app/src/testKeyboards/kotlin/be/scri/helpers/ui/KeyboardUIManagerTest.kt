@@ -647,8 +647,8 @@ class KeyboardUIManagerTest {
         assertNotNull("Button 3 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_3))
         assertNull("Button 4 should not be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
     }
-        
-    @Test  
+
+    @Test
     fun `showClipboardPanel hides toolbarBar and shows clipboardPanelHolder`() {
         uiManager.updateUI(
             currentState = ScribeState.TRANSLATE,
