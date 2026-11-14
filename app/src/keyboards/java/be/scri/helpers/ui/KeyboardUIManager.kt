@@ -183,6 +183,7 @@ class KeyboardUIManager(
                 keyboardView.setEnterKeyIcon(ScribeState.IDLE, earlierValue)
                 keyboardView.setEnterKeyColor(null, isDarkMode = resolvedIsDarkMode)
             }
+
             else -> {
                 keyboardView.setEnterKeyColor(context.getColor(R.color.color_primary))
                 keyboardView.setEnterKeyIcon(ScribeState.PLURAL, earlierValue)
@@ -211,23 +212,35 @@ class KeyboardUIManager(
         val isUserDarkMode = getIsDarkModeOrNot(context)
 
         when (currentState) {
-            ScribeState.IDLE ->
+            ScribeState.IDLE -> {
                 setupIdleView(
                     language,
                     emojiAutoSuggestionEnabled,
                     autoSuggestEmojis,
                 )
-            ScribeState.SELECT_COMMAND -> setupSelectCommandView(language)
-            ScribeState.INVALID -> setupInvalidView(language, invalidCommandSource)
+            }
+
+            ScribeState.SELECT_COMMAND -> {
+                setupSelectCommandView(language)
+            }
+
+            ScribeState.INVALID -> {
+                setupInvalidView(language, invalidCommandSource)
+            }
+
             ScribeState.TRANSLATE -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
                 binding.translateBtn.visibility = View.VISIBLE
             }
+
             ScribeState.CONJUGATE, ScribeState.SELECT_VERB_CONJUNCTION, ScribeState.PLURAL -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
             }
-            ScribeState.ALREADY_PLURAL -> setupAlreadyPluralView()
+
+            ScribeState.ALREADY_PLURAL -> {
+                setupAlreadyPluralView()
+            }
         }
 
         updateEnterKeyColor(isUserDarkMode, currentState)
@@ -886,6 +899,7 @@ class KeyboardUIManager(
                 emojiSpaceTablet2?.visibility = View.GONE
                 emojiBtnTablet3?.visibility = View.GONE
             }
+
             1 -> {
                 emojiBtnTablet1?.visibility = View.VISIBLE
                 emojiSpaceTablet1?.visibility = View.GONE
@@ -893,6 +907,7 @@ class KeyboardUIManager(
                 emojiSpaceTablet2?.visibility = View.GONE
                 emojiBtnTablet3?.visibility = View.GONE
             }
+
             2 -> {
                 emojiBtnTablet1?.visibility = View.VISIBLE
                 emojiSpaceTablet1?.visibility = View.VISIBLE
@@ -900,6 +915,7 @@ class KeyboardUIManager(
                 emojiSpaceTablet2?.visibility = View.GONE
                 emojiBtnTablet3?.visibility = View.GONE
             }
+
             else -> {
                 emojiBtnTablet1?.visibility = View.VISIBLE
                 emojiSpaceTablet1?.visibility = View.VISIBLE
@@ -931,11 +947,13 @@ class KeyboardUIManager(
                 emojiSpacePhone?.visibility = View.GONE
                 emojiBtnPhone2?.visibility = View.GONE
             }
+
             emojiCount >= 2 -> {
                 emojiBtnPhone1?.visibility = View.VISIBLE
                 emojiSpacePhone?.visibility = View.VISIBLE
                 emojiBtnPhone2?.visibility = View.VISIBLE
             }
+
             else -> {
                 emojiBtnPhone1?.visibility = View.GONE
                 emojiSpacePhone?.visibility = View.GONE
@@ -975,6 +993,9 @@ class KeyboardUIManager(
 
         binding.keyboardView.visibility = View.GONE
         binding.commandOptionsBar.visibility = View.GONE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
 
         val isDarkMode = getIsDarkModeOrNot(context)
 
@@ -1148,6 +1169,9 @@ class KeyboardUIManager(
         binding.emojiPaletteHolder.visibility = View.GONE
         binding.keyboardView.visibility = View.VISIBLE
         binding.commandOptionsBar.visibility = View.VISIBLE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
         binding.emojisList.scrollToPosition(0)
         binding.emojiCategoriesStrip.removeAllViews()
     }
@@ -1292,11 +1316,27 @@ class KeyboardUIManager(
     /**
      * Show information about Wikidata when the user clicks the information icon.
      */
-    private fun showInvalidInfo() {
+    internal fun showInvalidInfo() {
         binding.ivInfo.isClickable = true
         binding.ivInfo.isFocusable = true
         keyboardView.visibility = View.GONE
+        binding.toolbarBar.visibility = View.GONE
         binding.invalidInfoBar.visibility = View.VISIBLE
+        val invalidText =
+            binding.promptText.text
+                .toString()
+                .removeSuffix(": ")
+                .trim()
+        if (invalidText.isNotEmpty()) {
+            binding.invalidText.text = invalidText
+        }
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val backgroundColor = if (isDarkMode) R.color.command_bar_color_dark else white
+        binding.invalidText.backgroundTintList = ContextCompat.getColorStateList(context, backgroundColor)
+        binding.invalidText.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+        binding.invalidInfoBar.setBackgroundColor(
+            if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
+        )
         setupWikidataButtons()
         updateWikidataPage()
     }
@@ -1380,11 +1420,17 @@ class KeyboardUIManager(
         binding.clipboardPanelHolder.visibility = View.VISIBLE
         keyboardView.visibility = View.INVISIBLE
         binding.commandOptionsBar.visibility = View.INVISIBLE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
     }
 
     fun hideClipboardPanel() {
         binding.clipboardPanelHolder.visibility = View.GONE
         keyboardView.visibility = View.VISIBLE
         binding.commandOptionsBar.visibility = View.VISIBLE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
     }
 }

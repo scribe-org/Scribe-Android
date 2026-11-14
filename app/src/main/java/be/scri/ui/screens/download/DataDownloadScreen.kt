@@ -244,28 +244,32 @@ data class LanguageItem(
  */
 @Composable
 private fun EmptyStateSection(context: Context) {
-    Surface(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp),
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surface,
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Surface(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surface,
         ) {
-            Text(
-                text = stringResource(R.string.i18n_app_download_menu_ui_no_keyboards_installed),
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = stringResource(R.string.i18n_app_download_menu_ui_no_keyboards_installed),
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
         }
+
+        InstallKeyboardButton(
+            onClick = { SettingsUtil.navigateToKeyboardSettings(context) },
+            modifier = Modifier.padding(12.dp),
+        )
     }
-    InstallKeyboardButton(
-        onClick = { SettingsUtil.navigateToKeyboardSettings(context) },
-    )
 }
 
 /**

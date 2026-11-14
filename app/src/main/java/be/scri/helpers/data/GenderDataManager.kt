@@ -48,7 +48,7 @@ class GenderDataManager(
         val genderMap = HashMap<String, List<String>>()
 
         when {
-            hasCanonicalGender(contract) ->
+            hasCanonicalGender(contract) -> {
                 processGenders(
                     db = db,
                     nounColumn =
@@ -60,6 +60,8 @@ class GenderDataManager(
                             .firstOrNull(),
                     genderMap = genderMap,
                 )
+            }
+
             hasMasculineFeminine(contract) -> {
                 processGenders(
                     db = db,
@@ -78,7 +80,10 @@ class GenderDataManager(
                     defaultGender = "feminine",
                 )
             }
-            else -> Log.w("GenderDataManager", "No valid gender columns found in contract for language.")
+
+            else -> {
+                Log.w("GenderDataManager", "No valid gender columns found in contract for language.")
+            }
         }
         return genderMap
     }
