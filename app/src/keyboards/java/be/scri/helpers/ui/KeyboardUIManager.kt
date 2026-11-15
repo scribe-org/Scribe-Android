@@ -1197,9 +1197,29 @@ class KeyboardUIManager(
         val backgroundColor = if (isDarkMode) R.color.command_bar_color_dark else white
         binding.invalidText.backgroundTintList = ContextCompat.getColorStateList(context, backgroundColor)
         binding.invalidText.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
-        binding.invalidInfoBar.setBackgroundColor(
-            if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
-        )
+        val panelBgColor =
+            ContextCompat.getColor(
+                context,
+                if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+            )
+        binding.invalidInfoBar.setBackgroundColor(panelBgColor)
+        binding.infoWiki.setBackgroundColor(panelBgColor)
+
+        val cardBgColor =
+            ContextCompat.getColor(
+                context,
+                if (isDarkMode) R.color.dark_key_color else R.color.white,
+            )
+        val textColor = if (isDarkMode) Color.WHITE else ContextCompat.getColor(context, R.color.key_text_color)
+        binding.middleTextviewContainer.backgroundTintList = ColorStateList.valueOf(cardBgColor)
+        binding.middleTextview.setTextColor(textColor)
+
+        binding.buttonLeft.backgroundTintList = ColorStateList.valueOf(cardBgColor)
+        binding.buttonRight.backgroundTintList = ColorStateList.valueOf(cardBgColor)
+        val arrowColor = if (isDarkMode) Color.WHITE else Color.BLACK
+        binding.buttonLeft.foreground?.setTint(arrowColor)
+        binding.buttonRight.foreground?.setTint(arrowColor)
+
         setupWikidataButtons()
         updateWikidataPage()
     }
@@ -1232,13 +1252,17 @@ class KeyboardUIManager(
      */
     private fun updateDotIndicators() {
         val pageIndicators = binding.pageIndicators
+        val isDarkMode = getIsDarkModeOrNot(context)
         for (i in 0 until pageIndicators.childCount) {
             val dot = pageIndicators.getChildAt(i)
-            dot.background =
-                ContextCompat.getDrawable(
-                    context,
-                    if (i == currentPage) R.drawable.dot_active else R.drawable.dot_inactive,
-                )
+            val drawableRes = if (i == currentPage) R.drawable.dot_active else R.drawable.dot_inactive
+            val drawable = ContextCompat.getDrawable(context, drawableRes)?.mutate()
+            if (isDarkMode) {
+                drawable?.setTint(if (i == currentPage) Color.WHITE else 0x66FFFFFF.toInt())
+            } else {
+                drawable?.setTint(if (i == currentPage) Color.BLACK else 0xFFCCCCCC.toInt())
+            }
+            dot.background = drawable
         }
     }
 
@@ -1286,6 +1310,23 @@ class KeyboardUIManager(
         binding.toolbarBar.visibility = View.GONE
         binding.invalidInfoBar.visibility = View.GONE
         binding.conjugateGridContainer.visibility = View.GONE
+        applyClipboardPanelTheme()
+    }
+
+    fun applyClipboardPanelTheme() {
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val bgColor =
+            ContextCompat.getColor(
+                context,
+                if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+            )
+        val textColor = if (isDarkMode) Color.WHITE else Color.BLACK
+
+        binding.clipboardPanelTopBar.setBackgroundColor(bgColor)
+        binding.clipboardContentHolder.setBackgroundColor(bgColor)
+        binding.clipboardPanelClose.setColorFilter(textColor)
+        binding.clipboardPanelLabel.setTextColor(textColor)
+        binding.clipboardEmptyText.setTextColor(textColor)
     }
 
     fun hideClipboardPanel() {

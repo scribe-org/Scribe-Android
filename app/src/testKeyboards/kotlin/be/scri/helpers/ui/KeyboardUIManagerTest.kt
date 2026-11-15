@@ -3,9 +3,12 @@
 package be.scri.helpers.ui
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.test.core.app.ApplicationProvider
 import be.scri.R
 import be.scri.databinding.InputMethodViewBinding
@@ -530,5 +533,107 @@ class KeyboardUIManagerTest {
         assertEquals(View.VISIBLE, keyboardView.visibility)
         assertEquals(View.VISIBLE, commandOptionsBar.visibility)
         assertEquals(View.GONE, toolbarBar.visibility)
+    }
+
+    @Test
+    fun `showClipboardPanel applies dark mode styling when dark mode is enabled`() {
+        val sharedPrefs = context.getSharedPreferences(be.scri.helpers.PreferencesHelper.SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPrefs
+            .edit()
+            .putBoolean("dark_mode", true)
+            .putBoolean("last_system_dark_mode", false)
+            .commit()
+
+        uiManager.showClipboardPanel()
+
+        val expectedBg = ContextCompat.getColor(context, R.color.dark_keyboard_bg_color)
+        assertEquals(expectedBg, (binding.clipboardPanelTopBar.background as ColorDrawable).color)
+        assertEquals(expectedBg, (binding.clipboardContentHolder.background as ColorDrawable).color)
+        assertEquals(Color.WHITE, binding.clipboardPanelLabel.currentTextColor)
+        assertEquals(Color.WHITE, binding.clipboardEmptyText.currentTextColor)
+    }
+
+    @Test
+    fun `showClipboardPanel applies light mode styling when dark mode is disabled`() {
+        val sharedPrefs = context.getSharedPreferences(be.scri.helpers.PreferencesHelper.SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPrefs
+            .edit()
+            .putBoolean("dark_mode", false)
+            .putBoolean("last_system_dark_mode", false)
+            .commit()
+
+        uiManager.showClipboardPanel()
+
+        val expectedBg = ContextCompat.getColor(context, R.color.light_keyboard_bg_color)
+        assertEquals(expectedBg, (binding.clipboardPanelTopBar.background as ColorDrawable).color)
+        assertEquals(expectedBg, (binding.clipboardContentHolder.background as ColorDrawable).color)
+        assertEquals(Color.BLACK, binding.clipboardPanelLabel.currentTextColor)
+        assertEquals(Color.BLACK, binding.clipboardEmptyText.currentTextColor)
+    }
+
+    @Test
+    fun `showInvalidInfo applies dark mode styling to wikidata explanation card`() {
+        val sharedPrefs = context.getSharedPreferences(be.scri.helpers.PreferencesHelper.SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPrefs
+            .edit()
+            .putBoolean("dark_mode", true)
+            .putBoolean("last_system_dark_mode", false)
+            .commit()
+
+        uiManager.updateUI(
+            currentState = ScribeState.INVALID,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = null,
+            conjugateLabels = null,
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = null,
+            invalidCommandSource = ScribeState.CONJUGATE,
+        )
+
+        ivInfo.performClick()
+
+        val expectedBg = ContextCompat.getColor(context, R.color.dark_keyboard_bg_color)
+        val expectedCardBg = ContextCompat.getColor(context, R.color.dark_key_color)
+        assertEquals(expectedBg, (binding.invalidInfoBar.background as ColorDrawable).color)
+        assertEquals(expectedBg, (binding.infoWiki.background as ColorDrawable).color)
+        assertEquals(Color.WHITE, binding.middleTextview.currentTextColor)
+        assertEquals(expectedCardBg, binding.middleTextviewContainer.backgroundTintList?.defaultColor)
+        assertEquals(expectedCardBg, binding.buttonLeft.backgroundTintList?.defaultColor)
+        assertEquals(expectedCardBg, binding.buttonRight.backgroundTintList?.defaultColor)
+    }
+
+    @Test
+    fun `showInvalidInfo applies light mode styling to wikidata explanation card`() {
+        val sharedPrefs = context.getSharedPreferences(be.scri.helpers.PreferencesHelper.SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPrefs
+            .edit()
+            .putBoolean("dark_mode", false)
+            .putBoolean("last_system_dark_mode", false)
+            .commit()
+
+        uiManager.updateUI(
+            currentState = ScribeState.INVALID,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = null,
+            conjugateLabels = null,
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = null,
+            invalidCommandSource = ScribeState.CONJUGATE,
+        )
+
+        ivInfo.performClick()
+
+        val expectedBg = ContextCompat.getColor(context, R.color.light_keyboard_bg_color)
+        val expectedCardBg = ContextCompat.getColor(context, R.color.white)
+        assertEquals(expectedBg, (binding.invalidInfoBar.background as ColorDrawable).color)
+        assertEquals(expectedBg, (binding.infoWiki.background as ColorDrawable).color)
+        assertEquals(ContextCompat.getColor(context, R.color.key_text_color), binding.middleTextview.currentTextColor)
+        assertEquals(expectedCardBg, binding.middleTextviewContainer.backgroundTintList?.defaultColor)
+        assertEquals(expectedCardBg, binding.buttonLeft.backgroundTintList?.defaultColor)
+        assertEquals(expectedCardBg, binding.buttonRight.backgroundTintList?.defaultColor)
     }
 }

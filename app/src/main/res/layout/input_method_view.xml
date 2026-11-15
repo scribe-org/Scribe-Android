@@ -627,6 +627,7 @@ GeneralKeyboardIME.kt
 
             <!-- Middle TextView -->
             <LinearLayout
+                android:id="@+id/middle_textview_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

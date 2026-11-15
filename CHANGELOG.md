@@ -97,6 +97,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Verb conjugation lookups in the keyboard now support case-insensitive matching, inflected forms, and fallback to downloaded language databases, resolving "Not in Wikidata" errors ([#598](https://github.com/scribe-org/Scribe-Android/issues/598), [#738](https://github.com/scribe-org/Scribe-Android/issues/738)).
 - Active command bar is now properly hidden when opening the clipboard panel, emoji palette, or Wikidata info explanation, preventing toolbar doubling on return to normal keyboard UI ([#749](https://github.com/scribe-org/Scribe-Android/issues/749)).
 - Spell check error underlines no longer appear on command bar placeholder text and foreign language words ([#748](https://github.com/scribe-org/Scribe-Android/issues/748)).
+- The clipboard panel and Wikidata information panels now properly follow dark mode styling when dark mode is enabled ([#761](https://github.com/scribe-org/Scribe-Android/issues/761)).
 
 ### 🔒 Security
 
