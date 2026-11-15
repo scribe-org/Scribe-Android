@@ -4,6 +4,7 @@ package be.scri.helpers.data
 
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
+import android.util.Log
 import be.scri.data.remote.SqlIdentifier
 
 fun SQLiteDatabase.tableExists(tableName: String): Boolean =
@@ -73,6 +74,7 @@ fun SQLiteDatabase.getProfanity(): Set<String> {
             }
         }
     } catch (e: SQLiteException) {
+        Log.e("SQLiteExtensions", "Failed to read profanity table", e)
         return emptySet()
     }
     return profanity
