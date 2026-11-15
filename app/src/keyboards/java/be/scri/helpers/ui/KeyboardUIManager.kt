@@ -1310,7 +1310,10 @@ class KeyboardUIManager(
         binding.toolbarBar.visibility = View.GONE
         binding.invalidInfoBar.visibility = View.GONE
         binding.conjugateGridContainer.visibility = View.GONE
+        applyClipboardPanelTheme()
+    }
 
+    fun applyClipboardPanelTheme() {
         val isDarkMode = getIsDarkModeOrNot(context)
         val bgColor =
             ContextCompat.getColor(
