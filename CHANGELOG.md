@@ -48,6 +48,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Menu items have been provided to enable or disable keyboard functionalities ([#64](https://github.com/scribe-org/Scribe-Android/issues/64), [#65](https://github.com/scribe-org/Scribe-Android/issues/65)).
 - Menu items have been provided to customize the keyboard UI ([#148](https://github.com/scribe-org/Scribe-Android/issues/148)).
 - The application and community's relationship to the Wikimedia movement is explained in app ([#52](https://github.com/scribe-org/Scribe-Android/issues/52)).
+- The Wikimedia and Scribe screen was updated to reference Wiktionary rather than Wikipedia with updated text and Wiktionary logo, reflecting Scribe's use of Wiktionary translation data ([#754](https://github.com/scribe-org/Scribe-Android/issues/754)).
 - Vibrate on keypress and key click functionalities are included ([#405](https://github.com/scribe-org/Scribe-Android/issues/405), [#406](https://github.com/scribe-org/Scribe-Android/issues/406)).
 - An in-app tutorial is provided to detail functionalities of the application ([#602](https://github.com/scribe-org/Scribe-Android/issues/602), [#615](https://github.com/scribe-org/Scribe-Android/issues/615), [#616](https://github.com/scribe-org/Scribe-Android/issues/616)).
 - The user is able to easily rate the application, with installer-aware routing to the appropriate store ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
@@ -94,6 +95,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Native dictionaries are re-extracted after an app update so autosuggestions no longer use dictionaries from a previous install ([#701](https://github.com/scribe-org/Scribe-Android/issues/701)).
 - Tutorial practice text is now preserved across configuration changes such as device rotation ([#736](https://github.com/scribe-org/Scribe-Android/issues/736)).
 - Verb conjugation lookups in the keyboard now support case-insensitive matching, inflected forms, and fallback to downloaded language databases, resolving "Not in Wikidata" errors ([#598](https://github.com/scribe-org/Scribe-Android/issues/598), [#738](https://github.com/scribe-org/Scribe-Android/issues/738)).
+- Active command bar is now properly hidden when opening the clipboard panel, emoji palette, or Wikidata info explanation, preventing toolbar doubling on return to normal keyboard UI ([#749](https://github.com/scribe-org/Scribe-Android/issues/749)).
 - Spell check error underlines no longer appear on command bar placeholder text and foreign language words ([#748](https://github.com/scribe-org/Scribe-Android/issues/748)).
 
 ### 🔒 Security

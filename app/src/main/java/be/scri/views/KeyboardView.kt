@@ -353,6 +353,7 @@ class KeyboardView
                         mEnterKeyColor = darkSpecialKey
                         invalidateAllKeys()
                     }
+
                     else -> {
                         mEnterKeyColor = lightSpecialKey
                         invalidateAllKeys()
@@ -402,57 +403,72 @@ class KeyboardView
                     mKeyLabelFPS = label
                     topSmallLabelFPS = smallTextLabel
                 }
+
                 KeyboardBase.CODE_FPP -> {
                     mKeyLabelFPP = label
                     topSmallLabelFPP = smallTextLabel
                 }
+
                 KeyboardBase.CODE_SPS -> {
                     mKeyLabelSPS = label
                     topSmallLabelSPS = smallTextLabel
                 }
+
                 KeyboardBase.CODE_SPP -> {
                     mKeyLabelSPP = label
                     topSmallLabelSPP = smallTextLabel
                 }
+
                 KeyboardBase.CODE_TPS -> {
                     mKeyLabelTPS = label
                     topSmallLabelTPS = smallTextLabel
                 }
+
                 KeyboardBase.CODE_TPP -> {
                     mKeyLabelTPP = label
                     topSmallLabelTPP = smallTextLabel
                 }
+
                 KeyboardBase.CODE_TR -> {
                     mKeyLabelTR = label
                     topSmallLabelTR = smallTextLabel
                 }
+
                 KeyboardBase.CODE_TL -> {
                     mKeyLabelTL = label
                     topSmallLabelTL = smallTextLabel
                 }
+
                 KeyboardBase.CODE_BR -> {
                     mKeyLabelBR = label
                     topSmallLabelBR = smallTextLabel
                 }
+
                 KeyboardBase.CODE_1X3_CENTER -> {
                     mKeyLabel1X3TOP = label
                 }
+
                 KeyboardBase.CODE_1X3_LEFT -> {
                     mKeyLabel1X3LEFT = label
                 }
+
                 KeyboardBase.CODE_1X3_RIGHT -> {
                     mKeyLabel1X3BOTTOM = label
                 }
+
                 KeyboardBase.CODE_BL -> {
                     mKeyLabelBL = label
                     topSmallLabelBL = smallTextLabel
                 }
+
                 KeyboardBase.CODE_2X1_BOTTOM -> {
                     mKeyLabel2X1BOTTOM = label
                 }
+
                 KeyboardBase.CODE_2X1_TOP -> {
                     mKeyLabel2X1TOP = label
                 }
+
                 KeyboardBase.CODE_CURRENCY -> {
                     mCurrencySymbol = label
                 }
@@ -564,12 +580,17 @@ class KeyboardView
                                     val previewText = mPreviewText
                                     previewText?.visibility = INVISIBLE
                                 }
-                                MSG_REPEAT ->
+
+                                MSG_REPEAT -> {
                                     if (repeatKey(false)) {
                                         val repeat = Message.obtain(this, MSG_REPEAT)
                                         sendMessageDelayed(repeat, REPEAT_INTERVAL.toLong())
                                     }
-                                MSG_LONGPRESS -> openPopupIfRequired(msg.obj as MotionEvent)
+                                }
+
+                                MSG_LONGPRESS -> {
+                                    openPopupIfRequired(msg.obj as MotionEvent)
+                                }
                             }
                         }
                     }
@@ -1041,26 +1062,32 @@ class KeyboardView
                             leftShiftForLabel = 30
                             key.topSmallNumber = topSmallLabelBR
                         }
+
                         KeyboardBase.CODE_2X1_TOP -> {
                             label = mKeyLabel2X1TOP
                             leftShiftForLabel = 30
                         }
+
                         KeyboardBase.CODE_2X1_BOTTOM -> {
                             label = mKeyLabel2X1BOTTOM
                             leftShiftForLabel = 30
                         }
+
                         KeyboardBase.CODE_1X3_CENTER -> {
                             label = mKeyLabel1X3LEFT
                             leftShiftForLabel = 30
                         }
+
                         KeyboardBase.CODE_1X3_LEFT -> {
                             label = mKeyLabel1X3TOP
                             leftShiftForLabel = 30
                         }
+
                         KeyboardBase.CODE_1X3_RIGHT -> {
                             label = mKeyLabel1X3BOTTOM
                             leftShiftForLabel = 30
                         }
+
                         KeyboardBase.CODE_CURRENCY -> {
                             label = mCurrencySymbol
                             leftShiftForLabel = 30
@@ -1148,22 +1175,27 @@ class KeyboardView
                         if (code == KEYCODE_ENTER) {
                             val drawableId =
                                 when (mKeyboard?.mEnterKeyType) {
-                                    EditorInfo.IME_ACTION_SEARCH ->
+                                    EditorInfo.IME_ACTION_SEARCH -> {
                                         R.drawable.ic_search_vector
+                                    }
 
                                     EditorInfo.IME_ACTION_NEXT,
                                     EditorInfo.IME_ACTION_GO,
-                                    ->
+                                    -> {
                                         R.drawable.ic_arrow_right_vector
+                                    }
 
-                                    EditorInfo.IME_ACTION_SEND ->
+                                    EditorInfo.IME_ACTION_SEND -> {
                                         R.drawable.ic_send_vector
+                                    }
 
-                                    MyCustomActions.IME_ACTION_COMMAND ->
+                                    MyCustomActions.IME_ACTION_COMMAND -> {
                                         R.drawable.play_button
+                                    }
 
-                                    else ->
+                                    else -> {
                                         R.drawable.ic_enter_vector
+                                    }
                                 }
                             key.icon =
                                 resources
@@ -1861,6 +1893,7 @@ class KeyboardView
                         invalidateKey(mCurrentKey)
                         handled = true
                     }
+
                     MotionEvent.ACTION_DOWN -> {
                         mAbortKey = false
                         mLastCodeX = touchX
@@ -1914,6 +1947,7 @@ class KeyboardView
                             showPreview(keyIndex)
                         }
                     }
+
                     MotionEvent.ACTION_MOVE -> {
                         var continueLongPress = false
                         if (keyIndex != NOT_A_KEY) {
@@ -1969,6 +2003,7 @@ class KeyboardView
                             mLastMoveTime = eventTime
                         }
                     }
+
                     MotionEvent.ACTION_UP -> {
                         mLastSpaceMoveX = 0
                         removeMessages()
@@ -2019,6 +2054,7 @@ class KeyboardView
                         mOnKeyboardActionListener?.onActionUp()
                         mIsLongPressingSpace = false
                     }
+
                     MotionEvent.ACTION_CANCEL -> {
                         mIsLongPressingSpace = false
                         mLastSpaceMoveX = 0

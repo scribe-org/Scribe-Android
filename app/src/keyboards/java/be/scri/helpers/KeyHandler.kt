@@ -89,48 +89,65 @@ class KeyHandler(
                 commitTab(inputConnection)
                 true
             }
+
             KeyboardBase.KEYCODE_CAPS_LOCK -> {
                 handleCapsLock()
                 true
             }
+
             KeyboardBase.KEYCODE_DELETE -> {
                 handleDeleteKey()
                 true
             }
-            KeyboardBase.KEYCODE_SHIFT -> handleShiftKeyPress(previousWasLastKeySpace)
+
+            KeyboardBase.KEYCODE_SHIFT -> {
+                handleShiftKeyPress(previousWasLastKeySpace)
+            }
+
             KeyboardBase.KEYCODE_ENTER -> {
                 handleEnterKey()
                 true
             }
+
             KeyboardBase.KEYCODE_MODE_CHANGE -> {
                 handleModeChangeKey()
                 true
             }
+
             KeyboardBase.KEYCODE_FLOAT_TOGGLE -> {
                 ime.toggleFloatingMode()
                 true
             }
-            KeyboardBase.KEYCODE_SPACE -> handleSpaceKeyPress(previousWasLastKeySpace)
+
+            KeyboardBase.KEYCODE_SPACE -> {
+                handleSpaceKeyPress(previousWasLastKeySpace)
+            }
+
             in KeyboardBase.NAVIGATION_KEYS -> {
                 handleNavigationKey(code)
                 true
             }
+
             in KeyboardBase.SCRIBE_VIEW_KEYS -> {
                 handleScribeViewKey(code, language)
                 true
             }
+
             KeyboardBase.CODE_CURRENCY -> {
                 handleCurrencyKey(language)
                 true
             }
+
             KeyboardBase.KEYCODE_EMOJI -> {
                 ime.openEmojiKeyboard()
                 true
             }
+
             KeyboardBase.KEYCODE_CLIPBOARD -> {
                 ime.openClipboardPanel()
                 true
             }
+
             else -> {
                 handleDefaultKey(code, language)
                 true
@@ -289,10 +306,13 @@ class KeyHandler(
         language: String,
     ) {
         when (code) {
-            KeyboardBase.DISPLAY_LEFT, KeyboardBase.DISPLAY_RIGHT ->
+            KeyboardBase.DISPLAY_LEFT, KeyboardBase.DISPLAY_RIGHT -> {
                 handleConjugateCycleKeys(code, ime.imeContext)
-            else ->
+            }
+
+            else -> {
                 handleConjugateSelectionKey(code, language)
+            }
         }
     }
 
@@ -362,7 +382,9 @@ class KeyHandler(
                 ScribeState.TRANSLATE,
                 ScribeState.CONJUGATE,
                 ScribeState.PLURAL,
-                -> true // use command bar for actual commands
+                -> true
+
+                // use command bar for actual commands
                 else -> false // use main input field for IDLE and SELECT_COMMAND
             }
 

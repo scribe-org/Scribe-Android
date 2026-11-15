@@ -14,18 +14,28 @@ import be.scri.models.ScribeLanguage
 class SpanishKeyboardIME : GeneralKeyboardIME(ScribeLanguage.SPANISH) {
     override fun getKeyboardLayoutXML(): Int =
         when {
-            isTablet() -> R.xml.keys_letters_spanish_tablet
+            isTablet() -> {
+                R.xml.keys_letters_spanish_tablet
+            }
+
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                !isPeriodAndCommaEnabled() ->
+                !isPeriodAndCommaEnabled() -> {
                 R.xml.keys_letter_spanish_without_accent_characters_and_without_period_and_comma
+            }
+
             !getIsAccentCharacterDisabled(applicationContext, language) &&
-                isPeriodAndCommaEnabled() ->
+                isPeriodAndCommaEnabled() -> {
                 R.xml.keys_letters_spanish
+            }
+
             getIsAccentCharacterDisabled(applicationContext, language) &&
-                isPeriodAndCommaEnabled() ->
+                isPeriodAndCommaEnabled() -> {
                 R.xml.keys_letter_spanish_without_accent_character
-            else ->
+            }
+
+            else -> {
                 R.xml.keys_letter_spanish_without_period_and_comma
+            }
         }
 
     override val keyboardLetters: Int = 0

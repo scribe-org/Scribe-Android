@@ -583,6 +583,7 @@ abstract class GeneralKeyboardIME(
     // MARK: Helper Methods
 
     override fun openEmojiKeyboard() {
+        moveToIdleState()
         uiManager.showEmojiPalette(language)
     }
 
@@ -1263,6 +1264,7 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun openClipboardPanel() {
+        moveToIdleState()
         clipboardHandler.openClipboardPanel()
     }
 

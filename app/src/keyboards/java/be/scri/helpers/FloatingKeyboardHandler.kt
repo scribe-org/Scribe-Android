@@ -440,6 +440,7 @@ class FloatingKeyboardHandler(
 
                     true
                 }
+
                 MotionEvent.ACTION_MOVE -> {
                     if (!isResizing) return@OnTouchListener false
 
@@ -461,6 +462,7 @@ class FloatingKeyboardHandler(
                     }
                     true
                 }
+
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     isResizing = false
                     startHideCornersTimer()
@@ -489,7 +491,10 @@ class FloatingKeyboardHandler(
                         .start()
                     true
                 }
-                else -> false
+
+                else -> {
+                    false
+                }
             }
         }
 
@@ -533,6 +538,7 @@ class FloatingKeyboardHandler(
                     showCorners()
                     true
                 }
+
                 MotionEvent.ACTION_MOVE -> {
                     val deltaX = event.rawX - initialX
                     val deltaY = event.rawY - initialY
@@ -562,6 +568,7 @@ class FloatingKeyboardHandler(
 
                     true
                 }
+
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     val deltaX = event.rawX - initialX
                     val deltaY = event.rawY - initialY
@@ -595,7 +602,10 @@ class FloatingKeyboardHandler(
                     startHideCornersTimer()
                     true
                 }
-                else -> false
+
+                else -> {
+                    false
+                }
             }
         }
     }

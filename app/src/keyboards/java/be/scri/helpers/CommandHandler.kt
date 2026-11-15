@@ -74,8 +74,13 @@ class CommandHandler(
                             return
                         }
 
-                        null -> ""
-                        else -> if (isAllCaps) pluralResult.uppercase() else pluralResult
+                        null -> {
+                            ""
+                        }
+
+                        else -> {
+                            if (isAllCaps) pluralResult.uppercase() else pluralResult
+                        }
                     }
                 }
 
@@ -84,7 +89,9 @@ class CommandHandler(
                     if (isAllCaps) translation.uppercase() else translation
                 }
 
-                else -> ""
+                else -> {
+                    ""
+                }
             }
 
         if (commandModeOutput.isEmpty()) {

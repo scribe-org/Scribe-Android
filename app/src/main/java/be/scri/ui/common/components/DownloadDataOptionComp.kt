@@ -102,11 +102,13 @@ private fun getBackgroundColor(
     colorScheme: androidx.compose.material3.ColorScheme,
 ): Color =
     when (downloadState) {
-        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update ->
+        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update -> {
             if (isDarkTheme) colorScheme.tertiary else colorScheme.primary
+        }
 
-        DownloadState.Completed ->
+        DownloadState.Completed -> {
             if (isDarkTheme) colorScheme.surfaceVariant.copy(alpha = 0.25f) else colorScheme.surfaceVariant
+        }
     }
 
 private fun getTextColor(
@@ -115,11 +117,13 @@ private fun getTextColor(
     colorScheme: androidx.compose.material3.ColorScheme,
 ): Color =
     when (downloadState) {
-        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update ->
+        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update -> {
             if (isDarkTheme) colorScheme.primary else Color.Black
+        }
 
-        DownloadState.Completed ->
+        DownloadState.Completed -> {
             if (isDarkTheme) colorScheme.surfaceVariant else Color.Black
+        }
     }
 
 private fun getIconColor(

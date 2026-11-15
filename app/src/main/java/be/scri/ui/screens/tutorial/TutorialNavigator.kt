@@ -96,11 +96,13 @@ fun TutorialNavigator(
                 currentStepIndex > 0 -> {
                     currentStepIndex--
                 }
+
                 isFullTutorial && currentChapterIndex > 0 -> {
                     currentChapterIndex--
                     val prevSteps = allChapters[currentChapterIndex].second
                     currentStepIndex = prevSteps.size - 1
                 }
+
                 else -> {
                     currentScreen = "home"
                 }
@@ -127,6 +129,7 @@ fun TutorialNavigator(
                 },
             )
         }
+
         "step" -> {
             val (chapterTitle, steps) = allChapters[currentChapterIndex]
             val step = steps[currentStepIndex]
@@ -145,11 +148,13 @@ fun TutorialNavigator(
                         currentStepIndex > 0 -> {
                             currentStepIndex--
                         }
+
                         isFullTutorial && currentChapterIndex > 0 -> {
                             currentChapterIndex--
                             val prevSteps = allChapters[currentChapterIndex].second
                             currentStepIndex = prevSteps.size - 1
                         }
+
                         else -> {
                             currentScreen = "home"
                         }
@@ -160,10 +165,12 @@ fun TutorialNavigator(
                         !isLastStepInChapter -> {
                             currentStepIndex++
                         }
+
                         isFullTutorial && !isLastChapter -> {
                             currentChapterIndex++
                             currentStepIndex = 0
                         }
+
                         else -> {
                             currentScreen = "home"
                         }
