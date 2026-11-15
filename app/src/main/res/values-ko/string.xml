@@ -22,9 +22,11 @@
     <string name="i18n.app.about.community.visit_website">Scribe 웹사이트를 방문하세요</string>
     <string name="i18n.app.about.community.wikimedia">Wikimedia 및 Scribe</string>
     <string name="i18n.app.about.community.wikimedia.caption">우리가 함께 일하는 방식</string>
-    <string name="i18n.app.about.community.wikimedia.text_1">Scribe는 수많은 위키미디어 기여자들의 도움 없이는 불가능했을 것입니다. 특히 Scribe는 위키데이터의 어휘 데이터와 Scribe가 지원하는 각 언어의 위키피디아 데이터를 사용하고 있습니다.</string>
-    <string name="i18n.app.about.community.wikimedia.text_2">위키데이터는 위키미디어 재단이 운영하는 다국어 협업 지식 그래프 입니다. 누구나 사용할 수 있는 자유로운 데이터로, CC0(Creative Commons Public Domain license) 하에 제공됩니다. Scribe는 위키데이터의 언어 데이터를 활용하여 사용자에게 동사 활용, 명사 형태, 명사 복수형 등 다양한 기능을 제공합니다.</string>
-    <string name="i18n.app.about.community.wikimedia.text_3">위키피디아는 자원봉사자 커뮤니티가 개방형 협업과 위키 기반 편집 시스템을 통해 작성하고 유지하는 다국어 무료 온라인 백과사전입니다. Scribe는 위키피디아의 데이터를 활용하여 언어에서 가장 일반적인 단어와 그 뒤에 오는 가장 일반적인 단어를 기반으로 자동 추천을 생성합니다.</string>
+    <string name="i18n.app.about.community.wikimedia.text_1">위키미디어 운동은 위키피디아와 그 자매 프로젝트들을 포함한 수많은 무료 공개 리소스를 제공합니다. 스크라이브는 위키미디어 커뮤니티가 지원하는 여러 프로젝트에 대한 수많은 기여가 없었다면 불가능했을 것입니다.</string>
+    <string name="i18n.app.about.community.wikimedia.text_2">특히 스크라이브는 위키데이터 사전 데이터 커뮤니티의 데이터와 스크라이브가 지원하는 각 언어에 대한 위키낱말사전 데이터를 활용합니다.</string>
+    <string name="i18n.app.about.community.wikimedia.text_3">위키데이터는 위키미디어 재단에서 호스팅하는 협업 편집 방식의 다국어 지식 그래프입니다. 누구나 크리에이티브 커먼즈 퍼블릭 도메인 라이선스(CC0)에 따라 자유롭게 사용할 수 있는 데이터를 제공합니다. 스크라이브는 위키데이터의 언어 데이터를 사용하여 동사 활용형, 명사 형태 주석, 명사 복수형 및 기타 여러 기능을 사용자에게 제공합니다.</string>
+    <string name="i18n.app.about.community.wikimedia.text_4">위키낱말사전은 자원봉사자 커뮤니티가 개방적인 협업과 위키 기반 편집 시스템을 통해 유지 관리하는 다국어 무료 온라인 사전입니다. 스크라이브는 위키낱말사전의 데이터를 사용하여 스크라이브 언어 키보드 애플리케이션에 번역을 제공합니다.</string>
+    <string name="i18n.app.about.community.wikimedia.text_5">스크라이브는 개발자 지원 프로그램과 위키미디어 운동 행사에서 저희의 작업을 발표할 수 있도록 초대해 주신 위키미디어 재단과 위키미디어 독일에도 감사를 표하고 싶습니다.</string>
     <string name="i18n.app.about.feedback.bug_report">버그 제보하기</string>
     <string name="i18n.app.about.feedback.rate_conjugate">Scribe 활용 평가하기</string>
     <string name="i18n.app.about.feedback.rate_scribe">Scribe 평가하기</string>
