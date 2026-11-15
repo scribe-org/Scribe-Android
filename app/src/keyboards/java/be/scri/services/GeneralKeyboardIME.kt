@@ -491,6 +491,10 @@ abstract class GeneralKeyboardIME(
             startActivity(intent)
         }
 
+        if (binding.clipboardPanelHolder.visibility == View.VISIBLE) {
+            clipboardHandler.refreshTheme()
+        }
+
         applyNavBarColor()
 
         // Set initial shift state for empty text fields.

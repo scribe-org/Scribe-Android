@@ -1,13 +1,17 @@
 package be.scri.helpers.clipboard
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import be.scri.R
+import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 
 class ClipboardAdapter(
     private var items: List<ClipboardItem>,
@@ -40,6 +44,17 @@ class ClipboardAdapter(
         val item = items[position]
         holder.clipText.text = item.text
         holder.pinIcon.visibility = View.VISIBLE
+
+        val context = holder.itemView.context
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val cardColor =
+            ContextCompat.getColor(
+                context,
+                if (isDarkMode) R.color.dark_key_color else R.color.white,
+            )
+        val textColor = if (isDarkMode) Color.WHITE else Color.BLACK
+        holder.itemView.backgroundTintList = ColorStateList.valueOf(cardColor)
+        holder.clipText.setTextColor(textColor)
 
         holder.itemView.setOnClickListener {
             onItemClick(item)

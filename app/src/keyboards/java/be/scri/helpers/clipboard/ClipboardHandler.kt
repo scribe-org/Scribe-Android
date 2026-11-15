@@ -124,6 +124,14 @@ class ClipboardHandler(
         ime.uiManager.hideClipboardPanel()
     }
 
+    /** Re-applies dark/light styling to an already open clipboard panel (e.g. on keyboard resume). */
+    fun refreshTheme() {
+        if (!ime.isUiManagerInitialized) return
+        ime.uiManager.applyClipboardPanelTheme()
+        ime.binding.commandOptionsBar.visibility = View.INVISIBLE
+        clipboardAdapter?.notifyDataSetChanged()
+    }
+
     private suspend fun refreshClipboardPanel() {
         val items = clipboardRepository.getAllItems()
         clipboardAdapter?.updateItems(items)
