@@ -71,6 +71,9 @@ interface KeyboardIMEContext {
     var lastWord: String?
     val emojiAutoSuggestionEnabled: Boolean
 
+    /** Lowercase profane words for the current language; these are never shown as suggestions. */
+    val profanity: Set<String>
+
     val nounKeywords: HashMap<String, List<String>>
     val pluralWords: Set<String>?
     val caseAnnotation: HashMap<String, MutableList<String>>
