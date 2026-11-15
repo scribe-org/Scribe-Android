@@ -82,6 +82,9 @@ abstract class GeneralKeyboardIME(
     override val language: String
         get() = scribeLanguage.displayName
 
+    override val profanity: Set<String>
+        get() = dataHandler.profanity
+
     // Abstract members required by subclasses (like EnglishKeyboardIME).
     abstract override fun getKeyboardLayoutXML(): Int
 
@@ -937,7 +940,7 @@ abstract class GeneralKeyboardIME(
         limit: Int,
     ): List<String> {
         if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, word, previousWord, limit)
+            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, word, previousWord, limit, dataHandler.profanity)
             if (nativeCompletions.isNotEmpty()) {
                 return nativeCompletions.map { it.substringBefore("-") }
             }
@@ -1118,7 +1121,7 @@ abstract class GeneralKeyboardIME(
     ): List<String>? {
         if (lastWord == null) return null
         if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeSuggestions = nativeSuggestionEngine.getNextWordSuggestions(language, lastWord)
+            val nativeSuggestions = nativeSuggestionEngine.getNextWordSuggestions(language, lastWord, profanity = dataHandler.profanity)
             if (nativeSuggestions.isNotEmpty()) {
                 return nativeSuggestions.map { it.substringBefore("-") }
             }

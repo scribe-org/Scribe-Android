@@ -20,6 +20,28 @@ object StringUtils {
         return word[0].isUpperCase()
     }
 
+    private val WORD_SEPARATOR = Regex("[\\s-]+")
+
+    /**
+     * Checks if a suggestion is or contains a profane word, matching whole words so that
+     *
+     * @param text The suggestion to check.
+     * @param profanity Lowercase profane words for the current language.
+     *
+     * @return true if the suggestion should not be shown, false otherwise.
+     */
+    fun containsProfanity(
+        text: String,
+        profanity: Set<String>,
+    ): Boolean {
+        if (profanity.isEmpty()) return false
+        val lower = text.lowercase().trim()
+        if (lower in profanity) return true
+        // Only multi-word text (spaces or hyphens) needs the slower per-token check.
+        return lower.any { it == '-' || it.isWhitespace() } &&
+            lower.split(WORD_SEPARATOR).any { it in profanity }
+    }
+
     /**
      * Loads a string resource and replaces placeholder variables with provided parameters.
      *

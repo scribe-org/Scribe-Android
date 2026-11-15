@@ -5,16 +5,23 @@ package be.scri.helpers.data
 
 import android.database.sqlite.SQLiteDatabase
 import be.scri.helpers.DatabaseFileManager
+import be.scri.helpers.StringUtils.containsProfanity
 
 class AutoSuggestionDataManager(
     private val fileManager: DatabaseFileManager,
 ) {
-    fun getSuggestions(language: String): HashMap<String, List<String>> {
+    fun getSuggestions(
+        language: String,
+        profanity: Set<String> = emptySet(),
+    ): HashMap<String, List<String>> {
         val db = fileManager.getLanguageDatabase(language) ?: return hashMapOf()
-        return processAllSuggestions(db)
+        return processAllSuggestions(db, profanity)
     }
 
-    private fun processAllSuggestions(db: SQLiteDatabase): HashMap<String, List<String>> {
+    private fun processAllSuggestions(
+        db: SQLiteDatabase,
+        profanity: Set<String>,
+    ): HashMap<String, List<String>> {
         val suggestionMap = HashMap<String, List<String>>()
         val columnsToSelect = listOf("word", "autosuggestion_0", "autosuggestion_1", "autosuggestion_2")
 
@@ -41,7 +48,7 @@ class AutoSuggestionDataManager(
                 val word = cursor.getString(wordIndex)?.lowercase()?.takeIf { it.isNotEmpty() } ?: continue
                 val suggestions =
                     suggestionIndices.mapNotNull { idx ->
-                        cursor.getString(idx)?.takeIf { it.isNotEmpty() }
+                        cursor.getString(idx)?.takeIf { it.isNotEmpty() && !containsProfanity(it, profanity) }
                     }
                 if (suggestions.isNotEmpty()) {
                     suggestionMap[word] = suggestions
