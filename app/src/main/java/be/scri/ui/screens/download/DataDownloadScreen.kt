@@ -197,6 +197,7 @@ fun DownloadDataScreen(
                         onLanguageSelect = { selectedLanguage.value = it },
                         onDownloadAll = downloadActions.onDownloadAll,
                         onDownloadAction = downloadActions.onDownloadAction,
+                        onDeleteAction = { downloadActions.onDeleteAction?.invoke(it) },
                     )
                 }
 
@@ -280,6 +281,7 @@ private fun EmptyStateSection(context: Context) {
  * @param onLanguageSelect Callback invoked when a specific language is selected for download.
  * @param onDownloadAll Callback invoked when the "Update all" is clicked for download.
  * @param onDownloadAction Callback invoked when a specific language's download action is triggered, with parameters for language key and whether it's an "all" action.
+ * @param onDeleteAction Callback invoked when a specific language's downloaded data should be deleted.
  */
 @Composable
 private fun LanguagesListSection(
@@ -288,6 +290,7 @@ private fun LanguagesListSection(
     onLanguageSelect: (LanguageItem) -> Unit,
     onDownloadAll: () -> Unit,
     onDownloadAction: (String, Boolean) -> Unit,
+    onDeleteAction: (String) -> Unit,
 ) {
     Surface(
         modifier =
@@ -323,6 +326,9 @@ private fun LanguagesListSection(
                         } else {
                             onDownloadAction(lang.key, false)
                         }
+                    },
+                    onDeleteClick = {
+                        onDeleteAction(lang.key)
                     },
                     isDarkTheme = lang.isDark,
                     buttonState = currentStatus,

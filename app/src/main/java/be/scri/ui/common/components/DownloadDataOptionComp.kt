@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -25,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import be.scri.R
 import be.scri.ui.screens.download.DownloadState
+import be.scri.ui.theme.theme_dark_delete_button_color
+import be.scri.ui.theme.theme_light_delete_button_color
 
 /**
  * A button component that reflects the state of a data download.
@@ -61,10 +64,53 @@ fun DownloadDataOptionComp(
         modifier =
             modifier
                 .height(40.dp)
-                .width(150.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                .widthIn(min = 100.dp),
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
     ) {
         DownloadButtonContent(downloadState, iconColor)
+    }
+}
+
+/**
+ * A button component that allows the user to delete downloaded language data.
+ *
+ * @param onClick Callback triggered when the delete button is clicked.
+ * @param isDarkTheme Whether the dark theme is active.
+ * @param modifier Modifier for layout and styling.
+ */
+@Composable
+fun DeleteDataOptionComp(
+    onClick: () -> Unit,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val backgroundColor =
+        if (isDarkTheme) theme_dark_delete_button_color.copy(alpha = 0.25f) else theme_light_delete_button_color
+    val iconColor = if (isDarkTheme) theme_dark_delete_button_color else Color.Black
+
+    Button(
+        onClick = onClick,
+        enabled = true,
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = backgroundColor,
+                contentColor = iconColor,
+                disabledContainerColor = backgroundColor,
+                disabledContentColor = iconColor,
+            ),
+        shape = RoundedCornerShape(8.dp),
+        modifier =
+            modifier
+                .height(40.dp)
+                .width(44.dp),
+        contentPadding = PaddingValues(0.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.trash),
+            contentDescription = stringResource(R.string.i18n_app__global_delete),
+            modifier = Modifier.size(24.dp),
+            tint = iconColor,
+        )
     }
 }
 
@@ -88,7 +134,7 @@ private fun DownloadButtonContent(
                 },
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Medium,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f, fill = false),
             maxLines = 1,
         )
 

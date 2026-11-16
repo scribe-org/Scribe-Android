@@ -159,6 +159,7 @@ fun ConjugateDownloadDataScreen(
                                 title = lang.displayName,
                                 onClick = { },
                                 onButtonClick = { downloadActions.onDownloadAction(lang.key, false) },
+                                onDeleteClick = { downloadActions.onDeleteAction?.invoke(lang.key) },
                                 isDarkTheme = lang.isDark,
                                 buttonState = currentStatus,
                             )
