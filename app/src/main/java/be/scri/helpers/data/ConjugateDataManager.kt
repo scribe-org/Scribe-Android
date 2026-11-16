@@ -47,12 +47,17 @@ class ConjugateDataManager(
                 val conjugateForms: MutableMap<String, Collection<String>> = mutableMapOf()
                 tenseGroup.tenses.values.forEach { conjugationCategory ->
                     val forms =
-                        conjugationCategory.tenseForms.values.map { form ->
-                            resolveConjugatedValue(rowData, form.value, database)
-                        }
-                    conjugateForms[conjugationCategory.tenseTitle] = forms
+                        conjugationCategory.tenseForms.values
+                            .map { form ->
+                                resolveConjugatedValue(rowData, form.value, database)
+                            }.filter { it.isNotEmpty() }
+                    if (forms.isNotEmpty()) {
+                        conjugateForms[conjugationCategory.tenseTitle] = forms
+                    }
                 }
-                finalOutput[tenseGroup.sectionTitle] = conjugateForms
+                if (conjugateForms.isNotEmpty()) {
+                    finalOutput[tenseGroup.sectionTitle] = conjugateForms
+                }
             }
             if (finalOutput.isEmpty() || finalOutput.values.all { it.isEmpty() || it.values.all { forms -> forms.all { it.isEmpty() } } }) {
                 null
