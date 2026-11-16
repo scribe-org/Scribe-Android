@@ -98,6 +98,8 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Active command bar is now properly hidden when opening the clipboard panel, emoji palette, or Wikidata info explanation, preventing toolbar doubling on return to normal keyboard UI ([#749](https://github.com/scribe-org/Scribe-Android/issues/749)).
 - Spell check error underlines no longer appear on command bar placeholder text and foreign language words ([#748](https://github.com/scribe-org/Scribe-Android/issues/748)).
 - The clipboard panel and Wikidata information panels now properly follow dark mode styling when dark mode is enabled ([#761](https://github.com/scribe-org/Scribe-Android/issues/761)).
+- The IME layout no longer expands past the bottom of the screen and clips the bottom key row when language data has not been downloaded: the empty state banner uses `match_parent` width inside its vertical `LinearLayout` parent instead of `0dp`, which wrapped its text one character per line ([#770](https://github.com/scribe-org/Scribe-Android/issues/770)).
+- The keyboard view no longer forms a circular vertical constraint with the floating keyboard drag bar, which stretched the `wrap_content` IME root to the full window height and made `onComputeInsets` report a full-screen IME inset to host apps ([#770](https://github.com/scribe-org/Scribe-Android/issues/770)).
 
 ### 🔒 Security
 
