@@ -398,19 +398,26 @@ class DataDownloadViewModel(
 
         downloadJobs[key]?.cancel()
         downloadJobs.remove(key)
-        downloadStates[key] = DownloadState.Ready
 
         viewModelScope.launch(dispatcher) {
             val dbName = "${langCode.uppercase()}LanguageData.sqlite"
             getApplication<Application>().deleteDatabase(dbName)
 
-            val contractDir = File(getApplication<Application>().filesDir, "data-contracts")
-            val contractFile = File(contractDir, "$langCode.yaml")
-            if (contractFile.exists()) {
-                contractFile.delete()
+            val conjugateDb =
+                getApplication<Application>().getDatabasePath("${langCode.uppercase()}ConjugateData.sqlite")
+            if (!conjugateDb.exists()) {
+                val contractDir = File(getApplication<Application>().filesDir, "data-contracts")
+                val contractFile = File(contractDir, "$langCode.yaml")
+                if (contractFile.exists()) {
+                    contractFile.delete()
+                }
             }
 
             prefs.edit().remove("last_update_$langCode").apply()
+
+            withContext(Dispatchers.Main) {
+                downloadStates[key] = DownloadState.Ready
+            }
         }
     }
 

@@ -99,7 +99,7 @@ fun DownloadDataScreen(
 
     // Prepare the list of languages to display.
     val languages: ImmutableList<LanguageItem> =
-        remember(installedKeyboardLanguages) {
+        remember(installedKeyboardLanguages, isDarkTheme) {
             buildList {
                 installedKeyboardLanguages.forEach { languageCode ->
                     val displayName =
@@ -114,7 +114,7 @@ fun DownloadDataScreen(
                             "swedish" -> context.getString(R.string.i18n_app__global_swedish)
                             else -> languageCode.replaceFirstChar { it.uppercase() }
                         }
-                    add(LanguageItem(languageCode.lowercase(), displayName, false))
+                    add(LanguageItem(languageCode.lowercase(), displayName, isDarkTheme))
                 }
             }.toImmutableList()
         }
@@ -194,10 +194,11 @@ fun DownloadDataScreen(
                     LanguagesListSection(
                         languages = languages,
                         downloadStates = downloadActions.downloadStates,
+                        isDarkTheme = isDarkTheme,
                         onLanguageSelect = { selectedLanguage.value = it },
                         onDownloadAll = downloadActions.onDownloadAll,
                         onDownloadAction = downloadActions.onDownloadAction,
-                        onDeleteAction = { downloadActions.onDeleteAction?.invoke(it) },
+                        onDeleteAction = downloadActions.onDeleteAction,
                     )
                 }
 
@@ -282,6 +283,7 @@ private fun EmptyStateSection(context: Context) {
  * @param onDownloadAll Callback invoked when the "Update all" is clicked for download.
  * @param onDownloadAction Callback invoked when a specific language's download action is triggered, with parameters for language key and whether it's an "all" action.
  * @param onDeleteAction Callback invoked when a specific language's downloaded data should be deleted.
+ * @param isDarkTheme Boolean indicating if the dark theme is enabled.
  */
 @Composable
 private fun LanguagesListSection(
@@ -290,7 +292,8 @@ private fun LanguagesListSection(
     onLanguageSelect: (LanguageItem) -> Unit,
     onDownloadAll: () -> Unit,
     onDownloadAction: (String, Boolean) -> Unit,
-    onDeleteAction: (String) -> Unit,
+    onDeleteAction: ((String) -> Unit)? = null,
+    isDarkTheme: Boolean = false,
 ) {
     Surface(
         modifier =
@@ -301,19 +304,6 @@ private fun LanguagesListSection(
         color = MaterialTheme.colorScheme.surface,
     ) {
         Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
-            Text(
-                text = stringResource(R.string.i18n_app_download_menu_ui_download_data_update_all),
-                color = colorResource(R.color.dark_scribe_blue),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium,
-                modifier =
-                    Modifier
-                        .padding(horizontal = 12.dp, vertical = 10.dp)
-                        .align(Alignment.End)
-                        .clickable {
-                            onDownloadAll()
-                        },
-            )
             languages.forEachIndexed { index, lang ->
                 val currentStatus = downloadStates[lang.key] ?: DownloadState.Ready
 
@@ -327,10 +317,8 @@ private fun LanguagesListSection(
                             onDownloadAction(lang.key, false)
                         }
                     },
-                    onDeleteClick = {
-                        onDeleteAction(lang.key)
-                    },
-                    isDarkTheme = lang.isDark,
+                    onDeleteClick = onDeleteAction?.let { action -> { action(lang.key) } },
+                    isDarkTheme = isDarkTheme,
                     buttonState = currentStatus,
                 )
                 if (index < languages.lastIndex) {
@@ -341,6 +329,24 @@ private fun LanguagesListSection(
                     )
                 }
             }
+            HorizontalDivider(
+                color = Color.Gray.copy(alpha = 0.3f),
+                thickness = 1.dp,
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+            )
+            Text(
+                text = stringResource(R.string.i18n_app_download_menu_ui_download_data_update_all),
+                color = colorResource(R.color.dark_scribe_blue),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                modifier =
+                    Modifier
+                        .padding(horizontal = 12.dp, vertical = 10.dp)
+                        .align(Alignment.End)
+                        .clickable {
+                            onDownloadAll()
+                        },
+            )
         }
     }
 }

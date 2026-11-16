@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.ui.common.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -49,6 +50,7 @@ fun DownloadDataOptionComp(
     val backgroundColor = getBackgroundColor(downloadState, isDarkTheme, colorScheme)
     val textColor = getTextColor(downloadState, isDarkTheme, colorScheme)
     val iconColor = getIconColor(isDarkTheme, textColor)
+    val border = getBorder(downloadState, isDarkTheme, colorScheme)
 
     Button(
         onClick = onClick,
@@ -60,6 +62,7 @@ fun DownloadDataOptionComp(
                 disabledContainerColor = backgroundColor,
                 disabledContentColor = textColor,
             ),
+        border = border,
         shape = RoundedCornerShape(8.dp),
         modifier =
             modifier
@@ -87,6 +90,7 @@ fun DeleteDataOptionComp(
     val backgroundColor =
         if (isDarkTheme) theme_dark_delete_button_color.copy(alpha = 0.25f) else theme_light_delete_button_color
     val iconColor = if (isDarkTheme) theme_dark_delete_button_color else Color.Black
+    val border = if (isDarkTheme) BorderStroke(1.dp, theme_dark_delete_button_color) else null
 
     Button(
         onClick = onClick,
@@ -98,6 +102,7 @@ fun DeleteDataOptionComp(
                 disabledContainerColor = backgroundColor,
                 disabledContentColor = iconColor,
             ),
+        border = border,
         shape = RoundedCornerShape(8.dp),
         modifier =
             modifier
@@ -149,7 +154,7 @@ private fun getBackgroundColor(
 ): Color =
     when (downloadState) {
         DownloadState.Ready, DownloadState.Downloading, DownloadState.Update -> {
-            if (isDarkTheme) colorScheme.tertiary else colorScheme.primary
+            if (isDarkTheme) colorScheme.outline.copy(alpha = 0.25f) else colorScheme.primary
         }
 
         DownloadState.Completed -> {
@@ -164,7 +169,7 @@ private fun getTextColor(
 ): Color =
     when (downloadState) {
         DownloadState.Ready, DownloadState.Downloading, DownloadState.Update -> {
-            if (isDarkTheme) colorScheme.primary else Color.Black
+            if (isDarkTheme) colorScheme.outline else Color.Black
         }
 
         DownloadState.Completed -> {
@@ -176,6 +181,22 @@ private fun getIconColor(
     isDarkTheme: Boolean,
     textColor: Color,
 ): Color = if (isDarkTheme) textColor else Color.Black
+
+private fun getBorder(
+    downloadState: DownloadState,
+    isDarkTheme: Boolean,
+    colorScheme: androidx.compose.material3.ColorScheme,
+): BorderStroke? =
+    if (isDarkTheme) {
+        val color =
+            when (downloadState) {
+                DownloadState.Ready, DownloadState.Downloading, DownloadState.Update -> colorScheme.outline
+                DownloadState.Completed -> colorScheme.surfaceVariant
+            }
+        BorderStroke(1.dp, color)
+    } else {
+        null
+    }
 
 /**
  * Icon to show for the current download state.

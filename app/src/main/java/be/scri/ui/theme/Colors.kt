@@ -30,7 +30,7 @@ val theme_dark_switch_selector_color = Color(color = 0xFF2A1903)
 val theme_dark_unchecked_switch_selector_color = Color(color = 0xFF2D2D2D)
 val theme_dark_corner_button_color = Color(color = 0xFF2A1903)
 val theme_dark_success_color = Color(color = 0xFF08A045)
-val theme_dark_delete_button_color = Color(color = 0xFFE4572E)
+val theme_dark_delete_button_color = Color(color = 0xFFD11149)
 
 /**
  * Custom colors for use throughout the application.
