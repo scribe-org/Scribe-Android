@@ -42,7 +42,7 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeMaxTextSize="16sp"
                 app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:ellipsize="end" />
 
             <Button
@@ -58,7 +58,7 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeMaxTextSize="16sp"
                 app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:ellipsize="end" />
         </LinearLayout>
 
@@ -81,7 +81,7 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeMaxTextSize="16sp"
                 app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:ellipsize="end" />
 
             <Button
@@ -97,7 +97,7 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeMaxTextSize="16sp"
                 app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:ellipsize="end" />
         </LinearLayout>
 
