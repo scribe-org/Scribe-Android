@@ -144,6 +144,33 @@ class ConjugationHandler(
 
     companion object {
         /**
+         * Applies capitalization to all conjugated forms in the structured output map.
+         * Formats only the conjugated verb form while preserving the contract label.
+         *
+         * @param conjugations The structured map of tense groups, categories, and (label, form) pairs.
+         * @param isAllCaps If true, applies all capital letters; if false, capitalizes only the first letter.
+         *
+         * @return A new map with properly formatted conjugations.
+         */
+        fun applyCapitalizationToStructuredConjugations(
+            conjugations: Map<String, Map<String, List<Pair<String, String>>>>,
+            isAllCaps: Boolean = false,
+        ): Map<String, Map<String, List<Pair<String, String>>>> =
+            conjugations.mapValues { (_, categoryMap) ->
+                categoryMap.mapValues { (_, pairs) ->
+                    pairs.map { (label, form) ->
+                        val formattedForm =
+                            when {
+                                form.isEmpty() -> form
+                                isAllCaps -> form.uppercase()
+                                else -> form.replaceFirstChar { it.uppercase() }
+                            }
+                        label to formattedForm
+                    }
+                }
+            }
+
+        /**
          * Applies capitalization to all conjugated forms in the output map.
          * Supports both standard capitalization (first letter) and all capital letters formatting.
          *

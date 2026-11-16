@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.test.core.app.ApplicationProvider
 import be.scri.R
@@ -97,8 +98,8 @@ class KeyboardUIManagerTest {
             mapOf(
                 "Present" to
                     mapOf(
-                        "1ps" to listOf("I am"),
-                        "2ps" to listOf("You are"),
+                        "1ps" to listOf("1ps" to "I am"),
+                        "2ps" to listOf("2ps" to "You are"),
                     ),
             )
 
@@ -287,7 +288,7 @@ class KeyboardUIManagerTest {
             mapOf(
                 "Present" to
                     mapOf(
-                        "Present" to listOf("am", "are", "is", "are"),
+                        "Present" to listOf("1ps" to "am", "2ps" to "are", "3ps" to "is", "1pp" to "are"),
                     ),
             )
 
@@ -315,9 +316,9 @@ class KeyboardUIManagerTest {
         // Arrange
         val mockConjugateOutput =
             mapOf(
-                "Настоящее" to
+                "Прошедшее" to
                     mapOf(
-                        "Настоящее" to listOf("читаю", "читаешь", "читает"),
+                        "Прошедшее" to listOf("m" to "читал", "f" to "читала", "n" to "читало", "pl" to "читали"),
                     ),
             )
 
@@ -328,7 +329,7 @@ class KeyboardUIManagerTest {
             emojiAutoSuggestionEnabled = false,
             autoSuggestEmojis = null,
             conjugateOutput = mockConjugateOutput,
-            conjugateLabels = setOf("Настоящее"),
+            conjugateLabels = setOf("Прошедшее"),
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = "читать",
         )
@@ -340,13 +341,13 @@ class KeyboardUIManagerTest {
     }
 
     @Test
-    fun updateUI_SwedishWithSmallForms_Inflates2x2Grid() {
+    fun updateUI_ThreeForms_Inflates3x1Grid() {
         // Arrange
         val mockConjugateOutput =
             mapOf(
                 "Presens" to
                     mapOf(
-                        "Presens" to listOf("är", "var", "varit"),
+                        "Presens" to listOf("1ps" to "är", "2ps" to "var", "3ps" to "varit"),
                     ),
             )
 
@@ -363,9 +364,10 @@ class KeyboardUIManagerTest {
         )
 
         // Assert
-        assertNotNull("Button 1 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
-        assertNotNull("Button 4 should be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
-        assertNull("Button 5 should not be present in 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
+        assertNotNull("Button 1 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNotNull("Button 2 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_2))
+        assertNotNull("Button 3 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_3))
+        assertNull("Button 4 should not be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
     }
 
     @Test
@@ -375,7 +377,15 @@ class KeyboardUIManagerTest {
             mapOf(
                 "Präsens" to
                     mapOf(
-                        "Präsens" to listOf("habe", "hast", "hat", "haben", "habt", "haben"),
+                        "Präsens" to
+                            listOf(
+                                "ich" to "habe",
+                                "du" to "hast",
+                                "er/sie/es" to "hat",
+                                "wir" to "haben",
+                                "ihr" to "habt",
+                                "sie/Sie" to "haben",
+                            ),
                     ),
             )
 
@@ -392,9 +402,24 @@ class KeyboardUIManagerTest {
         )
 
         // Assert
-        assertNotNull("Button 1 should be present in 3x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
-        assertNotNull("Button 5 should be present in 3x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
-        assertNotNull("Button 6 should be present in 3x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_6))
+        val btn1 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_1)
+        val btn2 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_2)
+        val btn3 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_3)
+        val btn4 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_4)
+        val btn5 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_5)
+        val btn6 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_6)
+        assertNotNull(btn1)
+        assertNotNull(btn2)
+        assertNotNull(btn3)
+        assertNotNull(btn4)
+        assertNotNull(btn5)
+        assertNotNull(btn6)
+        assertTrue(btn1.text.toString().contains("ich") && btn1.text.toString().contains("habe"))
+        assertTrue(btn2.text.toString().contains("du") && btn2.text.toString().contains("hast"))
+        assertTrue(btn3.text.toString().contains("er/sie/es") && btn3.text.toString().contains("hat"))
+        assertTrue(btn4.text.toString().contains("wir") && btn4.text.toString().contains("haben"))
+        assertTrue(btn5.text.toString().contains("ihr") && btn5.text.toString().contains("habt"))
+        assertTrue(btn6.text.toString().contains("sie/Sie") && btn6.text.toString().contains("haben"))
     }
 
     @Test
@@ -404,7 +429,7 @@ class KeyboardUIManagerTest {
             mapOf(
                 "Present" to
                     mapOf(
-                        "Singular" to listOf("I am", "You are"),
+                        "Singular" to listOf("1ps" to "I am", "2ps" to "You are"),
                     ),
             )
 
@@ -435,7 +460,7 @@ class KeyboardUIManagerTest {
             mapOf(
                 "Present" to
                     mapOf(
-                        "Present" to listOf("form1", "form2"),
+                        "Present" to listOf("1ps" to "form1", "2ps" to "form2"),
                     ),
             )
 
@@ -456,6 +481,189 @@ class KeyboardUIManagerTest {
         assertEquals("Conjugate grid container should be visible", View.VISIBLE, conjugateGridContainer.visibility)
         assertNotNull("Button 1 should be present in fallback grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
         assertNull("Button 5 should not be present in fallback 2x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
+    }
+
+    @Test
+    fun updateUI_CategoryWithMultipleForms_ClickingOpensSubCategoryWithoutCommittingText() {
+        // Arrange
+        val mockConjugateOutput =
+            mapOf(
+                "Past" to
+                    mapOf(
+                        "Past Continuous" to
+                            listOf(
+                                "I/he/she/it" to "was being",
+                                "you/plural" to "were being",
+                            ),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Past"),
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = "be",
+        )
+
+        val btn = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_1)
+        assertNotNull(btn)
+        assertEquals("Past Continuous\nwas being / were being", btn.text.toString())
+
+        btn.performClick()
+
+        verify(exactly = 1) { listener.onConjugationSubCategorySelected("Past Continuous") }
+        verify(exactly = 0) { listener.commitText(any()) }
+    }
+
+    @Test
+    fun updateUI_SubSelectionActive_DisplaysLabelsAndClickingCommitsOnlyForm() {
+        // Arrange
+        val mockConjugateOutput =
+            mapOf(
+                "Past" to
+                    mapOf(
+                        "Past Continuous" to
+                            listOf(
+                                "I/he/she/it" to "was being",
+                                "you/plural" to "were being",
+                            ),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Past"),
+            selectedConjugationSubCategory = "Past Continuous",
+            currentVerbForConjugation = "be",
+        )
+
+        val btn1 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_1)
+        assertNotNull(btn1)
+        assertTrue(btn1.text.toString().contains("I/he/she/it"))
+        assertTrue(btn1.text.toString().contains("was being"))
+
+        btn1.performClick()
+
+        verify(exactly = 1) { listener.commitText("was being ") }
+        verify(exactly = 1) { listener.processLinguisticSuggestions("was being") }
+    }
+
+    @Test
+    fun updateUI_SubSelectionActive_ArrowClickDismissesSubCategory() {
+        // Arrange
+        val mockConjugateOutput =
+            mapOf(
+                "Past" to
+                    mapOf(
+                        "Past Continuous" to
+                            listOf(
+                                "I/he/she/it" to "was being",
+                                "you/plural" to "were being",
+                            ),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Past"),
+            selectedConjugationSubCategory = "Past Continuous",
+            currentVerbForConjugation = "be",
+        )
+
+        val leftArrow = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_arrow_left)
+        assertNotNull(leftArrow)
+        leftArrow.performClick()
+
+        verify(exactly = 1) { listener.onConjugationSubCategoryDismissed() }
+        verify(exactly = 0) { listener.onConjugateClicked() }
+    }
+
+    @Test
+    fun updateUI_DirectButtons_DisplaysLabelsAndClickingCommitsOnlyForm() {
+        // Arrange (Spanish direct buttons as shown in issue #750)
+        val mockConjugateOutput =
+            mapOf(
+                "Presente" to
+                    mapOf(
+                        "Presente" to
+                            listOf(
+                                "1ps" to "estoy",
+                                "2ps" to "estás",
+                                "3ps" to "está",
+                                "1pp" to "estamos",
+                                "2pp" to "estáis",
+                                "3pp" to "están",
+                            ),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "Spanish",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Presente"),
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = "estar",
+        )
+
+        val btn1 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_1)
+        assertNotNull(btn1)
+        assertTrue(btn1.text.toString().contains("1ps"))
+        assertTrue(btn1.text.toString().contains("estoy"))
+
+        btn1.performClick()
+
+        verify(exactly = 1) { listener.commitText("estoy ") }
+        verify(exactly = 1) { listener.processLinguisticSuggestions("estoy") }
+    }
+
+    @Test
+    fun updateUI_ThreeCategories_Inflates3x1Grid() {
+        // Arrange: 3 categories for English (e.g. Past without simplePast for "be")
+        val mockConjugateOutput =
+            mapOf(
+                "Past" to
+                    mapOf(
+                        "Past Perfect" to listOf("all" to "had been"),
+                        "Past Continuous" to listOf("1" to "was being", "2" to "were being"),
+                        "Past Perf. Continuous" to listOf("all" to "had been being"),
+                    ),
+            )
+
+        // Act
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("Past"),
+            selectedConjugationSubCategory = null,
+            currentVerbForConjugation = "be",
+        )
+
+        assertNotNull("Button 1 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
+        assertNotNull("Button 2 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_2))
+        assertNotNull("Button 3 should be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_3))
+        assertNull("Button 4 should not be present in 3x1 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_4))
     }
 
     @Test
