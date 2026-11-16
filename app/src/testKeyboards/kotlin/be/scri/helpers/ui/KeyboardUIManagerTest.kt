@@ -402,9 +402,24 @@ class KeyboardUIManagerTest {
         )
 
         // Assert
-        assertNotNull("Button 1 should be present in 3x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_1))
-        assertNotNull("Button 5 should be present in 3x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_5))
-        assertNotNull("Button 6 should be present in 3x2 grid", binding.conjugateGrid.findViewById(R.id.conjugate_btn_6))
+        val btn1 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_1)
+        val btn2 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_2)
+        val btn3 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_3)
+        val btn4 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_4)
+        val btn5 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_5)
+        val btn6 = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_6)
+        assertNotNull(btn1)
+        assertNotNull(btn2)
+        assertNotNull(btn3)
+        assertNotNull(btn4)
+        assertNotNull(btn5)
+        assertNotNull(btn6)
+        assertTrue(btn1.text.toString().contains("ich") && btn1.text.toString().contains("habe"))
+        assertTrue(btn2.text.toString().contains("du") && btn2.text.toString().contains("hast"))
+        assertTrue(btn3.text.toString().contains("er/sie/es") && btn3.text.toString().contains("hat"))
+        assertTrue(btn4.text.toString().contains("wir") && btn4.text.toString().contains("haben"))
+        assertTrue(btn5.text.toString().contains("ihr") && btn5.text.toString().contains("habt"))
+        assertTrue(btn6.text.toString().contains("sie/Sie") && btn6.text.toString().contains("haben"))
     }
 
     @Test
@@ -497,7 +512,7 @@ class KeyboardUIManagerTest {
 
         val btn = binding.conjugateGrid.findViewById<Button>(R.id.conjugate_btn_1)
         assertNotNull(btn)
-        assertEquals("was being / were being", btn.text.toString())
+        assertEquals("Past Continuous\nwas being / were being", btn.text.toString())
 
         btn.performClick()
 

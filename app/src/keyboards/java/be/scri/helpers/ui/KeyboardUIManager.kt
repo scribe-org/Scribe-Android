@@ -9,13 +9,16 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
 import android.text.InputType
+import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.style.AlignmentSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -535,16 +538,47 @@ class KeyboardUIManager(
             label.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
-        spannable.append("\n")
-        val formStart = spannable.length
-        spannable.append(form)
         spannable.setSpan(
-            StyleSpan(Typeface.BOLD),
-            formStart,
-            spannable.length,
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL),
+            0,
+            label.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
+        if (form.isNotEmpty()) {
+            spannable.append("\n")
+            val formStart = spannable.length
+            spannable.append(form)
+            spannable.setSpan(
+                StyleSpan(Typeface.BOLD),
+                formStart,
+                spannable.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+            spannable.setSpan(
+                AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                formStart,
+                spannable.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+        }
         return spannable
+    }
+
+    private fun applyButtonLayout(
+        btn: Button,
+        hasLabel: Boolean,
+    ) {
+        btn.gravity = if (hasLabel) (Gravity.TOP or Gravity.START) else Gravity.CENTER
+        if (hasLabel) {
+            val padHorizontal = (12 * context.resources.displayMetrics.density).toInt()
+            val padVertical = (8 * context.resources.displayMetrics.density).toInt()
+            btn.setPadding(padHorizontal, padVertical, padHorizontal, padVertical)
+            val lineSpacingExtra = 4 * context.resources.displayMetrics.density
+            btn.setLineSpacing(lineSpacingExtra, 1.0f)
+        } else {
+            btn.setPadding(0, 0, 0, 0)
+            btn.setLineSpacing(0f, 1.0f)
+        }
     }
 
     private fun populateSubSelectionButtons(
@@ -563,6 +597,8 @@ class KeyboardUIManager(
                         if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
                     )
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                val hasLabel = label.isNotEmpty() && label != "all"
+                applyButtonLayout(btn, hasLabel)
                 btn.text = formatButtonText(label, form, isDarkMode)
                 btn.setOnClickListener {
                     listener.commitText("$form ")
@@ -591,15 +627,16 @@ class KeyboardUIManager(
                         if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
                     )
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                val formsPreview = pairs.map { it.second.trim() }.filter { it.isNotBlank() }.joinToString(" / ")
+                applyButtonLayout(btn, categoryTitle.isNotEmpty())
+                btn.text = formatButtonText(categoryTitle, formsPreview, isDarkMode)
                 if (pairs.size == 1) {
-                    val (label, form) = pairs.first()
-                    btn.text = formatButtonText(label, form, isDarkMode)
+                    val (_, form) = pairs.first()
                     btn.setOnClickListener {
                         listener.commitText("$form ")
                         listener.processLinguisticSuggestions(form)
                     }
                 } else {
-                    btn.text = pairs.joinToString(" / ") { it.second }
                     btn.setOnClickListener {
                         listener.onConjugationSubCategorySelected(categoryTitle)
                     }
@@ -627,6 +664,8 @@ class KeyboardUIManager(
                         if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
                     )
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                val hasLabel = label.isNotEmpty() && label != "all"
+                applyButtonLayout(btn, hasLabel)
                 btn.text = formatButtonText(label, form, isDarkMode)
                 btn.setOnClickListener {
                     listener.commitText("$form ")
