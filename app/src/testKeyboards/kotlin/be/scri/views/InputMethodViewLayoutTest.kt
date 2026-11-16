@@ -25,10 +25,11 @@ import org.robolectric.annotation.Config
  *    `layout_width="0dp"` means a literal zero width. Its `wrap_content` text then wraps
  *    one character per line and inflates the whole IME window far beyond the keyboard.
  *
- *  - [R.id.keyboard_view] must not anchor its bottom edge to [R.id.floating_drag_bar],
- *    because that view anchors its own top edge back to [R.id.keyboard_view]. The
- *    resulting cycle makes the `wrap_content` root resolve to the full window height
- *    and `onComputeInsets` report a full-screen IME inset to the host app.
+ *  - [R.id.keyboard_view] must not anchor its bottom edge to [R.id.floating_drag_bar]
+ *    or to the parent. The drag bar anchors its top edge to [R.id.keyboard_view], so a
+ *    reverse anchor is a cycle that stretches the `wrap_content` root to the full
+ *    window height, and pinning the keyboard to the parent bottom leaves the drag bar
+ *    no room when floating mode makes it visible.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -77,13 +78,44 @@ class InputMethodViewLayoutTest {
     }
 
     @Test
-    fun keyboardView_bottomAnchorIsParent_floatingDragBarCycleIsBroken() {
-        val params = keyboardView.layoutParams as ConstraintLayout.LayoutParams
+    fun keyboardView_hasNoBottomAnchor_dragBarHangsBelowItInOneDirection() {
+        val keyboardParams = keyboardView.layoutParams as ConstraintLayout.LayoutParams
+        val dragParams = binding.floatingDragBar.layoutParams as ConstraintLayout.LayoutParams
 
-        // Before the fix the bottom edge pointed at floating_drag_bar, whose own top
-        // edge pointed back at keyboard_view - a cycle that stretched the wrap_content
-        // root to the full IME window height.
-        assertEquals(ConstraintLayout.LayoutParams.PARENT_ID, params.bottomToBottom)
-        assertEquals(ConstraintLayout.LayoutParams.UNSET, params.bottomToTop)
+        // A bottom anchor on the keyboard, whether to the drag bar or to the parent,
+        // either recreates the cycle or leaves the drag bar no slot in floating mode.
+        assertEquals(ConstraintLayout.LayoutParams.UNSET, keyboardParams.bottomToBottom)
+        assertEquals(ConstraintLayout.LayoutParams.UNSET, keyboardParams.bottomToTop)
+
+        assertEquals(keyboardView.id, dragParams.topToBottom)
+        assertEquals(ConstraintLayout.LayoutParams.UNSET, dragParams.bottomToBottom)
+        assertEquals(ConstraintLayout.LayoutParams.UNSET, dragParams.bottomToTop)
+    }
+
+    @Test
+    fun floatingDragBar_sitsBelowKeyboard_withoutStretchingTheCard() {
+        binding.floatingDragBar.visibility = View.VISIBLE
+
+        val displayMetrics = context.resources.displayMetrics
+        val screenHeight = displayMetrics.heightPixels
+        binding.root.measure(
+            View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(screenHeight, View.MeasureSpec.EXACTLY),
+        )
+        binding.root.layout(0, 0, binding.root.measuredWidth, binding.root.measuredHeight)
+
+        val card = binding.keyboardCard
+        val dragBar = binding.floatingDragBar
+
+        assertTrue(
+            "keyboard card stretched to ${card.height}px against a ${screenHeight}px window",
+            card.height in 1 until screenHeight / 2,
+        )
+        assertTrue("drag bar must keep its own height", dragBar.height > 0)
+        assertEquals(
+            "drag bar must start where the keyboard ends, not overlap it",
+            keyboardView.bottom,
+            dragBar.top,
+        )
     }
 }
