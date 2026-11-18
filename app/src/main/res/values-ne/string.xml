@@ -18,12 +18,14 @@
     <string name="i18n._global.support_scribe">स्क्राइबलाई समर्थन गर्नुहोस्</string>
     <string name="i18n._global.supporters">समर्थकहरू</string>
     <string name="i18n._global.trademark_policy">ट्रेडमार्क नीति</string>
+    <string name="i18n.app._global.button_install_keyboards">किबोर्ड स्थापना गर्नुहोस्</string>
     <string name="i18n.app._global.download_data">डेटा डाउनलोड गर्नुहोस्</string>
     <string name="i18n.app._global.english">अंग्रेजी</string>
     <string name="i18n.app._global.french">फ्रान्सेली</string>
     <string name="i18n.app._global.german">जर्मन</string>
     <string name="i18n.app._global.indonesian">इन्डोनेसियन</string>
     <string name="i18n.app._global.italian">इटालियन</string>
+    <string name="i18n.app._global.no_keyboards_installed">तपाईंसँग हाल कुनै स्क्राइब किबोर्ड स्थापना गरिएको छैन। किबोर्ड स्थापना गर्न तलको बटन क्लिक गर्नुहोस्।</string>
     <string name="i18n.app._global.norwegian">नर्वेजियन</string>
     <string name="i18n.app._global.portuguese">पोर्चुगिज</string>
     <string name="i18n.app._global.quick_tutorial">छिटो ट्युटोरियल</string>
@@ -78,7 +80,6 @@
     <string name="i18n.app.download.menu_ui.download_data.title">डाउनलोड गर्न डेटा चयन गर्नुहोस्</string>
     <string name="i18n.app.download.menu_ui.download_data.up_to_date">अद्यावधिक</string>
     <string name="i18n.app.download.menu_ui.download_data.update">अपडेट गर्नुहोस्</string>
-    <string name="i18n.app.download.menu_ui.no_keyboards_installed">तपाईंसँग हाल कुनै स्क्राइब किबोर्ड स्थापना गरिएको छैन। किबोर्ड स्थापना गर्न तलको बटन क्लिक गर्नुहोस्।</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.change_language">भाषा बद्ल्नुहोस्</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.download_warning">तपाईंले डाउनलोड गर्नुहुने डेटाले तपाईंलाई {source_language} बाट {target_language} मा अनुवाद गर्न दिनेछ। क्षमा गर्नुहोस्, कुन भाषाबाट अनुवाद गर्ने भाषा बद्ल्नुहुन्छ?</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.use_source_language">{source_language} प्रयोग गर्नुहोस्</string>
@@ -95,7 +96,6 @@
     <string name="i18n.app.installation.keyboard.text_4">किबोर्ड चयन गर्न</string>
     <string name="i18n.app.installation.keyboard.title">किबोर्ड स्थापना</string>
     <string name="i18n.app.installation.title">स्थापना</string>
-    <string name="i18n.app.settings.button_install_keyboards">किबोर्ड स्थापना गर्नुहोस्</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">सुझाव/पूर्ण गर्नुहोस् टिप्पणी गर्नुहोस्</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">टाइप गर्दा लिङ्ग देखाउन सुझाव र पूर्णताहरूलाई रेखाङ्कन गर्नुहोस्।</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">इमोजी स्वतः सुझाव</string>

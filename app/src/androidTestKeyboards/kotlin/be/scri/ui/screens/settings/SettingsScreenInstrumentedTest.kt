@@ -169,7 +169,7 @@ class SettingsScreenInstrumentedTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.i18n_app_settings_button_install_keyboards))
+            .onNodeWithText(context.getString(R.string.i18n_app__global_button_install_keyboards))
             .assertIsDisplayed()
             .assertHasClickAction()
     }
@@ -360,7 +360,7 @@ class SettingsScreenInstrumentedTest {
 
         val installButton =
             composeTestRule
-                .onNodeWithText(context.getString(R.string.i18n_app_settings_button_install_keyboards))
+                .onNodeWithText(context.getString(R.string.i18n_app__global_button_install_keyboards))
 
         installButton.assertIsDisplayed()
         installButton.assertHasClickAction()

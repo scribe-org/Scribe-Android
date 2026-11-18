@@ -18,6 +18,7 @@
     <string name="i18n._global.support_scribe">Scribe का समर्थन करें</string>
     <string name="i18n._global.supporters">समर्थक</string>
     <string name="i18n._global.trademark_policy">ट्रेडमार्क नीति</string>
+    <string name="i18n.app._global.button_install_keyboards">कीबोर्ड इंस्टॉल करें</string>
     <string name="i18n.app._global.clear_all">सभी साफ़ करें</string>
     <string name="i18n.app._global.confirmation">पुष्टि</string>
     <string name="i18n.app._global.delete">हटाएं</string>
@@ -29,6 +30,7 @@
     <string name="i18n.app._global.hint">संकेत</string>
     <string name="i18n.app._global.indonesian">इंडोनेशियाई</string>
     <string name="i18n.app._global.italian">इतालवी</string>
+    <string name="i18n.app._global.no_keyboards_installed">आपके पास कोई Scribe कीबोर्ड इंस्टॉल नहीं है। कृपया एक Scribe कीबोर्ड इंस्टॉल करने के लिए नीचे दिए गए "कीबोर्ड इंस्टॉल करें" बटन पर क्लिक करें और फिर आवश्यक डेटा डाउनलोड करने के लिए वापस आएं।</string>
     <string name="i18n.app._global.norwegian">नॉर्वेजियन</string>
     <string name="i18n.app._global.portuguese">पुर्तगाली</string>
     <string name="i18n.app._global.quick_tutorial">त्वरित ट्यूटोरियल</string>
@@ -125,7 +127,6 @@
     <string name="i18n.app.download.menu_ui.download_data.up_to_date">अद्यतित</string>
     <string name="i18n.app.download.menu_ui.download_data.update">अपडेट करें</string>
     <string name="i18n.app.download.menu_ui.download_data.update_all">सभी अपडेट करें</string>
-    <string name="i18n.app.download.menu_ui.no_keyboards_installed">आपके पास कोई Scribe कीबोर्ड इंस्टॉल नहीं है। कृपया एक Scribe कीबोर्ड इंस्टॉल करने के लिए नीचे दिए गए "कीबोर्ड इंस्टॉल करें" बटन पर क्लिक करें और फिर आवश्यक डेटा डाउनलोड करने के लिए वापस आएं।</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.change_language">भाषा बदलें</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.download_warning">आप जो डेटा डाउनलोड करेंगे, वह आपको {source_language} से {target_language} में अनुवाद करने में सक्षम बनाएगा। क्या आप वह भाषा बदलना चाहते हैं जिससे आप अनुवाद करेंगे?</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.use_source_language">{source_language} का उपयोग करें</string>
@@ -167,7 +168,6 @@
     <string name="i18n.app.keyboard.tutorial.verb_conjugation.invalid_language">{language} के लिए क्रिया संयोजन उपलब्ध नहीं है क्योंकि क्रियाओं में संयोजन नहीं होते। कृपया अगले ट्यूटोरियल पर आगे बढ़ें।</string>
     <string name="i18n.app.keyboard.tutorial.word_translation">शब्द अनुवाद</string>
     <string name="i18n.app.keyboard.tutorial.word_translation.instruction">आइए Wiktionary अनुवाद के साथ अनुवाद करें! अपने कीबोर्ड के ऊपर-बाएं कोने में पेंसिल जैसी Scribe की पर टैप करें, और {translate} चुनें।\n\nफिर वह शब्द लिखें जिसका आप अनुवाद करना चाहते हैं, ▶ दबाएं, और अनुवाद आपको वापस मिल जाएगा।</string>
-    <string name="i18n.app.settings.button_install_keyboards">कीबोर्ड इंस्टॉल करें</string>
     <string name="i18n.app.settings.conjugate_app_hint_tooltip">ऐप की भाषा और स्वरूप से जुड़ी सेटिंग्स यहां मिलेंगी।</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">अनोटेट सुझाव/समाप्ति</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">टाइप करते समय सुझाव और समाप्ति को रेखांकित करें ताकि उनके लिंग दिख सकें।</string>

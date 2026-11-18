@@ -2,6 +2,7 @@
 <resources>
     <string name="i18n._global.legal">Legal</string>
     <string name="i18n._global.privacy_policy">Kebijakan privasi</string>
+    <string name="i18n.app._global.button_install_keyboards">Pasang keyboard</string>
     <string name="i18n.app._global.download_data">Unduh data</string>
     <string name="i18n.app._global.english">Bahasa Inggris</string>
     <string name="i18n.app._global.french">Bahasa Prancis</string>
@@ -70,7 +71,6 @@
     <string name="i18n.app.installation.keyboard.text_4">untuk memilih keyboard</string>
     <string name="i18n.app.installation.keyboard.title">Instalasi Keyboard</string>
     <string name="i18n.app.installation.title">Instalasi</string>
-    <string name="i18n.app.settings.button_install_keyboards">Pasang keyboard</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Anotasi saran/pelengkapan</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Garis bawahi saran dan pelengkapan kata untuk menunjukkan gender saat kamu mengetik.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">Saran emoji otomatis</string>

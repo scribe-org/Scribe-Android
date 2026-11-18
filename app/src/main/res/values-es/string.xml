@@ -2,6 +2,7 @@
 <resources>
     <string name="i18n._global.legal">Legal</string>
     <string name="i18n._global.privacy_policy">Política de privacidad</string>
+    <string name="i18n.app._global.button_install_keyboards">Instalar teclados</string>
     <string name="i18n.app._global.download_data">Descargar datos</string>
     <string name="i18n.app._global.english">Inglés</string>
     <string name="i18n.app._global.french">Francés</string>
@@ -70,7 +71,6 @@
     <string name="i18n.app.installation.keyboard.text_4">para seleccionar teclados</string>
     <string name="i18n.app.installation.keyboard.title">Instalación del teclado</string>
     <string name="i18n.app.installation.title">Instalación</string>
-    <string name="i18n.app.settings.button_install_keyboards">Instalar teclados</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Anotar, sugerir/completar</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Subraya sugerencias y terminaciones para mostrar sus géneros mientras escribes.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">Autosugerir emojis</string>

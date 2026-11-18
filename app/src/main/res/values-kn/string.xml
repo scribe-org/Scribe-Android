@@ -18,6 +18,7 @@
     <string name="i18n._global.support_scribe">Scribe ಅನ್ನು ಬೆಂಬಲಿಸಿ</string>
     <string name="i18n._global.supporters">ಬೆಂಬಲಿಗರು</string>
     <string name="i18n._global.trademark_policy">ಟ್ರೇಡ್‌ಮಾರ್ಕ್ ನೀತಿ</string>
+    <string name="i18n.app._global.button_install_keyboards">ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ</string>
     <string name="i18n.app._global.clear_all">ಎಲ್ಲವನ್ನೂ ಅಳಿಸಿ</string>
     <string name="i18n.app._global.confirmation">ದೃಢೀಕರಣ</string>
     <string name="i18n.app._global.delete">ಅಳಿಸಿ</string>
@@ -28,6 +29,7 @@
     <string name="i18n.app._global.hint">ಸುಳಿವು</string>
     <string name="i18n.app._global.indonesian">ಇಂಡೋನೇಷಿಯನ್</string>
     <string name="i18n.app._global.italian">ಇಟಾಲಿಯನ್</string>
+    <string name="i18n.app._global.no_keyboards_installed">ನಿಮ್ಮ ಬಳಿ ಪ್ರಸ್ತುತ ಯಾವುದೇ Scribe ಕೀಬೋರ್ಡ್ ಇನ್‌ಸ್ಟಾಲ್ ಆಗಿಲ್ಲ. ದಯವಿಟ್ಟು Scribe ಕೀಬೋರ್ಡ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲು ಕೆಳಗಿನ "ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ" ಬಟನ್ ಒತ್ತಿ ಮತ್ತು ನಂತರ ಅಗತ್ಯವಿರುವ ದತ್ತಾಂಶವನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಹಿಂತಿರುಗಿ.</string>
     <string name="i18n.app._global.norwegian">ನಾರ್ವೇಜಿಯನ್</string>
     <string name="i18n.app._global.portuguese">ಪೋರ್ಚುಗೀಸ್</string>
     <string name="i18n.app._global.quick_tutorial">ತ್ವರಿತ ಟ್ಯುಟೋರಿಯಲ್</string>
@@ -124,7 +126,6 @@
     <string name="i18n.app.download.menu_ui.download_data.up_to_date">ಇತ್ತೀಚಿನದ್ದಾಗಿದೆ</string>
     <string name="i18n.app.download.menu_ui.download_data.update">ನವೀಕರಿಸಿ</string>
     <string name="i18n.app.download.menu_ui.download_data.update_all">ಎಲ್ಲವನ್ನೂ ನವೀಕರಿಸಿ</string>
-    <string name="i18n.app.download.menu_ui.no_keyboards_installed">ನಿಮ್ಮ ಬಳಿ ಪ್ರಸ್ತುತ ಯಾವುದೇ Scribe ಕೀಬೋರ್ಡ್ ಇನ್‌ಸ್ಟಾಲ್ ಆಗಿಲ್ಲ. ದಯವಿಟ್ಟು Scribe ಕೀಬೋರ್ಡ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲು ಕೆಳಗಿನ "ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ" ಬಟನ್ ಒತ್ತಿ ಮತ್ತು ನಂತರ ಅಗತ್ಯವಿರುವ ದತ್ತಾಂಶವನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಹಿಂತಿರುಗಿ.</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.change_language">ಭಾಷೆ ಬದಲಾಯಿಸಿ</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.download_warning">ನೀವು ಡೌನ್‌ಲೋಡ್ ಮಾಡುವ ದತ್ತಾಂಶವು ನಿಮಗೆ {source_language} ನಿಂದ {target_language} ಗೆ ಅನುವಾದಿಸಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ. ನೀವು ಅನುವಾದಿಸುವ ಭಾಷೆಯನ್ನು ಬದಲಾಯಿಸಲು ಬಯಸುವಿರಾ?</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.use_source_language">{source_language} ಬಳಸಿ</string>
@@ -167,7 +168,6 @@
     <string name="i18n.app.keyboard.tutorial.verb_conjugation.invalid_language">{language} ಗೆ ಕ್ರಿಯಾಪದ ಸಂಯೋಜನೆ ಲಭ್ಯವಿಲ್ಲ ಏಕೆಂದರೆ ಕ್ರಿಯಾಪದಗಳಿಗೆ ಸಂಯೋಜನೆಗಳಿಲ್ಲ. ದಯವಿಟ್ಟು ಮುಂದಿನ ಟ್ಯುಟೋರಿಯಲ್‌ಗೆ ಮುಂದುವರಿಯಿರಿ.</string>
     <string name="i18n.app.keyboard.tutorial.word_translation">ಪದ ಅನುವಾದ</string>
     <string name="i18n.app.keyboard.tutorial.word_translation.instruction">Wiktionary ಅನುವಾದಗಳೊಂದಿಗೆ ಅನುವಾದಿಸೋಣ! ನಿಮ್ಮ ಕೀಬೋರ್ಡ್‌ನ ಮೇಲಿನ-ಎಡ ಮೂಲೆಯಲ್ಲಿರುವ ಪೆನ್ಸಿಲ್‌ನಂತಹ Scribe ಕೀಯನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ, ಮತ್ತು {translate} ಆಯ್ಕೆಮಾಡಿ.\n\nನಂತರ ನೀವು ಅನುವಾದಿಸಲು ಬಯಸುವ ಪದವನ್ನು ಬರೆಯಿರಿ, ▶ ಒತ್ತಿ, ಮತ್ತು ಅನುವಾದ ನಿಮಗೆ ಸಿಗುತ್ತದೆ.</string>
-    <string name="i18n.app.settings.button_install_keyboards">ಕೀಬೋರ್ಡ್‌ಗಳನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ</string>
     <string name="i18n.app.settings.conjugate_app_hint_tooltip">ಆ್ಯಪ್‌ನ ಭಾಷೆ ಮತ್ತು ಇಂಟರ್ಫೇಸ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಇಲ್ಲಿ ಕಂಡುಬರುತ್ತವೆ.</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">ಸೂಚನೆಗಳನ್ನು ಎದ್ದುಕಾಣುವಂತೆ ಮಾಡಿ</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">ನೀವು ಟೈಪ್ ಮಾಡುವಾಗ ಅವುಗಳ ಲಿಂಗಗಳನ್ನು ತೋರಿಸಲು ಸೂಚನೆಗಳು ಮತ್ತು ಪೂರ್ಣಗೊಳಿಸುವಿಕೆಯನ್ನು ಅಂಡರ್‌ಲೈನ್ ಮಾಡಿ.</string>

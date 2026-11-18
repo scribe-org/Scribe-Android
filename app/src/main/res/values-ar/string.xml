@@ -2,6 +2,7 @@
 <resources>
     <string name="i18n._global.legal">قانوني</string>
     <string name="i18n._global.privacy_policy">سياسة الخصوصية</string>
+    <string name="i18n.app._global.button_install_keyboards">تثبيت لوحات المفاتيح</string>
     <string name="i18n.app._global.download_data">تنزيل البيانات</string>
     <string name="i18n.app._global.english">الإنجليزية</string>
     <string name="i18n.app._global.french">الفرنسية</string>
@@ -70,7 +71,6 @@
     <string name="i18n.app.installation.keyboard.text_4">لاختيار لوحات المفاتيح</string>
     <string name="i18n.app.installation.keyboard.title">تثبيت لوحة المفاتيح</string>
     <string name="i18n.app.installation.title">تثبيت</string>
-    <string name="i18n.app.settings.button_install_keyboards">تثبيت لوحات المفاتيح</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">توضيح الاقتراحات/الاكتمال</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">تسطير الاقتراحات والاكتملات لإظهار جنسها أثناء الكتابة.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">اقتراح الرموز التعبيرية تلقائيًا</string>

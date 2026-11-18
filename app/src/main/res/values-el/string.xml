@@ -18,12 +18,14 @@
     <string name="i18n._global.support_scribe">Υποστηρίξτε το Scribe</string>
     <string name="i18n._global.supporters">Υποστηρικτές</string>
     <string name="i18n._global.trademark_policy">Πολιτική Εμπορικών Σημάτων</string>
+    <string name="i18n.app._global.button_install_keyboards">Εγκατάσταση πληκτρολογίων</string>
     <string name="i18n.app._global.download_data">Λήψη δεδομένων</string>
     <string name="i18n.app._global.english">Αγγλικά</string>
     <string name="i18n.app._global.french">Γαλλικά</string>
     <string name="i18n.app._global.german">Γερμανικά</string>
     <string name="i18n.app._global.indonesian">Ινδονησιακά</string>
     <string name="i18n.app._global.italian">Ιταλικά</string>
+    <string name="i18n.app._global.no_keyboards_installed">Αυτή τη στιγμή δεν έχετε εγκατεστημένο κανένα πληκτρολόγιο Scribe. Παρακαλούμε πατήστε το κουμπί Εγκατάσταση πληκτρολογίων παρακάτω για να εγκαταστήσετε ένα πληκτρολόγιο Scribe και μετά επιστρέψτε για να κατεβάσετε τα απαραίτητα δεδομένα.</string>
     <string name="i18n.app._global.norwegian">Νορβηγικά</string>
     <string name="i18n.app._global.portuguese">Πορτογαλικά</string>
     <string name="i18n.app._global.quick_tutorial">Γρήγορο μάθημα</string>
@@ -78,7 +80,6 @@
     <string name="i18n.app.download.menu_ui.download_data.title">Επιλογή δεδομένων για λήψη</string>
     <string name="i18n.app.download.menu_ui.download_data.up_to_date">Ενημερωμένο</string>
     <string name="i18n.app.download.menu_ui.download_data.update">Ενημέρωση</string>
-    <string name="i18n.app.download.menu_ui.no_keyboards_installed">Αυτή τη στιγμή δεν έχετε εγκατεστημένο κανένα πληκτρολόγιο Scribe. Παρακαλούμε πατήστε το κουμπί Εγκατάσταση πληκτρολογίων παρακάτω για να εγκαταστήσετε ένα πληκτρολόγιο Scribe και μετά επιστρέψτε για να κατεβάσετε τα απαραίτητα δεδομένα.</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.change_language">Αλλαγή γλώσσας</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.download_warning">Τα δεδομένα που θα κατεβάσετε θα σας επιτρέψουν να μεταφράζετε από {source_language} σε {target_language}. Θέλετε να αλλάξετε τη γλώσσα από την οποία θα μεταφράζετε;</string>
     <string name="i18n.app.download.menu_ui.translation_source_tooltip.use_source_language">Χρήση {source_language}</string>
@@ -95,7 +96,6 @@
     <string name="i18n.app.installation.keyboard.text_4">για να επιλέξετε πληκτρολόγια</string>
     <string name="i18n.app.installation.keyboard.title">Εγκατάσταση πληκτρολογίου</string>
     <string name="i18n.app.installation.title">Εγκατάσταση</string>
-    <string name="i18n.app.settings.button_install_keyboards">Εγκατάσταση πληκτρολογίων</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Σήμανση προτάσεων/συμπληρώσεων</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Υπογράμμιση προτάσεων και συμπληρώσεων για εμφάνιση του γένους τους καθώς πληκτρολογείτε.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">Αυτόματη πρόταση emoji</string>

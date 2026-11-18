@@ -81,6 +81,7 @@ fun DownloadDataScreen(
     val scrollState = rememberScrollState()
     val regularlyUpdateData = remember { mutableStateOf(true) }
     val selectedLanguage = remember { mutableStateOf<LanguageItem?>(null) }
+    val languagePendingDeletion = remember { mutableStateOf<LanguageItem?>(null) }
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     val installedKeyboardLanguages by viewModel.languages.collectAsState()
@@ -198,7 +199,12 @@ fun DownloadDataScreen(
                         onLanguageSelect = { selectedLanguage.value = it },
                         onDownloadAll = downloadActions.onDownloadAll,
                         onDownloadAction = downloadActions.onDownloadAction,
-                        onDeleteAction = downloadActions.onDeleteAction,
+                        onDeleteAction =
+                            if (downloadActions.onDeleteAction != null) {
+                                { lang -> languagePendingDeletion.value = lang }
+                            } else {
+                                null
+                            },
                     )
                 }
 
@@ -227,6 +233,24 @@ fun DownloadDataScreen(
                         },
                         onChange = { onNavigateToTranslation(languageId) },
                         onDismiss = { selectedLanguage.value = null },
+                    )
+                }
+
+                languagePendingDeletion.value?.let { lang ->
+                    ConfirmationDialog(
+                        text =
+                            StringUtils.stringResourceWithParams(
+                                R.string.i18n_app_download_menu_ui_download_data_delete_confirmation,
+                                lang.displayName,
+                            ),
+                        textConfirm = stringResource(R.string.i18n_app__global_delete),
+                        textChange = stringResource(R.string.i18n_app_settings_option_cancel),
+                        onConfirm = {
+                            downloadActions.onDeleteAction?.invoke(lang.key)
+                            languagePendingDeletion.value = null
+                        },
+                        onChange = { languagePendingDeletion.value = null },
+                        onDismiss = { languagePendingDeletion.value = null },
                     )
                 }
             }
@@ -260,7 +284,7 @@ private fun EmptyStateSection(context: Context) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = stringResource(R.string.i18n_app_download_menu_ui_no_keyboards_installed),
+                    text = stringResource(R.string.i18n_app__global_no_keyboards_installed),
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -292,7 +316,7 @@ private fun LanguagesListSection(
     onLanguageSelect: (LanguageItem) -> Unit,
     onDownloadAll: () -> Unit,
     onDownloadAction: (String, Boolean) -> Unit,
-    onDeleteAction: ((String) -> Unit)? = null,
+    onDeleteAction: ((LanguageItem) -> Unit)? = null,
     isDarkTheme: Boolean = false,
 ) {
     Surface(
@@ -317,7 +341,7 @@ private fun LanguagesListSection(
                             onDownloadAction(lang.key, false)
                         }
                     },
-                    onDeleteClick = onDeleteAction?.let { action -> { action(lang.key) } },
+                    onDeleteClick = onDeleteAction?.let { action -> { action(lang) } },
                     isDarkTheme = isDarkTheme,
                     buttonState = currentStatus,
                 )

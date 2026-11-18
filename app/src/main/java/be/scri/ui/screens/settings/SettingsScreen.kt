@@ -225,7 +225,7 @@ private fun EmptyKeyboardSettingsSection(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = stringResource(R.string.i18n_app_download_menu_ui_no_keyboards_installed),
+                    text = stringResource(R.string.i18n_app__global_no_keyboards_installed),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                 )

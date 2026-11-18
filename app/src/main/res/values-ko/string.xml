@@ -2,6 +2,7 @@
 <resources>
     <string name="i18n._global.legal">법률</string>
     <string name="i18n._global.privacy_policy">제3자 정책</string>
+    <string name="i18n.app._global.button_install_keyboards">키보드 설치하기</string>
     <string name="i18n.app._global.download_data">다운로드</string>
     <string name="i18n.app._global.english">영어</string>
     <string name="i18n.app._global.french">프랑스어</string>
@@ -70,7 +71,6 @@
     <string name="i18n.app.installation.keyboard.text_4">키보드를 선택할 수 있습니다.</string>
     <string name="i18n.app.installation.keyboard.title">키보드 설치</string>
     <string name="i18n.app.installation.title">설치</string>
-    <string name="i18n.app.settings.button_install_keyboards">키보드 설치하기</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">추천 및 완성 설명</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">입력 시 성별에 따라 다른 단어가 제안될 때, 해당 단어에 밑줄 쳐서 성별을 나타낸다.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">이모지 추천</string>

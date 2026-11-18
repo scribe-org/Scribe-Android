@@ -417,6 +417,13 @@ class DataDownloadViewModel(
 
             withContext(Dispatchers.Main) {
                 downloadStates[key] = DownloadState.Ready
+                val displayLang = key.replaceFirstChar { it.uppercase() }
+                val template =
+                    getApplication<Application>().getString(
+                        R.string.i18n_app_download_menu_ui_download_data_delete_success,
+                    )
+                val msg = StringUtils.formatStringWithParams(template, displayLang)
+                showToast(msg)
             }
         }
     }
