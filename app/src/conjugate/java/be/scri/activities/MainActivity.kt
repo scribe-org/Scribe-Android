@@ -6,6 +6,7 @@
 
 package be.scri.activities
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,6 +25,10 @@ import androidx.navigation.compose.rememberNavController
 import be.scri.ScribeApp
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.setLightDarkModePreference
+import be.scri.helpers.dataupdate.DataUpdateNotifier
+import be.scri.helpers.dataupdate.DataUpdateScheduler
+import be.scri.helpers.dataupdate.DownloadNavEffect
+import be.scri.helpers.dataupdate.DownloadNavEvents
 import be.scri.ui.common.bottombar.BottomBarScreen
 import be.scri.ui.theme.ScribeTheme
 
@@ -32,12 +37,16 @@ import be.scri.ui.theme.ScribeTheme
  * Initializes theme settings, navigation, and sets up the main UI using Jetpack Compose.
  */
 class MainActivity : ComponentActivity() {
+    private val downloadNavEvents = DownloadNavEvents()
+
     /**
      * Initializes the app on launch. Sets the theme based on user preferences, sets up edge-to-edge
      * layout, and builds the UI using Compose.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DataUpdateScheduler.ensureScheduled(this)
+        downloadNavEvents.publish(intent)
         AppCompatDelegate.setDefaultNightMode(PreferencesHelper.getUserDarkModePreference(this))
 
         val isDark = PreferencesHelper.getUserDarkModePreference(this) == AppCompatDelegate.MODE_NIGHT_YES
@@ -69,6 +78,11 @@ class MainActivity : ComponentActivity() {
                 }
 
             val navController = rememberNavController()
+            DownloadNavEffect(
+                events = downloadNavEvents,
+                navController = navController,
+                route = DataUpdateNotifier.ROUTE_CONJUGATE,
+            )
 
             val isHintChangedMap = remember { mutableStateMapOf<Int, Boolean>() }
 
@@ -119,6 +133,12 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        downloadNavEvents.publish(intent)
     }
 
     private fun applyNavigationBarStyle(isDark: Boolean) {

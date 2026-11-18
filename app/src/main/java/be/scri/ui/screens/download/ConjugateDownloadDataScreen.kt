@@ -19,7 +19,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +33,6 @@ import be.scri.R
 import be.scri.ui.common.ScribeBaseScreen
 import be.scri.ui.common.components.CircleClickableItemComp
 import be.scri.ui.common.components.LanguageItemComp
-import be.scri.ui.common.components.SwitchableItemComp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
@@ -48,7 +46,6 @@ fun ConjugateDownloadDataScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    val regularlyUpdateData = remember { mutableStateOf(true) }
 
     val allLanguages: ImmutableList<LanguageItem> =
         remember {
@@ -116,11 +113,7 @@ fun ConjugateDownloadDataScreen(
                                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
                             )
                         }
-                        SwitchableItemComp(
-                            title = stringResource(R.string.i18n_app_download_menu_ui_update_data_regular_update),
-                            isChecked = regularlyUpdateData.value,
-                            onCheckedChange = { regularlyUpdateData.value = it },
-                        )
+                        RegularDataCheckSwitch()
                     }
                 }
             }

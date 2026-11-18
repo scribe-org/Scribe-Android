@@ -29,6 +29,7 @@ object PreferencesHelper {
     private const val DEFAULT_KEYBOARD_LAYOUT = "default_keyboard_layout"
     private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
     private const val INCREASE_TEXT_SIZE = "increase_text_size"
+    private const val REGULARLY_CHECK_FOR_DATA_UPDATES = "regularly_check_for_data_updates"
 
     /**
      * Sets the translation source language for a given language.
@@ -649,6 +650,26 @@ object PreferencesHelper {
     fun getIncreaseTextSizePreference(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return sharedPref.getBoolean(INCREASE_TEXT_SIZE, false)
+    }
+
+    /**
+     * Saves whether this install should check for new language data in the background.
+     * The default is off. The check notifies the user and does not download the data.
+     */
+    fun setRegularlyCheckForDataUpdates(
+        context: Context,
+        enabled: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putBoolean(REGULARLY_CHECK_FOR_DATA_UPDATES, enabled) }
+    }
+
+    /**
+     * Returns whether background data checks are enabled. Missing values are off.
+     */
+    fun getRegularlyCheckForDataUpdates(context: Context): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(REGULARLY_CHECK_FOR_DATA_UPDATES, false)
     }
 
     // MARK: Floating Keyboard Preferences

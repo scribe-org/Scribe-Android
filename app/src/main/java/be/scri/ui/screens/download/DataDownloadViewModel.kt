@@ -16,6 +16,9 @@ import be.scri.helpers.LanguageMappingConstants
 import be.scri.helpers.NetworkMonitor
 import be.scri.helpers.StringUtils
 import be.scri.helpers.data.ContractDataLoader
+import be.scri.helpers.dataupdate.DOWNLOAD_PREFS_NAME
+import be.scri.helpers.dataupdate.DataVersionComparator
+import be.scri.helpers.dataupdate.LAST_UPDATE_PREFIX
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
@@ -39,7 +42,7 @@ class DataDownloadViewModel(
     val downloadStates = mutableStateMapOf<String, DownloadState>()
     private val downloadSemaphore = kotlinx.coroutines.sync.Semaphore(1)
     private val downloadJobs = ConcurrentHashMap<String, Job>()
-    private val prefs = getApplication<Application>().getSharedPreferences("scribe_prefs", Context.MODE_PRIVATE)
+    private val prefs = getApplication<Application>().getSharedPreferences(DOWNLOAD_PREFS_NAME, Context.MODE_PRIVATE)
     private val _checkUpdateState = MutableStateFlow(CheckUpdateState.Idle)
     val checkUpdateState = _checkUpdateState.asStateFlow()
 
@@ -64,7 +67,7 @@ class DataDownloadViewModel(
                     ).lowercase()
 
             // Check if a timestamp exists in SharedPreferences.
-            val savedTimestamp = prefs.getString("last_update_$langCode", null)
+            val savedTimestamp = prefs.getString("$LAST_UPDATE_PREFIX$langCode", null)
 
             if (savedTimestamp != null) {
                 downloadStates[key] = DownloadState.Completed
@@ -88,12 +91,7 @@ class DataDownloadViewModel(
     private fun isUpdateAvailable(
         localUpdatedAt: String,
         serverUpdatedAt: String?,
-    ): Boolean {
-        val localDate = LocalDate.parse(localUpdatedAt.take(10))
-        val serverDate = LocalDate.parse(serverUpdatedAt.orEmpty().take(10))
-
-        return serverDate.isAfter(localDate)
-    }
+    ): Boolean = DataVersionComparator.isUpdateAvailable(localUpdatedAt, serverUpdatedAt)
 
     private fun isValidTimestamp(value: String?): Boolean = runCatching { LocalDate.parse(value.orEmpty().take(10)) }.isSuccess
 
@@ -141,7 +139,7 @@ class DataDownloadViewModel(
                     key.replaceFirstChar { it.uppercase() },
                 ).lowercase()
 
-        val localLastUpdate = prefs.getString("last_update_$langCode", "1970-01-01") ?: "1970-01-01"
+        val localLastUpdate = prefs.getString("$LAST_UPDATE_PREFIX$langCode", "1970-01-01") ?: "1970-01-01"
 
         // Store the job so we can cancel it later if needed.
         downloadJobs[key] =
@@ -154,6 +152,11 @@ class DataDownloadViewModel(
                             RetrofitClient.apiService.getData(langCode)
                         }
                     val serverLastUpdate = response.contract.updatedAt
+
+                    // Comparator treats a bad timestamp as "not newer", which would skip the download.
+                    if (!forceDownload && !isValidTimestamp(serverLastUpdate)) {
+                        throw DateTimeParseException("Invalid timestamp", serverLastUpdate.orEmpty(), 0)
+                    }
 
                     // Always download when forcing, or when update is available.
                     val updateNeeded = forceDownload || isUpdateAvailable(localLastUpdate, serverLastUpdate)
@@ -182,7 +185,7 @@ class DataDownloadViewModel(
 
                     // Save timestamp only if both database and contract saved successfully.
                     if (updateNeeded && isValidTimestamp(serverLastUpdate)) {
-                        prefs.edit().putString("last_update_$langCode", serverLastUpdate).apply()
+                        prefs.edit().putString("$LAST_UPDATE_PREFIX$langCode", serverLastUpdate).apply()
                     }
 
                     withContext(Dispatchers.Main) {
@@ -276,7 +279,7 @@ class DataDownloadViewModel(
                 .getLanguageAlias(key.replaceFirstChar { it.uppercase() })
                 .lowercase()
 
-        val localLastUpdate = prefs.getString("last_update_$langCode", "1970-01-01") ?: "1970-01-01"
+        val localLastUpdate = prefs.getString("$LAST_UPDATE_PREFIX$langCode", "1970-01-01") ?: "1970-01-01"
 
         try {
             val response = RetrofitClient.apiService.getDataVersion(langCode)

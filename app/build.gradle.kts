@@ -332,6 +332,7 @@ dependencies {
     api("com.github.bumptech.glide:glide:4.16.0")
     ksp("com.github.bumptech.glide:ksp:4.16.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation("androidx.work:work-runtime-ktx:2.11.2")
     implementation("com.charleskorn.kaml:kaml:0.57.0")
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 }
