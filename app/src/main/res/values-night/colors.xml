@@ -48,4 +48,32 @@
     <color name="annotateGreen">#85C26F</color>
     <color name="annotateOrange">#FD9F5D</color>
     <color name="toolbar_background_color">@color/dark_keyboard_bg_color</color>
+
+    <!-- Named Scribe tokens (#781). Night values of the colors the app already uses. -->
+    <color name="scribe_background">#FF235270</color>
+    <color name="scribe_text">#FFFFFFFF</color>
+    <color name="scribe_surface">#FF000000</color>
+    <color name="scribe_button">#FFD17B0F</color>
+    <color name="scribe_on_button">#FFD17B0F</color>
+    <color name="scribe_selected">#FF5EB5E8</color>
+    <color name="scribe_outline">#FFD17B0F</color>
+    <color name="scribe_success">#FF08A045</color>
+    <color name="scribe_caption">#FFCAC4D0</color>
+    <color name="scribe_switch_track">#FFAAAAAA</color>
+    <color name="scribe_switch_thumb">#FF2A1903</color>
+    <color name="scribe_switch_thumb_off">#FF2D2D2D</color>
+    <color name="scribe_corner_button">#FF2A1903</color>
+    <color name="scribe_keyboard_background">#FF1E1E1E</color>
+    <color name="scribe_key">#FF434343</color>
+    <color name="scribe_key_text">#95FFFFFF</color>
+    <color name="scribe_key_pressed">#FF363636</color>
+    <color name="scribe_key_special">#FF202020</color>
+    <color name="scribe_accent_blue">#FF4CADE6</color>
+    <color name="scribe_annotation_red">#FFFB5F6C</color>
+    <color name="scribe_annotation_blue">#FF339EEB</color>
+    <color name="scribe_annotation_purple">#FFAC6DEC</color>
+    <color name="scribe_annotation_green">#FF85C26F</color>
+    <color name="scribe_annotation_orange">#FFFD9F5D</color>
+    <color name="scribe_nav_unselected">#FF808080</color>
+    <color name="scribe_icon">#FFFFFFFF</color>
 </resources>

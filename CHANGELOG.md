@@ -64,6 +64,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ### 🎨 Design
 
+- Named `scribe_*` color tokens record the light and dark hexes the app already uses. No screen color changes ([#781](https://github.com/scribe-org/Scribe-Android/issues/781)).
 - The Scribe key and command bar where Scribe commands are triggered ([#16](https://github.com/scribe-org/Scribe-Android/issues/16)).
 - 3x2 and other conjugation tables from which conjugations can be selected in the Conjugate command ([#267](https://github.com/scribe-org/Scribe-Android/issues/267), [#270](https://github.com/scribe-org/Scribe-Android/issues/270), [#496](https://github.com/scribe-org/Scribe-Android/issues/496), [#523](https://github.com/scribe-org/Scribe-Android/issues/523)).
 - The return key is colored Scribe blue when commands are being triggered to let the user know that that is what they need to press to finish the command ([#160](https://github.com/scribe-org/Scribe-Android/issues/160)).
