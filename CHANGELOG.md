@@ -100,6 +100,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - The clipboard panel and Wikidata information panels now properly follow dark mode styling when dark mode is enabled ([#761](https://github.com/scribe-org/Scribe-Android/issues/761)).
 - The IME layout no longer expands past the bottom of the screen and clips the bottom key row when language data has not been downloaded: the empty state banner uses `match_parent` width inside its vertical `LinearLayout` parent instead of `0dp`, which wrapped its text one character per line ([#770](https://github.com/scribe-org/Scribe-Android/issues/770)).
 - The keyboard view no longer forms a circular vertical constraint with the floating keyboard drag bar. The drag bar now hangs below the keyboard in one direction, so the `wrap_content` IME root is not stretched to the full window height and floating mode still has room for the drag handle ([#770](https://github.com/scribe-org/Scribe-Android/issues/770)).
+- Word-by-word deletion now works properly on long backspace press when enabled in settings ([#774](https://github.com/scribe-org/Scribe-Android/issues/774)).
 
 ### 🔒 Security
 
