@@ -6,6 +6,7 @@ import android.view.inputmethod.InputConnection
 import be.scri.helpers.KeyboardIMEContext.Companion.MAX_TEXT_LENGTH
 import be.scri.helpers.PreferencesHelper.getIsWordByWordDeletionEnabled
 import be.scri.models.ScribeState
+import java.text.BreakIterator
 
 /**
  * Handles backspace/delete events for keyboard services implementing [KeyboardIMEContext].
@@ -145,10 +146,25 @@ class BackspaceHandler(
     }
 
     /**
-     * Deletes a single character.
+     * Deletes a single character or grapheme cluster (including emojis).
      */
     private fun deleteSingleCharacter(inputConnection: InputConnection) {
-        inputConnection.deleteSurroundingText(1, 0)
+        val prevText = inputConnection.getTextBeforeCursor(16, 0)
+        if (!prevText.isNullOrEmpty()) {
+            val breakIterator = BreakIterator.getCharacterInstance()
+            breakIterator.setText(prevText.toString())
+            val end = breakIterator.last()
+            val start = breakIterator.previous()
+            val count =
+                if (start == BreakIterator.DONE) {
+                    1
+                } else {
+                    (end - start).coerceAtLeast(1)
+                }
+            inputConnection.deleteSurroundingText(count, 0)
+        } else {
+            inputConnection.deleteSurroundingText(1, 0)
+        }
     }
 
     /**
