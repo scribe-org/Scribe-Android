@@ -47,7 +47,6 @@ import be.scri.ui.common.appcomponents.ConfirmationDialog
 import be.scri.ui.common.appcomponents.InstallKeyboardButton
 import be.scri.ui.common.components.CircleClickableItemComp
 import be.scri.ui.common.components.LanguageItemComp
-import be.scri.ui.common.components.SwitchableItemComp
 import be.scri.ui.screens.settings.SettingsUtil
 import be.scri.ui.screens.settings.SettingsViewModel
 import be.scri.ui.screens.settings.SettingsViewModelFactory
@@ -79,7 +78,6 @@ fun DownloadDataScreen(
 ) {
     val currentInitializeStates by rememberUpdatedState(downloadActions.initializeStates)
     val scrollState = rememberScrollState()
-    val regularlyUpdateData = remember { mutableStateOf(true) }
     val selectedLanguage = remember { mutableStateOf<LanguageItem?>(null) }
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
@@ -169,11 +167,7 @@ fun DownloadDataScreen(
                                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
                             )
                         }
-                        SwitchableItemComp(
-                            title = stringResource(R.string.i18n_app_download_menu_ui_update_data_regular_update),
-                            isChecked = regularlyUpdateData.value,
-                            onCheckedChange = { regularlyUpdateData.value = it },
-                        )
+                        RegularDataCheckSwitch()
                     }
                 }
             }

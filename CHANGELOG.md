@@ -28,6 +28,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ### ✨ New Features
 
+- The "Regularly update data" switch is saved and defaults to off. When it is on, the app checks Scribe-Server for newer language data immediately and once during the second week of each month, then posts a local notification. It does not download the data ([#768](https://github.com/scribe-org/Scribe-Android/issues/768)).
 - Keyboard extensions that can be used in any app.
 - Annotation of words in the command bar including the genders of nouns and cases that follow prepositions ([#135](https://github.com/scribe-org/Scribe-Android/issues/135), [#136](https://github.com/scribe-org/Scribe-Android/issues/136), [#275](https://github.com/scribe-org/Scribe-Android/issues/275)).
 - The Scribe command UI can be displayed by pressing the Scribe Key ([#16](https://github.com/scribe-org/Scribe-Android/issues/16), [#89](https://github.com/scribe-org/Scribe-Android/issues/89), [#137](https://github.com/scribe-org/Scribe-Android/issues/137)).
