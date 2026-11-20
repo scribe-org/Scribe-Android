@@ -17,6 +17,7 @@ If you have questions or would like to communicate with the team, please [join u
 - [Learning the tech stack](#learning-the-tech-stack)
 - [Development environment](#development-environment)
 - [Build Variant Selection](#build-variant-selection)
+- [Style guide](#style-guide)
 - [Pre-commit Hooks](#pre-commit-hooks)
 - [Testing](#testing)
 - [Issues and projects](#issues-and-projects)
@@ -38,7 +39,7 @@ Thank you for your interest in contributing to Scribe-Android! We look forward t
     - We'd suggest that you use the [Element](https://element.io/) client and [Element X](https://element.io/app) for a mobile app
     - The [General](https://matrix.to/#/!yQJjLmluvlkWttNhKo:matrix.org?via=matrix.org) and [Android](https://matrix.to/#/#ScribeAndroid:matrix.org) channels would be great places to start!
     - Feel free to introduce yourself and tell us what your interests are if you're comfortable :)
-- Read through this contributing guide for all the information you need to contribute
+- Read through this contributing guide and the [style guide](https://github.com/scribe-org/Scribe-Android/blob/main/STYLEGUIDE.md) for all the information you need to contribute
 - Look into issues marked [`good first issue`](https://github.com/scribe-org/Scribe-Android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) and the [Projects board](https://github.com/orgs/scribe-org/projects/1) to get a better understanding of what you can work on
 - Check out our [public designs on Figma](https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scribe_public_designs?type=design&node-id=405-464&mode=design&t=E3ccS9Z8MDVSizQ4-0) to understand Scribes's goals and direction
 - Consider joining our [bi-weekly developer sync](https://etherpad.wikimedia.org/p/scribe-dev-sync)!
@@ -162,6 +163,12 @@ Build variants can be selected from **Build → Select Build Variant** in Androi
 
 - **`keyboardDebug`** → Scribe Language Keyboards app (IME)
 - **`conjugateDebug`** → Scribe Conjugate verb conjugation app
+
+<sub><a href="#top">Back to top.</a></sub>
+
+## Style guide
+
+Please see the [Scribe-Android style guide](https://github.com/scribe-org/Scribe-Android/blob/main/STYLEGUIDE.md) for details about how to follow the code style for the project. We made this guide to assure that we as a community write clean, cohesive code that's easy to write and review. Suggestions for the style guide are welcome.
 
 <sub><a href="#top">Back to top.</a></sub>
 
