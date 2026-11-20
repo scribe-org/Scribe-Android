@@ -32,18 +32,24 @@
     <color
         name="conjugate_keyboard_color">@color/light_keyboard_bg_color</color>
 
-    <color name="emoji_palette_bg">#F3F3FA</color>
+    <color
+        name="emoji_palette_bg">#F3F3FA</color>
     <color name="emoji_palette_icons">#5D5F68</color>
-    <color name="emoji_category_active_bg">#ABBDF0</color>
-    <color name="emoji_category_active_icon">#1B2F59</color>
+    <color
+        name="emoji_category_active_bg">#ABBDF0</color>
+    <color name="emoji_category_active_icon">
+    #1B2F59</color>
 
     <color name="nav_bar_selected_color_light">@color/dark_scribe_color</color>
-    <color name="resize_handle_color">#FF555555</color>
-    <color name="nav_bar_selected_color_dark">@color/light_scribe_color</color>
+    <color
+        name="resize_handle_color">#FF555555</color>
+    <color name="nav_bar_selected_color_dark">
+    @color/light_scribe_color</color>
     <color name="nav_item_grey">#808080</color>
 
     <!-- Light theme -->
-    <color name="light_key_color">#FFFFFFFF</color>
+    <color
+        name="light_key_color">#FFFFFFFF</color>
     <color
         name="light_special_key_color">#FFAEB3BE</color>
     <color name="light_key_press_color">
@@ -805,35 +811,46 @@
     <color
         name="toolbar_background_color">@color/light_keyboard_bg_color</color>
 
-    <!--
-        Named Scribe tokens (#781). Nothing reads these yet, so the screen does not change.
-        Existing names above stay on their current hex. Dark button text stays orange.
-    -->
-    <color name="scribe_background">#FF5EB5E8</color>
+    <!-- Scribe brand colors. -->
+    <color
+        name="scribe_background">#FF5EB5E8</color>
     <color name="scribe_text">#FF000000</color>
-    <color name="scribe_surface">#FFFFFFFF</color>
+    <color
+        name="scribe_surface">#FFFFFFFF</color>
     <color name="scribe_button">#FFFDAD0D</color>
-    <color name="scribe_on_button">#FF000000</color>
+    <color
+        name="scribe_on_button">#FF000000</color>
     <color name="scribe_selected">#FF235270</color>
-    <color name="scribe_outline">#FFFDAD0D</color>
+    <color
+        name="scribe_outline">#FFFDAD0D</color>
     <color name="scribe_success">#FF9BC53D</color>
-    <color name="scribe_caption">#E558564B</color>
+    <color
+        name="scribe_caption">#E558564B</color>
     <color name="scribe_switch_track">#FFAAAAAA</color>
-    <color name="scribe_switch_thumb">#FFFEDE9E</color>
+    <color
+        name="scribe_switch_thumb">#FFFEDE9E</color>
     <color name="scribe_switch_thumb_off">#FFEEEEEE</color>
-    <color name="scribe_corner_button">#FFFDAD0D</color>
-    <color name="scribe_keyboard_background">#FFD3D6DD</color>
+    <color
+        name="scribe_corner_button">#FFFDAD0D</color>
+    <color name="scribe_keyboard_background">
+    #FFD3D6DD</color>
     <color name="scribe_key">#FFFFFFFF</color>
-    <color name="scribe_key_text">#95000000</color>
+    <color name="scribe_key_text">
+    #95000000</color>
     <color name="scribe_key_pressed">#FFE9E9E9</color>
-    <color name="scribe_key_special">#FFAEB3BE</color>
+    <color
+        name="scribe_key_special">#FFAEB3BE</color>
     <color name="scribe_accent_blue">#FF75CEFA</color>
-    <color name="scribe_annotation_red">#FF9F1722</color>
+    <color
+        name="scribe_annotation_red">#FF9F1722</color>
     <color name="scribe_annotation_blue">#FF335C99</color>
-    <color name="scribe_annotation_purple">#FF700589</color>
-    <color name="scribe_annotation_green">#FF3D7946</color>
+    <color
+        name="scribe_annotation_purple">#FF700589</color>
+    <color name="scribe_annotation_green">
+    #FF3D7946</color>
     <color name="scribe_annotation_orange">#FFF85A39</color>
-    <color name="scribe_nav_unselected">#FF808080</color>
+    <color
+        name="scribe_nav_unselected">#FF808080</color>
     <color name="scribe_icon">#FF000000</color>
 
 </resources>
