@@ -12,6 +12,7 @@
     <string name="i18n._global.privacy_policy">Datenschutzrichtlinie</string>
     <string name="i18n._global.support_scribe">Scribe unterstützen</string>
     <string name="i18n._global.supporters">Unterstützer</string>
+    <string name="i18n.app._global.button_install_keyboards">Tastaturen installieren</string>
     <string name="i18n.app._global.download_data">Daten herunterladen</string>
     <string name="i18n.app._global.english">Englisch</string>
     <string name="i18n.app._global.french">Französisch</string>
@@ -86,7 +87,6 @@
     <string name="i18n.app.installation.keyboard.text_4">um Tastaturen auszuwählen</string>
     <string name="i18n.app.installation.keyboard.title">Tastaturinstallation</string>
     <string name="i18n.app.installation.title">Installation</string>
-    <string name="i18n.app.settings.button_install_keyboards">Tastaturen installieren</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Vorschläge annotieren</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Vorschläge unterstreichen, um ihr Genus beim Tippen anzuzeigen.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">Schlage Emojis vor</string>

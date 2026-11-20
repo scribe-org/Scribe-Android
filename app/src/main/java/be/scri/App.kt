@@ -98,12 +98,14 @@ fun ScribeApp(
     val onDownloadAction = downloadViewModel::handleDownloadAction
     val onDownloadAll = downloadViewModel::handleDownloadAllLanguages
     val initializeStates = downloadViewModel::initializeStates
+    val onDeleteAction: (String) -> Unit = { key -> downloadViewModel.deleteLanguageData(key) }
     val downloadActions =
         DownloadActions(
             downloadStates = downloadStates,
             onDownloadAction = onDownloadAction,
             onDownloadAll = onDownloadAll,
             initializeStates = initializeStates,
+            onDeleteAction = onDeleteAction,
         )
     val checkUpdateState by downloadViewModel.checkUpdateState.collectAsState()
     val checkUpdateActions =
@@ -118,12 +120,14 @@ fun ScribeApp(
     val onConjugateDownloadAction = conjugateDownloadViewModel::handleDownloadAction
     val onConjugateDownloadAll = conjugateDownloadViewModel::handleDownloadAllLanguages
     val initializeConjugateStates = conjugateDownloadViewModel::initializeStates
+    val onConjugateDeleteAction: (String) -> Unit = { key -> conjugateDownloadViewModel.deleteLanguageData(key) }
     val conjugateDownloadActions =
         DownloadActions(
             downloadStates = conjugateDownloadStates,
             onDownloadAction = onConjugateDownloadAction,
             onDownloadAll = onConjugateDownloadAll,
             initializeStates = initializeConjugateStates,
+            onDeleteAction = onConjugateDeleteAction,
         )
     val conjugateCheckUpdateState by conjugateDownloadViewModel.checkUpdateState.collectAsState()
     val conjugateCheckUpdateActions =

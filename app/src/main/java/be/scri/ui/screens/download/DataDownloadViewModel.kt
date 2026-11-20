@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import retrofit2.HttpException
+import java.io.File
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
@@ -377,6 +378,56 @@ class DataDownloadViewModel(
         downloadJobs.clear()
     }
 
+    /**
+     * Deletes the downloaded data for the given language.
+     * Clears local database, cached contract, and timestamp preference,
+     * then resets state to Ready.
+     *
+     * @param key The key identifying the download item.
+     * @param dispatcher The coroutine dispatcher for file/database I/O operations.
+     */
+    fun deleteLanguageData(
+        key: String,
+        dispatcher: kotlinx.coroutines.CoroutineDispatcher = Dispatchers.IO,
+    ) {
+        val langCode =
+            LanguageMappingConstants
+                .getLanguageAlias(
+                    key.replaceFirstChar { it.uppercase() },
+                ).lowercase()
+
+        downloadJobs[key]?.cancel()
+        downloadJobs.remove(key)
+
+        viewModelScope.launch(dispatcher) {
+            val dbName = "${langCode.uppercase()}LanguageData.sqlite"
+            getApplication<Application>().deleteDatabase(dbName)
+
+            val conjugateDb =
+                getApplication<Application>().getDatabasePath("${langCode.uppercase()}ConjugateData.sqlite")
+            if (!conjugateDb.exists()) {
+                val contractDir = File(getApplication<Application>().filesDir, "data-contracts")
+                val contractFile = File(contractDir, "$langCode.yaml")
+                if (contractFile.exists()) {
+                    contractFile.delete()
+                }
+            }
+
+            prefs.edit().remove("last_update_$langCode").apply()
+
+            withContext(Dispatchers.Main) {
+                downloadStates[key] = DownloadState.Ready
+                val displayLang = key.replaceFirstChar { it.uppercase() }
+                val template =
+                    getApplication<Application>().getString(
+                        R.string.i18n_app_download_menu_ui_download_data_delete_success,
+                    )
+                val msg = StringUtils.formatStringWithParams(template, displayLang)
+                showToast(msg)
+            }
+        }
+    }
+
     private fun showToast(msg: String) {
         viewModelScope.launch {
             _toastMessage.value = msg
@@ -418,6 +469,7 @@ data class DownloadActions(
     val onDownloadAction: (String, Boolean) -> Unit,
     val onDownloadAll: () -> Unit,
     val initializeStates: (List<String>) -> Unit,
+    val onDeleteAction: ((String) -> Unit)? = null,
 )
 
 /**

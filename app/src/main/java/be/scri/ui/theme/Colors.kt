@@ -16,6 +16,7 @@ val theme_light_unchecked_switch_selector_color = Color(color = 0xFFEEEEEE)
 val theme_light_corner_button_color = Color(color = 0xFFFDAD0D)
 val theme_light_success_color = Color(color = 0xFF9BC53D)
 val theme_light_caption_color = Color(color = 0xE558564B)
+val theme_light_delete_button_color = Color(color = 0xFFE4572E)
 
 val theme_dark_card_view_color = Color(color = 0xFF000000)
 val theme_dark_button_color = Color(color = 0xFFD17B0F)
@@ -29,6 +30,7 @@ val theme_dark_switch_selector_color = Color(color = 0xFF2A1903)
 val theme_dark_unchecked_switch_selector_color = Color(color = 0xFF2D2D2D)
 val theme_dark_corner_button_color = Color(color = 0xFF2A1903)
 val theme_dark_success_color = Color(color = 0xFF08A045)
+val theme_dark_delete_button_color = Color(color = 0xFFD11149)
 
 /**
  * Custom colors for use throughout the application.

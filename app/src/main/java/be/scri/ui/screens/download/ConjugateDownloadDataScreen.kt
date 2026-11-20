@@ -31,7 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.scri.R
+import be.scri.helpers.StringUtils
 import be.scri.ui.common.ScribeBaseScreen
+import be.scri.ui.common.appcomponents.ConfirmationDialog
 import be.scri.ui.common.components.CircleClickableItemComp
 import be.scri.ui.common.components.LanguageItemComp
 import be.scri.ui.common.components.SwitchableItemComp
@@ -49,18 +51,19 @@ fun ConjugateDownloadDataScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val regularlyUpdateData = remember { mutableStateOf(true) }
+    val languagePendingDeletion = remember { mutableStateOf<LanguageItem?>(null) }
 
     val allLanguages: ImmutableList<LanguageItem> =
-        remember {
+        remember(isDarkTheme) {
             listOf(
-                LanguageItem("english", context.getString(R.string.i18n_app__global_english), false),
-                LanguageItem("french", context.getString(R.string.i18n_app__global_french), false),
-                LanguageItem("german", context.getString(R.string.i18n_app__global_german), false),
-                LanguageItem("italian", context.getString(R.string.i18n_app__global_italian), false),
-                LanguageItem("portuguese", context.getString(R.string.i18n_app__global_portuguese), false),
-                LanguageItem("russian", context.getString(R.string.i18n_app__global_russian), false),
-                LanguageItem("spanish", context.getString(R.string.i18n_app__global_spanish), false),
-                LanguageItem("swedish", context.getString(R.string.i18n_app__global_swedish), false),
+                LanguageItem("english", context.getString(R.string.i18n_app__global_english), isDarkTheme),
+                LanguageItem("french", context.getString(R.string.i18n_app__global_french), isDarkTheme),
+                LanguageItem("german", context.getString(R.string.i18n_app__global_german), isDarkTheme),
+                LanguageItem("italian", context.getString(R.string.i18n_app__global_italian), isDarkTheme),
+                LanguageItem("portuguese", context.getString(R.string.i18n_app__global_portuguese), isDarkTheme),
+                LanguageItem("russian", context.getString(R.string.i18n_app__global_russian), isDarkTheme),
+                LanguageItem("spanish", context.getString(R.string.i18n_app__global_spanish), isDarkTheme),
+                LanguageItem("swedish", context.getString(R.string.i18n_app__global_swedish), isDarkTheme),
             ).sortedBy { it.displayName }.toImmutableList()
         }
 
@@ -142,6 +145,29 @@ fun ConjugateDownloadDataScreen(
                     color = MaterialTheme.colorScheme.surface,
                 ) {
                     Column(Modifier.padding(vertical = 10.dp, horizontal = 4.dp)) {
+                        allLanguages.forEachIndexed { index, lang ->
+                            val currentStatus = downloadActions.downloadStates[lang.key] ?: DownloadState.Ready
+                            LanguageItemComp(
+                                title = lang.displayName,
+                                onClick = { },
+                                onButtonClick = { downloadActions.onDownloadAction(lang.key, false) },
+                                onDeleteClick = downloadActions.onDeleteAction?.let { { languagePendingDeletion.value = lang } },
+                                isDarkTheme = isDarkTheme,
+                                buttonState = currentStatus,
+                            )
+                            if (index < allLanguages.lastIndex) {
+                                HorizontalDivider(
+                                    color = Color.Gray.copy(alpha = 0.3f),
+                                    thickness = 1.dp,
+                                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+                                )
+                            }
+                        }
+                        HorizontalDivider(
+                            color = Color.Gray.copy(alpha = 0.3f),
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
+                        )
                         Text(
                             text = stringResource(R.string.i18n_app_download_menu_ui_download_data_update_all),
                             color = colorResource(R.color.dark_scribe_blue),
@@ -153,27 +179,28 @@ fun ConjugateDownloadDataScreen(
                                     .align(Alignment.End)
                                     .clickable { downloadActions.onDownloadAll() },
                         )
-                        allLanguages.forEachIndexed { index, lang ->
-                            val currentStatus = downloadActions.downloadStates[lang.key] ?: DownloadState.Ready
-                            LanguageItemComp(
-                                title = lang.displayName,
-                                onClick = { },
-                                onButtonClick = { downloadActions.onDownloadAction(lang.key, false) },
-                                isDarkTheme = lang.isDark,
-                                buttonState = currentStatus,
-                            )
-                            if (index < allLanguages.lastIndex) {
-                                HorizontalDivider(
-                                    color = Color.Gray.copy(alpha = 0.3f),
-                                    thickness = 1.dp,
-                                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
-                                )
-                            }
-                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
             }
+        }
+
+        languagePendingDeletion.value?.let { lang ->
+            ConfirmationDialog(
+                text =
+                    StringUtils.stringResourceWithParams(
+                        R.string.i18n_app_download_menu_ui_download_data_delete_confirmation,
+                        lang.displayName,
+                    ),
+                textConfirm = stringResource(R.string.i18n_app__global_delete),
+                textChange = stringResource(R.string.i18n_app_settings_option_cancel),
+                onConfirm = {
+                    downloadActions.onDeleteAction?.invoke(lang.key)
+                    languagePendingDeletion.value = null
+                },
+                onChange = { languagePendingDeletion.value = null },
+                onDismiss = { languagePendingDeletion.value = null },
+            )
         }
     }
 }
