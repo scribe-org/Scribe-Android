@@ -874,34 +874,9 @@ abstract class GeneralKeyboardIME(
      * @param isLongPress true` if this is a long press/repeat action, false for single tap.
      */
     override fun handleDelete(isLongPress: Boolean) {
-        val inputConnection = currentInputConnection ?: return
         val effectiveIsCommandBar =
             currentState != ScribeState.IDLE &&
                 currentState != ScribeState.SELECT_COMMAND
-
-        if (!effectiveIsCommandBar) {
-            val selectedText = inputConnection.getSelectedText(0)
-            if (selectedText.isNullOrEmpty()) {
-                // Use BreakIterator to delete full emoji characters.
-                val prevText = inputConnection.getTextBeforeCursor(8, 0)
-                if (!prevText.isNullOrEmpty()) {
-                    val breakIterator =
-                        android.icu.text.BreakIterator
-                            .getCharacterInstance()
-                    breakIterator.setText(prevText.toString())
-                    val end = breakIterator.last()
-                    val start = breakIterator.previous()
-                    val count =
-                        if (start == android.icu.text.BreakIterator.DONE) {
-                            1
-                        } else {
-                            (end - start).coerceAtLeast(1)
-                        }
-                    inputConnection.deleteSurroundingText(count, 0)
-                    return
-                }
-            }
-        }
 
         backspaceHandler.handleBackspace(effectiveIsCommandBar, isLongPress)
     }
