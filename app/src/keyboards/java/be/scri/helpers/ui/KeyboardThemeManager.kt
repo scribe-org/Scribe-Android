@@ -206,14 +206,22 @@ class KeyboardThemeManager {
         colorRes: Int,
         buttonText: String,
         textSizeSp: Float? = null,
+        type: String?,
     ) {
         button.visibility = View.VISIBLE
         button.text = buttonText
         if (textSizeSp != null) {
             button.textSize = textSizeSp
         }
-        button.isClickable = false
-        button.setOnClickListener(null)
+        when (type) {
+            "preposition" -> {
+                button.isClickable = true
+            }
+            else -> {
+                button.isClickable = false
+                button.setOnClickListener(null)
+            }
+        }
 
         if (colorRes != R.color.transparent) {
             button.background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)

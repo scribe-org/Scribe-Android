@@ -8,7 +8,9 @@ import be.scri.R
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
 import be.scri.helpers.KeyboardIMEContext
+import be.scri.latin.utils.Log
 import be.scri.models.ScribeState
+import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.Companion.SUGGESTION_SIZE
 
 /**
@@ -23,6 +25,7 @@ class SuggestionUIHandler(
 ) {
     private companion object {
         const val NOUN_TYPE_SIZE = 20f
+        const val TAG = "SuggestionUIHandler"
     }
 
     private val uiManager: KeyboardUIManager
@@ -115,6 +118,7 @@ class SuggestionUIHandler(
                 colorRes = R.color.annotateOrange,
                 buttonText = "PL",
                 textSizeSp = NOUN_TYPE_SIZE,
+                type = null,
             )
             return true
         }
@@ -205,8 +209,9 @@ class SuggestionUIHandler(
      */
     private fun handleSingleType(
         singleTypeSuggestion: List<String>?,
-        type: String? = null,
+        type: String,
     ) {
+        Log.d(TAG, "handling type $type with suggestion list $singleTypeSuggestion")
         val suggestionText = singleTypeSuggestion?.getOrNull(0).toString()
         val (colorRes, buttonText) =
             when (type) {
@@ -214,6 +219,14 @@ class SuggestionUIHandler(
                 "preposition" -> handleTextForCaseAnnotation(suggestionText, ime.language, ime.imeContext)
                 else -> Pair(R.color.transparent, "")
             }
+
+        if (type == "preposition") {
+            uiManager.binding.translateBtn.setOnClickListener {
+                if (ime is GeneralKeyboardIME) {
+                    ime.onPrepositionClicked(suggestionText)
+                }
+            }
+        }
 
         uiManager.genderSuggestionLeft?.visibility = View.INVISIBLE
         uiManager.genderSuggestionRight?.visibility = View.INVISIBLE
@@ -224,6 +237,7 @@ class SuggestionUIHandler(
             colorRes = colorRes,
             buttonText = buttonText,
             textSizeSp = NOUN_TYPE_SIZE,
+            type = type,
         )
     }
 
