@@ -20,6 +20,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 ### 🚀 Deployment
 
 - Releasing to the Google Play Store.
+- Replaced the deprecated Play Core library with the Play In-App Review library to support Android 14+ target SDKs on Google Play ([#793](https://github.com/scribe-org/Scribe-Android/issues/793)).
 
 ### ⌨️ Keyboards
 
