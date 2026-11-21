@@ -93,6 +93,23 @@ class KeyboardTest {
     }
 
     @Test
+    fun testPrepositionTriggersDeclensionSuggestion() {
+        val preposition = "mit"
+        every { mockIME.language } returns "German"
+        every { mockIME.getCaseAnnotationForPreposition(any(), preposition) } returns mutableListOf("dative case")
+
+        suggestionHandler.processLinguisticSuggestions(preposition)
+
+        verify(timeout = 2000) {
+            mockIME.updateAutoSuggestText(
+                nounTypeSuggestion = null,
+                isPlural = false,
+                caseAnnotationSuggestion = mutableListOf("dative case"),
+            )
+        }
+    }
+
+    @Test
     fun processSuggestions() {
         every { mockIME.findGenderForLastWord(any(), "in") } returns listOf("Neuter")
         every { mockIME.findWhetherWordIsPlural(any(), "in") } returns false

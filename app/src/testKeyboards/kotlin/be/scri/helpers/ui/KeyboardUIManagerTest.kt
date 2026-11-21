@@ -85,6 +85,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = null,
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = null,
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         assertEquals(View.VISIBLE, commandOptionsBar.visibility)
@@ -113,13 +115,23 @@ class KeyboardUIManagerTest {
             autoSuggestEmojis = null,
             conjugateOutput = mockConjugateOutput,
             conjugateLabels = setOf("1ps", "2ps"),
-            selectedConjugationSubCategory = null,
+            selectedConjugationSubCategory = "1ps",
             currentVerbForConjugation = "be",
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         assertEquals("Toolbar should be visible", View.VISIBLE, toolbarBar.visibility)
         assertEquals("Grid container should be visible", View.VISIBLE, conjugateGridContainer.visibility)
         assertEquals("Keyboard view should be GONE", View.GONE, keyboardView.visibility)
+
+        val grid = binding.conjugateGrid
+        assertTrue("Grid should have children", grid.childCount > 0)
+        val btn1 = grid.findViewById<android.widget.Button>(be.scri.R.id.conjugate_btn_1)
+        assertTrue(btn1.text.toString().contains("I am"))
+
+        btn1.performClick()
+        verify { listener.commitText("I am ") }
 
         assertTrue(commandBarEditText.text.toString().contains("be"))
     }
@@ -134,6 +146,37 @@ class KeyboardUIManagerTest {
     }
 
     @Test
+    fun `updateUI SELECT_VERB_CONJUNCTION with subcategory shows sub-forms`() {
+        val mockConjugateOutput =
+            mapOf(
+                "Indicative" to
+                    mapOf(
+                        "Present" to listOf("" to "am", "" to "are", "" to "is"),
+                        "Past" to listOf("" to "was", "" to "were"),
+                    ),
+            )
+
+        val sharedPrefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+        sharedPrefs.edit().putInt("conjugate_index", 0).commit()
+
+        uiManager.updateUI(
+            currentState = ScribeState.SELECT_VERB_CONJUNCTION,
+            language = "English",
+            emojiAutoSuggestionEnabled = false,
+            autoSuggestEmojis = null,
+            conjugateOutput = mockConjugateOutput,
+            conjugateLabels = setOf("1ps", "2ps", "3ps"),
+            selectedConjugationSubCategory = "Past",
+            currentVerbForConjugation = "be",
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
+        )
+
+        val btn1 = binding.conjugateGrid.findViewById<android.widget.Button>(be.scri.R.id.conjugate_btn_1)
+        assertEquals("was", btn1.text.toString())
+    }
+
+    @Test
     fun `updateUI INVALID state shows info icon`() {
         uiManager.updateUI(
             currentState = ScribeState.INVALID,
@@ -144,6 +187,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = null,
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = null,
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         assertEquals(View.VISIBLE, toolbarBar.visibility)
@@ -200,6 +245,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = null,
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = null,
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
         assertEquals("Toolbar bar should be visible in INVALID state", View.VISIBLE, toolbarBar.visibility)
         assertEquals("Info icon should be visible in INVALID state", View.VISIBLE, ivInfo.visibility)
@@ -223,6 +270,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = null,
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = null,
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         // Assert no orphaned UI elements remain.
@@ -243,6 +292,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = null,
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = null,
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
         assertEquals("Info icon should be visible in ALREADY_PLURAL state", View.VISIBLE, ivInfo.visibility)
 
@@ -261,6 +312,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = null,
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = null,
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         // Assert that no orphaned UI elements remain.
@@ -270,7 +323,18 @@ class KeyboardUIManagerTest {
 
     @Test
     fun `disableAutoSuggest resets buttons to commands`() {
-        uiManager.updateUI(ScribeState.IDLE, "English", false, null, null, null, null, null)
+        uiManager.updateUI(
+            ScribeState.IDLE,
+            "English",
+            false,
+            null,
+            null,
+            null,
+            null,
+            null,
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
+        )
 
         uiManager.disableAutoSuggest("English")
 
@@ -302,6 +366,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = setOf("Present"),
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = "be",
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         // Assert
@@ -332,6 +398,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = setOf("Прошедшее"),
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = "читать",
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         // Assert
@@ -361,6 +429,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = setOf("Presens"),
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = "vara",
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         // Assert
@@ -399,6 +469,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = setOf("Präsens"),
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = "haben",
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         // Assert
@@ -443,6 +515,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = setOf("Present"),
             selectedConjugationSubCategory = "Singular",
             currentVerbForConjugation = "be",
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         // Assert
@@ -474,6 +548,8 @@ class KeyboardUIManagerTest {
             conjugateLabels = setOf("Present"),
             selectedConjugationSubCategory = null,
             currentVerbForConjugation = "verb",
+            declensionOutput = null,
+            currentDeclensionSubNodes = null,
         )
 
         // Assert
