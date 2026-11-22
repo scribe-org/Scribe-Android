@@ -5,7 +5,8 @@
 </div>
 
 [![platforms](https://img.shields.io/static/v1?message=Android&logo=android&color=32DE84&logoColor=white&label=%20)](https://github.com/scribe-org/Scribe-Android)
-[![version](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
+[![version_keyboards](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?filter=keyboards%2F*&color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
+[![version_conjugate](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?filter=conjugate%2F*&color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
 [![issues](https://img.shields.io/github/issues/scribe-org/Scribe-Android?label=%20&logo=github)](https://github.com/scribe-org/Scribe-Android/issues)
 [![language](https://img.shields.io/badge/Kotlin%201-A97AFE.svg?logo=kotlin&logoColor=ffffff)](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md)
 [![license](https://img.shields.io/github/license/scribe-org/Scribe-Android.svg?label=%20)](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt)
