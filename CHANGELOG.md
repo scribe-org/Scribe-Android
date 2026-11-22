@@ -15,6 +15,14 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ## [Upcoming] Scribe-Android v1.X.Y
 
+### 🔒 Security
+
+- The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access.
+
+### ♻️ Code Refactoring
+
+- The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed.
+
 ## Scribe-Android v1.0.0
 
 ### MVP release of Scribe - Language Keyboards on Android
