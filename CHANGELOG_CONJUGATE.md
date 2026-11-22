@@ -13,9 +13,9 @@ Conjugate-Android tries to follow [semantic versioning](https://semver.org/), a 
 
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
-## [Upcoming] Conjugate-Android 1.X.Y
+## [Upcoming] Conjugate-Android v1.X.Y
 
-## Conjugate-Android 1.0.0
+## Conjugate-Android v1.0.0
 
 ### MVP release of Scribe - Verb Conjugation on Android
 

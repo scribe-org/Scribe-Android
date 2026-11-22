@@ -13,9 +13,9 @@ Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJ
 
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
-## [Upcoming] Scribe-Android 1.X.Y
+## [Upcoming] Scribe-Android v1.X.Y
 
-## Scribe-Android 1.0.0
+## Scribe-Android v1.0.0
 
 ### MVP release of Scribe - Language Keyboards on Android
 
