@@ -12,6 +12,7 @@ on:
       - "**/*.kts"
       - "**/*.xml"
       - "app/src/**"
+      - "scripts/**"
       - ".github/workflows/ci_android.yaml"
   push:
     branches:
@@ -21,6 +22,7 @@ on:
       - "**/*.kts"
       - "**/*.xml"
       - "app/src/**"
+      - "scripts/**"
       - ".github/workflows/ci_android.yaml"
 
 permissions:
@@ -96,6 +98,9 @@ jobs:
       - name: Build App
         run: ./gradlew assembleDebug
 
+      - name: Verify R8 Minification on Release
+        run: ./gradlew minifyKeyboardsReleaseWithR8 minifyConjugateReleaseWithR8
+
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         if: success()
@@ -146,3 +151,45 @@ jobs:
             adb wait-for-device
             adb shell input keyevent 82
             ./gradlew connected${{ matrix.flavor }}DebugAndroidTest --stacktrace
+
+  release_smoke_test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flavor: [Keyboards, Conjugate]
+      fail-fast: false
+    name: Run Release Smoke Test (${{ matrix.flavor }})
+    timeout-minutes: 35
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Prepare App
+        uses: ./.github/composite/prepareApp
+
+      - name: Enable KVM Group Permissions
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Pre-build Release APKs
+        run: ./gradlew assemble${{ matrix.flavor }}Release
+
+      - name: Run Release Smoke Test on Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: google_apis
+          arch: x86_64
+          profile: Nexus 6
+          ram-size: 2048M
+          heap-size: 512M
+          disk-size: 6000M
+          emulator-options: "-no-window -no-audio -no-boot-anim -camera-back none -camera-front none -gpu swiftshader_indirect -no-snapshot -wipe-data -accel on"
+          disable-animations: true
+          force-avd-creation: false
+          script: bash scripts/smoke_test_release.sh ${{ matrix.flavor }}
+
