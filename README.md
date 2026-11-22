@@ -20,14 +20,14 @@
 
 ### Scribe-Android: Keyboards for language learners & Conjugate-Android: Wikidata based verb conjugation app
 
-**Scribe-Android** is a pack of Android keyboards for language learners. Features include translation **`(beta)`**, verb conjugation and word annotation that give users the tools needed to communicate with confidence.
+**Scribe-Android** is a pack of Android keyboards for language learners. Features include translation, verb conjugation and word annotation that give users the tools needed to communicate with confidence.
 
 Scribe is fully open-source and does not collect usage data or ask for system access. Feature data is sourced from [Wikidata](https://www.wikidata.org/) and stored in-app, meaning Scribe is a highly responsive experience that does not require an internet connection.
 
 > [!NOTE]\
 > The [contributing](#contributing) section has information for those interested, with the articles and presentations in [featured by](#featured-by) also being good resources for learning more about Scribe.
 
-Also available on [iOS](https://github.com/scribe-org/Scribe-iOS), [Desktop](https://github.com/scribe-org/Scribe-Desktop) (planned) and for the data processes see [Scribe-Data](https://github.com/scribe-org/Scribe-Data).
+Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](https://github.com/scribe-org/Scribe-Desktop) (planned). Other supporting projects include the data process [Scribe-Data](https://github.com/scribe-org/Scribe-Data), the API that serves data to the apps [Scribe-Server](https://github.com/scribe-org/Scribe-Server) and the central localization process for all Scribe projects [Scribe-i18n](https://github.com/scribe-org/Scribe-i18n).
 
 Check out Scribe's [architecture diagram](https://github.com/scribe-org/Organization/blob/main/ARCHITECTURE.md) for an overview of the organization including our applications, services and processes. It depicts the projects that [Scribe](https://github.com/scribe-org) develops as well as the relationships between them and the external systems with which they interact.
 
