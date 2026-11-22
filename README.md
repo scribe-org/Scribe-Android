@@ -20,7 +20,9 @@
 
 ### Scribe-Android: Keyboards for language learners & Conjugate-Android: Wikidata based verb conjugation app
 
-**Scribe-Android** is a pack of Android keyboards for language learners. Features include translation, verb conjugation and word annotation that give users the tools needed to communicate with confidence. **Conjugate-Android** is a verb conjugation application that allows users to search for verbs in any language they have downloaded at the same time within a unified interface.
+**Scribe-Android** is a pack of Android keyboards for language learners. Features include translation, verb conjugation and word annotation that give users the tools needed to communicate with confidence.
+
+**Conjugate-Android** is a verb conjugation application that allows users to search for verbs in any language they have downloaded at the same time within a unified interface.
 
 These applications are fully open-source and do not collect usage data or ask for system access. Feature data is sourced from [Wikidata](https://www.wikidata.org/) and [Wiktionary](https://www.wiktionary.org/) and stored in-app, meaning the apps are highly responsive experiences that do not require an internet connection.
 
