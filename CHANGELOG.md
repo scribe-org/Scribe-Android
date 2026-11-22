@@ -17,11 +17,12 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ### 🔒 Security
 
-- The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access.
+- The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+- The unused `USE_FINGERPRINT` permission was removed as it's unneeded for the application ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
 
 ### ♻️ Code Refactoring
 
-- The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed.
+- The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
 
 ## Scribe-Android v1.0.0
 
