@@ -17,7 +17,8 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ### 🐛 Bug Fixes
 
-- ProGuard keep rules were added for JNI-bound classes and methods, preventing crashes in release builds ([#796](https://github.com/scribe-org/Scribe-Android/issues/796)).
+- ProGuard keep rules and defensive fallbacks in NativeSuggestionEngine were added for JNI-bound classes and methods, preventing crashes in release builds ([#796](https://github.com/scribe-org/Scribe-Android/issues/796)).
+
 ### 🔒 Security
 
 - The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
