@@ -526,14 +526,14 @@ class KeyboardUIManager(
         grid.removeAllViews()
 
         val isSubSelection = items.any { it.commitValue != null }
+        val count = items.size
 
         val layoutResId =
             when {
-                isSubSelection -> R.layout.conjugate_grid_2x1
-                language == "English" && items.size <= 4 -> R.layout.conjugate_grid_2x2
-                language in listOf("Russian", "Swedish") && items.size <= 4 -> R.layout.conjugate_grid_2x2
-                items.size > 4 -> R.layout.conjugate_grid_3x2
-                else -> R.layout.conjugate_grid_2x2
+                count <= MAX_FORM_COUNT_2X1 -> R.layout.conjugate_grid_2x1
+                count == FORM_COUNT_3X1 -> R.layout.conjugate_grid_3x1
+                count <= MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_2x2
+                else -> R.layout.conjugate_grid_3x2
             }
 
         val layoutInflater = LayoutInflater.from(context)

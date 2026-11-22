@@ -21,7 +21,7 @@ class DeclensionDataManager {
             val title = declension?.title ?: declension?.sectionTitle
             val forms = declension?.declensionForms
 
-            if (title !== null && forms !== null) {
+            if (title != null && forms != null) {
                 val options = parseForms(forms)
                 returnCases[title] = options
             }
@@ -32,7 +32,6 @@ class DeclensionDataManager {
 
     private fun parseForms(forms: Map<Int, DeclensionNode>): List<DeclensionNode> {
         val options = mutableListOf<DeclensionNode>()
-
         for (key in forms.keys.sorted()) {
             val node = forms[key] ?: continue
             if (node.value != null || !node.declensionForms.isNullOrEmpty()) {

@@ -8,7 +8,6 @@ import be.scri.R
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
 import be.scri.helpers.KeyboardIMEContext
-import be.scri.latin.utils.Log
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.Companion.SUGGESTION_SIZE
@@ -25,7 +24,6 @@ class SuggestionUIHandler(
 ) {
     private companion object {
         const val NOUN_TYPE_SIZE = 20f
-        const val TAG = "SuggestionUIHandler"
     }
 
     private val uiManager: KeyboardUIManager
@@ -77,15 +75,15 @@ class SuggestionUIHandler(
                     true
                 }
 
-                handleSingleNounSuggestion(nounTypeSuggestion) -> {
-                    true
-                }
-
                 handleMultipleCases(caseAnnotationSuggestion) -> {
                     true
                 }
 
                 handleSingleCaseSuggestion(caseAnnotationSuggestion) -> {
+                    true
+                }
+
+                handleSingleNounSuggestion(nounTypeSuggestion) -> {
                     true
                 }
 
@@ -211,7 +209,6 @@ class SuggestionUIHandler(
         singleTypeSuggestion: List<String>?,
         type: String,
     ) {
-        Log.d(TAG, "handling type $type with suggestion list $singleTypeSuggestion")
         val suggestionText = singleTypeSuggestion?.getOrNull(0).toString()
         val (colorRes, buttonText) =
             when (type) {
@@ -294,6 +291,16 @@ class SuggestionUIHandler(
                 leftSuggestion.second,
                 R.drawable.gender_suggestion_button_left_background,
             )
+            if (type == "preposition") {
+                val rawCaseText = multipleTypeSuggestion?.getOrNull(0)
+                if (rawCaseText != null) {
+                    it.setOnClickListener {
+                        if (ime is GeneralKeyboardIME) {
+                            ime.onPrepositionClicked(rawCaseText)
+                        }
+                    }
+                }
+            }
         }
 
         uiManager.genderSuggestionRight?.let {
@@ -303,6 +310,16 @@ class SuggestionUIHandler(
                 rightSuggestion.second,
                 R.drawable.gender_suggestion_button_right_background,
             )
+            if (type == "preposition") {
+                val rawCaseText = multipleTypeSuggestion?.getOrNull(1)
+                if (rawCaseText != null) {
+                    it.setOnClickListener {
+                        if (ime is GeneralKeyboardIME) {
+                            ime.onPrepositionClicked(rawCaseText)
+                        }
+                    }
+                }
+            }
         }
     }
 

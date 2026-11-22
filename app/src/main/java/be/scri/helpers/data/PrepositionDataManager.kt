@@ -57,7 +57,10 @@ class PrepositionDataManager(
             val case = cursor.getString(caseIndex)
 
             if (prep != null && case != null) {
-                result.getOrPut(prep) { mutableListOf() }.add(case)
+                val cases = case.split("|").map { it.trim() }.filter { it.isNotEmpty() }
+                for (c in cases) {
+                    result.getOrPut(prep.lowercase().trim()) { mutableListOf() }.add(c)
+                }
             }
         } while (cursor.moveToNext())
 

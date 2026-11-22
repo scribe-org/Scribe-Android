@@ -1153,7 +1153,9 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun onDeclensionNodeClicked(node: DeclensionNode) {
-        currentDeclensionSubNodes = node.declensionForms?.values?.toList()
+        if (!node.declensionForms?.values.isNullOrEmpty()) {
+            currentDeclensionSubNodes = node.declensionForms.values.toList()
+        }
         refreshUI()
     }
 
