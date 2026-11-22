@@ -1,7 +1,7 @@
 # Scribe-Android Changelog
 
 > [!NOTE]
-> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Scribe-Android. See [CHANGELOG_CONJUGATE.md](/CHANGELOG_CONJUGATE.md) for the Conjugate-Android changelog.
+> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Scribe-Android. See [CHANGELOG_CONJUGATE.md](./CHANGELOG_CONJUGATE.md) for the Conjugate-Android changelog.
 
 See the [releases for this repository](https://github.com/scribe-org/Scribe-Android/releases) for an up to date list of versions and their release dates. Versions that are marked as released may not yet be on Google Play and other stores if it's within the submission review period.
 
@@ -13,14 +13,15 @@ Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJ
 
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
-## [Upcoming] Scribe-Android 1.0.0
+## [Upcoming] Scribe-Android 1.X.Y
+
+## Scribe-Android 1.0.0
 
 ### MVP release of Scribe - Language Keyboards on Android
 
 ### 🚀 Deployment
 
 - Releasing to the Google Play Store.
-- Replaced the deprecated Play Core library with the Play In-App Review library to support Android 14+ target SDKs on Google Play ([#793](https://github.com/scribe-org/Scribe-Android/issues/793)).
 
 ### ⌨️ Keyboards
 
