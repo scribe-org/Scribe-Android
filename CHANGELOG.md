@@ -96,6 +96,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 ### 🔒 Security
 
 - Clipboard history is excluded from Android Auto Backup and device-to-device transfer so that copied text never leaves the device ([#695](https://github.com/scribe-org/Scribe-Android/issues/695)).
+- The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access.
 
 ### ⚖️ Legal
 
@@ -110,3 +111,4 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - `KeyboardLayoutHandler` was extracted from `GeneralKeyboardIME` to encapsulate layout XML resolution, symbol keyboard mapping, and width calculations ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
 - `ShiftHandler` was extracted from `GeneralKeyboardIME` to encapsulate shift state machine toggling, double-tap caps lock lock timing, and keyboard layout mode switching ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
 - Non-null assertions (!!) were removed from the codebase ([#705](https://github.com/scribe-org/Scribe-Android/issues/705)).
+- The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed.
