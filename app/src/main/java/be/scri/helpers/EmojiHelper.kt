@@ -36,11 +36,16 @@ fun parseRawEmojiSpecsFile(
         for (line in lines) {
             when {
                 line.startsWith("#") -> { }
+
                 line.startsWith("[") -> {
                     commitEmojiEditorList()
                     category = line.replace("[", "").replace("]", "")
                 }
-                line.trim().isEmpty() -> continue
+
+                line.trim().isEmpty() -> {
+                    continue
+                }
+
                 else -> {
                     if (!line.startsWith("\t")) {
                         commitEmojiEditorList()

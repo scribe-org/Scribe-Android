@@ -145,7 +145,8 @@ class NativeSuggestionEngine(private val context: Context) {
         language: String,
         prefix: String,
         previousWord: String? = null,
-        limit: Int = 3
+        limit: Int = 3,
+        profanity: Set<String> = emptySet()
     ): List<String> {
         val dict = getDictionary(language) ?: return emptyList()
         if (prefix.isBlank()) return emptyList()
@@ -173,7 +174,8 @@ class NativeSuggestionEngine(private val context: Context) {
                 ?.filter {
                     it.isNotBlank() &&
                         it.startsWith(prefix, ignoreCase = true) &&
-                        it.lowercase(Locale.ROOT) != prefix.lowercase(Locale.ROOT)
+                        it.lowercase(Locale.ROOT) != prefix.lowercase(Locale.ROOT) &&
+                        !StringUtils.containsProfanity(it, profanity)
                 }
                 ?.map { if (isCapitalized) it.replaceFirstChar { c -> c.uppercaseChar() } else it }
                 ?.take(limit)
@@ -190,7 +192,8 @@ class NativeSuggestionEngine(private val context: Context) {
     fun getNextWordSuggestions(
         language: String,
         lastWord: String?,
-        limit: Int = 3
+        limit: Int = 3,
+        profanity: Set<String> = emptySet()
     ): List<String> {
         val dict = getDictionary(language) ?: return emptyList()
         if (lastWord.isNullOrBlank()) return emptyList()
@@ -210,7 +213,11 @@ class NativeSuggestionEngine(private val context: Context) {
             )
 
             suggestions?.map { it.mWord }
-                ?.filter { it.isNotBlank() && it.lowercase(Locale.ROOT) != lastWord.lowercase(Locale.ROOT) }
+                ?.filter {
+                    it.isNotBlank() &&
+                        it.lowercase(Locale.ROOT) != lastWord.lowercase(Locale.ROOT) &&
+                        !StringUtils.containsProfanity(it, profanity)
+                }
                 ?.take(limit)
                 ?: emptyList()
         } catch (e: Exception) {

@@ -1,7 +1,7 @@
 # Conjugate-Android Changelog
 
 > [!NOTE]
-> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Conjugate-Android. See [CHANGELOG.md](/CHANGELOG.md) for the Scribe-Android changelog.
+> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Conjugate-Android. See [CHANGELOG.md](./CHANGELOG.md) for the Scribe-Android changelog.
 
 See the [releases for this repository](https://github.com/scribe-org/Scribe-Android/releases) for an up to date list of versions and their release dates. Versions that are marked as released may not yet be on Google Play and other stores if it's within the submission review period.
 
@@ -13,19 +13,22 @@ Conjugate-Android tries to follow [semantic versioning](https://semver.org/), a 
 
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
-## [Upcoming] Conjugate-Android 1.0.0
+## [Upcoming] Conjugate-Android v1.X.Y
 
-### MVP release of Scribe Conjugate on Android
+## Conjugate-Android v1.0.0
+
+### MVP release of Scribe - Verb Conjugation on Android
 
 ### 🚀 Deployment
 
-- Releasing for the Google Play Store
+- Releasing to the Google Play Store.
 
 ### ✨ New Features
 
 - A verb Conjugation tab was added to the application ([#563](https://github.com/scribe-org/Scribe-Android/issues/563)).
 - Users can search for verbs across languages ([#566](https://github.com/scribe-org/Scribe-Android/issues/566)).
 - A reactive conjugation selection UI was developed to easily copy desired conjugations ([#567](https://github.com/scribe-org/Scribe-Android/issues/567), [#570](https://github.com/scribe-org/Scribe-Android/issues/570)).
+- Verb data populates generated conjugation tables from the database based on language data contracts ([#571](https://github.com/scribe-org/Scribe-Android/issues/571)).
 - Users are able to filter verb conjugations by tense ([#572](https://github.com/scribe-org/Scribe-Android/issues/572)).
 - Recently conjugated verbs are displayed to the user in the Conjugation tab ([#568](https://github.com/scribe-org/Scribe-Android/issues/568), [#569](https://github.com/scribe-org/Scribe-Android/issues/569)).
 - The Settings tab for the Scribe keyboard application was migrated to allow base settings for the app interface ([#562](https://github.com/scribe-org/Scribe-Android/issues/562)).

@@ -24,6 +24,10 @@ class KeyboardDataHandler {
     var dataContract: DataContract? = null
         internal set
 
+    @Volatile
+    var profanity: Set<String> = emptySet()
+        internal set
+
     var emojiKeywords: HashMap<String, MutableList<String>>? = null
         internal set
 
@@ -42,7 +46,7 @@ class KeyboardDataHandler {
     lateinit var caseAnnotation: HashMap<String, MutableList<String>>
         internal set
 
-    var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>? = null
+    var conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>? = null
         internal set
 
     var conjugateLabels: Set<String> = emptySet()
@@ -65,6 +69,7 @@ class KeyboardDataHandler {
     fun loadLanguageData(language: String) {
         val languageAlias = getLanguageAlias(language)
         dataContract = dbManagers.getLanguageContract(languageAlias)
+        profanity = dbManagers.getProfanity(languageAlias)
         emojiKeywords = dbManagers.emojiManager.getEmojiKeywords(languageAlias)
         emojiMaxKeywordLength = dbManagers.emojiManager.maxKeywordLength
         pluralWords =
@@ -73,7 +78,7 @@ class KeyboardDataHandler {
                 ?.map { it.lowercase() }
                 ?.toSet()
         nounKeywords = dbManagers.genderManager.findGenderOfWord(languageAlias, dataContract)
-        suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias)
+        suggestionWords = dbManagers.suggestionManager.getSuggestions(languageAlias, profanity)
         val numbersColumns =
             dataContract
                 ?.nouns
@@ -81,10 +86,10 @@ class KeyboardDataHandler {
                 ?.values
                 ?.flatMap { listOf(it.singular, it.plural) }
                 ?.distinct() ?: emptyList()
-        autocompletionManager.loadWords(languageAlias, numbersColumns)
+        autocompletionManager.loadWords(languageAlias, numbersColumns, profanity)
         caseAnnotation = dbManagers.prepositionManager.getCaseAnnotations(languageAlias)
 
-        val tempConjugateOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, "describe")
+        val tempConjugateOutput = dbManagers.conjugateDataManager.getStructuredConjugations(languageAlias, dataContract, "describe")
         conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
     }
@@ -140,9 +145,9 @@ class KeyboardDataHandler {
     fun queryConjugateData(
         language: String,
         searchInput: String,
-    ): Pair<MutableMap<String, MutableMap<String, Collection<String>>>?, Set<String>> {
+    ): Pair<Map<String, Map<String, List<Pair<String, String>>>>?, Set<String>> {
         val languageAlias = getLanguageAlias(language)
-        val tempOutput = dbManagers.conjugateDataManager.getTheConjugateLabels(languageAlias, dataContract, searchInput)
+        val tempOutput = dbManagers.conjugateDataManager.getStructuredConjugations(languageAlias, dataContract, searchInput)
         val output =
             if (tempOutput?.isEmpty() == true || tempOutput?.values?.all { it.isEmpty() } == true) {
                 null

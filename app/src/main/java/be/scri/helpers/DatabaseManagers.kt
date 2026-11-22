@@ -12,6 +12,7 @@ import be.scri.helpers.data.GenderDataManager
 import be.scri.helpers.data.PluralFormsManager
 import be.scri.helpers.data.PrepositionDataManager
 import be.scri.helpers.data.TranslationDataManager
+import be.scri.helpers.data.getProfanity
 
 /**
  * The primary entry point for all data-related operations.
@@ -51,4 +52,13 @@ class DatabaseManagers(
         if (contract == null) contractLoader.downloadMissingContractInBackground(language)
         return contract
     }
+
+    /**
+     * Loads the lowercase profane words for a given language, which are never shown as suggestions.
+     *
+     * @param language The language code (e.g., "DE", "FR").
+     *
+     * @return The set of profane words, or an empty set if the language data has none.
+     */
+    fun getProfanity(language: String): Set<String> = fileManager.getLanguageDatabase(language)?.use { it.getProfanity() } ?: emptySet()
 }

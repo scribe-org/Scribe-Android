@@ -126,13 +126,21 @@ object RatingHelper {
                 }
             }
 
-            INSTALLER_FDROID -> openStore(context, URL_FDROID, "F-Droid")
+            INSTALLER_FDROID -> {
+                openStore(context, URL_FDROID, "F-Droid")
+            }
 
-            INSTALLER_AMAZON -> openStore(context, URL_AMAZON, "Amazon")
+            INSTALLER_AMAZON -> {
+                openStore(context, URL_AMAZON, "Amazon")
+            }
 
-            INSTALLER_SAMSUNG -> openStore(context, URL_SAMSUNG, "Galaxy Store")
+            INSTALLER_SAMSUNG -> {
+                openStore(context, URL_SAMSUNG, "Galaxy Store")
+            }
 
-            else -> openStore(context, URL_PLAY_STORE, "Play Store")
+            else -> {
+                openStore(context, URL_PLAY_STORE, "Play Store")
+            }
         }
     }
 }

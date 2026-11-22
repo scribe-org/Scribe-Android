@@ -7,19 +7,21 @@ package be.scri.models
  *
  * @property displayName The human-readable name of the language (e.g., "English").
  * @property isoCode The two-letter ISO code for the language (e.g., "EN").
+ * @property defaultLayout The default keyboard layout (e.g., "QWERTY", "AZERTY", "QWERTZ", "ЙЦУКЕН").
  */
 enum class ScribeLanguage(
     val displayName: String,
     val isoCode: String,
+    val defaultLayout: String,
 ) {
-    ENGLISH("English", "EN"),
-    FRENCH("French", "FR"),
-    GERMAN("German", "DE"),
-    ITALIAN("Italian", "IT"),
-    PORTUGUESE("Portuguese", "PT"),
-    RUSSIAN("Russian", "RU"),
-    SPANISH("Spanish", "ES"),
-    SWEDISH("Swedish", "SV"),
+    ENGLISH("English", "EN", "QWERTY"),
+    FRENCH("French", "FR", "AZERTY"),
+    GERMAN("German", "DE", "QWERTZ"),
+    ITALIAN("Italian", "IT", "QWERTY"),
+    PORTUGUESE("Portuguese", "PT", "QWERTY"),
+    RUSSIAN("Russian", "RU", "ЙЦУКЕН"),
+    SPANISH("Spanish", "ES", "QWERTY"),
+    SWEDISH("Swedish", "SV", "QWERTY"),
     ;
 
     companion object {

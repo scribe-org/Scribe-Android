@@ -82,6 +82,9 @@ abstract class GeneralKeyboardIME(
     override val language: String
         get() = scribeLanguage.displayName
 
+    override val profanity: Set<String>
+        get() = dataHandler.profanity
+
     // Abstract members required by subclasses (like EnglishKeyboardIME).
     abstract override fun getKeyboardLayoutXML(): Int
 
@@ -172,7 +175,7 @@ abstract class GeneralKeyboardIME(
             dataHandler.emojiKeywords = value
         }
 
-    override var conjugateOutput: MutableMap<String, MutableMap<String, Collection<String>>>?
+    override var conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>?
         get() = dataHandler.conjugateOutput
         set(value) {
             dataHandler.conjugateOutput = value
@@ -488,6 +491,10 @@ abstract class GeneralKeyboardIME(
             startActivity(intent)
         }
 
+        if (binding.clipboardPanelHolder.visibility == View.VISIBLE) {
+            clipboardHandler.refreshTheme()
+        }
+
         applyNavBarColor()
 
         // Set initial shift state for empty text fields.
@@ -580,6 +587,7 @@ abstract class GeneralKeyboardIME(
     // MARK: Helper Methods
 
     override fun openEmojiKeyboard() {
+        moveToIdleState()
         uiManager.showEmojiPalette(language)
     }
 
@@ -765,29 +773,17 @@ abstract class GeneralKeyboardIME(
         suggestionHandler.processLinguisticSuggestions(word)
     }
 
+    override fun onConjugationSubCategorySelected(category: String) {
+        selectedConjugationSubCategory = category
+        refreshUI()
+    }
+
+    override fun onConjugationSubCategoryDismissed() {
+        selectedConjugationSubCategory = null
+        refreshUI()
+    }
+
     override fun commitText(text: String) {
-        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
-            val label = text.trim()
-            val output = conjugateOutput
-            val conjugateIndex = uiManager.getValidatedConjugateIndex(output)
-            val title = output?.keys?.elementAtOrNull(conjugateIndex)
-            val languageOutput = title?.let { output[it] }
-
-            val matchingEntry =
-                languageOutput?.entries?.find { (_, values) ->
-                    if (values.size == 1) values.first() == label else values.joinToString(" / ") == label
-                }
-
-            if (matchingEntry != null) {
-                val (key, values) = matchingEntry
-                if (values.size > 1) {
-                    selectedConjugationSubCategory = key
-                    refreshUI()
-                    return
-                }
-            }
-        }
-
         currentInputConnection?.commitText(text, 1)
         suggestionHandler.processLinguisticSuggestions(text.trim())
 
@@ -936,7 +932,7 @@ abstract class GeneralKeyboardIME(
         limit: Int,
     ): List<String> {
         if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, word, previousWord, limit)
+            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, word, previousWord, limit, dataHandler.profanity)
             if (nativeCompletions.isNotEmpty()) {
                 return nativeCompletions.map { it.substringBefore("-") }
             }
@@ -1117,7 +1113,7 @@ abstract class GeneralKeyboardIME(
     ): List<String>? {
         if (lastWord == null) return null
         if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeSuggestions = nativeSuggestionEngine.getNextWordSuggestions(language, lastWord)
+            val nativeSuggestions = nativeSuggestionEngine.getNextWordSuggestions(language, lastWord, profanity = dataHandler.profanity)
             if (nativeSuggestions.isNotEmpty()) {
                 return nativeSuggestions.map { it.substringBefore("-") }
             }
@@ -1260,6 +1256,7 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun openClipboardPanel() {
+        moveToIdleState()
         clipboardHandler.openClipboardPanel()
     }
 

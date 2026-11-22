@@ -607,22 +607,27 @@ class KeyboardBase {
                             if (key.code == KEYCODE_ENTER) {
                                 val enterResourceId =
                                     when (mEnterKeyType) {
-                                        EditorInfo.IME_ACTION_SEARCH ->
+                                        EditorInfo.IME_ACTION_SEARCH -> {
                                             R.drawable.ic_search_vector
+                                        }
 
                                         EditorInfo.IME_ACTION_NEXT,
                                         EditorInfo.IME_ACTION_GO,
-                                        ->
+                                        -> {
                                             R.drawable.ic_arrow_right_vector
+                                        }
 
-                                        EditorInfo.IME_ACTION_SEND ->
+                                        EditorInfo.IME_ACTION_SEND -> {
                                             R.drawable.ic_send_vector
+                                        }
 
-                                        MyCustomActions.IME_ACTION_COMMAND ->
+                                        MyCustomActions.IME_ACTION_COMMAND -> {
                                             R.drawable.play_button
+                                        }
 
-                                        else ->
+                                        else -> {
                                             R.drawable.ic_enter_vector
+                                        }
                                     }
                                 key.icon = context.resources.getDrawable(enterResourceId, context.theme)
                             }

@@ -70,12 +70,29 @@ class SuggestionUIHandler(
                     true
                 }
 
-                handlePluralIfNeeded(isPlural) -> true
-                handleSingleNounSuggestion(nounTypeSuggestion) -> true
-                handleMultipleCases(caseAnnotationSuggestion) -> true
-                handleSingleCaseSuggestion(caseAnnotationSuggestion) -> true
-                handleFallbackSuggestions(nounTypeSuggestion, caseAnnotationSuggestion) -> true
-                else -> false
+                handlePluralIfNeeded(isPlural) -> {
+                    true
+                }
+
+                handleSingleNounSuggestion(nounTypeSuggestion) -> {
+                    true
+                }
+
+                handleMultipleCases(caseAnnotationSuggestion) -> {
+                    true
+                }
+
+                handleSingleCaseSuggestion(caseAnnotationSuggestion) -> {
+                    true
+                }
+
+                handleFallbackSuggestions(nounTypeSuggestion, caseAnnotationSuggestion) -> {
+                    true
+                }
+
+                else -> {
+                    false
+                }
             }
 
         if (!handled) uiManager.disableAutoSuggest(ime.language)
@@ -294,15 +311,19 @@ class SuggestionUIHandler(
             }
 
         return when (type) {
-            "noun" ->
+            "noun" -> {
                 handleColorAndTextForNounType(leftType, ime.language, ime.imeContext) to
                     handleColorAndTextForNounType(rightType, ime.language, ime.imeContext)
+            }
 
-            "preposition" ->
+            "preposition" -> {
                 handleTextForCaseAnnotation(leftType, ime.language, ime.imeContext) to
                     handleTextForCaseAnnotation(rightType, ime.language, ime.imeContext)
+            }
 
-            else -> null
+            else -> {
+                null
+            }
         }
     }
 
