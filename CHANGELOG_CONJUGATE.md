@@ -15,6 +15,14 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ## [Upcoming] Conjugate-Android v1.X.Y
 
+### 🔒 Security
+
+- The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access.
+
+### ♻️ Code Refactoring
+
+- The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed.
+
 ## Conjugate-Android v1.0.0
 
 ### MVP release of Scribe - Verb Conjugation on Android
@@ -63,10 +71,6 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 - Functions in the application have been documented ([#18](https://github.com/scribe-org/Scribe-Android/issues/18), [#354](https://github.com/scribe-org/Scribe-Android/issues/354)).
 
-### 🔒 Security
-
-- The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access.
-
 ### ⚖️ Legal
 
 - All code has been developed under the GNU General Public License (GPL-3.0) ([#301](https://github.com/scribe-org/Scribe-Android/issues/301)).
@@ -77,4 +81,3 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 ### ♻️ Code Refactoring
 
 - Code quality improvements were continuously done to assure that the application is easy to maintain and meets Kotlin standards ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
-- The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed.
