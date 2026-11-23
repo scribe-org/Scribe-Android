@@ -98,8 +98,8 @@ jobs:
       - name: Build App
         run: ./gradlew assembleDebug
 
-      - name: Verify R8 Minification on Release
-        run: ./gradlew minifyKeyboardsReleaseWithR8 minifyConjugateReleaseWithR8
+      - name: Verify R8 Minification
+        run: ./gradlew minifyKeyboardsMinifiedDebugWithR8 minifyConjugateMinifiedDebugWithR8
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
@@ -175,8 +175,8 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Pre-build Release APKs
-        run: ./gradlew assemble${{ matrix.flavor }}Release
+      - name: Pre-build Minified APKs
+        run: ./gradlew assemble${{ matrix.flavor }}MinifiedDebug
 
       - name: Run Release Smoke Test on Emulator
         uses: reactivecircus/android-emulator-runner@v2

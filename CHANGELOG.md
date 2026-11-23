@@ -30,7 +30,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ### ✅ Tests
 
-- A CI release smoke test workflow and R8 minification verification were added to test release builds on emulators and prevent crash regressions ([#799](https://github.com/scribe-org/Scribe-Android/issues/799)).
+- A CI smoke test workflow and R8 minification verification were added to test minified builds on emulators and prevent crash regressions ([#799](https://github.com/scribe-org/Scribe-Android/issues/799)).
 
 ## Scribe-Android v1.0.0
 

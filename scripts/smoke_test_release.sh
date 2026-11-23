@@ -26,12 +26,12 @@ sleep 1
 adb logcat -c
 
 if [[ "$FLAVOR" == "Keyboards" ]]; then
-    PACKAGE="be.scri.keyboards"
+    PACKAGE="be.scri.keyboards.debug"
     ACTIVITY="be.scri.activities.MainActivity"
-    IME_SERVICE="be.scri.keyboards/be.scri.services.EnglishKeyboardIME"
+    IME_SERVICE="be.scri.keyboards.debug/be.scri.services.EnglishKeyboardIME"
 
-    echo "Installing Scribe Keyboards Release APK..."
-    ./gradlew installKeyboardsRelease
+    echo "Installing Scribe Keyboards Minified APK..."
+    ./gradlew installKeyboardsMinifiedDebug
 
     echo "Enabling Scribe keyboard IME: $IME_SERVICE"
     adb shell ime enable "$IME_SERVICE"
@@ -55,11 +55,11 @@ if [[ "$FLAVOR" == "Keyboards" ]]; then
     sleep 3
 
 elif [[ "$FLAVOR" == "Conjugate" ]]; then
-    PACKAGE="be.scri.conjugate"
+    PACKAGE="be.scri.conjugate.debug"
     ACTIVITY="be.scri.activities.MainActivity"
 
-    echo "Installing Scribe Conjugate Release APK..."
-    ./gradlew installConjugateRelease
+    echo "Installing Scribe Conjugate Minified APK..."
+    ./gradlew installConjugateMinifiedDebug
 
     echo "Launching Scribe Conjugate MainActivity..."
     adb shell am start -W -n "$PACKAGE/$ACTIVITY"
