@@ -31,7 +31,7 @@ if [[ "$FLAVOR" == "Keyboards" ]]; then
     IME_SERVICE="be.scri.keyboards.debug/be.scri.services.EnglishKeyboardIME"
 
     echo "Installing Scribe Keyboards Minified APK..."
-    ./gradlew installKeyboardsMinifiedDebug
+    ./gradlew installKeyboardsDebug -Pminify
 
     echo "Enabling Scribe keyboard IME: $IME_SERVICE"
     adb shell ime enable "$IME_SERVICE"
@@ -84,7 +84,7 @@ elif [[ "$FLAVOR" == "Conjugate" ]]; then
     ACTIVITY="be.scri.activities.MainActivity"
 
     echo "Installing Scribe Conjugate Minified APK..."
-    ./gradlew installConjugateMinifiedDebug
+    ./gradlew installConjugateDebug -Pminify
 
     echo "Launching Scribe Conjugate MainActivity..."
     adb shell am start -W -n "$PACKAGE/$ACTIVITY"
