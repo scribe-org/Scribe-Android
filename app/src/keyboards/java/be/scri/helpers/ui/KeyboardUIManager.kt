@@ -434,18 +434,38 @@ class KeyboardUIManager(
         title: String?,
         conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>?,
         selectedConjugationSubCategory: String?,
+        isDarkMode: Boolean,
     ): List<GridItem> {
         val gridItems = mutableListOf<GridItem>()
         val groupData = conjugateOutput?.get(title) ?: return emptyList()
 
         if (selectedConjugationSubCategory != null) {
             val pairs = groupData[selectedConjugationSubCategory]
-            pairs?.forEach { pair ->
-                gridItems.add(GridItem(label = pair.second, commitValue = "${pair.second} "))
+            pairs?.forEach { (label, form) ->
+                val hasLabel = label.isNotEmpty() && label != "all"
+                val text = formatButtonText(label, form, isDarkMode)
+                gridItems.add(GridItem(label = text, rawForm = form, commitValue = "$form ", hasLabel = hasLabel))
+            }
+        } else if (groupData.containsKey(title) && groupData.size == 1) {
+            val pairs = groupData[title]
+            pairs?.forEach { (label, form) ->
+                val hasLabel = label.isNotEmpty() && label != "all"
+                val text = formatButtonText(label, form, isDarkMode)
+                gridItems.add(GridItem(label = text, rawForm = form, commitValue = "$form ", hasLabel = hasLabel))
             }
         } else {
-            groupData.keys.forEach { tenseName ->
-                gridItems.add(GridItem(label = tenseName, categoryToOpen = tenseName))
+            groupData.forEach { (categoryTitle, pairs) ->
+                if (pairs.size == 1) {
+                    val (label, form) = pairs.first()
+                    val hasLabel = label.isNotEmpty() && label != "all"
+                    val text = formatButtonText(label, form, isDarkMode)
+                    gridItems.add(GridItem(label = text, rawForm = form, commitValue = "$form ", hasLabel = hasLabel))
+                } else {
+                    val formsPreview = pairs.map { it.second.trim() }.filter { it.isNotBlank() }.joinToString(" / ")
+                    val hasLabel = categoryTitle.isNotEmpty()
+                    val text = formatButtonText(categoryTitle, formsPreview, isDarkMode)
+                    gridItems.add(GridItem(label = text, categoryToOpen = categoryTitle, hasLabel = hasLabel))
+                }
             }
         }
 
@@ -534,6 +554,8 @@ class KeyboardUIManager(
             val item = items.getOrNull(i)
             val btn = gridContent.findViewById<Button?>(btnId)
             if (btn != null && item != null) {
+                btn.visibility = View.VISIBLE
+                applyButtonLayout(btn, item.hasLabel)
                 btn.text = item.label
                 btn.backgroundTintList =
                     ContextCompat.getColorStateList(
@@ -545,16 +567,20 @@ class KeyboardUIManager(
                     when {
                         item.commitValue != null -> {
                             listener.commitText(item.commitValue)
-                            listener.processLinguisticSuggestions(item.label)
+                            val formToSuggest = item.rawForm ?: item.label.toString().trim()
+                            listener.processLinguisticSuggestions(formToSuggest)
                         }
                         item.categoryToOpen != null -> {
-                            listener.onConjugationCategoryClicked(item.categoryToOpen)
+                            listener.onConjugationSubCategorySelected(item.categoryToOpen)
                         }
                         item.nodeToOpen != null -> {
                             listener.onDeclensionNodeClicked(item.nodeToOpen)
                         }
                     }
                 }
+            } else {
+                btn?.visibility = View.INVISIBLE
+                btn?.setOnClickListener(null)
             }
         }
 
@@ -596,81 +622,10 @@ class KeyboardUIManager(
 
         when (currentState) {
             ScribeState.SELECT_VERB_CONJUNCTION -> {
-                binding.conjugateGridContainer.visibility = View.VISIBLE
-                binding.keyboardView.visibility = View.GONE
-
-                binding.conjugateGridContainer.setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
-                    ),
-                )
-
-                val grid = binding.conjugateGrid
-                grid.removeAllViews()
-
                 val conjugateIndex = getValidatedConjugateIndex(conjugateOutput)
                 val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
-                val languageOutput = title?.let { conjugateOutput[it] }
-
-                val isSubSelection = selectedConjugationSubCategory != null
-                val showCategories = !isSubSelection && (languageOutput?.containsKey(title) != true)
-
-                val scribeLanguage = ScribeLanguage.fromDisplayName(language)
-                val layoutResId =
-                    when {
-                        isSubSelection -> {
-                            val subPairs = languageOutput?.get(selectedConjugationSubCategory) ?: emptyList()
-                            when {
-                                subPairs.size <= MAX_FORM_COUNT_2X1 -> R.layout.conjugate_grid_2x1
-                                subPairs.size == FORM_COUNT_3X1 -> R.layout.conjugate_grid_3x1
-                                subPairs.size <= MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_2x2
-                                else -> R.layout.conjugate_grid_3x2
-                            }
-                        }
-                        else -> {
-                            val formsCount =
-                                if (showCategories) {
-                                    languageOutput?.size ?: 0
-                                } else {
-                                    languageOutput?.get(title)?.size ?: 0
-                                }
-                            val isSmallFormLanguage =
-                                scribeLanguage == ScribeLanguage.ENGLISH ||
-                                    scribeLanguage == ScribeLanguage.RUSSIAN ||
-                                    scribeLanguage == ScribeLanguage.SWEDISH
-                            when {
-                                formsCount <= MAX_FORM_COUNT_2X1 -> R.layout.conjugate_grid_2x1
-                                formsCount == FORM_COUNT_3X1 -> R.layout.conjugate_grid_3x1
-                                isSmallFormLanguage && formsCount <= MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_2x2
-                                formsCount > MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_3x2
-                                else -> R.layout.conjugate_grid_2x2
-                            }
-                        }
-                    }
-
-                val layoutInflater = LayoutInflater.from(context)
-                val gridContent = layoutInflater.inflate(layoutResId, grid, false) as LinearLayout
-                grid.addView(gridContent)
-
-                when {
-                    isSubSelection -> {
-                        val subPairs = languageOutput?.get(selectedConjugationSubCategory) ?: emptyList()
-                        populateSubSelectionButtons(gridContent, subPairs, isDarkMode)
-                    }
-                    showCategories -> {
-                        val categoryEntries = languageOutput?.entries?.toList() ?: emptyList()
-                        populateCategoryButtons(gridContent, categoryEntries, isDarkMode)
-                    }
-                    else -> {
-                        val directPairs = languageOutput?.get(title) ?: emptyList()
-                        populateDirectButtons(gridContent, directPairs, isDarkMode)
-                    }
-                }
-
-                setupArrows(gridContent, context, isSubSelection, "conjugate_index")
-
-                promptText = if (isSubSelection) selectedConjugationSubCategory else (title ?: "___")
+                val items = extractConjugateForms(title, conjugateOutput, selectedConjugationSubCategory, isDarkMode)
+                promptText = renderGrid(title, items, isDarkMode, language, selectedConjugationSubCategory, "conjugate_index")
                 hintWord = conjugateLabels?.lastOrNull()
             }
             ScribeState.SELECT_DECLENSION -> {
@@ -761,103 +716,6 @@ class KeyboardUIManager(
         } else {
             btn.setPadding(0, 0, 0, 0)
             btn.setLineSpacing(0f, 1.0f)
-        }
-    }
-
-    private fun populateSubSelectionButtons(
-        gridContent: View,
-        subPairs: List<Pair<String, String>>,
-        isDarkMode: Boolean,
-    ) {
-        buttonIds.forEachIndexed { i, btnId ->
-            val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
-            if (i < subPairs.size) {
-                val (label, form) = subPairs[i]
-                btn.visibility = View.VISIBLE
-                btn.backgroundTintList =
-                    ContextCompat.getColorStateList(
-                        context,
-                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
-                    )
-                btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
-                val hasLabel = label.isNotEmpty() && label != "all"
-                applyButtonLayout(btn, hasLabel)
-                btn.text = formatButtonText(label, form, isDarkMode)
-                btn.setOnClickListener {
-                    listener.commitText("$form ")
-                    listener.processLinguisticSuggestions(form)
-                }
-            } else {
-                btn.visibility = View.INVISIBLE
-                btn.setOnClickListener(null)
-            }
-        }
-    }
-
-    private fun populateCategoryButtons(
-        gridContent: View,
-        categoryEntries: List<Map.Entry<String, List<Pair<String, String>>>>,
-        isDarkMode: Boolean,
-    ) {
-        buttonIds.forEachIndexed { i, btnId ->
-            val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
-            if (i < categoryEntries.size) {
-                val (categoryTitle, pairs) = categoryEntries[i]
-                btn.visibility = View.VISIBLE
-                btn.backgroundTintList =
-                    ContextCompat.getColorStateList(
-                        context,
-                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
-                    )
-                btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
-                val formsPreview = pairs.map { it.second.trim() }.filter { it.isNotBlank() }.joinToString(" / ")
-                applyButtonLayout(btn, categoryTitle.isNotEmpty())
-                btn.text = formatButtonText(categoryTitle, formsPreview, isDarkMode)
-                if (pairs.size == 1) {
-                    val (_, form) = pairs.first()
-                    btn.setOnClickListener {
-                        listener.commitText("$form ")
-                        listener.processLinguisticSuggestions(form)
-                    }
-                } else {
-                    btn.setOnClickListener {
-                        listener.onConjugationSubCategorySelected(categoryTitle)
-                    }
-                }
-            } else {
-                btn.visibility = View.INVISIBLE
-                btn.setOnClickListener(null)
-            }
-        }
-    }
-
-    private fun populateDirectButtons(
-        gridContent: View,
-        directPairs: List<Pair<String, String>>,
-        isDarkMode: Boolean,
-    ) {
-        buttonIds.forEachIndexed { i, btnId ->
-            val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
-            if (i < directPairs.size) {
-                val (label, form) = directPairs[i]
-                btn.visibility = View.VISIBLE
-                btn.backgroundTintList =
-                    ContextCompat.getColorStateList(
-                        context,
-                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
-                    )
-                btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
-                val hasLabel = label.isNotEmpty() && label != "all"
-                applyButtonLayout(btn, hasLabel)
-                btn.text = formatButtonText(label, form, isDarkMode)
-                btn.setOnClickListener {
-                    listener.commitText("$form ")
-                    listener.processLinguisticSuggestions(form)
-                }
-            } else {
-                btn.visibility = View.INVISIBLE
-                btn.setOnClickListener(null)
-            }
         }
     }
 
@@ -1704,9 +1562,11 @@ class KeyboardUIManager(
     }
 
     data class GridItem(
-        val label: String,
+        val label: CharSequence,
+        val rawForm: String? = null,
         val commitValue: String? = null,
         val categoryToOpen: String? = null,
         val nodeToOpen: DeclensionNode? = null,
+        val hasLabel: Boolean = false,
     )
 }
