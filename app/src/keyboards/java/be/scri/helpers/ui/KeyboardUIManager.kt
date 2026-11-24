@@ -50,7 +50,6 @@ import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
 import be.scri.helpers.getCategoryIconRes
 import be.scri.helpers.getRecentEmojis
 import be.scri.helpers.parseRawEmojiSpecsFile
-import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
 import be.scri.views.KeyboardView
