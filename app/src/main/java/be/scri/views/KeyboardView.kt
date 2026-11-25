@@ -949,15 +949,17 @@ class KeyboardView
                                 "keyboard_preferences",
                                 Context.MODE_PRIVATE,
                             )
+                        val currentState = (mOnKeyboardActionListener as? be.scri.helpers.KeyboardIMEContext)?.currentState
+                        val preferenceKey = if (currentState == ScribeState.SELECT_DECLENSION) "declension_index" else "conjugate_index"
                         sharedPreferences.edit(commit = true) {
-                            val currentValue = sharedPreferences.getInt("conjugate_index", 0)
+                            val currentValue = sharedPreferences.getInt(preferenceKey, 0)
                             val newValue =
                                 when (code) {
                                     DISPLAY_LEFT -> currentValue + 1
                                     DISPLAY_RIGHT -> currentValue - 1
                                     else -> currentValue
                                 }
-                            putInt("conjugate_index", newValue)
+                            putInt(preferenceKey, newValue)
                         }
                         val density = context.resources.displayMetrics.density
                         key.height = (KEY_HEIGHT * density).toInt() + LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT

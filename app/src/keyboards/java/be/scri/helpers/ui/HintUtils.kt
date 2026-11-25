@@ -50,9 +50,11 @@ object HintUtils {
         currentState: ScribeState,
         language: String,
         word: String?,
+        declensionSectionTitle: String?,
     ): String =
         when (currentState) {
             ScribeState.SELECT_VERB_CONJUNCTION -> word ?: ""
+            ScribeState.SELECT_DECLENSION -> declensionSectionTitle ?: ""
             else -> getHintForState(currentState)[language] ?: ""
         }
 
@@ -68,21 +70,8 @@ object HintUtils {
             ScribeState.TRANSLATE -> getTranslateHints()
             ScribeState.CONJUGATE -> getConjugateHints()
             ScribeState.PLURAL -> getPluralHints()
-            ScribeState.SELECT_DECLENSION -> getDeclensionHints()
             else -> emptyMap()
         }
-
-    private fun getDeclensionHints(): Map<String, String> =
-        mapOf(
-            "English" to "Decline: ",
-            "French" to "Décliner: ",
-            "German" to "Deklinieren: ",
-            "Italian" to "Declinare: ",
-            "Portuguese" to "Declinar: ",
-            "Russian" to "Склонение: ",
-            "Spanish" to "Declinar: ",
-            "Swedish" to "Deklinera: ",
-        )
 
     /**
      * Provides the translation hints for different languages.
@@ -370,14 +359,14 @@ object HintUtils {
 
     private fun getDeclensionPrompt(language: String): String =
         when (language) {
-            "English" -> "Decline :"
-            "French" -> "Décliner :"
-            "German" -> "Deklinieren :"
-            "Italian" -> "Declinare :"
-            "Portuguese" -> "Declinar :"
-            "Russian" -> "Склонение :"
-            "Spanish" -> "Declinar :"
-            "Swedish" -> "Deklinera :"
+            "English" -> "Decline:"
+            "French" -> "Décliner:"
+            "German" -> "Deklinieren:"
+            "Italian" -> "Declinare:"
+            "Portuguese" -> "Declinar:"
+            "Russian" -> "Склонение:"
+            "Spanish" -> "Declinar:"
+            "Swedish" -> "Deklinera:"
             else -> "Decline :"
         }
 

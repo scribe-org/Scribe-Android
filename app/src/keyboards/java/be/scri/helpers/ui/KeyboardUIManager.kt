@@ -619,20 +619,23 @@ class KeyboardUIManager(
         var hintWord: String? = null
         var promptText: String? = null
 
+        var declensionSectionTitle: String? = null
+
         when (currentState) {
             ScribeState.SELECT_VERB_CONJUNCTION -> {
-                val conjugateIndex = getValidatedConjugateIndex(conjugateOutput)
-                val title = conjugateOutput?.keys?.elementAtOrNull(conjugateIndex)
+                val prefIndexName = "conjugate_index"
+                val index = getValidatedIndex(prefIndexName, conjugateOutput?.size ?: 0)
+                val title = conjugateOutput?.keys?.elementAtOrNull(index)
                 val items = extractConjugateForms(title, conjugateOutput, selectedConjugationSubCategory, isDarkMode)
-                promptText = renderGrid(title, items, isDarkMode, language, selectedConjugationSubCategory, "conjugate_index")
+                promptText = renderGrid(title, items, isDarkMode, language, selectedConjugationSubCategory, prefIndexName)
                 hintWord = conjugateLabels?.lastOrNull()
             }
             ScribeState.SELECT_DECLENSION -> {
                 val prefIndexName = "declension_index"
                 val index = getValidatedIndex(prefIndexName, declensionOutput?.size ?: 0)
-                val title = declensionOutput?.keys?.elementAtOrNull(index)
-                val items = extractDeclensionForms(title, declensionOutput, currentDeclensionSubNodes)
-                promptText = renderGrid(title, items, isDarkMode, language, null, prefIndexName)
+                declensionSectionTitle = declensionOutput?.keys?.elementAtOrNull(index)
+                val items = extractDeclensionForms(declensionSectionTitle, declensionOutput, currentDeclensionSubNodes)
+                promptText = renderGrid(declensionSectionTitle, items, isDarkMode, language, null, prefIndexName)
             }
             else -> {
                 binding.conjugateGridContainer.visibility = View.GONE
@@ -640,18 +643,8 @@ class KeyboardUIManager(
             }
         }
 
-        updateCommandBarHintAndPrompt(currentState, language, promptText, isDarkMode, hintWord, currentVerbForConjugation)
+        updateCommandBarHintAndPrompt(currentState, language, promptText, isDarkMode, hintWord, currentVerbForConjugation, declensionSectionTitle)
     }
-
-    private val buttonIds =
-        listOf(
-            R.id.conjugate_btn_1,
-            R.id.conjugate_btn_2,
-            R.id.conjugate_btn_3,
-            R.id.conjugate_btn_4,
-            R.id.conjugate_btn_5,
-            R.id.conjugate_btn_6,
-        )
 
     private fun formatButtonText(
         label: String,
@@ -764,7 +757,11 @@ class KeyboardUIManager(
                             val newValue = if (isLeft) current - 1 else current + 1
                             prefs.edit { putInt(prefIndexName, newValue) }
 
-                            listener.onConjugateClicked()
+                            if (prefIndexName == "declension_index") {
+                                listener.onGridPageChanged()
+                            } else {
+                                listener.onConjugateClicked()
+                            }
                         }
                     }
                 }
@@ -846,6 +843,7 @@ class KeyboardUIManager(
         isUserDarkMode: Boolean? = null,
         word: String? = null,
         currentVerbForConjugation: String? = null,
+        currentDeclensionSectionTitle: String? = null,
     ) {
         val resolvedIsDarkMode = isUserDarkMode ?: getIsDarkModeOrNot(context)
         val commandBarEditText = binding.commandBar
@@ -868,7 +866,7 @@ class KeyboardUIManager(
             commandBarEditText.isFocusable = false
             commandBarEditText.isFocusableInTouchMode = false
         } else {
-            currentCommandBarHint = HintUtils.getCommandBarHint(currentState, language, word)
+            currentCommandBarHint = HintUtils.getCommandBarHint(currentState, language, word, currentDeclensionSectionTitle)
             commandBarEditText.isFocusable = true
             commandBarEditText.isFocusableInTouchMode = true
             commandBarEditText.setTextColor(commandBarHintColor)
@@ -908,8 +906,6 @@ class KeyboardUIManager(
      * Retrieves and validates the stored index for the current view.
      * Ensures the index is within the bounds of available types.
      */
-    internal fun getValidatedConjugateIndex(conjugateOutput: Map<String, Any>?): Int = getValidatedIndex("conjugate_index", conjugateOutput?.size ?: 0)
-
     internal fun getValidatedIndex(
         prefKey: String,
         size: Int,

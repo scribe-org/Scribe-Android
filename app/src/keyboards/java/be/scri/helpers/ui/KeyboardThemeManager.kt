@@ -223,13 +223,22 @@ class KeyboardThemeManager {
             }
         }
 
+        val isUserDarkMode = getIsDarkModeOrNot(context)
         if (colorRes != R.color.transparent) {
             button.background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
             button.backgroundTintList = ContextCompat.getColorStateList(context, colorRes)
-            button.setTextColor(ContextCompat.getColor(context, R.color.white))
+            button.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    if (colorRes == R.color.annotateDeclension && isUserDarkMode) {
+                        android.R.color.black
+                    } else {
+                        R.color.white
+                    },
+                ),
+            )
         } else {
             button.background = null
-            val isUserDarkMode = getIsDarkModeOrNot(context)
             button.backgroundTintList = ContextCompat.getColorStateList(context, R.color.transparent)
             button.setTextColor(ContextCompat.getColor(context, if (isUserDarkMode) R.color.white else android.R.color.black))
         }

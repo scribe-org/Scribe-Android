@@ -43,6 +43,7 @@
     <color name="you_button_background_color">@color/light_scribe_color</color>
     <color name="you_hint_surface_color">#000000</color>
     <color name="annotateRed">#FB5F6C</color>
+    <color name="annotateDeclension">@color/white</color>
     <color name="annotateBlue">#339EEB</color>
     <color name="annotatePurple">#AC6DEC</color>
     <color name="annotateGreen">#85C26F</color>

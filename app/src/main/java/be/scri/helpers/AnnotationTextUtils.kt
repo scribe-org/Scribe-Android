@@ -27,7 +27,7 @@ object AnnotationTextUtils {
         language: String,
         context: Context,
     ): Pair<Int, String> {
-        val color = R.color.annotateOrange
+        val color = R.color.annotateDeclension
         val suggestionMap =
             mapOf(
                 "genitive case" to Pair(color, processValuesForPreposition(language, "Gen")),
