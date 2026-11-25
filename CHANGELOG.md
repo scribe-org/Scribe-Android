@@ -1,7 +1,7 @@
 # Scribe-Android Changelog
 
 > [!NOTE]
-> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Scribe-Android. See [CHANGELOG_CONJUGATE.md](/CHANGELOG_CONJUGATE.md) for the Conjugate-Android changelog.
+> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Scribe-Android. See [CHANGELOG_CONJUGATE.md](./CHANGELOG_CONJUGATE.md) for the Conjugate-Android changelog.
 
 See the [releases for this repository](https://github.com/scribe-org/Scribe-Android/releases) for an up to date list of versions and their release dates. Versions that are marked as released may not yet be on Google Play and other stores if it's within the submission review period.
 
@@ -13,7 +13,18 @@ Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJ
 
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
-## [Upcoming] Scribe-Android 1.0.0
+## [Upcoming] Scribe-Android v1.X.Y
+
+### 🔒 Security
+
+- The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+- The unused `USE_FINGERPRINT` permission was removed as it's unneeded for the application ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+
+### ♻️ Code Refactoring
+
+- The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+
+## Scribe-Android v1.0.0
 
 ### MVP release of Scribe - Language Keyboards on Android
 

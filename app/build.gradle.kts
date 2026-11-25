@@ -249,15 +249,13 @@ dependencies {
     // Layout and UI
     // ==========================
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.documentfile:documentfile:1.1.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.exifinterface:exifinterface:1.4.1")
-    implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("com.google.android.play:core-ktx:1.8.1")
+    implementation("com.google.android.play:review-ktx:2.0.2")
     implementation("androidx.navigation:navigation-compose:2.9.0")
 
     // ==========================

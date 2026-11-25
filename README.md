@@ -5,7 +5,8 @@
 </div>
 
 [![platforms](https://img.shields.io/static/v1?message=Android&logo=android&color=32DE84&logoColor=white&label=%20)](https://github.com/scribe-org/Scribe-Android)
-[![version](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
+[![version_keyboards](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?filter=keyboards%2F*&color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
+[![version_conjugate](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?filter=conjugate%2F*&color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
 [![issues](https://img.shields.io/github/issues/scribe-org/Scribe-Android?label=%20&logo=github)](https://github.com/scribe-org/Scribe-Android/issues)
 [![language](https://img.shields.io/badge/Kotlin%201-A97AFE.svg?logo=kotlin&logoColor=ffffff)](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md)
 [![license](https://img.shields.io/github/license/scribe-org/Scribe-Android.svg?label=%20)](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt)
@@ -19,18 +20,18 @@
 
 ### Scribe-Android: Keyboards for language learners & Conjugate-Android: Wikidata based verb conjugation app
 
-#### WIP port of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
+**Scribe-Android** is a pack of Android keyboards for language learners. Features include translation, verb conjugation and word annotation that give users the tools needed to communicate with confidence.
 
-**Scribe-Android** is a pack of Android keyboards for language learners. Features include translation **`(beta)`**, verb conjugation and word annotation that give users the tools needed to communicate with confidence.
+**Conjugate-Android** is a verb conjugation application that allows users to search for verbs in any language they have downloaded at the same time within a unified interface.
 
-Scribe is fully open-source and does not collect usage data or ask for system access. Feature data is sourced from [Wikidata](https://www.wikidata.org/) and stored in-app, meaning Scribe is a highly responsive experience that does not require an internet connection.
+These applications are fully open-source and do not collect usage data or ask for system access. Feature data is sourced from [Wikidata](https://www.wikidata.org/) and [Wiktionary](https://www.wiktionary.org/) and stored in-app, meaning the apps are highly responsive experiences that do not require an internet connection.
 
 > [!NOTE]\
 > The [contributing](#contributing) section has information for those interested, with the articles and presentations in [featured by](#featured-by) also being good resources for learning more about Scribe.
 
-Also available on [iOS](https://github.com/scribe-org/Scribe-iOS), [Desktop](https://github.com/scribe-org/Scribe-Desktop) (planned) and for the data processes see [Scribe-Data](https://github.com/scribe-org/Scribe-Data).
+Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](https://github.com/scribe-org/Scribe-Desktop) (WIP). Other supporting projects include the data process [Scribe-Data](https://github.com/scribe-org/Scribe-Data), the API that serves data to the apps [Scribe-Server](https://github.com/scribe-org/Scribe-Server) and the central localization process for all Scribe projects [Scribe-i18n](https://github.com/scribe-org/Scribe-i18n).
 
-Check out Scribe's [architecture diagrams](https://github.com/scribe-org/Organization/blob/main/ARCHITECTURE.md) for an overview of the organization including our applications, services and processes. It depicts the projects that [Scribe](https://github.com/scribe-org) is developing as well as the relationships between them and the external systems with which they interact.
+Check out Scribe's [architecture diagram](https://github.com/scribe-org/Organization/blob/main/ARCHITECTURE.md) for an overview of the organization including our applications, services and processes. It depicts the projects that [Scribe](https://github.com/scribe-org) develops as well as the relationships between them and the external systems with which they interact.
 
 # Contents
 
