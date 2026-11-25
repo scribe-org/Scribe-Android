@@ -481,21 +481,13 @@ class KeyboardUIManager(
         val nodes = subNodes ?: declensionOutput?.get(title) ?: return emptyList()
 
         nodes.forEach { node ->
+            val hasSubNodes = !node.declensionForms?.values.isNullOrEmpty()
+            val textToCommit = node.value ?: node.label
             gridItems.add(
                 GridItem(
-                    label = node.label ?: "",
-                    commitValue =
-                        if (node.value != null) {
-                            "${node.value} "
-                        } else {
-                            null
-                        },
-                    nodeToOpen =
-                        if (node.value == null) {
-                            node
-                        } else {
-                            null
-                        },
+                    label = node.displayValue ?: node.label ?: "",
+                    commitValue = if (!hasSubNodes && textToCommit != null) "$textToCommit " else null,
+                    nodeToOpen = if (hasSubNodes) node else null,
                 ),
             )
         }
@@ -507,7 +499,6 @@ class KeyboardUIManager(
         title: String?,
         items: List<GridItem>,
         isDarkMode: Boolean,
-        language: String,
         selectedConjugationSubCategory: String?,
         prefIndexName: String,
     ): String? {
@@ -524,7 +515,12 @@ class KeyboardUIManager(
         val grid = binding.conjugateGrid
         grid.removeAllViews()
 
-        val isSubSelection = items.any { it.commitValue != null }
+        val isSubSelection =
+            if (prefIndexName == "declension_index") {
+                (listener as? GeneralKeyboardIME)?.currentDeclensionSubNodes != null
+            } else {
+                selectedConjugationSubCategory != null || items.any { it.commitValue != null }
+            }
         val count = items.size
 
         val layoutResId =
@@ -627,15 +623,16 @@ class KeyboardUIManager(
                 val index = getValidatedIndex(prefIndexName, conjugateOutput?.size ?: 0)
                 val title = conjugateOutput?.keys?.elementAtOrNull(index)
                 val items = extractConjugateForms(title, conjugateOutput, selectedConjugationSubCategory, isDarkMode)
-                promptText = renderGrid(title, items, isDarkMode, language, selectedConjugationSubCategory, prefIndexName)
+                promptText = renderGrid(title, items, isDarkMode, selectedConjugationSubCategory, prefIndexName)
                 hintWord = conjugateLabels?.lastOrNull()
             }
             ScribeState.SELECT_DECLENSION -> {
                 val prefIndexName = "declension_index"
-                val index = getValidatedIndex(prefIndexName, declensionOutput?.size ?: 0)
-                declensionSectionTitle = declensionOutput?.keys?.elementAtOrNull(index)
-                val items = extractDeclensionForms(declensionSectionTitle, declensionOutput, currentDeclensionSubNodes)
-                promptText = renderGrid(declensionSectionTitle, items, isDarkMode, language, null, prefIndexName)
+                val output = declensionOutput ?: (listener as? GeneralKeyboardIME)?.dataHandler?.declensions
+                val index = getValidatedIndex(prefIndexName, output?.size ?: 0)
+                declensionSectionTitle = output?.keys?.elementAtOrNull(index)
+                val items = extractDeclensionForms(declensionSectionTitle, output, currentDeclensionSubNodes)
+                promptText = renderGrid(declensionSectionTitle, items, isDarkMode, null, prefIndexName)
             }
             else -> {
                 binding.conjugateGridContainer.visibility = View.GONE

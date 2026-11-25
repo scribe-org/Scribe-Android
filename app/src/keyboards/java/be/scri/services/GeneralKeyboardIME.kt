@@ -185,6 +185,7 @@ abstract class GeneralKeyboardIME(
 
     var declensionOutput: Map<String, List<DeclensionNode>>? = null
     var currentDeclensionSubNodes: List<DeclensionNode>? = null
+    private val declensionStack = mutableListOf<List<DeclensionNode>>()
 
     internal var conjugateLabels: Set<String>
         get() = dataHandler.conjugateLabels
@@ -685,6 +686,7 @@ abstract class GeneralKeyboardIME(
         selectedConjugationSubCategory = null
         declensionOutput = null
         currentDeclensionSubNodes = null
+        declensionStack.clear()
         if (this::uiManager.isInitialized) refreshUI()
     }
 
@@ -789,6 +791,11 @@ abstract class GeneralKeyboardIME(
 
     override fun onConjugationSubCategoryDismissed() {
         selectedConjugationSubCategory = null
+        if (declensionStack.isNotEmpty()) {
+            currentDeclensionSubNodes = declensionStack.removeAt(declensionStack.lastIndex)
+        } else {
+            currentDeclensionSubNodes = null
+        }
         refreshUI()
     }
 
@@ -799,6 +806,7 @@ abstract class GeneralKeyboardIME(
         if (currentState == ScribeState.SELECT_VERB_CONJUNCTION || currentState == ScribeState.SELECT_DECLENSION) {
             selectedConjugationSubCategory = null
             currentDeclensionSubNodes = null
+            declensionStack.clear()
             declensionOutput = null
             moveToIdleState()
         }
@@ -1153,10 +1161,12 @@ abstract class GeneralKeyboardIME(
     }
 
     override fun onDeclensionNodeClicked(node: DeclensionNode) {
-        if (!node.declensionForms?.values.isNullOrEmpty()) {
-            currentDeclensionSubNodes = node.declensionForms.values.toList()
+        val children = node.declensionForms?.values?.toList()
+        if (!children.isNullOrEmpty()) {
+            currentDeclensionSubNodes?.let { declensionStack.add(it) }
+            currentDeclensionSubNodes = children
+            refreshUI()
         }
-        refreshUI()
     }
 
     override fun onGridPageChanged() {

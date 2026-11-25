@@ -36,11 +36,11 @@ class AnnotationTextUtilsTest {
     fun testHandleTextForCaseAnnotation() {
         every { context.getString(R.string.i18n_app_keyboard_suggestion) } returns "Suggestion"
         val result = AnnotationTextUtils.handleTextForCaseAnnotation("dative case", "English", context)
-        assertEquals(R.color.annotateOrange, result.first)
+        assertEquals(R.color.annotateDeclension, result.first)
         assertEquals("Dat", result.second)
 
         val resultGerman = AnnotationTextUtils.handleTextForCaseAnnotation("accusative case", "German", context)
-        assertEquals(R.color.annotateOrange, resultGerman.first)
+        assertEquals(R.color.annotateDeclension, resultGerman.first)
         assertEquals("Akk", resultGerman.second)
     }
 

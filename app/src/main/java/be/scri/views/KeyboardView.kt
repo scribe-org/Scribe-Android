@@ -31,7 +31,6 @@ import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.EditorInfo
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.core.content.edit
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withSave
 import be.scri.R
@@ -944,23 +943,6 @@ class KeyboardView
                     val shadowOffsetY = SHADOW_OFFSET_Y
 
                     if ((code == DISPLAY_LEFT) || (code == DISPLAY_RIGHT)) {
-                        val sharedPreferences =
-                            context.getSharedPreferences(
-                                "keyboard_preferences",
-                                Context.MODE_PRIVATE,
-                            )
-                        val currentState = (mOnKeyboardActionListener as? be.scri.helpers.KeyboardIMEContext)?.currentState
-                        val preferenceKey = if (currentState == ScribeState.SELECT_DECLENSION) "declension_index" else "conjugate_index"
-                        sharedPreferences.edit(commit = true) {
-                            val currentValue = sharedPreferences.getInt(preferenceKey, 0)
-                            val newValue =
-                                when (code) {
-                                    DISPLAY_LEFT -> currentValue + 1
-                                    DISPLAY_RIGHT -> currentValue - 1
-                                    else -> currentValue
-                                }
-                            putInt(preferenceKey, newValue)
-                        }
                         val density = context.resources.displayMetrics.density
                         key.height = (KEY_HEIGHT * density).toInt() + LEFT_RIGHT_CONJUGATE_KEY_EXTRA_HEIGHT
                     }
