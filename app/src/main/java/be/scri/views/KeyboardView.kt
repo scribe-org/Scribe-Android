@@ -247,6 +247,10 @@ class KeyboardView
 
         private var mEnterKeyColor: Int = 0
 
+        /** Current Enter key background, for tests. */
+        @get:VisibleForTesting
+        internal val enterKeyColor: Int get() = mEnterKeyColor
+
         private var mKeyBackground: Drawable? = null
 
         private var mToolbarHolder: View? = null

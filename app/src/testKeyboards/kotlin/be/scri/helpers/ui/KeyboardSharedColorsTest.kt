@@ -20,6 +20,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -140,6 +141,43 @@ class KeyboardSharedColorsTest {
         assertEquals(0xFFD11149.toInt(), binding.clipboardClearAll.imageTintList!!.defaultColor)
     }
 
+    @Test
+    @Config(qualifiers = "night")
+    fun directConjugationLabelsFollowTheScribeSetting() {
+        val light = showConjugationGrid(scribeDark = false, deviceNight = true, output = DIRECT_OUTPUT)
+        assertEquals(0xE558564B.toInt(), light.root.labelColor("1ps"))
+        val dark = showConjugationGrid(scribeDark = true, deviceNight = true, output = DIRECT_OUTPUT)
+        assertEquals(0xFFCAC4D0.toInt(), dark.root.labelColor("1ps"))
+    }
+
+    @Test
+    fun subSelectionConjugationLabelsFollowTheScribeSetting() {
+        val dark = showConjugationGrid(scribeDark = true, deviceNight = false, output = SUB_OUTPUT, subCategory = "1ps")
+        assertEquals(0xFFCAC4D0.toInt(), dark.root.labelColor("sg"))
+        val light = showConjugationGrid(scribeDark = false, deviceNight = false, output = SUB_OUTPUT, subCategory = "1ps")
+        assertEquals(0xE558564B.toInt(), light.root.labelColor("sg"))
+    }
+
+    @Test
+    fun enterKeyUsesTheSpecialKeyColorForTheScribeSetting() {
+        val binding = showState(ScribeState.IDLE, scribeDark = false, deviceNight = false)
+        binding.keyboardView.setEnterKeyColor(null, isDarkMode = true)
+        assertEquals(0xFF2D2D2D.toInt(), binding.keyboardView.enterKeyColor)
+        binding.keyboardView.setEnterKeyColor(null, isDarkMode = false)
+        assertEquals(0xFFADB3BD.toInt(), binding.keyboardView.enterKeyColor)
+    }
+
+    @Test
+    fun clearAllHasNoXmlTintAndShowingTheClipboardTintsIt() {
+        val binding = showState(ScribeState.IDLE, scribeDark = true, deviceNight = false)
+        // The XML tint followed the device night mode, so the color now only comes from code.
+        val inflated = InputMethodViewBinding.inflate(LayoutInflater.from(ApplicationProvider.getApplicationContext()))
+        assertNull(inflated.clipboardClearAll.imageTintList)
+
+        KeyboardUIManager(binding, ApplicationProvider.getApplicationContext(), relaxedListener()).showClipboardPanel()
+        assertEquals(0xFFD11149.toInt(), binding.clipboardClearAll.imageTintList!!.defaultColor)
+    }
+
     private fun showState(
         state: ScribeState,
         scribeDark: Boolean,
@@ -147,6 +185,7 @@ class KeyboardSharedColorsTest {
         conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>? = null,
         conjugateLabels: Set<String>? = null,
         verb: String? = null,
+        subCategory: String? = null,
     ): InputMethodViewBinding {
         val context = ApplicationProvider.getApplicationContext<Context>()
         context
@@ -165,7 +204,7 @@ class KeyboardSharedColorsTest {
             autoSuggestEmojis = null,
             conjugateOutput = conjugateOutput,
             conjugateLabels = conjugateLabels,
-            selectedConjugationSubCategory = null,
+            selectedConjugationSubCategory = subCategory,
             currentVerbForConjugation = verb,
         )
         return binding
@@ -183,6 +222,8 @@ class KeyboardSharedColorsTest {
     private fun showConjugationGrid(
         scribeDark: Boolean,
         deviceNight: Boolean,
+        output: Map<String, Map<String, List<Pair<String, String>>>> = CATEGORY_OUTPUT,
+        subCategory: String? = null,
     ): InputMethodViewBinding {
         val context = ApplicationProvider.getApplicationContext<Context>()
         context
@@ -194,17 +235,30 @@ class KeyboardSharedColorsTest {
             ScribeState.SELECT_VERB_CONJUNCTION,
             scribeDark = scribeDark,
             deviceNight = deviceNight,
-            conjugateOutput =
-                mapOf(
-                    "Present" to
-                        mapOf(
-                            "1ps" to listOf("1ps" to "I am"),
-                            "2ps" to listOf("2ps" to "You are"),
-                        ),
-                ),
+            conjugateOutput = output,
             conjugateLabels = setOf("1ps", "2ps"),
             verb = "be",
+            subCategory = subCategory,
         )
+    }
+
+    private companion object {
+        val CATEGORY_OUTPUT =
+            mapOf(
+                "Present" to
+                    mapOf(
+                        "1ps" to listOf("1ps" to "I am"),
+                        "2ps" to listOf("2ps" to "You are"),
+                    ),
+            )
+        val DIRECT_OUTPUT =
+            mapOf(
+                "Present" to mapOf("Present" to listOf("1ps" to "I am", "2ps" to "You are")),
+            )
+        val SUB_OUTPUT =
+            mapOf(
+                "Present" to mapOf("1ps" to listOf("sg" to "I am", "pl" to "we are")),
+            )
     }
 
     private fun View.backgroundColor(): Int = (background as ColorDrawable).color
