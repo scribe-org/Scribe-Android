@@ -18,6 +18,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 ### 🎨 Design
 
 - Compose theme colors now come from the shared `scribe_*` resources. Dark mode button text stays orange on orange. The dark caption uses the named token `#CAC4D0`, the same grey this slot already used ([#782](https://github.com/scribe-org/Scribe-Android/issues/782)).
+- The keyboard's conjugation labels and dark command info bar read the shared `scribe_*` colors instead of hex literals. No color changes ([#783](https://github.com/scribe-org/Scribe-Android/issues/783)).
 
 ### 🔒 Security
 

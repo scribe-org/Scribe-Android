@@ -3,7 +3,6 @@
 package be.scri.ui.theme
 
 import android.content.Context
-import android.content.res.Configuration
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -16,7 +15,7 @@ import be.scri.R
  * [dark] follows the app theme argument, not the device night mode.
  */
 fun Context.scribeColorScheme(dark: Boolean): ColorScheme {
-    val themed = configurationContext(dark)
+    val themed = scribeNightContext(dark)
     val button = themed.scribeColor(R.color.scribe_button)
     val onButton = themed.scribeColor(R.color.scribe_on_button)
     val background = themed.scribeColor(R.color.scribe_background)
@@ -65,13 +64,6 @@ fun Context.scribeColorScheme(dark: Boolean): ColorScheme {
             onSurfaceVariant = caption,
         )
     }
-}
-
-private fun Context.configurationContext(dark: Boolean): Context {
-    val nightMode = if (dark) Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
-    val config = Configuration(resources.configuration)
-    config.uiMode = (config.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or nightMode
-    return createConfigurationContext(config)
 }
 
 private fun Context.scribeColor(id: Int): Color = Color(color = ContextCompat.getColor(this, id))

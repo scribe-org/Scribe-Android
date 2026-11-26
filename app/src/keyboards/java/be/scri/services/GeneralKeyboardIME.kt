@@ -266,8 +266,6 @@ abstract class GeneralKeyboardIME(
         const val SMALLEST_SCREEN_WIDTH_TABLET = 600
         const val TEXT_LENGTH = 20
         const val SUGGESTION_SIZE = 15f
-        const val DARK_THEME = "#aeb3be"
-        const val LIGHT_THEME = "#4b4b4b"
         internal const val MAX_TEXT_LENGTH = 1000
         const val COMMIT_TEXT_CURSOR_POSITION = 1
         internal const val CUSTOM_CURSOR = "│" // special tall cursor character

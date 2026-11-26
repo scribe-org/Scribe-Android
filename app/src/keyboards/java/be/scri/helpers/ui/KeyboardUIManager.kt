@@ -52,11 +52,14 @@ import be.scri.helpers.parseRawEmojiSpecsFile
 import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
+import be.scri.ui.theme.scribeColorInt
 import be.scri.views.KeyboardView
 
 private const val SUB_SELECTION_LABEL_TEXT_SIZE_RATIO = 0.8f
-private const val CONJUGATION_LABEL_COLOR_LIGHT = "#E558564B"
-private const val CONJUGATION_LABEL_COLOR_DARK = "#CAC4D0"
+
+// Light background of the invalid and already-plural command bars. It is one step off
+// scribe_keyboard_background (#D3D6DD), so it stays as is until we decide which one wins.
+private const val LIGHT_COMMAND_INFO_BAR_COLOR = "#D2D4DA"
 private const val MAX_FORM_COUNT_2X1 = 2
 private const val FORM_COUNT_3X1 = 3
 private const val MAX_FORM_COUNT_2X2 = 4
@@ -370,10 +373,6 @@ class KeyboardUIManager(
             binding.pluralBtn.foreground = null
         }
 
-        val separatorColor = (if (isUserDarkMode) GeneralKeyboardIME.DARK_THEME else GeneralKeyboardIME.LIGHT_THEME).toColorInt()
-        binding.separator2.setBackgroundColor(separatorColor)
-        binding.separator3.setBackgroundColor(separatorColor)
-
         val spaceInDp = 4
         val spaceInPx = (spaceInDp * context.resources.displayMetrics.density).toInt()
         listOf(binding.separator2, binding.separator3).forEach { separator ->
@@ -530,8 +529,7 @@ class KeyboardUIManager(
             label.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
-        val labelColor =
-            (if (isDarkMode) CONJUGATION_LABEL_COLOR_DARK else CONJUGATION_LABEL_COLOR_LIGHT).toColorInt()
+        val labelColor = context.scribeColorInt(R.color.scribe_caption, isDarkMode)
         spannable.setSpan(
             ForegroundColorSpan(labelColor),
             0,
@@ -748,9 +746,7 @@ class KeyboardUIManager(
         val isDarkMode = getIsDarkModeOrNot(context)
 
         // Restore original logic: Set background on toolbarBar, not invalidInfoBar.
-        binding.toolbarBar.setBackgroundColor(
-            if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
-        )
+        binding.toolbarBar.setBackgroundColor(commandInfoBarColor(isDarkMode))
 
         val isWikidata = invalidCommandSource != ScribeState.TRANSLATE
         val invalidMsg =
@@ -773,6 +769,16 @@ class KeyboardUIManager(
     }
 
     /**
+     * Background of the command bar while it shows the invalid or already-plural message.
+     */
+    private fun commandInfoBarColor(isDarkMode: Boolean): Int =
+        if (isDarkMode) {
+            context.scribeColorInt(R.color.scribe_keyboard_background, dark = true)
+        } else {
+            LIGHT_COMMAND_INFO_BAR_COLOR.toColorInt()
+        }
+
+    /**
      * Configures the UI for the `ALREADY_PLURAL` state, which is shown when the user
      * attempts to pluralize a word that is already plural.
      */
@@ -781,7 +787,7 @@ class KeyboardUIManager(
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
         val isDarkMode = getIsDarkModeOrNot(context)
-        binding.toolbarBar.setBackgroundColor(if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt())
+        binding.toolbarBar.setBackgroundColor(commandInfoBarColor(isDarkMode))
         binding.ivInfo.visibility = View.VISIBLE
         binding.promptText.text = "$ALREADY_PLURAL_MSG: "
         binding.commandBar.hint = ""
