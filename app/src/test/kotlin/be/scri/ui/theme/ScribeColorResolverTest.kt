@@ -9,6 +9,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 /**
@@ -27,6 +28,28 @@ class ScribeColorResolverTest {
     fun keyboardColorsMatchTheOldHexOnANightDevice() {
         assertKeyboardColors(ApplicationProvider.getApplicationContext())
     }
+
+    @Test
+    fun everyScribeColorIgnoresTheDeviceNightMode() {
+        val ids =
+            R.color::class.java.fields
+                .filter { it.name.startsWith("scribe_") }
+                .associate { it.name to it.getInt(null) }
+        // Guards against the list silently shrinking if the R class shape changes.
+        assertEquals(true, ids.size >= 26)
+
+        val onDayDevice = ids.mapValues { (_, id) -> context().bothModes(id) }
+        RuntimeEnvironment.setQualifiers("+night")
+        val onNightDevice = ids.mapValues { (_, id) -> context().bothModes(id) }
+
+        assertEquals(onDayDevice, onNightDevice)
+        // The light and dark halves really come from different files.
+        assertEquals(0xFF5EB5E8.toInt() to 0xFF235270.toInt(), onDayDevice.getValue("scribe_background"))
+    }
+
+    private fun context(): Context = ApplicationProvider.getApplicationContext()
+
+    private fun Context.bothModes(id: Int): Pair<Int, Int> = scribeColorInt(id, dark = false) to scribeColorInt(id, dark = true)
 
     private fun assertKeyboardColors(context: Context) {
         // Conjugation sub-labels, was "#E558564B" / "#CAC4D0".
