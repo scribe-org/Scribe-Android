@@ -79,6 +79,25 @@ class KeyboardSharedColorsTest {
         }
     }
 
+    @Test
+    @Config(qualifiers = "night")
+    fun letterKeysUseScribeKeyAndTextOnANightDevice() {
+        val binding = showState(ScribeState.IDLE, scribeDark = false, deviceNight = true)
+        val light = binding.keyboardView.keyColorsFor(dark = false)
+        val dark = binding.keyboardView.keyColorsFor(dark = true)
+        assertEquals(0xFFFFFFFF.toInt(), light.key)
+        assertEquals(0xFF000000.toInt(), light.label)
+        assertEquals(0xFF434343.toInt(), dark.key)
+        assertEquals(0xFFFFFFFF.toInt(), dark.label)
+    }
+
+    @Test
+    fun letterKeysUseScribeKeyAndTextOnADayDevice() {
+        val binding = showState(ScribeState.IDLE, scribeDark = true, deviceNight = false)
+        assertEquals(0xFF434343.toInt(), binding.keyboardView.keyColorsFor(dark = true).key)
+        assertEquals(0xFFFFFFFF.toInt(), binding.keyboardView.keyColorsFor(dark = false).key)
+    }
+
     private fun showState(
         state: ScribeState,
         scribeDark: Boolean,

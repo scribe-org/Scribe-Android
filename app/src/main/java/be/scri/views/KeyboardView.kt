@@ -31,6 +31,8 @@ import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.EditorInfo
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withSave
@@ -66,6 +68,7 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.models.ScribeState
+import be.scri.ui.theme.scribeColorInt
 import java.util.Arrays
 import java.util.Locale
 import kotlin.ranges.coerceIn
@@ -274,6 +277,27 @@ class KeyboardView
         private var lastSpaceBarTapTime = 0L
 
         private var mKeyboardBackgroundColor = 0
+
+        /**
+         * Shared `scribe_*` colors for the keys in one mode.
+         */
+        internal data class KeyColors(
+            @ColorInt val key: Int,
+            @ColorInt val label: Int,
+        )
+
+        private var cachedKeyColors: Pair<Boolean, KeyColors>? = null
+
+        /**
+         * Key colors for the Scribe dark mode setting, read once per mode instead of on every draw.
+         */
+        @VisibleForTesting
+        internal fun keyColorsFor(dark: Boolean): KeyColors =
+            cachedKeyColors?.takeIf { it.first == dark }?.second
+                ?: KeyColors(
+                    key = context.scribeColorInt(R.color.scribe_key, dark = dark),
+                    label = context.scribeColorInt(R.color.scribe_text, dark = dark),
+                ).also { cachedKeyColors = dark to it }
 
         private val alpha = FULL_ALPHA
         private val redDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
@@ -858,24 +882,10 @@ class KeyboardView
                 val isUserDarkMode =
                     be.scri.helpers.PreferencesHelper
                         .getIsDarkModeOrNot(context)
-                val keyBackgroundColor =
-                    if (isUserDarkMode) {
-                        Color.DKGRAY
-                    } else {
-                        Color.WHITE
-                    }
-                mBackgroundColor =
-                    if (isUserDarkMode) {
-                        Color.DKGRAY
-                    } else {
-                        Color.WHITE
-                    }
-                mTextColor =
-                    if (keyBackgroundColor == Color.WHITE) {
-                        Color.BLACK
-                    } else {
-                        Color.WHITE
-                    }
+                val keyColors = keyColorsFor(isUserDarkMode)
+                val keyBackgroundColor = keyColors.key
+                mBackgroundColor = keyColors.key
+                mTextColor = keyColors.label
                 val pressedColorResId =
                     if (isUserDarkMode) {
                         R.color.dark_key_press_color
