@@ -57,10 +57,6 @@ import be.scri.ui.theme.scribeColorInt
 import be.scri.views.KeyboardView
 
 private const val SUB_SELECTION_LABEL_TEXT_SIZE_RATIO = 0.8f
-
-// Light background of the invalid and already-plural command bars. It is one step off
-// scribe_keyboard_background (#D3D6DD), so it stays as is until we decide which one wins.
-private const val LIGHT_COMMAND_INFO_BAR_COLOR = "#D2D4DA"
 private const val MAX_FORM_COUNT_2X1 = 2
 private const val FORM_COUNT_3X1 = 3
 private const val MAX_FORM_COUNT_2X2 = 4
@@ -780,12 +776,7 @@ class KeyboardUIManager(
     /**
      * Background of the command bar while it shows the invalid or already-plural message.
      */
-    private fun commandInfoBarColor(isDarkMode: Boolean): Int =
-        if (isDarkMode) {
-            context.scribeColorInt(R.color.scribe_keyboard_background, dark = true)
-        } else {
-            LIGHT_COMMAND_INFO_BAR_COLOR.toColorInt()
-        }
+    private fun commandInfoBarColor(isDarkMode: Boolean): Int = context.scribeColorInt(R.color.scribe_keyboard_background, dark = isDarkMode)
 
     /**
      * Configures the UI for the `ALREADY_PLURAL` state, which is shown when the user

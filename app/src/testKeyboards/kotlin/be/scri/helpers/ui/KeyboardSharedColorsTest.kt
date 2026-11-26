@@ -41,7 +41,7 @@ class KeyboardSharedColorsTest {
     @Config(qualifiers = "night")
     fun invalidBarIsLightWhenScribeIsLightOnANightDevice() {
         val binding = showState(ScribeState.INVALID, scribeDark = false, deviceNight = true)
-        assertEquals(0xFFD2D4DA.toInt(), binding.toolbarBar.backgroundColor())
+        assertEquals(0xFFD3D6DD.toInt(), binding.toolbarBar.backgroundColor())
     }
 
     @Test
@@ -54,7 +54,7 @@ class KeyboardSharedColorsTest {
     @Config(qualifiers = "night")
     fun alreadyPluralBarIsLightWhenScribeIsLightOnANightDevice() {
         val binding = showState(ScribeState.ALREADY_PLURAL, scribeDark = false, deviceNight = true)
-        assertEquals(0xFFD2D4DA.toInt(), binding.toolbarBar.backgroundColor())
+        assertEquals(0xFFD3D6DD.toInt(), binding.toolbarBar.backgroundColor())
     }
 
     @Test
