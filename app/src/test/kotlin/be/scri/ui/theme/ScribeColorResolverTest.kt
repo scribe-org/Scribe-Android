@@ -60,5 +60,8 @@ class ScribeColorResolverTest {
         // Floating keyboard border, was 0x40888888 in both modes.
         assertEquals(0x40888888, context.scribeColorInt(R.color.scribe_keyboard_border, dark = false))
         assertEquals(0x40888888, context.scribeColorInt(R.color.scribe_keyboard_border, dark = true))
+        // Clipboard clear-all, the delete red from #772 (was #E53935 in both modes).
+        assertEquals(0xFFE4572E.toInt(), context.scribeColorInt(R.color.scribe_delete, dark = false))
+        assertEquals(0xFFD11149.toInt(), context.scribeColorInt(R.color.scribe_delete, dark = true))
     }
 }

@@ -120,6 +120,21 @@ class KeyboardSharedColorsTest {
         assertEquals(0xFFFFFFFF.toInt(), binding.translateBtn.currentTextColor)
     }
 
+    @Test
+    @Config(qualifiers = "night")
+    fun clipboardClearAllUsesTheLightDeleteRedWhenScribeIsLightOnANightDevice() {
+        val binding = showState(ScribeState.IDLE, scribeDark = false, deviceNight = true)
+        KeyboardUIManager(binding, ApplicationProvider.getApplicationContext(), relaxedListener()).applyClipboardPanelTheme()
+        assertEquals(0xFFE4572E.toInt(), binding.clipboardClearAll.imageTintList!!.defaultColor)
+    }
+
+    @Test
+    fun clipboardClearAllUsesTheDarkDeleteRedWhenScribeIsDarkOnADayDevice() {
+        val binding = showState(ScribeState.IDLE, scribeDark = true, deviceNight = false)
+        KeyboardUIManager(binding, ApplicationProvider.getApplicationContext(), relaxedListener()).applyClipboardPanelTheme()
+        assertEquals(0xFFD11149.toInt(), binding.clipboardClearAll.imageTintList!!.defaultColor)
+    }
+
     private fun showState(
         state: ScribeState,
         scribeDark: Boolean,
@@ -138,13 +153,7 @@ class KeyboardSharedColorsTest {
         assertEquals(scribeDark, PreferencesHelper.getIsDarkModeOrNot(context))
 
         val binding = InputMethodViewBinding.inflate(LayoutInflater.from(context))
-        val listener = mockk<KeyboardUIManager.KeyboardUIListener>(relaxed = true)
-        every { listener.getKeyboardLayoutXML() } returns R.xml.keys_letters_english
-        every { listener.getCurrentKeyboardLayoutXML() } returns R.xml.keys_letters_english
-        every { listener.onKeyboardActionListener() } returns mockk()
-        every { listener.isNumericKeyboardActive() } returns false
-
-        KeyboardUIManager(binding, context, listener).updateUI(
+        KeyboardUIManager(binding, context, relaxedListener()).updateUI(
             currentState = state,
             language = "English",
             emojiAutoSuggestionEnabled = false,
@@ -155,6 +164,15 @@ class KeyboardSharedColorsTest {
             currentVerbForConjugation = verb,
         )
         return binding
+    }
+
+    private fun relaxedListener(): KeyboardUIManager.KeyboardUIListener {
+        val listener = mockk<KeyboardUIManager.KeyboardUIListener>(relaxed = true)
+        every { listener.getKeyboardLayoutXML() } returns R.xml.keys_letters_english
+        every { listener.getCurrentKeyboardLayoutXML() } returns R.xml.keys_letters_english
+        every { listener.onKeyboardActionListener() } returns mockk()
+        every { listener.isNumericKeyboardActive() } returns false
+        return listener
     }
 
     private fun showConjugationGrid(

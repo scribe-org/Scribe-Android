@@ -853,5 +853,6 @@
         name="scribe_nav_unselected">#FF808080</color>
     <color name="scribe_icon">#FF000000</color>
     <color name="scribe_keyboard_border">#40888888</color>
+    <color name="scribe_delete">#FFE4572E</color>
 
 </resources>

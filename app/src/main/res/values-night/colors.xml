@@ -77,4 +77,5 @@
     <color name="scribe_nav_unselected">#FF808080</color>
     <color name="scribe_icon">#FFFFFFFF</color>
     <color name="scribe_keyboard_border">#40888888</color>
+    <color name="scribe_delete">#FFD11149</color>
 </resources>

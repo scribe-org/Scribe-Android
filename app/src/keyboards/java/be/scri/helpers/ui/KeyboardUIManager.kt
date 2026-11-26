@@ -1509,6 +1509,8 @@ class KeyboardUIManager(
         binding.clipboardPanelClose.setColorFilter(textColor)
         binding.clipboardPanelLabel.setTextColor(textColor)
         binding.clipboardEmptyText.setTextColor(textColor)
+        binding.clipboardClearAll.imageTintList =
+            ColorStateList.valueOf(context.scribeColorInt(R.color.scribe_delete, dark = isDarkMode))
     }
 
     fun hideClipboardPanel() {
