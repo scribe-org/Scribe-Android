@@ -856,19 +856,29 @@ class KeyboardUIManager(
         promptTextView.setTextColor(commandBarTextColor)
         promptTextView.setBackgroundColor(context.getColor(backgroundColor))
 
-        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
-            val verbInfinitive = currentVerbForConjugation ?: ""
-            commandBarEditText.setText(": $verbInfinitive")
-            commandBarEditText.setTextColor(commandBarTextColor)
-            commandBarEditText.isFocusable = false
-            commandBarEditText.isFocusableInTouchMode = false
-        } else {
-            currentCommandBarHint = HintUtils.getCommandBarHint(currentState, language, word, currentDeclensionSectionTitle)
-            commandBarEditText.isFocusable = true
-            commandBarEditText.isFocusableInTouchMode = true
-            commandBarEditText.setTextColor(commandBarHintColor)
-            setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
-            commandBarEditText.requestFocus()
+        with(commandBarEditText) {
+            when (currentState) {
+                ScribeState.SELECT_VERB_CONJUNCTION -> {
+                    setText(": ${currentVerbForConjugation.orEmpty()}")
+                    setTextColor(commandBarTextColor)
+                    isFocusable = false
+                    isFocusableInTouchMode = false
+                }
+                ScribeState.SELECT_DECLENSION -> {
+                    setText(HintUtils.getCommandBarHint(currentState, language, word, currentDeclensionSectionTitle))
+                    setTextColor(commandBarHintColor)
+                    isFocusable = false
+                    isFocusableInTouchMode = false
+                }
+                else -> {
+                    currentCommandBarHint = HintUtils.getCommandBarHint(currentState, language, word, currentDeclensionSectionTitle)
+                    isFocusable = true
+                    isFocusableInTouchMode = true
+                    setTextColor(commandBarHintColor)
+                    setCommandBarTextWithCursor(currentCommandBarHint, cursorAtStart = true)
+                    requestFocus()
+                }
+            }
         }
     }
 

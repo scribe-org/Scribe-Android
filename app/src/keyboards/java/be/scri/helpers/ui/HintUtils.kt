@@ -359,15 +359,15 @@ object HintUtils {
 
     private fun getDeclensionPrompt(language: String): String =
         when (language) {
-            "English" -> "Decline:"
-            "French" -> "Décliner:"
-            "German" -> "Deklinieren:"
-            "Italian" -> "Declinare:"
-            "Portuguese" -> "Declinar:"
-            "Russian" -> "Склонение:"
-            "Spanish" -> "Declinar:"
-            "Swedish" -> "Deklinera:"
-            else -> "Decline :"
+            "English" -> "Decline: "
+            "French" -> "Décliner: "
+            "German" -> "Deklinieren: "
+            "Italian" -> "Declinare: "
+            "Portuguese" -> "Declinar: "
+            "Russian" -> "Склонение: "
+            "Spanish" -> "Declinar: "
+            "Swedish" -> "Deklinera: "
+            else -> "Decline: "
         }
 
     /**
