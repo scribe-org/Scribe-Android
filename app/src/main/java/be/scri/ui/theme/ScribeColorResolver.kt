@@ -6,7 +6,14 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
+import java.util.concurrent.ConcurrentHashMap
+
+// Colors are only split by night mode (values and values-night), so a color id and the
+// dark flag fully decide the value. Caching avoids a new configuration context per lookup,
+// as suggestions are colored on every keystroke.
+private val scribeColorCache = ConcurrentHashMap<Long, Int>()
 
 /**
  * Reads a shared `scribe_*` color for light or dark.
@@ -17,7 +24,16 @@ import androidx.core.content.ContextCompat
 fun Context.scribeColorInt(
     @ColorRes id: Int,
     dark: Boolean,
-): Int = ContextCompat.getColor(scribeNightContext(dark), id)
+): Int {
+    val key = (id.toLong() shl 1) or (if (dark) 1L else 0L)
+    return scribeColorCache.getOrPut(key) { ContextCompat.getColor(scribeNightContext(dark), id) }
+}
+
+/**
+ * Empties the color cache so tests can resolve again under a different device configuration.
+ */
+@VisibleForTesting
+internal fun clearScribeColorCache() = scribeColorCache.clear()
 
 /**
  * A context whose resources resolve as day or night according to [dark].

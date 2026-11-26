@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import be.scri.R
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -18,6 +19,9 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class ScribeColorResolverTest {
+    @Before
+    fun resetColorCache() = clearScribeColorCache()
+
     @Test
     fun keyboardColorsMatchTheOldHexOnADayDevice() {
         assertKeyboardColors(ApplicationProvider.getApplicationContext())
@@ -38,7 +42,9 @@ class ScribeColorResolverTest {
         // Guards against the list silently shrinking if the R class shape changes.
         assertEquals(true, ids.size >= 26)
 
+        clearScribeColorCache()
         val onDayDevice = ids.mapValues { (_, id) -> context().bothModes(id) }
+        clearScribeColorCache()
         RuntimeEnvironment.setQualifiers("+night")
         val onNightDevice = ids.mapValues { (_, id) -> context().bothModes(id) }
 

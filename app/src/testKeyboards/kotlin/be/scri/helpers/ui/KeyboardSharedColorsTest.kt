@@ -15,10 +15,12 @@ import be.scri.R
 import be.scri.databinding.InputMethodViewBinding
 import be.scri.helpers.PreferencesHelper
 import be.scri.models.ScribeState
+import be.scri.ui.theme.clearScribeColorCache
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -31,6 +33,9 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class KeyboardSharedColorsTest {
+    @Before
+    fun resetColorCache() = clearScribeColorCache()
+
     @Test
     fun invalidBarIsDarkWhenScribeIsDarkOnADayDevice() {
         val binding = showState(ScribeState.INVALID, scribeDark = true, deviceNight = false)
