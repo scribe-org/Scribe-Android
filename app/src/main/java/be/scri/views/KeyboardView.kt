@@ -279,11 +279,12 @@ class KeyboardView
         private var mKeyboardBackgroundColor = 0
 
         /**
-         * Shared `scribe_*` colors for the keys in one mode.
+         * Shared `scribe_*` colors for the keys in one mode. [special] paints Enter, delete, shift and the mode key.
          */
         internal data class KeyColors(
             @ColorInt val key: Int,
             @ColorInt val label: Int,
+            @ColorInt val special: Int,
         )
 
         private var cachedKeyColors: Pair<Boolean, KeyColors>? = null
@@ -297,18 +298,8 @@ class KeyboardView
                 ?: KeyColors(
                     key = context.scribeColorInt(R.color.scribe_key, dark = dark),
                     label = context.scribeColorInt(R.color.scribe_text, dark = dark),
+                    special = context.scribeColorInt(R.color.scribe_key_special, dark = dark),
                 ).also { cachedKeyColors = dark to it }
-
-        private val alpha = FULL_ALPHA
-        private val redDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
-        private val greenDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
-        private val blueDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
-        private val darkSpecialKey = Color.argb(FULL_ALPHA, redDark, greenDark, blueDark)
-
-        private val red = (LIGHT_COLOR_RED_FACTOR * FULL_ALPHA).toInt()
-        private val green = (LIGHT_COLOR_GREEN_FACTOR * FULL_ALPHA).toInt()
-        private val blue = (LIGHT_COLOR_BLUE_FACTOR * FULL_ALPHA).toInt()
-        private val lightSpecialKey = Color.argb(alpha, red, green, blue)
 
         /**
          * Contains constants and configuration values used across KeyboardView.
@@ -327,10 +318,6 @@ class KeyboardView
             private const val DOUBLE_TAP_DELAY = 300L
             private const val NUMBER_OF_KEYS = 12
             private const val FULL_ALPHA = 255
-            private const val DARK_COLOR_FACTOR = 0.180
-            private const val LIGHT_COLOR_RED_FACTOR = 0.682
-            private const val LIGHT_COLOR_GREEN_FACTOR = 0.702
-            private const val LIGHT_COLOR_BLUE_FACTOR = 0.745
             private const val DEFAULT_KEY_TEXT_SIZE = 18
             private const val MARGIN_ADJUSTMENT = 10
             private const val PROXIMITY_SCALING_FACTOR = 1.4f
@@ -374,12 +361,12 @@ class KeyboardView
             } else {
                 when (isDarkMode) {
                     true -> {
-                        mEnterKeyColor = darkSpecialKey
+                        mEnterKeyColor = keyColorsFor(dark = true).special
                         invalidateAllKeys()
                     }
 
                     else -> {
-                        mEnterKeyColor = lightSpecialKey
+                        mEnterKeyColor = keyColorsFor(dark = false).special
                         invalidateAllKeys()
                     }
                 }
@@ -893,13 +880,7 @@ class KeyboardView
                         R.color.light_key_press_color
                     }
                 val pressedColor = resources.getColor(pressedColorResId, context.theme)
-                val specialKeyColorResource =
-                    if (isUserDarkMode) {
-                        R.color.special_key_dark
-                    } else {
-                        R.color.special_key_light
-                    }
-                val specialKeyColorValue = resources.getColor(specialKeyColorResource, context.theme)
+                val specialKeyColorValue = keyColors.special
                 val focusedColorResId =
                     if (isUserDarkMode) {
                         R.color.theme_scribe_blue

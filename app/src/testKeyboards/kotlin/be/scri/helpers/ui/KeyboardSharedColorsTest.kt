@@ -89,6 +89,9 @@ class KeyboardSharedColorsTest {
         assertEquals(0xFF000000.toInt(), light.label)
         assertEquals(0xFF434343.toInt(), dark.key)
         assertEquals(0xFFFFFFFF.toInt(), dark.label)
+        // Enter, delete, shift and the mode key use the Figma special-key values.
+        assertEquals(0xFFADB3BD.toInt(), light.special)
+        assertEquals(0xFF2D2D2D.toInt(), dark.special)
     }
 
     @Test
@@ -96,6 +99,8 @@ class KeyboardSharedColorsTest {
         val binding = showState(ScribeState.IDLE, scribeDark = true, deviceNight = false)
         assertEquals(0xFF434343.toInt(), binding.keyboardView.keyColorsFor(dark = true).key)
         assertEquals(0xFFFFFFFF.toInt(), binding.keyboardView.keyColorsFor(dark = false).key)
+        assertEquals(0xFF2D2D2D.toInt(), binding.keyboardView.keyColorsFor(dark = true).special)
+        assertEquals(0xFFADB3BD.toInt(), binding.keyboardView.keyColorsFor(dark = false).special)
     }
 
     @Test

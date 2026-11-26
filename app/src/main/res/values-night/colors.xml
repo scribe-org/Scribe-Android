@@ -67,7 +67,7 @@
     <color name="scribe_key">#FF434343</color>
     <color name="scribe_key_text">#95FFFFFF</color>
     <color name="scribe_key_pressed">#FF363636</color>
-    <color name="scribe_key_special">#FF202020</color>
+    <color name="scribe_key_special">#FF2D2D2D</color>
     <color name="scribe_accent_blue">#FF4CADE6</color>
     <color name="scribe_annotation_red">#FFFB5F6C</color>
     <color name="scribe_annotation_blue">#FF339EEB</color>

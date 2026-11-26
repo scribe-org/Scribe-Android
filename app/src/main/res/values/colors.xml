@@ -839,7 +839,7 @@
     #95000000</color>
     <color name="scribe_key_pressed">#FFE9E9E9</color>
     <color
-        name="scribe_key_special">#FFAEB3BE</color>
+        name="scribe_key_special">#FFADB3BD</color>
     <color name="scribe_accent_blue">#FF75CEFA</color>
     <color
         name="scribe_annotation_red">#FF9F1722</color>
