@@ -53,6 +53,35 @@ class ScribeColorResolverTest {
         assertEquals(0xFF5EB5E8.toInt() to 0xFF235270.toInt(), onDayDevice.getValue("scribe_background"))
     }
 
+    @Test
+    fun cachedLookupsReturnTheSameValuesInBothModes() {
+        val context = context()
+        val first = context.bothModes(R.color.scribe_key)
+        assertEquals(2, scribeColorCacheSize())
+        // Second read comes from the cache and must keep light and dark apart.
+        assertEquals(first, context.bothModes(R.color.scribe_key))
+        assertEquals(0xFFFFFFFF.toInt() to 0xFF434343.toInt(), first)
+        assertEquals(2, scribeColorCacheSize())
+    }
+
+    @Test
+    fun aCachedTransparentColorIsNotMistakenForAMiss() {
+        val context = context()
+        assertEquals(0, context.scribeColorInt(R.color.transparent, dark = false))
+        assertEquals(1, scribeColorCacheSize())
+        assertEquals(0, context.scribeColorInt(R.color.transparent, dark = false))
+        assertEquals(1, scribeColorCacheSize())
+    }
+
+    @Test
+    fun clearingTheCacheEmptiesBothModes() {
+        context().bothModes(R.color.scribe_text)
+        assertEquals(2, scribeColorCacheSize())
+        clearScribeColorCache()
+        assertEquals(0, scribeColorCacheSize())
+        assertEquals(0xFF000000.toInt() to 0xFFFFFFFF.toInt(), context().bothModes(R.color.scribe_text))
+    }
+
     private fun context(): Context = ApplicationProvider.getApplicationContext()
 
     private fun Context.bothModes(id: Int): Pair<Int, Int> = scribeColorInt(id, dark = false) to scribeColorInt(id, dark = true)
