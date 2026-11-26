@@ -57,5 +57,8 @@ class ScribeColorResolverTest {
         assertEquals(0xFFCAC4D0.toInt(), context.scribeColorInt(R.color.scribe_caption, dark = true))
         // Dark invalid and already-plural command bar, was "#1E1E1E".
         assertEquals(0xFF1E1E1E.toInt(), context.scribeColorInt(R.color.scribe_keyboard_background, dark = true))
+        // Floating keyboard border, was 0x40888888 in both modes.
+        assertEquals(0x40888888, context.scribeColorInt(R.color.scribe_keyboard_border, dark = false))
+        assertEquals(0x40888888, context.scribeColorInt(R.color.scribe_keyboard_border, dark = true))
     }
 }
