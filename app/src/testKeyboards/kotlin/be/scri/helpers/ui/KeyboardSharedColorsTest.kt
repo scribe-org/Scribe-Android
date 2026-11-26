@@ -98,6 +98,23 @@ class KeyboardSharedColorsTest {
         assertEquals(0xFFFFFFFF.toInt(), binding.keyboardView.keyColorsFor(dark = false).key)
     }
 
+    @Test
+    @Config(qualifiers = "night")
+    fun suggestionsMatchTheKeyLabelsWhenScribeIsLightOnANightDevice() {
+        val binding = showState(ScribeState.IDLE, scribeDark = false, deviceNight = true)
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        assertEquals(0xFF000000.toInt(), KeyboardThemeManager().getSuggestionTextColor(context))
+        assertEquals(0xFF000000.toInt(), binding.translateBtn.currentTextColor)
+    }
+
+    @Test
+    fun suggestionsMatchTheKeyLabelsWhenScribeIsDarkOnADayDevice() {
+        val binding = showState(ScribeState.IDLE, scribeDark = true, deviceNight = false)
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        assertEquals(0xFFFFFFFF.toInt(), KeyboardThemeManager().getSuggestionTextColor(context))
+        assertEquals(0xFFFFFFFF.toInt(), binding.translateBtn.currentTextColor)
+    }
+
     private fun showState(
         state: ScribeState,
         scribeDark: Boolean,

@@ -28,7 +28,6 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.graphics.toColorInt
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import be.scri.R
@@ -269,7 +268,8 @@ class KeyboardUIManager(
             ),
         )
 
-        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
+        // Same color as the characters on the keys.
+        val textColor = context.scribeColorInt(R.color.scribe_text, dark = isUserDarkMode)
 
         listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEachIndexed { index, button ->
             button.visibility = View.VISIBLE
