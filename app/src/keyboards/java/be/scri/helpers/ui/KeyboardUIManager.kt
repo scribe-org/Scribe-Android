@@ -24,6 +24,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -515,10 +516,16 @@ class KeyboardUIManager(
             R.id.conjugate_btn_6,
         )
 
+    /**
+     * Color of the small label above a conjugation form, resolved once per grid.
+     */
+    @ColorInt
+    private fun conjugationLabelColor(isDarkMode: Boolean): Int = context.scribeColorInt(R.color.scribe_caption, dark = isDarkMode)
+
     private fun formatButtonText(
         label: String,
         form: String,
-        isDarkMode: Boolean,
+        @ColorInt labelColor: Int,
     ): CharSequence {
         if (label.isEmpty() || label == "all") return form
         val spannable = SpannableStringBuilder()
@@ -529,7 +536,6 @@ class KeyboardUIManager(
             label.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
-        val labelColor = context.scribeColorInt(R.color.scribe_caption, isDarkMode)
         spannable.setSpan(
             ForegroundColorSpan(labelColor),
             0,
@@ -584,6 +590,7 @@ class KeyboardUIManager(
         subPairs: List<Pair<String, String>>,
         isDarkMode: Boolean,
     ) {
+        val labelColor = conjugationLabelColor(isDarkMode)
         buttonIds.forEachIndexed { i, btnId ->
             val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
             if (i < subPairs.size) {
@@ -597,7 +604,7 @@ class KeyboardUIManager(
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                 val hasLabel = label.isNotEmpty() && label != "all"
                 applyButtonLayout(btn, hasLabel)
-                btn.text = formatButtonText(label, form, isDarkMode)
+                btn.text = formatButtonText(label, form, labelColor)
                 btn.setOnClickListener {
                     listener.commitText("$form ")
                     listener.processLinguisticSuggestions(form)
@@ -614,6 +621,7 @@ class KeyboardUIManager(
         categoryEntries: List<Map.Entry<String, List<Pair<String, String>>>>,
         isDarkMode: Boolean,
     ) {
+        val labelColor = conjugationLabelColor(isDarkMode)
         buttonIds.forEachIndexed { i, btnId ->
             val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
             if (i < categoryEntries.size) {
@@ -627,7 +635,7 @@ class KeyboardUIManager(
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                 val formsPreview = pairs.map { it.second.trim() }.filter { it.isNotBlank() }.joinToString(" / ")
                 applyButtonLayout(btn, categoryTitle.isNotEmpty())
-                btn.text = formatButtonText(categoryTitle, formsPreview, isDarkMode)
+                btn.text = formatButtonText(categoryTitle, formsPreview, labelColor)
                 if (pairs.size == 1) {
                     val (_, form) = pairs.first()
                     btn.setOnClickListener {
@@ -651,6 +659,7 @@ class KeyboardUIManager(
         directPairs: List<Pair<String, String>>,
         isDarkMode: Boolean,
     ) {
+        val labelColor = conjugationLabelColor(isDarkMode)
         buttonIds.forEachIndexed { i, btnId ->
             val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
             if (i < directPairs.size) {
@@ -664,7 +673,7 @@ class KeyboardUIManager(
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                 val hasLabel = label.isNotEmpty() && label != "all"
                 applyButtonLayout(btn, hasLabel)
-                btn.text = formatButtonText(label, form, isDarkMode)
+                btn.text = formatButtonText(label, form, labelColor)
                 btn.setOnClickListener {
                     listener.commitText("$form ")
                     listener.processLinguisticSuggestions(form)
