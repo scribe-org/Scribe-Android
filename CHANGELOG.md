@@ -32,6 +32,10 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 - The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
 
+### ✅ Tests
+
+- A CI smoke test workflow and R8 minification verification were added to test minified builds on emulators and prevent crash regressions ([#799](https://github.com/scribe-org/Scribe-Android/issues/799)).
+
 ## Scribe-Android v1.0.0
 
 ### MVP release of Scribe - Language Keyboards on Android
