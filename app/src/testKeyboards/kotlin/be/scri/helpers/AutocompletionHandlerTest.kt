@@ -145,4 +145,23 @@ class AutocompletionHandlerTest {
         verify(exactly = 0) { ime.getAutocompletions(any(), any(), any()) }
         verify(exactly = 0) { ime.updateAutocompleteCompletions(any()) }
     }
+
+    @Test
+    fun processAutocomplete_whenPrefixMatchesProfanity_doesNotBlockCompletions() {
+        val runnableSlot = slot<Runnable>()
+        every { handler.postDelayed(capture(runnableSlot), any()) } returns true
+        every { ime.currentState } returns ScribeState.IDLE
+        every { ime.profanity } returns setOf("hell")
+        every { ime.getPreviousWordBeforeCursor() } returns null
+        every { ime.getAutocompletions("hell", null, any()) } returns listOf("hello", "helmet")
+
+        autocompletionHandler.processAutocomplete("hell")
+
+        verify { ime.updateTypedWordSuggestion("hell") }
+
+        runnableSlot.captured.run()
+
+        verify { ime.getAutocompletions("hell", null, any()) }
+        verify { ime.updateAutocompleteCompletions(listOf("hello", "helmet")) }
+    }
 }

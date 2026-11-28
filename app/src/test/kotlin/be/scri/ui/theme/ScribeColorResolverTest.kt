@@ -1,0 +1,102 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+package be.scri.ui.theme
+
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import be.scri.R
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
+
+/**
+ * The keyboard colors moved off hex literals in #783 must keep the exact values they had.
+ */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
+class ScribeColorResolverTest {
+    @Before
+    fun resetColorCache() = clearScribeColorCache()
+
+    @Test
+    fun keyboardColorsMatchTheOldHexOnADayDevice() {
+        assertKeyboardColors(ApplicationProvider.getApplicationContext())
+    }
+
+    @Test
+    @Config(qualifiers = "night")
+    fun keyboardColorsMatchTheOldHexOnANightDevice() {
+        assertKeyboardColors(ApplicationProvider.getApplicationContext())
+    }
+
+    @Test
+    fun everyScribeColorIgnoresTheDeviceNightMode() {
+        val ids =
+            R.color::class.java.fields
+                .filter { it.name.startsWith("scribe_") }
+                .associate { it.name to it.getInt(null) }
+        // Guards against the list silently shrinking if the R class shape changes.
+        assertEquals(true, ids.size >= 26)
+
+        clearScribeColorCache()
+        val onDayDevice = ids.mapValues { (_, id) -> context().bothModes(id) }
+        clearScribeColorCache()
+        RuntimeEnvironment.setQualifiers("+night")
+        val onNightDevice = ids.mapValues { (_, id) -> context().bothModes(id) }
+
+        assertEquals(onDayDevice, onNightDevice)
+        // The light and dark halves really come from different files.
+        assertEquals(0xFF5EB5E8.toInt() to 0xFF235270.toInt(), onDayDevice.getValue("scribe_background"))
+    }
+
+    @Test
+    fun cachedLookupsReturnTheSameValuesInBothModes() {
+        val context = context()
+        val first = context.bothModes(R.color.scribe_key)
+        assertEquals(2, scribeColorCacheSize())
+        // Second read comes from the cache and must keep light and dark apart.
+        assertEquals(first, context.bothModes(R.color.scribe_key))
+        assertEquals(0xFFFFFFFF.toInt() to 0xFF434343.toInt(), first)
+        assertEquals(2, scribeColorCacheSize())
+    }
+
+    @Test
+    fun aCachedTransparentColorIsNotMistakenForAMiss() {
+        val context = context()
+        assertEquals(0, context.scribeColorInt(R.color.transparent, dark = false))
+        assertEquals(1, scribeColorCacheSize())
+        assertEquals(0, context.scribeColorInt(R.color.transparent, dark = false))
+        assertEquals(1, scribeColorCacheSize())
+    }
+
+    @Test
+    fun clearingTheCacheEmptiesBothModes() {
+        context().bothModes(R.color.scribe_text)
+        assertEquals(2, scribeColorCacheSize())
+        clearScribeColorCache()
+        assertEquals(0, scribeColorCacheSize())
+        assertEquals(0xFF000000.toInt() to 0xFFFFFFFF.toInt(), context().bothModes(R.color.scribe_text))
+    }
+
+    private fun context(): Context = ApplicationProvider.getApplicationContext()
+
+    private fun Context.bothModes(id: Int): Pair<Int, Int> = scribeColorInt(id, dark = false) to scribeColorInt(id, dark = true)
+
+    private fun assertKeyboardColors(context: Context) {
+        // Conjugation sub-labels, was "#E558564B" / "#CAC4D0".
+        assertEquals(0xE558564B.toInt(), context.scribeColorInt(R.color.scribe_caption, dark = false))
+        assertEquals(0xFFCAC4D0.toInt(), context.scribeColorInt(R.color.scribe_caption, dark = true))
+        // Dark invalid and already-plural command bar, was "#1E1E1E".
+        assertEquals(0xFF1E1E1E.toInt(), context.scribeColorInt(R.color.scribe_keyboard_background, dark = true))
+        // Floating keyboard border, was 0x40888888 in both modes.
+        assertEquals(0x40888888, context.scribeColorInt(R.color.scribe_keyboard_border, dark = false))
+        assertEquals(0x40888888, context.scribeColorInt(R.color.scribe_keyboard_border, dark = true))
+        // Clipboard clear-all, the delete red from #772 (was #E53935 in both modes).
+        assertEquals(0xFFE4572E.toInt(), context.scribeColorInt(R.color.scribe_delete, dark = false))
+        assertEquals(0xFFD11149.toInt(), context.scribeColorInt(R.color.scribe_delete, dark = true))
+    }
+}

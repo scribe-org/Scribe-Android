@@ -12,6 +12,7 @@ import be.scri.latin.NgramContext
 import be.scri.latin.common.ComposedData
 import be.scri.latin.dictionary.ReadOnlyBinaryDictionary
 import be.scri.latin.settings.SettingsValuesForSuggestion
+import be.scri.latin.utils.JniUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -30,7 +31,21 @@ class NativeSuggestionEngine(private val context: Context) {
     }
 
     private val loadedDicts = HashMap<String, ReadOnlyBinaryDictionary>()
-    private val dummyProximityInfo = ProximityInfo()
+
+    /**
+     * Checks whether the underlying native library (libjni_latinime.so) was loaded successfully.
+     */
+    val isNativeAvailable: Boolean
+        get() = JniUtils.sHaveGestureLib
+
+    private val dummyProximityInfo by lazy {
+        try {
+            if (isNativeAvailable) ProximityInfo() else null
+        } catch (t: Throwable) {
+            Log.e(TAG, "Failed to initialize dummy ProximityInfo", t)
+            null
+        }
+    }
 
     /**
      * Map a language string to its corresponding main dictionary asset name and Locale.
@@ -108,6 +123,8 @@ class NativeSuggestionEngine(private val context: Context) {
      */
     @Synchronized
     fun getDictionary(language: String): ReadOnlyBinaryDictionary? {
+        if (!isNativeAvailable) return null
+
         val cacheKey = language.lowercase(Locale.ROOT)
         loadedDicts[cacheKey]?.let { return it }
 
@@ -132,8 +149,8 @@ class NativeSuggestionEngine(private val context: Context) {
                 dict.close()
                 null
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error initializing ReadOnlyBinaryDictionary for $language", e)
+        } catch (t: Throwable) {
+            Log.e(TAG, "Error initializing ReadOnlyBinaryDictionary for $language", t)
             null
         }
     }
@@ -148,8 +165,9 @@ class NativeSuggestionEngine(private val context: Context) {
         limit: Int = 3,
         profanity: Set<String> = emptySet()
     ): List<String> {
+        if (!isNativeAvailable || prefix.isBlank()) return emptyList()
+        val proximityInfo = dummyProximityInfo ?: return emptyList()
         val dict = getDictionary(language) ?: return emptyList()
-        if (prefix.isBlank()) return emptyList()
 
         return try {
             val composedData = ComposedData.createForWord(prefix)
@@ -162,7 +180,7 @@ class NativeSuggestionEngine(private val context: Context) {
             val suggestions = dict.getSuggestions(
                 composedData,
                 ngramContext,
-                dummyProximityInfo.nativeProximityInfo, // proximityInfoHandle
+                proximityInfo.nativeProximityInfo, // proximityInfoHandle
                 SettingsValuesForSuggestion(true, false), // blockPotentiallyOffensive, spaceAwareGesture
                 1, // sessionId
                 1.0f, // weightForLocale
@@ -180,8 +198,8 @@ class NativeSuggestionEngine(private val context: Context) {
                 ?.map { if (isCapitalized) it.replaceFirstChar { c -> c.uppercaseChar() } else it }
                 ?.take(limit)
                 ?: emptyList()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error fetching native suggestions for $prefix", e)
+        } catch (t: Throwable) {
+            Log.e(TAG, "Error fetching native suggestions for $prefix", t)
             emptyList()
         }
     }
@@ -195,8 +213,9 @@ class NativeSuggestionEngine(private val context: Context) {
         limit: Int = 3,
         profanity: Set<String> = emptySet()
     ): List<String> {
+        if (!isNativeAvailable || lastWord.isNullOrBlank()) return emptyList()
+        val proximityInfo = dummyProximityInfo ?: return emptyList()
         val dict = getDictionary(language) ?: return emptyList()
-        if (lastWord.isNullOrBlank()) return emptyList()
 
         return try {
             val wordInfo = NgramContext.WordInfo(lastWord)
@@ -205,7 +224,7 @@ class NativeSuggestionEngine(private val context: Context) {
             val suggestions = dict.getSuggestions(
                 composedData,
                 ngramContext,
-                dummyProximityInfo.nativeProximityInfo, // proximityInfoHandle
+                proximityInfo.nativeProximityInfo, // proximityInfoHandle
                 SettingsValuesForSuggestion(true, false), // blockPotentiallyOffensive, spaceAwareGesture
                 1, // sessionId
                 1.0f, // weightForLocale
@@ -220,8 +239,8 @@ class NativeSuggestionEngine(private val context: Context) {
                 }
                 ?.take(limit)
                 ?: emptyList()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error fetching native next-word suggestions for $lastWord", e)
+        } catch (t: Throwable) {
+            Log.e(TAG, "Error fetching native next-word suggestions for $lastWord", t)
             emptyList()
         }
     }
@@ -232,7 +251,11 @@ class NativeSuggestionEngine(private val context: Context) {
     @Synchronized
     fun close() {
         for (dict in loadedDicts.values) {
-            dict.close()
+            try {
+                dict.close()
+            } catch (t: Throwable) {
+                Log.e(TAG, "Error closing dictionary", t)
+            }
         }
         loadedDicts.clear()
     }
