@@ -178,6 +178,45 @@ class KeyboardSharedColorsTest {
         assertEquals(0xFFD11149.toInt(), binding.clipboardClearAll.imageTintList!!.defaultColor)
     }
 
+    @Test
+    @Config(qualifiers = "night")
+    fun pageDotsUseTextAndCaptionWhenScribeIsLightOnANightDevice() {
+        val binding = showInvalidInfoPanel(scribeDark = false, deviceNight = true)
+        binding.assertDotColors(active = 0xFF000000.toInt(), inactive = 0xE558564B.toInt(), currentPage = 0)
+        binding.buttonRight.performClick()
+        binding.assertDotColors(active = 0xFF000000.toInt(), inactive = 0xE558564B.toInt(), currentPage = 1)
+    }
+
+    @Test
+    fun pageDotsUseTextAndCaptionWhenScribeIsDarkOnADayDevice() {
+        val binding = showInvalidInfoPanel(scribeDark = true, deviceNight = false)
+        binding.assertDotColors(active = 0xFFFFFFFF.toInt(), inactive = 0xFFCAC4D0.toInt(), currentPage = 0)
+        binding.buttonRight.performClick()
+        binding.assertDotColors(active = 0xFFFFFFFF.toInt(), inactive = 0xFFCAC4D0.toInt(), currentPage = 1)
+    }
+
+    private fun showInvalidInfoPanel(
+        scribeDark: Boolean,
+        deviceNight: Boolean,
+    ): InputMethodViewBinding {
+        val binding = showState(ScribeState.INVALID, scribeDark = scribeDark, deviceNight = deviceNight)
+        binding.ivInfo.performClick()
+        return binding
+    }
+
+    private fun InputMethodViewBinding.assertDotColors(
+        active: Int,
+        inactive: Int,
+        currentPage: Int,
+    ) {
+        assertEquals(3, pageIndicators.childCount)
+        for (i in 0 until pageIndicators.childCount) {
+            val expected = if (i == currentPage) active else inactive
+            val actual = pageIndicators.getChildAt(i).backgroundTintList!!.defaultColor
+            assertEquals("dot $i on page $currentPage", expected, actual)
+        }
+    }
+
     private fun showState(
         state: ScribeState,
         scribeDark: Boolean,

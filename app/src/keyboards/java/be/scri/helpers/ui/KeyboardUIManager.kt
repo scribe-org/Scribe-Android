@@ -1435,16 +1435,11 @@ class KeyboardUIManager(
     private fun updateDotIndicators() {
         val pageIndicators = binding.pageIndicators
         val isDarkMode = getIsDarkModeOrNot(context)
+        val activeColor = context.scribeColorInt(R.color.scribe_text, dark = isDarkMode)
+        val inactiveColor = context.scribeColorInt(R.color.scribe_caption, dark = isDarkMode)
         for (i in 0 until pageIndicators.childCount) {
-            val dot = pageIndicators.getChildAt(i)
-            val drawableRes = if (i == currentPage) R.drawable.dot_active else R.drawable.dot_inactive
-            val drawable = ContextCompat.getDrawable(context, drawableRes)?.mutate()
-            if (isDarkMode) {
-                drawable?.setTint(if (i == currentPage) Color.WHITE else 0x66FFFFFF.toInt())
-            } else {
-                drawable?.setTint(if (i == currentPage) Color.BLACK else 0xFFCCCCCC.toInt())
-            }
-            dot.background = drawable
+            val color = if (i == currentPage) activeColor else inactiveColor
+            pageIndicators.getChildAt(i).backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 

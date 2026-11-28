@@ -671,13 +671,13 @@ GeneralKeyboardIME.kt
                         android:layout_width="6dp"
                         android:layout_height="6dp"
                         android:layout_margin="4dp"
-                        android:background="@drawable/dot_inactive" />
+                        android:background="@drawable/dot_active" />
 
                     <View
                         android:layout_width="6dp"
                         android:layout_height="6dp"
                         android:layout_margin="4dp"
-                        android:background="@drawable/dot_inactive" />
+                        android:background="@drawable/dot_active" />
 
                 </LinearLayout>
             </LinearLayout>
