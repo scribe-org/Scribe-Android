@@ -34,6 +34,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ### ✨ New Features
 
+- The "Regularly update data" switch is saved and defaults to off. When it is on, the app checks Scribe-Server for newer verb data immediately and once during the second week of each month, then posts a local notification. It does not download the data ([#768](https://github.com/scribe-org/Scribe-Android/issues/768)).
 - A verb Conjugation tab was added to the application ([#563](https://github.com/scribe-org/Scribe-Android/issues/563)).
 - Users can search for verbs across languages ([#566](https://github.com/scribe-org/Scribe-Android/issues/566)).
 - A reactive conjugation selection UI was developed to easily copy desired conjugations ([#567](https://github.com/scribe-org/Scribe-Android/issues/567), [#570](https://github.com/scribe-org/Scribe-Android/issues/570)).
