@@ -24,6 +24,7 @@ class ClipboardAdapter(
     ) : RecyclerView.ViewHolder(view) {
         val clipText: TextView = view.findViewById(R.id.clip_text)
         val pinIcon: ImageView = view.findViewById(R.id.pin_icon)
+        val pinnedBadge: ImageView = view.findViewById(R.id.pinned_badge)
     }
 
     override fun onCreateViewHolder(
@@ -55,6 +56,15 @@ class ClipboardAdapter(
         val textColor = if (isDarkMode) Color.WHITE else Color.BLACK
         holder.itemView.backgroundTintList = ColorStateList.valueOf(cardColor)
         holder.clipText.setTextColor(textColor)
+
+        if (item.isPinned) {
+            holder.pinnedBadge.visibility = View.VISIBLE
+            holder.itemView.foreground =
+                ContextCompat.getDrawable(context, R.drawable.clipboard_item_pinned_border)
+        } else {
+            holder.pinnedBadge.visibility = View.GONE
+            holder.itemView.foreground = null
+        }
 
         holder.itemView.setOnClickListener {
             onItemClick(item)

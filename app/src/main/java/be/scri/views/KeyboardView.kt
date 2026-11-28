@@ -31,6 +31,8 @@ import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.EditorInfo
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withSave
@@ -66,6 +68,7 @@ import be.scri.helpers.SHIFT_OFF
 import be.scri.helpers.SHIFT_ON_ONE_CHAR
 import be.scri.helpers.SHIFT_ON_PERMANENT
 import be.scri.models.ScribeState
+import be.scri.ui.theme.scribeColorInt
 import java.util.Arrays
 import java.util.Locale
 import kotlin.ranges.coerceIn
@@ -244,6 +247,10 @@ class KeyboardView
 
         private var mEnterKeyColor: Int = 0
 
+        /** Current Enter key background, for tests. */
+        @get:VisibleForTesting
+        internal val enterKeyColor: Int get() = mEnterKeyColor
+
         private var mKeyBackground: Drawable? = null
 
         private var mToolbarHolder: View? = null
@@ -275,16 +282,28 @@ class KeyboardView
 
         private var mKeyboardBackgroundColor = 0
 
-        private val alpha = FULL_ALPHA
-        private val redDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
-        private val greenDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
-        private val blueDark = (DARK_COLOR_FACTOR * FULL_ALPHA).toInt()
-        private val darkSpecialKey = Color.argb(FULL_ALPHA, redDark, greenDark, blueDark)
+        /**
+         * Shared `scribe_*` colors for the keys in one mode. [special] paints Enter, delete, shift and the mode key.
+         */
+        internal data class KeyColors(
+            @ColorInt val key: Int,
+            @ColorInt val label: Int,
+            @ColorInt val special: Int,
+        )
 
-        private val red = (LIGHT_COLOR_RED_FACTOR * FULL_ALPHA).toInt()
-        private val green = (LIGHT_COLOR_GREEN_FACTOR * FULL_ALPHA).toInt()
-        private val blue = (LIGHT_COLOR_BLUE_FACTOR * FULL_ALPHA).toInt()
-        private val lightSpecialKey = Color.argb(alpha, red, green, blue)
+        private var cachedKeyColors: Pair<Boolean, KeyColors>? = null
+
+        /**
+         * Key colors for the Scribe dark mode setting, read once per mode instead of on every draw.
+         */
+        @VisibleForTesting
+        internal fun keyColorsFor(dark: Boolean): KeyColors =
+            cachedKeyColors?.takeIf { it.first == dark }?.second
+                ?: KeyColors(
+                    key = context.scribeColorInt(R.color.scribe_key, dark = dark),
+                    label = context.scribeColorInt(R.color.scribe_text, dark = dark),
+                    special = context.scribeColorInt(R.color.scribe_key_special, dark = dark),
+                ).also { cachedKeyColors = dark to it }
 
         /**
          * Contains constants and configuration values used across KeyboardView.
@@ -303,10 +322,6 @@ class KeyboardView
             private const val DOUBLE_TAP_DELAY = 300L
             private const val NUMBER_OF_KEYS = 12
             private const val FULL_ALPHA = 255
-            private const val DARK_COLOR_FACTOR = 0.180
-            private const val LIGHT_COLOR_RED_FACTOR = 0.682
-            private const val LIGHT_COLOR_GREEN_FACTOR = 0.702
-            private const val LIGHT_COLOR_BLUE_FACTOR = 0.745
             private const val DEFAULT_KEY_TEXT_SIZE = 18
             private const val MARGIN_ADJUSTMENT = 10
             private const val PROXIMITY_SCALING_FACTOR = 1.4f
@@ -350,12 +365,12 @@ class KeyboardView
             } else {
                 when (isDarkMode) {
                     true -> {
-                        mEnterKeyColor = darkSpecialKey
+                        mEnterKeyColor = keyColorsFor(dark = true).special
                         invalidateAllKeys()
                     }
 
                     else -> {
-                        mEnterKeyColor = lightSpecialKey
+                        mEnterKeyColor = keyColorsFor(dark = false).special
                         invalidateAllKeys()
                     }
                 }
@@ -858,24 +873,10 @@ class KeyboardView
                 val isUserDarkMode =
                     be.scri.helpers.PreferencesHelper
                         .getIsDarkModeOrNot(context)
-                val keyBackgroundColor =
-                    if (isUserDarkMode) {
-                        Color.DKGRAY
-                    } else {
-                        Color.WHITE
-                    }
-                mBackgroundColor =
-                    if (isUserDarkMode) {
-                        Color.DKGRAY
-                    } else {
-                        Color.WHITE
-                    }
-                mTextColor =
-                    if (keyBackgroundColor == Color.WHITE) {
-                        Color.BLACK
-                    } else {
-                        Color.WHITE
-                    }
+                val keyColors = keyColorsFor(isUserDarkMode)
+                val keyBackgroundColor = keyColors.key
+                mBackgroundColor = keyColors.key
+                mTextColor = keyColors.label
                 val pressedColorResId =
                     if (isUserDarkMode) {
                         R.color.dark_key_press_color
@@ -883,13 +884,7 @@ class KeyboardView
                         R.color.light_key_press_color
                     }
                 val pressedColor = resources.getColor(pressedColorResId, context.theme)
-                val specialKeyColorResource =
-                    if (isUserDarkMode) {
-                        R.color.special_key_dark
-                    } else {
-                        R.color.special_key_light
-                    }
-                val specialKeyColorValue = resources.getColor(specialKeyColorResource, context.theme)
+                val specialKeyColorValue = keyColors.special
                 val focusedColorResId =
                     if (isUserDarkMode) {
                         R.color.theme_scribe_blue

@@ -1,7 +1,7 @@
 # Scribe-Android Changelog
 
 > [!NOTE]
-> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Scribe-Android. See [CHANGELOG_CONJUGATE.md](/CHANGELOG_CONJUGATE.md) for the Conjugate-Android changelog.
+> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Scribe-Android. See [CHANGELOG_CONJUGATE.md](./CHANGELOG_CONJUGATE.md) for the Conjugate-Android changelog.
 
 See the [releases for this repository](https://github.com/scribe-org/Scribe-Android/releases) for an up to date list of versions and their release dates. Versions that are marked as released may not yet be on Google Play and other stores if it's within the submission review period.
 
@@ -13,7 +13,31 @@ Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJ
 
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
-## [Upcoming] Scribe-Android 1.0.0
+## [Upcoming] Scribe-Android v1.X.Y
+
+### 🎨 Design
+
+- Compose theme colors now come from the shared `scribe_*` resources. Dark mode button text stays orange on orange. The dark caption uses the named token `#CAC4D0`, the same grey this slot already used ([#782](https://github.com/scribe-org/Scribe-Android/issues/782)).
+- The keyboard reads the shared `scribe_*` colors instead of hex literals. Small intentional changes: the light invalid and already-plural bar matches the keyboard background, dark letter keys use `scribe_key`, suggestions match the key labels, Enter, delete, shift and the mode key use the Figma special-key colors, and the clipboard clear-all icon uses the new `scribe_delete` red, and the Wikidata info-panel page dots use the key text color when active and `scribe_caption` when not ([#783](https://github.com/scribe-org/Scribe-Android/issues/783)).
+
+### 🐛 Bug Fixes
+
+- ProGuard keep rules and defensive fallbacks in NativeSuggestionEngine were added for JNI-bound classes and methods, preventing crashes in release builds ([#796](https://github.com/scribe-org/Scribe-Android/issues/796)).
+
+### 🔒 Security
+
+- The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+- The unused `USE_FINGERPRINT` permission was removed as it's unneeded for the application ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+
+### ♻️ Code Refactoring
+
+- The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+
+### ✅ Tests
+
+- A CI smoke test workflow and R8 minification verification were added to test minified builds on emulators and prevent crash regressions ([#799](https://github.com/scribe-org/Scribe-Android/issues/799)).
+
+## Scribe-Android v1.0.0
 
 ### MVP release of Scribe - Language Keyboards on Android
 
@@ -64,6 +88,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ### 🎨 Design
 
+- Named `scribe_*` color tokens record the light and dark hexes the app already uses. No screen color changes ([#781](https://github.com/scribe-org/Scribe-Android/issues/781)).
 - The Scribe key and command bar where Scribe commands are triggered ([#16](https://github.com/scribe-org/Scribe-Android/issues/16)).
 - 3x2 and other conjugation tables from which conjugations can be selected in the Conjugate command ([#267](https://github.com/scribe-org/Scribe-Android/issues/267), [#270](https://github.com/scribe-org/Scribe-Android/issues/270), [#496](https://github.com/scribe-org/Scribe-Android/issues/496), [#523](https://github.com/scribe-org/Scribe-Android/issues/523)).
 - The return key is colored Scribe blue when commands are being triggered to let the user know that that is what they need to press to finish the command ([#160](https://github.com/scribe-org/Scribe-Android/issues/160)).

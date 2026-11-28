@@ -16,13 +16,13 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import be.scri.R
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
+import be.scri.ui.theme.scribeColorInt
 
 /**
  * Manages UI theme color resolutions, gradient/ripple drawables creation,
@@ -232,6 +232,7 @@ class KeyboardThemeManager {
      */
     fun getSuggestionTextColor(context: Context): Int {
         val isDarkMode = getIsDarkModeOrNot(context)
-        return if (isDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
+        // Same color as the characters on the keys.
+        return context.scribeColorInt(R.color.scribe_text, dark = isDarkMode)
     }
 }
