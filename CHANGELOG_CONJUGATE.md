@@ -15,6 +15,10 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ## [Upcoming] Conjugate-Android v1.X.Y
 
+### 🗃️ Data
+
+- Downloaded conjugate data can be deleted via a trashcan icon in the download UI ([#769](https://github.com/scribe-org/Scribe-Android/issues/769)).
+
 ### 🔒 Security
 
 - The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
@@ -51,7 +55,6 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 - Calls are made to the [Scribe-Server API](https://scribe-server.toolforge.org/) hosted on Toolforge to download language data and insert it into SQLite tables ([#547](https://github.com/scribe-org/Scribe-Android/issues/547), [#565](https://github.com/scribe-org/Scribe-Android/issues/565), [#626](github.com/scribe-org/Scribe-Android/issues/626)).
 - The data download UI was created to download data for any keyboards that have been installed ([#437](https://github.com/scribe-org/Scribe-Android/issues/437), [#439](https://github.com/scribe-org/Scribe-Android/issues/439), [#513](https://github.com/scribe-org/Scribe-Android/issues/513), [#554](https://github.com/scribe-org/Scribe-Android/issues/554), [#564](https://github.com/scribe-org/Scribe-Android/issues/564)).
 - Network indicators for data request have been added to the application and are shown via toasts ([#651](https://github.com/scribe-org/Scribe-Android/issues/651)).
-- Downloaded conjugate data can be deleted via a trashcan icon in the download UI ([#769](https://github.com/scribe-org/Scribe-Android/issues/769)).
 
 ### 🎨 Design
 
