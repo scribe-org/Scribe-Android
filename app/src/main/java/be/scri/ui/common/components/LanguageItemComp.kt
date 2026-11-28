@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import be.scri.ui.screens.download.DownloadState
 
 /**
- * Simple language item with a title on the left and a download button on the right.
+ * Simple language item with a title on the left and download/delete buttons on the right.
  */
 @Composable
 fun LanguageItemComp(
@@ -29,10 +29,16 @@ fun LanguageItemComp(
     onClick: () -> Unit,
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onDeleteClick: (() -> Unit)? = null,
     titleFontWeight: FontWeight = FontWeight.Normal,
     isDarkTheme: Boolean = false,
     buttonState: DownloadState? = null,
 ) {
+    val currentState = buttonState ?: DownloadState.Ready
+    val showDelete =
+        onDeleteClick != null &&
+            (currentState == DownloadState.Completed || currentState == DownloadState.Update)
+
     Row(
         modifier =
             modifier
@@ -49,13 +55,25 @@ fun LanguageItemComp(
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = titleFontWeight,
             maxLines = 1,
+            modifier = Modifier.weight(1f),
         )
-        Spacer(modifier = Modifier.width(100.dp))
-        DownloadDataOptionComp(
-            onClick = onButtonClick,
-            isDarkTheme = isDarkTheme,
-            downloadState = buttonState ?: DownloadState.Ready,
-            modifier = Modifier.widthIn(min = 50.dp),
-        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            DownloadDataOptionComp(
+                onClick = onButtonClick,
+                isDarkTheme = isDarkTheme,
+                downloadState = currentState,
+                modifier = Modifier.widthIn(min = 50.dp),
+            )
+            if (showDelete) {
+                DeleteDataOptionComp(
+                    onClick = onDeleteClick,
+                    isDarkTheme = isDarkTheme,
+                )
+            }
+        }
     }
 }

@@ -15,6 +15,10 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ## [Upcoming] Conjugate-Android v1.X.Y
 
+### 🗃️ Data
+
+- Downloaded conjugate data can be deleted via a trashcan icon in the download UI ([#769](https://github.com/scribe-org/Scribe-Android/issues/769)).
+
 ### 🔒 Security
 
 - The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).

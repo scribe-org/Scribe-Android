@@ -2,6 +2,7 @@
 <resources>
     <string name="i18n._global.legal">कायदेशीर</string>
     <string name="i18n._global.privacy_policy">गोपनीयता धोरण</string>
+    <string name="i18n.app._global.button_install_keyboards">कीबोर्ड इंस्टॉल करा</string>
     <string name="i18n.app._global.download_data">डेटा डाउनलोड करा</string>
     <string name="i18n.app._global.english">इंग्रजी</string>
     <string name="i18n.app._global.french">फ्रेंच</string>
@@ -70,7 +71,6 @@
     <string name="i18n.app.installation.keyboard.text_4">कीबोर्ड निवडण्यासाठी</string>
     <string name="i18n.app.installation.keyboard.title">कीबोर्ड इंस्टॉलेशन</string>
     <string name="i18n.app.installation.title">इंस्टॉलेशन</string>
-    <string name="i18n.app.settings.button_install_keyboards">कीबोर्ड इंस्टॉल करा</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">सुचवण्या/समाप्ति वर्णन करा</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">टाइप करताना सुचवण्या आणि समाप्ति रेखांकित करा जेणेकरून त्यांच्या लिंगाची माहिती मिळू शकेल.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">इमोजीचा स्वयंचलित सुचवण्या</string>

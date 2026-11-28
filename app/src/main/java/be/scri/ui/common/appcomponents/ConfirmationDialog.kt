@@ -39,6 +39,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import be.scri.R
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
+import be.scri.ui.theme.scribeColorInt
 
 /**
  * A confirmation dialog with customizable text and actions.
@@ -47,6 +48,7 @@ import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
  * @param textChange The text for the change button.
  * @param textConfirm The text for the confirm button.
  * @param modifier Modifier for layout and styling.
+ * @param iconRes The drawable resource ID for the icon. Defaults to info icon.
  * @param onConfirm Callback triggered when the confirm button is clicked.
  * @param onChange Callback triggered when the change button is clicked.
  * @param onDismiss Callback triggered when the dialog is dismissed.
@@ -57,6 +59,7 @@ fun ConfirmationDialog(
     textChange: String,
     textConfirm: String,
     modifier: Modifier = Modifier,
+    iconRes: Int = R.drawable.ic_info_vector,
     onConfirm: () -> Unit = {},
     onChange: () -> Unit = {},
     onDismiss: () -> Unit = {},
@@ -71,6 +74,7 @@ fun ConfirmationDialog(
         onConfirm = onConfirm,
         onChange = onChange,
         isUserDarkMode = isUserDarkMode,
+        iconRes = iconRes,
         modifier = modifier.padding(top = 24.dp),
         onDismiss = onDismiss,
     )
@@ -84,6 +88,7 @@ fun ConfirmationDialog(
  * @param textChange The text for the change button.
  * @param isUserDarkMode Whether the dark mode is enabled.
  * @param modifier Modifier for layout and styling.
+ * @param iconRes The drawable resource ID for the icon.
  * @param onConfirm Callback triggered when the confirm button is clicked.
  * @param onChange Callback triggered when the change button is clicked.
  * @param onDismiss Callback triggered when the dialog is dismissed.
@@ -97,8 +102,16 @@ fun ConfirmationDialogContent(
     textConfirm: String,
     textChange: String,
     modifier: Modifier = Modifier,
+    iconRes: Int = R.drawable.ic_info_vector,
     onDismiss: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val iconTint =
+        if (iconRes == R.drawable.ic_warning_vector) {
+            Color(context.scribeColorInt(R.color.scribe_delete, dark = isUserDarkMode))
+        } else {
+            Color(0xFFFDAD0D)
+        }
     val buttonConfirmColor: Color
     val buttonChangeColor: Color
     val buttonTextColor: Color
@@ -155,9 +168,9 @@ fun ConfirmationDialogContent(
                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 6.dp),
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_info_vector),
+                            painter = painterResource(iconRes),
                             contentDescription = stringResource(R.string.i18n_app__global_confirmation),
-                            tint = Color(0xFFFDAD0D),
+                            tint = iconTint,
                             modifier =
                                 Modifier
                                     .padding(start = 0.dp, end = 10.dp)

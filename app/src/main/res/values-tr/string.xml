@@ -2,6 +2,7 @@
 <resources>
     <string name="i18n._global.legal">Yasal</string>
     <string name="i18n._global.privacy_policy">Gizlilik politikası</string>
+    <string name="i18n.app._global.button_install_keyboards">Klavye yükle</string>
     <string name="i18n.app._global.download_data">Veri indir</string>
     <string name="i18n.app._global.english">İngilizce</string>
     <string name="i18n.app._global.french">Fransızca</string>
@@ -71,7 +72,6 @@
     <string name="i18n.app.installation.keyboard.text_4">klavyeleri seçmek için</string>
     <string name="i18n.app.installation.keyboard.title">Klavye kurulumu</string>
     <string name="i18n.app.installation.title">Kurulum</string>
-    <string name="i18n.app.settings.button_install_keyboards">Klavye yükle</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions">Önerileri/otomatik tamamlamayı etkinleştir</string>
     <string name="i18n.app.settings.keyboard.functionality.annotate_suggestions_description">Yazarken önerilerin ve otomatik tamamlamaların altını çizerek cinsiyetlerini gösterin.</string>
     <string name="i18n.app.settings.keyboard.functionality.auto_suggest_emoji">Emojileri otomatik öner</string>

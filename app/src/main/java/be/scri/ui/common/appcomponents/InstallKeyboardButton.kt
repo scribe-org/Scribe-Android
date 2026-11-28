@@ -43,7 +43,7 @@ fun InstallKeyboardButton(
             ),
     ) {
         Text(
-            text = stringResource(R.string.i18n_app_settings_button_install_keyboards),
+            text = stringResource(R.string.i18n_app__global_button_install_keyboards),
             fontSize = Dimensions.TextSizeExtraLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onPrimary,

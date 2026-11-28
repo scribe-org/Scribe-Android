@@ -15,6 +15,10 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ## [Upcoming] Scribe-Android v1.X.Y
 
+### 🗃️ Data
+
+- Downloaded language data can be deleted via a trashcan icon in the download UI ([#769](https://github.com/scribe-org/Scribe-Android/issues/769)).
+
 ### 🎨 Design
 
 - Compose theme colors now come from the shared `scribe_*` resources. Dark mode button text stays orange on orange. The dark caption uses the named token `#CAC4D0`, the same grey this slot already used ([#782](https://github.com/scribe-org/Scribe-Android/issues/782)).
