@@ -144,6 +144,12 @@ class KeyboardView
              * that don't need delete repeat tracking.
              */
             fun setDeleteRepeating(isRepeating: Boolean) {}
+
+            /**
+             * Returns the repeat interval in milliseconds for the given key code.
+             * Defaults to [DEFAULT_REPEAT_INTERVAL] (50ms).
+             */
+            fun getRepeatInterval(keyCode: Int): Long = DEFAULT_REPEAT_INTERVAL
         }
 
         var mKeyboard: KeyboardBase? = null
@@ -317,8 +323,9 @@ class KeyboardView
             private const val MSG_LONGPRESS = 3
             private const val DELAY_AFTER_PREVIEW = 100
             private const val DEBOUNCE_TIME = 70
-            private const val REPEAT_INTERVAL = 50 // ~20 keys per second
-            private const val REPEAT_START_DELAY = 400
+            const val DEFAULT_REPEAT_INTERVAL = 50L // ~20 keys per second
+            const val REPEAT_START_DELAY = 400
+            const val WORD_DELETION_REPEAT_INTERVAL = 500L // 1 word every half second
             private const val DOUBLE_TAP_DELAY = 300L
             private const val NUMBER_OF_KEYS = 12
             private const val FULL_ALPHA = 255
@@ -599,7 +606,14 @@ class KeyboardView
                                 MSG_REPEAT -> {
                                     if (repeatKey(false)) {
                                         val repeat = Message.obtain(this, MSG_REPEAT)
-                                        sendMessageDelayed(repeat, REPEAT_INTERVAL.toLong())
+                                        val repeatInterval =
+                                            if (mRepeatKeyIndex != NOT_A_KEY && mRepeatKeyIndex < mKeys.size) {
+                                                mOnKeyboardActionListener?.getRepeatInterval(mKeys[mRepeatKeyIndex].code)
+                                                    ?: DEFAULT_REPEAT_INTERVAL
+                                            } else {
+                                                DEFAULT_REPEAT_INTERVAL
+                                            }
+                                        sendMessageDelayed(repeat, repeatInterval)
                                     }
                                 }
 
@@ -1579,6 +1593,9 @@ class KeyboardView
                                     override fun commitPeriodAfterSpace() {
                                         mOnKeyboardActionListener?.commitPeriodAfterSpace()
                                     }
+
+                                    override fun getRepeatInterval(keyCode: Int): Long =
+                                        mOnKeyboardActionListener?.getRepeatInterval(keyCode) ?: DEFAULT_REPEAT_INTERVAL
                                 }
                         }
 

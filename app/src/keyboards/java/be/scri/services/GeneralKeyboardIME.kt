@@ -893,6 +893,23 @@ abstract class GeneralKeyboardIME(
         backspaceHandler.isDeleteRepeating = repeating
     }
 
+    /**
+     * Returns the repeat interval for the given key code.
+     * For the delete key, returns word-by-word repeat interval when enabled,
+     * or the default repeat interval otherwise.
+     */
+    override fun getRepeatInterval(keyCode: Int): Long {
+        if (keyCode == KeyboardBase.KEYCODE_DELETE) {
+            val effectiveIsCommandBar =
+                currentState != ScribeState.IDLE &&
+                    currentState != ScribeState.SELECT_COMMAND
+            if (!effectiveIsCommandBar) {
+                return backspaceHandler.getRepeatInterval()
+            }
+        }
+        return KeyboardView.DEFAULT_REPEAT_INTERVAL
+    }
+
     // MARK: State & Logic Helpers
 
     /**

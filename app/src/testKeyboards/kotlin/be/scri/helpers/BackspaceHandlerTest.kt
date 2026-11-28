@@ -86,4 +86,22 @@ class BackspaceHandlerTest {
 
         verify { inputConnection.deleteSurroundingText(1, 0) }
     }
+
+    @Test
+    fun getRepeatInterval_wordByWordEnabled_returnsWordDeletionInterval() {
+        every { PreferencesHelper.getIsWordByWordDeletionEnabled(any(), any()) } returns true
+
+        val interval = backspaceHandler.getRepeatInterval()
+
+        assert(interval == KeyboardView.WORD_DELETION_REPEAT_INTERVAL)
+    }
+
+    @Test
+    fun getRepeatInterval_wordByWordDisabled_returnsDefaultInterval() {
+        every { PreferencesHelper.getIsWordByWordDeletionEnabled(any(), any()) } returns false
+
+        val interval = backspaceHandler.getRepeatInterval()
+
+        assert(interval == KeyboardView.DEFAULT_REPEAT_INTERVAL)
+    }
 }

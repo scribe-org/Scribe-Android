@@ -6,6 +6,7 @@ import android.view.inputmethod.InputConnection
 import be.scri.helpers.KeyboardIMEContext.Companion.MAX_TEXT_LENGTH
 import be.scri.helpers.PreferencesHelper.getIsWordByWordDeletionEnabled
 import be.scri.models.ScribeState
+import be.scri.views.KeyboardView
 import java.text.BreakIterator
 
 /**
@@ -22,6 +23,20 @@ class BackspaceHandler(
      * Track if the delete key is currently being repeated (long press).
      */
     var isDeleteRepeating: Boolean = false
+
+    /**
+     * Returns the repeat interval for backspace in milliseconds.
+     * Returns [KeyboardView.WORD_DELETION_REPEAT_INTERVAL] (500ms) if word-by-word deletion is enabled,
+     * or [KeyboardView.DEFAULT_REPEAT_INTERVAL] (50ms) for character deletion.
+     */
+    fun getRepeatInterval(): Long {
+        val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.imeContext, ime.language)
+        return if (isWordByWordEnabled) {
+            KeyboardView.WORD_DELETION_REPEAT_INTERVAL
+        } else {
+            KeyboardView.DEFAULT_REPEAT_INTERVAL
+        }
+    }
 
     /**
      * Handles the logic for the Delete/Backspace key. It deletes characters from either
