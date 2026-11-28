@@ -194,6 +194,7 @@ fun ConjugateDownloadDataScreen(
                     ),
                 textConfirm = stringResource(R.string.i18n_app__global_delete),
                 textChange = stringResource(R.string.i18n_app_settings_option_cancel),
+                iconRes = R.drawable.ic_warning_vector,
                 onConfirm = {
                     downloadActions.onDeleteAction?.invoke(lang.key)
                     languagePendingDeletion.value = null
