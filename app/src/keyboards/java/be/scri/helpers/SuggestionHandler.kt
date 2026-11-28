@@ -14,8 +14,8 @@ import be.scri.models.ScribeState
  */
 class SuggestionHandler(
     private val ime: KeyboardIMEContext,
+    private val handler: Handler = Handler(Looper.getMainLooper()),
 ) {
-    private val handler = Handler(Looper.getMainLooper())
     private var emojiSuggestionRunnable: Runnable? = null
     private var linguisticSuggestionRunnable: Runnable? = null
     private var wordSuggestionRunnable: Runnable? = null

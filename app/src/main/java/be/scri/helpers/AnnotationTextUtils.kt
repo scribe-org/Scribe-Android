@@ -27,17 +27,17 @@ object AnnotationTextUtils {
         language: String,
         context: Context,
     ): Pair<Int, String> {
-        val color = R.color.annotateOrange
+        val color = R.color.annotateDeclension
         val suggestionMap =
             mapOf(
                 "genitive case" to Pair(color, processValuesForPreposition(language, "Gen")),
                 "accusative case" to Pair(color, processValuesForPreposition(language, "Acc")),
                 "dative case" to Pair(color, processValuesForPreposition(language, "Dat")),
                 "locative case" to Pair(color, processValuesForPreposition(language, "Loc")),
-                "Prepositional case" to Pair(color, processValuesForPreposition(language, "Pre")),
-                "Instrumental case" to Pair(color, processValuesForPreposition(language, "Ins")),
+                "prepositional case" to Pair(color, processValuesForPreposition(language, "Pre")),
+                "instrumental case" to Pair(color, processValuesForPreposition(language, "Ins")),
             )
-        return suggestionMap[nounType] ?: Pair(R.color.transparent, context.getString(R.string.i18n_app_keyboard_suggestion))
+        return suggestionMap[nounType.lowercase()] ?: Pair(R.color.transparent, context.getString(R.string.i18n_app_keyboard_suggestion))
     }
 
     /**
@@ -54,14 +54,14 @@ object AnnotationTextUtils {
     ): Pair<Int, String> {
         val suggestionMap =
             mapOf(
-                "PL" to Pair(R.color.annotateOrange, "PL"),
+                "pl" to Pair(R.color.annotateOrange, "PL"),
                 "neuter" to Pair(R.color.annotateGreen, processValueForNouns(language, "N")),
                 "common of two genders" to Pair(R.color.annotatePurple, processValueForNouns(language, "C")),
                 "common" to Pair(R.color.annotatePurple, processValueForNouns(language, "C")),
                 "masculine" to Pair(R.color.annotateBlue, processValueForNouns(language, "M")),
                 "feminine" to Pair(R.color.annotateRed, processValueForNouns(language, "F")),
             )
-        return suggestionMap[nounType] ?: Pair(R.color.transparent, context.getString(R.string.i18n_app_keyboard_suggestion))
+        return suggestionMap[nounType.lowercase()] ?: Pair(R.color.transparent, context.getString(R.string.i18n_app_keyboard_suggestion))
     }
 
     /**
@@ -92,4 +92,33 @@ object AnnotationTextUtils {
         language: String,
         text: String,
     ): String = prepAnnotationConversionDict[language]?.get(text) ?: text
+
+    /**
+     * Converts a raw case annotation string into a localized keyword for data filtering.
+     *
+     * This function first maps internal system strings (e.g., "accusative case") to standard
+     * abbreviations (e.g., "Acc"), and then translates those abbreviations based on the
+     * provided language (e.g., returning "Akk" for German). This is primarily used to
+     * filter declension sections in the language's data contract.
+     *
+     * @param language The current keyboard language.
+     * @param annotationText The raw annotation string to convert.
+     * @return A localized abbreviation suitable for matching against declension titles.
+     */
+    fun getLocalizedKeyword(
+        language: String,
+        annotationText: String,
+    ): String {
+        val keyword =
+            when (annotationText.lowercase()) {
+                "accusative case" -> "Acc"
+                "dative case" -> "Dat"
+                "genitive case" -> "Gen"
+                "locative case" -> "Loc"
+                "prepositional case" -> "Pre"
+                "instrumental case" -> "Ins"
+                else -> ""
+            }
+        return processValuesForPreposition(language, keyword)
+    }
 }

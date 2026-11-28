@@ -330,18 +330,19 @@ class KeyHandler(
     ) {
         val sharedPreferences = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        var currentValue = sharedPreferences.getInt("conjugate_index", 0)
+        val preferenceKey = if (ime.currentState == ScribeState.SELECT_DECLENSION) "declension_index" else "conjugate_index"
+        var currentValue = sharedPreferences.getInt(preferenceKey, 0)
         if (code == KeyboardBase.DISPLAY_RIGHT) {
             currentValue--
         } else if (code == KeyboardBase.DISPLAY_LEFT) {
             currentValue++
         }
 
-        editor.putInt("conjugate_index", currentValue)
+        editor.putInt(preferenceKey, currentValue)
         editor.apply()
 
         ime.updateUI()
-        Log.d(TAG, "New conjugate_index: $currentValue")
+        Log.d(TAG, "New $preferenceKey: $currentValue")
     }
 
     /**

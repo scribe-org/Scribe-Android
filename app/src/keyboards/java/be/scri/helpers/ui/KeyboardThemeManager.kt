@@ -206,22 +206,39 @@ class KeyboardThemeManager {
         colorRes: Int,
         buttonText: String,
         textSizeSp: Float? = null,
+        type: String?,
     ) {
         button.visibility = View.VISIBLE
         button.text = buttonText
         if (textSizeSp != null) {
             button.textSize = textSizeSp
         }
-        button.isClickable = false
-        button.setOnClickListener(null)
+        when (type) {
+            "preposition" -> {
+                button.isClickable = true
+            }
+            else -> {
+                button.isClickable = false
+                button.setOnClickListener(null)
+            }
+        }
 
+        val isUserDarkMode = getIsDarkModeOrNot(context)
         if (colorRes != R.color.transparent) {
             button.background = ContextCompat.getDrawable(context, R.drawable.button_background_rounded)
             button.backgroundTintList = ContextCompat.getColorStateList(context, colorRes)
-            button.setTextColor(ContextCompat.getColor(context, R.color.white))
+            button.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    if (colorRes == R.color.annotateDeclension && isUserDarkMode) {
+                        android.R.color.black
+                    } else {
+                        R.color.white
+                    },
+                ),
+            )
         } else {
             button.background = null
-            val isUserDarkMode = getIsDarkModeOrNot(context)
             button.backgroundTintList = ContextCompat.getColorStateList(context, R.color.transparent)
             button.setTextColor(ContextCompat.getColor(context, if (isUserDarkMode) R.color.white else android.R.color.black))
         }

@@ -3,6 +3,7 @@
 package be.scri.services
 
 import DataContract
+import DeclensionNode
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -22,6 +23,7 @@ import android.widget.TextView
 import be.scri.R
 import be.scri.activities.MainActivity
 import be.scri.databinding.InputMethodViewBinding
+import be.scri.helpers.AnnotationTextUtils
 import be.scri.helpers.AutocompletionHandler
 import be.scri.helpers.BackspaceHandler
 import be.scri.helpers.CommandHandler
@@ -180,6 +182,10 @@ abstract class GeneralKeyboardIME(
         set(value) {
             dataHandler.conjugateOutput = value
         }
+
+    var declensionOutput: Map<String, List<DeclensionNode>>? = null
+    var currentDeclensionSubNodes: List<DeclensionNode>? = null
+    private val declensionStack = mutableListOf<List<DeclensionNode>>()
 
     internal var conjugateLabels: Set<String>
         get() = dataHandler.conjugateLabels
@@ -660,6 +666,8 @@ abstract class GeneralKeyboardIME(
             emojiAutoSuggestionEnabled = emojiAutoSuggestionEnabled,
             autoSuggestEmojis = autoSuggestEmojis,
             conjugateOutput = conjugateOutput,
+            declensionOutput = declensionOutput,
+            currentDeclensionSubNodes = currentDeclensionSubNodes,
             conjugateLabels = conjugateLabels,
             selectedConjugationSubCategory = selectedConjugationSubCategory,
             currentVerbForConjugation = currentVerbForConjugation,
@@ -676,6 +684,9 @@ abstract class GeneralKeyboardIME(
         saveConjugateModeType("none")
         currentVerbForConjugation = null
         selectedConjugationSubCategory = null
+        declensionOutput = null
+        currentDeclensionSubNodes = null
+        declensionStack.clear()
         if (this::uiManager.isInitialized) refreshUI()
     }
 
@@ -780,6 +791,11 @@ abstract class GeneralKeyboardIME(
 
     override fun onConjugationSubCategoryDismissed() {
         selectedConjugationSubCategory = null
+        if (declensionStack.isNotEmpty()) {
+            currentDeclensionSubNodes = declensionStack.removeAt(declensionStack.lastIndex)
+        } else {
+            currentDeclensionSubNodes = null
+        }
         refreshUI()
     }
 
@@ -787,8 +803,11 @@ abstract class GeneralKeyboardIME(
         currentInputConnection?.commitText(text, 1)
         suggestionHandler.processLinguisticSuggestions(text.trim())
 
-        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION) {
+        if (currentState == ScribeState.SELECT_VERB_CONJUNCTION || currentState == ScribeState.SELECT_DECLENSION) {
             selectedConjugationSubCategory = null
+            currentDeclensionSubNodes = null
+            declensionStack.clear()
+            declensionOutput = null
             moveToIdleState()
         }
     }
@@ -1136,13 +1155,42 @@ abstract class GeneralKeyboardIME(
 
     // MARK: Suggestion UI Logic
 
+    override fun onConjugationCategoryClicked(category: String) {
+        selectedConjugationSubCategory = category
+        refreshUI()
+    }
+
+    override fun onDeclensionNodeClicked(node: DeclensionNode) {
+        val children = node.declensionForms?.values?.toList()
+        if (!children.isNullOrEmpty()) {
+            currentDeclensionSubNodes?.let { declensionStack.add(it) }
+            currentDeclensionSubNodes = children
+            refreshUI()
+        }
+    }
+
+    override fun onGridPageChanged() {
+        refreshUI()
+    }
+
+    fun onPrepositionClicked(suggestionText: String) {
+        declensionOutput =
+            dataHandler.declensions?.filter { (title, _) ->
+                title.contains(
+                    AnnotationTextUtils.getLocalizedKeyword(
+                        language,
+                        suggestionText,
+                    ),
+                    ignoreCase = true,
+                )
+            }
+        stateManager.moveToState(ScribeState.SELECT_DECLENSION)
+        refreshUI()
+    }
+
     /**
-     * The main dispatcher for displaying linguistic auto-suggestions (gender, case, plurality).
-     * Delegated to [SuggestionUIHandler].
+     * Displays word prediction suggestions on the command buttons.
      *
-     * @param nounTypeSuggestion The detected gender(s) of the last word.
-     * @param isPlural true if the last word is plural.
-     * @param caseAnnotationSuggestion The detected case(s) required by the last word.
      * @param wordSuggestions The list of predicted words to display.
      */
     override fun updateAutoSuggestText(

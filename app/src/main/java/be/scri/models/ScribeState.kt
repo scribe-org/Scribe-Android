@@ -13,4 +13,5 @@ enum class ScribeState {
     SELECT_VERB_CONJUNCTION,
     INVALID,
     ALREADY_PLURAL,
+    SELECT_DECLENSION,
 }

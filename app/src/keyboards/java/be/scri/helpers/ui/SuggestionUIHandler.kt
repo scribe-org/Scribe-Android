@@ -9,6 +9,7 @@ import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
 import be.scri.helpers.KeyboardIMEContext
 import be.scri.models.ScribeState
+import be.scri.services.GeneralKeyboardIME
 import be.scri.services.GeneralKeyboardIME.Companion.SUGGESTION_SIZE
 
 /**
@@ -74,15 +75,15 @@ class SuggestionUIHandler(
                     true
                 }
 
-                handleSingleNounSuggestion(nounTypeSuggestion) -> {
-                    true
-                }
-
                 handleMultipleCases(caseAnnotationSuggestion) -> {
                     true
                 }
 
                 handleSingleCaseSuggestion(caseAnnotationSuggestion) -> {
+                    true
+                }
+
+                handleSingleNounSuggestion(nounTypeSuggestion) -> {
                     true
                 }
 
@@ -115,6 +116,7 @@ class SuggestionUIHandler(
                 colorRes = R.color.annotateOrange,
                 buttonText = "PL",
                 textSizeSp = NOUN_TYPE_SIZE,
+                type = null,
             )
             return true
         }
@@ -205,7 +207,7 @@ class SuggestionUIHandler(
      */
     private fun handleSingleType(
         singleTypeSuggestion: List<String>?,
-        type: String? = null,
+        type: String,
     ) {
         val suggestionText = singleTypeSuggestion?.getOrNull(0).toString()
         val (colorRes, buttonText) =
@@ -214,6 +216,14 @@ class SuggestionUIHandler(
                 "preposition" -> handleTextForCaseAnnotation(suggestionText, ime.language, ime.imeContext)
                 else -> Pair(R.color.transparent, "")
             }
+
+        if (type == "preposition") {
+            uiManager.binding.translateBtn.setOnClickListener {
+                if (ime is GeneralKeyboardIME) {
+                    ime.onPrepositionClicked(suggestionText)
+                }
+            }
+        }
 
         uiManager.genderSuggestionLeft?.visibility = View.INVISIBLE
         uiManager.genderSuggestionRight?.visibility = View.INVISIBLE
@@ -224,6 +234,7 @@ class SuggestionUIHandler(
             colorRes = colorRes,
             buttonText = buttonText,
             textSizeSp = NOUN_TYPE_SIZE,
+            type = type,
         )
     }
 
@@ -280,6 +291,16 @@ class SuggestionUIHandler(
                 leftSuggestion.second,
                 R.drawable.gender_suggestion_button_left_background,
             )
+            if (type == "preposition") {
+                val rawCaseText = multipleTypeSuggestion?.getOrNull(0)
+                if (rawCaseText != null) {
+                    it.setOnClickListener {
+                        if (ime is GeneralKeyboardIME) {
+                            ime.onPrepositionClicked(rawCaseText)
+                        }
+                    }
+                }
+            }
         }
 
         uiManager.genderSuggestionRight?.let {
@@ -289,6 +310,16 @@ class SuggestionUIHandler(
                 rightSuggestion.second,
                 R.drawable.gender_suggestion_button_right_background,
             )
+            if (type == "preposition") {
+                val rawCaseText = multipleTypeSuggestion?.getOrNull(1)
+                if (rawCaseText != null) {
+                    it.setOnClickListener {
+                        if (ime is GeneralKeyboardIME) {
+                            ime.onPrepositionClicked(rawCaseText)
+                        }
+                    }
+                }
+            }
         }
     }
 

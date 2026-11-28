@@ -3,6 +3,7 @@
 package be.scri.helpers
 
 import DataContract
+import DeclensionNode
 import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.util.Log
@@ -52,6 +53,9 @@ class KeyboardDataHandler {
     var conjugateLabels: Set<String> = emptySet()
         internal set
 
+    var declensions: LinkedHashMap<String, List<DeclensionNode>>? = null
+        internal set
+
     val isInitialized: Boolean
         get() = this::dbManagers.isInitialized
 
@@ -92,6 +96,8 @@ class KeyboardDataHandler {
         val tempConjugateOutput = dbManagers.conjugateDataManager.getStructuredConjugations(languageAlias, dataContract, "describe")
         conjugateOutput = if (tempConjugateOutput?.isEmpty() == true) null else tempConjugateOutput
         conjugateLabels = dbManagers.conjugateDataManager.extractConjugateHeadings(dataContract, "coacha")
+
+        declensions = dbManagers.declensionManager.getDeclensions(languageAlias, dataContract)
     }
 
     /**

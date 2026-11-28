@@ -50,9 +50,11 @@ object HintUtils {
         currentState: ScribeState,
         language: String,
         word: String?,
+        declensionSectionTitle: String?,
     ): String =
         when (currentState) {
             ScribeState.SELECT_VERB_CONJUNCTION -> word ?: ""
+            ScribeState.SELECT_DECLENSION -> declensionSectionTitle ?: ""
             else -> getHintForState(currentState)[language] ?: ""
         }
 
@@ -351,7 +353,21 @@ object HintUtils {
             ScribeState.CONJUGATE -> getConjugationPrompt(language)
             ScribeState.PLURAL -> getPluralPrompt(language)
             ScribeState.SELECT_VERB_CONJUNCTION -> text ?: ""
+            ScribeState.SELECT_DECLENSION -> getDeclensionPrompt(language)
             else -> ""
+        }
+
+    private fun getDeclensionPrompt(language: String): String =
+        when (language) {
+            "English" -> "Decline: "
+            "French" -> "Décliner: "
+            "German" -> "Deklinieren: "
+            "Italian" -> "Declinare: "
+            "Portuguese" -> "Declinar: "
+            "Russian" -> "Склонение: "
+            "Spanish" -> "Declinar: "
+            "Swedish" -> "Deklinera: "
+            else -> "Decline: "
         }
 
     /**

@@ -15,6 +15,7 @@ data class DataContract(
     val nouns: Nouns,
     val verbs: Verbs,
     val translations: Translations,
+    val declensions: Map<Int, Declensions> = emptyMap(),
 )
 
 /**
@@ -71,6 +72,28 @@ data class TenseGroup(
 data class ConjugationCategory(
     val tenseTitle: String = "",
     val tenseForms: Map<Int, TenseForm>,
+)
+
+/**
+ * Represents the structure of declensions for a language.
+ */
+@Serializable
+data class Declensions(
+    val title: String? = null,
+    val sectionTitle: String? = null,
+    val declensionForms: Map<Int, DeclensionNode>? = null,
+)
+
+/**
+ * Represents a node in the declension tree.
+ */
+@Serializable
+data class DeclensionNode(
+    val label: String? = null,
+    val value: String? = null,
+    val displayValue: String? = null,
+    val title: String? = null,
+    val declensionForms: Map<Int, DeclensionNode>? = null,
 )
 
 @Serializable
