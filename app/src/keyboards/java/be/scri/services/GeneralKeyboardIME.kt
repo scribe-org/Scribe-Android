@@ -872,34 +872,9 @@ abstract class GeneralKeyboardIME(
      * @param isLongPress true` if this is a long press/repeat action, false for single tap.
      */
     override fun handleDelete(isLongPress: Boolean) {
-        val inputConnection = currentInputConnection ?: return
         val effectiveIsCommandBar =
             currentState != ScribeState.IDLE &&
                 currentState != ScribeState.SELECT_COMMAND
-
-        if (!effectiveIsCommandBar) {
-            val selectedText = inputConnection.getSelectedText(0)
-            if (selectedText.isNullOrEmpty()) {
-                // Use BreakIterator to delete full emoji characters.
-                val prevText = inputConnection.getTextBeforeCursor(8, 0)
-                if (!prevText.isNullOrEmpty()) {
-                    val breakIterator =
-                        android.icu.text.BreakIterator
-                            .getCharacterInstance()
-                    breakIterator.setText(prevText.toString())
-                    val end = breakIterator.last()
-                    val start = breakIterator.previous()
-                    val count =
-                        if (start == android.icu.text.BreakIterator.DONE) {
-                            1
-                        } else {
-                            (end - start).coerceAtLeast(1)
-                        }
-                    inputConnection.deleteSurroundingText(count, 0)
-                    return
-                }
-            }
-        }
 
         backspaceHandler.handleBackspace(effectiveIsCommandBar, isLongPress)
     }
@@ -916,6 +891,23 @@ abstract class GeneralKeyboardIME(
      */
     override fun setDeleteRepeating(repeating: Boolean) {
         backspaceHandler.isDeleteRepeating = repeating
+    }
+
+    /**
+     * Returns the repeat interval for the given key code.
+     * For the delete key, returns word-by-word repeat interval when enabled,
+     * or the default repeat interval otherwise.
+     */
+    override fun getRepeatInterval(keyCode: Int): Long {
+        if (keyCode == KeyboardBase.KEYCODE_DELETE) {
+            val effectiveIsCommandBar =
+                currentState != ScribeState.IDLE &&
+                    currentState != ScribeState.SELECT_COMMAND
+            if (!effectiveIsCommandBar) {
+                return backspaceHandler.getRepeatInterval()
+            }
+        }
+        return KeyboardView.DEFAULT_REPEAT_INTERVAL
     }
 
     // MARK: State & Logic Helpers

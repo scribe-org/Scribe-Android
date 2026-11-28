@@ -6,6 +6,8 @@ import android.view.inputmethod.InputConnection
 import be.scri.helpers.KeyboardIMEContext.Companion.MAX_TEXT_LENGTH
 import be.scri.helpers.PreferencesHelper.getIsWordByWordDeletionEnabled
 import be.scri.models.ScribeState
+import be.scri.views.KeyboardView
+import java.text.BreakIterator
 
 /**
  * Handles backspace/delete events for keyboard services implementing [KeyboardIMEContext].
@@ -21,6 +23,20 @@ class BackspaceHandler(
      * Track if the delete key is currently being repeated (long press).
      */
     var isDeleteRepeating: Boolean = false
+
+    /**
+     * Returns the repeat interval for backspace in milliseconds.
+     * Returns [KeyboardView.WORD_DELETION_REPEAT_INTERVAL] (500ms) if word-by-word deletion is enabled,
+     * or [KeyboardView.DEFAULT_REPEAT_INTERVAL] (50ms) for character deletion.
+     */
+    fun getRepeatInterval(): Long {
+        val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.imeContext, ime.language)
+        return if (isWordByWordEnabled) {
+            KeyboardView.WORD_DELETION_REPEAT_INTERVAL
+        } else {
+            KeyboardView.DEFAULT_REPEAT_INTERVAL
+        }
+    }
 
     /**
      * Handles the logic for the Delete/Backspace key. It deletes characters from either
@@ -145,10 +161,25 @@ class BackspaceHandler(
     }
 
     /**
-     * Deletes a single character.
+     * Deletes a single character or grapheme cluster (including emojis).
      */
     private fun deleteSingleCharacter(inputConnection: InputConnection) {
-        inputConnection.deleteSurroundingText(1, 0)
+        val prevText = inputConnection.getTextBeforeCursor(16, 0)
+        if (!prevText.isNullOrEmpty()) {
+            val breakIterator = BreakIterator.getCharacterInstance()
+            breakIterator.setText(prevText.toString())
+            val end = breakIterator.last()
+            val start = breakIterator.previous()
+            val count =
+                if (start == BreakIterator.DONE) {
+                    1
+                } else {
+                    (end - start).coerceAtLeast(1)
+                }
+            inputConnection.deleteSurroundingText(count, 0)
+        } else {
+            inputConnection.deleteSurroundingText(1, 0)
+        }
     }
 
     /**

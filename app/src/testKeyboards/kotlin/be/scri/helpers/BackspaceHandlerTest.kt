@@ -53,4 +53,55 @@ class BackspaceHandlerTest {
 
         verify { inputConnection.deleteSurroundingText(1, 0) }
     }
+
+    @Test
+    fun handleBackspace_longPress_wordByWordEnabled_deletesWord() {
+        every { inputConnection.getSelectedText(any()) } returns null
+        every { PreferencesHelper.getIsWordByWordDeletionEnabled(any(), any()) } returns true
+        every { inputConnection.getTextBeforeCursor(any(), any()) } returns "hello world"
+
+        backspaceHandler.handleBackspace(isCommandBar = false, isLongPress = true)
+
+        verify { inputConnection.deleteSurroundingText(5, 0) }
+    }
+
+    @Test
+    fun handleBackspace_longPress_wordByWordEnabled_withTrailingSpace_deletesWordAndSpace() {
+        every { inputConnection.getSelectedText(any()) } returns null
+        every { PreferencesHelper.getIsWordByWordDeletionEnabled(any(), any()) } returns true
+        every { inputConnection.getTextBeforeCursor(any(), any()) } returns "hello world "
+
+        backspaceHandler.handleBackspace(isCommandBar = false, isLongPress = true)
+
+        verify { inputConnection.deleteSurroundingText(6, 0) }
+    }
+
+    @Test
+    fun handleBackspace_longPress_wordByWordDisabled_deletesSingleCharacter() {
+        every { inputConnection.getSelectedText(any()) } returns null
+        every { PreferencesHelper.getIsWordByWordDeletionEnabled(any(), any()) } returns false
+        every { inputConnection.getTextBeforeCursor(any(), any()) } returns "hello world"
+
+        backspaceHandler.handleBackspace(isCommandBar = false, isLongPress = true)
+
+        verify { inputConnection.deleteSurroundingText(1, 0) }
+    }
+
+    @Test
+    fun getRepeatInterval_wordByWordEnabled_returnsWordDeletionInterval() {
+        every { PreferencesHelper.getIsWordByWordDeletionEnabled(any(), any()) } returns true
+
+        val interval = backspaceHandler.getRepeatInterval()
+
+        assert(interval == KeyboardView.WORD_DELETION_REPEAT_INTERVAL)
+    }
+
+    @Test
+    fun getRepeatInterval_wordByWordDisabled_returnsDefaultInterval() {
+        every { PreferencesHelper.getIsWordByWordDeletionEnabled(any(), any()) } returns false
+
+        val interval = backspaceHandler.getRepeatInterval()
+
+        assert(interval == KeyboardView.DEFAULT_REPEAT_INTERVAL)
+    }
 }

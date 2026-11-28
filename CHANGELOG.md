@@ -23,6 +23,7 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 ### 🐛 Bug Fixes
 
 - ProGuard keep rules and defensive fallbacks in NativeSuggestionEngine were added for JNI-bound classes and methods, preventing crashes in release builds ([#796](https://github.com/scribe-org/Scribe-Android/issues/796)).
+- Word-by-word deletion now works properly on long backspace press when enabled in settings ([#774](https://github.com/scribe-org/Scribe-Android/issues/774)).
 
 ### 🔒 Security
 
