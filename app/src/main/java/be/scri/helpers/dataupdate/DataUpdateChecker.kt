@@ -18,8 +18,26 @@ fun interface DataVersionSource {
 }
 
 /**
+ * What one pass over the downloaded languages found.
+ * [checkedCount] counts the languages that were asked, and [failedCount] the ones that did not answer.
+ */
+data class DataUpdateCheckResult(
+    val languagesWithUpdates: List<String>,
+    val checkedCount: Int,
+    val failedCount: Int,
+) {
+    /**
+     * True when at least one language was asked and none of them answered.
+     * That means the check itself failed, as opposed to there being nothing new.
+     */
+    val allFailed: Boolean
+        get() = checkedCount > 0 && failedCount == checkedCount
+}
+
+/**
  * Asks Scribe-Server which already-downloaded languages have a newer data pack.
- * Languages that fail to answer are skipped so one error does not hide the rest.
+ * A language that fails to answer is skipped so one error does not hide the rest,
+ * but it is counted so the caller can tell "nothing new" apart from "every check failed".
  */
 class DataUpdateChecker(
     private val downloadPrefs: SharedPreferences,
@@ -27,14 +45,17 @@ class DataUpdateChecker(
     private val keyPrefix: String = LAST_UPDATE_PREFIX,
 ) {
     /**
-     * ISO codes whose saved timestamp is older than the server.
+     * Compares each downloaded language's saved timestamp with the server.
      * [keyPrefix] is `last_update_` in Keyboards and `last_conjugate_update_` in Conjugate.
      */
     @Suppress("TooGenericExceptionCaught")
-    suspend fun languagesWithUpdates(): List<String> {
+    suspend fun check(): DataUpdateCheckResult {
         val updates = mutableListOf<String>()
+        var checked = 0
+        var failed = 0
         for (code in downloadedLanguageCodes()) {
             val localUpdatedAt = downloadPrefs.getString("$keyPrefix$code", null) ?: continue
+            checked++
             try {
                 val response = source.getDataVersion(code)
                 if (DataVersionComparator.anyVersionNewer(localUpdatedAt, response.versions)) {
@@ -43,10 +64,11 @@ class DataUpdateChecker(
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (e: Exception) {
+                failed++
                 Log.w(TAG, "Version check failed for $code", e)
             }
         }
-        return updates
+        return DataUpdateCheckResult(updates, checked, failed)
     }
 
     private fun downloadedLanguageCodes(): List<String> =

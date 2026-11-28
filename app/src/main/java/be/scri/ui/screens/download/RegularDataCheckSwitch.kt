@@ -26,7 +26,7 @@ import be.scri.ui.common.components.SwitchableItemComp
 /**
  * The saved "Regularly update data" switch.
  * The label stays on the existing i18n string. Turning it on checks now, then once each month.
- * Notification permission is requested on Android 13 and newer. A denial still leaves the switch on.
+ * If the notification permission is denied on Android 13 and newer, the switch stays off.
  */
 @Composable
 fun RegularDataCheckSwitch(modifier: Modifier = Modifier) {
@@ -34,23 +34,30 @@ fun RegularDataCheckSwitch(modifier: Modifier = Modifier) {
     var enabled by remember {
         mutableStateOf(PreferencesHelper.getRegularlyCheckForDataUpdates(context))
     }
+    val toggleHolder = remember { ToggleHolder() }
     val permissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             if (!granted) {
-                Log.i(TAG, "Notification permission denied. Data checks will still run.")
+                Log.i(TAG, "Notification permission denied. Data checks stay off.")
             }
+            toggleHolder.toggle?.onPermissionResult(granted)
+        }
+    toggleHolder.toggle =
+        remember(context, permissionLauncher) {
+            NotificationGatedToggle(
+                needsPermission = { needsNotificationPermission(context) },
+                requestPermission = { permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) },
+                apply = { checked ->
+                    enabled = checked
+                    DataUpdateScheduler.onToggle(context, checked)
+                },
+            )
         }
 
     SwitchableItemComp(
         title = stringResource(R.string.i18n_app_download_menu_ui_update_data_regular_update),
         isChecked = enabled,
-        onCheckedChange = { checked ->
-            enabled = checked
-            if (checked && needsNotificationPermission(context)) {
-                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-            DataUpdateScheduler.onToggle(context, checked)
-        },
+        onCheckedChange = { checked -> toggleHolder.toggle?.onUserToggle(checked) },
         modifier = modifier,
     )
 }
@@ -59,6 +66,11 @@ private fun needsNotificationPermission(context: Context): Boolean {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return false
     val status = ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
     return status != PackageManager.PERMISSION_GRANTED
+}
+
+/** Lets the permission callback reach the toggle that is created after the launcher. */
+private class ToggleHolder {
+    var toggle: NotificationGatedToggle? = null
 }
 
 private const val TAG = "RegularDataCheckSwitch"

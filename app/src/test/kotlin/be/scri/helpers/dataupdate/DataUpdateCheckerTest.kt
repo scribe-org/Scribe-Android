@@ -6,8 +6,12 @@ import android.content.SharedPreferences
 import be.scri.data.model.DataVersionResponse
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.IOException
@@ -35,9 +39,12 @@ class DataUpdateCheckerTest {
                     DataVersionResponse(language, mapOf("verbs" to serverDate))
                 }
 
-            val updates = DataUpdateChecker(prefs, source).languagesWithUpdates()
+            val result = DataUpdateChecker(prefs, source).check()
 
-            assertEquals(listOf("fr"), updates)
+            assertEquals(listOf("fr"), result.languagesWithUpdates)
+            assertEquals(3, result.checkedCount)
+            assertEquals(1, result.failedCount)
+            assertFalse(result.allFailed)
             assertEquals(setOf("fr", "de", "es"), requested.toSet())
         }
 
@@ -50,9 +57,11 @@ class DataUpdateCheckerTest {
                     error("no language should be requested")
                 }
 
-            val updates = DataUpdateChecker(prefs, source).languagesWithUpdates()
+            val result = DataUpdateChecker(prefs, source).check()
 
-            assertTrue(updates.isEmpty())
+            assertTrue(result.languagesWithUpdates.isEmpty())
+            assertEquals(0, result.checkedCount)
+            assertFalse(result.allFailed)
         }
 
     @Test
@@ -72,11 +81,55 @@ class DataUpdateCheckerTest {
                     DataVersionResponse(language, mapOf("verbs" to "2025-01-01"))
                 }
 
-            val updates =
-                DataUpdateChecker(prefs, source, CONJUGATE_LAST_UPDATE_PREFIX).languagesWithUpdates()
+            val result = DataUpdateChecker(prefs, source, CONJUGATE_LAST_UPDATE_PREFIX).check()
 
-            assertEquals(listOf("de"), updates)
+            assertEquals(listOf("de"), result.languagesWithUpdates)
             assertEquals(listOf("de"), requested)
+        }
+
+    @Test
+    fun everyLanguageFailingIsReportedAsAllFailedNotAsNoUpdates() =
+        runTest {
+            val prefs =
+                prefsWith(
+                    mapOf(
+                        "${LAST_UPDATE_PREFIX}fr" to "2024-01-01",
+                        "${LAST_UPDATE_PREFIX}de" to "2024-01-01",
+                    ),
+                )
+            val source = DataVersionSource { throw IOException("offline") }
+
+            val result = DataUpdateChecker(prefs, source).check()
+
+            assertTrue(result.languagesWithUpdates.isEmpty())
+            assertEquals(2, result.checkedCount)
+            assertEquals(2, result.failedCount)
+            assertTrue(result.allFailed)
+        }
+
+    @Test
+    fun aLanguageWithoutASavedTimestampIsNotCounted() =
+        runTest {
+            val prefs = mockk<SharedPreferences>()
+            every { prefs.all } returns mapOf("${LAST_UPDATE_PREFIX}fr" to "x")
+            every { prefs.getString("${LAST_UPDATE_PREFIX}fr", null) } returns null
+            val source = DataVersionSource { error("must not be asked") }
+
+            val result = DataUpdateChecker(prefs, source).check()
+
+            assertEquals(0, result.checkedCount)
+            assertFalse(result.allFailed)
+        }
+
+    @Test
+    fun cancellationIsNotCountedAsAFailure() =
+        runTest {
+            val prefs = prefsWith(mapOf("${LAST_UPDATE_PREFIX}fr" to "2024-01-01"))
+            val source = DataVersionSource { throw CancellationException("stopped") }
+
+            assertThrows(CancellationException::class.java) {
+                runBlocking { DataUpdateChecker(prefs, source).check() }
+            }
         }
 
     private fun prefsWith(entries: Map<String, String>): SharedPreferences {
