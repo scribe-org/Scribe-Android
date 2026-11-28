@@ -14,4 +14,12 @@ class PreferencesHelperTest {
     fun testGetLanguageSpecificPreferenceKey() {
         assertEquals("KEY_English", PreferencesHelper.getLanguageSpecificPreferenceKey("KEY", "English"))
     }
+
+    @Test
+    fun testGetLanguageSpecificPreferenceKeyForKeyboardLayout() {
+        assertEquals(
+            "default_keyboard_layout_German",
+            PreferencesHelper.getLanguageSpecificPreferenceKey("default_keyboard_layout", "German"),
+        )
+    }
 }

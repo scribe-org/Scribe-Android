@@ -5,18 +5,12 @@ package be.scri.services
 import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
-import be.scri.helpers.KeyHandler
+import be.scri.models.ScribeLanguage
 
 /**
  * The FrenchKeyboardIME class provides the input method for the French language keyboard.
  */
-class FrenchKeyboardIME : GeneralKeyboardIME("French") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
+class FrenchKeyboardIME : GeneralKeyboardIME(ScribeLanguage.FRENCH) {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_french_tablet
@@ -32,19 +26,9 @@ class FrenchKeyboardIME : GeneralKeyboardIME("French") {
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
-    override var hasTextBeforeCursor: Boolean = false
 
     // REFACTOR_FIX: The 'binding' and 'keyboardView' properties are no longer abstract in the parent class,
     // so we must remove the overrides here. They are now inherited directly.
     // override lateinit var binding: KeyboardViewCommandOptionsBinding // REMOVED
     // override var keyboardView: KeyboardView? = null // REMOVED
-
-    private val keyHandler by lazy { KeyHandler(this) }
-
-    /**
-     * Handles key press events on the keyboard.
-     */
-    override fun onKey(code: Int) {
-        keyHandler.handleKey(code, language)
-    }
 }

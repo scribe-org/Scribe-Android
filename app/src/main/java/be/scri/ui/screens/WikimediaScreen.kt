@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -52,37 +53,46 @@ fun WikimediaScreen(
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = stringResource(id = R.string.scribe_key),
+                    text = stringResource(id = R.string.i18n_app_about_community_wikimedia_text_1),
                     style = MaterialTheme.typography.bodyMedium,
                 )
-                Image(
-                    imageVector = ImageVector.vectorResource(R.drawable.wikidata_logo),
-                    contentDescription = stringResource(R.string.wikimedia_logo),
-                    modifier =
-                        Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .width(200.dp)
-                            .padding(vertical = 5.dp),
-                    contentScale = ContentScale.Fit,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                )
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = stringResource(id = R.string.i18n_app_about_community_wikimedia_text_2),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.wikipedia_logo),
-                    contentDescription = stringResource(R.string.wikimedia_logo),
+                    imageVector = ImageVector.vectorResource(R.drawable.wikidata_logo),
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_wikimedia_logo),
                     modifier =
                         Modifier
                             .align(Alignment.CenterHorizontally)
-                            .width(251.dp)
-                            .height(123.dp),
+                            .width(200.dp)
+                            .padding(vertical = 12.dp),
                     contentScale = ContentScale.Fit,
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 )
                 Text(
                     text = stringResource(id = R.string.i18n_app_about_community_wikimedia_text_3),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.wiktionary_logo),
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_wikimedia_logo),
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .width(180.dp)
+                            .padding(vertical = 12.dp),
+                    contentScale = ContentScale.Fit,
+                )
+                Text(
+                    text = stringResource(id = R.string.i18n_app_about_community_wikimedia_text_4),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(id = R.string.i18n_app_about_community_wikimedia_text_5),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }

@@ -102,9 +102,13 @@
             app:keyLabel=","
             app:keyWidth="10%p" />
         <Key
+            app:code="-6"
+            app:keyIcon="@drawable/ic_emoji_vector"
+            app:keyWidth="10%p" />
+        <Key
             app:code="32"
             app:isRepeatable="true"
-            app:keyWidth="50%p" />
+            app:keyWidth="40%p" />
         <Key
             app:keyLabel="."
             app:keyWidth="10%p"

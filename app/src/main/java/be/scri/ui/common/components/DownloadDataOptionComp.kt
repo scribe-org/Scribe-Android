@@ -102,11 +102,13 @@ private fun getBackgroundColor(
     colorScheme: androidx.compose.material3.ColorScheme,
 ): Color =
     when (downloadState) {
-        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update ->
+        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update -> {
             if (isDarkTheme) colorScheme.tertiary else colorScheme.primary
+        }
 
-        DownloadState.Completed ->
+        DownloadState.Completed -> {
             if (isDarkTheme) colorScheme.surfaceVariant.copy(alpha = 0.25f) else colorScheme.surfaceVariant
+        }
     }
 
 private fun getTextColor(
@@ -115,11 +117,13 @@ private fun getTextColor(
     colorScheme: androidx.compose.material3.ColorScheme,
 ): Color =
     when (downloadState) {
-        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update ->
+        DownloadState.Ready, DownloadState.Downloading, DownloadState.Update -> {
             if (isDarkTheme) colorScheme.primary else Color.Black
+        }
 
-        DownloadState.Completed ->
+        DownloadState.Completed -> {
             if (isDarkTheme) colorScheme.surfaceVariant else Color.Black
+        }
     }
 
 private fun getIconColor(
@@ -142,7 +146,7 @@ private fun DownloadStateIcon(
         DownloadState.Ready -> {
             Icon(
                 painter = painterResource(id = R.drawable.clouddownload),
-                contentDescription = "Download",
+                contentDescription = stringResource(R.string.i18n_app__global_download),
                 modifier = Modifier.size(24.dp),
                 tint = iconColor,
             )
@@ -159,7 +163,7 @@ private fun DownloadStateIcon(
         DownloadState.Completed -> {
             Icon(
                 painter = painterResource(id = R.drawable.check),
-                contentDescription = "Check",
+                contentDescription = stringResource(R.string.i18n_app__global_check),
                 modifier = Modifier.size(24.dp),
                 tint = iconColor,
             )
@@ -168,7 +172,7 @@ private fun DownloadStateIcon(
         DownloadState.Update -> {
             Icon(
                 painter = painterResource(id = R.drawable.clouddownload),
-                contentDescription = "Update",
+                contentDescription = stringResource(R.string.i18n_app_download_menu_ui_download_data_update),
                 modifier = Modifier.size(24.dp),
                 tint = iconColor,
             )

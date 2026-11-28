@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Popup shown when the user long-presses the emoji key.
+  Three options (left → right):
+    1. Floating keyboard  (disabled until #621 is merged)
+    2. Emoji palette      (primary action)
+    3. Clipboard panel
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/emoji_long_hold_popup_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="6dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/minikeyboard_background"
+    android:elevation="8dp">
+
+    <!-- Left: Floating keyboard (disabled until #621) -->
+    <ImageButton
+        android:id="@+id/emoji_popup_floating_keyboard"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="10dp"
+        android:src="@drawable/globe"
+        android:background="@drawable/keyboard_key_selector"
+        android:contentDescription="@string/floating_keyboard"
+        android:alpha="0.35"
+        android:enabled="false"
+        android:scaleType="fitCenter"
+        android:tint="@android:color/white" />
+
+    <!-- Center: Emoji palette -->
+    <ImageButton
+        android:id="@+id/emoji_popup_emoji"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="10dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_emoji_vector"
+        android:background="@drawable/keyboard_key_selector"
+        android:contentDescription="@string/emojis"
+        android:scaleType="fitCenter"
+        android:tint="@android:color/white" />
+
+    <!-- Right: Clipboard -->
+    <ImageButton
+        android:id="@+id/emoji_popup_clipboard"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_clipboard_vector"
+        android:background="@drawable/keyboard_key_selector"
+        android:contentDescription="@string/clipboard"
+        android:scaleType="fitCenter"
+        android:tint="@android:color/white" />
+
+</LinearLayout>

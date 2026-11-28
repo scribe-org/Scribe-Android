@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude
+            domain="database"
+            path="scribe_clipboard_db" />
+        <exclude
+            domain="database"
+            path="scribe_clipboard_db-journal" />
+        <exclude
+            domain="database"
+            path="scribe_clipboard_db-shm" />
+        <exclude
+            domain="database"
+            path="scribe_clipboard_db-wal" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude
+            domain="database"
+            path="scribe_clipboard_db" />
+        <exclude
+            domain="database"
+            path="scribe_clipboard_db-journal" />
+        <exclude
+            domain="database"
+            path="scribe_clipboard_db-shm" />
+        <exclude
+            domain="database"
+            path="scribe_clipboard_db-wal" />
+    </device-transfer>
+</data-extraction-rules>

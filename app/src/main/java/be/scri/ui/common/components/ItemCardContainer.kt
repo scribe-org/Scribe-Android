@@ -43,6 +43,8 @@ fun ItemsCardContainer(
                         ClickableItemComp(
                             title = stringResource(item.title),
                             desc = item.desc?.let { stringResource(it) },
+                            altText = item.altText?.let { stringResource(it) },
+                            value = item.value,
                             onClick = item.action,
                         )
                     }
@@ -51,6 +53,7 @@ fun ItemsCardContainer(
                         SwitchableItemComp(
                             title = stringResource(item.title),
                             desc = stringResource(item.desc),
+                            altText = item.altText?.let { stringResource(it) },
                             isChecked = item.state,
                             onCheckedChange = item.onToggle,
                         )
@@ -62,6 +65,8 @@ fun ItemsCardContainer(
                     is ScribeItem.ExternalLinkItem -> {
                         AboutPageItemComp(
                             title = stringResource(item.title),
+                            descText = item.descText,
+                            altText = item.altText?.let { stringResource(it) },
                             leadingIcon = item.leadingIcon,
                             trailingIcon = item.trailingIcon,
                             onClick = item.onClick,

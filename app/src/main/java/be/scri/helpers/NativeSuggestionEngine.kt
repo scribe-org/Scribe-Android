@@ -4,12 +4,15 @@
 package be.scri.helpers
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import be.scri.inputmethod.keyboard.ProximityInfo
 import be.scri.latin.NgramContext
 import be.scri.latin.common.ComposedData
 import be.scri.latin.dictionary.ReadOnlyBinaryDictionary
 import be.scri.latin.settings.SettingsValuesForSuggestion
+import be.scri.latin.utils.JniUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -24,10 +27,25 @@ class NativeSuggestionEngine(private val context: Context) {
     companion object {
         private const val TAG = "NativeSuggestionEngine"
         private const val DICT_DIR = "dicts"
+        private const val DICT_PREFS = "native_dict_prefs"
     }
 
     private val loadedDicts = HashMap<String, ReadOnlyBinaryDictionary>()
-    private val dummyProximityInfo = ProximityInfo()
+
+    /**
+     * Checks whether the underlying native library (libjni_latinime.so) was loaded successfully.
+     */
+    val isNativeAvailable: Boolean
+        get() = JniUtils.sHaveGestureLib
+
+    private val dummyProximityInfo by lazy {
+        try {
+            if (isNativeAvailable) ProximityInfo() else null
+        } catch (t: Throwable) {
+            Log.e(TAG, "Failed to initialize dummy ProximityInfo", t)
+            null
+        }
+    }
 
     /**
      * Map a language string to its corresponding main dictionary asset name and Locale.
@@ -57,29 +75,56 @@ class NativeSuggestionEngine(private val context: Context) {
         }
 
         val targetFile = File(dictsFolder, assetName)
-        if (targetFile.exists() && targetFile.length() > 0) {
-            return targetFile
+        val existingFile = targetFile.takeIf { it.exists() && it.length() > 0 }
+        val prefs = context.getSharedPreferences(DICT_PREFS, Context.MODE_PRIVATE)
+        val appUpdateTime = getAppLastUpdateTime()
+        if (existingFile != null && prefs.getLong(assetName, -1L) == appUpdateTime) {
+            return existingFile
         }
 
+        val tempFile = File(dictsFolder, "$assetName.tmp")
         try {
             context.assets.open("dicts/$assetName").use { inputStream ->
-                FileOutputStream(targetFile).use { outputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
                     inputStream.copyTo(outputStream)
                 }
             }
+            if (!tempFile.renameTo(targetFile)) {
+                Log.e(TAG, "Failed to move extracted native dictionary into place: $assetName")
+                tempFile.delete()
+                return existingFile
+            }
+            prefs.edit().putLong(assetName, appUpdateTime).apply()
             Log.i(TAG, "Successfully extracted native dictionary: $assetName")
             return targetFile
         } catch (e: IOException) {
+            tempFile.delete()
             Log.e(TAG, "Error extracting native dictionary $assetName from assets", e)
-            return null
+            return existingFile
         }
     }
+
+    private fun getAppLastUpdateTime(): Long =
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.packageManager
+                    .getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
+                    .lastUpdateTime
+            } else {
+                @Suppress("DEPRECATION")
+                context.packageManager.getPackageInfo(context.packageName, 0).lastUpdateTime
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            0L
+        }
 
     /**
      * Retrieves or loads the BinaryDictionary for the given language.
      */
     @Synchronized
     fun getDictionary(language: String): ReadOnlyBinaryDictionary? {
+        if (!isNativeAvailable) return null
+
         val cacheKey = language.lowercase(Locale.ROOT)
         loadedDicts[cacheKey]?.let { return it }
 
@@ -104,8 +149,8 @@ class NativeSuggestionEngine(private val context: Context) {
                 dict.close()
                 null
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error initializing ReadOnlyBinaryDictionary for $language", e)
+        } catch (t: Throwable) {
+            Log.e(TAG, "Error initializing ReadOnlyBinaryDictionary for $language", t)
             null
         }
     }
@@ -116,32 +161,45 @@ class NativeSuggestionEngine(private val context: Context) {
     fun getAutocompletions(
         language: String,
         prefix: String,
-        limit: Int = 3
+        previousWord: String? = null,
+        limit: Int = 3,
+        profanity: Set<String> = emptySet()
     ): List<String> {
+        if (!isNativeAvailable || prefix.isBlank()) return emptyList()
+        val proximityInfo = dummyProximityInfo ?: return emptyList()
         val dict = getDictionary(language) ?: return emptyList()
-        if (prefix.isBlank()) return emptyList()
 
         return try {
             val composedData = ComposedData.createForWord(prefix)
+            val ngramContext =
+                if (previousWord.isNullOrBlank()) {
+                    NgramContext.EMPTY_PREV_WORDS_INFO
+                } else {
+                    NgramContext(NgramContext.WordInfo(previousWord))
+                }
             val suggestions = dict.getSuggestions(
                 composedData,
-                NgramContext.EMPTY_PREV_WORDS_INFO,
-                dummyProximityInfo.nativeProximityInfo, // proximityInfoHandle
-                SettingsValuesForSuggestion(false, false),
+                ngramContext,
+                proximityInfo.nativeProximityInfo, // proximityInfoHandle
+                SettingsValuesForSuggestion(true, false), // blockPotentiallyOffensive, spaceAwareGesture
                 1, // sessionId
                 1.0f, // weightForLocale
                 null // inOutWeightOfLangModelVsSpatialModel
             )
 
+            val isCapitalized = StringUtils.isWordCapitalized(prefix)
             suggestions?.map { it.mWord }
                 ?.filter {
                     it.isNotBlank() &&
+                        it.startsWith(prefix, ignoreCase = true) &&
                         it.lowercase(Locale.ROOT) != prefix.lowercase(Locale.ROOT) &&
-                        it.startsWith(prefix, ignoreCase = true)
-                }?.take(limit)
+                        !StringUtils.containsProfanity(it, profanity)
+                }
+                ?.map { if (isCapitalized) it.replaceFirstChar { c -> c.uppercaseChar() } else it }
+                ?.take(limit)
                 ?: emptyList()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error fetching native suggestions for $prefix", e)
+        } catch (t: Throwable) {
+            Log.e(TAG, "Error fetching native suggestions for $prefix", t)
             emptyList()
         }
     }
@@ -170,10 +228,12 @@ class NativeSuggestionEngine(private val context: Context) {
     fun getNextWordSuggestions(
         language: String,
         lastWord: String?,
-        limit: Int = 3
+        limit: Int = 3,
+        profanity: Set<String> = emptySet()
     ): List<String> {
+        if (!isNativeAvailable || lastWord.isNullOrBlank()) return emptyList()
+        val proximityInfo = dummyProximityInfo ?: return emptyList()
         val dict = getDictionary(language) ?: return emptyList()
-        if (lastWord.isNullOrBlank()) return emptyList()
 
         return try {
             val wordInfo = NgramContext.WordInfo(lastWord)
@@ -182,19 +242,23 @@ class NativeSuggestionEngine(private val context: Context) {
             val suggestions = dict.getSuggestions(
                 composedData,
                 ngramContext,
-                dummyProximityInfo.nativeProximityInfo, // proximityInfoHandle
-                SettingsValuesForSuggestion(false, false),
+                proximityInfo.nativeProximityInfo, // proximityInfoHandle
+                SettingsValuesForSuggestion(true, false), // blockPotentiallyOffensive, spaceAwareGesture
                 1, // sessionId
                 1.0f, // weightForLocale
                 null // inOutWeightOfLangModelVsSpatialModel
             )
 
             suggestions?.map { it.mWord }
-                ?.filter { it.isNotBlank() }
+                ?.filter {
+                    it.isNotBlank() &&
+                        it.lowercase(Locale.ROOT) != lastWord.lowercase(Locale.ROOT) &&
+                        !StringUtils.containsProfanity(it, profanity)
+                }
                 ?.take(limit)
                 ?: emptyList()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error fetching native next-word suggestions for $lastWord", e)
+        } catch (t: Throwable) {
+            Log.e(TAG, "Error fetching native next-word suggestions for $lastWord", t)
             emptyList()
         }
     }
@@ -205,7 +269,11 @@ class NativeSuggestionEngine(private val context: Context) {
     @Synchronized
     fun close() {
         for (dict in loadedDicts.values) {
-            dict.close()
+            try {
+                dict.close()
+            } catch (t: Throwable) {
+                Log.e(TAG, "Error closing dictionary", t)
+            }
         }
         loadedDicts.clear()
     }

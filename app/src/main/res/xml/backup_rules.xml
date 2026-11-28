@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <exclude
+        domain="database"
+        path="scribe_clipboard_db" />
+    <exclude
+        domain="database"
+        path="scribe_clipboard_db-journal" />
+    <exclude
+        domain="database"
+        path="scribe_clipboard_db-shm" />
+    <exclude
+        domain="database"
+        path="scribe_clipboard_db-wal" />
+</full-backup-content>

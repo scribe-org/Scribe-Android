@@ -35,7 +35,6 @@ fun InstallKeyboardButton(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(Dimensions.PaddingSmallXL)
                 .shadow(Dimensions.ElevationSmall, RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard))),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.rounded_corner_radius_standard)),
         colors =

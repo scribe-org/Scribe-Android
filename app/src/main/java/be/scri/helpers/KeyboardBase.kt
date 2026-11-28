@@ -38,7 +38,7 @@ class KeyboardBase {
 
         fun isSearchBar(): Boolean
 
-        fun isClipboardKeyEnabled(): Boolean
+        fun isFloatingModeActive(): Boolean
     }
 
     /** Horizontal gap default for all rows  */
@@ -83,9 +83,11 @@ class KeyboardBase {
         private const val WIDTH_DIVIDER = 10
         const val KEYCODE_SHIFT = -1
         const val KEYCODE_MODE_CHANGE = -2
+        const val KEYCODE_FLOAT_TOGGLE = -10
         const val KEYCODE_ENTER = -4
         const val KEYCODE_DELETE = -5
         const val KEYCODE_SPACE = 32
+        const val KEYCODE_EMOJI = -6
         const val KEYCODE_TAB = -30
         const val KEYCODE_CAPS_LOCK = -50
         const val KEYCODE_LEFT_ARROW = -55
@@ -215,11 +217,10 @@ class KeyboardBase {
                     when (conjugateMode) {
                         "2x2" -> res.getDimension(R.dimen.conjugate_view_key_height_2x2).toInt()
                         "3x3" -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
-                        "2x1" -> res.getDimension(R.dimen.conjugate_view_key_height_2x1).toInt()
+                        "2x1", "1x3" -> res.getDimension(R.dimen.conjugate_view_key_height_2x1).toInt()
                         else -> res.getDimension(R.dimen.conjugate_view_key_height_3x3).toInt()
                     }
                 } else {
-                    Log.i("≠", "The current state is not conjugate view")
                     when (resources.configuration.orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> {
                             res.getDimension(R.dimen.key_height_landscape).toInt()
@@ -358,8 +359,12 @@ class KeyboardBase {
             popupResId = a.getResourceId(R.styleable.KeyboardBase_Key_popupKeyboard, 0)
             repeatable = a.getBoolean(R.styleable.KeyboardBase_Key_isRepeatable, false)
             edgeFlags = a.getInt(R.styleable.KeyboardBase_Key_keyEdgeFlags, 0)
-            icon = a.getDrawable(R.styleable.KeyboardBase_Key_keyIcon)
-            icon?.setBounds(0, 0, icon!!.intrinsicWidth, icon!!.intrinsicHeight)
+            icon =
+                a
+                    .getDrawable(R.styleable.KeyboardBase_Key_keyIcon)
+                    ?.apply {
+                        setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+                    }
 
             label = a.getText(R.styleable.KeyboardBase_Key_keyLabel) ?: ""
             topSmallNumber = a.getString(R.styleable.KeyboardBase_Key_topSmallNumber) ?: ""
@@ -414,8 +419,9 @@ class KeyboardBase {
         context: Context,
         @XmlRes xmlLayoutResId: Int,
         enterKeyType: Int,
+        customWidth: Int? = null,
     ) {
-        mDisplayWidth = context.resources.displayMetrics.widthPixels
+        mDisplayWidth = customWidth ?: context.resources.displayMetrics.widthPixels
         mDefaultHorizontalGap = 0
         mDefaultWidth = mDisplayWidth / WIDTH_DIVIDER
         mDefaultHeight = mDefaultWidth
@@ -446,7 +452,7 @@ class KeyboardBase {
         row.defaultWidth = keyWidth
         row.defaultHorizontalGap = mDefaultHorizontalGap
 
-        characters.forEachIndexed { index, character ->
+        characters.forEachIndexed { _, character ->
             val key = Key(row)
             if (column >= MAX_KEYS_PER_MINI_ROW) {
                 column = 0
@@ -462,7 +468,7 @@ class KeyboardBase {
             key.code = character.code
             column++
             x += key.width + key.gap
-            mKeys!!.add(key)
+            mKeys?.add(key)
             row.mKeys.add(key)
             if (x > mMinWidth) {
                 mMinWidth = x
@@ -582,8 +588,12 @@ class KeyboardBase {
                         }
 
                         TAG_KEY -> {
+                            if (currentRow == null) {
+                                Log.e("KeyboardBase", "Key element found outside of a Row tag at line ${parser.lineNumber}")
+                                continue
+                            }
                             inKey = true
-                            key = createKeyFromXml(res, currentRow!!, x, y, parser)
+                            key = createKeyFromXml(res, currentRow, x, y, parser)
 
                             if (hideComma && key.code == ','.code) {
                                 widthToRedistribute = key.width + key.gap
@@ -593,26 +603,31 @@ class KeyboardBase {
                                 key.gap = 0
                             }
 
-                            mKeys!!.add(key)
+                            mKeys?.add(key)
                             if (key.code == KEYCODE_ENTER) {
                                 val enterResourceId =
                                     when (mEnterKeyType) {
-                                        EditorInfo.IME_ACTION_SEARCH ->
+                                        EditorInfo.IME_ACTION_SEARCH -> {
                                             R.drawable.ic_search_vector
+                                        }
 
                                         EditorInfo.IME_ACTION_NEXT,
                                         EditorInfo.IME_ACTION_GO,
-                                        ->
+                                        -> {
                                             R.drawable.ic_arrow_right_vector
+                                        }
 
-                                        EditorInfo.IME_ACTION_SEND ->
+                                        EditorInfo.IME_ACTION_SEND -> {
                                             R.drawable.ic_send_vector
+                                        }
 
-                                        MyCustomActions.IME_ACTION_COMMAND ->
+                                        MyCustomActions.IME_ACTION_COMMAND -> {
                                             R.drawable.play_button
+                                        }
 
-                                        else ->
+                                        else -> {
                                             R.drawable.ic_enter_vector
+                                        }
                                     }
                                 key.icon = context.resources.getDrawable(enterResourceId, context.theme)
                             }
@@ -626,13 +641,17 @@ class KeyboardBase {
                 } else if (event == XmlResourceParser.END_TAG) {
                     if (inKey) {
                         inKey = false
-                        x += key!!.gap + key.width
+                        key?.run {
+                            x += gap + width
+                        }
                         if (x > mMinWidth) {
                             mMinWidth = x
                         }
                     } else if (inRow) {
                         inRow = false
-                        y += currentRow!!.defaultHeight
+                        currentRow?.run {
+                            y += defaultHeight
+                        }
                         row++
                     }
                 }
@@ -657,39 +676,6 @@ class KeyboardBase {
                         val currentKey = rowToAdjust.mKeys[i]
                         currentKey.x = prevKey.x + prevKey.width + prevKey.gap
                     }
-                }
-            }
-        }
-
-        if (currentKeyboardMode == keyboardLettersMode && mKeys != null && provider?.isClipboardKeyEnabled() == true) {
-            val spaceKey = mKeys!!.find { it?.code == 32 }
-            val commaKey = mKeys!!.find { it?.code == ','.code }
-            val row = mRows.lastOrNull()
-            if (spaceKey != null && commaKey != null && row != null) {
-                val clipWidth = (mDisplayWidth * 0.10).toInt()
-
-                val clipKey = Key(row)
-                clipKey.code = KEYCODE_CLIPBOARD
-                clipKey.width = clipWidth
-                clipKey.height = spaceKey.height
-                clipKey.gap = spaceKey.gap
-                clipKey.icon = context.resources.getDrawable(R.drawable.ic_clipboard_vector, context.theme)
-                clipKey.icon?.setBounds(0, 0, clipKey.icon!!.intrinsicWidth, clipKey.icon!!.intrinsicHeight)
-
-                spaceKey.width = spaceKey.width - clipWidth - clipKey.gap
-
-                val commaIdxInList = mKeys!!.indexOf(commaKey)
-                val commaIdxInRow = row.mKeys.indexOf(commaKey)
-
-                if (commaIdxInList != -1 && commaIdxInRow != -1) {
-                    clipKey.x = commaKey.x
-                    clipKey.y = commaKey.y
-
-                    commaKey.x = clipKey.x + clipKey.width + clipKey.gap
-                    spaceKey.x = commaKey.x + commaKey.width + commaKey.gap
-
-                    mKeys!!.add(commaIdxInList, clipKey)
-                    row.mKeys.add(commaIdxInRow, clipKey)
                 }
             }
         }

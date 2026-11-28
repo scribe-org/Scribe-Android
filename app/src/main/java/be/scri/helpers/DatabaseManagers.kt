@@ -12,6 +12,7 @@ import be.scri.helpers.data.GenderDataManager
 import be.scri.helpers.data.PluralFormsManager
 import be.scri.helpers.data.PrepositionDataManager
 import be.scri.helpers.data.TranslationDataManager
+import be.scri.helpers.data.getProfanity
 
 /**
  * The primary entry point for all data-related operations.
@@ -39,11 +40,25 @@ class DatabaseManagers(
     /**
      * A facade method to load the data contract for a given language.
      * It delegates the loading and parsing logic to the [ContractDataLoader].
+     * If the contract is missing, it is downloaded in the background for the next load.
      *
      * @param language The language code (e.g., "DE", "FR") for which to load the contract.
      *
      * @return A [DataContract] object containing the language's structural metadata, or `null`
      * if not found or on error.
      */
-    fun getLanguageContract(language: String): DataContract? = contractLoader.loadContract(language)
+    fun getLanguageContract(language: String): DataContract? {
+        val contract = contractLoader.loadContract(language)
+        if (contract == null) contractLoader.downloadMissingContractInBackground(language)
+        return contract
+    }
+
+    /**
+     * Loads the lowercase profane words for a given language, which are never shown as suggestions.
+     *
+     * @param language The language code (e.g., "DE", "FR").
+     *
+     * @return The set of profane words, or an empty set if the language data has none.
+     */
+    fun getProfanity(language: String): Set<String> = fileManager.getLanguageDatabase(language)?.use { it.getProfanity() } ?: emptySet()
 }

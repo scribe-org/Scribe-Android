@@ -21,18 +21,18 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/conjugate_btn_1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_all_corners"
                 android:layout_margin="4dp"
@@ -42,13 +42,13 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeMaxTextSize="16sp"
                 app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:ellipsize="end" />
 
             <Button
                 android:id="@+id/conjugate_btn_2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_all_corners"
                 android:layout_margin="4dp"
@@ -58,22 +58,15 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeMaxTextSize="16sp"
                 app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:ellipsize="end" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/conjugate_btn_3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/rounded_all_corners"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_all_corners"
                 android:layout_margin="4dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -81,38 +74,22 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeMaxTextSize="16sp"
                 app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
-                android:ellipsize="end" />
-
-            <Button
-                android:id="@+id/conjugate_btn_4"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/rounded_all_corners"
-                android:layout_weight="1"
-                android:layout_margin="4dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:autoSizeTextType="uniform"
-                app:autoSizeMinTextSize="8sp"
-                app:autoSizeMaxTextSize="16sp"
-                app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:ellipsize="end" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <Button
-                android:id="@+id/conjugate_btn_5"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/rounded_all_corners"
+                android:id="@+id/conjugate_btn_4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_all_corners"
                 android:layout_margin="4dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -120,15 +97,31 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeMaxTextSize="16sp"
                 app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
+                android:maxLines="3"
+                android:ellipsize="end" />
+
+            <Button
+                android:id="@+id/conjugate_btn_5"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_all_corners"
+                android:layout_margin="4dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeStepGranularity="1sp"
+                android:maxLines="3"
                 android:ellipsize="end" />
 
             <Button
                 android:id="@+id/conjugate_btn_6"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/rounded_all_corners"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_all_corners"
                 android:layout_margin="4dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -136,7 +129,7 @@
                 app:autoSizeMinTextSize="8sp"
                 app:autoSizeMaxTextSize="16sp"
                 app:autoSizeStepGranularity="1sp"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:ellipsize="end" />
         </LinearLayout>
 

@@ -6,15 +6,14 @@ package be.scri.helpers
 import android.os.Handler
 import android.os.Looper
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
 
 /**
  * Handles auto-suggestions such as noun gender, plurality, case, and emojis.
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */
 class SuggestionHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     private val handler = Handler(Looper.getMainLooper())
     private var emojiSuggestionRunnable: Runnable? = null
@@ -27,6 +26,8 @@ class SuggestionHandler(
     companion object {
         private const val SUGGESTION_DELAY_MS = 50L
     }
+
+    private fun isProfane(word: String) = StringUtils.containsProfanity(word, ime.profanity)
 
     /**
      * Processes the given word to find and display relevant LINGUISTIC suggestions.
@@ -45,7 +46,7 @@ class SuggestionHandler(
                     return@Runnable
                 }
 
-                if (completedWord.isNullOrEmpty()) {
+                if (completedWord.isNullOrEmpty() || isProfane(completedWord)) {
                     clearLinguisticSuggestions()
                     return@Runnable
                 }
@@ -73,7 +74,9 @@ class SuggestionHandler(
                     ime.disableAutoSuggest()
                 }
             }
-        handler.postDelayed(linguisticSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+                .also {
+                    handler.postDelayed(it, SUGGESTION_DELAY_MS)
+                }
     }
 
     fun processWordSuggestions(completedWord: String?) {
@@ -86,7 +89,7 @@ class SuggestionHandler(
                     return@Runnable
                 }
 
-                if (completedWord.isNullOrEmpty()) {
+                if (completedWord.isNullOrEmpty() || isProfane(completedWord)) {
                     clearLinguisticSuggestions()
                     return@Runnable
                 }
@@ -119,8 +122,9 @@ class SuggestionHandler(
                     }
                 }
             }
-
-        handler.postDelayed(wordSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+                .also {
+                    handler.postDelayed(it, SUGGESTION_DELAY_MS)
+                }
     }
 
     /**
@@ -141,7 +145,8 @@ class SuggestionHandler(
 
                 ime.lastWord = currentWord
 
-                if (currentWord.isNullOrEmpty()) {
+                if (currentWord.isNullOrEmpty() || isProfane(currentWord)) {
+                    ime.autoSuggestEmojis = null
                     ime.updateButtonVisibility(false)
                     return@Runnable
                 }
@@ -160,11 +165,13 @@ class SuggestionHandler(
                     ime.updateEmojiSuggestion(true, emojis)
                     ime.updateButtonVisibility(true)
                 } else {
+                    ime.autoSuggestEmojis = null
                     ime.updateButtonVisibility(false)
                 }
             }
-
-        handler.postDelayed(emojiSuggestionRunnable!!, SUGGESTION_DELAY_MS)
+                .also {
+                    handler.postDelayed(it, SUGGESTION_DELAY_MS)
+                }
     }
 
     /**

@@ -7,6 +7,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
+import be.scri.models.ScribeLanguage
 
 /**
  * A helper to facilitate setting preferences for individual language keyboards.
@@ -15,6 +16,7 @@ import androidx.core.content.edit
 object PreferencesHelper {
     const val SCRIBE_PREFS = "app_preferences"
     private const val PERIOD_ON_DOUBLE_TAP = "period_on_double_tap"
+    private const val AUTO_SPACE_AFTER_PUNCTUATION = "auto_space_after_punctuation"
     private const val VIBRATE_ON_KEYPRESS = "vibrate_on_keypress"
     private const val SOUND_ON_KEYPRESS = "sound_on_keypress"
     private const val SHOW_POPUP_ON_KEYPRESS = "show_popup_on_keypress"
@@ -24,9 +26,9 @@ object PreferencesHelper {
     private const val DISABLE_ACCENT_CHARACTER = "disable_accent_character"
     private const val WORD_BY_WORD_DELETION = "word_by_word_deletion"
     private const val DEFAULT_CURRENCY = "default_currency"
+    private const val DEFAULT_KEYBOARD_LAYOUT = "default_keyboard_layout"
     private const val HOLD_FOR_ALT_KEYS = "hold_for_alt_keys"
     private const val INCREASE_TEXT_SIZE = "increase_text_size"
-    private const val CLIPBOARD_KEY_ON_KEYBOARD = "clipboard_key_on_keyboard"
 
     /**
      * Sets the translation source language for a given language.
@@ -93,6 +95,27 @@ object PreferencesHelper {
             putBoolean(
                 getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language),
                 shouldEnablePeriodOnSpaceBarDoubleTap,
+            )
+        }
+    }
+
+    /**
+     * Sets the preference for enabling or disabling auto spacing after punctuation.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the preference.
+     * @param shouldEnableAutoSpaceAfterPunctuation Whether to enable or disable the feature.
+     */
+    fun setAutoSpaceAfterPunctuationPreference(
+        context: Context,
+        language: String,
+        shouldEnableAutoSpaceAfterPunctuation: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putBoolean(
+                getLanguageSpecificPreferenceKey(AUTO_SPACE_AFTER_PUNCTUATION, language),
+                shouldEnableAutoSpaceAfterPunctuation,
             )
         }
     }
@@ -349,7 +372,23 @@ object PreferencesHelper {
         language: String,
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
-        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), false)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(PERIOD_ON_DOUBLE_TAP, language), true)
+    }
+
+    /**
+     * Retrieves whether auto spacing after punctuation is enabled for a given language.
+     *
+     * @param context The application context.
+     * @param language The language for which to check the preference.
+     *
+     * @return true if auto spacing after punctuation is enabled, false otherwise.
+     */
+    fun getAutoSpaceAfterPunctuationPreference(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(AUTO_SPACE_AFTER_PUNCTUATION, language), true)
     }
 
     /**
@@ -502,6 +541,44 @@ object PreferencesHelper {
     }
 
     /**
+     * Retrieves the default keyboard layout preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to get the keyboard layout preference.
+     *
+     * @return The default keyboard layout (e.g., "QWERTY", "AZERTY", "QWERTZ", "ЙЦУКЕН").
+     */
+    fun getDefaultKeyboardLayout(
+        context: Context,
+        language: String,
+    ): String {
+        val defaultLayout = ScribeLanguage.fromDisplayName(language).defaultLayout
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getString(
+            getLanguageSpecificPreferenceKey(DEFAULT_KEYBOARD_LAYOUT, language),
+            defaultLayout,
+        ) ?: defaultLayout
+    }
+
+    /**
+     * Sets the default keyboard layout preference for a specific language.
+     *
+     * @param context The application context.
+     * @param language The language for which to set the keyboard layout preference.
+     * @param layout The layout name (e.g., "QWERTY", "AZERTY").
+     */
+    fun setDefaultKeyboardLayout(
+        context: Context,
+        language: String,
+        layout: String,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            putString(getLanguageSpecificPreferenceKey(DEFAULT_KEYBOARD_LAYOUT, language), layout)
+        }
+    }
+
+    /**
      * Sets the state of hold key style for a specific language.
      *
      * @param context The application context.
@@ -533,31 +610,6 @@ object PreferencesHelper {
     ): Boolean {
         val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
         return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(HOLD_FOR_ALT_KEYS, language), true)
-    }
-
-    /**
-     * Sets the preference for showing or hiding the clipboard key on the keyboard.
-     */
-    fun setClipboardKeyPreference(
-        context: Context,
-        language: String,
-        enabled: Boolean,
-    ) {
-        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
-        sharedPref.edit {
-            putBoolean(getLanguageSpecificPreferenceKey(CLIPBOARD_KEY_ON_KEYBOARD, language), enabled)
-        }
-    }
-
-    /**
-     * Retrieves whether the clipboard key is enabled on the keyboard for a given language.
-     */
-    fun getIsClipboardKeyEnabled(
-        context: Context,
-        language: String,
-    ): Boolean {
-        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
-        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(CLIPBOARD_KEY_ON_KEYBOARD, language), true)
     }
 
     /**
@@ -597,5 +649,118 @@ object PreferencesHelper {
     fun getIncreaseTextSizePreference(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
         return sharedPref.getBoolean(INCREASE_TEXT_SIZE, false)
+    }
+
+    // MARK: Floating Keyboard Preferences
+
+    private const val FLOATING_MODE_ENABLED = "floating_mode_enabled"
+    private const val FLOATING_X = "floating_x"
+    private const val FLOATING_Y = "floating_y"
+    private const val FLOATING_SCALE = "floating_scale"
+    private const val FLOATING_SCALE_X = "floating_scale_x"
+    private const val FLOATING_SCALE_Y = "floating_scale_y"
+
+    fun setIsFloatingModeEnabled(
+        context: Context,
+        language: String,
+        enabled: Boolean,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putBoolean(getLanguageSpecificPreferenceKey(FLOATING_MODE_ENABLED, language), enabled) }
+    }
+
+    fun getIsFloatingModeEnabled(
+        context: Context,
+        language: String,
+    ): Boolean {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(getLanguageSpecificPreferenceKey(FLOATING_MODE_ENABLED, language), false)
+    }
+
+    fun setFloatingX(
+        context: Context,
+        language: String,
+        x: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_X, language), x) }
+    }
+
+    fun getFloatingX(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_X, language), 0f)
+    }
+
+    fun setFloatingY(
+        context: Context,
+        language: String,
+        y: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_Y, language), y) }
+    }
+
+    fun getFloatingY(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_Y, language), 0f)
+    }
+
+    fun setFloatingScale(
+        context: Context,
+        language: String,
+        scale: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE, language), scale) }
+    }
+
+    fun getFloatingScale(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE, language), 1.0f)
+    }
+
+    fun setFloatingScaleX(
+        context: Context,
+        language: String,
+        scaleX: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_X, language), scaleX) }
+    }
+
+    fun getFloatingScaleX(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val defaultScale = getFloatingScale(context, language)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_X, language), defaultScale)
+    }
+
+    fun setFloatingScaleY(
+        context: Context,
+        language: String,
+        scaleY: Float,
+    ) {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        sharedPref.edit { putFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_Y, language), scaleY) }
+    }
+
+    fun getFloatingScaleY(
+        context: Context,
+        language: String,
+    ): Float {
+        val sharedPref = context.getSharedPreferences(SCRIBE_PREFS, Context.MODE_PRIVATE)
+        val defaultScale = getFloatingScale(context, language)
+        return sharedPref.getFloat(getLanguageSpecificPreferenceKey(FLOATING_SCALE_Y, language), defaultScale)
     }
 }

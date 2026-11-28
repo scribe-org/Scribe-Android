@@ -5,18 +5,12 @@ package be.scri.services
 import android.text.InputType
 import android.view.inputmethod.EditorInfo.IME_ACTION_NONE
 import be.scri.R
-import be.scri.helpers.KeyHandler
+import be.scri.models.ScribeLanguage
 
 /**
  * The PortugueseKeyboardIME class provides the input method for the Portuguese language keyboard.
  */
-class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
-    companion object {
-        const val SMALLEST_SCREEN_WIDTH_TABLET = 600
-    }
-
-    private fun isTablet(): Boolean = resources.configuration.smallestScreenWidthDp >= SMALLEST_SCREEN_WIDTH_TABLET
-
+class PortugueseKeyboardIME : GeneralKeyboardIME(ScribeLanguage.PORTUGUESE) {
     override fun getKeyboardLayoutXML(): Int =
         when {
             isTablet() -> R.xml.keys_letters_portuguese_tablet
@@ -32,11 +26,4 @@ class PortugueseKeyboardIME : GeneralKeyboardIME("Portuguese") {
     override var inputTypeClass: Int = InputType.TYPE_CLASS_TEXT
     override var enterKeyType: Int = IME_ACTION_NONE
     override var switchToLetters: Boolean = false
-    override var hasTextBeforeCursor: Boolean = false
-
-    private val keyHandler by lazy { KeyHandler(this) }
-
-    override fun onKey(code: Int) {
-        keyHandler.handleKey(code, language)
-    }
 }

@@ -17,13 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.scri.R
 
 /**
- *  A composable component that displays a clickable item with a title, optional description and an arrow icon.
+ *  A composable component that displays a clickable item with a title, optional description, optional current value and an arrow icon.
  */
 @Composable
 fun ClickableItemComp(
@@ -31,12 +33,20 @@ fun ClickableItemComp(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     desc: String? = null,
+    altText: String? = null,
+    value: String? = null,
 ) {
+    val semanticsModifier =
+        altText?.let { text ->
+            Modifier.semantics(mergeDescendants = true) { contentDescription = text }
+        } ?: Modifier
+
     Box(
         modifier =
             modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick),
+                .clickable(onClick = onClick)
+                .then(semanticsModifier),
     ) {
         Column(
             modifier =
@@ -57,6 +67,14 @@ fun ClickableItemComp(
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                 )
+                if (!value.isNullOrEmpty()) {
+                    Text(
+                        text = value,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
+                }
                 Icon(
                     painter = painterResource(R.drawable.right_arrow),
                     modifier =
@@ -64,14 +82,14 @@ fun ClickableItemComp(
                             .padding(start = 6.dp)
                             .size(17.dp),
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = "Right Arrow",
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_right_arrow),
                 )
             }
 
             if (!desc.isNullOrEmpty()) {
                 Text(
                     text = desc,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(top = 4.dp),
                 )

@@ -2,22 +2,20 @@
 
 package be.scri.helpers
 
-import android.text.TextUtils
 import android.view.inputmethod.InputConnection
+import be.scri.helpers.KeyboardIMEContext.Companion.MAX_TEXT_LENGTH
 import be.scri.helpers.PreferencesHelper.getIsWordByWordDeletionEnabled
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
-import be.scri.services.GeneralKeyboardIME.Companion.MAX_TEXT_LENGTH
 
 /**
- * Handles backspace/delete events for the [GeneralKeyboardIME].
+ * Handles backspace/delete events for keyboard services implementing [KeyboardIMEContext].
  * Encapsulates logic for single character deletion, word-by-word deletion,
  * command bar deletion, and repeating delete state.
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */
 class BackspaceHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     /**
      * Track if the delete key is currently being repeated (long press).
@@ -45,9 +43,9 @@ class BackspaceHandler(
         if (isCommandBar) {
             handleCommandBarDelete()
         } else {
-            val inputConnection = ime.currentInputConnection ?: return
-            if (TextUtils.isEmpty(inputConnection.getSelectedText(0))) {
-                val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.applicationContext, ime.language)
+            val inputConnection = ime.getInputConnection() ?: return
+            if (inputConnection.getSelectedText(0).isNullOrEmpty()) {
+                val isWordByWordEnabled = getIsWordByWordDeletionEnabled(ime.imeContext, ime.language)
                 // Only use word-by-word deletion on long press when the feature is enabled.
                 if (isWordByWordEnabled && isLongPress) {
                     deleteWordByWord(inputConnection)
@@ -165,15 +163,33 @@ class BackspaceHandler(
         // Check if special characters are considered word.
         return when (Character.getType(char).toByte()) {
             // Connector punctuation.
-            Character.CONNECTOR_PUNCTUATION -> true
-            Character.DASH_PUNCTUATION -> true
+            Character.CONNECTOR_PUNCTUATION -> {
+                true
+            }
+
+            Character.DASH_PUNCTUATION -> {
+                true
+            }
+
             Character.OTHER_PUNCTUATION -> {
                 char in "'\".,@#$%&*+=~`|\\/:;?!^"
             }
-            Character.CURRENCY_SYMBOL -> true
-            Character.MATH_SYMBOL -> char in "+=<>~^"
-            Character.OTHER_SYMBOL -> char in "@#$%&*+=~`|\\/:;?!^"
-            else -> false
+
+            Character.CURRENCY_SYMBOL -> {
+                true
+            }
+
+            Character.MATH_SYMBOL -> {
+                char in "+=<>~^"
+            }
+
+            Character.OTHER_SYMBOL -> {
+                char in "@#$%&*+=~`|\\/:;?!^"
+            }
+
+            else -> {
+                false
+            }
         }
     }
 }

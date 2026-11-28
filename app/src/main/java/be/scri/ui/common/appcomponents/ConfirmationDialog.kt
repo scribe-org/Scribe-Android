@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -155,7 +156,7 @@ fun ConfirmationDialogContent(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_info_vector),
-                            contentDescription = "Confirmation",
+                            contentDescription = stringResource(R.string.i18n_app__global_confirmation),
                             tint = Color(0xFFFDAD0D),
                             modifier =
                                 Modifier

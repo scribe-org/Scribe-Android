@@ -35,6 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,7 +80,7 @@ enum class InputValidationState {
 data class TutorialStep(
     val instruction: String,
     val expectedWord: String = "",
-    val hint: String = "If your second language is not German, change the language in your keyboard.",
+    val hint: String = "",
     val successMessage: String = "Great! Press Next to continue.",
     val errorMessage: String = "",
     val requiresValidation: Boolean = true,
@@ -167,13 +168,13 @@ fun TutorialStepScreen(
     val successColor = if (isDarkTheme) Color(0xFF08A045) else Color(0xFF9BC53D)
     val errorColor = Color(0xFFE53935)
 
-    var userInput by remember(step) { mutableStateOf("") }
+    var userInput by rememberSaveable(step) { mutableStateOf("") }
 
     val validationState =
         when {
             !step.requiresValidation -> InputValidationState.CORRECT
             userInput.isEmpty() -> InputValidationState.EMPTY
-            userInput.trim().equals(step.expectedWord, ignoreCase = false) -> InputValidationState.CORRECT
+            userInput.trim().equals(step.expectedWord, ignoreCase = true) -> InputValidationState.CORRECT
             else -> InputValidationState.INCORRECT
         }
 
@@ -182,6 +183,7 @@ fun TutorialStepScreen(
             step.errorMessage
         } else {
             stringResource(R.string.i18n_app_keyboard_tutorial_not_quite)
+                .replace("{expected_word}", step.expectedWord)
         }
 
     Column(
@@ -205,7 +207,7 @@ fun TutorialStepScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.i18n_app_accessibility_back),
                     tint = headerColor,
                     modifier = Modifier.size(24.dp),
                 )
@@ -256,19 +258,21 @@ fun TutorialStepScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Language hint
-                Row(
-                    verticalAlignment = Alignment.Top,
-                ) {
-                    Text(
-                        text = "\uD83C\uDF10 ",
-                        fontSize = 14.sp,
-                    )
-                    Text(
-                        text = step.hint,
-                        color = textSecondaryColor,
-                        fontSize = 13.sp,
-                        lineHeight = 18.sp,
-                    )
+                if (step.hint.isNotEmpty()) {
+                    Row(
+                        verticalAlignment = Alignment.Top,
+                    ) {
+                        Text(
+                            text = "\uD83C\uDF10 ",
+                            fontSize = 14.sp,
+                        )
+                        Text(
+                            text = step.hint,
+                            color = textSecondaryColor,
+                            fontSize = 13.sp,
+                            lineHeight = 18.sp,
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -311,6 +315,7 @@ fun TutorialStepScreen(
                             )
                         }
                     }
+
                     InputValidationState.INCORRECT -> {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -320,6 +325,7 @@ fun TutorialStepScreen(
                             fontWeight = FontWeight.Medium,
                         )
                     }
+
                     InputValidationState.EMPTY -> {
                         // No feedback when empty.
                     }
@@ -327,7 +333,7 @@ fun TutorialStepScreen(
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Next / Finish button
         Button(

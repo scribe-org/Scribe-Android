@@ -1,6 +1,9 @@
-# Changelog
+# Scribe-Android Changelog
 
-See the [releases for Scribe-Android](https://github.com/scribe-org/Scribe-Android/releases) for an up to date list of versions and their release dates. Versions that are marked as released may yet to be on Google Play and other stores if it's within the submission review period.
+> [!NOTE]
+> This repository contains the code for two different applications: Scribe-Android and Conjugate-Android (Scribe-Conjugate for Android). This is the changelog for Scribe-Android. See [CHANGELOG_CONJUGATE.md](./CHANGELOG_CONJUGATE.md) for the Conjugate-Android changelog.
+
+See the [releases for this repository](https://github.com/scribe-org/Scribe-Android/releases) for an up to date list of versions and their release dates. Versions that are marked as released may not yet be on Google Play and other stores if it's within the submission review period.
 
 Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJOR.MINOR.PATCH version where increments are made of the:
 
@@ -10,8 +13,133 @@ Scribe-Android tries to follow [semantic versioning](https://semver.org/), a MAJ
 
 Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
-# Scribe-Android 1.0.0
+## [Upcoming] Scribe-Android v1.X.Y
+
+### 🎨 Design
+
+- Compose theme colors now come from the shared `scribe_*` resources. Dark mode button text stays orange on orange. The dark caption uses the named token `#CAC4D0`, the same grey this slot already used ([#782](https://github.com/scribe-org/Scribe-Android/issues/782)).
+- The keyboard reads the shared `scribe_*` colors instead of hex literals. Small intentional changes: the light invalid and already-plural bar matches the keyboard background, dark letter keys use `scribe_key`, suggestions match the key labels, Enter, delete, shift and the mode key use the Figma special-key colors, and the clipboard clear-all icon uses the new `scribe_delete` red, and the Wikidata info-panel page dots use the key text color when active and `scribe_caption` when not ([#783](https://github.com/scribe-org/Scribe-Android/issues/783)).
+
+### 🐛 Bug Fixes
+
+- ProGuard keep rules and defensive fallbacks in NativeSuggestionEngine were added for JNI-bound classes and methods, preventing crashes in release builds ([#796](https://github.com/scribe-org/Scribe-Android/issues/796)).
+
+### 🔒 Security
+
+- The unused `WRITE_EXTERNAL_STORAGE` permission was removed so the app requests only network access ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+- The unused `USE_FINGERPRINT` permission was removed as it's unneeded for the application ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+
+### ♻️ Code Refactoring
+
+- The unused `androidx.biometric` and `androidx.documentfile` dependencies were removed ([#791](https://github.com/scribe-org/Scribe-Android/issues/791)).
+
+### ✅ Tests
+
+- A CI smoke test workflow and R8 minification verification were added to test minified builds on emulators and prevent crash regressions ([#799](https://github.com/scribe-org/Scribe-Android/issues/799)).
+
+## Scribe-Android v1.0.0
+
+### MVP release of Scribe - Language Keyboards on Android
+
+### 🚀 Deployment
+
+- Releasing to the Google Play Store.
+
+### ⌨️ Keyboards
+
+- Keyboards for English, French, German, Italian, Portuguese, Russian, Spanish and Swedish.
+- Keyboards can easily be individually installed based on the language the user speaks ([#15](https://github.com/scribe-org/Scribe-Android/issues/15)).
 
 ### ✨ New Features
 
-- Conjugate app download data UI that displays all supported languages alphabetically, using shared components with the keyboard app ([#564](https://github.com/scribe-org/Scribe-Android/issues/564))
+- Keyboard extensions that can be used in any app.
+- Annotation of words in the command bar including the genders of nouns and cases that follow prepositions ([#135](https://github.com/scribe-org/Scribe-Android/issues/135), [#136](https://github.com/scribe-org/Scribe-Android/issues/136), [#275](https://github.com/scribe-org/Scribe-Android/issues/275)).
+- The Scribe command UI can be displayed by pressing the Scribe Key ([#16](https://github.com/scribe-org/Scribe-Android/issues/16), [#89](https://github.com/scribe-org/Scribe-Android/issues/89), [#137](https://github.com/scribe-org/Scribe-Android/issues/137)).
+- Basic translations from any keyboard language into any other keyboard language ([#265](https://github.com/scribe-org/Scribe-Android/issues/265), [#266](https://github.com/scribe-org/Scribe-Android/issues/266)).
+- Querying the plurals of nouns ([#272](https://github.com/scribe-org/Scribe-Android/issues/272), [#421](https://github.com/scribe-org/Scribe-Android/issues/421), [#466](https://github.com/scribe-org/Scribe-Android/issues/466), [#467](https://github.com/scribe-org/Scribe-Android/issues/467)).
+- Conjugations of verbs within an interactive UI ([#268](https://github.com/scribe-org/Scribe-Android/issues/268), [#270](https://github.com/scribe-org/Scribe-Android/issues/270), [#598](https://github.com/scribe-org/Scribe-Android/issues/598), [#744](https://github.com/scribe-org/Scribe-Android/issues/744)).
+- Instructions for how to install keyboards are provided to the user on the Installation tab ([#113](https://github.com/scribe-org/Scribe-Android/issues/113)).
+- Autosuggestions and autocompletions are displayed as the user types ([#408](https://github.com/scribe-org/Scribe-Android/issues/408), [#409](https://github.com/scribe-org/Scribe-Android/issues/409), [#551](https://github.com/scribe-org/Scribe-Android/issues/551)).
+- Profanity is removed from autosuggestions and autocompletions ([#665](https://github.com/scribe-org/Scribe-Android/issues/665)).
+- Emojis can be selected as autosuggestions and autocompletions ([#66](https://github.com/scribe-org/Scribe-Android/issues/66), [#138](https://github.com/scribe-org/Scribe-Android/issues/138), [#313](https://github.com/scribe-org/Scribe-Android/issues/313), [#428](https://github.com/scribe-org/Scribe-Android/issues/428), [#637](https://github.com/scribe-org/Scribe-Android/issues/637)).
+- An integrated emoji keyboard is included in the keyboard ([#425](https://github.com/scribe-org/Scribe-Android/issues/425), [#654](https://github.com/scribe-org/Scribe-Android/issues/654)).
+- An integrated numeric keyboard is included when the user is typing in numeric form fields ([#607](https://github.com/scribe-org/Scribe-Android/issues/607)).
+- A clipboard can be accessed for copying and pasting texts by long holding the emoji key ([#459](https://github.com/scribe-org/Scribe-Android/issues/459), [#642](https://github.com/scribe-org/Scribe-Android/issues/642), [#663](https://github.com/scribe-org/Scribe-Android/issues/663)).
+- The keyboard can float via a key that is pressed when long holding the emoji key ([#261](https://github.com/scribe-org/Scribe-Android/issues/261)).
+- Text proxy labels guide the user through Scribe commands ([#271](https://github.com/scribe-org/Scribe-Android/issues/271)).
+- Invalid state labels explain to the user why a command hasn't worked ([#273](https://github.com/scribe-org/Scribe-Android/issues/273), [#274](https://github.com/scribe-org/Scribe-Android/issues/274), [#421](https://github.com/scribe-org/Scribe-Android/issues/421), [#553](https://github.com/scribe-org/Scribe-Android/issues/553)).
+- Base keyboard functionality like double space periods, auto capitalization auto spacing have been included ([#20](https://github.com/scribe-org/Scribe-Android/issues/20), [#447](https://github.com/scribe-org/Scribe-Android/issues/447), [#669](https://github.com/scribe-org/Scribe-Android/issues/669)).
+- Menu items have been provided to enable or disable keyboard functionalities ([#64](https://github.com/scribe-org/Scribe-Android/issues/64), [#65](https://github.com/scribe-org/Scribe-Android/issues/65)).
+- Menu items have been provided to customize the keyboard UI ([#148](https://github.com/scribe-org/Scribe-Android/issues/148)).
+- The application and community's relationship to the Wikimedia movement is explained in app ([#52](https://github.com/scribe-org/Scribe-Android/issues/52)).
+- The Wikimedia and Scribe screen was updated to reference Wiktionary rather than Wikipedia with updated text and Wiktionary logo, reflecting Scribe's use of Wiktionary translation data ([#754](https://github.com/scribe-org/Scribe-Android/issues/754)).
+- Vibrate on keypress and key click functionalities are included ([#405](https://github.com/scribe-org/Scribe-Android/issues/405), [#406](https://github.com/scribe-org/Scribe-Android/issues/406)).
+- An in-app tutorial is provided to detail functionalities of the application ([#602](https://github.com/scribe-org/Scribe-Android/issues/602), [#615](https://github.com/scribe-org/Scribe-Android/issues/615), [#616](https://github.com/scribe-org/Scribe-Android/issues/616)).
+- The user is able to easily rate the application, with installer-aware routing to the appropriate store ([#165](https://github.com/scribe-org/Scribe-Android/issues/165), [#640](https://github.com/scribe-org/Scribe-Android/issues/640)).
+
+### 🗃️ Data
+
+- SQLite databases have been set up for all data needed for the keyboards ([#87](https://github.com/scribe-org/Scribe-Android/issues/87)).
+- Calls are made to the [Scribe-Server API](https://scribe-server.toolforge.org/) hosted on Toolforge to download language data and insert it into SQLite tables ([#547](https://github.com/scribe-org/Scribe-Android/issues/547), [#626](github.com/scribe-org/Scribe-Android/issues/626)).
+- The user is directed to download data in the keyboard UI if they access it with empty databases ([#581](https://github.com/scribe-org/Scribe-Android/issues/581), [#650](https://github.com/scribe-org/Scribe-Android/issues/650)).
+- The data download UI was created to download data for any keyboards that have been installed ([#437](https://github.com/scribe-org/Scribe-Android/issues/437), [#439](https://github.com/scribe-org/Scribe-Android/issues/439), [#513](https://github.com/scribe-org/Scribe-Android/issues/513), [#520](https://github.com/scribe-org/Scribe-Android/issues/520), [#554](https://github.com/scribe-org/Scribe-Android/issues/554)).
+- Network indicators for data request have been added to the application and are shown via toasts ([#651](https://github.com/scribe-org/Scribe-Android/issues/651)).
+- Language data contracts were updated to use nested nouns and verbs structures, bundled contract assets were removed, and dynamic contract downloads from Scribe-Server were connected to local storage ([#714](https://github.com/scribe-org/Scribe-Android/issues/714)).
+
+### 🎨 Design
+
+- Named `scribe_*` color tokens record the light and dark hexes the app already uses. No screen color changes ([#781](https://github.com/scribe-org/Scribe-Android/issues/781)).
+- The Scribe key and command bar where Scribe commands are triggered ([#16](https://github.com/scribe-org/Scribe-Android/issues/16)).
+- 3x2 and other conjugation tables from which conjugations can be selected in the Conjugate command ([#267](https://github.com/scribe-org/Scribe-Android/issues/267), [#270](https://github.com/scribe-org/Scribe-Android/issues/270), [#496](https://github.com/scribe-org/Scribe-Android/issues/496), [#523](https://github.com/scribe-org/Scribe-Android/issues/523)).
+- The return key is colored Scribe blue when commands are being triggered to let the user know that that is what they need to press to finish the command ([#160](https://github.com/scribe-org/Scribe-Android/issues/160)).
+- Dark mode compatibility through a responsive color scheme ([#25](https://github.com/scribe-org/Scribe-Android/issues/25), [#51](https://github.com/scribe-org/Scribe-Android/issues/51), [#116](https://github.com/scribe-org/Scribe-Android/issues/116), [#121](https://github.com/scribe-org/Scribe-Android/issues/121), [#155](https://github.com/scribe-org/Scribe-Android/issues/155), [#161](https://github.com/scribe-org/Scribe-Android/issues/161), [#543](https://github.com/scribe-org/Scribe-Android/issues/543)).
+- The application menu follows modern Android styling ([#114](https://github.com/scribe-org/Scribe-Android/issues/114), [#150](https://github.com/scribe-org/Scribe-Android/issues/150), [#217](https://github.com/scribe-org/Scribe-Android/issues/217), [#246](https://github.com/scribe-org/Scribe-Android/issues/246), [#247](https://github.com/scribe-org/Scribe-Android/issues/247), [248](https://github.com/scribe-org/Scribe-Android/issues/248), [#256](https://github.com/scribe-org/Scribe-Android/issues/256)).
+- Clear directions and an install button are displayed in the keyboard settings sub menu when no keyboard is installed ([#753](https://github.com/scribe-org/Scribe-Android/issues/753)).
+- Sub-menu settings options for translation source language, default keyboard layout, and default currency symbol now display their current values next to the navigation chevron ([#751](https://github.com/scribe-org/Scribe-Android/issues/751)).
+
+### 🌐 Localization
+
+- The application has been localized into many languages using [Weblate](https://weblate.org/en/) and the [Scribe-i18n](https://github.com/scribe-org/Scribe-i18n) project as a central Git submodule of localizations ([#44](https://github.com/scribe-org/Scribe-Android/issues/44), [#95](https://github.com/scribe-org/Scribe-Android/issues/95), [#214](https://github.com/scribe-org/Scribe-Android/issues/214), [#527](https://github.com/scribe-org/Scribe-Android/issues/527)).
+
+### ✅ Tests
+
+- [ktlint](https://github.com/ktlint/ktlint) and [detekt](https://github.com/detekt/detekt) linting was added to the project to validate code quality and standards ([#70](https://github.com/scribe-org/Scribe-Android/issues/70), [#354](https://github.com/scribe-org/Scribe-Android/issues/354)).
+- Unit tests and code coverage were written for the project ([#181](https://github.com/scribe-org/Scribe-Android/issues/181), [#196](https://github.com/scribe-org/Scribe-Android/issues/196)).
+- GitHub Actions based CI was set up with unit and instrumentation tests ([#195](https://github.com/scribe-org/Scribe-Android/issues/195), [#212](https://github.com/scribe-org/Scribe-Android/issues/212), [#422](https://github.com/scribe-org/Scribe-Android/issues/422), [#580](https://github.com/scribe-org/Scribe-Android/issues/580)).
+- prek based pre-commit hooks were added to the repo to catch common mistakes on commit ([#215](https://github.com/scribe-org/Scribe-Android/issues/215)).
+- A CI workflow to enforces `CHANGELOG.md` or `CHANGELOG_CONJUGATE.md` updates on all PRs targeting `main`, with support for a `no-changelog` label to skip the check when appropriate.
+
+### 📝 Documentation
+
+- Functions in the application have been documented ([#18](https://github.com/scribe-org/Scribe-Android/issues/18), [#354](https://github.com/scribe-org/Scribe-Android/issues/354)).
+
+### 🐛 Bug Fixes
+
+- The keyboard service no longer crashes when an editor starts input with no `EditorInfo` ([#699](https://github.com/scribe-org/Scribe-Android/issues/699)).
+- Downloading or checking for language data updates no longer crashes the app when the server returns a malformed timestamp ([#700](https://github.com/scribe-org/Scribe-Android/issues/700)).
+- Native dictionaries are re-extracted after an app update so autosuggestions no longer use dictionaries from a previous install ([#701](https://github.com/scribe-org/Scribe-Android/issues/701)).
+- Tutorial practice text is now preserved across configuration changes such as device rotation ([#736](https://github.com/scribe-org/Scribe-Android/issues/736)).
+- Verb conjugation lookups in the keyboard now support case-insensitive matching, inflected forms, and fallback to downloaded language databases, resolving "Not in Wikidata" errors ([#598](https://github.com/scribe-org/Scribe-Android/issues/598), [#738](https://github.com/scribe-org/Scribe-Android/issues/738)).
+- Active command bar is now properly hidden when opening the clipboard panel, emoji palette, or Wikidata info explanation, preventing toolbar doubling on return to normal keyboard UI ([#749](https://github.com/scribe-org/Scribe-Android/issues/749)).
+- Spell check error underlines no longer appear on command bar placeholder text and foreign language words ([#748](https://github.com/scribe-org/Scribe-Android/issues/748)).
+- The clipboard panel and Wikidata information panels now properly follow dark mode styling when dark mode is enabled ([#761](https://github.com/scribe-org/Scribe-Android/issues/761)).
+- The IME layout no longer expands past the bottom of the screen and clips the bottom key row when language data has not been downloaded: the empty state banner uses `match_parent` width inside its vertical `LinearLayout` parent instead of `0dp`, which wrapped its text one character per line ([#770](https://github.com/scribe-org/Scribe-Android/issues/770)).
+- The keyboard view no longer forms a circular vertical constraint with the floating keyboard drag bar. The drag bar now hangs below the keyboard in one direction, so the `wrap_content` IME root is not stretched to the full window height and floating mode still has room for the drag handle ([#770](https://github.com/scribe-org/Scribe-Android/issues/770)).
+
+### 🔒 Security
+
+- Clipboard history is excluded from Android Auto Backup and device-to-device transfer so that copied text never leaves the device ([#695](https://github.com/scribe-org/Scribe-Android/issues/695)).
+
+### ⚖️ Legal
+
+- All code has been developed under the GNU General Public License (GPL-3.0) ([#301](https://github.com/scribe-org/Scribe-Android/issues/301)).
+- The legal policies of the application are displayed to the user in the About tab ([#58](https://github.com/scribe-org/Scribe-Android/issues/58)).
+- A privacy policy was provided to make clear that policies around user data and their security ([#59](https://github.com/scribe-org/Scribe-Android/issues/59)).
+- Third party licensed code used in the development of the project were detailed ([#60](https://github.com/scribe-org/Scribe-Android/issues/60)).
+
+### ♻️ Code Refactoring
+
+- Code quality improvements were continuously done to assure that the application is easy to maintain and meets Kotlin standards ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
+- `KeyboardLayoutHandler` was extracted from `GeneralKeyboardIME` to encapsulate layout XML resolution, symbol keyboard mapping, and width calculations ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
+- `ShiftHandler` was extracted from `GeneralKeyboardIME` to encapsulate shift state machine toggling, double-tap caps lock lock timing, and keyboard layout mode switching ([#426](https://github.com/scribe-org/Scribe-Android/issues/426)).
+- Non-null assertions (!!) were removed from the codebase ([#705](https://github.com/scribe-org/Scribe-Android/issues/705)).

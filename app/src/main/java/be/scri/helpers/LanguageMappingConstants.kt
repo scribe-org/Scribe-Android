@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package be.scri.helpers
 
+import be.scri.models.ScribeLanguage
+
 /**
  * Object containing constant mappings related to language-specific data.
  * This includes conversions for grammatical annotations.
@@ -28,22 +30,16 @@ object LanguageMappingConstants {
         )
 
     /**
+     * Converts a [ScribeLanguage] to its two-letter ISO alias (e.g., "EN").
+     */
+    fun getLanguageAlias(language: ScribeLanguage): String = language.isoCode
+
+    /**
      * Converts a full language name (e.g., "English") to its two-letter ISO alias (e.g., "EN").
      *
      * @param language The full name of the language.
      *
      * @return The two-letter alias.
      */
-    fun getLanguageAlias(language: String): String =
-        when (language) {
-            "English" -> "EN"
-            "French" -> "FR"
-            "German" -> "DE"
-            "Italian" -> "IT"
-            "Portuguese" -> "PT"
-            "Russian" -> "RU"
-            "Spanish" -> "ES"
-            "Swedish" -> "SV"
-            else -> ""
-        }
+    fun getLanguageAlias(language: String): String = ScribeLanguage.fromDisplayName(language).isoCode
 }

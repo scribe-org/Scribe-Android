@@ -2,6 +2,9 @@
 
 package be.scri.ui.screens.tutorial
 
+import android.content.Context
+import be.scri.R
+
 /**
  * Defines all tutorial chapters and their steps.
  * Each chapter contains one or more interactive steps that guide the user
@@ -12,75 +15,156 @@ object TutorialContent {
      * Chapter 1: Noun Annotation.
      * Teaches users about gender tags that appear when typing nouns.
      */
-    val nounAnnotationSteps =
-        listOf(
+    fun getNounAnnotationSteps(
+        languageCode: String,
+        context: Context,
+    ): List<TutorialStep> {
+        val (fatherWord, fatherTag, fatherGender) =
+            when (languageCode) {
+                "es" -> Triple("padre", "M", "Masculino")
+                "fr" -> Triple("père", "M", "Masculin")
+                "it" -> Triple("padre", "M", "Maschile")
+                "pt" -> Triple("pai", "M", "Masculino")
+                "ru" -> Triple("отец", "M", "Мужской")
+                "sv" -> Triple("far", "C", "Common")
+                else -> Triple("Vater", "M", "Maskulin")
+            }
+
+        val (motherWord, motherTag, motherGender) =
+            when (languageCode) {
+                "es" -> Triple("madre", "F", "Femenino")
+                "fr" -> Triple("mère", "F", "Féminin")
+                "it" -> Triple("madre", "F", "Femminile")
+                "pt" -> Triple("mãe", "F", "Feminino")
+                "ru" -> Triple("мать", "F", "Женский")
+                "sv" -> Triple("mor", "C", "Common")
+                else -> Triple("Mutter", "F", "Feminin")
+            }
+
+        if (languageCode == "en") {
+            return listOf(
+                TutorialStep(
+                    instruction =
+                        context
+                            .getString(R.string.i18n_app_keyboard_tutorial_noun_annotation_invalid_language)
+                            .replace("{language}", "English"),
+                    requiresValidation = false,
+                ),
+            )
+        }
+        return listOf(
             TutorialStep(
                 instruction =
-                    "Write the word \"Vater\". Notice the word suggestions " +
-                        "that appear on the keyboard's top bar.\n\n" +
-                        "Then, press space. You will see the word's gender " +
-                        "tag on the keyboard's top bar \u2013 in this case, \"M\" for Maskulin.",
-                expectedWord = "Vater",
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_noun_annotation_instruction_1)
+                        .replace("{mother_word}", motherWord)
+                        .replace("{mother_tag}", motherTag)
+                        .replace("{mother_gender}", motherGender),
+                expectedWord = motherWord,
             ),
             TutorialStep(
                 instruction =
-                    "Now write the word \"Mutter\" and then press space. " +
-                        "The gender tag will be \"F\", for Feminin.",
-                expectedWord = "Mutter",
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_noun_annotation_instruction_2)
+                        .replace("{father_word}", fatherWord)
+                        .replace("{father_tag}", fatherTag)
+                        .replace("{father_gender}", fatherGender),
+                expectedWord = fatherWord,
             ),
         )
+    }
 
     /**
      * Chapter 2: Word Translation.
      * Teaches users how to use the Translate command via the Scribe key.
      */
-    val wordTranslationSteps =
-        listOf(
+    fun wordTranslationSteps(
+        languageCode: String,
+        context: Context,
+    ): List<TutorialStep> {
+        val translation =
+            when (languageCode) {
+                "en" -> "Translate"
+                "es" -> "Traducir"
+                "fr" -> "Traduire"
+                "it" -> "Tradurre"
+                "pt" -> "Traduzir"
+                "ru" -> "Перевести"
+                "sv" -> "Översätt"
+                else -> "Übersetzen"
+            }
+        return listOf(
             TutorialStep(
                 instruction =
-                    "Let's translate! Tap the \u27A1 Scribe key on the top-left " +
-                        "corner of your keyboard, and select \u00DCbersetzen.\n\n" +
-                        "Then write the word you want to translate, press \u25B6, " +
-                        "and the translation will be returned to you.",
-                hint = "If your second language is not German, change the language in your keyboard.",
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_word_translation_instruction)
+                        .replace("{translate}", translation),
                 requiresValidation = false,
             ),
         )
+    }
 
-    val verbConjugationSteps =
-        listOf(
+    fun verbConjugationSteps(
+        languageCode: String,
+        context: Context,
+    ): List<TutorialStep> {
+        val conjugation =
+            when (languageCode) {
+                "en" -> "Conjugate"
+                "es" -> "Conjugar"
+                "fr" -> "Conjuguer"
+                "it" -> "Coniugare"
+                "pt" -> "Conjugar"
+                "ru" -> "Спрягать"
+                "sv" -> "Konjugera"
+                else -> "Konjugieren"
+            }
+        return listOf(
             TutorialStep(
                 instruction =
-                    "On to the verbs. Tap the \u27A1 Scribe key on the top-left " +
-                        "corner of your keyboard, and select Konjugieren.\n\n" +
-                        "Write the verb you want to conjugate, press \u25B6, and " +
-                        "you will see a table with all the verb tenses. Select " +
-                        "the one you need and it will be inserted!",
-                hint = "If your second language is not German, change the language in your keyboard.",
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_verb_conjugation_instruction)
+                        .replace("{conjugate}", conjugation),
                 requiresValidation = false,
             ),
         )
+    }
 
-    val nounPluralsSteps =
-        listOf(
+    fun nounPluralsSteps(
+        languageCode: String,
+        context: Context,
+    ): List<TutorialStep> {
+        val plural =
+            when (languageCode) {
+                "en" -> "Plural"
+                "es" -> "Plural"
+                "fr" -> "Pluriel"
+                "it" -> "Plurale"
+                "pt" -> "Plural"
+                "ru" -> "Множ-ое"
+                "sv" -> "Plural"
+                else -> "Plural"
+            }
+        return listOf(
             TutorialStep(
                 instruction =
-                    "Finding the plural of a noun with Scribe is easy. Tap " +
-                        "the \u27A1 Scribe key on the top-left corner of your " +
-                        "keyboard, and select Plural.\n\n" +
-                        "Then write the noun you want the plural for, press " +
-                        "\u25B6, and the plural will be returned to you.",
-                hint = "If your second language is not German, change the language in your keyboard.",
+                    context
+                        .getString(R.string.i18n_app_keyboard_tutorial_noun_plurals_instruction)
+                        .replace("{plural}", plural),
                 requiresValidation = false,
             ),
         )
+    }
 
     /** Returns all chapters as a list of pairs (title, steps). */
-    fun getAllChapters(): List<Pair<String, List<TutorialStep>>> =
+    fun getAllChapters(
+        languageCode: String = "de",
+        context: Context,
+    ): List<Pair<String, List<TutorialStep>>> =
         listOf(
-            "Noun annotation" to nounAnnotationSteps,
-            "Word translation" to wordTranslationSteps,
-            "Verb conjugation" to verbConjugationSteps,
-            "Noun plurals" to nounPluralsSteps,
+            context.getString(R.string.i18n_app_keyboard_tutorial_noun_annotation) to getNounAnnotationSteps(languageCode, context),
+            context.getString(R.string.i18n_app_keyboard_tutorial_word_translation) to wordTranslationSteps(languageCode, context),
+            context.getString(R.string.i18n_app_keyboard_tutorial_verb_conjugation) to verbConjugationSteps(languageCode, context),
+            context.getString(R.string.i18n_app_keyboard_tutorial_noun_plurals) to nounPluralsSteps(languageCode, context),
         )
 }

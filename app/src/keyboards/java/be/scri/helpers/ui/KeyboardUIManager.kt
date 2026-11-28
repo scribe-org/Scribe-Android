@@ -4,34 +4,61 @@ package be.scri.helpers.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Typeface
+import android.text.InputType
+import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.AlignmentSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.graphics.toColorInt
+import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.GridLayoutManager
 import be.scri.R
 import be.scri.R.color.white
 import be.scri.databinding.InputMethodViewBinding
+import be.scri.helpers.AutoGridLayoutManager
+import be.scri.helpers.EMOJI_SPEC_FILE_PATH
+import be.scri.helpers.EmojiAdapter
+import be.scri.helpers.EmojiData
 import be.scri.helpers.KeyboardBase
 import be.scri.helpers.KeyboardLanguageMappingConstants.conjugatePlaceholder
+import be.scri.helpers.KeyboardLanguageMappingConstants.emojiCategoryHeaders
 import be.scri.helpers.KeyboardLanguageMappingConstants.pluralPlaceholder
 import be.scri.helpers.KeyboardLanguageMappingConstants.translatePlaceholder
 import be.scri.helpers.LanguageMappingConstants.getLanguageAlias
 import be.scri.helpers.PreferencesHelper
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
 import be.scri.helpers.english.ENInterfaceVariables.ALREADY_PLURAL_MSG
+import be.scri.helpers.getCategoryIconRes
+import be.scri.helpers.getRecentEmojis
+import be.scri.helpers.parseRawEmojiSpecsFile
+import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
+import be.scri.ui.theme.scribeColorInt
 import be.scri.views.KeyboardView
+
+private const val SUB_SELECTION_LABEL_TEXT_SIZE_RATIO = 0.8f
+private const val MAX_FORM_COUNT_2X1 = 2
+private const val FORM_COUNT_3X1 = 3
+private const val MAX_FORM_COUNT_2X2 = 4
 
 /**
  * Manages the UI elements and state transitions for the GeneralKeyboardIME.
@@ -56,6 +83,10 @@ class KeyboardUIManager(
 
         fun onCloseClicked()
 
+        fun onFloatClicked()
+
+        fun isFloatingModeActive(): Boolean
+
         fun onEmojiSelected(emoji: String)
 
         fun onSuggestionClicked(suggestion: String)
@@ -72,7 +103,13 @@ class KeyboardUIManager(
 
         fun processLinguisticSuggestions(word: String)
 
+        fun onConjugationSubCategorySelected(category: String)
+
+        fun onConjugationSubCategoryDismissed()
+
         fun isNumericKeyboardActive(): Boolean
+
+        fun getKeyboardWidth(): Int
 
         fun onClipboardSuggestionClicked()
     }
@@ -82,6 +119,8 @@ class KeyboardUIManager(
 
     // UI Elements
     var pluralBtn: Button? = binding.pluralBtn
+    var floatBtn: Button? = null
+    var separatorFloat: View? = null
     var emojiBtnPhone1: Button? = binding.emojiBtnPhone1
     var emojiSpacePhone: View? = binding.emojiSpacePhone
     var emojiBtnPhone2: Button? = binding.emojiBtnPhone2
@@ -105,6 +144,7 @@ class KeyboardUIManager(
 
     init {
         setupClickListeners()
+        binding.commandBar.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
     }
 
     private fun setupClickListeners() {
@@ -145,6 +185,7 @@ class KeyboardUIManager(
                 keyboardView.setEnterKeyIcon(ScribeState.IDLE, earlierValue)
                 keyboardView.setEnterKeyColor(null, isDarkMode = resolvedIsDarkMode)
             }
+
             else -> {
                 keyboardView.setEnterKeyColor(context.getColor(R.color.color_primary))
                 keyboardView.setEnterKeyIcon(ScribeState.PLURAL, earlierValue)
@@ -164,7 +205,7 @@ class KeyboardUIManager(
         language: String,
         emojiAutoSuggestionEnabled: Boolean,
         autoSuggestEmojis: MutableList<String>?,
-        conjugateOutput: Map<String, Map<String, Collection<String>>>?,
+        conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>?,
         conjugateLabels: Set<String>?,
         selectedConjugationSubCategory: String?,
         currentVerbForConjugation: String?,
@@ -173,23 +214,35 @@ class KeyboardUIManager(
         val isUserDarkMode = getIsDarkModeOrNot(context)
 
         when (currentState) {
-            ScribeState.IDLE ->
+            ScribeState.IDLE -> {
                 setupIdleView(
                     language,
                     emojiAutoSuggestionEnabled,
                     autoSuggestEmojis,
                 )
-            ScribeState.SELECT_COMMAND -> setupSelectCommandView(language)
-            ScribeState.INVALID -> setupInvalidView(language, invalidCommandSource)
+            }
+
+            ScribeState.SELECT_COMMAND -> {
+                setupSelectCommandView(language)
+            }
+
+            ScribeState.INVALID -> {
+                setupInvalidView(language, invalidCommandSource)
+            }
+
             ScribeState.TRANSLATE -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
                 binding.translateBtn.text = translatePlaceholder[getLanguageAlias(language)] ?: "Translate"
                 binding.translateBtn.visibility = View.VISIBLE
             }
+
             ScribeState.CONJUGATE, ScribeState.SELECT_VERB_CONJUNCTION, ScribeState.PLURAL -> {
                 setupToolbarView(currentState, language, conjugateOutput, conjugateLabels, selectedConjugationSubCategory, currentVerbForConjugation)
             }
-            ScribeState.ALREADY_PLURAL -> setupAlreadyPluralView()
+
+            ScribeState.ALREADY_PLURAL -> {
+                setupAlreadyPluralView()
+            }
         }
 
         updateEnterKeyColor(isUserDarkMode, currentState)
@@ -215,11 +268,13 @@ class KeyboardUIManager(
             ),
         )
 
-        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
+        // Same color as the characters on the keys.
+        val textColor = context.scribeColorInt(R.color.scribe_text, dark = isUserDarkMode)
 
         listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEachIndexed { index, button ->
             button.visibility = View.VISIBLE
             button.background = null
+            button.foreground = null
             button.setTextColor(textColor)
             button.text = HintUtils.getBaseAutoSuggestions(language).getOrNull(index)
             button.isAllCaps = false
@@ -289,15 +344,31 @@ class KeyboardUIManager(
             button.backgroundTintList = ContextCompat.getColorStateList(context, R.color.theme_scribe_blue)
             button.setTextColor(buttonTextColor)
             button.textSize = GeneralKeyboardIME.SUGGESTION_SIZE
+            button.isAllCaps = false
         }
 
-        binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
-        binding.conjugateBtn.text = conjugatePlaceholder[langAlias] ?: "Conjugate"
-        binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
+        val isFloating = listener.isFloatingModeActive()
+        if (isFloating) {
+            binding.translateBtn.text = ""
+            binding.conjugateBtn.text = ""
+            binding.pluralBtn.text = ""
 
-        val separatorColor = (if (isUserDarkMode) GeneralKeyboardIME.DARK_THEME else GeneralKeyboardIME.LIGHT_THEME).toColorInt()
-        binding.separator2.setBackgroundColor(separatorColor)
-        binding.separator3.setBackgroundColor(separatorColor)
+            binding.translateBtn.foreground = ContextCompat.getDrawable(context, R.drawable.ic_translate_command)
+            binding.conjugateBtn.foreground = ContextCompat.getDrawable(context, R.drawable.ic_conjugate_command)
+            binding.pluralBtn.foreground = ContextCompat.getDrawable(context, R.drawable.ic_plural_command)
+
+            binding.translateBtn.foregroundGravity = android.view.Gravity.CENTER
+            binding.conjugateBtn.foregroundGravity = android.view.Gravity.CENTER
+            binding.pluralBtn.foregroundGravity = android.view.Gravity.CENTER
+        } else {
+            binding.translateBtn.text = translatePlaceholder[langAlias] ?: "Translate"
+            binding.conjugateBtn.text = conjugatePlaceholder[langAlias] ?: "Conjugate"
+            binding.pluralBtn.text = pluralPlaceholder[langAlias] ?: "Plural"
+
+            binding.translateBtn.foreground = null
+            binding.conjugateBtn.foreground = null
+            binding.pluralBtn.foreground = null
+        }
 
         val spaceInDp = 4
         val spaceInPx = (spaceInDp * context.resources.displayMetrics.density).toInt()
@@ -325,7 +396,7 @@ class KeyboardUIManager(
     private fun setupToolbarView(
         currentState: ScribeState,
         language: String,
-        conjugateOutput: Map<String, Map<String, Collection<String>>>?,
+        conjugateOutput: Map<String, Map<String, List<Pair<String, String>>>>?,
         conjugateLabels: Set<String>?,
         selectedConjugationSubCategory: String?,
         currentVerbForConjugation: String?,
@@ -367,78 +438,59 @@ class KeyboardUIManager(
             val isSubSelection = selectedConjugationSubCategory != null
             val showCategories = !isSubSelection && (languageOutput?.containsKey(title) != true)
 
-            val forms =
-                if (isSubSelection) {
-                    languageOutput?.get(selectedConjugationSubCategory)?.toList() ?: listOf("", "", "", "")
-                } else if (showCategories) {
-                    languageOutput?.map { (_, values) ->
-                        if (values.size == 1) values.first() else values.joinToString(" / ")
-                    } ?: listOf("", "", "", "")
-                } else {
-                    languageOutput?.get(title)?.toList() ?: listOf("", "", "", "")
-                }
-
+            val scribeLanguage = ScribeLanguage.fromDisplayName(language)
             val layoutResId =
                 when {
-                    isSubSelection -> R.layout.conjugate_grid_2x1
-                    language == "English" && forms.size <= 4 -> R.layout.conjugate_grid_2x2
-                    language in listOf("Russian", "Swedish") && forms.size <= 4 -> R.layout.conjugate_grid_2x2
-                    forms.size > 4 -> R.layout.conjugate_grid_3x2
-                    else -> R.layout.conjugate_grid_2x2
+                    isSubSelection -> {
+                        val subPairs = languageOutput?.get(selectedConjugationSubCategory) ?: emptyList()
+                        when {
+                            subPairs.size <= MAX_FORM_COUNT_2X1 -> R.layout.conjugate_grid_2x1
+                            subPairs.size == FORM_COUNT_3X1 -> R.layout.conjugate_grid_3x1
+                            subPairs.size <= MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_2x2
+                            else -> R.layout.conjugate_grid_3x2
+                        }
+                    }
+                    else -> {
+                        val formsCount =
+                            if (showCategories) {
+                                languageOutput?.size ?: 0
+                            } else {
+                                languageOutput?.get(title)?.size ?: 0
+                            }
+                        val isSmallFormLanguage =
+                            scribeLanguage == ScribeLanguage.ENGLISH ||
+                                scribeLanguage == ScribeLanguage.RUSSIAN ||
+                                scribeLanguage == ScribeLanguage.SWEDISH
+                        when {
+                            formsCount <= MAX_FORM_COUNT_2X1 -> R.layout.conjugate_grid_2x1
+                            formsCount == FORM_COUNT_3X1 -> R.layout.conjugate_grid_3x1
+                            isSmallFormLanguage && formsCount <= MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_2x2
+                            formsCount > MAX_FORM_COUNT_2X2 -> R.layout.conjugate_grid_3x2
+                            else -> R.layout.conjugate_grid_2x2
+                        }
+                    }
                 }
 
             val layoutInflater = LayoutInflater.from(context)
             val gridContent = layoutInflater.inflate(layoutResId, grid, false) as LinearLayout
             grid.addView(gridContent)
 
-            val buttonIds =
-                listOf(
-                    R.id.conjugate_btn_1,
-                    R.id.conjugate_btn_2,
-                    R.id.conjugate_btn_3,
-                    R.id.conjugate_btn_4,
-                    R.id.conjugate_btn_5,
-                    R.id.conjugate_btn_6,
-                )
-
-            buttonIds.forEachIndexed { i, btnId ->
-                val btn = gridContent.findViewById<Button?>(btnId)
-                if (btn != null) {
-                    btn.text = forms.getOrNull(i) ?: ""
-                    btn.backgroundTintList =
-                        ContextCompat.getColorStateList(
-                            context,
-                            if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
-                        )
-                    btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
-                    btn.setOnClickListener {
-                        val label = btn.text.toString()
-                        if (label.isNotEmpty()) {
-                            var handledAsCategory = false
-                            if (showCategories) {
-                                val matchingEntry =
-                                    languageOutput?.entries?.find { (_, values) ->
-                                        if (values.size == 1) values.first() == label else values.joinToString(" / ") == label
-                                    }
-
-                                if (matchingEntry != null) {
-                                    val (key, values) = matchingEntry
-                                    if (values.size > 1) {
-                                        // Category logic is handled in IME's commitText.
-                                    }
-                                }
-                            }
-
-                            if (!handledAsCategory) {
-                                listener.commitText("$label ")
-                                listener.processLinguisticSuggestions(label)
-                            }
-                        }
-                    }
+            when {
+                isSubSelection -> {
+                    val subPairs = languageOutput?.get(selectedConjugationSubCategory) ?: emptyList()
+                    populateSubSelectionButtons(gridContent, subPairs, isDarkMode)
+                }
+                showCategories -> {
+                    val categoryEntries = languageOutput?.entries?.toList() ?: emptyList()
+                    populateCategoryButtons(gridContent, categoryEntries, isDarkMode)
+                }
+                else -> {
+                    val directPairs = languageOutput?.get(title) ?: emptyList()
+                    populateDirectButtons(gridContent, directPairs, isDarkMode)
                 }
             }
 
-            setupConjugateArrows(gridContent, context)
+            setupConjugateArrows(gridContent, context, isSubSelection)
 
             promptText = if (isSubSelection) selectedConjugationSubCategory else (title ?: "___")
             hintWord = conjugateLabels?.lastOrNull()
@@ -450,12 +502,192 @@ class KeyboardUIManager(
         updateCommandBarHintAndPrompt(currentState, language, promptText, isDarkMode, hintWord, currentVerbForConjugation)
     }
 
+    private val buttonIds =
+        listOf(
+            R.id.conjugate_btn_1,
+            R.id.conjugate_btn_2,
+            R.id.conjugate_btn_3,
+            R.id.conjugate_btn_4,
+            R.id.conjugate_btn_5,
+            R.id.conjugate_btn_6,
+        )
+
+    /**
+     * Color of the small label above a conjugation form, resolved once per grid.
+     */
+    @ColorInt
+    private fun conjugationLabelColor(isDarkMode: Boolean): Int = context.scribeColorInt(R.color.scribe_caption, dark = isDarkMode)
+
+    private fun formatButtonText(
+        label: String,
+        form: String,
+        @ColorInt labelColor: Int,
+    ): CharSequence {
+        if (label.isEmpty() || label == "all") return form
+        val spannable = SpannableStringBuilder()
+        spannable.append(label)
+        spannable.setSpan(
+            RelativeSizeSpan(SUB_SELECTION_LABEL_TEXT_SIZE_RATIO),
+            0,
+            label.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+        spannable.setSpan(
+            ForegroundColorSpan(labelColor),
+            0,
+            label.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+        spannable.setSpan(
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL),
+            0,
+            label.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+        if (form.isNotEmpty()) {
+            spannable.append("\n")
+            val formStart = spannable.length
+            spannable.append(form)
+            spannable.setSpan(
+                StyleSpan(Typeface.BOLD),
+                formStart,
+                spannable.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+            spannable.setSpan(
+                AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                formStart,
+                spannable.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+        }
+        return spannable
+    }
+
+    private fun applyButtonLayout(
+        btn: Button,
+        hasLabel: Boolean,
+    ) {
+        btn.gravity = if (hasLabel) (Gravity.TOP or Gravity.START) else Gravity.CENTER
+        if (hasLabel) {
+            val padHorizontal = (12 * context.resources.displayMetrics.density).toInt()
+            val padVertical = (8 * context.resources.displayMetrics.density).toInt()
+            btn.setPadding(padHorizontal, padVertical, padHorizontal, padVertical)
+            val lineSpacingExtra = 4 * context.resources.displayMetrics.density
+            btn.setLineSpacing(lineSpacingExtra, 1.0f)
+        } else {
+            btn.setPadding(0, 0, 0, 0)
+            btn.setLineSpacing(0f, 1.0f)
+        }
+    }
+
+    private fun populateSubSelectionButtons(
+        gridContent: View,
+        subPairs: List<Pair<String, String>>,
+        isDarkMode: Boolean,
+    ) {
+        val labelColor = conjugationLabelColor(isDarkMode)
+        buttonIds.forEachIndexed { i, btnId ->
+            val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
+            if (i < subPairs.size) {
+                val (label, form) = subPairs[i]
+                btn.visibility = View.VISIBLE
+                btn.backgroundTintList =
+                    ContextCompat.getColorStateList(
+                        context,
+                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                    )
+                btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                val hasLabel = label.isNotEmpty() && label != "all"
+                applyButtonLayout(btn, hasLabel)
+                btn.text = formatButtonText(label, form, labelColor)
+                btn.setOnClickListener {
+                    listener.commitText("$form ")
+                    listener.processLinguisticSuggestions(form)
+                }
+            } else {
+                btn.visibility = View.INVISIBLE
+                btn.setOnClickListener(null)
+            }
+        }
+    }
+
+    private fun populateCategoryButtons(
+        gridContent: View,
+        categoryEntries: List<Map.Entry<String, List<Pair<String, String>>>>,
+        isDarkMode: Boolean,
+    ) {
+        val labelColor = conjugationLabelColor(isDarkMode)
+        buttonIds.forEachIndexed { i, btnId ->
+            val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
+            if (i < categoryEntries.size) {
+                val (categoryTitle, pairs) = categoryEntries[i]
+                btn.visibility = View.VISIBLE
+                btn.backgroundTintList =
+                    ContextCompat.getColorStateList(
+                        context,
+                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                    )
+                btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                val formsPreview = pairs.map { it.second.trim() }.filter { it.isNotBlank() }.joinToString(" / ")
+                applyButtonLayout(btn, categoryTitle.isNotEmpty())
+                btn.text = formatButtonText(categoryTitle, formsPreview, labelColor)
+                if (pairs.size == 1) {
+                    val (_, form) = pairs.first()
+                    btn.setOnClickListener {
+                        listener.commitText("$form ")
+                        listener.processLinguisticSuggestions(form)
+                    }
+                } else {
+                    btn.setOnClickListener {
+                        listener.onConjugationSubCategorySelected(categoryTitle)
+                    }
+                }
+            } else {
+                btn.visibility = View.INVISIBLE
+                btn.setOnClickListener(null)
+            }
+        }
+    }
+
+    private fun populateDirectButtons(
+        gridContent: View,
+        directPairs: List<Pair<String, String>>,
+        isDarkMode: Boolean,
+    ) {
+        val labelColor = conjugationLabelColor(isDarkMode)
+        buttonIds.forEachIndexed { i, btnId ->
+            val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
+            if (i < directPairs.size) {
+                val (label, form) = directPairs[i]
+                btn.visibility = View.VISIBLE
+                btn.backgroundTintList =
+                    ContextCompat.getColorStateList(
+                        context,
+                        if (isDarkMode) R.color.dark_key_color else R.color.light_key_color,
+                    )
+                btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+                val hasLabel = label.isNotEmpty() && label != "all"
+                applyButtonLayout(btn, hasLabel)
+                btn.text = formatButtonText(label, form, labelColor)
+                btn.setOnClickListener {
+                    listener.commitText("$form ")
+                    listener.processLinguisticSuggestions(form)
+                }
+            } else {
+                btn.visibility = View.INVISIBLE
+                btn.setOnClickListener(null)
+            }
+        }
+    }
+
     /**
      * Sets up the navigation arrow buttons for the conjugation grid view.
      */
     private fun setupConjugateArrows(
         gridContent: View,
         context: Context,
+        isSubSelection: Boolean,
     ) {
         val isDarkMode = getIsDarkModeOrNot(context)
         val arrowButtonIds =
@@ -485,13 +717,17 @@ class KeyboardUIManager(
                     arrowBtn.compoundDrawableTintList = ContextCompat.getColorStateList(context, iconTint)
                     arrowBtn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                     arrowBtn.setOnClickListener {
-                        val isLeft = arrowBtnName.contains("left")
-                        val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
-                        val current = prefs.getInt("conjugate_index", 0)
-                        val newValue = if (isLeft) current - 1 else current + 1
-                        prefs.edit { putInt("conjugate_index", newValue) }
+                        if (isSubSelection) {
+                            listener.onConjugationSubCategoryDismissed()
+                        } else {
+                            val isLeft = arrowBtnName.contains("left")
+                            val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
+                            val current = prefs.getInt("conjugate_index", 0)
+                            val newValue = if (isLeft) current - 1 else current + 1
+                            prefs.edit { putInt("conjugate_index", newValue) }
 
-                        listener.onConjugateClicked()
+                            listener.onConjugateClicked()
+                        }
                     }
                 }
             }
@@ -515,9 +751,7 @@ class KeyboardUIManager(
         val isDarkMode = getIsDarkModeOrNot(context)
 
         // Restore original logic: Set background on toolbarBar, not invalidInfoBar.
-        binding.toolbarBar.setBackgroundColor(
-            if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
-        )
+        binding.toolbarBar.setBackgroundColor(commandInfoBarColor(isDarkMode))
 
         val isWikidata = invalidCommandSource != ScribeState.TRANSLATE
         val invalidMsg =
@@ -540,6 +774,11 @@ class KeyboardUIManager(
     }
 
     /**
+     * Background of the command bar while it shows the invalid or already-plural message.
+     */
+    private fun commandInfoBarColor(isDarkMode: Boolean): Int = context.scribeColorInt(R.color.scribe_keyboard_background, dark = isDarkMode)
+
+    /**
      * Configures the UI for the `ALREADY_PLURAL` state, which is shown when the user
      * attempts to pluralize a word that is already plural.
      */
@@ -548,7 +787,7 @@ class KeyboardUIManager(
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
         val isDarkMode = getIsDarkModeOrNot(context)
-        binding.toolbarBar.setBackgroundColor(if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt())
+        binding.toolbarBar.setBackgroundColor(commandInfoBarColor(isDarkMode))
         binding.ivInfo.visibility = View.VISIBLE
         binding.promptText.text = "$ALREADY_PLURAL_MSG: "
         binding.commandBar.hint = ""
@@ -610,8 +849,12 @@ class KeyboardUIManager(
      */
     fun initializeKeyboard(xmlId: Int) {
         val enterKeyType = listener.getCurrentEnterKeyType()
-        keyboard = KeyboardBase(context, xmlId, enterKeyType)
-        keyboardView.setKeyboard(keyboard!!)
+        val width = listener.getKeyboardWidth()
+        keyboard =
+            KeyboardBase(context, xmlId, enterKeyType, width)
+                .also {
+                    keyboardView.setKeyboard(it)
+                }
         keyboardView.mOnKeyboardActionListener = listener.onKeyboardActionListener()
         keyboardView.requestLayout()
     }
@@ -630,7 +873,7 @@ class KeyboardUIManager(
      * Retrieves and validates the stored index for the current conjugation view.
      * Ensures the index is within the bounds of available conjugation types.
      */
-    private fun getValidatedConjugateIndex(conjugateOutput: Map<String, Any>?): Int {
+    internal fun getValidatedConjugateIndex(conjugateOutput: Map<String, Any>?): Int {
         val prefs = context.getSharedPreferences("keyboard_preferences", Context.MODE_PRIVATE)
         var index = prefs.getInt("conjugate_index", 0)
         val maxIndex = conjugateOutput?.keys?.count()?.minus(1) ?: -1
@@ -657,7 +900,8 @@ class KeyboardUIManager(
 
         val isTablet =
             (context.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >=
-                Configuration.SCREENLAYOUT_SIZE_LARGE
+                Configuration.SCREENLAYOUT_SIZE_LARGE ||
+                context.resources.configuration.smallestScreenWidthDp >= GeneralKeyboardIME.SMALLEST_SCREEN_WIDTH_TABLET
 
         val emojiCount = if (isAutoSuggestEnabled) autoSuggestEmojis?.size ?: 0 else 0
 
@@ -678,6 +922,10 @@ class KeyboardUIManager(
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
+
+        binding.translateBtn.foreground = null
+        binding.conjugateBtn.foreground = null
+        pluralBtn?.foreground = null
     }
 
     /**
@@ -696,6 +944,7 @@ class KeyboardUIManager(
                 emojiSpaceTablet2?.visibility = View.GONE
                 emojiBtnTablet3?.visibility = View.GONE
             }
+
             1 -> {
                 emojiBtnTablet1?.visibility = View.VISIBLE
                 emojiSpaceTablet1?.visibility = View.GONE
@@ -703,6 +952,7 @@ class KeyboardUIManager(
                 emojiSpaceTablet2?.visibility = View.GONE
                 emojiBtnTablet3?.visibility = View.GONE
             }
+
             2 -> {
                 emojiBtnTablet1?.visibility = View.VISIBLE
                 emojiSpaceTablet1?.visibility = View.VISIBLE
@@ -710,6 +960,7 @@ class KeyboardUIManager(
                 emojiSpaceTablet2?.visibility = View.GONE
                 emojiBtnTablet3?.visibility = View.GONE
             }
+
             else -> {
                 emojiBtnTablet1?.visibility = View.VISIBLE
                 emojiSpaceTablet1?.visibility = View.VISIBLE
@@ -741,11 +992,13 @@ class KeyboardUIManager(
                 emojiSpacePhone?.visibility = View.GONE
                 emojiBtnPhone2?.visibility = View.GONE
             }
+
             emojiCount >= 2 -> {
                 emojiBtnPhone1?.visibility = View.VISIBLE
                 emojiSpacePhone?.visibility = View.VISIBLE
                 emojiBtnPhone2?.visibility = View.VISIBLE
             }
+
             else -> {
                 emojiBtnPhone1?.visibility = View.GONE
                 emojiSpacePhone?.visibility = View.GONE
@@ -762,6 +1015,210 @@ class KeyboardUIManager(
         emojiBtnTablet3?.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
+    }
+
+    /**
+     * Displays the emoji palette and hides the keyboard view.
+     * Loads emojis from the emoji spec file on a background thread and populates the grid.
+     */
+    fun showEmojiPalette(language: String) {
+        binding.keyboardView.post {
+            val keyboardHeight = binding.keyboardView.measuredHeight
+            val toolbarHeight =
+                binding.commandOptionsBar.measuredHeight.takeIf { it > 0 }
+                    ?: context.resources.getDimensionPixelSize(R.dimen.toolbar_height)
+
+            binding.emojiPaletteHolder.updateLayoutParams {
+                height = keyboardHeight + toolbarHeight
+            }
+            binding.emojiPaletteHolder.requestLayout()
+        }
+
+        binding.emojiPaletteHolder.visibility = View.VISIBLE
+
+        binding.keyboardView.visibility = View.GONE
+        binding.commandOptionsBar.visibility = View.GONE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
+
+        val isDarkMode = getIsDarkModeOrNot(context)
+
+        binding.emojiPaletteClose.setOnClickListener {
+            hideEmojiPalette()
+        }
+        binding.emojiPaletteClose.setColorFilter(if (isDarkMode) Color.WHITE else Color.BLACK)
+
+        binding.emojiPaletteModeChange.setOnClickListener {
+            hideEmojiPalette()
+        }
+        binding.emojiPaletteModeChange.text = "ABC"
+        binding.emojiPaletteModeChange.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+
+        binding.emojiPaletteBackspace.setOnClickListener {
+            listener.onKeyboardActionListener().onKey(KeyboardBase.KEYCODE_DELETE)
+        }
+        binding.emojiPaletteBackspace.setColorFilter(if (isDarkMode) Color.WHITE else Color.BLACK)
+        val keySelector = if (isDarkMode) R.drawable.keyboard_key_selector_dark else R.drawable.keyboard_key_selector
+        binding.emojiPaletteModeChange.setBackgroundResource(keySelector)
+        binding.emojiPaletteBackspace.setBackgroundResource(keySelector)
+
+        Thread {
+            val fullEmojiList = parseRawEmojiSpecsFile(context, EMOJI_SPEC_FILE_PATH)
+            val systemFontPaint =
+                android.graphics.Paint().apply {
+                    typeface = android.graphics.Typeface.DEFAULT
+                }
+            val emojis =
+                fullEmojiList.filter { emoji ->
+                    systemFontPaint.hasGlyph(emoji.emoji)
+                }
+
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                setupEmojiAdapter(emojis, language)
+            }
+        }.start()
+    }
+
+    /**
+     * Sets up the emoji RecyclerView adapter and category strip.
+     *
+     * @param emojis The filtered list of emojis the device can render.
+     */
+    private fun setupEmojiAdapter(
+        emojis: List<EmojiData>,
+        language: String,
+    ) {
+        val recentEmojiChars = getRecentEmojis(context)
+        val recentEmojiData = recentEmojiChars.mapNotNull { char -> emojis.find { it.emoji == char } }
+
+        val emojiCategories = prepareEmojiCategories(emojis)
+        val categoriesWithRecents =
+            if (recentEmojiData.isNotEmpty()) {
+                linkedMapOf("recently_used" to recentEmojiData) + emojiCategories
+            } else {
+                emojiCategories
+            }
+        val emojiItems = prepareEmojiItems(categoriesWithRecents)
+        val categoryHeaders =
+            (emojiCategoryHeaders["EN"] ?: emptyMap()) + (emojiCategoryHeaders[getLanguageAlias(language)] ?: emptyMap())
+
+        val emojiItemSize = context.resources.getDimensionPixelSize(R.dimen.emoji_item_size)
+        val emojiLayoutManager = AutoGridLayoutManager(context, emojiItemSize)
+
+        emojiLayoutManager.spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int =
+                    if (emojiItems[position] is EmojiAdapter.Item.Category) {
+                        emojiLayoutManager.spanCount
+                    } else {
+                        1
+                    }
+            }
+
+        binding.emojisList.layoutManager = emojiLayoutManager
+        binding.emojisList.adapter =
+            EmojiAdapter(context, emojiItems, categoryHeaders) { emojiData ->
+                listener.onEmojiSelected(emojiData.emoji)
+            }
+
+        setupEmojiCategoryStrip(categoriesWithRecents, emojiItems, emojiLayoutManager)
+    }
+
+    /**
+     * Groups emojis by category.
+     *
+     * @param emojis The full list of emojis.
+     * @return A map of category name to list of emojis in corresponding category.
+     */
+    private fun prepareEmojiCategories(emojis: List<EmojiData>): Map<String, List<EmojiData>> = emojis.groupBy { it.category }
+
+    /**
+     * Builds a list of category headers and emoji items for the RecyclerView.
+     *
+     * @param categories The map of categories to their emojis.
+     * @return A flat list of [EmojiAdapter.Item] objects.
+     */
+    private fun prepareEmojiItems(categories: Map<String, List<EmojiData>>): List<EmojiAdapter.Item> {
+        val emojiItems = mutableListOf<EmojiAdapter.Item>()
+        categories.entries.forEach { (category, emojis) ->
+            emojiItems.add(EmojiAdapter.Item.Category(category))
+            emojis.forEach { emojiItems.add(EmojiAdapter.Item.Emoji(it)) }
+        }
+        return emojiItems
+    }
+
+    /**
+     * Populates the emoji category strip at the bottom of the palette.
+     * Tapping a category icon scrolls the emoji list to that category.
+     *
+     * @param categories The map of category names to their emojis.
+     * @param emojiItems The full flat list used to find category positions.
+     * @param layoutManager The AutoGridLayoutManager used to scroll to positions.
+     */
+    private fun setupEmojiCategoryStrip(
+        categories: Map<String, List<EmojiData>>,
+        emojiItems: List<EmojiAdapter.Item>,
+        layoutManager: AutoGridLayoutManager,
+    ) {
+        binding.emojiCategoriesStrip.removeAllViews()
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val activeColor =
+            ContextCompat.getColor(
+                context,
+                if (isDarkMode) R.color.nav_bar_selected_color_dark else R.color.nav_bar_selected_color_light,
+            )
+        val inactiveColor = ContextCompat.getColor(context, R.color.nav_item_grey)
+
+        var activeButton: android.widget.ImageButton? = null
+
+        categories.keys.forEachIndexed { index, category ->
+            val button =
+                android.widget.ImageButton(context).apply {
+                    setImageResource(getCategoryIconRes(category))
+                    background = null
+                    imageTintList =
+                        ColorStateList.valueOf(if (index == 0) activeColor else inactiveColor)
+                    layoutParams =
+                        android.widget.LinearLayout.LayoutParams(
+                            0,
+                            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                            1f,
+                        )
+                    setOnClickListener {
+                        activeButton?.imageTintList = ColorStateList.valueOf(inactiveColor)
+                        imageTintList = ColorStateList.valueOf(activeColor)
+                        activeButton = this
+
+                        val position =
+                            emojiItems.indexOfFirst {
+                                it is EmojiAdapter.Item.Category && it.value == category
+                            }
+                        if (position != -1) {
+                            (layoutManager as androidx.recyclerview.widget.LinearLayoutManager)
+                                .scrollToPositionWithOffset(position, 0)
+                        }
+                    }
+                }
+
+            if (index == 0) activeButton = button
+            binding.emojiCategoriesStrip.addView(button)
+        }
+    }
+
+    /**
+     * Hides the emoji palette and restores the normal keyboard view and command options bar.
+     * Called when the user taps the close button, the ABC button, or finishes emoji selection.
+     */
+    fun hideEmojiPalette() {
+        binding.emojiPaletteHolder.visibility = View.GONE
+        binding.keyboardView.visibility = View.VISIBLE
+        binding.commandOptionsBar.visibility = View.VISIBLE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
+        binding.emojisList.scrollToPosition(0)
+        binding.emojiCategoriesStrip.removeAllViews()
     }
 
     /**
@@ -904,11 +1361,47 @@ class KeyboardUIManager(
     /**
      * Show information about Wikidata when the user clicks the information icon.
      */
-    private fun showInvalidInfo() {
+    internal fun showInvalidInfo() {
         binding.ivInfo.isClickable = true
         binding.ivInfo.isFocusable = true
         keyboardView.visibility = View.GONE
+        binding.toolbarBar.visibility = View.GONE
         binding.invalidInfoBar.visibility = View.VISIBLE
+        val invalidText =
+            binding.promptText.text
+                .toString()
+                .removeSuffix(": ")
+                .trim()
+        if (invalidText.isNotEmpty()) {
+            binding.invalidText.text = invalidText
+        }
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val backgroundColor = if (isDarkMode) R.color.command_bar_color_dark else white
+        binding.invalidText.backgroundTintList = ContextCompat.getColorStateList(context, backgroundColor)
+        binding.invalidText.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
+        val panelBgColor =
+            ContextCompat.getColor(
+                context,
+                if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+            )
+        binding.invalidInfoBar.setBackgroundColor(panelBgColor)
+        binding.infoWiki.setBackgroundColor(panelBgColor)
+
+        val cardBgColor =
+            ContextCompat.getColor(
+                context,
+                if (isDarkMode) R.color.dark_key_color else R.color.white,
+            )
+        val textColor = if (isDarkMode) Color.WHITE else ContextCompat.getColor(context, R.color.key_text_color)
+        binding.middleTextviewContainer.backgroundTintList = ColorStateList.valueOf(cardBgColor)
+        binding.middleTextview.setTextColor(textColor)
+
+        binding.buttonLeft.backgroundTintList = ColorStateList.valueOf(cardBgColor)
+        binding.buttonRight.backgroundTintList = ColorStateList.valueOf(cardBgColor)
+        val arrowColor = if (isDarkMode) Color.WHITE else Color.BLACK
+        binding.buttonLeft.foreground?.setTint(arrowColor)
+        binding.buttonRight.foreground?.setTint(arrowColor)
+
         setupWikidataButtons()
         updateWikidataPage()
     }
@@ -941,13 +1434,12 @@ class KeyboardUIManager(
      */
     private fun updateDotIndicators() {
         val pageIndicators = binding.pageIndicators
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val activeColor = context.scribeColorInt(R.color.scribe_text, dark = isDarkMode)
+        val inactiveColor = context.scribeColorInt(R.color.scribe_caption, dark = isDarkMode)
         for (i in 0 until pageIndicators.childCount) {
-            val dot = pageIndicators.getChildAt(i)
-            dot.background =
-                ContextCompat.getDrawable(
-                    context,
-                    if (i == currentPage) R.drawable.dot_active else R.drawable.dot_inactive,
-                )
+            val color = if (i == currentPage) activeColor else inactiveColor
+            pageIndicators.getChildAt(i).backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 
@@ -967,11 +1459,11 @@ class KeyboardUIManager(
         binding.separator2.visibility = View.GONE
         binding.separator3.visibility = View.GONE
 
-        binding.emojiBtnPhone1?.visibility = View.GONE
-        binding.emojiBtnPhone2?.visibility = View.GONE
-        binding.emojiBtnTablet1?.visibility = View.GONE
-        binding.emojiBtnTablet2?.visibility = View.GONE
-        binding.emojiBtnTablet3?.visibility = View.GONE
+        binding.emojiBtnPhone1.visibility = View.GONE
+        binding.emojiBtnPhone2.visibility = View.GONE
+        binding.emojiBtnTablet1.visibility = View.GONE
+        binding.emojiBtnTablet2.visibility = View.GONE
+        binding.emojiBtnTablet3.visibility = View.GONE
         binding.separator4.visibility = View.GONE
         binding.separator5.visibility = View.GONE
         binding.separator6.visibility = View.GONE
@@ -992,11 +1484,36 @@ class KeyboardUIManager(
         binding.clipboardPanelHolder.visibility = View.VISIBLE
         keyboardView.visibility = View.INVISIBLE
         binding.commandOptionsBar.visibility = View.INVISIBLE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
+        applyClipboardPanelTheme()
+    }
+
+    fun applyClipboardPanelTheme() {
+        val isDarkMode = getIsDarkModeOrNot(context)
+        val bgColor =
+            ContextCompat.getColor(
+                context,
+                if (isDarkMode) R.color.dark_keyboard_bg_color else R.color.light_keyboard_bg_color,
+            )
+        val textColor = if (isDarkMode) Color.WHITE else Color.BLACK
+
+        binding.clipboardPanelTopBar.setBackgroundColor(bgColor)
+        binding.clipboardContentHolder.setBackgroundColor(bgColor)
+        binding.clipboardPanelClose.setColorFilter(textColor)
+        binding.clipboardPanelLabel.setTextColor(textColor)
+        binding.clipboardEmptyText.setTextColor(textColor)
+        binding.clipboardClearAll.imageTintList =
+            ColorStateList.valueOf(context.scribeColorInt(R.color.scribe_delete, dark = isDarkMode))
     }
 
     fun hideClipboardPanel() {
         binding.clipboardPanelHolder.visibility = View.GONE
         keyboardView.visibility = View.VISIBLE
         binding.commandOptionsBar.visibility = View.VISIBLE
+        binding.toolbarBar.visibility = View.GONE
+        binding.invalidInfoBar.visibility = View.GONE
+        binding.conjugateGridContainer.visibility = View.GONE
     }
 }

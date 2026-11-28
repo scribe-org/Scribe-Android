@@ -3,18 +3,17 @@
 package be.scri.helpers
 
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
 
 /**
  * Processes key events specifically related to the space key.
  * This includes handling "period on double tap" logic, committing spaces
  * in normal input mode or command bar mode, and interacting with suggestions.
  *
- * @property ime The [GeneralKeyboardIME] instance this processor is associated with.
+ * @property ime The [KeyboardIMEContext] instance this processor is associated with.
  * @property suggestionHandler The [SuggestionHandler] to manage suggestions.
  */
 class SpaceKeyProcessor(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
     private val suggestionHandler: SuggestionHandler,
 ) {
     /**
@@ -68,36 +67,27 @@ class SpaceKeyProcessor(
             return
         }
 
-        val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime, ime.language)
-        val ic = ime.currentInputConnection ?: return
+        val periodOnDoubleTapEnabled = PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context = ime.imeContext, ime.language)
+        val ic = ime.getInputConnection() ?: return
         val wordBeforeSpace = ime.getLastWordBeforeCursor()
-        // Get char before space.
-        val twoCharsBeforeCursor = ic.getTextBeforeCursor(2, 0)?.toString()
-        val charBeforeSpace = if (twoCharsBeforeCursor?.length == 2) twoCharsBeforeCursor[0] else null
-        val isPunctuationBeforeSpace = charBeforeSpace == '.' || charBeforeSpace == '?' || charBeforeSpace == '!'
+
+        val textBefore = ic.getTextBeforeCursor(2, 0)?.toString()
+        val charBeforeSpace = if (textBefore != null && textBefore.length == 2) textBefore[0] else null
+        val isPunctuationOrSpaceBefore =
+            charBeforeSpace == null ||
+                charBeforeSpace.isWhitespace() ||
+                charBeforeSpace in listOf('.', '?', '!', ',')
 
         var shouldEnableAutoCapitalization = false
 
-        if (periodOnDoubleTapEnabled && wasLastKeySpace && ime.hasTextBeforeCursor()) {
-            val textBeforeTwoChars = ic.getTextBeforeCursor(2, 0)?.toString()
-
-            if (meetsTwoCharDoubleSpacePeriodCondition(textBeforeTwoChars)) {
-                val oneCharBefore = ic.getTextBeforeCursor(1, 0)?.toString()
-                if (oneCharBefore == " " && !isPunctuationBeforeSpace) {
-                    ime.commitPeriodAfterSpace()
-                    shouldEnableAutoCapitalization = true
-                } else {
-                    insertSpace()
-                }
-            } else {
-                val textBeforeOneChar = ic.getTextBeforeCursor(1, 0)?.toString()
-                if (textBeforeOneChar == " " && !isPunctuationBeforeSpace) {
-                    ime.commitPeriodAfterSpace()
-                    shouldEnableAutoCapitalization = true
-                } else {
-                    insertSpace()
-                }
-            }
+        if (periodOnDoubleTapEnabled &&
+            wasLastKeySpace &&
+            textBefore != null &&
+            textBefore.endsWith(" ") &&
+            !isPunctuationOrSpaceBefore
+        ) {
+            ime.commitPeriodAfterSpace()
+            shouldEnableAutoCapitalization = true
         } else {
             insertSpace()
 
@@ -132,20 +122,4 @@ class SpaceKeyProcessor(
             commandBarState = false,
         )
     }
-
-    /**
-     * Checks if the text before the cursor meets the specific criteria for inserting a period
-     * on a double space when the text before is two characters long.
-     * Criteria: not null, length is 2, starts with a space, and does not end with " .".
-     * This typically matches patterns like " X" (where X is not '.') or "  ".
-     *
-     * @param textBefore The two characters of text immediately before the cursor.
-     *
-     * @return true if the conditions are met, false otherwise.
-     */
-    private fun meetsTwoCharDoubleSpacePeriodCondition(textBefore: String?): Boolean =
-        textBefore != null &&
-            textBefore.length == 2 &&
-            textBefore.startsWith(" ") &&
-            !textBefore.endsWith(" .")
 }

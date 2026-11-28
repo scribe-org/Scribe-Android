@@ -3,7 +3,6 @@
 package be.scri.ui.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -11,12 +10,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.scri.R
 import be.scri.helpers.PreferencesHelper
 import be.scri.ui.common.ScribeBaseScreen
@@ -30,6 +33,8 @@ import be.scri.ui.models.ScribeItemList
 private data class FunctionalitySettings(
     val periodOnDoubleTapState: Boolean,
     val onTogglePeriodOnDoubleTap: (Boolean) -> Unit,
+    val autoSpaceAfterPunctuationState: Boolean,
+    val onToggleAutoSpaceAfterPunctuation: (Boolean) -> Unit,
     val emojiSuggestionsState: Boolean,
     val onToggleEmojiSuggestions: (Boolean) -> Unit,
     val togglePopUpOnKeyPress: Boolean,
@@ -55,6 +60,7 @@ fun LanguageSettingsScreen(
     onTranslationLanguageSelect: () -> Unit,
     onCurrencySelect: () -> Unit,
     modifier: Modifier = Modifier,
+    onDefaultLayoutSelect: () -> Unit = {},
 ) {
     val context = LocalContext.current
 
@@ -64,6 +70,13 @@ fun LanguageSettingsScreen(
         remember {
             mutableStateOf(
                 PreferencesHelper.getEnablePeriodOnSpaceBarDoubleTap(context, language),
+            )
+        }
+
+    val autoSpaceAfterPunctuationState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getAutoSpaceAfterPunctuationPreference(context, language),
             )
         }
 
@@ -109,13 +122,6 @@ fun LanguageSettingsScreen(
             )
         }
 
-    val clipboardKeyOnKeyboardState =
-        remember {
-            mutableStateOf(
-                PreferencesHelper.getIsClipboardKeyEnabled(context, language),
-            )
-        }
-
     val wordByWordDeletionState =
         remember {
             mutableStateOf(
@@ -130,10 +136,53 @@ fun LanguageSettingsScreen(
             )
         }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val translationSourceLanguageState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getTranslationSourceLanguage(context, language),
+            )
+        }
+
+    val defaultLayoutState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getDefaultKeyboardLayout(context, language),
+            )
+        }
+
+    val defaultCurrencySymbolState =
+        remember {
+            mutableStateOf(
+                PreferencesHelper.getDefaultCurrencySymbol(context, language),
+            )
+        }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    translationSourceLanguageState.value =
+                        PreferencesHelper.getTranslationSourceLanguage(context, language)
+                    defaultLayoutState.value =
+                        PreferencesHelper.getDefaultKeyboardLayout(context, language)
+                    defaultCurrencySymbolState.value =
+                        PreferencesHelper.getDefaultCurrencySymbol(context, language)
+                }
+            }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     val translationSourceLanguageList =
         ScribeItemList(
             items =
-                getTranslationSourceLanguageListData {
+                getTranslationSourceLanguageListData(
+                    translationSourceLanguage = translationSourceLanguageState.value,
+                ) {
                     onTranslationLanguageSelect()
                 },
         )
@@ -161,16 +210,10 @@ fun LanguageSettingsScreen(
                             shouldDisableAccentCharacter,
                         )
                     },
-                    toggleClipboardKeyOnKeyboard = clipboardKeyOnKeyboardState.value,
-                    onToggleClipboardKeyOnKeyboard = { isEnabled ->
-                        clipboardKeyOnKeyboardState.value = isEnabled
-                        PreferencesHelper.setClipboardKeyPreference(
-                            context,
-                            language,
-                            isEnabled,
-                        )
-                    },
                     onCurrencySelect = onCurrencySelect,
+                    onDefaultLayoutSelect = onDefaultLayoutSelect,
+                    defaultLayout = defaultLayoutState.value,
+                    defaultCurrencySymbol = defaultCurrencySymbolState.value,
                 ),
         )
 
@@ -181,6 +224,15 @@ fun LanguageSettingsScreen(
             onTogglePeriodOnDoubleTap = { isEnabled ->
                 periodOnDoubleTapState.value = isEnabled
                 PreferencesHelper.setPeriodOnSpaceBarDoubleTapPreference(
+                    context,
+                    language,
+                    isEnabled,
+                )
+            },
+            autoSpaceAfterPunctuationState = autoSpaceAfterPunctuationState.value,
+            onToggleAutoSpaceAfterPunctuation = { isEnabled ->
+                autoSpaceAfterPunctuationState.value = isEnabled
+                PreferencesHelper.setAutoSpaceAfterPunctuationPreference(
                     context,
                     language,
                     isEnabled,
@@ -247,8 +299,10 @@ fun LanguageSettingsScreen(
             items = getFunctionalityListData(functionalitySettings),
         )
 
+    val pageTitleText = "${stringResource(getLanguageStringFromi18n(language))} ${stringResource(R.string.i18n_app_settings_title).lowercase()}"
+
     ScribeBaseScreen(
-        pageTitle = stringResource(getLanguageStringFromi18n(language)),
+        pageTitle = pageTitleText,
         lastPage = stringResource(R.string.i18n_app_settings_title),
         onBackNavigation = onBackNavigation,
         modifier = modifier,
@@ -305,6 +359,12 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
                 onToggle = settings.onTogglePeriodOnDoubleTap,
             ),
             ScribeItem.SwitchItem(
+                title = R.string.i18n_app_settings_keyboard_functionality_auto_space_punctuation,
+                desc = R.string.i18n_app_settings_keyboard_functionality_auto_space_punctuation_description,
+                state = settings.autoSpaceAfterPunctuationState,
+                onToggle = settings.onToggleAutoSpaceAfterPunctuation,
+            ),
+            ScribeItem.SwitchItem(
                 title = R.string.i18n_app_settings_keyboard_functionality_auto_suggest_emoji,
                 desc = R.string.i18n_app_settings_keyboard_functionality_auto_suggest_emoji_description,
                 state = settings.emojiSuggestionsState,
@@ -359,18 +419,49 @@ private fun getFunctionalityListData(settings: FunctionalitySettings): List<Scri
  *
  * @return A list of [ScribeItem]s to be displayed in the UI.
  */
-@Composable
 private fun getLayoutListData(
     language: String,
     togglePeriodAndCommaState: Boolean,
     onTogglePeriodAndComma: (Boolean) -> Unit,
     toggleDisableAccentCharacter: Boolean,
     onToggleDisableAccentCharacter: (Boolean) -> Unit,
-    toggleClipboardKeyOnKeyboard: Boolean,
-    onToggleClipboardKeyOnKeyboard: (Boolean) -> Unit,
     onCurrencySelect: () -> Unit,
+    onDefaultLayoutSelect: () -> Unit = {},
+    defaultLayout: String? = null,
+    defaultCurrencySymbol: String? = null,
 ): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
+
+    list.add(
+        ScribeItem.ClickableItem(
+            title = R.string.i18n_app_settings_keyboard_layout_default_layout,
+            desc = R.string.i18n_app_settings_keyboard_layout_default_layout_description,
+            value = defaultLayout,
+            action = {
+                onDefaultLayoutSelect()
+            },
+        ),
+    )
+
+    list.add(
+        ScribeItem.ClickableItem(
+            title = R.string.i18n_app_settings_keyboard_layout_default_currency,
+            desc = R.string.i18n_app_settings_keyboard_layout_default_currency_description,
+            value = defaultCurrencySymbol,
+            action = {
+                onCurrencySelect()
+            },
+        ),
+    )
+
+    list.add(
+        ScribeItem.SwitchItem(
+            title = R.string.i18n_app_settings_keyboard_layout_period_and_comma,
+            desc = R.string.i18n_app_settings_keyboard_layout_period_and_comma_description,
+            state = togglePeriodAndCommaState,
+            onToggle = onTogglePeriodAndComma,
+        ),
+    )
 
     when (language) {
         "German", "Swedish", "Spanish" -> {
@@ -384,33 +475,6 @@ private fun getLayoutListData(
             )
         }
     }
-
-    list.add(
-        ScribeItem.SwitchItem(
-            title = R.string.i18n_app_settings_keyboard_layout_period_and_comma,
-            desc = R.string.i18n_app_settings_keyboard_layout_period_and_comma_description,
-            state = togglePeriodAndCommaState,
-            onToggle = onTogglePeriodAndComma,
-        ),
-    )
-    list.add(
-        ScribeItem.SwitchItem(
-            title = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard,
-            desc = R.string.i18n_app_settings_keyboard_layout_clipboard_on_keyboard_description,
-            state = toggleClipboardKeyOnKeyboard,
-            onToggle = onToggleClipboardKeyOnKeyboard,
-        ),
-    )
-    list.add(
-        ScribeItem.ClickableItem(
-            title = R.string.i18n_app_settings_keyboard_layout_default_currency,
-            desc = R.string.i18n_app_settings_keyboard_layout_default_currency_description,
-            action = {
-                Log.d("Navigation", "onCurrencySelect clicked")
-                onCurrencySelect()
-            },
-        ),
-    )
 
     return list
 }
@@ -449,14 +513,17 @@ fun getLanguageStringFromi18n(language: String): Int {
  * @return A list of [ScribeItem]s to be displayed in the UI.
  */
 @Composable
-private fun getTranslationSourceLanguageListData(onTranslationLanguageSelect: () -> Unit): List<ScribeItem> {
+private fun getTranslationSourceLanguageListData(
+    translationSourceLanguage: String? = null,
+    onTranslationLanguageSelect: () -> Unit,
+): List<ScribeItem> {
     val list: MutableList<ScribeItem> = mutableListOf()
     list.add(
         ScribeItem.ClickableItem(
             title = R.string.i18n_app_settings_keyboard_translation_select_source,
             desc = R.string.i18n_app_settings_keyboard_translation_select_source_description,
+            value = translationSourceLanguage,
             action = {
-                Log.d("Navigation", "onTranslationLanguageSelect clicked")
                 onTranslationLanguageSelect()
             },
         ),

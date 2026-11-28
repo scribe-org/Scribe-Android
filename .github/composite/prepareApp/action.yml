@@ -18,12 +18,16 @@ runs:
 
       - name: Setup JDK environment
         uses: actions/setup-java@v4
+        env:
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
         with:
             distribution: "zulu"
             java-version: 17
 
       - name: Cache Gradle
-        uses: actions/cache@v3
+        uses: actions/cache@v4
+        env:
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
         with:
           path: | 
                   ~/.gradle/caches

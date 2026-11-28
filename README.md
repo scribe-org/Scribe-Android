@@ -5,7 +5,8 @@
 </div>
 
 [![platforms](https://img.shields.io/static/v1?message=Android&logo=android&color=32DE84&logoColor=white&label=%20)](https://github.com/scribe-org/Scribe-Android)
-[![version](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
+[![version_keyboards](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?filter=keyboards%2F*&color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
+[![version_conjugate](https://img.shields.io/github/v/release/scribe-org/Scribe-Android?filter=conjugate%2F*&color=%2300550&sort=semver&label=%20)](https://github.com/scribe-org/Scribe-Android/releases/)
 [![issues](https://img.shields.io/github/issues/scribe-org/Scribe-Android?label=%20&logo=github)](https://github.com/scribe-org/Scribe-Android/issues)
 [![language](https://img.shields.io/badge/Kotlin%201-A97AFE.svg?logo=kotlin&logoColor=ffffff)](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md)
 [![license](https://img.shields.io/github/license/scribe-org/Scribe-Android.svg?label=%20)](https://github.com/scribe-org/Scribe-Android/blob/main/LICENSE.txt)
@@ -19,18 +20,18 @@
 
 ### Scribe-Android: Keyboards for language learners & Conjugate-Android: Wikidata based verb conjugation app
 
-#### WIP port of [Scribe-iOS](https://github.com/scribe-org/Scribe-iOS): see [Issues](https://github.com/scribe-org/Scribe-Android/issues)
+**Scribe-Android** is a pack of Android keyboards for language learners. Features include translation, verb conjugation and word annotation that give users the tools needed to communicate with confidence.
 
-**Scribe-Android** is a pack of Android keyboards for language learners. Features include translation **`(beta)`**, verb conjugation and word annotation that give users the tools needed to communicate with confidence.
+**Conjugate-Android** is a verb conjugation application that allows users to search for verbs in any language they have downloaded at the same time within a unified interface.
 
-Scribe is fully open-source and does not collect usage data or ask for system access. Feature data is sourced from [Wikidata](https://www.wikidata.org/) and stored in-app, meaning Scribe is a highly responsive experience that does not require an internet connection.
+These applications are fully open-source and do not collect usage data or ask for system access. Feature data is sourced from [Wikidata](https://www.wikidata.org/) and [Wiktionary](https://www.wiktionary.org/) and stored in-app, meaning the apps are highly responsive experiences that do not require an internet connection.
 
 > [!NOTE]\
 > The [contributing](#contributing) section has information for those interested, with the articles and presentations in [featured by](#featured-by) also being good resources for learning more about Scribe.
 
-Also available on [iOS](https://github.com/scribe-org/Scribe-iOS), [Desktop](https://github.com/scribe-org/Scribe-Desktop) (planned) and for the data processes see [Scribe-Data](https://github.com/scribe-org/Scribe-Data).
+Also available on [iOS](https://github.com/scribe-org/Scribe-iOS) and [Desktop](https://github.com/scribe-org/Scribe-Desktop) (WIP). Other supporting projects include the data process [Scribe-Data](https://github.com/scribe-org/Scribe-Data), the API that serves data to the apps [Scribe-Server](https://github.com/scribe-org/Scribe-Server) and the central localization process for all Scribe projects [Scribe-i18n](https://github.com/scribe-org/Scribe-i18n).
 
-Check out Scribe's [architecture diagrams](https://github.com/scribe-org/Organization/blob/main/ARCHITECTURE.md) for an overview of the organization including our applications, services and processes. It depicts the projects that [Scribe](https://github.com/scribe-org) is developing as well as the relationships between them and the external systems with which they interact.
+Check out Scribe's [architecture diagram](https://github.com/scribe-org/Organization/blob/main/ARCHITECTURE.md) for an overview of the organization including our applications, services and processes. It depicts the projects that [Scribe](https://github.com/scribe-org) develops as well as the relationships between them and the external systems with which they interact.
 
 # Contents
 
@@ -64,7 +65,7 @@ Check out Scribe's [architecture diagrams](https://github.com/scribe-org/Organiz
 
 Scribe uses [Matrix](https://matrix.org/) for communications. You're more than welcome to [join us in our public chat rooms](https://matrix.to/#/#scribe_community:matrix.org) to share ideas, ask questions or just say hi to the team :) We'd suggest that you use the [Element](https://element.io/) client and [Element X](https://element.io/app) for a mobile app.
 
-Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) if you are interested in contributing to Scribe-Android. Work that is in progress or could be implemented is tracked in the [issues](https://github.com/scribe-org/Scribe-Android/issues) and [projects](https://github.com/scribe-org/Scribe-Android/projects).
+Please see the [contribution guidelines](https://github.com/scribe-org/Scribe-Android/blob/main/CONTRIBUTING.md) and [style guide](https://github.com/scribe-org/Scribe-Android/blob/main/STYLEGUIDE.md) if you are interested in contributing to Scribe-Android. Work that is in progress or could be implemented is tracked in the [issues](https://github.com/scribe-org/Scribe-Android/issues) and [projects](https://github.com/scribe-org/Scribe-Android/projects).
 
 > [!NOTE]\
 > Just because an issue is assigned on GitHub doesn't mean the team isn't open to your contribution! Feel free to write [in the issues](https://github.com/scribe-org/Scribe-Android/issues) and we can potentially reassign it to you.
@@ -111,9 +112,9 @@ The [designs for Scribe](https://www.figma.com/file/c8945w2iyoPYVhsqW7vRn6/scrib
 ### Data Edits
 
 > [!NOTE]\
-> Please see the [Wikidata and Scribe Guide](https://github.com/scribe-org/Organization/blob/main/WIKIDATAGUIDE.md) for an overview of [Wikidata](https://www.wikidata.org/) and how Scribe uses it.
+> Please see the [Wikidata and Scribe Guide](https://github.com/scribe-org/Organization/blob/main/WIKIDATAGUIDE.md) and the [data contracts guide](https://github.com/scribe-org/Organization/blob/main/DATA_CONTRACTS.md) and [Wikidata](https://www.wikidata.org/) for an overview of [Wikidata](https://www.wikidata.org/) and how Scribe uses it.
 
-Scribe does not accept direct edits to the grammar files as they are sourced from [Wikidata](https://www.wikidata.org/). Edits can be discussed and the [Scribe-Data](https://github.com/scribe-org/Scribe-Data) queries will be changed. If there is a problem with one of the files, then the fix should be made on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us know that edits have been made by [opening a data issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
+Scribe does not accept direct edits to the queries or any resulting Scribe-Data data files as they are sourced from [data contracts](https://github.com/scribe-org/Organization/blob/main/DATA_CONTRACTS.md) and [Wikidata](https://www.wikidata.org/). Edits can be discussed and the contracts themselves will be changed used to generate queries before an update. If there is a problem with data in Scribe applications, then the fix should be made on [Wikidata](https://www.wikidata.org/) and not on Scribe. Feel free to let us know that edits have been made by [opening a data issue](https://github.com/scribe-org/Scribe-Android/issues/new?assignees=&labels=data&template=data_wikidata.yml) or contacting us in the [issues for Scribe-Data](https://github.com/scribe-org/Scribe-Data/issues) and we'll be happy to integrate them!
 
 <sub><a href="#top">Back to top.</a></sub>
 
@@ -303,7 +304,7 @@ Please see the [blog posts page on our website](https://scri.be/docs/about/blog-
 
 ### Organizations
 
-The following organizations have supported the development of Scribe projects through various programs. Thank you all! 💙
+The following organizations have supported the development of Scribe projects through various programs. Thank you all! 🩵
 
 <div align="center">
   <br>
@@ -356,8 +357,8 @@ The Scribe community would like to thank all the great software that made Scribe
       <img width="240" src="https://raw.githubusercontent.com/scribe-org/Organization/main/resources/images/logos/WikidataLogo.png" alt="Wikidata logo">
     </a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://www.wikipedia.org/">
-      <img width="160" src="https://raw.githubusercontent.com/scribe-org/Organization/main/resources/images/logos/WikipediaLogo.png" alt="Wikipedia logo">
+    <a href="https://www.wiktionary.org/">
+      <img width="160" src="https://raw.githubusercontent.com/scribe-org/Organization/main/resources/images/logos/WiktionaryLogo.png" alt="Wiktionary logo">
     </a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <br>

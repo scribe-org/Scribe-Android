@@ -126,11 +126,18 @@ android {
         }
     }
 
+    val isMinify = project.findProperty("minify")?.let { it == "" || it.toString().toBoolean() } ?: false
+
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debug"
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
+            if (isMinify) {
+                isDebuggable = false
+                isMinifyEnabled = true
+                proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            }
         }
         getByName("release") {
             isMinifyEnabled = true
@@ -249,15 +256,13 @@ dependencies {
     // Layout and UI
     // ==========================
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.documentfile:documentfile:1.1.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.exifinterface:exifinterface:1.4.1")
-    implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation("com.google.android.play:core-ktx:1.8.1")
+    implementation("com.google.android.play:review-ktx:2.0.2")
     implementation("androidx.navigation:navigation-compose:2.9.0")
 
     // ==========================
@@ -287,6 +292,7 @@ dependencies {
     // Unit Testing
     // ==========================
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5Version")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5Version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:$junit5Version")
     testImplementation("io.mockk:mockk:$mockkVersion")
@@ -319,7 +325,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("io.mockk:mockk-android:1.14.2")
 
     // ==========================
     // Other

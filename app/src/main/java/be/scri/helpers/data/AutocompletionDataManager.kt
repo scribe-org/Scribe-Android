@@ -2,6 +2,7 @@
 package be.scri.helpers.data
 
 import be.scri.helpers.DatabaseFileManager
+import be.scri.helpers.StringUtils.containsProfanity
 import be.scri.helpers.StringUtils.isWordCapitalized
 
 /**
@@ -25,10 +26,12 @@ class AutocompletionDataManager(
      *
      * @param language The language code (e.g. "en", "id") for which to load words.
      * @param numbersColumns Column names from the contract's `numbers` map.
+     * @param profanity Lowercase profane words that are never offered as completions.
      */
     fun loadWords(
         language: String,
         numbersColumns: List<String> = emptyList(),
+        profanity: Set<String> = emptySet(),
     ) {
         trie = Trie()
         trieLoaded = false
@@ -47,7 +50,7 @@ class AutocompletionDataManager(
                     val wordIndex = cursor.getColumnIndex("word")
                     while (cursor.moveToNext()) {
                         val word = cursor.getString(wordIndex)?.lowercase()?.trim()
-                        if (!word.isNullOrEmpty()) {
+                        if (!word.isNullOrEmpty() && !containsProfanity(word, profanity)) {
                             trie.insert(word)
                         }
                     }
@@ -69,7 +72,7 @@ class AutocompletionDataManager(
                             if (isGerman) {
                                 germanNouns.add(word)
                             }
-                            if (!hasLexicon) {
+                            if (!hasLexicon && !containsProfanity(word, profanity)) {
                                 nounWords.add(word)
                             }
                         }

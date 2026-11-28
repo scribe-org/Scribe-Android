@@ -29,14 +29,22 @@ class EmojiDataManager(
         val db = fileManager.getLanguageDatabase(language) ?: return emojiMap
 
         db.use {
-            if (!it.tableExists("emoji_keywords")) return emojiMap
+            // The server contract names the table "emojikeywords", but older local
+            // databases may use the snake_case form, so accept both.
+            val tableName =
+                when {
+                    it.tableExists("emoji_keywords") -> "emoji_keywords"
+                    it.tableExists("emojikeywords") -> "emojikeywords"
+                    else -> return emojiMap
+                }
 
-            it.rawQuery("SELECT MAX(LENGTH(word)) FROM emoji_keywords", null).use { cursor ->
+            it.rawQuery("SELECT MAX(LENGTH(word)) FROM $tableName", null).use { cursor ->
                 if (cursor.moveToFirst()) {
                     maxKeywordLength = cursor.getInt(0)
                 }
             }
-            it.rawQuery("SELECT * FROM emoji_keywords", null).use { cursor ->
+
+            it.rawQuery("SELECT * FROM $tableName", null).use { cursor ->
                 processEmojiCursor(cursor, emojiMap)
             }
         }
@@ -61,7 +69,8 @@ class EmojiDataManager(
                 .mapNotNull { name -> cursor.getColumnIndex(name).takeIf { it != -1 } }
 
         do {
-            val word = cursor.getString(wordIndex)
+            // Keys are lowercased so lookups via the user's (lowercased) input match.
+            val word = cursor.getString(wordIndex)?.lowercase() ?: continue
             val emojis =
                 emojiIndices
                     .mapNotNull { index -> cursor.getString(index)?.takeIf { it.isNotBlank() } }

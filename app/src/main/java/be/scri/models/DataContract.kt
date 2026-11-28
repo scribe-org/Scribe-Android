@@ -12,10 +12,35 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class DataContract(
-    val numbers: Map<String, String>,
-    val genders: Genders,
-    val conjugations: Map<Int, TenseGroup>,
+    val nouns: Nouns,
+    val verbs: Verbs,
     val translations: Translations,
+)
+
+/**
+ * Represents noun grammar metadata (genders and number representations).
+ */
+@Serializable
+data class Nouns(
+    val genders: Genders,
+    val numbers: Map<Int, NumberPair>,
+)
+
+/**
+ * Represents a singular-plural column mapping pair for nouns.
+ */
+@Serializable
+data class NumberPair(
+    val singular: String,
+    val plural: String,
+)
+
+/**
+ * Represents verb grammar metadata (conjugations).
+ */
+@Serializable
+data class Verbs(
+    val conjugations: Map<Int, TenseGroup>,
 )
 
 /**

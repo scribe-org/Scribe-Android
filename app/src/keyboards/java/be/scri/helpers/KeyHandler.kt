@@ -4,21 +4,23 @@ package be.scri.helpers
 
 import android.content.Context
 import android.util.Log
+import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
+import be.scri.helpers.KeyboardIMEContext.Companion.COMMIT_TEXT_CURSOR_POSITION
+import be.scri.helpers.KeyboardIMEContext.Companion.MAX_TEXT_LENGTH
 import be.scri.models.ScribeState
-import be.scri.services.GeneralKeyboardIME
 
 /**
- * Handles key events for the [GeneralKeyboardIME].
+ * Handles key events for keyboard services implementing [KeyboardIMEContext].
  * This class processes raw key codes, determines the appropriate action based on the
  * current keyboard state and the key pressed, and delegates to specific handlers
- * or directly interacts with the [GeneralKeyboardIME] instance.
+ * or directly interacts with the [KeyboardIMEContext] instance.
  *
- * @property ime The [GeneralKeyboardIME] instance this handler is associated with.
+ * @property ime The [KeyboardIMEContext] instance this handler is associated with.
  */
 @Suppress("TooManyFunctions")
 class KeyHandler(
-    private val ime: GeneralKeyboardIME,
+    private val ime: KeyboardIMEContext,
 ) {
     private val suggestionHandler = ime.suggestionHandler
     private val spaceKeyProcessor = SpaceKeyProcessor(ime, suggestionHandler)
@@ -42,8 +44,8 @@ class KeyHandler(
         code: Int,
         language: String,
     ) {
-        val inputConnection = ime.currentInputConnection
-        if (!isValidState(inputConnection)) {
+        val inputConnection = ime.getInputConnection()
+        if (inputConnection == null || ime.keyboard == null) {
             wasLastKeySpace = false
             return
         }
@@ -87,42 +89,67 @@ class KeyHandler(
                 commitTab(inputConnection)
                 true
             }
+
             KeyboardBase.KEYCODE_CAPS_LOCK -> {
                 handleCapsLock()
                 true
             }
+
             KeyboardBase.KEYCODE_DELETE -> {
                 handleDeleteKey()
                 true
             }
-            KeyboardBase.KEYCODE_SHIFT -> handleShiftKeyPress(previousWasLastKeySpace)
+
+            KeyboardBase.KEYCODE_SHIFT -> {
+                handleShiftKeyPress(previousWasLastKeySpace)
+            }
+
             KeyboardBase.KEYCODE_ENTER -> {
                 handleEnterKey()
                 true
             }
+
             KeyboardBase.KEYCODE_MODE_CHANGE -> {
                 handleModeChangeKey()
                 true
             }
-            KeyboardBase.KEYCODE_SPACE -> handleSpaceKeyPress(previousWasLastKeySpace)
+
+            KeyboardBase.KEYCODE_FLOAT_TOGGLE -> {
+                ime.toggleFloatingMode()
+                true
+            }
+
+            KeyboardBase.KEYCODE_SPACE -> {
+                handleSpaceKeyPress(previousWasLastKeySpace)
+            }
+
             in KeyboardBase.NAVIGATION_KEYS -> {
                 handleNavigationKey(code)
                 true
             }
+
             in KeyboardBase.SCRIBE_VIEW_KEYS -> {
                 handleScribeViewKey(code, language)
                 true
             }
+
             KeyboardBase.CODE_CURRENCY -> {
                 handleCurrencyKey(language)
                 true
             }
+
+            KeyboardBase.KEYCODE_EMOJI -> {
+                ime.openEmojiKeyboard()
+                true
+            }
+
             KeyboardBase.KEYCODE_CLIPBOARD -> {
                 ime.openClipboardPanel()
                 true
             }
+
             else -> {
-                handleDefaultKey(code)
+                handleDefaultKey(code, language)
                 true
             }
         }
@@ -153,18 +180,6 @@ class KeyHandler(
     }
 
     /**
-     * Checks if the IME is in a valid state to process key events.
-     * A valid state requires a non-null keyboard instance and an active input connection.
-     *
-     * @param inputConnection The current input connection.
-     *
-     * @return true if the state is valid, false otherwise.
-     */
-    private fun isValidState(inputConnection: InputConnection?): Boolean =
-        ime.keyboard != null &&
-            inputConnection != null
-
-    /**
      * Resets the shift key's double-tap timestamp if the pressed key is not the shift key itself.
      * This is used to manage the "shift lock on double-tap" feature.
      *
@@ -182,7 +197,7 @@ class KeyHandler(
      * @param inputConnection The active input connection.
      */
     private fun commitTab(inputConnection: InputConnection) {
-        inputConnection.commitText("\t", GeneralKeyboardIME.COMMIT_TEXT_CURSOR_POSITION)
+        inputConnection.commitText("\t", COMMIT_TEXT_CURSOR_POSITION)
     }
 
     /**
@@ -222,8 +237,8 @@ class KeyHandler(
      * Handles the currency symbol key press. It outputs the user's selected currency symbol for the current language.
      */
     private fun handleCurrencyKey(language: String) {
-        val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(ime.applicationContext, language)
-        ime.currentInputConnection?.commitText(currencySymbol, 1)
+        val currencySymbol = PreferencesHelper.getDefaultCurrencySymbol(ime.imeContext, language)
+        ime.getInputConnection()?.commitText(currencySymbol, 1)
 
         // Process emoji suggestions if in idle state.
         if (ime.currentState == ScribeState.IDLE) {
@@ -253,7 +268,7 @@ class KeyHandler(
      * It delegates the logic to the IME and clears any active suggestions.
      */
     private fun handleModeChangeKey() {
-        ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime)
+        ime.handleModeChange(ime.keyboardMode, ime.keyboardView, ime.imeContext)
         suggestionHandler.clearAllSuggestionsAndHideButtonUI()
     }
 
@@ -264,11 +279,13 @@ class KeyHandler(
      */
     private fun handleNavigationKey(code: Int) {
         val isRight = code == KeyboardBase.KEYCODE_RIGHT_ARROW
-        ime.currentInputConnection?.let { ic ->
-            val currentPos = ic.getTextBeforeCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.length ?: 0
+        ime.getInputConnection()?.let { ic ->
+            val extracted = ic.getExtractedText(ExtractedTextRequest(), 0) ?: return@let
+            if (extracted.selectionStart < 0) return@let
+            val currentPos = extracted.startOffset + extracted.selectionStart
             val newPos =
                 if (isRight) {
-                    val textAfter = ic.getTextAfterCursor(GeneralKeyboardIME.MAX_TEXT_LENGTH, 0)?.toString() ?: ""
+                    val textAfter = ic.getTextAfterCursor(MAX_TEXT_LENGTH, 0)?.toString() ?: ""
                     (currentPos + 1).coerceAtMost(currentPos + textAfter.length)
                 } else {
                     (currentPos - 1).coerceAtLeast(0)
@@ -289,10 +306,13 @@ class KeyHandler(
         language: String,
     ) {
         when (code) {
-            KeyboardBase.DISPLAY_LEFT, KeyboardBase.DISPLAY_RIGHT ->
-                handleConjugateCycleKeys(code, ime.applicationContext)
-            else ->
+            KeyboardBase.DISPLAY_LEFT, KeyboardBase.DISPLAY_RIGHT -> {
+                handleConjugateCycleKeys(code, ime.imeContext)
+            }
+
+            else -> {
                 handleConjugateSelectionKey(code, language)
+            }
         }
     }
 
@@ -321,7 +341,7 @@ class KeyHandler(
         editor.apply()
 
         ime.updateUI()
-        Log.i(TAG, "New conjugate_index: $currentValue")
+        Log.d(TAG, "New conjugate_index: $currentValue")
     }
 
     /**
@@ -353,17 +373,52 @@ class KeyHandler(
      * @param code The key code representing the character to input.
      */
 
-    private fun handleDefaultKey(code: Int) {
+    private fun handleDefaultKey(
+        code: Int,
+        language: String,
+    ) {
         val isCommandBarActive =
             when (ime.currentState) {
                 ScribeState.TRANSLATE,
                 ScribeState.CONJUGATE,
                 ScribeState.PLURAL,
-                -> true // use command bar for actual commands
+                -> true
+
+                // use command bar for actual commands
                 else -> false // use main input field for IDLE and SELECT_COMMAND
             }
 
+        val charCode = code.toChar()
+        val isPunctuation = charCode in listOf('.', ',', '!', '?')
+        val isAutoSpaceEnabled =
+            !isCommandBarActive &&
+                isPunctuation &&
+                PreferencesHelper.getAutoSpaceAfterPunctuationPreference(ime.imeContext, language)
+
+        if (isAutoSpaceEnabled) {
+            val ic = ime.getInputConnection()
+            val textBefore = ic?.getTextBeforeCursor(2, 0)?.toString()
+            if (textBefore != null && textBefore.length == 2 && textBefore.endsWith(" ")) {
+                val charBeforeSpace = textBefore[0]
+                if (charBeforeSpace in listOf('.', ',', '!', '?')) {
+                    ic.deleteSurroundingText(1, 0)
+                }
+            }
+        }
+
         ime.handleElseCondition(code, ime.keyboardMode, isCommandBarActive)
+
+        if (isAutoSpaceEnabled) {
+            val ic = ime.getInputConnection()
+            val textBefore = ic?.getTextBeforeCursor(2, 0)?.toString()
+            if (textBefore != null && textBefore.length == 2) {
+                val prevChar = textBefore[0]
+                val typedPunct = textBefore[1]
+                if (typedPunct in listOf('.', ',', '!', '?') && !prevChar.isWhitespace() && prevChar !in listOf('.', ',', '!', '?')) {
+                    ic.commitText(" ", 1)
+                }
+            }
+        }
 
         if (ime.currentState == ScribeState.IDLE) {
             val currentWord = ime.getLastWordBeforeCursor()
