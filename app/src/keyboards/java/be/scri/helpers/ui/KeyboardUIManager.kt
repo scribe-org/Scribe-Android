@@ -24,10 +24,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.graphics.toColorInt
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import be.scri.R
@@ -52,11 +52,10 @@ import be.scri.helpers.parseRawEmojiSpecsFile
 import be.scri.models.ScribeLanguage
 import be.scri.models.ScribeState
 import be.scri.services.GeneralKeyboardIME
+import be.scri.ui.theme.scribeColorInt
 import be.scri.views.KeyboardView
 
 private const val SUB_SELECTION_LABEL_TEXT_SIZE_RATIO = 0.8f
-private const val CONJUGATION_LABEL_COLOR_LIGHT = "#E558564B"
-private const val CONJUGATION_LABEL_COLOR_DARK = "#CAC4D0"
 private const val MAX_FORM_COUNT_2X1 = 2
 private const val FORM_COUNT_3X1 = 3
 private const val MAX_FORM_COUNT_2X2 = 4
@@ -269,7 +268,8 @@ class KeyboardUIManager(
             ),
         )
 
-        val textColor = if (isUserDarkMode) Color.WHITE else "#1E1E1E".toColorInt()
+        // Same color as the characters on the keys.
+        val textColor = context.scribeColorInt(R.color.scribe_text, dark = isUserDarkMode)
 
         listOf(binding.translateBtn, binding.conjugateBtn, binding.pluralBtn).forEachIndexed { index, button ->
             button.visibility = View.VISIBLE
@@ -369,10 +369,6 @@ class KeyboardUIManager(
             binding.conjugateBtn.foreground = null
             binding.pluralBtn.foreground = null
         }
-
-        val separatorColor = (if (isUserDarkMode) GeneralKeyboardIME.DARK_THEME else GeneralKeyboardIME.LIGHT_THEME).toColorInt()
-        binding.separator2.setBackgroundColor(separatorColor)
-        binding.separator3.setBackgroundColor(separatorColor)
 
         val spaceInDp = 4
         val spaceInPx = (spaceInDp * context.resources.displayMetrics.density).toInt()
@@ -516,10 +512,16 @@ class KeyboardUIManager(
             R.id.conjugate_btn_6,
         )
 
+    /**
+     * Color of the small label above a conjugation form, resolved once per grid.
+     */
+    @ColorInt
+    private fun conjugationLabelColor(isDarkMode: Boolean): Int = context.scribeColorInt(R.color.scribe_caption, dark = isDarkMode)
+
     private fun formatButtonText(
         label: String,
         form: String,
-        isDarkMode: Boolean,
+        @ColorInt labelColor: Int,
     ): CharSequence {
         if (label.isEmpty() || label == "all") return form
         val spannable = SpannableStringBuilder()
@@ -530,8 +532,6 @@ class KeyboardUIManager(
             label.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
-        val labelColor =
-            (if (isDarkMode) CONJUGATION_LABEL_COLOR_DARK else CONJUGATION_LABEL_COLOR_LIGHT).toColorInt()
         spannable.setSpan(
             ForegroundColorSpan(labelColor),
             0,
@@ -586,6 +586,7 @@ class KeyboardUIManager(
         subPairs: List<Pair<String, String>>,
         isDarkMode: Boolean,
     ) {
+        val labelColor = conjugationLabelColor(isDarkMode)
         buttonIds.forEachIndexed { i, btnId ->
             val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
             if (i < subPairs.size) {
@@ -599,7 +600,7 @@ class KeyboardUIManager(
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                 val hasLabel = label.isNotEmpty() && label != "all"
                 applyButtonLayout(btn, hasLabel)
-                btn.text = formatButtonText(label, form, isDarkMode)
+                btn.text = formatButtonText(label, form, labelColor)
                 btn.setOnClickListener {
                     listener.commitText("$form ")
                     listener.processLinguisticSuggestions(form)
@@ -616,6 +617,7 @@ class KeyboardUIManager(
         categoryEntries: List<Map.Entry<String, List<Pair<String, String>>>>,
         isDarkMode: Boolean,
     ) {
+        val labelColor = conjugationLabelColor(isDarkMode)
         buttonIds.forEachIndexed { i, btnId ->
             val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
             if (i < categoryEntries.size) {
@@ -629,7 +631,7 @@ class KeyboardUIManager(
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                 val formsPreview = pairs.map { it.second.trim() }.filter { it.isNotBlank() }.joinToString(" / ")
                 applyButtonLayout(btn, categoryTitle.isNotEmpty())
-                btn.text = formatButtonText(categoryTitle, formsPreview, isDarkMode)
+                btn.text = formatButtonText(categoryTitle, formsPreview, labelColor)
                 if (pairs.size == 1) {
                     val (_, form) = pairs.first()
                     btn.setOnClickListener {
@@ -653,6 +655,7 @@ class KeyboardUIManager(
         directPairs: List<Pair<String, String>>,
         isDarkMode: Boolean,
     ) {
+        val labelColor = conjugationLabelColor(isDarkMode)
         buttonIds.forEachIndexed { i, btnId ->
             val btn = gridContent.findViewById<Button?>(btnId) ?: return@forEachIndexed
             if (i < directPairs.size) {
@@ -666,7 +669,7 @@ class KeyboardUIManager(
                 btn.setTextColor(if (isDarkMode) Color.WHITE else Color.BLACK)
                 val hasLabel = label.isNotEmpty() && label != "all"
                 applyButtonLayout(btn, hasLabel)
-                btn.text = formatButtonText(label, form, isDarkMode)
+                btn.text = formatButtonText(label, form, labelColor)
                 btn.setOnClickListener {
                     listener.commitText("$form ")
                     listener.processLinguisticSuggestions(form)
@@ -748,9 +751,7 @@ class KeyboardUIManager(
         val isDarkMode = getIsDarkModeOrNot(context)
 
         // Restore original logic: Set background on toolbarBar, not invalidInfoBar.
-        binding.toolbarBar.setBackgroundColor(
-            if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt(),
-        )
+        binding.toolbarBar.setBackgroundColor(commandInfoBarColor(isDarkMode))
 
         val isWikidata = invalidCommandSource != ScribeState.TRANSLATE
         val invalidMsg =
@@ -773,6 +774,11 @@ class KeyboardUIManager(
     }
 
     /**
+     * Background of the command bar while it shows the invalid or already-plural message.
+     */
+    private fun commandInfoBarColor(isDarkMode: Boolean): Int = context.scribeColorInt(R.color.scribe_keyboard_background, dark = isDarkMode)
+
+    /**
      * Configures the UI for the `ALREADY_PLURAL` state, which is shown when the user
      * attempts to pluralize a word that is already plural.
      */
@@ -781,7 +787,7 @@ class KeyboardUIManager(
         binding.commandOptionsBar.visibility = View.GONE
         binding.toolbarBar.visibility = View.VISIBLE
         val isDarkMode = getIsDarkModeOrNot(context)
-        binding.toolbarBar.setBackgroundColor(if (isDarkMode) "#1E1E1E".toColorInt() else "#d2d4da".toColorInt())
+        binding.toolbarBar.setBackgroundColor(commandInfoBarColor(isDarkMode))
         binding.ivInfo.visibility = View.VISIBLE
         binding.promptText.text = "$ALREADY_PLURAL_MSG: "
         binding.commandBar.hint = ""
@@ -1429,16 +1435,11 @@ class KeyboardUIManager(
     private fun updateDotIndicators() {
         val pageIndicators = binding.pageIndicators
         val isDarkMode = getIsDarkModeOrNot(context)
+        val activeColor = context.scribeColorInt(R.color.scribe_text, dark = isDarkMode)
+        val inactiveColor = context.scribeColorInt(R.color.scribe_caption, dark = isDarkMode)
         for (i in 0 until pageIndicators.childCount) {
-            val dot = pageIndicators.getChildAt(i)
-            val drawableRes = if (i == currentPage) R.drawable.dot_active else R.drawable.dot_inactive
-            val drawable = ContextCompat.getDrawable(context, drawableRes)?.mutate()
-            if (isDarkMode) {
-                drawable?.setTint(if (i == currentPage) Color.WHITE else 0x66FFFFFF.toInt())
-            } else {
-                drawable?.setTint(if (i == currentPage) Color.BLACK else 0xFFCCCCCC.toInt())
-            }
-            dot.background = drawable
+            val color = if (i == currentPage) activeColor else inactiveColor
+            pageIndicators.getChildAt(i).backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 
@@ -1503,6 +1504,8 @@ class KeyboardUIManager(
         binding.clipboardPanelClose.setColorFilter(textColor)
         binding.clipboardPanelLabel.setTextColor(textColor)
         binding.clipboardEmptyText.setTextColor(textColor)
+        binding.clipboardClearAll.imageTintList =
+            ColorStateList.valueOf(context.scribeColorInt(R.color.scribe_delete, dark = isDarkMode))
     }
 
     fun hideClipboardPanel() {

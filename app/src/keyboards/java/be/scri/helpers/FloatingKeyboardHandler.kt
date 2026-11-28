@@ -17,6 +17,7 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import be.scri.R
 import be.scri.helpers.PreferencesHelper.getIsDarkModeOrNot
+import be.scri.ui.theme.scribeColorInt
 
 /**
  * Manages floating keyboard state, resize handles, touch listeners, and layout transitions
@@ -160,7 +161,7 @@ class FloatingKeyboardHandler(
                     shape = GradientDrawable.RECTANGLE
                     cornerRadius = 16f * density
                     setColor(kbBgColor)
-                    setStroke((1f * density).toInt(), 0x40888888.toInt())
+                    setStroke((1f * density).toInt(), ime.imeContext.scribeColorInt(R.color.scribe_keyboard_border, dark = isDarkMode))
                 }
             card.background = floatingBg
             card.elevation = 8f * density

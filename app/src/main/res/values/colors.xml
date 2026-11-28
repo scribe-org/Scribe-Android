@@ -25,7 +25,6 @@
     <color name="transparent">@android:color/transparent</color>
     <color
         name="special_key_light">#aeb3be</color>
-    <color name="special_key_dark">#202020</color>
     <color
         name="command_bar_color_dark">#2E2E2E</color>
     <color name="mini_keyboard_color">#3F3F46</color>
@@ -839,7 +838,7 @@
     #95000000</color>
     <color name="scribe_key_pressed">#FFE9E9E9</color>
     <color
-        name="scribe_key_special">#FFAEB3BE</color>
+        name="scribe_key_special">#FFADB3BD</color>
     <color name="scribe_accent_blue">#FF75CEFA</color>
     <color
         name="scribe_annotation_red">#FF9F1722</color>
@@ -852,5 +851,7 @@
     <color
         name="scribe_nav_unselected">#FF808080</color>
     <color name="scribe_icon">#FF000000</color>
+    <color name="scribe_keyboard_border">#40888888</color>
+    <color name="scribe_delete">#FFE4572E</color>
 
 </resources>
