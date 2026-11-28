@@ -126,11 +126,18 @@ android {
         }
     }
 
+    val isMinify = project.findProperty("minify")?.let { it == "" || it.toString().toBoolean() } ?: false
+
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".debug"
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
+            if (isMinify) {
+                isDebuggable = false
+                isMinifyEnabled = true
+                proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            }
         }
         getByName("release") {
             isMinifyEnabled = true
