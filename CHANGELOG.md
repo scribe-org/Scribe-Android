@@ -15,6 +15,10 @@ Emojis for the following are chosen based on [gitmoji](https://gitmoji.dev/).
 
 ## [Upcoming] Scribe-Android v1.X.Y
 
+### 🎨 Design
+
+- Compose theme colors now come from the shared `scribe_*` resources. Dark mode button text stays orange on orange. The dark caption uses the named token `#CAC4D0`, the same grey this slot already used ([#782](https://github.com/scribe-org/Scribe-Android/issues/782)).
+
 ### 🐛 Bug Fixes
 
 - ProGuard keep rules and defensive fallbacks in NativeSuggestionEngine were added for JNI-bound classes and methods, preventing crashes in release builds ([#796](https://github.com/scribe-org/Scribe-Android/issues/796)).
