@@ -941,8 +941,10 @@ abstract class GeneralKeyboardIME(
             }
         }
 
-    override fun isValidWord(word: String): Boolean =
-        this::nativeSuggestionEngine.isInitialized && nativeSuggestionEngine.isValidWord(language, word)
+    override fun isValidWord(word: String): Boolean {
+        if (!this::nativeSuggestionEngine.isInitialized) return false
+        return nativeSuggestionEngine.isValidWord(language, word)
+    }
 
     /**
      * Gets the current text in the command bar without the cursor.
