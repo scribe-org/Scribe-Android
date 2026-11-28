@@ -928,14 +928,22 @@ abstract class GeneralKeyboardIME(
         word: String,
         previousWord: String?,
         limit: Int,
-    ): List<String> {
-        if (this::nativeSuggestionEngine.isInitialized) {
-            val nativeCompletions = nativeSuggestionEngine.getAutocompletions(language, word, previousWord, limit, dataHandler.profanity)
-            if (nativeCompletions.isNotEmpty()) {
-                return nativeCompletions.map { it.substringBefore("-") }
+    ): List<String> =
+        // The lexicon is a deterministic prefix match and is preferred; the native engine's
+        // suggestions can drift on longer words, so it's only the fallback.
+        dataHandler.getAutocompletions(word, limit).ifEmpty {
+            if (this::nativeSuggestionEngine.isInitialized) {
+                nativeSuggestionEngine
+                    .getAutocompletions(language, word, previousWord, limit, dataHandler.profanity)
+                    .map { it.substringBefore("-") }
+            } else {
+                emptyList()
             }
         }
-        return dataHandler.getAutocompletions(word, limit)
+
+    override fun isValidWord(word: String): Boolean {
+        if (!this::nativeSuggestionEngine.isInitialized) return false
+        return nativeSuggestionEngine.isValidWord(language, word)
     }
 
     /**
@@ -1152,7 +1160,12 @@ abstract class GeneralKeyboardIME(
 
     override fun updateTypedWordSuggestion(word: String?) = suggestionUIHandler.updateTypedWordSuggestion(word)
 
-    override fun updateAutocompleteCompletions(completions: List<String>) = suggestionUIHandler.updateAutocompleteCompletions(completions)
+    override fun updateAutocompleteCompletions(
+        completions: List<String>,
+        highlightedSuggestion: String?,
+    ) = suggestionUIHandler.updateAutocompleteCompletions(completions, highlightedSuggestion)
+
+    override fun tryInsertHighlightedAutocompleteSuggestion(): Boolean = suggestionUIHandler.tryInsertHighlightedAutocompleteSuggestion()
 
     /**
      * Clears autocomplete suggestions by resetting the suggestion strip

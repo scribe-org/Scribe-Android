@@ -111,7 +111,14 @@ interface KeyboardIMEContext {
 
     fun updateTypedWordSuggestion(word: String?)
 
-    fun updateAutocompleteCompletions(completions: List<String>)
+    fun updateAutocompleteCompletions(
+        completions: List<String>,
+        highlightedSuggestion: String? = null,
+    )
+
+    fun tryInsertHighlightedAutocompleteSuggestion(): Boolean
+
+    fun isValidWord(word: String): Boolean
 
     fun getPreviousWordBeforeCursor(): String?
 

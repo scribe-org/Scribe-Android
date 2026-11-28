@@ -2,8 +2,21 @@
 
 package be.scri.helpers.ui
 
+import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PixelFormat
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.InsetDrawable
+import android.graphics.drawable.LayerDrawable
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import be.scri.R
 import be.scri.helpers.AnnotationTextUtils.handleColorAndTextForNounType
 import be.scri.helpers.AnnotationTextUtils.handleTextForCaseAnnotation
@@ -23,7 +36,19 @@ class SuggestionUIHandler(
 ) {
     private companion object {
         const val NOUN_TYPE_SIZE = 20f
+        const val SUGGESTION_HIGHLIGHT_ALPHA = 51
+        const val SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP = 12f
+        const val SUGGESTION_HIGHLIGHT_HORIZONTAL_INSET_DP = 4f
+        const val SUGGESTION_HIGHLIGHT_VERTICAL_INSET_DP = 1f
+        const val SUGGESTION_UNDERLINE_HEIGHT_DP = 3f
+        const val SUGGESTION_UNDERLINE_EXTRA_HORIZONTAL_INSET_DP = 6f
     }
+
+    /**
+     * The suggestion currently shown highlighted (if any), so a following space press can
+     * insert it in place of what the user has typed, matching Scribe-iOS behavior.
+     */
+    private var highlightedAutocompleteSuggestion: String? = null
 
     private val uiManager: KeyboardUIManager
         get() = ime.uiManager
@@ -49,6 +74,7 @@ class SuggestionUIHandler(
         ime.checkIfPluralWord = isPlural
         ime.caseAnnotationSuggestion = caseAnnotationSuggestion
         ime.wordSuggestions = wordSuggestions
+        highlightedAutocompleteSuggestion = null
 
         if (ime.currentState != ScribeState.IDLE) {
             if (ime.currentState != ScribeState.SELECT_COMMAND) {
@@ -412,6 +438,7 @@ class SuggestionUIHandler(
         button.background = null
         button.foreground = null
         button.setTextColor(themeManager.getSuggestionTextColor(ime.imeContext))
+        button.setTypeface(button.typeface, Typeface.NORMAL)
         button.setOnClickListener {
             ime.getInputConnection()?.commitText("$text ", 1)
             ime.moveToIdleState()
@@ -425,6 +452,7 @@ class SuggestionUIHandler(
      * — unlike the completions, it needs no lookup, so it should never lag.
      */
     fun updateTypedWordSuggestion(word: String?) {
+        highlightedAutocompleteSuggestion = null
         if (ime.currentState != ScribeState.IDLE || word.isNullOrEmpty()) {
             uiManager.disableAutoSuggest(ime.language)
             if (!ime.autoSuggestEmojis.isNullOrEmpty() && ime.emojiAutoSuggestionEnabled) {
@@ -449,16 +477,29 @@ class SuggestionUIHandler(
     /**
      * Fills the remaining suggestion slots with dictionary/engine completions.
      * Clears them (leaving the typed word alone) if not idle.
+     *
+     * [highlightedSuggestion] is either one of [completions] or the typed word itself.
      */
-    fun updateAutocompleteCompletions(completions: List<String>) {
-        if (ime.currentState != ScribeState.IDLE) return
+    fun updateAutocompleteCompletions(
+        completions: List<String>,
+        highlightedSuggestion: String? = null,
+    ) {
+        if (ime.currentState != ScribeState.IDLE) {
+            highlightedAutocompleteSuggestion = null
+            return
+        }
+        highlightedAutocompleteSuggestion = highlightedSuggestion
 
         val completion1 = completions.getOrNull(0) ?: ""
         val completion2 = completions.getOrNull(1) ?: ""
 
-        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1)
+        if (highlightedSuggestion != null && highlightedSuggestion !in completions) {
+            uiManager.binding.translateBtn.background = buildSuggestionBackground(highlightedSuggestion, isHighlighted = true)
+        }
+
+        setAutocompleteButton(uiManager.binding.conjugateBtn, completion1, highlightedSuggestion)
         if (ime.autoSuggestEmojis.isNullOrEmpty()) {
-            uiManager.pluralBtn?.let { setAutocompleteButton(it, completion2) }
+            uiManager.pluralBtn?.let { setAutocompleteButton(it, completion2, highlightedSuggestion) }
         } else {
             uiManager.updateButtonVisibility(ime.currentState, true, ime.autoSuggestEmojis)
         }
@@ -475,6 +516,7 @@ class SuggestionUIHandler(
         word: String,
     ) {
         setSuggestionButton(button, "\"$word\"")
+        button.background = buildSuggestionBackground(word, isHighlighted = false)
         button.setOnClickListener {
             ime.getInputConnection()?.commitText(" ", 1)
             ime.suggestionHandler.processLinguisticSuggestions(word)
@@ -486,25 +528,102 @@ class SuggestionUIHandler(
     /**
      * Sets up an autocomplete button with the given suggestion text.
      * When clicked, it replaces the current word with the suggestion.
+     * The highlighted suggestion is the one pressing space will also insert.
      */
     private fun setAutocompleteButton(
         button: Button,
         text: String,
+        highlightedSuggestion: String? = null,
     ) {
         setSuggestionButton(button, text)
         if (text.isBlank()) {
             button.setOnClickListener(null)
             return
         }
+        button.background = buildSuggestionBackground(text, text.equals(highlightedSuggestion, ignoreCase = true))
         button.setOnClickListener {
-            val ic = ime.getInputConnection() ?: return@setOnClickListener
-            val beforeText = ic.getTextBeforeCursor(50, 0) ?: ""
-            val wordStartIndex = beforeText.lastIndexOfAny(charArrayOf(' ', '\n', '\t', '.', ',', '?', '!')) + 1
-            val currentWord = beforeText.substring(wordStartIndex)
-            ic.deleteSurroundingText(currentWord.length, 0)
-            ic.commitText(text, 1)
-            ime.moveToIdleState()
+            if (replaceCurrentWordWithSuggestion(text)) ime.moveToIdleState()
         }
+    }
+
+    /**
+     * Deletes the word currently being typed (immediately before the cursor) and commits
+     * [text] in its place. Returns false if there is no input connection.
+     */
+    private fun replaceCurrentWordWithSuggestion(text: String): Boolean {
+        val ic = ime.getInputConnection() ?: return false
+        val beforeText = ic.getTextBeforeCursor(50, 0) ?: ""
+        val wordStartIndex = beforeText.lastIndexOfAny(charArrayOf(' ', '\n', '\t', '.', ',', '?', '!')) + 1
+        val currentWord = beforeText.substring(wordStartIndex)
+        ic.deleteSurroundingText(currentWord.length, 0)
+        ic.commitText(text, 1)
+        return true
+    }
+
+    /**
+     * If a suggestion is currently highlighted, replaces the typed word with it, appends a
+     * space, and returns true. Otherwise does nothing and returns false.
+     */
+    fun tryInsertHighlightedAutocompleteSuggestion(): Boolean {
+        val suggestion = highlightedAutocompleteSuggestion ?: return false
+        highlightedAutocompleteSuggestion = null
+        replaceCurrentWordWithSuggestion(suggestion)
+        ime.getInputConnection()?.commitText(" ", 1)
+        ime.moveToIdleState()
+        return true
+    }
+
+    /**
+     * Builds the background for a suggestion chip: a rounded, tinted fill when highlighted,
+     * plus an underline in the word's grammatical gender color(s) when known (split for
+     * nouns with several genders, per #407). Returns null if neither applies.
+     */
+    private fun buildSuggestionBackground(
+        text: String,
+        isHighlighted: Boolean,
+    ): Drawable? {
+        val underlineColors = getGenderUnderlineColors(text)
+        if (!isHighlighted && underlineColors.isEmpty()) return null
+
+        val density = ime.getImeResources().displayMetrics.density
+        val horizontalInsetPx = (SUGGESTION_HIGHLIGHT_HORIZONTAL_INSET_DP * density).toInt()
+        val verticalInsetPx = (SUGGESTION_HIGHLIGHT_VERTICAL_INSET_DP * density).toInt()
+
+        val layers = mutableListOf<Drawable>()
+        if (isHighlighted) layers.add(buildSuggestionHighlightFill())
+        if (underlineColors.isNotEmpty()) layers.add(SplitColorDrawable(underlineColors))
+
+        val layered = LayerDrawable(layers.toTypedArray())
+        if (underlineColors.isNotEmpty()) {
+            val underlineIndex = layers.lastIndex
+            val extraInsetPx = (SUGGESTION_UNDERLINE_EXTRA_HORIZONTAL_INSET_DP * density).toInt()
+            layered.setLayerInset(underlineIndex, extraInsetPx, 0, extraInsetPx, 0)
+            layered.setLayerGravity(underlineIndex, Gravity.BOTTOM)
+            layered.setLayerHeight(underlineIndex, (SUGGESTION_UNDERLINE_HEIGHT_DP * density).toInt())
+        }
+        return InsetDrawable(layered, horizontalInsetPx, verticalInsetPx, horizontalInsetPx, verticalInsetPx)
+    }
+
+    private fun buildSuggestionHighlightFill(): Drawable {
+        val highlightColor =
+            ColorUtils.setAlphaComponent(
+                ContextCompat.getColor(ime.imeContext, R.color.theme_scribe_blue),
+                SUGGESTION_HIGHLIGHT_ALPHA,
+            )
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = SUGGESTION_HIGHLIGHT_CORNER_RADIUS_DP * ime.getImeResources().displayMetrics.density
+            setColor(highlightColor)
+        }
+    }
+
+    private fun getGenderUnderlineColors(text: String): List<Int> {
+        val genders = ime.findGenderForLastWord(ime.nounKeywords, text) ?: return emptyList()
+        return genders
+            .map { handleColorAndTextForNounType(it, ime.language, ime.imeContext).first }
+            .filter { it != R.color.transparent }
+            .distinct()
+            .map { ContextCompat.getColor(ime.imeContext, it) }
     }
 
     /**
@@ -512,8 +631,61 @@ class SuggestionUIHandler(
      * to the default command buttons via the UI Manager.
      */
     fun clearAutocomplete() {
+        highlightedAutocompleteSuggestion = null
         if (ime.isUiManagerInitialized) {
             uiManager.disableAutoSuggest(ime.language)
         }
     }
+}
+
+/**
+ * A pill-shaped drawable that splits its bounds into equal horizontal segments, one per color.
+ * Used to render a noun's gender annotation as a single-color underline, or a half-and-half
+ * split underline for nouns with more than one gender (e.g. German "Schild"), per #407.
+ */
+private class SplitColorDrawable(
+    private val colors: List<Int>,
+) : Drawable() {
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    override fun draw(canvas: Canvas) {
+        val b = bounds
+        if (colors.isEmpty() || b.width() <= 0 || b.height() <= 0) return
+
+        val cornerRadius = b.height() / 2f
+        val clipPath =
+            Path().apply {
+                addRoundRect(
+                    b.left.toFloat(),
+                    b.top.toFloat(),
+                    b.right.toFloat(),
+                    b.bottom.toFloat(),
+                    cornerRadius,
+                    cornerRadius,
+                    Path.Direction.CW,
+                )
+            }
+        canvas.save()
+        canvas.clipPath(clipPath)
+
+        val segmentWidth = b.width().toFloat() / colors.size
+        colors.forEachIndexed { index, color ->
+            paint.color = color
+            val left = b.left + segmentWidth * index
+            val right = if (index == colors.lastIndex) b.right.toFloat() else b.left + segmentWidth * (index + 1)
+            canvas.drawRect(left, b.top.toFloat(), right, b.bottom.toFloat(), paint)
+        }
+        canvas.restore()
+    }
+
+    override fun setAlpha(alpha: Int) {
+        paint.alpha = alpha
+    }
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        paint.colorFilter = colorFilter
+    }
+
+    @Deprecated("Deprecated in Java", ReplaceWith("PixelFormat.TRANSLUCENT"))
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 }

@@ -62,7 +62,15 @@ class AutocompletionHandler(
                 val previousWord = ime.getPreviousWordBeforeCursor()
                 val completions = ime.getAutocompletions(currentWord, previousWord, limit = MAX_COMPLETIONS + 1)
 
-                ime.updateAutocompleteCompletions(buildCompletions(currentWord, completions))
+                val shownCompletions = buildCompletions(currentWord, completions)
+                // Highlight the typed word if it's a real word, else the only possible completion.
+                val highlightedSuggestion =
+                    when {
+                        ime.isValidWord(currentWord) -> currentWord
+                        completions.size == 1 -> shownCompletions.firstOrNull()
+                        else -> null
+                    }
+                ime.updateAutocompleteCompletions(shownCompletions, highlightedSuggestion)
             }.also { handler.postDelayed(it, AUTOCOMPLETE_DELAY_MS) }
     }
 
