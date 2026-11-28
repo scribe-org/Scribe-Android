@@ -9,7 +9,7 @@ echo "=================================================="
 echo "Starting Release Smoke Test for flavor: $FLAVOR"
 echo "=================================================="
 
-# Wait for device/emulator to boot
+# Wait for device/emulator to boot.
 echo "Waiting for device to finish booting..."
 adb wait-for-device
 while [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "1" ]]; do
@@ -18,11 +18,11 @@ while [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" != "
 done
 echo "Device boot completed."
 
-# Wake screen and dismiss lockscreen
+# Wake screen and dismiss lock screen.
 adb shell input keyevent 82 || true
 sleep 1
 
-# Clear logcat buffer to only capture fresh logs
+# Clear logcat buffer to only capture fresh logs.
 adb logcat -c
 
 if [[ "$FLAVOR" == "Keyboards" ]]; then
@@ -54,14 +54,14 @@ if [[ "$FLAVOR" == "Keyboards" ]]; then
     WIDTH=$(echo "$SCREEN_SIZE" | cut -d'x' -f1)
     HEIGHT=$(echo "$SCREEN_SIZE" | cut -d'x' -f2)
 
-    # Tap input field
+    # Tap input field.
     INPUT_X=$(( WIDTH / 2 ))
     INPUT_Y=$(( HEIGHT * 90 / 100 ))
     echo "Focusing input field at ($INPUT_X, $INPUT_Y)..."
     adb shell input tap "$INPUT_X" "$INPUT_Y" || true
     sleep 2
 
-    # Check whether the keyboard IME is shown
+    # Check whether the keyboard IME is shown.
     if adb shell dumpsys input_method | grep -q "mInputShown=true"; then
         echo "Keyboard IME is visible on screen (mInputShown=true)."
     else
@@ -70,7 +70,7 @@ if [[ "$FLAVOR" == "Keyboards" ]]; then
         sleep 2
     fi
 
-    # Tap keyboard keys in the center of the soft keyboard to trigger the JNI suggestion engine
+    # Tap keyboard keys in the center of the soft keyboard to trigger the JNI suggestion engine.
     KEY_X=$(( WIDTH / 2 ))
     KEY_Y=$(( HEIGHT * 70 / 100 ))
     echo "Tapping keyboard keys at ($KEY_X, $KEY_Y) to trigger native suggestion engine..."
