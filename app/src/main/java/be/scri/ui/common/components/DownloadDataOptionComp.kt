@@ -21,14 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import be.scri.R
 import be.scri.ui.screens.download.DownloadState
-import be.scri.ui.theme.theme_dark_delete_button_color
-import be.scri.ui.theme.theme_light_delete_button_color
+import be.scri.ui.theme.scribeColorInt
 
 /**
  * A button component that reflects the state of a data download.
@@ -87,10 +87,10 @@ fun DeleteDataOptionComp(
     isDarkTheme: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val backgroundColor =
-        if (isDarkTheme) theme_dark_delete_button_color.copy(alpha = 0.25f) else theme_light_delete_button_color
-    val iconColor = if (isDarkTheme) theme_dark_delete_button_color else Color.Black
-    val border = if (isDarkTheme) BorderStroke(1.dp, theme_dark_delete_button_color) else null
+    val deleteColor = Color(LocalContext.current.scribeColorInt(R.color.scribe_delete, dark = isDarkTheme))
+    val backgroundColor = if (isDarkTheme) deleteColor.copy(alpha = 0.25f) else deleteColor
+    val iconColor = if (isDarkTheme) deleteColor else Color.Black
+    val border = if (isDarkTheme) BorderStroke(1.dp, deleteColor) else null
 
     Button(
         onClick = onClick,
