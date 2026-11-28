@@ -16,14 +16,31 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="6dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Copied text"
-            android:textColor="#999999"
-            android:textSize="11sp"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/pinned_badge"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_pin_vector"
+                android:tint="@color/theme_scribe_blue"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Copied text"
+                android:textColor="#999999"
+                android:textSize="11sp" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/pin_icon"
